@@ -84,13 +84,23 @@ public class FormProviderServiceImpl implements FormProviderService {
 
 
         Object input = null;
-        long contentId = task.getTaskData().getDocumentContentId();
-        if (contentId != -1) {
-            Content content = contentService.getContentById(contentId);
+        long inputContentId = task.getTaskData().getDocumentContentId();
+        if (inputContentId != -1) {
+            Content content = contentService.getContentById(inputContentId);
             input = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         }
         if(input == null){
             input = new HashMap<String, String>();
+        }
+        
+        Object output = null;
+        long outputContentId = task.getTaskData().getOutputContentId();
+        if (outputContentId != -1) {
+            Content content = contentService.getContentById(outputContentId);
+            output = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        }
+        if(output == null){
+            output = new HashMap<String, String>();
         }
 
         // check if a template exists
@@ -117,12 +127,24 @@ public class FormProviderServiceImpl implements FormProviderService {
         if(taskOutputMappings == null){
              taskOutputMappings = new HashMap<String, String>();
         }
+        
+        // I need to replace the value that comes from the 
+        //process mappings with the value that can be stored in the output Content
+        Map<String, String> finalOutput = new HashMap<String, String>();
+        for(String key: taskOutputMappings.values()){
+            String value = ((Map<String, String>)output).get(key);
+            if(value == null){
+                value = "";
+            }
+            finalOutput.put(key, value);
+        }
+        
 
         // merge template with process variables
         Map<String, Object> renderContext = new HashMap<String, Object>();
         renderContext.put("task", task);
         renderContext.put("inputs", input);
-        renderContext.put("outputs", taskOutputMappings);
+        renderContext.put("outputs", finalOutput);
 
         return render(name, template, renderContext);
 

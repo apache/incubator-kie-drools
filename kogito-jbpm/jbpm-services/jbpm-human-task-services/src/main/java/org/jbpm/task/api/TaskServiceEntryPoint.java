@@ -201,6 +201,8 @@ public interface TaskServiceEntryPoint {
     public int removeAllTasks();
 
     long addContent(long taskId, Content content);
+    
+    long addContent(long taskId, Map<String, Object> params);
 
     void deleteContent(long taskId, long contentId);
 

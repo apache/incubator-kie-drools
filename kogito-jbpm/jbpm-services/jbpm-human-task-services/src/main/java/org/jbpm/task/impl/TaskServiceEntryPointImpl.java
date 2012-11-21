@@ -421,6 +421,10 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public long addContent(long taskId, Content content) {
         return this.taskContentService.addContent(taskId, content);
     }
+    
+    public long addContent(long taskId, Map<String, Object> params) {
+        return this.taskContentService.addContent(taskId, params);
+    }
 
     public void deleteContent(long taskId, long contentId) {
         this.taskContentService.deleteContent(taskId, contentId);

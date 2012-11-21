@@ -34,6 +34,7 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.annotations.Internal;
+import org.jbpm.task.api.TaskContentService;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskQueryService;
@@ -88,6 +89,8 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     private TaskQueryService taskQueryService;
     @Inject
     private TaskIdentityService taskIdentityService;
+    @Inject
+    private TaskContentService taskContentService;
     @Inject
     private Event<Task> taskEvents;
     @Inject
@@ -380,11 +383,9 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 }
                 case Complete: {
                     if (data != null) {
-                        ContentData result = ContentMarshallerHelper.marshal((Object) data, null);
-                        Content content = new Content();
-                        content.setContent(result.getContent());
-                        em.persist(content);
-                        task.getTaskData().setOutput(content.getId(), result);
+                        
+                        taskContentService.addContent(taskId, data);
+                        
                     }
 
                     taskEvents.select(new AnnotationLiteral<AfterTaskCompletedEvent>() {

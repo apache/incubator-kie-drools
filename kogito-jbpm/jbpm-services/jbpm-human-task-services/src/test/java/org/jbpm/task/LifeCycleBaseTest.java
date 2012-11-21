@@ -150,6 +150,98 @@ public abstract class LifeCycleBaseTest extends BaseTest {
         assertEquals("value3",unmarshalledvars.get("key3") );
     }
     
+    /*
+     * This test shows how to work with a task and save severeal intermediate steps of the content that the 
+     * task is handling. 
+     * The input parameters for this task are: (key1,value1) (key3,value3). 
+     * 
+     * (key2, null) is a variable that is input/output, this means that is a variable that comes defined, but it value can be changed
+     * by the user
+     * 
+     * The expected outputs for the task are: (key2, value2), (key4, value4) (key5, value5) (key6, value6)
+     */
+    @Test
+    public void testNewTaskWithMapContentAndOutput() {
+        
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        Map<String, Object> variablesMap = new HashMap<String, Object>();
+        variablesMap.put("key1", "value1");
+        variablesMap.put("key2", null);
+        variablesMap.put("key3", "value3");
+        ContentData data = ContentMarshallerHelper.marshal(variablesMap, null);
+        
+        Task task = ( Task )  TaskFactory.evalTask( new StringReader( str ));
+        taskService.addTask( task, data );
+        
+        long taskId = task.getId();
+        
+        // Task should be assigned to the single potential owner and state set to Reserved
+        
+        
+        Task task1 = taskService.getTaskById( taskId );
+        assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
+        assertEquals( "java.util.HashMap", task1.getTaskData().getDocumentType() );
+        long contentId = task1.getTaskData().getDocumentContentId();
+        assertTrue( contentId != -1 ); 
+
+        
+        
+        Content content = taskService.getContentById(contentId);
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        if(!(unmarshalledObject instanceof Map)){
+            fail("The variables should be a Map");
+        
+        }
+        Map<String, Object> unmarshalledvars = (Map<String, Object>)unmarshalledObject;
+        
+        assertEquals("value1",unmarshalledvars.get("key1") );
+        assertNull(unmarshalledvars.get("key2") );
+        assertEquals("value3",unmarshalledvars.get("key3") );
+        
+        taskService.start(taskId,"Bobba Fet" );
+        
+        task1 = taskService.getTaskById( taskId );
+        assertEquals(Status.InProgress, task1.getTaskData().getStatus());
+        // Once the task has being started the user decide to start working on it. 
+        
+        
+        Map<String, Object> intermediateOutputContentMap = new HashMap<String, Object>();
+        
+        intermediateOutputContentMap.put("key2", "value2");
+        intermediateOutputContentMap.put("key4", "value4");
+        
+        
+        taskService.addContent(taskId, intermediateOutputContentMap);
+        
+        Map<String, Object> finalOutputContentMap = new HashMap<String, Object>();
+         finalOutputContentMap.put("key5", "value5");
+        finalOutputContentMap.put("key6", "value6");
+        
+        
+        taskService.complete(taskId,"Bobba Fet", finalOutputContentMap);
+        
+        task1 = taskService.getTaskById( taskId );
+        assertEquals(Status.Completed, task1.getTaskData().getStatus());
+        long outputContentId = task1.getTaskData().getOutputContentId();
+        Content contentById = taskService.getContentById(outputContentId);
+        
+        unmarshalledObject = ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
+        assertNotNull(unmarshalledObject);
+        if(!(unmarshalledObject instanceof Map)){
+            fail("The variables should be a Map");
+        
+        }
+        assertTrue(((Map<String, Object>)unmarshalledObject).containsKey("key2"));
+        assertTrue(((Map<String, Object>)unmarshalledObject).containsKey("key4"));
+        assertTrue(((Map<String, Object>)unmarshalledObject).containsKey("key5"));
+        assertTrue(((Map<String, Object>)unmarshalledObject).containsKey("key6"));
+        
+    }
+    
     @Test
     public void testNewTaskWithLargeContent() {
         

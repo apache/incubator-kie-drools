@@ -64,11 +64,7 @@ public class CompleteTaskCommand<Void> extends TaskCommand {
         }
 
         if (data != null) {
-            ContentData result = ContentMarshallerHelper.marshal((Object) data, null);
-            Content content = new Content();
-            content.setContent(result.getContent());
-            context.getEm().persist(content);
-            task.getTaskData().setOutput(content.getId(), result);
+            context.getTaskContentService().addContent(taskId, data);
         }
 
         context.getTaskEvents().select(new AnnotationLiteral<AfterTaskCompletedEvent>() {}).fire(task);

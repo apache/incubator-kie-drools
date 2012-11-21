@@ -16,14 +16,16 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Content;
+import org.jbpm.task.ContentData;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskContentService;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 /**
  *
@@ -32,14 +34,38 @@ import org.jbpm.task.api.TaskContentService;
 @ApplicationScoped
 public class TaskContentServiceImpl implements TaskContentService {
 
-    @Inject 
+    @Inject
     private EntityManager em;
 
     public TaskContentServiceImpl() {
     }
 
-    
-    
+    public long addContent(long taskId, Map<String, Object> params) {
+        Task task = em.find(Task.class, taskId);
+        long outputContentId = task.getTaskData().getOutputContentId();
+        Content outputContent = em.find(Content.class, outputContentId);
+        
+        long contentId = -1;
+        if (outputContent == null) {
+            ContentData outputContentData = ContentMarshallerHelper.marshal(params, null);
+            Content content = new Content(outputContentData.getContent());
+            em.persist(content);
+            
+            task.getTaskData().setOutput(content.getId(), outputContentData);
+            contentId = content.getId();
+        } else {
+            // I need to merge it if it already exist
+            Object unmarshalledObject = ContentMarshallerHelper.unmarshall(outputContent.getContent(), null);
+            if(unmarshalledObject != null && unmarshalledObject instanceof Map){
+                ((Map<String, Object>)unmarshalledObject).putAll(params);
+            }
+            ContentData outputContentData = ContentMarshallerHelper.marshal(unmarshalledObject, null);
+            outputContent.setContent(outputContentData.getContent());
+            contentId = outputContentId;
+        }
+        return contentId;
+    }
+
     public long addContent(long taskId, Content content) {
         Task task = em.find(Task.class, taskId);
         em.persist(content);
@@ -52,7 +78,7 @@ public class TaskContentServiceImpl implements TaskContentService {
         task.getTaskData().setDocumentContentId(-1);
         Content content = em.find(Content.class, contentId);
         em.remove(content);
-        
+
     }
 
     public List<Content> getAllContentByTaskId(long taskId) {

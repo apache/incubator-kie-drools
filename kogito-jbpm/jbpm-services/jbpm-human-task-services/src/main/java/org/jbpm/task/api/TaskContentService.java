@@ -5,6 +5,7 @@
 package org.jbpm.task.api;
 
 import java.util.List;
+import java.util.Map;
 import org.jbpm.task.Content;
 
 /**
@@ -22,6 +23,8 @@ import org.jbpm.task.Content;
 public interface TaskContentService {
 
     long addContent(long taskId, Content content);
+    
+    long addContent(long taskId, Map<String, Object> params);
 
     void deleteContent(long taskId, long contentId);
 

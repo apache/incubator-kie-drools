@@ -22,6 +22,7 @@ import org.kie.command.Context;
 import org.kie.command.World;
 import org.jbpm.task.Task;
 import org.jbpm.task.annotations.Internal;
+import org.jbpm.task.api.TaskContentService;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskQueryService;
@@ -40,6 +41,8 @@ public class TaskContext implements Context{
     private TaskQueryService taskQueryService;
     @Inject
     private TaskIdentityService taskIdentityService;
+    @Inject
+    private TaskContentService taskContentService;
     @Inject 
     private Event<Task> taskEvents;
     @Inject @Internal
@@ -70,6 +73,14 @@ public class TaskContext implements Context{
         return taskQueryService;
     }
 
+    public TaskContentService getTaskContentService() {
+        return taskContentService;
+    }
+
+    public void setTaskContentService(TaskContentService taskContentService) {
+        this.taskContentService = taskContentService;
+    }
+    
     public void setTaskQueryService(TaskQueryService taskQueryService) {
         this.taskQueryService = taskQueryService;
     }
@@ -106,6 +117,8 @@ public class TaskContext implements Context{
         this.eventListener = eventListener;
     }
 
+    
+    
     public World getContextManager() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
