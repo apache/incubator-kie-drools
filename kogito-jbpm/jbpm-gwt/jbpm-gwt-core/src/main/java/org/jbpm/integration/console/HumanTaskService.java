@@ -5,11 +5,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.kie.SystemEventListenerFactory;
+import org.jbpm.integration.console.shared.PropertyLoader;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.AllowedToDelegate;
 import org.jbpm.task.Attachment;
@@ -32,17 +33,20 @@ import org.jbpm.task.User;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
+import org.kie.SystemEventListenerFactory;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 
 public class HumanTaskService {
 	
-	private static TaskService INSTANCE;
+	private static TaskService INSTANCE;	
 	
 	public static TaskService getService() {
 		if (INSTANCE == null) {
-	        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
+		    Properties jbpmConsoleProperties = PropertyLoader.getJbpmConsoleProperties();
+	        EntityManagerFactory emf = Persistence.createEntityManagerFactory(
+	                jbpmConsoleProperties.getProperty("jbpm.console.task.service.pu", "org.jbpm.persistence.jpa"));
 	        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 	        TaskServiceSession taskSession = taskService.createSession();
 	        // Add users

@@ -16,9 +16,6 @@
 
 package org.jbpm.integration.console;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.security.Principal;
 import java.security.acl.Group;
 import java.util.ArrayList;
@@ -29,12 +26,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.naming.InitialContext;
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
+import javax.transaction.UserTransaction;
 
 import org.jboss.bpm.console.client.model.TaskRef;
 import org.jbpm.integration.console.shared.PropertyLoader;
-import org.jbpm.task.AccessType;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
@@ -88,18 +86,31 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 	}
 
 	public void completeTask(long taskId, Map data, String userId) {
-		connect();
-		
-		service.start(taskId, userId);
-		
-		ContentData contentData = null;
-		if (data != null) {
-		    
-		    contentData = ContentMarshallerHelper.marshal(data, StatefulKnowledgeSessionUtil.getStatefulKnowledgeSession().getEnvironment());
-		}
-  
-		service.complete(taskId, userId, contentData);
-		
+	    try {
+	    UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        
+            try {
+                
+        	    connect();
+        		
+        		service.start(taskId, userId);
+        		
+        		ContentData contentData = null;
+        		if (data != null) {
+        		    
+        		    contentData = ContentMarshallerHelper.marshal(data, StatefulKnowledgeSessionUtil.getStatefulKnowledgeSession().getEnvironment());
+        		}
+          
+        		service.complete(taskId, userId, contentData);
+        		ut.commit();
+            } catch (Exception e) {
+                ut.rollback();
+                throw e;
+            }
+	    } catch (Exception e) {
+            throw new RuntimeException("Error when completing task", e);
+        }
 	}
 
 	@SuppressWarnings("unchecked")
@@ -157,8 +168,21 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 	}
 	
 	public void skipTask(long taskId, String userId) {
-	    connect();
-        service.skip(taskId, userId);
+        try {
+            UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+            ut.begin();
+        
+            try {
+        	    connect();
+                service.skip(taskId, userId);
+                ut.commit();
+            } catch (Exception e) {
+                ut.rollback();
+                throw e;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error when completing task", e);
+        }
 	}
 
     private List<String> getCallerRoles() {

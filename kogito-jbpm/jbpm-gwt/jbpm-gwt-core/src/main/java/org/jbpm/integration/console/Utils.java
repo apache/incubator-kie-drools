@@ -31,7 +31,7 @@ public class Utils {
     
     public static int getTaskServicePort(Properties properties) {
         String strategy = properties.getProperty("jbpm.console.task.service.strategy", DEFAULT_TASK_SERVICE_STRATEGY);
-        String defaultPort = null;
+        String defaultPort = "-1";
         if ("Mina".equalsIgnoreCase(strategy)) {
             defaultPort = "9123";
             

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <process id="UserTaskLocal" name="User Task" isExecutable="true" processType="Private">
+    <startEvent id="_1" name="StartProcess">
+      <outgoing>_1-_2</outgoing>
+    </startEvent>
+    <userTask id="_2" name="Hello">
+      <incoming>_1-_2</incoming>
+      <outgoing>SequenceFlow_1</outgoing>
+      <ioSpecification id="InputOutputSpecification_1">
+        <inputSet id="InputSet_1"/>
+        <outputSet id="OutputSet_1"/>
+      </ioSpecification>
+      <potentialOwner id="PotentialOwner_1">
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <formalExpression id="FormalExpression_1">Tony Stark</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_3" name="EndProcess">
+      <incoming>_2-_3</incoming>
+      <terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </endEvent>
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <sequenceFlow id="_2-_3" sourceRef="ScriptTask_1" targetRef="_3"/>
+    <scriptTask id="ScriptTask_1" name="Script Task 1" scriptFormat="http://www.java.com/java">
+      <incoming>SequenceFlow_1</incoming>
+      <outgoing>_2-_3</outgoing>
+      <script>Integer.parseInt(&quot;a&quot;);</script>
+    </scriptTask>
+    <sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="_2" targetRef="ScriptTask_1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="UserTaskLocal">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="48.0" width="48.0" x="16.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="_2">
+        <dc:Bounds height="48.0" width="100.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_3">
+        <dc:Bounds height="48.0" width="48.0" x="440.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_UserTask_1">
+        <di:waypoint xsi:type="dc:Point" x="64.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="96.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-_3" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="357.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="440.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="247.0" y="15.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="196.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="247.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
