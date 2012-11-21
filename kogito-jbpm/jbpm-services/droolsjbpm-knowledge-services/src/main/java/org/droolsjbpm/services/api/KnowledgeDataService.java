@@ -50,6 +50,6 @@ public interface KnowledgeDataService {
     
     Collection<VariableStateDesc> getVariablesCurrentState(long processInstanceId);
     
-    
+    Collection<VariableStateDesc> getVariableHistory(long processInstanceId, String variableId);
 
 }

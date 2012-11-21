@@ -34,6 +34,7 @@ import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -157,6 +158,13 @@ public abstract class DomainKnowledgeServiceBaseTest {
         assertEquals("Initial Document", variableIterator.next().getNewValue());
         assertEquals("Reviewed Document", variableIterator.next().getNewValue());
         
+        
+        ProcessInstance pi = ksession.getProcessInstance(processInstance.getId());
+        ((WorkflowProcessInstance) pi).setVariable("approval_document", "Initial Document(updated)");
+        
+        variablesCurrentState = dataService.getVariablesCurrentState(processInstance.getId());
+        assertEquals(2, variablesCurrentState.size());
+        
         translatorTasks = taskService.getTasksAssignedAsPotentialOwner("translator", "en-UK");
         assertEquals(1, translatorTasks.size());
 
@@ -183,16 +191,21 @@ public abstract class DomainKnowledgeServiceBaseTest {
         variablesCurrentState = dataService.getVariablesCurrentState(processInstance.getId());
         assertEquals(3, variablesCurrentState.size());
         variableIterator = variablesCurrentState.iterator();
-        assertEquals("Initial Document", variableIterator.next().getNewValue());
+        
         assertEquals("Reviewed Document", variableIterator.next().getNewValue());
+        assertEquals("Initial Document(updated)", variableIterator.next().getNewValue());
         assertEquals("Translated Document", variableIterator.next().getNewValue());
         
         
         processInstanceHistory = dataService.getProcessInstanceFullHistory(0, processInstance.getId());
         assertEquals(18, processInstanceHistory.size());
 
-       
-
+        variablesCurrentState = dataService.getVariableHistory(processInstance.getId(), "approval_document");
+        assertEquals(2, variablesCurrentState.size());
+        variableIterator = variablesCurrentState.iterator();
+        assertEquals("Initial Document(updated)", variableIterator.next().getNewValue());
+        assertEquals("Initial Document", variableIterator.next().getNewValue());
+        
     }
     
     @Test

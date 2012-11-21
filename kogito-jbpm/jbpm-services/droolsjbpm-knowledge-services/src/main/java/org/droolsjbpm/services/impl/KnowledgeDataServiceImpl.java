@@ -91,7 +91,7 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
     }
 
     public Collection<VariableStateDesc> getVariablesCurrentState(long processInstanceId) {
-        List<VariableStateDesc> variablesState = em.createQuery("select vs FROM VariableStateDesc vs where vs.processInstanceId =:processInstanceId AND vs.pk = (select max(vss.pk) FROM VariableStateDesc vss WHERE vss.id = vs.id ) ")
+        List<VariableStateDesc> variablesState = em.createQuery("select vs FROM VariableStateDesc vs where vs.processInstanceId =:processInstanceId AND vs.pk in (select max(vss.pk) FROM VariableStateDesc vss WHERE vss.processInstanceId =:processInstanceId group by vss.variableId ) order by vs.pk")
                 .setParameter("processInstanceId", processInstanceId)
                 .getResultList();
 
@@ -146,5 +146,14 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         
 
         return uncompletedNodeInstances;
+    }
+    
+    public Collection<VariableStateDesc> getVariableHistory(long processInstanceId, String variableId) {
+        List<VariableStateDesc> variablesState = em.createQuery("select vs FROM VariableStateDesc vs where vs.processInstanceId =:processInstanceId AND vs.variableId =:variableId order by vs.pk DESC")
+                .setParameter("processInstanceId", processInstanceId)
+                .setParameter("variableId", variableId)
+                .getResultList();
+
+        return variablesState;
     }
 }
