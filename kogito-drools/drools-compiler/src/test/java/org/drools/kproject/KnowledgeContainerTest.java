@@ -33,7 +33,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
         kContainer.deploy(kJar1);
 
         // create a ksesion and check it works as expected
-        StatefulKnowledgeSession ksession = kContainer.getStatefulKnowlegeSession("org.test.KSession1");
+        StatefulKnowledgeSession ksession = kContainer.getStatefulKnowlegeSession("KSession1");
         checkKSession(ksession, "rule1", "rule2");
 
         this.fileManager.tearDown();
@@ -47,7 +47,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
         kContainer.deploy(kJar2);
 
         // create a ksesion and check it works as expected
-        StatefulKnowledgeSession ksession2 = kContainer.getStatefulKnowlegeSession("org.test.KSession1");
+        StatefulKnowledgeSession ksession2 = kContainer.getStatefulKnowlegeSession("KSession1");
         checkKSession(ksession2, "rule2", "rule3");
     }
 
@@ -89,16 +89,16 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
 
         for (String rule : rules) {
             String file = "org/test/" + rule + ".drl";
-            fileManager.write(fileManager.newFile("src/kbases/org.test.KBase1/" + file), createDRL(rule));
+            fileManager.write(fileManager.newFile("src/kbases/KBase1/" + file), createDRL(rule));
             files.add(file);
         }
 
         KProject kproj = new KProjectImpl();
-        KBase kBase1 = kproj.newKBase( "org.test", "KBase1" )
+        KBase kBase1 = kproj.newKBase( "KBase1" )
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( "org.test", "KSession1" )
+        KSession ksession1 = kBase1.newKSession( "KSession1" )
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
@@ -121,7 +121,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
     public void testKBaseUnit(KnowledgeContainer kContainer, String jarName) {
         List<String> list = new ArrayList<String>();
 
-        StatelessKnowledgeSession stlsKsession = kContainer.getStatelessKnowlegeSession(jarName + ".test1.KSession1");
+        StatelessKnowledgeSession stlsKsession = kContainer.getStatelessKnowlegeSession(jarName + ".KSession1");
         stlsKsession.setGlobal( "list", list );
         stlsKsession.execute( "dummy" );
         assertEquals( 2, list.size() );
@@ -129,7 +129,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
         assertTrue( list.contains( jarName + ".test1:rule2" ) );
 
         list.clear();
-        StatefulKnowledgeSession stflKsession = kContainer.getStatefulKnowlegeSession(jarName + ".test1.KSession2");
+        StatefulKnowledgeSession stflKsession = kContainer.getStatefulKnowlegeSession(jarName + ".KSession2");
         stflKsession.setGlobal( "list", list );
         stflKsession.fireAllRules();
         assertEquals( 2, list.size() );
@@ -137,7 +137,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
         assertTrue( list.contains( jarName + ".test1:rule2" ) );
 
         list.clear();
-        stflKsession = kContainer.getStatefulKnowlegeSession(jarName + ".test2.KSession3");
+        stflKsession = kContainer.getStatefulKnowlegeSession(jarName + ".KSession3");
         stflKsession.setGlobal( "list", list );
         stflKsession.fireAllRules();
         assertEquals( 2, list.size() );
@@ -146,7 +146,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
         assertTrue( list.contains( jarName + ".test2:rule2" ) );
 
         list.clear();
-        stlsKsession = kContainer.getStatelessKnowlegeSession(jarName + ".test3.KSession4");
+        stlsKsession = kContainer.getStatelessKnowlegeSession(jarName + ".KSession4");
         stlsKsession.setGlobal( "list", list );
         stlsKsession.execute( "dummy" );
         assertEquals( 4, list.size() );

@@ -27,8 +27,6 @@ import static org.drools.core.util.IoUtils.recursiveListFile;
 public class KBaseImpl
         implements
         KBase {
-    private String                           namespace;
-
     private String                           name;
     
     private Set<String>                      includes;
@@ -49,11 +47,8 @@ public class KBaseImpl
         this.includes = new HashSet<String>();
     }
 
-    public KBaseImpl(KProjectImpl kProject,
-                     String namespace,
-                     String name) {
+    public KBaseImpl(KProjectImpl kProject, String name) {
         this.kProject = kProject;
-        this.namespace = namespace;
         this.includes = new HashSet<String>();
         this.name = name;
         this.kSessions = Collections.emptyMap();
@@ -91,12 +86,11 @@ public class KBaseImpl
     /* (non-Javadoc)
      * @see org.kie.kproject.KBase#addKSession(org.kie.kproject.KSessionImpl)
      */
-    public KSession newKSession(String namespace,
-                                String name) {
-        KSession kSession = new KSessionImpl( this, namespace, name );
+    public KSession newKSession(String name) {
+        KSession kSession = new KSessionImpl( this, name );
         Map<String, KSession> newMap = new HashMap<String, KSession>();
         newMap.putAll( this.kSessions );
-        newMap.put( kSession.getQName(), kSession );
+        newMap.put( kSession.getName(), kSession );
         setKSessions( newMap );
 
         return kSession;
@@ -142,24 +136,6 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#getNamespace()
-     */
-    public String getNamespace() {
-        return namespace;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#setNamespace(java.lang.String)
-     */
-    public KBase setNamespace(String namespace) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "namespace", this.namespace, namespace ) );
-        }
-        this.namespace = namespace;
-        return this;
-    }
-
-    /* (non-Javadoc)
      * @see org.kie.kproject.KBase#getName()
      */
     public String getName() {
@@ -177,13 +153,6 @@ public class KBaseImpl
         return this;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#getQName()
-     */
-    public String getQName() {
-        return this.namespace + "." + this.name;
-    }
-        
     public Set<String> getIncludes() {
         return Collections.unmodifiableSet( includes );
     }
@@ -257,32 +226,42 @@ public class KBaseImpl
      */
     @Override
     public String toString() {
-        return "KBase [namespace=" + namespace + ", name=" + name + ", annotations=" + annotations + ", equalsBehaviour=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", ksessions=" + kSessions + "]";
+        return "KBase [name=" + name + ", annotations=" + annotations + ", equalsBehaviour=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", ksessions=" + kSessions + "]";
     }
 
-    public static List<String> getFiles(String kBaseQName, ZipFile zipFile) {
+    public static List<String> getFiles(String kBaseName, ZipFile zipFile) {
         List<String> files = new ArrayList<String>();
         Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
         while (zipEntries.hasMoreElements()) {
             ZipEntry zipEntry = zipEntries.nextElement();
             String fileName = zipEntry.getName();
-            if (filterFileInKBase(kBaseQName, fileName)) {
+            if (filterFileInKBase(kBaseName, fileName)) {
                 files.add(fileName);
             }
         }
         return files;
     }
 
-    public static List<String> getFiles(String kBaseQName, java.io.File root) {
+    public static List<String> getFiles(String kBaseName, java.io.File root) {
+        String prefix = "";
         java.io.File kBaseRoot = null;
-        for (java.io.File child : root.listFiles()) {
-            if (child.getName().equals(kBaseQName)) {
-                kBaseRoot = child;
-                break;
+        if (root.getName().equals(kBaseName)) {
+            kBaseRoot = root;
+        } else {
+            for (java.io.File child : root.listFiles()) {
+                if (child.getName().equals(kBaseName)) {
+                    kBaseRoot = child;
+                    break;
+                }
             }
+            prefix = kBaseName + "/";
         }
 
-        return recursiveListFile(kBaseRoot, kBaseQName + "/", new Predicate<java.io.File>() {
+        if (kBaseRoot == null) {
+            throw new RuntimeException("Unable to find KBase " + kBaseName + " in " + root);
+        }
+
+        return recursiveListFile(kBaseRoot, prefix, new Predicate<java.io.File>() {
             public boolean apply(java.io.File file) {
                 String fileName = file.getName();
                 return fileName.endsWith(".drl") || fileName.endsWith(".bpm2");
@@ -303,7 +282,6 @@ public class KBaseImpl
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
             KBaseImpl kBase = (KBaseImpl) value;
             writer.addAttribute("name", kBase.getName());
-            writer.addAttribute("namespace", kBase.getNamespace());
             if (kBase.getEventProcessingMode() != null) {
                 writer.addAttribute("eventProcessingMode", kBase.getEventProcessingMode().getMode());
             }
@@ -318,7 +296,6 @@ public class KBaseImpl
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final KBaseImpl kBase = new KBaseImpl();
             kBase.setName(reader.getAttribute("name"));
-            kBase.setNamespace(reader.getAttribute("namespace"));
 
             String eventMode = reader.getAttribute("eventProcessingMode");
             if (eventMode != null) {
@@ -335,7 +312,7 @@ public class KBaseImpl
                         Map<String, KSession> kSessions = new HashMap<String, KSession>();
                         for (KSessionImpl kSession : readObjectList(reader, context, KSessionImpl.class)) {
                             kSession.setKBase(kBase);
-                            kSessions.put( kSession.getQName(), kSession );
+                            kSessions.put( kSession.getName(), kSession );
                         }
                         kBase.setKSessions(kSessions);
                     } else if ("includes".equals(name)) {

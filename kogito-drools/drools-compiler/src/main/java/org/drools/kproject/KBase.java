@@ -11,7 +11,7 @@ import org.kie.conf.EventProcessingOption;
 
 public interface KBase {
 
-    KSession newKSession(String namespace, String name);
+    KSession newKSession(String name);
 
     KBase removeKSession(String qName);
 
@@ -27,15 +27,9 @@ public interface KBase {
 
     KBase setListener(PropertyChangeListener listener);
 
-    String getNamespace();
-
-    KBase setNamespace(String namespace);
-
     String getName();
 
     KBase setName(String name);
-
-    String getQName();
 
     AssertBehaviorOption getEqualsBehavior();
 

@@ -7,30 +7,24 @@ import org.kie.runtime.conf.ClockTypeOption;
 
 public interface KSession {
 
-    public PropertyChangeListener getListener();
+    PropertyChangeListener getListener();
 
-    public KSession setListener(PropertyChangeListener listener);
+    KSession setListener(PropertyChangeListener listener);
 
-    public String getNamespace();
+    String getName();
 
-    public KSession setNamespace(String namespace);
+    KSession setName(String name);
 
-    public String getName();
+    String getType();
 
-    public KSession setName(String name);
+    KSession setType(String type);
 
-    public String getQName();
+    ClockTypeOption getClockType();
 
-    public String getType();
+    KSession setClockType(ClockTypeOption clockType);
 
-    public KSession setType(String type);
+    List<String> getAnnotations();
 
-    public ClockTypeOption getClockType();
-
-    public KSession setClockType(ClockTypeOption clockType);
-
-    public List<String> getAnnotations();
-
-    public KSession setAnnotations(List<String> annotations);
+    KSession setAnnotations(List<String> annotations);
 
 }

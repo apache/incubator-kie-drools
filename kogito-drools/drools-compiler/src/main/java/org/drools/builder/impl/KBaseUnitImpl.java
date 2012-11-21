@@ -79,7 +79,7 @@ public class KBaseUnitImpl implements KBaseUnit {
     }
 
     public String getKBaseName() {
-        return kBase.getQName();
+        return kBase.getName();
     }
 
     public boolean hasErrors() {
@@ -140,7 +140,7 @@ public class KBaseUnitImpl implements KBaseUnit {
             }
 
             try {
-                for ( String file : getFiles(kBase.getQName(), zipFile) ) {
+                for ( String file : getFiles(kBase.getName(), zipFile) ) {
                     ZipEntry zipEntry = zipFile.getEntry( file );
                     ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.DRL );
                 }
@@ -154,7 +154,7 @@ public class KBaseUnitImpl implements KBaseUnit {
             }
         } else {
             try {
-                for ( String file : getFiles(kBase.getQName(), new File(rootPath)) ) {
+                for ( String file : getFiles(kBase.getName(), new File(rootPath)) ) {
                     ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
                 }
             } catch ( Exception e) {

@@ -6,27 +6,26 @@ import java.util.Map;
 
 public interface KProject {
     
-    public GroupArtifactVersion getGroupArtifactVersion();
+    GroupArtifactVersion getGroupArtifactVersion();
     
-    public void setGroupArtifactVersion(GroupArtifactVersion gav);
+    void setGroupArtifactVersion(GroupArtifactVersion gav);
 
-    public  PropertyChangeListener getListener();
+    PropertyChangeListener getListener();
 
-    public  KProject setListener(PropertyChangeListener listener);
+    KProject setListener(PropertyChangeListener listener);
 
-    public  String getKProjectPath();
+    String getKProjectPath();
 
-    public  KProject setKProjectPath(String kprojectPath);
+    KProject setKProjectPath(String kprojectPath);
 
-    public  String getKBasesPath();
+    String getKBasesPath();
 
-    public  KProject setKBasesPath(String kprojectPath);
+    KProject setKBasesPath(String kprojectPath);
 
-    public  KBase newKBase(String namespace,
-                           String name);
+    KBase newKBase(String name);
     
-    public  void removeKBase(String qName);
+    void removeKBase(String qName);
 
-    public  Map<String, KBase> getKBases();
+    Map<String, KBase> getKBases();
 
 }

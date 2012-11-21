@@ -40,7 +40,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
 
     private static final Logger log = LoggerFactory.getLogger(KnowledgeContainer.class);
 
-    public static final String KBASES_FOLDER = "kbases";
+    public static final String KBASES_FOLDER = "src/kbases";
     public static final String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
     public static final String KPROJECT_RELATIVE_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
 
@@ -79,7 +79,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     public List<KBaseUnit> getKBaseUnits() {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
         for (KBase kBase : kBases.values()) {
-            units.add(getOrCreateKBaseUnit(urls.get(kBase.getQName()), kBase));
+            units.add(getOrCreateKBaseUnit(urls.get(kBase.getName()), kBase));
         }
         return units;
     }
@@ -88,7 +88,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
         KProject kProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
         for (KBase kBase : kProject.getKBases().values()) {
-            units.add(new KBaseUnitImpl( sourceFolder.getAbsolutePath() + "/" + kBase.getQName(), kBase, classLoader ));
+            units.add(new KBaseUnitImpl( sourceFolder.getAbsolutePath() + "/" + kBase.getName(), kBase, classLoader ));
         }
         return units;
     }
@@ -99,9 +99,8 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         copyFile(kProjectFile, new File(outputFolder, KPROJECT_JAR_PATH));
 
         for (KBase kBase : kProject.getKBases().values()) {
-            for (String kBaseFile : getFiles(kBase.getQName(), rootFolder)) {
-                String file = KBASES_FOLDER + "/" + kBase.getQName() + "/" + kBaseFile;
-                copyFile(new File(rootFolder + "/src", file), new File(outputFolder, kBaseFile));
+            for (String kBaseFile : getFiles(kBase.getName(), new File(rootFolder, KBASES_FOLDER))) {
+                copyFile(new File(rootFolder, KBASES_FOLDER + "/" + kBaseFile), new File(outputFolder, kBaseFile));
             }
         }
     }
@@ -130,7 +129,11 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     }
 
     public StatelessKnowledgeSession getStatelessKnowlegeSession(String kSessionName) {
-        return getKBaseUnit(kSessions.get(kSessionName)).newStatelessKnowledegSession(kSessionName);
+        String kBaseName = kSessions.get(kSessionName);
+        if (kBaseName == null) {
+            throw new RuntimeException("Unknown KnowledgeSession: " + kSessionName);
+        }
+        return getKBaseUnit(kBaseName).newStatelessKnowledegSession(kSessionName);
     }
 
     private void loadKProjects(ClassLoader classLoader, boolean doEvict) {
@@ -150,34 +153,34 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     private void indexKSessions(KProject kProject, String url, boolean doEvict) {
         for (KBase kBase : kProject.getKBases().values()) {
             cleanUpExistingKBase(kBase, doEvict);
-            kBases.put(kBase.getQName(), kBase);
-            urls.put(kBase.getQName(), url);
+            kBases.put(kBase.getName(), kBase);
+            urls.put(kBase.getName(), url);
             for (KSession kSession : kBase.getKSessions().values()) {
-                kSessions.put(kSession.getQName(), kBase.getQName());
+                kSessions.put(kSession.getName(), kBase.getName());
             }
         }
     }
 
     private void cleanUpExistingKBase(KBase kBase, boolean doEvict) {
         if (doEvict) {
-            evictKBaseUnit(kBase.getQName());
+            evictKBaseUnit(kBase.getName());
         }
-        KBase oldKbase = kBases.get(kBase.getQName());
+        KBase oldKbase = kBases.get(kBase.getName());
         if (oldKbase != null) {
-            urls.remove(oldKbase.getQName());
+            urls.remove(oldKbase.getName());
             for (KSession kSession : oldKbase.getKSessions().values()) {
-                kSessions.remove(kSession.getQName());
+                kSessions.remove(kSession.getName());
             }
         }
     }
 
     private File writeKJar(File rootFolder, File outputFolder, String jarName, KProject kProject) {
-        File kBasesFolder = new File(rootFolder, "src/" + KBASES_FOLDER);
+        File kBasesFolder = new File(rootFolder, KBASES_FOLDER);
         Map<String, String> jarEntries = new HashMap<String, String>();
         jarEntries.put(KPROJECT_RELATIVE_PATH, KPROJECT_JAR_PATH);
         for (KBase kBase : kProject.getKBases().values()) {
-            for (String kBaseFile : getFiles(kBase.getQName(), kBasesFolder)) {
-                jarEntries.put("src/" + KBASES_FOLDER + "/" + kBaseFile, kBaseFile);
+            for (String kBaseFile : getFiles(kBase.getName(), kBasesFolder)) {
+                jarEntries.put(KBASES_FOLDER + "/" + kBaseFile, kBaseFile);
             }
         }
         return writeAsJar(rootFolder, outputFolder, jarName, jarEntries);

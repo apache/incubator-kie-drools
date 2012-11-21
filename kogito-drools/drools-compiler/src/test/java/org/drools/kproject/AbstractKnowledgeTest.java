@@ -50,39 +50,39 @@ public class AbstractKnowledgeTest {
         kproj.setKProjectPath( "src/main/resources/" );
         kproj.setKBasesPath( "src/kbases" );
 
-        KBase kBase1 = kproj.newKBase( namespace + ".test1", "KBase1" )
+        KBase kBase1 = kproj.newKBase( namespace + ".KBase1" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( namespace + ".test1", "KSession1" )
+        KSession ksession1 = kBase1.newKSession( namespace + ".KSession1" )
                 .setType( "stateless" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        KSession ksession2 = kBase1.newKSession( namespace + ".test1", "KSession2" )
+        KSession ksession2 = kBase1.newKSession( namespace + ".KSession2" )
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KBase kBase2 = kproj.newKBase( namespace + ".test2", "KBase2" )
+        KBase kBase2 = kproj.newKBase( namespace + ".KBase2" )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KSession ksession3 = kBase2.newKSession( namespace + ".test2", "KSession3" )
+        KSession ksession3 = kBase2.newKSession( namespace + ".KSession3" )
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KBase kBase3 = kproj.newKBase( namespace + ".test3", "KBase3" )
-                .addInclude( kBase1.getQName() )
-                .addInclude( kBase2.getQName() )
+        KBase kBase3 = kproj.newKBase( namespace + ".KBase3" )
+                .addInclude( kBase1.getName() )
+                .addInclude( kBase2.getName() )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KSession ksession4 = kBase3.newKSession( namespace + ".test3", "KSession4" )
+        KSession ksession4 = kBase3.newKSession( namespace + ".KSession4" )
                 .setType( "stateless" )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
@@ -103,8 +103,8 @@ public class AbstractKnowledgeTest {
         String kbase2R1 = getRule( namespace + ".test2", "rule1" );
         String kbase2R2 = getRule( namespace + ".test2", "rule2" );
 
-        String fldKB1 = kproj.getKBasesPath() + "/" + kBase1.getQName();
-        String fldKB2 = kproj.getKBasesPath() + "/" + kBase2.getQName();
+        String fldKB1 = kproj.getKBasesPath() + "/" + kBase1.getName();
+        String fldKB2 = kproj.getKBasesPath() + "/" + kBase2.getName();
 
         mfs.getFolder( fldKB1 ).create();
         mfs.getFolder( fldKB2 ).create();
@@ -171,34 +171,34 @@ public class AbstractKnowledgeTest {
 
                 "@KPTest(\"" + namespace + "\") \n" +
                 "public class KProjectTestClass" + namespace + " implements org.drools.kproject.KProjectTestClass {\n" +
-                "    private @Inject @KBase(\"" + namespace + ".test1.KBase1\")  " +
+                "    private @Inject @KBase(\"" + namespace + ".KBase1\")  " +
                 "    KnowledgeBase kBase1; \n" +
                 "    public KnowledgeBase getKBase1() {\n" +
                 "        return kBase1;\n" +
                 "    }\n" +
-                "    private @Inject @KBase(\"" + namespace + ".test2.KBase2\") " +
+                "    private @Inject @KBase(\"" + namespace + ".KBase2\") " +
                 "    KnowledgeBase kBase2; \n" +
                 "    public KnowledgeBase getKBase2() {\n" +
                 "        return kBase2;\n" +
                 "    }\n" +
-                "    private @Inject @KBase(\"" + namespace + ".test3.KBase3\") \n" +
+                "    private @Inject @KBase(\"" + namespace + ".KBase3\") \n" +
                 "    KnowledgeBase kBase3; \n" +
                 "    public KnowledgeBase getKBase3() {\n" +
                 "        return kBase3;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".test1.KSession1\") StatelessKnowledgeSession kBase1kSession1; \n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession1\") StatelessKnowledgeSession kBase1kSession1; \n" +
                 "    public StatelessKnowledgeSession getKBase1KSession1() {\n" +
                 "        return kBase1kSession1;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".test1.KSession2\") StatefulKnowledgeSession kBase1kSession2; \n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession2\") StatefulKnowledgeSession kBase1kSession2; \n" +
                 "    public StatefulKnowledgeSession getKBase1KSession2() {\n" +
                 "        return kBase1kSession2;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".test2.KSession3\") StatefulKnowledgeSession kBase2kSession3; \n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession3\") StatefulKnowledgeSession kBase2kSession3; \n" +
                 "    public StatefulKnowledgeSession getKBase2KSession3() {\n" +
                 "        return kBase2kSession3;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".test3.KSession4\") StatelessKnowledgeSession kBase3kSession4; \n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession4\") StatelessKnowledgeSession kBase3kSession4; \n" +
                 "    public StatelessKnowledgeSession getKBase3KSession4() {\n" +
                 "        return kBase3kSession4;\n" +
                 "    }\n" +
@@ -210,8 +210,8 @@ public class AbstractKnowledgeTest {
                                 MemoryFileSystem trgMfs,
                                 List<String> classes) {
         for ( KBase kbase : kproj.getKBases().values() ) {
-            Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getQName() );
-            Folder trgFolder = trgMfs.getFolder(kbase.getQName());
+            Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getName() );
+            Folder trgFolder = trgMfs.getFolder(kbase.getName());
 
             copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
         }

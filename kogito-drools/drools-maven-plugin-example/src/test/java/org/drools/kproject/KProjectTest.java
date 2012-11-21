@@ -1,9 +1,9 @@
 package org.drools.kproject;
 
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.definition.type.FactType;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.definition.type.FactType;
+import org.kie.runtime.StatefulKnowledgeSession;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -17,10 +17,10 @@ public class KProjectTest {
     @Test @Ignore
     public void testKJar() throws Exception {
         // Simulate having the jar in the classpath
-        URLClassLoader urlClassLoader = new URLClassLoader( new URL[] { new java.io.File("drools-maven-example/target/classes/test.jar").toURI().toURL() } );
+        URLClassLoader urlClassLoader = new URLClassLoader( new URL[] { new java.io.File("drools-maven-plugin-example/target/classes/test.jar").toURI().toURL() } );
         Thread.currentThread().setContextClassLoader( urlClassLoader );
 
-        StatefulKnowledgeSession ksession = KnowledgeBaseFactory.getStatefulKnowlegeSession("org.test.KSession1");
+        StatefulKnowledgeSession ksession = KnowledgeBaseFactory.getStatefulKnowlegeSession("KBase1.session");
         useKSession(ksession);
     }
 
