@@ -316,8 +316,8 @@
            x="50"
            y="150.00014"
            style="font-size:14px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara4308-6">Planner wades through the search space of solutions efficiently.</flowPara><flowPara
-         id="flowPara3157">Drools calculates the score of every solution under evaluation.</flowPara></flowRoot>    <g
+         id="flowPara4308-6">The Solver wades through the search space of solutions efficiently.</flowPara><flowPara
+         id="flowPara3157">The ScoreDirector calculates the score of every solution under evaluation.</flowPara></flowRoot>    <g
        id="g3709"
        transform="translate(0,19.999997)" />
     <flowRoot
@@ -351,7 +351,7 @@
            height="18.106119"
            width="181.06113"
            id="rect3188" /></flowRegion><flowPara
-         id="flowPara3190">Planner</flowPara></flowRoot>    <rect
+         id="flowPara3190">Solver</flowPara></flowRoot>    <rect
        ry="5"
        rx="4.9999986"
        y="612.86218"
@@ -783,15 +783,15 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot4289"
-       style="font-size:10.86366652999999971px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,-70.410837,600.06953)"><flowRegion
+       style="font-size:10.86366653px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,-70.410837,603.06985)"><flowRegion
          id="flowRegion4291"><rect
            id="rect4293"
            width="84.495232"
            height="24.14143"
            x="241.66278"
            y="73.808144"
-           style="font-size:10.86366652999999971px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
+           style="font-size:10.86366653px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara4295">calculateScore()</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4297"
@@ -817,7 +817,19 @@
            width="181.06111"
            id="rect4309" /></flowRegion><flowPara
          id="flowPara4311">Calculate the score</flowPara><flowPara
-         id="flowPara4313">of a solution</flowPara></flowRoot>  </g>
+         id="flowPara4313">of a solution</flowPara></flowRoot>    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-80.404009,685.34859)"
+       style="font-size:7.24244452px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#555753;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3150"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3152"><rect
+           style="font-size:7.24244452px;text-align:center;text-anchor:middle;fill:#555753"
+           y="60.361694"
+           x="247.69403"
+           height="12.070743"
+           width="84.495186"
+           id="rect3154" /></flowRegion><flowPara
+         id="flowPara3156">many times per ms</flowPara></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
