@@ -271,16 +271,18 @@ public class DefaultEscalatedDeadlineHandler
                        to.toString() );
 
             if ( header.getFrom() != null && header.getFrom().trim().length() > 0 ) {
+                String emailAddress = userInfo.getEmailForEntity( new User(header.getFrom()) );
                 email.put( "From",
-                           header.getFrom() );
+                        emailAddress );
             } else {
                 email.put( "From",
                            from );
             }
 
             if ( header.getReplyTo() != null && header.getReplyTo().trim().length() > 0 ) {
+                String emailAddress = userInfo.getEmailForEntity( new User(header.getReplyTo()) );
                 email.put( "Reply-To",
-                           header.getReplyTo() );
+                        emailAddress );
             } else {
                 email.put( "Reply-To",
                            replyTo );

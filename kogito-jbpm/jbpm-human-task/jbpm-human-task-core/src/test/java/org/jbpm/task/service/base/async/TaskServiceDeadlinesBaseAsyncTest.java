@@ -150,6 +150,87 @@ public abstract class TaskServiceDeadlinesBaseAsyncTest extends BaseTest {
         assertTrue("Could not find tony in recipients list.", tonyMatched);
         assertTrue("Could not find darth in recipients list.", darthMatched);
     }
+    
+    public void testDelayedEmailNotificationWithFromReplyToOnDeadline() throws Exception {
+        Map<String, Object> vars = fillVariables();
+
+        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
+        WorkItemManager manager = new DefaultWorkItemManager(null);
+        notificationHandler.setManager(manager);
+        
+        MockUserInfo userInfo = new MockUserInfo();
+        userInfo.getEmails().put( users.get("tony"), emailAddressTony);
+        userInfo.getEmails().put( users.get("darth"), emailAddressDarth );
+
+        userInfo.getLanguages().put(users.get("tony"), "en-UK");
+        userInfo.getLanguages().put(users.get("darth"), "en-UK");
+        notificationHandler.setUserInfo(userInfo);
+
+        taskService.setEscalatedDeadlineHandler(notificationHandler);
+
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotificationFromReplyTo));
+        Task task = (Task) eval(reader, vars);
+
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        client.addTask(task, null, addTaskResponseHandler);
+        long taskId = addTaskResponseHandler.getTaskId();
+
+        Content content = new Content();
+        Map<String, String> params = fillMarshalSubjectAndBodyParams();
+        ContentData condantData = ContentMarshallerHelper.marshal(params, null);
+        
+        content.setContent(condantData.getContent());
+        BlockingSetContentResponseHandler setContentResponseHandler = new BlockingSetContentResponseHandler();
+        client.setDocumentContent(taskId,content , setContentResponseHandler);
+        long contentId = setContentResponseHandler.getContentId();
+        BlockingGetContentResponseHandler getResponseHandler = new BlockingGetContentResponseHandler();
+        client.getContent(contentId, getResponseHandler);
+        content = getResponseHandler.getContent();
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        checkContentSubjectAndBody(unmarshalledObject);
+
+        // emails should not be set yet
+        assertEquals(0, getWiser().getMessages().size());
+        Thread.sleep(100);
+
+        // nor yet
+        assertEquals(0, getWiser().getMessages().size());
+
+        long time = 0;
+        while (getWiser().getMessages().size() != 2 && time < 15000) {
+            Thread.sleep(500);
+            time += 500;
+        }
+
+        // 1 email with two recipients should now exist
+        assertEquals(2, getWiser().getMessages().size());
+
+        List<String> list = new ArrayList<String>(2);
+        list.add(getWiser().getMessages().get(0).getEnvelopeReceiver());
+        list.add(getWiser().getMessages().get(1).getEnvelopeReceiver());
+
+        assertTrue( list.contains(emailAddressTony));
+        assertTrue( list.contains(emailAddressDarth));
+
+        MimeMessage msg = (( WiserMessage  ) getWiser().getMessages().get( 0 )).getMimeMessage();
+        assertEquals( myBody, msg.getContent() );
+        assertEquals( mySubject, msg.getSubject() );
+        assertEquals( emailAddressTony, ((InternetAddress)msg.getFrom()[0]).getAddress() );
+        assertEquals( emailAddressDarth, ((InternetAddress)msg.getReplyTo()[0]).getAddress() );
+        boolean tonyMatched = false;
+        boolean darthMatched = false;
+        for( int i = 0; i < msg.getRecipients(RecipientType.TO).length; ++i ) { 
+            String emailAddress = ((InternetAddress)msg.getRecipients( RecipientType.TO )[i]).getAddress(); 
+           if( "tony@domain.com".equals(emailAddress) ) { 
+               tonyMatched = true;
+    }
+           else if( "darth@domain.com".equals(emailAddress) ) { 
+              darthMatched = true; 
+           }
+        }
+        assertTrue("Could not find tony in recipients list.", tonyMatched);
+        assertTrue("Could not find darth in recipients list.", darthMatched);
+    }
 
     public void testDelayedReassignmentOnDeadline() throws Exception {
         Map<String, Object> vars = fillVariables();
