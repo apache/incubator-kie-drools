@@ -19,6 +19,7 @@ package org.drools.command;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.KnowledgeBase;
+import org.kie.builder.KnowledgeContainer;
 import org.kie.command.Context;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
@@ -30,6 +31,11 @@ public class NewStatefulKnowledgeSessionCommand
 
     private KnowledgeSessionConfiguration ksessionConf;
     private Environment environment;
+    private String sessionId;
+
+    public NewStatefulKnowledgeSessionCommand(String sessionId) {
+        this.sessionId = sessionId;
+    }
 
     public NewStatefulKnowledgeSessionCommand(KnowledgeSessionConfiguration ksessionConf) {
         this.ksessionConf = ksessionConf;
@@ -40,14 +46,18 @@ public class NewStatefulKnowledgeSessionCommand
                                                 Environment env) { 
         this(ksessionConf);
         this.environment = env;
-        
     }
-    
 
     public StatefulKnowledgeSession execute(Context context) {
-        KnowledgeBase kbase = ((KnowledgeCommandContext) context).getKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( this.ksessionConf, environment );
-        
+        StatefulKnowledgeSession ksession = null;
+        if( sessionId != null ) {
+            // use the new API to retrieve the session by ID
+            KnowledgeContainer kcontainer = ((KnowledgeCommandContext) context).getKnowledgeContainer();
+            ksession = kcontainer.getStatefulKnowlegeSession( sessionId );
+        } else {
+            KnowledgeBase kbase = ((KnowledgeCommandContext) context).getKnowledgeBase();
+            ksession = kbase.newStatefulKnowledgeSession( this.ksessionConf, environment );
+        }
         return ksession;
     }
 

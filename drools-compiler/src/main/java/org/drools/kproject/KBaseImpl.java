@@ -6,6 +6,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.Predicate;
+import org.kie.builder.ResourceType;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 
@@ -264,13 +265,14 @@ public class KBaseImpl
         return recursiveListFile(kBaseRoot, prefix, new Predicate<java.io.File>() {
             public boolean apply(java.io.File file) {
                 String fileName = file.getName();
-                return fileName.endsWith(".drl") || fileName.endsWith(".bpm2");
+                return fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) || 
+                       fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() );
             }
         });
     }
 
     private static boolean filterFileInKBase(String kBaseQName, String fileName) {
-        return fileName.startsWith(kBaseQName) && (fileName.endsWith(".drl") || fileName.endsWith(".bpm2"));
+        return fileName.startsWith(kBaseQName) && (fileName.endsWith(ResourceType.DRL.getDefaultExtension()) || fileName.endsWith(ResourceType.BPMN2.getDefaultExtension()));
     }
 
     public static class KBaseConverter extends AbstractXStreamConverter {

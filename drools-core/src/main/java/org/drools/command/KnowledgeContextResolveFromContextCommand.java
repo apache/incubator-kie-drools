@@ -60,6 +60,7 @@ public class KnowledgeContextResolveFromContextCommand
 
     public Object execute(Context context) {
         FixedKnowledgeCommandContext kcContext = new FixedKnowledgeCommandContext( context,
+                                                                         null,
                                                                          (KnowledgeBuilder) context.get( this.kbuilderIdentifier ),
                                                                          (KnowledgeBase) context.get( this.kbaseIdentifier ),
                                                                          (StatefulKnowledgeSession) context.get( this.statefulKsessionName ),

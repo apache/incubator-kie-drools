@@ -17,16 +17,23 @@
 package org.drools.command;
 
 import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.command.Context;
 
 public class NewKnowledgeBaseCommand
-    implements
-    GenericCommand<KnowledgeBase> {
+        implements
+        GenericCommand<KnowledgeBase> {
 
     private KnowledgeBaseConfiguration kbaseConf;
+    private String                     id;
+
+    public NewKnowledgeBaseCommand(String id) {
+        this.id = id;
+    }
 
     public NewKnowledgeBaseCommand(KnowledgeBaseConfiguration kbaseConf) {
         this.kbaseConf = kbaseConf;
@@ -34,10 +41,17 @@ public class NewKnowledgeBaseCommand
 
     public KnowledgeBase execute(Context context) {
         KnowledgeBase kbase = null;
-        if ( this.kbaseConf == null ) {
-            kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        if ( id == null ) {
+            if ( this.kbaseConf == null ) {
+                kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            } else {
+                kbase = KnowledgeBaseFactory.newKnowledgeBase( this.kbaseConf );
+            }
         } else {
-            kbase = KnowledgeBaseFactory.newKnowledgeBase( this.kbaseConf );
+            // use the new API to get the reference to the kbase
+            KBaseUnit unit = KnowledgeBaseFactory.getKBaseUnit( id );
+            ((KnowledgeCommandContext) context).setKBaseUnit( unit );
+            kbase = unit.getKnowledgeBase();
         }
 
         return kbase;

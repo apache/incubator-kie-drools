@@ -123,6 +123,7 @@ public class SingleSessionCommandService
         this.kContext = new FixedKnowledgeCommandContext( null,
                                                           null,
                                                           null,
+                                                          null,
                                                           this.ksession,
                                                           null );
 
@@ -261,6 +262,7 @@ public class SingleSessionCommandService
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed
             this.kContext = new FixedKnowledgeCommandContext( null,
+                                                              null,
                                                               null,
                                                               null,
                                                               this.ksession,
