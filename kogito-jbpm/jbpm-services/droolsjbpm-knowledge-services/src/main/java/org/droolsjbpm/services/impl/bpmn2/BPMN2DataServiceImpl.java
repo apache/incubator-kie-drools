@@ -68,9 +68,10 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
     public Map<String, String> getTaskInputMappings(String bpmn2Content, String taskName){
-         if (bpmn2Content == null || "".equals(bpmn2Content)) {
+        if (bpmn2Content == null || "".equals(bpmn2Content)) {
             throw new IllegalStateException("The Process Content cannot be Empty!");
         }
+        repo.clear();
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
@@ -89,9 +90,10 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
     
      public Map<String, String> getTaskOutputMappings(String bpmn2Content, String taskName){
-         if (bpmn2Content == null || "".equals(bpmn2Content)) {
+        if (bpmn2Content == null || "".equals(bpmn2Content)) {
             throw new IllegalStateException("The Process Content cannot be Empty!");
         }
+        repo.clear();
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
@@ -111,9 +113,10 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
 
 
     public Collection<TaskDef> getAllTasksDef(String bpmn2Content){
-         if (bpmn2Content == null || "".equals(bpmn2Content)) {
+        if (bpmn2Content == null || "".equals(bpmn2Content)) {
             throw new IllegalStateException("The Process Content cannot be Empty!");
         }
+        repo.clear();
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
@@ -132,9 +135,10 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
     public Map<String, String> getAssociatedEntities(String bpmn2Content) {
-         if (bpmn2Content == null || "".equals(bpmn2Content)) {
+        if (bpmn2Content == null || "".equals(bpmn2Content)) {
             throw new IllegalStateException("The Process Content cannot be Empty!");
         }
+        repo.clear(); 
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
@@ -157,9 +161,10 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
     public Map<String, String> getProcessData(String bpmn2Content) {
-         if (bpmn2Content == null || "".equals(bpmn2Content)) {
+        if (bpmn2Content == null || "".equals(bpmn2Content)) {
             throw new IllegalStateException("The Process Content cannot be Empty!");
         }
+        repo.clear();
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
@@ -182,9 +187,10 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
     public ProcessDesc getProcessDesc(String bpmn2Content){
-         if (bpmn2Content == null || "".equals(bpmn2Content)) {
+        if (bpmn2Content == null || "".equals(bpmn2Content)) {
             throw new IllegalStateException("The Process Content cannot be Empty!");
         }
+        repo.clear();
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);

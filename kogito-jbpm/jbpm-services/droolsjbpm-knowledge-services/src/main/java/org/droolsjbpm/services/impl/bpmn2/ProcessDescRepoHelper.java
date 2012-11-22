@@ -64,4 +64,13 @@ public class ProcessDescRepoHelper {
     public Map<String, String> getTaskAssignments() {
         return taskAssignments;
     }
+    
+    public void clear(){
+        process = null;
+        tasks.clear();
+        taskInputMappings.clear();
+        taskOutputMappings.clear();
+        inputs.clear();
+        taskAssignments.clear();
+    }
 }

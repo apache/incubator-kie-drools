@@ -79,7 +79,24 @@ public class FormProviderServiceImpl implements FormProviderService {
         this.actionsForItem.put(className, actionClassNames);
     }
     
-    public String getFormDisplay(long taskId) {
+    public String getFormDisplayProcess(String processId) {
+
+        InputStream template = getClass().getResourceAsStream("/ftl/DefaultProcess.ftl");
+        
+        String processString = domainService.getAvailableProcesses().get(processId);
+        Map<String, String> processData = bpmn2Service.getProcessData(processString);
+        if(processData == null){
+            processData = new HashMap<String,String>();
+        }
+        ProcessDesc processDesc = bpmn2Service.getProcessDesc(processString);
+        Map<String, Object> renderContext = new HashMap<String, Object>();
+        renderContext.put("process", processDesc);
+        renderContext.put("outputs", processData);
+        return render(processDesc.getName(), template, renderContext);
+        
+    }
+    
+    public String getFormDisplayTask(long taskId) {
         Task task = queryService.getTaskInstanceById(taskId);
 
 
@@ -150,30 +167,7 @@ public class FormProviderServiceImpl implements FormProviderService {
 
 
     }
-    
-    public String getProcessFormDisplay(String bpmn2) {
-        ProcessDesc desc = bpmn2Service.getProcessDesc(bpmn2);
-	String processName = desc.getId();
-        Map<String, String> processData = bpmn2Service.getProcessData(bpmn2);
-
-
-        
-
-
-        InputStream template = getClass().getResourceAsStream("/ftl/"+processName+".ftl");
-        
-
-        // merge template with process variables
-        Map<String, Object> renderContext = new HashMap<String, Object>();
-        
-        renderContext.put("processData", processData);
-        
-
-        return render(processName, template, renderContext);
-
-
-    }
-
+   
 
     public String render(String name, InputStream src, Map<String, Object> renderContext) {
         String str = null;
@@ -388,4 +382,6 @@ public class FormProviderServiceImpl implements FormProviderService {
         }
         return retval;
     }
+
+   
 }
