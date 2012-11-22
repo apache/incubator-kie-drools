@@ -37,8 +37,7 @@ public class LocalTaskServiceTest {
         pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
         pds.init();
 
-        
-        System.setProperty("jbpm.conf.dir", "/home/mswiders/Development/git-repos/jbpm-main/jbpm-gwt/jbpm-gwt-core/src/test/resources/local");
+        System.setProperty("jbpm.conf.dir", "./src/test/resources/local");
         System.setProperty("jbpm.console.directory","./src/test/resources");
     }
     
