@@ -1,8 +1,11 @@
 package org.drools.command;
 
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.KnowledgeContainer;
 import org.kie.command.Context;
 import org.kie.command.World;
 import org.kie.runtime.ExecutionResults;
@@ -19,6 +22,14 @@ public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext
         this.context = context;
     }
     
+    public KnowledgeContainer getKnowledgeContainer() {
+        KnowledgeContainer kcontainer = (KnowledgeContainer) context.get( KnowledgeContainer.class.getName() );
+        if( kcontainer == null ) {
+            kcontainer = KnowledgeBuilderFactory.newKnowledgeContainer();
+            context.set( KnowledgeContainer.class.getName(), kcontainer );
+        }
+        return kcontainer;
+    }
 
     public KnowledgeBuilder getKnowledgeBuilder() {
         return ( KnowledgeBuilder ) context.get( KnowledgeBuilder.class.getName() );
@@ -26,6 +37,14 @@ public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext
 
     public void setKnowledgeBuilder(KnowledgeBuilder kbuilder) {
         context.set( KnowledgeBuilder.class.getName(), kbuilder );
+    }
+
+    public KBaseUnit getKBaseUnit() {
+        return ( KBaseUnit ) context.get( KBaseUnit.class.getName() );
+    }
+    
+    public void setKBaseUnit( KBaseUnit unit ) {
+        context.set( KBaseUnit.class.getName(), unit );
     }
 
     public KnowledgeBase getKnowledgeBase() {

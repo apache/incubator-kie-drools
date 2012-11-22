@@ -35,7 +35,7 @@ public class GetFactHandlesCommandTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = kbase.newStatefulKnowledgeSession();
         FixedKnowledgeCommandContext kContext 
-            = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null ), null, null, this.ksession, null );
+            = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null ), null, null, null, this.ksession, null );
         commandService = new DefaultCommandService(kContext);
         
     }

@@ -142,7 +142,7 @@ public class KBaseUnitImpl implements KBaseUnit {
             try {
                 for ( String file : getFiles(kBase.getName(), zipFile) ) {
                     ZipEntry zipEntry = zipFile.getEntry( file );
-                    ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.DRL );
+                    ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.determineResourceType( file ) );
                 }
             } catch ( Exception e ) {
                 try {
@@ -155,7 +155,7 @@ public class KBaseUnitImpl implements KBaseUnit {
         } else {
             try {
                 for ( String file : getFiles(kBase.getName(), new File(rootPath)) ) {
-                    ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
+                    ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ),ResourceType.determineResourceType( file ) );
                 }
             } catch ( Exception e) {
                 log.error( "Unable to build KBase:" + kBase.getName() + "\n" + e.getMessage() );
