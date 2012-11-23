@@ -50,7 +50,7 @@ where
     or t.descriptions.size = 0
     ) and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -101,7 +101,7 @@ where
     or t.descriptions.size = 0
     ) and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -154,7 +154,7 @@ where
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -207,7 +207,7 @@ where
 
     t.taskData.status in (:status) and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -260,7 +260,7 @@ where
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -313,7 +313,7 @@ where
 
     t.taskData.status in (:status) and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -366,7 +366,7 @@ where
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -421,7 +421,7 @@ where
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -473,7 +473,7 @@ where
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -526,7 +526,7 @@ where
     or t.descriptions.size = 0
     ) and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -577,7 +577,7 @@ where
     or t.descriptions.size = 0
     ) and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -628,7 +628,7 @@ where
     or t.descriptions.size = 0
     ) and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -677,7 +677,7 @@ where
     or t.descriptions.size = 0
     ) and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -727,7 +727,7 @@ where
             or t.descriptions.size = 0
             ) and
 
-            t.taskData.expirationTime is null
+            t.taskData.expirationTime is null group by t.id
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -777,7 +777,7 @@ where
 
             t.taskData.status in (:status) and
 
-            t.taskData.expirationTime is null
+            t.taskData.expirationTime is null group by t.id
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -828,7 +828,7 @@ where
 
             t.taskData.status in (:status) and
 
-            t.taskData.expirationTime is null
+            t.taskData.expirationTime is null group by t.id
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -882,6 +882,7 @@ where
             and
     
             t.taskData.activationTime &lt; :since
+             group by t.id
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -930,7 +931,7 @@ where
             or t.descriptions.size = 0
             ) and
 
-            t.taskData.expirationTime is null
+            t.taskData.expirationTime is null group by t.id
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -982,7 +983,7 @@ where
     or t.descriptions.size = 0
     ) and
 
-    t.taskData.expirationTime is null
+    t.taskData.expirationTime is null group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
