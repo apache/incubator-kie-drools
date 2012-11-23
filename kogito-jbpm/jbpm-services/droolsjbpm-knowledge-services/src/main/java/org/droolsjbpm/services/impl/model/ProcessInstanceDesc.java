@@ -49,6 +49,8 @@ public class ProcessInstanceDesc implements Serializable{
     
     private String domainName;
     
+    private String initiator;
+    
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataTimeStamp;
 
@@ -58,7 +60,7 @@ public class ProcessInstanceDesc implements Serializable{
 
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
                                 int state, String[] eventTypes, String processDefId, 
-                                String domainName, int sessionId) {
+                                String domainName, int sessionId, String initiator) {
         this.id = id;
         this.processId = processId;
         this.processName = processName;
@@ -69,6 +71,7 @@ public class ProcessInstanceDesc implements Serializable{
         this.sessionId = sessionId;
         this.domainName = domainName;
         this.dataTimeStamp = new Date();
+        this.initiator = initiator;
     }
     
     public String getProcessId() {
@@ -118,6 +121,14 @@ public class ProcessInstanceDesc implements Serializable{
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String getInitiator() {
+        return initiator;
+    }
+
+    public void setInitiator(String initiator) {
+        this.initiator = initiator;
     }
 
     

@@ -30,7 +30,11 @@ import org.droolsjbpm.services.impl.model.VariableStateDesc;
 public interface KnowledgeDataService {
     Collection<ProcessInstanceDesc> getProcessInstances();
     
-    Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states);
+    Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states, String initiator);
+    
+    Collection<ProcessInstanceDesc> getProcessInstancesByProcessId(List<Integer> states, String processId, String initiator);
+    
+    Collection<ProcessInstanceDesc> getProcessInstancesByProcessName(List<Integer> states, String processName, String initiator);
 
     Collection<ProcessInstanceDesc> getProcessInstancesBySessionId(String sessionId);
 

@@ -24,6 +24,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.SessionLocator;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
@@ -52,10 +54,18 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         return processInstances;
     }
     
-    public Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states) { 
-        List<ProcessInstanceDesc> processInstances = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id ) and pi.state in (:states)")
-                .setParameter("states", states).getResultList();
-
+    public Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states, String initiator) { 
+        List<ProcessInstanceDesc> processInstances = null; 
+        Query query = null;
+        if (initiator == null) {
+            query = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id ) and pi.state in (:states)");
+            query = query.setParameter("states", states);
+        } else {
+            query = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id and pi.initiator =:initiator) and pi.state in (:states)");
+            query = query.setParameter("states", states);
+            query = query.setParameter("initiator", initiator);
+        }
+        processInstances = query.getResultList(); 
         return processInstances;
     }
 
@@ -155,5 +165,52 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
                 .getResultList();
 
         return variablesState;
+    }
+
+    @Override
+    public Collection<ProcessInstanceDesc> getProcessInstancesByProcessId(
+            List<Integer> states, String processId, String initiator) {
+        List<ProcessInstanceDesc> processInstances = null; 
+        Query query = null;
+        if (initiator == null) {
+            query = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id ) " +
+            		"and pi.state in (:states) and pi.processId =:processId");
+            query = query.setParameter("states", states);
+            query = query.setParameter("processId", processId);
+        } else {
+            query = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id  and pi.initiator =:initiator) " +
+            		"and pi.state in (:states) and pi.processId =:processId");
+            query = query.setParameter("states", states);
+            query = query.setParameter("initiator", initiator);
+            query = query.setParameter("processId", processId);
+        }
+                
+                
+        processInstances = query.getResultList();
+        return processInstances;
+
+    }
+
+    @Override
+    public Collection<ProcessInstanceDesc> getProcessInstancesByProcessName(
+            List<Integer> states, String processName, String initiator) {
+        List<ProcessInstanceDesc> processInstances = null; 
+        Query query = null;
+        if (initiator == null) {
+            query = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id ) " +
+                    "and pi.state in (:states) and pi.processName =:processName");
+            query = query.setParameter("states", states);
+            query = query.setParameter("processName", processName);
+        } else {
+            query = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id  and pi.initiator =:initiator) " +
+                    "and pi.state in (:states) and pi.processName =:processName");
+            query = query.setParameter("states", states);
+            query = query.setParameter("initiator", initiator);
+            query = query.setParameter("processName", processName);
+        }
+                
+                
+        processInstances = query.getResultList();
+        return processInstances;
     }
 }

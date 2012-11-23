@@ -27,6 +27,7 @@ import org.kie.event.process.ProcessVariableChangedEvent;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.ProcessInstance;
+import org.droolsjbpm.services.api.IdentityProvider;
 import org.droolsjbpm.services.impl.helpers.NodeInstanceDescFactory;
 import org.droolsjbpm.services.impl.helpers.ProcessInstanceDescFactory;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
@@ -42,6 +43,9 @@ import org.jboss.seam.transaction.Transactional;
 public class CDIProcessEventListener implements ProcessEventListener {
     @Inject
     private EntityManager em; 
+    
+    @Inject
+    private IdentityProvider identity;
 
     private String domainName;
     
@@ -54,7 +58,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
         //do nothing
         ProcessInstance processInstance = pse.getProcessInstance();
         int sessionId = ((StatefulKnowledgeSession)pse.getKnowledgeRuntime()).getId();
-        em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance));
+        em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
     }
 
     public void afterProcessStarted(ProcessStartedEvent pse) {
@@ -63,7 +67,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
         if (currentState == ProcessInstance.STATE_ACTIVE) {
             ProcessInstance processInstance = pse.getProcessInstance();
             int sessionId = ((StatefulKnowledgeSession)pse.getKnowledgeRuntime()).getId();
-            em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance));
+            em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
         }
     }
 
@@ -71,7 +75,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
         //do nothing
         ProcessInstance processInstance = pce.getProcessInstance();
         int sessionId = ((StatefulKnowledgeSession)pce.getKnowledgeRuntime()).getId();
-        em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance));
+        em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
     }
 
     public void afterProcessCompleted(ProcessCompletedEvent pce) {

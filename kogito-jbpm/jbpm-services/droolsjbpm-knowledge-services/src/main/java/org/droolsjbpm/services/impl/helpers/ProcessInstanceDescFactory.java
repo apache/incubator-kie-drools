@@ -23,7 +23,7 @@ import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
  * @author salaboy
  */
 public class ProcessInstanceDescFactory {
-    public static ProcessInstanceDesc newProcessInstanceDesc(String domainName, int sessionId, ProcessInstance processInstance){
+    public static ProcessInstanceDesc newProcessInstanceDesc(String domainName, int sessionId, ProcessInstance processInstance, String initiator){
        return new ProcessInstanceDesc(processInstance.getId(),
                                       processInstance.getProcessId(),
                                       processInstance.getProcessName(), 
@@ -31,6 +31,6 @@ public class ProcessInstanceDescFactory {
                                       processInstance.getState(), 
                                       processInstance.getEventTypes() , 
                                       processInstance.getProcess().getId(), 
-                                      domainName, sessionId);
+                                      domainName, sessionId, initiator);
     }
 }
