@@ -86,14 +86,6 @@ public class KnowledgeBuilderFactory {
                                                                                      classLoaders );
     }
 
-    public static KnowledgeContainer newKnowledgeContainer() {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeContainer();
-    }
-
-    public static KnowledgeContainer newKnowledgeContainer(KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeContainer(conf);
-    }
-
     /**
      * DecisionTable resources require a ResourceConfiguration, that configuration instance is created
      * here. Note that if you are passing a Reader, you must use an InputStreamReader so the encoding 
