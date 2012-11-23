@@ -3,8 +3,8 @@ package org.drools.kproject;
 import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.core.util.FileManager;
 import org.junit.Test;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeContainer;
+import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -24,7 +24,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
 
     @Test
     public void testKContainer() throws Exception {
-        KnowledgeContainer kContainer = KnowledgeBuilderFactory.newKnowledgeContainer();
+        KnowledgeContainer kContainer = KnowledgeContainerFactory.newKnowledgeContainer();
 
         // create a kjar and deploy it
         // the deploy method causes the compilation of all the KnowledgeBases defined in the kjar
@@ -63,7 +63,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
         File file3 = fileManager.newFile( "jar3.jar" );
         File fol4 = fileManager.newFile( "fol4" );
 
-        KnowledgeContainer kContainer = KnowledgeBuilderFactory.newKnowledgeContainer();
+        KnowledgeContainer kContainer = KnowledgeContainerFactory.newKnowledgeContainer();
         kContainer.deploy(file1, file2, file3, fol4);
 
         testKBaseUnit(kContainer, "jar1");
@@ -85,16 +85,13 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
     }
 
     private File createKJar(KnowledgeContainer kContainer, String kjarName, String... rules) throws IOException {
-        List<String> files = new ArrayList<String>();
-
         for (String rule : rules) {
             String file = "org/test/" + rule + ".drl";
             fileManager.write(fileManager.newFile("src/kbases/KBase1/" + file), createDRL(rule));
-            files.add(file);
         }
 
         KProject kproj = new KProjectImpl();
-        KBase kBase1 = kproj.newKBase( "KBase1" )
+        KBase kBase1 = kproj.newKBase("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 

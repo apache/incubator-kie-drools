@@ -57,6 +57,7 @@
     <module>drools-examples</module>
     <module>drools-scorecards</module>
     <module>drools-maven-plugin</module>
+    <module>kie-ci</module>
   </modules>
 
   <profiles>

@@ -7,6 +7,7 @@ import org.kie.KBaseUnit;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.drools.builder.impl.KnowledgeContainerImpl;
+import org.kie.builder.KnowledgeContainerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -55,7 +56,7 @@ public class BuildMojo extends AbstractMojo {
         }
 
         KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, projectClassLoader);
-        KnowledgeContainerImpl kbuilder = (KnowledgeContainerImpl)KnowledgeBuilderFactory.newKnowledgeContainer(kConf);
+        KnowledgeContainerImpl kbuilder = (KnowledgeContainerImpl) KnowledgeContainerFactory.newKnowledgeContainer(kConf);
 
         for (KBaseUnit kBaseUnit : kbuilder.getKBaseUnits(rootFolder, sourceFolder)) {
             if (kBaseUnit.hasErrors()) {
