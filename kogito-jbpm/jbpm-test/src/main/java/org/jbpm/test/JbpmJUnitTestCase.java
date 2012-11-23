@@ -53,6 +53,7 @@ import org.jbpm.task.TaskService;
 import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
 import org.jbpm.task.identity.UserGroupCallbackManager;
 import org.jbpm.task.service.local.LocalTaskService;
+import org.jbpm.task.utils.OnErrorAction;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -561,7 +562,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
     	}
     	LocalTaskService localTaskService = new LocalTaskService(taskService);
 		LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler(
-			localTaskService, ksession);
+			localTaskService, ksession, OnErrorAction.RETHROW);
 		humanTaskHandler.connect();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
 		return localTaskService;
