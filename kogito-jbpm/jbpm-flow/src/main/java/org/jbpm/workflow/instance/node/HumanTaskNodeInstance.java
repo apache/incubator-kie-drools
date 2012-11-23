@@ -49,6 +49,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         SwimlaneContextInstance swimlaneContextInstance = getSwimlaneContextInstance(swimlaneName);
         if (swimlaneContextInstance != null) {
             actorId = swimlaneContextInstance.getActorId(swimlaneName);
+            workItem.setParameter("SwimlaneActorId", actorId);
         }
         // if no actor can be assigned based on the swimlane, check whether an
         // actor is specified for this human task
@@ -56,6 +57,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         	actorId = (String) workItem.getParameter("ActorId");
         	if (actorId != null && swimlaneContextInstance != null) {
         		swimlaneContextInstance.setActorId(swimlaneName, actorId);
+        		workItem.setParameter("SwimlaneActorId", actorId);
         	}
         }
         return actorId;

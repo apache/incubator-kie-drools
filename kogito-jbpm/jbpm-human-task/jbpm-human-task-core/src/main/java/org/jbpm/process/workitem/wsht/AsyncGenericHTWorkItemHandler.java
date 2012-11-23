@@ -19,10 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.AsyncTaskService;
@@ -39,8 +35,13 @@ import org.jbpm.task.service.TaskClientHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,9 +165,14 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         Task task = createTaskBasedOnWorkItemParams(workItem);
         ContentData content = createTaskContentBasedOnWorkItemParams(workItem);
         connect();
-        client.addTask(task, content, new TaskAddedHandler(workItem.getId()));
+        TaskAddedHandler taskAddedHandler = new TaskAddedHandler(workItem.getId());
+        
 
-
+        if (isAutoClaim(workItem, task)) {
+            taskAddedHandler = new TaskAddedAutoClaimHandler(workItem.getId(), (String) workItem.getParameter("SwimlaneActorId"));
+        }
+        
+        client.addTask(task, content, taskAddedHandler);
     }
 
     @Override
@@ -186,12 +192,14 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private class TaskAddedHandler extends AbstractBaseResponseHandler implements TaskClientHandler.AddTaskResponseHandler {
 
         private long workItemId;
+        private long taskId;
 
         public TaskAddedHandler(long workItemId) {
             this.workItemId = workItemId;
         }
 
         public void execute(long taskId) {
+            this.taskId = taskId;
         }
 
         @Override
@@ -210,6 +218,24 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 logMsg.append(". Error reported by task server: " + getError().getMessage());
                 logger.error(logMsg.toString(), getError());
             }
+        }
+        
+        public long getTaskId() {
+            return this.taskId;
+        }
+    }
+    
+    private class TaskAddedAutoClaimHandler extends TaskAddedHandler implements TaskClientHandler.AddTaskResponseHandler {
+
+        private String claimUser;
+
+        public TaskAddedAutoClaimHandler(long workItemId, String claimUser) {
+            super(workItemId);
+            this.claimUser = claimUser;
+        }
+
+        public void execute(long taskId) {
+            client.claim(taskId, claimUser, new BlockingTaskOperationResponseHandler());
         }
     }
 

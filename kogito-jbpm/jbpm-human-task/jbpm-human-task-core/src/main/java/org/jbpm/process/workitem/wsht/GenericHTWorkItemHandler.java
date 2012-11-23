@@ -180,6 +180,9 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         connect();
         try {
             client.addTask(task, content);
+            if (isAutoClaim(workItem, task)) {
+                autoClaim(workItem.getId(), (String) workItem.getParameter("SwimlaneActorId"));
+            }
         } catch (Exception e) {
             if (action.equals(OnErrorAction.ABORT)) {
                 manager.abortWorkItem(workItem.getId());
@@ -204,6 +207,17 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         if (task != null) {
             try {
                 client.exit(task.getId(), "Administrator");
+            } catch (PermissionDeniedException e) {
+                logger.info(e.getMessage());
+            }
+        }
+    }
+    
+    public void autoClaim(long workItemId, String claimUser) {
+        Task task = client.getTaskByWorkItemId(workItemId);
+        if (task != null) {
+            try {
+                client.claim(task.getId(), claimUser);
             } catch (PermissionDeniedException e) {
                 logger.info(e.getMessage());
             }
