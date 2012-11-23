@@ -38,6 +38,7 @@ import org.kie.KnowledgeBaseFactoryService;
 import org.kie.Service;
 import org.kie.SystemEventListenerService;
 import org.kie.builder.KnowledgeBuilderFactoryService;
+import org.kie.builder.KnowledgeContainerFactoryService;
 import org.kie.concurrent.ExecutorProvider;
 import org.kie.io.ResourceFactoryService;
 import org.kie.marshalling.MarshallerProvider;
@@ -172,6 +173,9 @@ public class ServiceRegistryImpl
     private void init() {
         addDefault( KnowledgeBuilderFactoryService.class,
                     "org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
+
+        addDefault( KnowledgeContainerFactoryService.class,
+                    "org.drools.builder.impl.KnowledgeContainerFactoryServiceImpl" );
 
         addDefault( KnowledgeBaseFactoryService.class,
                     "org.drools.impl.KnowledgeBaseFactoryServiceImpl" );
