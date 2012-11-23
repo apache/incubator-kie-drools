@@ -4,10 +4,13 @@ import junit.framework.Assert;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.TypeDeclaration;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeBuilderResults;
 import org.kie.builder.ResultSeverity;
+import org.kie.definition.type.Annotation;
 import org.kie.definition.type.FactField;
 import org.kie.definition.type.FactType;
 import org.kie.io.Resource;
@@ -17,6 +20,11 @@ import org.kie.io.ResourceType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 public class TypeDeclarationTest {
 
@@ -398,5 +406,76 @@ public class TypeDeclarationTest {
             fail( "Two definitions with the same name are not allowed, but it was not detected! " );
         }
     }
+
+
+
+    @Retention(value = RetentionPolicy.RUNTIME)
+    @Target(value = ElementType.TYPE)
+    public static @interface KlassAnnotation {
+        String value();
+    }
+
+    @Retention(value = RetentionPolicy.RUNTIME)
+    @Target(value = ElementType.FIELD)
+    public static @interface FieldAnnotation {
+        String prop();
+    }
+
+    @Test
+    public void testTypeDeclarationMetadata() {
+        String str = "";
+        str += "package org.drools.test; \n" +
+                "import org.drools.compiler.TypeDeclarationTest.KlassAnnotation; \n" +
+                "import org.drools.compiler.TypeDeclarationTest.FieldAnnotation; \n" +
+                "import org.drools.Person\n" +
+                "\n" +
+                "declare Bean \n" +
+                "@role(event) \n" +
+                "@expires( 1s ) \n" +
+                "@KlassAnnotation( \"klass\" )" +
+                "" +
+                "    name : String @key @FieldAnnotation( prop = \"fld\" )\n" +
+                "end \n" +
+                "declare Person @role(event) end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+        System.err.println( kbuilder.getErrors() );
+        assertFalse(kbuilder.hasErrors());
+
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        FactType bean = kBase.getFactType( "org.drools.test", "Bean" );
+        FactType pers = kBase.getFactType( "org.drools", "Person" );
+        assertEquals( "org.drools.test.Bean", bean.getName() );
+        assertEquals( "Bean", bean.getSimpleName() );
+        assertEquals( "org.drools.test", bean.getPackageName() );
+
+        assertEquals( 1, bean.getClassAnnotations().size() );
+        Annotation ann = bean.getClassAnnotations().get( 0 );
+        assertEquals( "org.drools.compiler.TypeDeclarationTest$KlassAnnotation", ann.getName() );
+        assertEquals( "klass", ann.getPropertyValue( "value" ) );
+        assertEquals( String.class, ann.getPropertyType( "value" ) );
+
+        assertEquals( 2, bean.getMetaData().size() );
+        assertEquals( "event", bean.getMetaData().get( "role" ) );
+
+        FactField field = bean.getField( "name" );
+        assertNotNull( field );
+        assertEquals( 1, field.getFieldAnnotations().size() );
+        Annotation fnn = field.getFieldAnnotations().get( 0 );
+
+        assertEquals( "org.drools.compiler.TypeDeclarationTest$FieldAnnotation", fnn.getName() );
+        assertEquals( "fld", fnn.getPropertyValue( "prop" ) );
+        assertEquals( String.class, fnn.getPropertyType( "prop" ) );
+
+        assertEquals( 1, field.getMetaData().size() );
+        assertTrue( field.getMetaData().containsKey( "key" ) );
+
+    }
+
 
 }
