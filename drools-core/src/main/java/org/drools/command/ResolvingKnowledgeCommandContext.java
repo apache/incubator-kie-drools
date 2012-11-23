@@ -6,6 +6,7 @@ import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeContainer;
+import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.command.Context;
 import org.kie.command.World;
 import org.kie.runtime.ExecutionResults;
@@ -25,7 +26,7 @@ public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext
     public KnowledgeContainer getKnowledgeContainer() {
         KnowledgeContainer kcontainer = (KnowledgeContainer) context.get( KnowledgeContainer.class.getName() );
         if( kcontainer == null ) {
-            kcontainer = KnowledgeBuilderFactory.newKnowledgeContainer();
+            kcontainer = KnowledgeContainerFactory.newKnowledgeContainer();
             context.set( KnowledgeContainer.class.getName(), kcontainer );
         }
         return kcontainer;

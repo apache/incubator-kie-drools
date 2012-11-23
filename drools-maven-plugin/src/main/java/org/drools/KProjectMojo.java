@@ -4,17 +4,12 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.drools.builder.impl.KnowledgeContainerImpl;
-import org.drools.core.util.Predicate;
-import org.drools.kproject.KBase;
 import org.drools.kproject.KProjectImpl;
-import org.drools.kproject.KSession;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import static org.drools.core.util.IoUtils.recursiveListFile;
 
 /**
  * This goal builds the drools file belonging to the kproject.
@@ -59,9 +54,9 @@ public class KProjectMojo extends AbstractMojo {
 
         for (File kBaseFolder : sourceFolder.listFiles()) {
             String kBaseName = kBaseFolder.getName();
-            kproj.newKBase( kBaseName )
-                    .newKSession( kBaseName + ".session" )
-                    .setType( "stateful" );
+            kproj.newKBase(kBaseName)
+                    .newKSession(kBaseName + ".session")
+                    .setType("stateful");
         }
 
 

@@ -1,6 +1,5 @@
 package org.drools.kproject;
 
-import com.thoughtworks.xstream.XStream;
 import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.core.util.FileManager;
 import org.junit.After;
@@ -9,8 +8,8 @@ import org.junit.Test;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeContainer;
+import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.definition.type.FactType;
@@ -103,7 +102,7 @@ public class KJarTest {
         fileManager.write(fileManager.newFile("src/kbases/KBase1/org/test/decB.drl"), declarationB);
 
         KProject kproj = new KProjectImpl();
-        KBase kBase1 = kproj.newKBase( "KBase1" )
+        KBase kBase1 = kproj.newKBase("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
@@ -114,7 +113,7 @@ public class KJarTest {
 
         fileManager.write( fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KProjectImpl)kproj).toXML() );
 
-        KnowledgeContainer kcontainer = KnowledgeBuilderFactory.newKnowledgeContainer();
+        KnowledgeContainer kcontainer = KnowledgeContainerFactory.newKnowledgeContainer();
 
         // input and output folder are the same
         File kJar = kcontainer.buildKJar(fileManager.getRootDirectory(), fileManager.getRootDirectory(), "test.jar");

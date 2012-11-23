@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import static org.drools.builder.impl.KBaseUnitCachingFactory.evictKBaseUnit;
@@ -52,7 +52,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
 
     public KnowledgeContainerImpl(KnowledgeBuilderConfiguration kConf) {
         classLoader = ((PackageBuilderConfiguration)kConf).getClassLoader();
-        loadKProjects(classLoader, false);
+        loadKProjects(classLoader);
     }
 
     public static void clearCache() {
@@ -61,13 +61,39 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
 
     public void deploy(File... kJars) {
         for (File kJar : kJars) {
-            URLClassLoader urlClassLoader;
+            if (kJar.isDirectory()) {
+                deployDirectory(kJar);
+            } else {
+                deployJar(kJar);
+            }
+        }
+    }
+
+    private void deployJar(File kJar) {
+        ZipFile zipFile;
+        try {
+            zipFile = new ZipFile( kJar );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ZipEntry zipEntry = zipFile.getEntry( KPROJECT_JAR_PATH );
+        if (zipEntry != null) {
             try {
-                urlClassLoader = new URLClassLoader( new URL[] { kJar.toURI().toURL() } );
+                indexKSessions(fromXML(zipFile.getInputStream( zipEntry )), fixURL(kJar.toURI().toURL()), true);
+            } catch (IOException e) {
+                log.error("Unable to access kJar " + kJar.getAbsolutePath() + " caused by: " + e.getLocalizedMessage());
+            }
+        }
+    }
+
+    private void deployDirectory(File kJar) {
+        File kProkjectFile = new File(kJar, KPROJECT_JAR_PATH);
+        if (kProkjectFile.exists()) {
+            try {
+                indexKSessions(fromXML(kProkjectFile), fixURL(kProkjectFile.toURI().toURL()), true);
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
-            loadKProjects(urlClassLoader, true );
         }
     }
 
@@ -136,7 +162,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         return getKBaseUnit(kBaseName).newStatelessKnowledegSession(kSessionName);
     }
 
-    private void loadKProjects(ClassLoader classLoader, boolean doEvict) {
+    private void loadKProjects(ClassLoader classLoader) {
         Enumeration<URL> e = null;
         try {
             e = classLoader.getResources( KPROJECT_JAR_PATH );
@@ -146,7 +172,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
 
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();
-            indexKSessions(fromXML(url), fixURL(url), doEvict);
+            indexKSessions(fromXML(url), fixURL(url), false);
         }
     }
 
@@ -244,8 +270,8 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
             if ( urlPath.indexOf( '!' ) > 0 ) {
                 urlPath = urlPath.substring( 0, urlPath.indexOf( '!' ) );
             }
-        } else {
-            urlPath = urlPath.substring( 0, urlPath.length() - "/META-INF/kproject.xml".length() );
+        } else if (urlPath.endsWith(KPROJECT_JAR_PATH)) {
+            urlPath = urlPath.substring( 0, urlPath.length() - KPROJECT_JAR_PATH.length() - 1 );
         }
 
 

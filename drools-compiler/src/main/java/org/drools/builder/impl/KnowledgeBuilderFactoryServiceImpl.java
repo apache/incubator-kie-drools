@@ -36,14 +36,6 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         return new KnowledgeBuilderImpl( new PackageBuilder() );
     }
 
-    public KnowledgeContainer newKnowledgeContainer() {
-        return newKnowledgeContainer(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, getClass().getClassLoader()));
-    }
-
-    public KnowledgeContainer newKnowledgeContainer(KnowledgeBuilderConfiguration conf) {
-        return new KnowledgeContainerImpl(conf);
-    }
-
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
         return new KnowledgeBuilderImpl( new PackageBuilder( (PackageBuilderConfiguration) conf ) );
     }

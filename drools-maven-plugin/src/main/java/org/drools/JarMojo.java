@@ -4,6 +4,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeContainer;
+import org.kie.builder.KnowledgeContainerFactory;
 
 import java.io.File;
 
@@ -41,7 +42,7 @@ public class JarMojo extends AbstractMojo {
     private String jarName;
 
     public void execute() throws MojoExecutionException {
-        KnowledgeContainer kbuilder = KnowledgeBuilderFactory.newKnowledgeContainer();
+        KnowledgeContainer kbuilder = KnowledgeContainerFactory.newKnowledgeContainer();
         File kJar = kbuilder.buildKJar(rootFolder, outputDirectory, jarName);
         getLog().info("Knowledge jar file written in " + kJar.getAbsolutePath());
     }
