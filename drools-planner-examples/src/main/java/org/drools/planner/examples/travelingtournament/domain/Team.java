@@ -18,9 +18,11 @@ package org.drools.planner.examples.travelingtournament.domain;
 
 import java.util.Map;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@XStreamAlias("TtpTeam")
 public class Team extends AbstractPersistable {
 
     private String name;

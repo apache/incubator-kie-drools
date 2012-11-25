@@ -21,12 +21,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@XStreamAlias("TravelingTournament")
 public class TravelingTournament extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
     private List<Day> dayList;

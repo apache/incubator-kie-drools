@@ -16,6 +16,7 @@
 
 package org.drools.planner.examples.travelingtournament.domain;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
@@ -25,6 +26,7 @@ import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
+@XStreamAlias("TtpMatch")
 public class Match extends AbstractPersistable {
 
     private Team homeTeam;
