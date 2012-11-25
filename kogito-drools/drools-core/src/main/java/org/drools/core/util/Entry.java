@@ -17,8 +17,8 @@
 package org.drools.core.util;
 
 
-public interface Entry {
-    public void setNext(Entry next);
+public interface Entry <T extends Entry<T>>{
+    public void setNext(T next);
 
-    public Entry getNext();
+    public T getNext();
 }

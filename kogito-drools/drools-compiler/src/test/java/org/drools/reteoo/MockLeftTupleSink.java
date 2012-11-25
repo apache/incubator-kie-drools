@@ -63,7 +63,6 @@ public class MockLeftTupleSink extends LeftTupleSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         this.retracted.add( new Object[]{tuple, context, workingMemory} );
-
     }
 
     public List getAsserted() {
@@ -81,11 +80,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     public int getId() {
         return this.id;
     }
-
-    public Memory createMemory(final RuleBaseConfiguration config) {
-        return null;
-    }
-
+    
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) throws FactException {
@@ -147,23 +142,17 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public boolean isLeftTupleMemoryEnabled() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void networkUpdated(UpdateContext updateContext) {
-        // TODO Auto-generated method stub
-        
     }
 
     public short getType() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -171,15 +160,11 @@ public class MockLeftTupleSink extends LeftTupleSource
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-        
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
@@ -210,12 +195,20 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public LeftTupleSource getLeftTupleSource() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     protected ObjectTypeNode getObjectTypeNode() {
+        return null;
+    }
+
+    public Memory createMemory(RuleBaseConfiguration config) {
+        return null;
+    }
+
+    @Override
+    public LeftTuple createPeer(LeftTuple original) {
         return null;
     }
 

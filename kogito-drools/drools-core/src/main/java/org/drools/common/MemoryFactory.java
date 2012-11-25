@@ -20,7 +20,6 @@ import org.drools.RuleBaseConfiguration;
 
 public interface MemoryFactory {
     public int getId();
-
+    
     public Memory createMemory(RuleBaseConfiguration config);
-
 }

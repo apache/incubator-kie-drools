@@ -12,6 +12,7 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NetworkNode;
 import org.drools.common.PropagationContextImpl;
+import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -285,6 +286,7 @@ public class RuleUnlinkingTest {
 
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
 
+        SegmentUtilities.createSegmentMemory( liaNode, wm );
         liaNode.assertObject( f1, context, wm );
         n1.assertObject( f1, context, wm );
         n3.assertObject( f1, context, wm );
@@ -338,7 +340,7 @@ public class RuleUnlinkingTest {
                                                   InternalWorkingMemory wm) {
         BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory( node );
         if ( betaMemory.getSegmentMemory() == null ) {
-            node.createNodeSegmentMemory( node, wm );
+            SegmentUtilities.createSegmentMemory( node, wm );
         }
         return betaMemory;
 

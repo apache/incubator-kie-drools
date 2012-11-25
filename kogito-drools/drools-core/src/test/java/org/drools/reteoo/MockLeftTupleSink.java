@@ -74,7 +74,6 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public void ruleAttached() {
-        // TODO Auto-generated method stub
     }
 
     public int getId() {
@@ -88,8 +87,6 @@ public class MockLeftTupleSink extends LeftTupleSource
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) throws FactException {
-        // TODO Auto-generated method stub
-
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -99,13 +96,10 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public void attach(BuildContext buildContext) {
-        // TODO Auto-generated method stub
-
     }
 
     public List getPropagatedTuples(final ReteooWorkingMemory workingMemory,
                                     final LeftTupleSink sink) {
-        // TODO Auto-generated method stub
         return Collections.EMPTY_LIST;
     }
 
@@ -146,22 +140,16 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public boolean isLeftTupleMemoryEnabled() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void networkUpdated(UpdateContext updateContext) {
-        // TODO Auto-generated method stub
-        
     }
 
     public short getType() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -169,15 +157,11 @@ public class MockLeftTupleSink extends LeftTupleSource
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-        
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
@@ -208,12 +192,16 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public LeftTupleSource getLeftTupleSource() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     protected ObjectTypeNode getObjectTypeNode() {
+        return null;
+    }
+
+    @Override
+    public LeftTuple createPeer(LeftTuple original) {
         return null;
     }
 

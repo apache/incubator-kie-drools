@@ -31,6 +31,7 @@ import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
@@ -161,6 +162,10 @@ public class RightInputAdapterNode extends ObjectSource
         
         return rianMem;
     }
+    
+    public LeftTuple createPeer(LeftTuple original) {
+        return null;
+    }    
 
     /**
      * Takes the asserted <code>ReteTuple</code> received from the <code>TupleSource</code> and
@@ -200,7 +205,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     @SuppressWarnings("unchecked")
-    private InternalFactHandle createFactHandle(final LeftTuple leftTuple,
+    public InternalFactHandle createFactHandle(final LeftTuple leftTuple,
                                                 final PropagationContext context,
                                                 final InternalWorkingMemory workingMemory) {
         InternalFactHandle handle = null;
@@ -464,24 +469,13 @@ public class RightInputAdapterNode extends ObjectSource
         throw new UnsupportedOperationException();
     }
     
-    public static class RiaNodeMemory implements Memory, Externalizable {
+    public static class RiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
         private ObjectHashMap map = new ObjectHashMap();
         private RuleMemory ruleSegments;
         
         public RiaNodeMemory() {            
         }
         
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( map );
-            out.writeObject( ruleSegments );
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            map = (ObjectHashMap) in.readObject();
-            ruleSegments = ( RuleMemory ) in.readObject();
-        }        
-
         public ObjectHashMap getMap() {
             return map;
         }
@@ -496,12 +490,16 @@ public class RightInputAdapterNode extends ObjectSource
 
         public void setRuleSegments(RuleMemory ruleSegments) {
             this.ruleSegments = ruleSegments;
-        } 
+        }
+        
+        public SegmentMemory getSegmentMemory() {
+            throw new UnsupportedOperationException();
+        }        
         
         public short getNodeType() {
             return NodeTypeEnums.RightInputAdaterNode;
-        }        
-        
+        }
+     
     }
 
 }

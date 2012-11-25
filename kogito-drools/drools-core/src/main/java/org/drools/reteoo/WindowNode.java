@@ -396,9 +396,7 @@ public class WindowNode extends ObjectSource
         return entryPoint;
     }
 
-    public static class WindowMemory implements Externalizable, Memory {
-
-        private static final long      serialVersionUID = 540l;
+    public static class WindowMemory implements Memory {
 
         public ObjectHashMap           events           = new ObjectHashMap();
         public ContextEntry[]          context;
@@ -406,23 +404,29 @@ public class WindowNode extends ObjectSource
 
         public transient ReentrantLock gate;
 
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
-            context = (ContextEntry[]) in.readObject();
-            behaviorContext = (Object) in.readObject();
-            events = (ObjectHashMap) in.readObject();
-            gate = new ReentrantLock();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(context);
-            out.writeObject(behaviorContext);
-            out.writeObject(events);
-        }
-
         public short getNodeType() {
             return NodeTypeEnums.WindowNode;
         }
+        
+        public SegmentMemory getSegmentMemory() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Memory getPrevious() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setPrevious(Memory previous) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setNext(Memory next) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Memory getNext() {
+            throw new UnsupportedOperationException();
+        }        
     }
 
     @Override

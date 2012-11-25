@@ -37,6 +37,7 @@ import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.LeftTupleList;
@@ -52,6 +53,7 @@ import org.drools.rule.From;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
+import org.w3c.dom.views.AbstractView;
 
 public class FromNode extends LeftTupleSource
     implements
@@ -505,6 +507,13 @@ public class FromNode extends LeftTupleSource
                                this.dataProvider.createContext(),
                                this.alphaConstraints );
     }
+   
+
+    @Override
+    public LeftTuple createPeer(LeftTuple original) {
+        // TODO Auto-generated method stub
+        return null;
+    }    
 
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
@@ -554,7 +563,7 @@ public class FromNode extends LeftTupleSource
         return NodeTypeEnums.FromNode;
     } 
 
-    public static class FromMemory
+    public static class FromMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Serializable,
         Memory {
@@ -578,6 +587,19 @@ public class FromNode extends LeftTupleSource
         public short getNodeType() {
             return NodeTypeEnums.FromNode;
         }
+
+        public SegmentMemory getSegmentMemory() {
+            return betaMemory.getSegmentMemory();
+        }
+
+        public BetaMemory getBetaMemory() {
+            return betaMemory;
+        }
+
+        public void setBetaMemory(BetaMemory betaMemory) {
+            this.betaMemory = betaMemory;
+        }
+                
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
@@ -613,7 +635,6 @@ public class FromNode extends LeftTupleSource
 
     protected ObjectTypeNode getObjectTypeNode() {
         return leftInput.getObjectTypeNode();
-    }
-    
+    }    
 
 }

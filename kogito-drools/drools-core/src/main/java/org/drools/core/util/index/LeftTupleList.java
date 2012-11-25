@@ -51,6 +51,15 @@ public class LeftTupleList
         this.hashCode = 0;
         this.index = null;
     }
+    
+    public LeftTupleList(LeftTuple first, LeftTuple last, int size) {
+        // this is not an index bucket        
+        this.hashCode = 0;
+        this.index = null;
+        this.first = first;
+        this.last = last;
+        this.size = size;
+    }    
 
     public LeftTupleList(final Index index,
                          final int hashCode) {
@@ -151,7 +160,7 @@ public class LeftTupleList
         }        
         leftTuple.clear();
         this.size--;
-    }
+    } 
 
     public boolean contains(final LeftTuple leftTuple) {
         return get( leftTuple ) != null;

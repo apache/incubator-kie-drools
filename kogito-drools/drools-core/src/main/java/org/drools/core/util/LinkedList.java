@@ -69,11 +69,11 @@ public class LinkedList<T extends LinkedListNode<T>>
         lastNode    = (T)in.readObject();
         size        = in.readInt();
         
-        LinkedListNode current = firstNode;
-        LinkedListNode previous = null;
+        T current = firstNode;
+        T previous = null;
 
         while ( current != lastNode) {
-            LinkedListNode next = (LinkedListNode) in.readObject();
+            T next = (T) in.readObject();
             current.setPrevious(previous);
             current.setNext(next);
             previous = current;
@@ -93,7 +93,7 @@ public class LinkedList<T extends LinkedListNode<T>>
             // no other nodes
             return;
         }        
-        for (LinkedListNode node = firstNode; node != null; node = node.getNext()) {
+        for (T node = firstNode; node != null; node = node.getNext()) {
             out.writeObject(node.getNext());
         }          
     }
@@ -213,7 +213,7 @@ public class LinkedList<T extends LinkedListNode<T>>
                 this.lastNode = newNode;
             } else {
                 // if existing node is null, then insert it as a first node
-                final LinkedListNode node = this.firstNode;
+                final T node = this.firstNode;
                 node.setPrevious( newNode );
                 newNode.setNext( node );
                 this.firstNode = newNode;
@@ -238,11 +238,11 @@ public class LinkedList<T extends LinkedListNode<T>>
      * @return
      *      The first <code>LinkedListNode</code>.
      */
-    public LinkedListNode removeLast() {
+    public T removeLast() {
         if ( this.lastNode == null ) {
             return null;
         }
-        final LinkedListNode node = this.lastNode;
+        final T node = this.lastNode;
         this.lastNode = (T) node.getPrevious();
         node.setPrevious( null );
         if ( this.lastNode != null ) {
@@ -255,7 +255,7 @@ public class LinkedList<T extends LinkedListNode<T>>
     }
     
     public Object get(int i) {
-        Entry current = getFirst();
+        T current = getFirst();
         for ( int j = 0; j < i; j++ ) {
             current = current.getNext();
         }
@@ -289,7 +289,7 @@ public class LinkedList<T extends LinkedListNode<T>>
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        for ( LinkedListNode node = this.firstNode; node != null; node = node.getNext() ) {
+        for ( T node = this.firstNode; node != null; node = node.getNext() ) {
             result = PRIME * result + node.hashCode();
         }
         return result;
@@ -304,13 +304,13 @@ public class LinkedList<T extends LinkedListNode<T>>
             return false;
         }
 
-        final LinkedList other = (LinkedList) object;
+        final LinkedList<T> other = (LinkedList<T>) object;
 
         if ( this.size() != other.size() ) {
             return false;
         }
 
-        for ( LinkedListNode thisNode = this.firstNode, otherNode = other.firstNode; thisNode != null && otherNode != null; thisNode = thisNode.getNext(), otherNode = otherNode.getNext() ) {
+        for ( T thisNode = this.firstNode, otherNode = other.firstNode; thisNode != null && otherNode != null; thisNode = thisNode.getNext(), otherNode = otherNode.getNext() ) {
             if ( !thisNode.equals( otherNode ) ) {
                 return false;
             }
@@ -336,8 +336,8 @@ public class LinkedList<T extends LinkedListNode<T>>
         }        
     }
 
-    public java.util.Iterator javaUtilIterator() {
-        return new JavaUtilIterator( this );
+    public java.util.Iterator<T> javaUtilIterator() {
+        return new JavaUtilIterator<T>( this );
     }
 
     /**
@@ -366,7 +366,7 @@ public class LinkedList<T extends LinkedListNode<T>>
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            list    = (LinkedList)in.readObject();
+            list    = (LinkedList<T>)in.readObject();
             current = (T)in.readObject();
         }
 
@@ -377,25 +377,26 @@ public class LinkedList<T extends LinkedListNode<T>>
 
     }
 
-    public static class JavaUtilIterator
+    public static class JavaUtilIterator<T extends LinkedListNode<T>>
         implements
-        java.util.Iterator,
+        java.util.Iterator<T>,
         Externalizable {
-        private LinkedList     list;
-        private LinkedListNode currentNode;
-        private LinkedListNode nextNode;
+        
+        private LinkedList<T>     list;
+        private T currentNode;
+        private T nextNode;
         private boolean        immutable;
 
         public JavaUtilIterator() {
 
         }
 
-        public JavaUtilIterator(final LinkedList list) {
+        public JavaUtilIterator(final LinkedList<T> list) {
             this( list,
                   true );
         }
 
-        public JavaUtilIterator(final LinkedList list,
+        public JavaUtilIterator(final LinkedList<T> list,
                                 final boolean immutable) {
             this.list = list;
             this.nextNode = this.list.getFirst();
@@ -403,9 +404,9 @@ public class LinkedList<T extends LinkedListNode<T>>
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            list    = (LinkedList)in.readObject();
-            currentNode = (LinkedListNode)in.readObject();
-            nextNode = (LinkedListNode)in.readObject();
+            list    = (LinkedList<T>)in.readObject();
+            currentNode = (T)in.readObject();
+            nextNode = (T)in.readObject();
             immutable   = in.readBoolean();
         }
 
@@ -420,7 +421,7 @@ public class LinkedList<T extends LinkedListNode<T>>
             return (this.nextNode != null);
         }
 
-        public Object next() {
+        public T next() {
             this.currentNode = this.nextNode;
             if ( this.currentNode != null ) {
                 this.nextNode = this.currentNode.getNext();

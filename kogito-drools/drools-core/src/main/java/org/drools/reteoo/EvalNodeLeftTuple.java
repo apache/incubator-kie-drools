@@ -102,6 +102,12 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
         super.unlinkFromRightParent();
         this.blocker = null;
     }
+    
+    public void clearBlocker() {
+        this.blockedPrevious = null;
+        this.blockedNext = null;
+        this.blocker= null;
+    }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)

@@ -16,30 +16,13 @@
 
 package org.drools.core.util;
 
-import java.io.Externalizable;
-
 /**
  * Items placed in a <code>LinkedList<code> must implement this interface .
  *
  * @see LinkedList
  */
 public interface LinkedListNode<T extends LinkedListNode<T>>
-    extends Entry,
-    Externalizable {
-
-    /**
-     * Returns the next node
-     * @return
-     *      The next LinkedListNode
-     */
-    public T getNext();
-
-    /**
-     * Sets the next node
-     * @param next
-     *      The next LinkedListNode
-     */
-    public void setNext(T next);
+    extends Entry<T> {
 
     /**
      * Returns the previous node

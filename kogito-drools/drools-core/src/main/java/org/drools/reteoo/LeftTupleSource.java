@@ -114,7 +114,9 @@ public abstract class LeftTupleSource extends BaseNode
         out.writeLong( leftInferredMask );
         out.writeLong( leftNegativeMask );
     }
-
+    
+    public abstract LeftTuple createPeer(LeftTuple original);
+    
     public void addTupleSink(final LeftTupleSink tupleSink) {
         addTupleSink(tupleSink, null);
     }
@@ -412,51 +414,6 @@ public abstract class LeftTupleSource extends BaseNode
         //        }
     }
     
-    public boolean isStagedForModifyRight(final RightTuple rightTuple, 
-                                          final BetaMemory bm,
-                                          final PropagationContext context,
-                                          final InternalWorkingMemory wm ) {
-        if ( !bm.getSegmentMemory().isActive() ) {
-            if ( !rightTuple.getMemory().isStagingMemory() ) {
-                // if not already staged, then stage it
-                bm.getRightTupleMemory().remove( rightTuple );
-               // bm.getSegmentMemory().addModifyRightTuple( rightTuple, wm );
-            }                       
-            return true;
-        } 
-        
-        return false;
-    }
-    
-    public boolean isStagedForAssertLeft(final LeftTuple leftTuple, 
-                                         final BetaMemory bm,
-                                         final PropagationContext context,
-                                         final InternalWorkingMemory wm ) {
-        if ( !bm.getSegmentMemory().isActive() ) {
-            bm.getSegmentMemory().addAssertLeftTuple( leftTuple, wm );
-            return true;
-        }
-        
-        return false;
-    }
-    
-    
-    public boolean isStagedForModifyLeft(final LeftTuple leftTuple, 
-                                         final BetaMemory bm,
-                                         final PropagationContext context,
-                                         final InternalWorkingMemory wm ) {
-//        if ( !bm.getSegmentMemory().isActive() ) {
-//            if ( leftTuple.getMemory() != null && !leftTuple.getMemory().isStagingMemory() ) {
-//                // if not already staged, then stage it
-//                bm.getLeftTupleMemory().remove( leftTuple );
-//                bm.getSegmentMemory().addModifyLeftTuple( leftTuple, wm );
-//            }             
-//            return true;
-//        }
-        
-        return false;
-    }
-
     public long getLeftDeclaredMask() {
         return leftDeclaredMask;
     }

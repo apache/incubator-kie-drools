@@ -768,6 +768,11 @@ public class CompositeObjectSinkAdapterTest {
         public void assertRightTuple(RightTuple rightTuple,
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory) {
+        }
+
+        @Override
+        public LeftTuple createPeer(LeftTuple original) {
+            return null;
         }                
     }
 }

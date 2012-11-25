@@ -440,4 +440,10 @@ public class ElseNode extends BetaNode {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public LeftTuple createPeer(LeftTuple original) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

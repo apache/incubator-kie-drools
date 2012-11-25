@@ -4,37 +4,71 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.MemoryFactory;
+import org.drools.common.StagedLeftTuples;
+import org.drools.core.util.Entry;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleList;
+import org.drools.phreak.SegmentPropagator;
 
-public class SegmentMemory {
-    private long             linkedNodeMask;
-
-    private long             allLinkedMaskTest;
-
-    private List<RuleMemory> ruleMemories;
-
-    private long             segmentPosMaskBit;
+public class SegmentMemory extends LinkedList<SegmentMemory> implements LinkedListNode<SegmentMemory>{
+    private LeftTupleSource   rootNode;
+    private LeftTupleSource     tipNode;
     
-    private int              pos;
+    private LinkedList<Memory> nodeMemories;
+    
+    private long              linkedNodeMask;
 
-    private LeftTupleList    stagedAssertLeftTuple;
-    private LeftTupleList    stagedRetractLeftTuple;
-    private LeftTupleList    stagedModifyLeftTuple;
+    private long              allLinkedMaskTest;
 
-    private int              counter;
+    private List<RuleMemory>  ruleMemories;
 
-    private boolean          active;
+    private long              segmentPosMaskBit;
+    
+    private int               pos;
 
-    public SegmentMemory() {
-        ruleMemories = new ArrayList<RuleMemory>( 1 );
+    private StagedLeftTuples         stagedLeftTuples;    
 
-        stagedAssertLeftTuple = new LeftTupleList();
-        stagedAssertLeftTuple.setStagingMemory( true );
+    private int               counter;
 
-        stagedModifyLeftTuple = new LeftTupleList();
-        stagedModifyLeftTuple.setStagingMemory( true );
+    private boolean           active;
+    
+    private SegmentMemory     previous;
+    private SegmentMemory     next;
+    
+
+    public SegmentMemory(LeftTupleSource rootNode) {
+        this.rootNode = rootNode;
+        this.ruleMemories = new ArrayList<RuleMemory>( 1 );
+        this.nodeMemories = new LinkedList<Memory>(); 
+        
+        this.stagedLeftTuples = new StagedLeftTuples();
     }
+        
+    public LeftTupleSource getRootNode() {
+        return rootNode;
+    }
+    
+    public LeftTupleSource getTipNode() {
+        return tipNode;
+    }
+    
+    public void setTipNode(LeftTupleSource tipNode) {
+        this.tipNode = tipNode;
+    }
+
+    public Memory createNodeMemory(MemoryFactory memoryFactory, InternalWorkingMemory wm) {
+        Memory memory = wm.getNodeMemory( memoryFactory );        
+        nodeMemories.add( memory );
+        return memory;
+    }
+    
+    public LinkedList<Memory> getNodeMemories() {
+        return nodeMemories;
+    }    
 
     public long getLinkedNodeMask() {
         return linkedNodeMask;
@@ -53,16 +87,18 @@ public class SegmentMemory {
     }
 
     public void notifyRuleLinkSegment(InternalWorkingMemory wm) {
-        for ( RuleMemory rs : ruleMemories ) {
-            rs.linkSegment( segmentPosMaskBit, wm );
+        for ( int i = 0, length = ruleMemories.size(); i < length; i++ ) {
+            // do not use foreach, don't want Iterator object creation
+            ruleMemories.get( i ).linkSegment( segmentPosMaskBit, wm );
         }
     }
 
     public void unlinkNode(long mask,
                            InternalWorkingMemory wm) {
         if ( isSegmentLinked() ) {
-            for ( RuleMemory rs : ruleMemories ) {
-                rs.unlinkedSegment( segmentPosMaskBit, wm );
+            for ( int i = 0, length = ruleMemories.size(); i < length; i++ ) {
+                // do not use foreach, don't want Iterator object creation
+                ruleMemories.get( i ).unlinkedSegment( segmentPosMaskBit, wm );
             }
         }
         linkedNodeMask = linkedNodeMask ^ mask;
@@ -96,75 +132,6 @@ public class SegmentMemory {
         this.segmentPosMaskBit = nodeSegmenMask;
     }
 
-    public void addAssertLeftTuple(LeftTuple leftTuple,
-                                   InternalWorkingMemory wm) {
-        stagedAssertLeftTuple.add( leftTuple );
-        if ( counter == 0 && isSegmentLinked() ) {
-            notifyRuleLinkSegment( wm );
-        }
-        counter++;
-    }
-
-    public void removeAssertLeftTuple(LeftTuple leftTuple,
-                                      InternalWorkingMemory wm) {
-        stagedAssertLeftTuple.remove( leftTuple );
-        counter--;
-    }
-
-    public LeftTupleList getStagedAssertLeftTuple() {
-        return stagedAssertLeftTuple;
-    }
-
-    public void setStagedAssertLeftTuple(LeftTupleList stagedAssertLeftTuple) {
-        this.stagedAssertLeftTuple = stagedAssertLeftTuple;
-    }
-
-    public void addModifyLeftTuple(LeftTuple leftTuple,
-                                   InternalWorkingMemory wm) {
-        stagedModifyLeftTuple.add( leftTuple );
-        if ( counter == 0 && isSegmentLinked() ) {
-            notifyRuleLinkSegment( wm );
-        }
-        counter++;
-    }
-
-    public void removeModifyLeftTuple(LeftTuple leftTuple,
-                                      InternalWorkingMemory wm) {
-        stagedModifyLeftTuple.remove( leftTuple );
-        counter--;
-    }
-
-    public LeftTupleList getStagedModifyLeftTuple() {
-        return stagedModifyLeftTuple;
-    }
-
-    public void setStagedModifyLeftTuple(LeftTupleList stagedModifyLeftTuple) {
-        this.stagedModifyLeftTuple = stagedModifyLeftTuple;
-    }
-
-    //    public void addAssertRightTuple(RightTuple rightTuple,
-    //                                    InternalWorkingMemory wm) {
-    //        stagedAssertRightTuple.add(  rightTuple );
-    //        if ( counter == 0 && isSegmentLinked() ) {
-    //            notifyRuleLinkSegment( wm );
-    //        }        
-    //        counter++;
-    //    }
-    //    
-    //    public void removeAssertRightTuple(RightTuple rightTuple,
-    //                                       InternalWorkingMemory wm) {
-    //        stagedAssertRightTuple.remove(  rightTuple );
-    //        counter--;
-    //    } 
-    //    
-    //    public RightTupleList getStagedAssertRightTuple() {
-    //        return stagedAssertRightTuple;
-    //    }
-    //
-    //    public void setStagedAssertRightTuple(RightTupleList stagedAssertRightTuple) {
-    //        this.stagedAssertRightTuple = stagedAssertRightTuple;
-    //    }
-
     public boolean isActive() {
         return active;
     }
@@ -179,6 +146,50 @@ public class SegmentMemory {
 
     public void setPos(int pos) {
         this.pos = pos;
-    }    
+    }
 
+    public StagedLeftTuples getStagedLeftTuples() {
+        return stagedLeftTuples;
+    }
+
+    public void setStagedTuples(StagedLeftTuples stagedTuples) {
+        this.stagedLeftTuples = stagedTuples;
+    }
+
+    public void setNext(SegmentMemory next) {
+        this.next = next;
+    }
+
+    public SegmentMemory getNext() {
+        return this.next;
+    }
+
+    public SegmentMemory getPrevious() {
+        return this.previous;
+    }
+
+    public void setPrevious(SegmentMemory previous) {
+        this.previous = previous;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;        
+        int result = prime * rootNode.getId();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( !super.equals( obj ) ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        SegmentMemory other = (SegmentMemory) obj;
+        if ( rootNode == null ) {
+            if ( other.rootNode != null ) return false;
+        } else if ( rootNode.getId() != other.rootNode.getId()) return false;
+        return true;
+    } 
+    
+    
 }

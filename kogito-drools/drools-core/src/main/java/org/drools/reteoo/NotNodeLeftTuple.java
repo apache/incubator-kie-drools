@@ -141,6 +141,12 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     public Entry getNext() {
         return this.next;
     }
+    
+    public void clearBlocker() {
+        this.blockedPrevious = null;
+        this.blockedNext = null;
+        this.blocker= null;
+    }    
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
@@ -183,4 +189,5 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     public void setBlockedNext(LeftTuple blockerNext) {
         this.blockedNext = blockerNext;
     }
+  
 }

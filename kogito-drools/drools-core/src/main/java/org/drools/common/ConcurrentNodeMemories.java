@@ -76,6 +76,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
     /**
      * Checks if a memory does not exists for the given node and
      * creates it.
+     * @param index 
      * 
      * @param node
      * @return

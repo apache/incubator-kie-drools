@@ -212,55 +212,55 @@ public class ReteooRuleBuilder implements RuleBuilder {
     public void setUnlinkDisabledCount(LeftTupleSource startNode,
                                        LeftTupleSource lt,
                                        InternalWorkingMemory[] wms) {
-        while ( lt != null ) {
-            if ( startNode == lt ) {
-                return;
-            }
-            if ( NodeTypeEnums.isBetaNode( lt ) ) {
-                BetaNode betaNode = (BetaNode) lt;
-                if ( betaNode.isRightInputIsRiaNode() ) {
-                    RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
-                    lt = lt.getLeftTupleSource();
-                    setUnlinkDisabledCount( lt, riaNode.getLeftTupleSource(), wms );
-                    continue;
-                }
-
-                if ( wms != null && betaNode.isUnlinkingEnabled() ) {
-                    for ( InternalWorkingMemory wm : wms ) {
-                        BetaMemory bm;
-                        if ( NodeTypeEnums.AccumulateNode == lt.getType() ) {
-                            bm = ((AccumulateMemory) wm.getNodeMemory( (AccumulateNode) lt )).getBetaMemory();
-                        } else {
-                            bm = (BetaMemory) wm.getNodeMemory( (BetaNode) lt );
-                        }
-                        RightTupleList list = bm.getStagedAssertRightTupleList();
-                        int length = list.size();
-
-                        BetaNode.propagateAssertRightTuples( betaNode, list, length, wm );
-                        bm.clearStagingMemory();
-                    }
-                }
-                betaNode.setUnlinkingEnabled( false );
-                betaNode.setUnlinkedDisabledCount( betaNode.getUnlinkedDisabledCount() + 1 );
-            } else if ( NodeTypeEnums.LeftInputAdapterNode == lt.getType() ) {
-                LeftInputAdapterNode liaNode = ((LeftInputAdapterNode) lt);
-
-                if ( wms != null && liaNode.isUnlinkingEnabled() ) {
-                    for ( InternalWorkingMemory wm : wms ) {
-                        LiaNodeMemory lm = (LiaNodeMemory) wm.getNodeMemory( (LeftInputAdapterNode) lt );
-                        LeftTupleList list = lm.getStagedLeftTupleList();
-                        int length = list.size();
-
-                        LeftInputAdapterNode.propagateLeftTuples( (LeftInputAdapterNode) lt, list, length, wm );
-                        lm.setStagedLeftTupleList( null );
-                    }
-                }   
-                
-                liaNode.setUnlinkedDisabledCount( liaNode.getUnlinkedDisabledCount() + 1 );
-                liaNode.setUnlinkingEnabled( false );
-            }
-            lt = lt.getLeftTupleSource();
-        }
+//        while ( lt != null ) {
+//            if ( startNode == lt ) {
+//                return;
+//            }
+//            if ( NodeTypeEnums.isBetaNode( lt ) ) {
+//                BetaNode betaNode = (BetaNode) lt;
+//                if ( betaNode.isRightInputIsRiaNode() ) {
+//                    RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
+//                    lt = lt.getLeftTupleSource();
+//                    setUnlinkDisabledCount( lt, riaNode.getLeftTupleSource(), wms );
+//                    continue;
+//                }
+//
+//                if ( wms != null && betaNode.isUnlinkingEnabled() ) {
+//                    for ( InternalWorkingMemory wm : wms ) {
+//                        BetaMemory bm;
+//                        if ( NodeTypeEnums.AccumulateNode == lt.getType() ) {
+//                            bm = ((AccumulateMemory) wm.getNodeMemory( (AccumulateNode) lt )).getBetaMemory();
+//                        } else {
+//                            bm = (BetaMemory) wm.getNodeMemory( (BetaNode) lt );
+//                        }
+//                        RightTupleList list = bm.getStagedAssertRightTupleList();
+//                        int length = list.size();
+//
+//                        BetaNode.propagateAssertRightTuples( betaNode, list, length, wm );
+//                        bm.clearStagingMemory();
+//                    }
+//                }
+//                betaNode.setUnlinkingEnabled( false );
+//                betaNode.setUnlinkedDisabledCount( betaNode.getUnlinkedDisabledCount() + 1 );
+//            } else if ( NodeTypeEnums.LeftInputAdapterNode == lt.getType() ) {
+//                LeftInputAdapterNode liaNode = ((LeftInputAdapterNode) lt);
+//
+//                if ( wms != null && liaNode.isUnlinkingEnabled() ) {
+//                    for ( InternalWorkingMemory wm : wms ) {
+//                        LiaNodeMemory lm = (LiaNodeMemory) wm.getNodeMemory( (LeftInputAdapterNode) lt );
+//                        LeftTupleList list = lm.getStagedLeftTupleList();
+//                        int length = list.size();
+//
+//                        LeftInputAdapterNode.propagateLeftTuples( (LeftInputAdapterNode) lt, list, length, wm );
+//                        lm.setStagedLeftTupleList( null );
+//                    }
+//                }   
+//                
+//                liaNode.setUnlinkedDisabledCount( liaNode.getUnlinkedDisabledCount() + 1 );
+//                liaNode.setUnlinkingEnabled( false );
+//            }
+//            lt = lt.getLeftTupleSource();
+//        }
     } 
 
     /**

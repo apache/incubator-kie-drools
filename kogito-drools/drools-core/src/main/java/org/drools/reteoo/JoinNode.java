@@ -22,6 +22,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
+import org.drools.common.StagedRightTuples;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;
@@ -54,11 +55,7 @@ public class JoinNode extends BetaNode {
     public void assertLeftTuple( final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory ) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );     
-        
-        if ( isUnlinkingEnabled() && isStagedForModifyLeft( leftTuple, memory, context, workingMemory )) {
-            return;
-        }        
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );            
 
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
@@ -174,25 +171,31 @@ public class JoinNode extends BetaNode {
                                    final PropagationContext context,
                                    final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this ); 
-
-        if ( rightTuple.getMemory().isStagingMemory()) {
-            rightTuple.getMemory().remove( rightTuple );
-        } else {
-            memory.getRightTupleMemory().remove( rightTuple );
-        }   
+        if ( isUnlinkingEnabled() ) {
+            StagedRightTuples stagedRightTuples = memory.getStagedRightTuples();
+            switch ( rightTuple.getStagedType() ) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    stagedRightTuples.removeInsert( rightTuple );
+                    break;
+                case LeftTuple.UPDATE:
+                    stagedRightTuples.removeUpdate( rightTuple );
+                    break;
+            }  
+            stagedRightTuples.addDelete( rightTuple );         
+            if ( memory.getDecAndGetCounter() == 0 && !isRightInputIsRiaNode() ) {
+                memory.unlinkNode( workingMemory );            
+            }              
+            return;
+        } 
         
-        if ( rightTuple.firstChild != null ) {
-            if (   isUnlinkingEnabled()  ) {
-                // stage for later removal of children
-                memory.addStagedRetractRightTuple( rightTuple, workingMemory );
-            } else {
-                this.sink.propagateRetractRightTuple( rightTuple,
-                                                      context,
-                                                      workingMemory );                
-            }
-        }
+        memory.getRightTupleMemory().remove( rightTuple );
+        
+        this.sink.propagateRetractRightTuple( rightTuple,
+                                              context,
+                                              workingMemory );
                 
-        if (  isUnlinkingEnabled() && memory.getAndDecCounter() == 0 && !isRightInputIsRiaNode() ) {
+        if (  isUnlinkingEnabled() && memory.getDecAndGetCounter() == 0 && !isRightInputIsRiaNode() ) {
             // unlink node
             memory.unlinkNode( workingMemory );            
         }
@@ -217,31 +220,27 @@ public class JoinNode extends BetaNode {
         }
     }
     
-    public void modifyRightTuple2( final RightTuple rightTuple,
-                                   final PropagationContext context,
-                                   final InternalWorkingMemory workingMemory ) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this ); 
-
-        if ( rightTuple.getMemory().isStagingMemory()) {
-            rightTuple.getMemory().remove( rightTuple );
-        } else {
-            memory.getRightTupleMemory().remove( rightTuple );
-        }   
-        
-        if ( rightTuple.firstChild != null ) {
-            // stage for later removal of children
-            memory.addStagedModifyRightTuple( rightTuple, workingMemory );
-        }
-    }   
+//    public void modifyRightTuple2( final RightTuple rightTuple,
+//                                   final PropagationContext context,
+//                                   final InternalWorkingMemory workingMemory ) {
+//        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this ); 
+//
+//        if ( rightTuple.getMemory().isStagingMemory()) {
+//            rightTuple.getMemory().remove( rightTuple );
+//        } else {
+//            memory.getRightTupleMemory().remove( rightTuple );
+//        }   
+//        
+//        if ( rightTuple.firstChild != null ) {
+//            // stage for later removal of children
+//            memory.addStagedModifyRightTuple( rightTuple, workingMemory );
+//        }
+//    }   
 
     public void modifyRightTuple( final RightTuple rightTuple,
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        if ( isUnlinkingEnabled() && isStagedForModifyRight( rightTuple, memory, context, workingMemory )) {
-            return;
-        }
         
         // WTD here
         //                if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
@@ -335,10 +334,6 @@ public class JoinNode extends BetaNode {
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        if ( isUnlinkingEnabled() && isStagedForModifyLeft( leftTuple, memory, context, workingMemory )) {
-            return;
-        }
         
         ContextEntry[] contextEntry = memory.getContext();
 
@@ -468,6 +463,13 @@ public class JoinNode extends BetaNode {
     
     public String toString() {
         return "[JoinNode(" + this.getId() + ") - " + getObjectTypeNode().getObjectType() + "]";
+    }
+    
+    public LeftTuple createPeer(LeftTuple original) {
+        JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,

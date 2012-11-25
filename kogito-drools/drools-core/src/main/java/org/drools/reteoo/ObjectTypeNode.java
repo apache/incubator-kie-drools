@@ -695,20 +695,31 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     
-    public static class ObjectTypeNodeMemory implements Memory, Externalizable {
+    public static class ObjectTypeNodeMemory implements Memory {
         public ObjectHashSet memory = new ObjectHashSet();
 
         public short getNodeType() {
             return NodeTypeEnums.ObjectTypeNode;
         }
 
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( memory );
+        public SegmentMemory getSegmentMemory() {
+            throw new UnsupportedOperationException();
         }
 
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            memory = (ObjectHashSet) in.readObject();
+        public Memory getPrevious() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setPrevious(Memory previous) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setNext(Memory next) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Memory getNext() {
+            throw new UnsupportedOperationException();
         }
     }
 }

@@ -1008,10 +1008,8 @@ public abstract class AbstractWorkingMemory
     /**
      * Retrieve the <code>JoinMemory</code> for a particular
      * <code>JoinNode</code>.
-     * 
      * @param node
      *            The <code>JoinNode</code> key.
-     * 
      * @return The node's memory.
      */
     public Memory getNodeMemory(final MemoryFactory node) {

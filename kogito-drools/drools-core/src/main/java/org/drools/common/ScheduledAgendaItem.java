@@ -75,11 +75,7 @@ public class ScheduledAgendaItem extends AgendaItem
 
     public void setNext(final ScheduledAgendaItem next) {
         this.next = next;
-    }    
-
-    public void setNext(Entry next) {
-        this.next = (ScheduledAgendaItem) next;
-    }    
+    }       
 
     public ScheduledAgendaItem getPrevious() {
         return this.previous;

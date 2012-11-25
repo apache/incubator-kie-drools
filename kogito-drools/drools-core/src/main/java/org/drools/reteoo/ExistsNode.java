@@ -20,6 +20,7 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.StagedRightTuples;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.RightTupleList;
@@ -95,11 +96,7 @@ public class ExistsNode extends BetaNode {
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        if ( isUnlinkingEnabled() && isStagedForModifyLeft( leftTuple, memory, context, workingMemory )) {
-            return;
-        }                
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );                       
         
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
         
@@ -218,22 +215,30 @@ public class ExistsNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        if ( isUnlinkingEnabled() ) {
+            StagedRightTuples stagedRightTuples = memory.getStagedRightTuples();
+            switch ( rightTuple.getStagedType() ) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    stagedRightTuples.removeInsert( rightTuple );
+                    break;
+                case LeftTuple.UPDATE:
+                    stagedRightTuples.removeUpdate( rightTuple );
+                    break;
+            }  
+            stagedRightTuples.addDelete( rightTuple );         
+            if ( memory.getDecAndGetCounter() == 0 && !isRightInputIsRiaNode() ) {
+                memory.unlinkNode( workingMemory );            
+            }              
+            return;
+        }      
         
         FastIterator it = memory.getRightTupleMemory().fastIterator();
         final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
 
-        if ( rightTuple.getMemory() == memory.getStagedAssertRightTupleList() ) {
-            memory.getStagedAssertRightTupleList().remove( rightTuple );            
-        } else {
-            memory.getRightTupleMemory().remove( rightTuple );
-        }
+        memory.getRightTupleMemory().remove( rightTuple );
         rightTuple.setMemory( null );
-        
-        if (  isUnlinkingEnabled() && memory.getAndDecCounter() == 0 && !isRightInputIsRiaNode() ) {
-            memory.unlinkNode( workingMemory );            
-        }   
-        
-
+               
         if ( rightTuple.getBlocked() == null ) {
             return;
         }
@@ -401,11 +406,7 @@ public class ExistsNode extends BetaNode {
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        if ( isUnlinkingEnabled() && isStagedForModifyRight( rightTuple, memory, context, workingMemory )) {
-            return;
-        }        
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );  
 
         if ( memory.getLeftTupleMemory() == null || (memory.getLeftTupleMemory().size() == 0 && rightTuple.getBlocked() == null) ) {
             // do nothing here, as we know there are no left tuples
@@ -589,4 +590,9 @@ public class ExistsNode extends BetaNode {
                                      boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
+    
+    public LeftTuple createPeer(LeftTuple original) {
+        return null;
+    }    
+
 }

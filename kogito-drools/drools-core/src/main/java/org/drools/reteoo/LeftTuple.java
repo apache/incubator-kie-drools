@@ -6,7 +6,15 @@ import org.drools.core.util.index.LeftTupleList;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
-public interface LeftTuple extends Entry, Tuple {
+public interface LeftTuple
+        extends
+        Entry,
+        Tuple {
+
+    static final short NONE   = 0;
+    static final short INSERT = 1;
+    static final short UPDATE = 2;
+    static final short DELETE = 3;
 
     void reAdd();
 
@@ -61,6 +69,22 @@ public interface LeftTuple extends Entry, Tuple {
 
     InternalFactHandle getLastHandle();
 
+    public short getStagedType();
+
+    public void setStagedType(short stagedType);
+
+    public LeftTuple getStagedNext();
+
+    public void setStagedNext(LeftTuple stageNext);
+
+    public LeftTuple getStagedPrevious();
+
+    public void setStagePrevious(LeftTuple stagePrevious);
+
+    public void clearStaged();
+
+    void clearBlocker();
+    
     void setBlocker(RightTuple blocker);
 
     RightTuple getBlocker();
@@ -130,12 +154,15 @@ public interface LeftTuple extends Entry, Tuple {
     void setIndex(int index);
 
     void setParent(LeftTuple parent);
-    
-    
+
     public PropagationContext getPropagationContext();
 
     public void setPropagationContext(PropagationContext propagationContext);
 
     void clear();
+
+    void setPeer(LeftTuple peer);
+    
+    LeftTuple getPeer();
 
 }

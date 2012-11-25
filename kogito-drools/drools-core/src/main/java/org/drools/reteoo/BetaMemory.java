@@ -18,10 +18,12 @@ package org.drools.reteoo;
 
 import org.drools.common.Memory;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.StagedRightTuples;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.rule.ContextEntry;
 
-public class BetaMemory
+public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Memory {
 
@@ -30,9 +32,8 @@ public class BetaMemory
     private LeftTupleMemory   leftTupleMemory;
     private RightTupleMemory  rightTupleMemory;
 
-    private RightTupleList    stagedAssertRightTupleMemory;
-    private RightTupleList    stagedRetractRightTupleMemory;
-    private RightTupleList    stagedModifyRightTupleMemory;
+    private StagedRightTuples stagedRightTuples;
+    
     private ContextEntry[]    context;
 
     // the node type this memory belongs to
@@ -43,6 +44,8 @@ public class BetaMemory
     private long              nodePosMaskBit;
 
     private int               counter;
+    
+    private SegmentMemory     subnetworkSegmentMemory;
 
     public BetaMemory() {
     }
@@ -53,61 +56,33 @@ public class BetaMemory
                       final short nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
-        this.stagedAssertRightTupleMemory = new RightTupleList();
-        this.stagedRetractRightTupleMemory = new RightTupleList();
-        this.stagedModifyRightTupleMemory = new RightTupleList();
+        this.stagedRightTuples = new StagedRightTuples();
         this.context = context;
         this.nodeType = nodeType;
     }
-
-    public void addStagedAssertRightTuple(RightTuple rightTuple,
-                                          InternalWorkingMemory wm) {
-        stagedAssertRightTupleMemory.add( rightTuple );
+    
+    public StagedRightTuples getStagedRightTuples() {
+        return stagedRightTuples;
     }
 
-    public void removeStagedAssertRightTuple(RightTuple rightTuple,
-                                             InternalWorkingMemory wm) {
-        stagedAssertRightTupleMemory.remove( rightTuple );
-    }
-
-    public RightTupleList getStagedAssertRightTupleList() {
-        return stagedAssertRightTupleMemory;
+    public void setStagedRightTuples(StagedRightTuples stagedRightTuples) {
+        this.stagedRightTuples = stagedRightTuples;
     }
     
-    public void addStagedRetractRightTuple(RightTuple rightTuple,
-                                           InternalWorkingMemory wm) {
-        stagedAssertRightTupleMemory.add( rightTuple );
-    }
-
-    public void removeStagedRetractRightTuple(RightTuple rightTuple,
-                                              InternalWorkingMemory wm) {
-        stagedAssertRightTupleMemory.remove( rightTuple );
-    }
-
-    public RightTupleList getStagedRetractRightTupleList() {
-        return stagedAssertRightTupleMemory;
-    }
-    
-    public void addStagedModifyRightTuple(RightTuple rightTuple,
-                                          InternalWorkingMemory wm) {
-        stagedAssertRightTupleMemory.add( rightTuple );
-    }
-
-    public void removeStagedModifyRightTuple(RightTuple rightTuple,
-                                             InternalWorkingMemory wm) {
-        stagedAssertRightTupleMemory.remove( rightTuple );
-    }
-
-    public RightTupleList getStagedModifyRightTupleList() {
-        return stagedAssertRightTupleMemory;
-    }
-
     public RightTupleMemory getRightTupleMemory() {
         return this.rightTupleMemory;
     }
 
     public LeftTupleMemory getLeftTupleMemory() {
         return this.leftTupleMemory;
+    }    
+
+    public SegmentMemory getSubnetworkSegmentMemory() {
+        return subnetworkSegmentMemory;
+    }
+
+    public void setSubnetworkSegmentMemor(SegmentMemory subnetworkSegmentMemory) {
+        this.subnetworkSegmentMemory = subnetworkSegmentMemory;
     }
 
     /**
@@ -157,22 +132,8 @@ public class BetaMemory
         return counter++;
     }
 
-    public int getAndDecCounter() {
+    public int getDecAndGetCounter() {
         return --counter;
     }
 
-    public void clearStagingMemory() {
-        stagedAssertRightTupleMemory = null;
-        stagedModifyRightTupleMemory = null;
-        stagedRetractRightTupleMemory = null;
-    }
-    
-    public void createStagingMemory() {
-        stagedAssertRightTupleMemory = new RightTupleList();
-        stagedModifyRightTupleMemory = new RightTupleList();
-        stagedRetractRightTupleMemory = new RightTupleList();
-        stagedAssertRightTupleMemory.setStagingMemory( true );
-        stagedModifyRightTupleMemory.setStagingMemory( true );
-        stagedRetractRightTupleMemory.setStagingMemory( true );
-    }
 }

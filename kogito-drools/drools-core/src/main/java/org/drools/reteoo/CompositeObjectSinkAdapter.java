@@ -881,7 +881,8 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     public static class FieldIndex
         implements
-        LinkedListNode<FieldIndex> {
+        LinkedListNode<FieldIndex>,
+        Externalizable {
         private static final long    serialVersionUID = 510l;
         private int                  index;
         private InternalReadAccessor fieldExtactor;
@@ -963,10 +964,6 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         public void setPrevious(final FieldIndex previous) {
             this.previous = previous;
-        }
-
-        public void setNext(Entry next) {
-            this.next = ( FieldIndex ) next;
         }
     }
 }

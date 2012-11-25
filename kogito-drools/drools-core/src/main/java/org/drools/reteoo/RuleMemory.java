@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.RuleNetworkEvaluatorActivation;
 import org.drools.common.Memory;
+import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 
-public class RuleMemory
+public class RuleMemory  extends AbstractBaseLinkedListNode<Memory>
         implements
         Memory {
     private long                           linkedSegmentMask;
@@ -19,7 +20,7 @@ public class RuleMemory
 
     private RuleNetworkEvaluatorActivation agendaItem;
     
-    private SegmentMemory[]                  segmentMemories;
+    private SegmentMemory[]                segmentMemories;
 
     public RuleMemory(RuleTerminalNode rtn) {
         this.rtn = rtn;
@@ -103,7 +104,9 @@ public class RuleMemory
     public void setSegmentMemories(SegmentMemory[] segmentMemories) {
         this.segmentMemories = segmentMemories;
     }
-    
-    
+
+    public SegmentMemory getSegmentMemory() {
+        throw new UnsupportedOperationException();
+    }    
 
 }

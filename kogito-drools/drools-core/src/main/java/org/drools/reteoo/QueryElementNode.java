@@ -35,6 +35,7 @@ import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.common.UpdateContext;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
@@ -722,17 +723,38 @@ public class QueryElementNode extends LeftTupleSource
         return new QueryElementNodeMemory(this);
     }
     
-    public static class QueryElementNodeMemory implements Memory {
-        public final QueryElementNode node;
+    public static class QueryElementNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
+        private QueryElementNode node;
+        
+        private SegmentMemory smem;
+        
         public QueryElementNodeMemory(QueryElementNode node) {
             this.node = node;
         }
+        
+        public QueryElementNode getNode() {
+            return this.node;
+        }
+        
         public short getNodeType() {
             return NodeTypeEnums.QueryElementNode;
+        }
+        
+        public void setSegmentMemory(SegmentMemory smem) {
+            this.smem = smem;
+        }        
+        
+        public SegmentMemory getSegmentMemory() {
+            return smem;
         }
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
         return leftInput.getObjectTypeNode();
+    }
+
+    @Override
+    public LeftTuple createPeer(LeftTuple original) {
+        return null;
     }
 }

@@ -650,6 +650,10 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         rmem.setAllLinkedMaskTest( allLinkedTestMask );
         rmem.setSegmentMemories( new SegmentMemory[segmentCount] );
         return rmem;
+    }
+
+    public LeftTuple createPeer(LeftTuple original) {
+        throw new UnsupportedOperationException();
     }            
 
 }

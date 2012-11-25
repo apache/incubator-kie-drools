@@ -31,8 +31,11 @@ import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.StagedLeftTuples;
 import org.drools.common.UpdateContext;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.LeftTupleList;
+import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleComponent;
@@ -60,7 +63,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
     protected boolean         rootQueryNode;
     
     protected boolean         unlinkingEnabled;
-    private int               unlinkedDisabledCount;    
+    private int               unlinkedDisabledCount;
+    private int               segmentMemoryIndex;    
     
     public LeftInputAdapterNode() {
 
@@ -112,7 +116,14 @@ public class LeftInputAdapterNode extends LeftTupleSource
         out.writeInt( unlinkedDisabledCount );        
     }
     
+    public int getSegmentMemoryIndex() {
+        return segmentMemoryIndex;
+    }
 
+    public void setSegmentMemoryIndex(int segmentMemoryIndex) {
+        this.segmentMemoryIndex = segmentMemoryIndex;
+    }
+    
     public short getType() {
         return NodeTypeEnums.LeftInputAdapterNode;
     }
@@ -177,6 +188,22 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
+        if ( unlinkingEnabled ) {
+            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+            if ( lm.getSegmentMemory() == null ) {
+                SegmentUtilities.createSegmentMemory( this, workingMemory );
+            }
+            LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
+            LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, leftTupleMemoryEnabled );
+            leftTuple.setPropagationContext( context );
+            if ( lm.getSegmentMemory().getStagedLeftTuples().insertSize() == 0 ) {
+                lm.linkNode( workingMemory );
+            }
+            lm.setCounter( lm.getCounter() + 1 );
+            lm.getSegmentMemory().getStagedLeftTuples().addInsert( leftTuple );
+            return;
+        } 
+        
         boolean useLeftMemory = true;
         if ( !this.leftTupleMemoryEnabled ) {
             // This is a hack, to not add closed DroolsQuery objects
@@ -184,7 +211,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             if ( object instanceof DroolsQuery &&  !((DroolsQuery)object).isOpen() ) {
                 useLeftMemory = false;
             }
-        }
+        }        
         
         if ( !workingMemory.isSequential() ) {
             this.sink.createAndPropagateAssertLeftTuple( factHandle,
@@ -218,24 +245,31 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public void retractLeftTuple(LeftTuple leftTuple,
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
-        boolean retractFromSinks = true;
         if ( isUnlinkingEnabled() ) {
             LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+            SegmentMemory smem = lm.getSegmentMemory();
             
-            if ( leftTuple.getMemory() == lm.getStagedLeftTupleList() ) {
-                retractFromSinks = false;
-                lm.removeAssertLeftTuple( leftTuple, workingMemory );
-            }
+            StagedLeftTuples leftTuples = smem.getStagedLeftTuples();
+            switch ( leftTuple.getStagedType() ) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    leftTuples.removeInsert( leftTuple );
+                    break;
+                case LeftTuple.UPDATE:
+                    leftTuples.removeUpdate( leftTuple );
+                    break;
+            }                        
+            
             lm.setCounter( lm.getCounter() - 1 ); // we need this to track when we unlink
             if ( lm.getCounter() == 0 ) {
                 lm.unlinkNode( workingMemory );
-            }            
+            }    
+            return;
         }
-        if ( retractFromSinks ) {
-            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
-                                                           context,
-                                                           workingMemory );
-        }
+        
+        leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
+                                                       context,
+                                                       workingMemory );
         
     }
 
@@ -284,6 +318,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                   this,
                                   workingMemories );
     }
+    
+
+    public LeftTuple createPeer(LeftTuple original) {
+        return null;
+    }
+    
     
     public void handleUnlinking(final RuleRemovalContext context) {
         if ( !context.isUnlinkEnabled( )  && unlinkedDisabledCount == 0) {
@@ -436,20 +476,16 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     public Memory createMemory(RuleBaseConfiguration config) {
         return new LiaNodeMemory();
-    }
+    }    
     
-    public static class LiaNodeMemory implements Memory { 
+    public static class LiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory { 
         private int                 counter;
         
         private SegmentMemory        segmentMemory;
 
         private long                nodePosMaskBit;     
         
-        private LeftTupleList       stagedLeftTupleList;
-        
         public LiaNodeMemory() {
-            stagedLeftTupleList = new LeftTupleList();
-            stagedLeftTupleList.setStagingMemory( true );
         }
         
         
@@ -485,23 +521,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
             segmentMemory.unlinkNode( nodePosMaskBit, wm );        
         }
         
-        public void addAssertLeftTuple(LeftTuple leftTuple,
-                                       InternalWorkingMemory wm) {
-            stagedLeftTupleList.add(  leftTuple );
-        }
-        
-        public void removeAssertLeftTuple(LeftTuple leftTuple,
-                                          InternalWorkingMemory wm) {
-            stagedLeftTupleList.remove(  leftTuple );
-        }          
-
-        public LeftTupleList getStagedLeftTupleList() {
-            return stagedLeftTupleList;
-        }
-
-        public void setStagedLeftTupleList(LeftTupleList stagedLeftTupleList) {
-            this.stagedLeftTupleList = stagedLeftTupleList;
-        }
 
         public short getNodeType() {           
             return NodeTypeEnums.LeftInputAdapterNode;

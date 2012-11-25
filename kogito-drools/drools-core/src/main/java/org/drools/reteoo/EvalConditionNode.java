@@ -31,6 +31,7 @@ import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
@@ -256,6 +257,12 @@ public class EvalConditionNode extends LeftTupleSource
         return new EvalMemory( this.condition.createContext() );
     }
 
+    @Override
+    public LeftTuple createPeer(LeftTuple original) {
+        // TODO Auto-generated method stub
+        return null;
+    }    
+
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
@@ -377,7 +384,7 @@ public class EvalConditionNode extends LeftTupleSource
         return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }        
     
-    public static class EvalMemory
+    public static class EvalMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Externalizable,
         Memory {
@@ -385,6 +392,8 @@ public class EvalConditionNode extends LeftTupleSource
         private static final long serialVersionUID = 510l;
 
         public Object             context;
+        
+        private SegmentMemory     memory;
 
         public EvalMemory() {
 
@@ -406,9 +415,18 @@ public class EvalConditionNode extends LeftTupleSource
         public short getNodeType() {
             return NodeTypeEnums.EvalConditionNode;
         }
+
+        public void setSegmentMemory(SegmentMemory smem) {
+            this.memory = smem;
+        }
+        
+        public SegmentMemory getSegmentMemory() {
+            return this.memory;
+        }
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
         return leftInput.getObjectTypeNode();
     }
+
 }

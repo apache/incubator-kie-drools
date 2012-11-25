@@ -90,6 +90,10 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public LeftTupleSink[] getSinks() {
         return new LeftTupleSink[]{};
     }
+    
+    public LeftTupleSinkNode getFirstLeftTupleSink() {
+        return null;
+    }    
 
     public int size() {
         return 0;
@@ -168,5 +172,7 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                        PropagationContext context,
                                        InternalWorkingMemory workingMemory) {        
     }
+
+
 
 }

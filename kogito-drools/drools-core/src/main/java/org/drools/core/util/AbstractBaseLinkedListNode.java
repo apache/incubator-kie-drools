@@ -46,12 +46,6 @@ public abstract class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
     public AbstractBaseLinkedListNode() {
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-    }
-
     /* (non-Javadoc)
      * @see org.kie.reteoo.LinkedListNode#getNext()
      */
@@ -78,9 +72,5 @@ public abstract class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
      */
     public void setPrevious(final T previous) {
         this.previous = previous;
-    }
-
-    public void setNext(Entry next) {
-        this.next = ( T ) next;
     }
 }

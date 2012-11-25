@@ -25,6 +25,7 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.StagedRightTuples;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.RightTupleList;
@@ -89,11 +90,7 @@ public class NotNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        if ( isUnlinkingEnabled() && isStagedForModifyLeft( leftTuple, memory, context, workingMemory )) {
-            return;
-        }  
-        
+
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
         
         ContextEntry[] contextEntry = memory.getContext();
@@ -144,19 +141,26 @@ public class NotNode extends BetaNode {
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, workingMemory); 
-        
-        // unlink node
-        if ( isUnlinkingEnabled() && memory.getAndIncCounter() == 0 && !isRightInputIsRiaNode() && isEmptyBetaConstraints() ) {            
-            // we can only unlink 'not' nodes when there are no variable constraints. This is not the case for Join/Exists.
-            // unlink node
-            memory.unlinkNode( workingMemory );             
-        }
 
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this,
                                                   context );
         
         rightTuple.setPropagationContext( context );
+
+        if ( isUnlinkingEnabled() ) {              
+            // strangely we link here, this is actually just to force a network evaluation
+            // The assert is then processed and the rule unlink then. 
+            // This is because we need the first RightTuple to link with it's blocked
+            if (  memory.getAndIncCounter() == 0 && !isRightInputIsRiaNode() && isEmptyBetaConstraints()  ) {
+                // NotNodes can only be unlinked, if they have no variable constraints
+                // Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
+                memory.linkNode( workingMemory ); 
+            } 
+            
+            memory.getStagedRightTuples().addInsert( rightTuple );   
+            return;
+        }     
         
         // NotNodes must always propagate, they never get staged.
         assertRightTuple(rightTuple, context, workingMemory );        
@@ -208,6 +212,27 @@ public class NotNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        if ( isUnlinkingEnabled() ) {
+            StagedRightTuples stagedRightTuples = memory.getStagedRightTuples();
+            switch ( rightTuple.getStagedType() ) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    stagedRightTuples.removeInsert( rightTuple );
+                    break;
+                case LeftTuple.UPDATE:
+                    stagedRightTuples.removeUpdate( rightTuple );
+                    break;
+            }  
+            stagedRightTuples.addDelete( rightTuple );
+            
+            if (  memory.getDecAndGetCounter() == 0 && !isRightInputIsRiaNode() && isEmptyBetaConstraints()  ) {
+                // NotNodes can only be unlinked, if they have no variable constraints
+                // unlink node. Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
+                memory.linkNode( workingMemory ); 
+            }              
+            return;
+        }    
+        
         
         FastIterator it = memory.getRightTupleMemory().fastIterator();
 
@@ -216,11 +241,6 @@ public class NotNode extends BetaNode {
 
         memory.getRightTupleMemory().remove( rightTuple );
         
-        if (  isUnlinkingEnabled() && memory.getAndDecCounter() == 0 && !isRightInputIsRiaNode() && isEmptyBetaConstraints()  ) {
-            // NotNodes can only be unlinked, if they have no variable constraints
-            // unlink node. Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
-            memory.linkNode( workingMemory ); 
-        }    
 
         if ( rightTuple.getBlocked() == null ) {
             return;
@@ -536,6 +556,13 @@ public class NotNode extends BetaNode {
     public short getType() {
         return NodeTypeEnums.NotNode;
     }
+    
+    public LeftTuple createPeer(LeftTuple original) {
+        NotNodeLeftTuple peer = new NotNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
+    }    
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      LeftTupleSink sink,
