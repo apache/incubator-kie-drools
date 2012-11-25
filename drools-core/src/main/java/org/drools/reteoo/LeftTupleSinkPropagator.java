@@ -74,6 +74,8 @@ public interface LeftTupleSinkPropagator
     
     public BaseNode getMatchingNode(BaseNode candidate);
 
+    public LeftTupleSinkNode getFirstLeftTupleSink();
+    
     public LeftTupleSink[] getSinks();
     
     public void byPassModifyToBetaNode (final InternalFactHandle factHandle,

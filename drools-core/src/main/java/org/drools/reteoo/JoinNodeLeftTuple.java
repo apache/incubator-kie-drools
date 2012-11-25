@@ -116,4 +116,5 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
     public Entry getNext() {
         return this.next;
     }
+
 }

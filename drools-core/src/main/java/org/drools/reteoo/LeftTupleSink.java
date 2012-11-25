@@ -67,6 +67,8 @@ public interface LeftTupleSink
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory);
+
+    public LeftTuple createPeer(LeftTuple original);
     
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      LeftTupleSink sink,

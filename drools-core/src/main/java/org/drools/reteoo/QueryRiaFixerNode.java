@@ -304,4 +304,9 @@ public class QueryRiaFixerNode extends LeftTupleSource
     protected ObjectTypeNode getObjectTypeNode() {
         return leftInput.getObjectTypeNode();
     }
+
+    @Override
+    public LeftTuple createPeer(LeftTuple original) {
+        return null;
+    }
 }

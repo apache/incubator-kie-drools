@@ -44,7 +44,7 @@ import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 @XmlAccessorType(XmlAccessType.NONE)
 public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHandle>
                               implements
-                              InternalFactHandle, Serializable {
+                              InternalFactHandle {
 
     // ----------------------------------------------------------------------
     // Instance members
@@ -499,39 +499,5 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                                                                                                                                                   elements[5].trim() );
         this.disconnected = true;
     }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-         id = in.readInt();
-        recency =  in.readLong();
-        object = in.readObject();
-        key = (EqualityKey) in.readObject();
-        objectHashCode = in.readInt();
-        identityHashCode = in.readInt();
-        firstRightTuple = (RightTuple) in.readObject();
-        lastRightTuple = (RightTuple) in.readObject();
-        firstLeftTuple = (LeftTuple) in.readObject();
-        lastLeftTuple = (LeftTuple) in.readObject();
-        entryPoint = (WorkingMemoryEntryPoint) in.readObject();
-        disconnected = in.readBoolean();
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt( id );
-        out.writeLong( recency );
-        out.writeObject( object );
-        out.writeObject( key );
-        out.writeInt(objectHashCode);
-        out.writeInt(identityHashCode);
-        out.writeObject(firstRightTuple);
-        out.writeObject(lastRightTuple);
-        out.writeObject(firstLeftTuple);
-        out.writeObject(lastLeftTuple);
-        out.writeObject(entryPoint);
-        out.writeBoolean(disconnected);
-        
-    }
-
     
 }

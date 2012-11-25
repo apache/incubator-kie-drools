@@ -338,4 +338,8 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public void setLeftInputOtnId(int leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }
+
+    public LeftTuple createPeer(LeftTuple original) {
+        return null;
+    }
 }

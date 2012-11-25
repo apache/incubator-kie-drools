@@ -53,9 +53,8 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.index.RightTupleList;
+import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.Pattern;
@@ -314,35 +313,31 @@ public abstract class BetaNode extends LeftTupleSource
             }
         }
     }    
-    
+
     public void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext context,
                               final InternalWorkingMemory wm ) {
         final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, wm);
-        
 
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this,
                                                   context );
         rightTuple.setPropagationContext( context );
         
-        if ( !isUnlinkingEnabled() ) {
-            assertRightTuple(rightTuple, context, wm );
+        if ( isUnlinkingEnabled() ) {            
+            if (  memory.getStagedRightTuples().insertSize() == 0 && !isRightInputIsRiaNode() ) {
+                // link node. Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
+                // Even if rule is already linked, still call this in case the lazy agenda item needs re-activating
+                memory.linkNode( wm );
+            }
+                
+            memory.getAndIncCounter();
+            memory.getStagedRightTuples().addInsert( rightTuple );  
             return;
         }
         
-        if ( isUnlinkingEnabled() && memory.getAndIncCounter() == 0 && !isRightInputIsRiaNode() ) {
-            // link node. Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
-            // Even if rule is already linked, still call this in case the lazy agenda item needs re-activating
-            memory.linkNode( wm );
-        }
-                        
-        if ( context.getReaderContext() != null || isRightInputIsRiaNode() ) {
-            // Always let rianodes propagate
-            assertRightTuple(rightTuple, context, wm );
-        } else {     
-            memory.addStagedAssertRightTuple( rightTuple, wm );
-        }
+        assertRightTuple(rightTuple, context, wm );
+        
     }    
     
     public abstract void assertRightTuple( final RightTuple rightTuple,
@@ -472,6 +467,11 @@ public abstract class BetaNode extends LeftTupleSource
     public BetaConstraints getRawConstraints() {
         return this.constraints;
     }
+    
+    public void setConstraints(BetaConstraints constraints) {
+        this.constraints = constraints;
+    }
+    
 
     public void networkUpdated(UpdateContext updateContext) {
         updateContext.startVisitNode( leftInput );
@@ -742,6 +742,10 @@ this.leftInput.remove( context,
     public void setConcurrentRightTupleMemory(boolean concurrentRightTupleMemory) {
         this.concurrentRightTupleMemory = concurrentRightTupleMemory;
     }
+    
+    public Memory createMemory(RuleBaseConfiguration config) {
+        return constraints.createBetaMemory(config, getType());
+    }
 
     public String toString() {
         return "[ " + this.getClass().getSimpleName() + "(" + this.id + ") ]";
@@ -790,10 +794,6 @@ this.leftInput.remove( context,
                 this.constraints.equals( other.constraints ) &&
                 areNullSafeEquals(this.leftListenedProperties, other.leftListenedProperties) &&
                 areNullSafeEquals(this.rightListenedProperties, other.rightListenedProperties);
-    }
-
-    public Memory createMemory(RuleBaseConfiguration config) {
-        return constraints.createBetaMemory(config, getType());
     }
 
     /**
@@ -896,7 +896,7 @@ this.leftInput.remove( context,
         
         
         if ( betaNode.isUnlinkingEnabled() && memory.getSegmentMemory() == null ) {
-            createNodeSegmentMemory( betaNode, workingMemory ); // initialises for all nodes in segment, including this one
+            SegmentUtilities.createSegmentMemory( betaNode, workingMemory ); // initialises for all nodes in segment, including this one
         }
         return memory;
     }
@@ -914,150 +914,6 @@ this.leftInput.remove( context,
         }
     }
     
-    /**
-     * Initialises the NodeSegment memory for all nodes in the segment.
-     * @param wm
-     */
-	public static void createNodeSegmentMemory(LeftTupleSource tupleSource ,
-	                                           final InternalWorkingMemory wm) {
-		// find segment root
-		while ( parentInSameSegment(tupleSource)  ) {
-			tupleSource = tupleSource.getLeftTupleSource();
-		}
-		
-		LeftTupleSource segmentRoot = tupleSource;
-		
-		SegmentMemory smem = new SegmentMemory();
-
-		// Iterate all nodes on the same segment, assigning their position as a bit mask value
-		// allLinkedTestMask is the resulting mask used to test if all nodes are linked in
-		long nodePosMask = 1;	
-		long allLinkedTestMask = 0;
-		
-		while ( true ) {
-            if ( NodeTypeEnums.isBetaNode( tupleSource ) ) {
-                BetaMemory betaMemory;
-                if ( NodeTypeEnums.AccumulateNode == tupleSource.getType() ) {
-                    betaMemory = (( AccumulateMemory ) wm.getNodeMemory( ( AccumulateNode ) tupleSource )).getBetaMemory();
-                } else {
-                    betaMemory = ( BetaMemory ) wm.getNodeMemory( ( BetaNode ) tupleSource );
-
-                }
-                
-                betaMemory.createStagingMemory();
-
-                betaMemory.setSegmentMemory( smem );
-                betaMemory.setNodePosMaskBit( nodePosMask );
-                allLinkedTestMask = allLinkedTestMask | nodePosMask;
-                if ( NodeTypeEnums.NotNode == tupleSource.getType() ||  NodeTypeEnums.AccumulateNode == tupleSource.getType())  {
-                    // NotNode's and Accumulate are initialised as linkedin
-                    smem.linkNode( nodePosMask, wm );
-                }
-                nodePosMask = nodePosMask << 1;
-            } else if ( tupleSource.getType() == NodeTypeEnums.LeftInputAdapterNode ) {
-                LiaNodeMemory liaMemory = ( LiaNodeMemory ) wm.getNodeMemory( ( LeftInputAdapterNode ) tupleSource );
-                liaMemory.setSegmentMemory( smem );
-                liaMemory.setNodePosMaskBit( nodePosMask );
-                allLinkedTestMask = allLinkedTestMask | nodePosMask;
-
-                nodePosMask = nodePosMask << 1;                
-            }
-            
-            if ( tupleSource.sink.getSinks().length == 1 ) {
-                if ( NodeTypeEnums.isLeftTupleSource( tupleSource.sink.getSinks()[0] ) ) {
-                    tupleSource = ( LeftTupleSource ) tupleSource.sink.getSinks()[0];
-                } else {
-                    // rtn or rian
-                    break;
-                }
-            } else if ( tupleSource.sink.getSinks().length == 2 && 
-                           NodeTypeEnums.isBetaNode( tupleSource.sink.getSinks()[1] ) && 
-                               ((BetaNode)tupleSource.sink.getSinks()[1]).isRightInputIsRiaNode() ) {
-                // must be a subnetwork split, always take the non riaNode path
-                tupleSource = ( LeftTupleSource ) tupleSource.sink.getSinks()[1];
-            } else {
-                // not in same segment
-                break;
-            }   
-            
-		}		
-		smem.setAllLinkedMaskTest( allLinkedTestMask );
-	
-		
-		// iterate to find root and determine the SegmentNodes position in the RuleSegment
-	    LeftTupleSource parent = segmentRoot;	
-	    int ruleSegmentPosMask = 1;
-	    int counter = 0;
-	    while ( parent.getLeftTupleSource() != null ) {
-	           if ( !parentInSameSegment( parent ) ) {
-	               // for each new found segment, increase the mask bit position
-	               ruleSegmentPosMask = ruleSegmentPosMask << 1;
-	               counter++;
-	           }    	        
-	       parent = parent.getLeftTupleSource();	          
-	    }
-	    smem.setSegmentPosMaskBit( ruleSegmentPosMask );
-	    smem.setPos( counter );
-		
-		updateRiaAndTerminalMemory( 0, tupleSource, tupleSource, smem, wm );
-		
-		
-		if ( smem.isSegmentLinked() ) {
-		    // A segment that only Not nodes in it will all be true and must notify the Rule
-		    smem.notifyRuleLinkSegment( wm );
-		}
-	}
-	
-	/**
-	 * Is the LeftTupleSource a node in the sub network for the RightInputAdapterNode
-	 * 
-	 * @param riaNode
-	 * @param leftTupleSource
-	 * @return
-	 */
-	public static boolean inSubNetwork(RightInputAdapterNode riaNode, LeftTupleSource leftTupleSource) {
-	    LeftTupleSource startTupleSource = riaNode.getStartTupleSource();
-	    LeftTupleSource parent = riaNode.getLeftTupleSource();
-	    
-	    while ( parent != startTupleSource ) {
-	        if ( parent == leftTupleSource) {
-	            return true;
-	        }
-	        parent = parent.getLeftTupleSource();
-	    }
-	    
-	    return false;
-	}
-	
-	public static void updateRiaAndTerminalMemory(int pos, LeftTupleSource lt,
-	                                              LeftTupleSource originalLt,
-	                                              SegmentMemory smem,
-	                                              InternalWorkingMemory wm) {
-	    for ( LeftTupleSink sink : lt.getSinkPropagator().getSinks() ) {
-    	    if (NodeTypeEnums.isLeftTupleSource( sink ) ) {
-    	        if ( sink.getType() == NodeTypeEnums.NotNode ) {
-    	            BetaMemory bm = ( BetaMemory) wm.getNodeMemory( (MemoryFactory) sink );
-    	             if ( bm.getSegmentMemory() == null ) {
-    	                 // Not nodes must be initialised
-    	                 BetaNode.createNodeSegmentMemory( (NotNode) sink, wm );
-    	             }
-    	        }
-    	        updateRiaAndTerminalMemory(++pos, ( LeftTupleSource ) sink, originalLt, smem, wm);
-    	    } else if ( sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
-    	        RiaNodeMemory memory = ( RiaNodeMemory ) wm.getNodeMemory( (MemoryFactory) sink );        	        
-    	        // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
-    	        if ( inSubNetwork( (RightInputAdapterNode)sink, originalLt ) ) {    	        
-    	            smem.getRuleMemories().add( memory.getRuleSegments() );
-    	        }
-    	    } else if ( NodeTypeEnums.isTerminalNode( sink) ) {
-    	        RuleMemory rmem = ( RuleMemory ) wm.getNodeMemory( (MemoryFactory) sink );
-                smem.getRuleMemories().add( rmem );
-                rmem.getSegmentMemories()[smem.getPos()] = smem;
-    	        
-    	    }
-	    }
-	}
-
     public long getRightDeclaredMask() {
         return rightDeclaredMask;
     }

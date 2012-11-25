@@ -41,6 +41,10 @@ public class RightTuple
 
     protected RightTupleSink     sink;
     
+    protected short               stageType;
+    protected RightTuple          stageNext;
+    protected RightTuple          stagePrevious;      
+    
     private PropagationContext   propagationContext;
 
     public RightTuple() {
@@ -168,15 +172,53 @@ public class RightTuple
 
     public void setNext(Entry next) {
         this.next = next;
+    }      
+
+    public LeftTuple getFirstChild() {
+        return firstChild;
     }
 
-    //    public LeftTuple getFirstChild() {
-    //        return firstChild;
-    //    }
-    //
-    //    public void setFirstChildren(LeftTuple betachildren) {
-    //        this.firstChild = betachildren;
-    //    }
+    public void setFirstChild(LeftTuple firstChild) {
+        this.firstChild = firstChild;
+    }
+
+    public LeftTuple getLastChild() {
+        return lastChild;
+    }
+
+    public void setLastChild(LeftTuple lastChild) {
+        this.lastChild = lastChild;
+    }
+    
+    public short getStagedType() {
+        return this.stageType;
+    }
+
+    public void setStagedType(short stagedType) {
+        this.stageType = stagedType;
+    }
+
+    public RightTuple getStagedNext() {
+        return stageNext;
+    }
+
+    public void setStagedNext(RightTuple stageNext) {
+        this.stageNext = stageNext;
+    }
+
+    public RightTuple getStagedPrevious() {
+        return stagePrevious;
+    }
+
+    public void setStagePrevious(RightTuple stagePrevious) {
+        this.stagePrevious = stagePrevious;
+    }
+    
+    public void clearStaged() {
+        this.stageType = LeftTuple.NONE;
+        this.stageNext = null;
+        this.stagePrevious = null;;
+    }    
 
     public int hashCode() {
         return this.handle.hashCode();
@@ -217,6 +259,5 @@ public class RightTuple
         this.next = null;
         this.memory = null;
     }
-    
     
 }

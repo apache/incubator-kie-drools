@@ -285,23 +285,33 @@ public class AlphaNode extends ObjectSource
 
     public static class AlphaMemory
         implements
-        Externalizable,
         Memory {
         private static final long serialVersionUID = 510l;
 
         public ContextEntry       context;
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            context = (ContextEntry) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( context );
-        }
-
+        
         public short getNodeType() {
             return NodeTypeEnums.AlphaNode;
+        }
+
+        public SegmentMemory getSegmentMemory() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Memory getPrevious() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setPrevious(Memory previous) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setNext(Memory next) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Memory getNext() {
+            throw new UnsupportedOperationException();
         }
     }
 

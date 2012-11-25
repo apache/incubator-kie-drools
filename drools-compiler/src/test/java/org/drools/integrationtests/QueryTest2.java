@@ -18,7 +18,7 @@ public class QueryTest2 extends CommonTestMethodBase {
     @Test
     public void testEvalRewrite() throws Exception {
         String str = "" +
-        "package org.kie;\n" +
+        "package org.drools;\n" +
         "global java.util.List results;\n" +
         "rule \"eval rewrite\"\n" +
         "    when\n" +

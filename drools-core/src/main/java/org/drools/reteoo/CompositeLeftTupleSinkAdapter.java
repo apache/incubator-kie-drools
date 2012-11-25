@@ -47,6 +47,10 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         this.sinks.remove( (LeftTupleSinkNode) sink );
     }
     
+    public  LeftTupleSinkNodeList getRawSinks() {
+        return sinks;
+    }
+    
     public void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
                                               final RightTuple rightTuple,
                                               boolean leftTupleMemoryEnabled,
@@ -119,30 +123,10 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                                  leftTupleMemoryEnabled );
             lt.setPropagationContext( context );            
             
-            if ( liaNode.isUnlinkingEnabled() ) {
-                LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( liaNode );
-                if ( lm.getSegmentMemory() == null ) {
-                    BetaNode.createNodeSegmentMemory( liaNode, workingMemory ); // initialises for all nodes in segment, including this one
-                }          
-                if ( lm.getStagedLeftTupleList().size() == 0 ) {
-                    // link. We do this on staged tuples, instead of entire count, as the lazy agenda might need re-activating
-                    lm.linkNode( workingMemory );
-                }            
-                if ( context.getReaderContext() == null ) {
-                    lm.getStagedLeftTupleList().add( lt );
-                    lm.setCounter( lm.getCounter() + 1 ); // we need this to track when we unlink
-                } else {
-                    doPropagateAssertLeftTuple( context,
-                                                workingMemory,
-                                                sink,
-                                                lt );                
-                }
-            } else {
-                doPropagateAssertLeftTuple( context,
-                                            workingMemory,
-                                            sink,
-                                            lt );
-            }
+            doPropagateAssertLeftTuple( context,
+                                        workingMemory,
+                                        sink,
+                                        lt );
         }
     }
 
@@ -217,6 +201,10 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
 
         return sinkArray;
     }
+    
+    public LeftTupleSinkNode getFirstLeftTupleSink() {
+        return this.sinks.getFirst();
+    }    
 
     public int size() {
         return this.sinks.size();

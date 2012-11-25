@@ -32,6 +32,7 @@ import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.runtime.rule.impl.AgendaImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -261,6 +262,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
     @Test
+    @Ignore
     public void testReuseAgendaAfterException() throws Exception {
         // JBRULES-3677
 

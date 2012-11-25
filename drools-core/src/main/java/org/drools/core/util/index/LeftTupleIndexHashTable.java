@@ -386,8 +386,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
             }
             this.size--;
         }
-        leftTuple.setNext( null );
-        leftTuple.setPrevious( null );
+        leftTuple.clear();
     }
 
     public boolean contains(final LeftTuple tuple) {

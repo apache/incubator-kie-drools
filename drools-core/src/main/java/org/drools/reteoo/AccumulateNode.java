@@ -31,6 +31,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.StagedRightTuples;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.ArrayUtils;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
@@ -127,10 +129,6 @@ public class AccumulateNode extends BetaNode {
                                  final InternalWorkingMemory workingMemory ) {
 
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
-
-        if ( isUnlinkingEnabled() && isStagedForModifyLeft( leftTuple, memory.getBetaMemory(), context, workingMemory )) {
-            return;
-        }   
         
         AccumulateContext accresult = new AccumulateContext();
 
@@ -314,19 +312,30 @@ public class AccumulateNode extends BetaNode {
         if ( context.getType() == PropagationContext.EXPIRATION ) {
             ((PropagationContextImpl) context).setFactHandle( null );
         }
-        
-        BetaMemory bm = memory.betaMemory;
-        if ( rightTuple.getMemory() == bm.getStagedAssertRightTupleList() ) {
-            bm.getStagedAssertRightTupleList().remove( rightTuple );
-            rightTuple.setMemory( null );
-        } else {
-            bm.getRightTupleMemory().remove( rightTuple );
-        }
-        
-        if (  isUnlinkingEnabled() && bm.getAndDecCounter() == 0 && !isRightInputIsRiaNode() ) {
-            bm.unlinkNode( workingMemory );            
-        }
 
+        BetaMemory bm = memory.getBetaMemory();
+        
+        if ( isUnlinkingEnabled() ) {
+
+            StagedRightTuples stagedRightTuples = bm.getStagedRightTuples();
+            switch ( rightTuple.getStagedType() ) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    stagedRightTuples.removeInsert( rightTuple );
+                    break;
+                case LeftTuple.UPDATE:
+                    stagedRightTuples.removeUpdate( rightTuple );
+                    break;
+            }  
+            stagedRightTuples.addDelete( rightTuple );         
+            if ( bm.getDecAndGetCounter() == 0 && !isRightInputIsRiaNode() ) {
+                bm.unlinkNode( workingMemory );            
+            }              
+            return;
+        } 
+
+        bm.getRightTupleMemory().remove( rightTuple );
+        
         removePreviousMatchesForRightTuple( rightTuple,
                                             context,
                                             workingMemory,
@@ -346,9 +355,6 @@ public class AccumulateNode extends BetaNode {
         final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
         
         BetaMemory bm = memory.betaMemory;
-        if ( isUnlinkingEnabled() && isStagedForModifyLeft( leftTuple, bm, context, workingMemory )) {
-            return;
-        }
 
         // Add and remove to make sure we are in the right bucket and at the end
         // this is needed to fix for indexing and deterministic iteration
@@ -471,10 +477,6 @@ public class AccumulateNode extends BetaNode {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
         BetaMemory bm = memory.betaMemory;
-        
-        if ( isUnlinkingEnabled() && isStagedForModifyRight( rightTuple, bm, context, workingMemory )) {
-            return;
-        }
 
         
         // Add and remove to make sure we are in the right bucket and at the end
@@ -853,6 +855,10 @@ public class AccumulateNode extends BetaNode {
         }
         return memory;
     }
+    
+    public LeftTuple createPeer(LeftTuple original) {
+        return null;
+    }
 
     public short getType() {
         return NodeTypeEnums.AccumulateNode;
@@ -1082,31 +1088,14 @@ public class AccumulateNode extends BetaNode {
         return child;
     }
 
-    public static class AccumulateMemory
+    public static class AccumulateMemory extends AbstractBaseLinkedListNode<Memory>
         implements
-        Externalizable, 
         Memory {
-        private static final long serialVersionUID = 510l;
 
         public Object[]           workingMemoryContext;
         public BetaMemory         betaMemory;
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
-
-        public void readExternal( ObjectInput in ) throws IOException,
-                                                  ClassNotFoundException {
-            workingMemoryContext = (Object[]) in.readObject();
-            betaMemory = (BetaMemory) in.readObject();
-            resultsContext = (ContextEntry[]) in.readObject();
-            alphaContexts = (ContextEntry[]) in.readObject();
-        }
-
-        public void writeExternal( ObjectOutput out ) throws IOException {
-            out.writeObject( workingMemoryContext );
-            out.writeObject( betaMemory );
-            out.writeObject( resultsContext );
-            out.writeObject( alphaContexts );
-        }
         
         public BetaMemory getBetaMemory() {
             return this.betaMemory;
@@ -1114,6 +1103,10 @@ public class AccumulateNode extends BetaNode {
 
         public short getNodeType() {
             return NodeTypeEnums.AccumulateNode;
+        }
+
+        public SegmentMemory getSegmentMemory() {
+            return betaMemory.getSegmentMemory();
         }
 
     }

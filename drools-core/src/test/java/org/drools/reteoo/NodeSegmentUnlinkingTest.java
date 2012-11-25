@@ -14,6 +14,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NetworkNode;
 import org.drools.common.PropagationContextImpl;
+import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
@@ -204,6 +205,7 @@ public class NodeSegmentUnlinkingTest {
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( LRUnlinkingOption.ENABLED );        
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
+        SegmentUtilities.createSegmentMemory( liaNode, wm );
         liaNode.assertObject( (InternalFactHandle) wm.insert( "str" ), context, wm );
         
 
@@ -236,6 +238,9 @@ public class NodeSegmentUnlinkingTest {
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( LRUnlinkingOption.ENABLED );        
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
+        
+        SegmentUtilities.createSegmentMemory( liaNode, wm ); 
+        
         InternalFactHandle fh1 = (InternalFactHandle) wm.insert( "str1" );
         n1.assertObject( fh1, context, wm );    
         
@@ -432,7 +437,7 @@ public class NodeSegmentUnlinkingTest {
                                                   InternalWorkingMemory wm) {
         BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory( node );
         if ( betaMemory.getSegmentMemory() == null ) {
-            node.createNodeSegmentMemory( node, wm );
+            SegmentUtilities.createSegmentMemory( node, wm );
         }
         return betaMemory;
 

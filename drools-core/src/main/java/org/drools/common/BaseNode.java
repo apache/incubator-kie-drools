@@ -84,6 +84,10 @@ public abstract class BaseNode
     public int getId() {
         return this.id;
     }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void attach() {
         attach(null);

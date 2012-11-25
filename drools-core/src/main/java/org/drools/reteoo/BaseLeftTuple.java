@@ -64,8 +64,14 @@ public class BaseLeftTuple
     protected LeftTupleList      memory;
     protected Entry              next;
     protected Entry              previous;    
+    
+    protected short              stagedType;
+    protected LeftTuple          stagedNext;
+    protected LeftTuple          stagedPrevious;        
 
-    private Object             object;
+    private Object               object;
+    
+    private LeftTuple            peer;
 
     public BaseLeftTuple() {
         // constructor needed for serialisation
@@ -91,6 +97,7 @@ public class BaseLeftTuple
         this.index = leftTuple.getIndex();
         this.parent = leftTuple.getParent();
         this.handle = leftTuple.getHandle();
+        this.propagationContext = leftTuple.getPropagationContext();
 
         if ( leftTupleMemoryEnabled ) {
             this.leftParent = leftTuple;
@@ -510,6 +517,11 @@ public class BaseLeftTuple
         }
         return handles;
     }
+    
+
+    public void clearBlocker() {
+        throw new UnsupportedOperationException();
+    }    
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
@@ -576,7 +588,10 @@ public class BaseLeftTuple
         LeftTuple entry = this;
         while ( entry != null ) {
             //buffer.append( entry.handle );
-            buffer.append(entry.getHandle()).append("\n");
+            buffer.append(entry.getHandle());
+            if ( entry.getParent() != null ) {
+                buffer.append("\n");
+            }
             entry = entry.getParent();
         }
         return buffer.toString();
@@ -717,7 +732,46 @@ public class BaseLeftTuple
      */
     public Entry getNext() {
         return this.next;
-    }    
+    }               
+
+    public short getStagedType() {
+        return stagedType;
+    }
+
+    public void setStagedType(short stagedType) {
+        this.stagedType = stagedType;
+    }
+
+    public LeftTuple getStagedNext() {
+        return stagedNext;
+    }
+
+    public void setStagedNext(LeftTuple stageNext) {
+        this.stagedNext = stageNext;
+    }
+
+    public LeftTuple getStagedPrevious() {
+        return stagedPrevious;
+    }
+
+    public void setStagePrevious(LeftTuple stagePrevious) {
+        this.stagedPrevious = stagePrevious;
+    }
+    
+    public void clearStaged() {
+        stagedType = LeftTuple.NONE;
+        stagedNext = null;
+        stagedPrevious = null;
+        
+    }
+
+    public LeftTuple getPeer() {
+        return peer;
+    }
+
+    public void setPeer(LeftTuple peer) {
+        this.peer = peer;
+    }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#getSubTuple(int)
@@ -822,5 +876,17 @@ public class BaseLeftTuple
         this.previous = null;
         this.next = null;
         this.memory = null;
-    }    
+    }   
+    
+    public void initPeer(BaseLeftTuple original, LeftTupleSink sink) {
+        this.index = original.index;
+        this.parent = original.parent;
+        
+        this.handle = original.handle;
+        this.propagationContext = original.propagationContext;      
+        this.sink = sink;
+
+    }
+
+    
 }
