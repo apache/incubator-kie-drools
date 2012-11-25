@@ -1,4 +1,4 @@
-<org.drools.planner.examples.nqueens.domain.NQueens id="1">
+<NQueens id="1">
   <id>0</id>
   <n>16</n>
   <columnList id="2">
@@ -134,88 +134,88 @@
     </Row>
   </rowList>
   <queenList id="36">
-    <org.drools.planner.examples.nqueens.domain.Queen id="37">
+    <Queen id="37">
       <id>0</id>
       <column reference="3"/>
       <row reference="34"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="38">
+    </Queen>
+    <Queen id="38">
       <id>1</id>
       <column reference="4"/>
       <row reference="28"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="39">
+    </Queen>
+    <Queen id="39">
       <id>2</id>
       <column reference="5"/>
       <row reference="24"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="40">
+    </Queen>
+    <Queen id="40">
       <id>3</id>
       <column reference="6"/>
       <row reference="20"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="41">
+    </Queen>
+    <Queen id="41">
       <id>4</id>
       <column reference="7"/>
       <row reference="29"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="42">
+    </Queen>
+    <Queen id="42">
       <id>5</id>
       <column reference="8"/>
       <row reference="31"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="43">
+    </Queen>
+    <Queen id="43">
       <id>6</id>
       <column reference="9"/>
       <row reference="22"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="44">
+    </Queen>
+    <Queen id="44">
       <id>7</id>
       <column reference="10"/>
       <row reference="25"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="45">
+    </Queen>
+    <Queen id="45">
       <id>8</id>
       <column reference="11"/>
       <row reference="23"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="46">
+    </Queen>
+    <Queen id="46">
       <id>9</id>
       <column reference="12"/>
       <row reference="32"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="47">
+    </Queen>
+    <Queen id="47">
       <id>10</id>
       <column reference="13"/>
       <row reference="30"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="48">
+    </Queen>
+    <Queen id="48">
       <id>11</id>
       <column reference="14"/>
       <row reference="35"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="49">
+    </Queen>
+    <Queen id="49">
       <id>12</id>
       <column reference="15"/>
       <row reference="33"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="50">
+    </Queen>
+    <Queen id="50">
       <id>13</id>
       <column reference="16"/>
       <row reference="26"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="51">
+    </Queen>
+    <Queen id="51">
       <id>14</id>
       <column reference="17"/>
       <row reference="21"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="52">
+    </Queen>
+    <Queen id="52">
       <id>15</id>
       <column reference="18"/>
       <row reference="27"/>
-    </org.drools.planner.examples.nqueens.domain.Queen>
+    </Queen>
   </queenList>
   <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" id="53">
     <score>0</score>
   </score>
-</org.drools.planner.examples.nqueens.domain.NQueens>
+</NQueens>

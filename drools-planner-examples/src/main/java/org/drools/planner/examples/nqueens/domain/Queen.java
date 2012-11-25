@@ -16,6 +16,7 @@
 
 package org.drools.planner.examples.nqueens.domain;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRange;
@@ -25,6 +26,7 @@ import org.drools.planner.examples.nqueens.domain.solution.QueenDifficultyWeight
 import org.drools.planner.examples.nqueens.domain.solution.RowStrengthWeightFactory;
 
 @PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
+@XStreamAlias("Queen")
 public class Queen extends AbstractPersistable {
 
     private Column column;

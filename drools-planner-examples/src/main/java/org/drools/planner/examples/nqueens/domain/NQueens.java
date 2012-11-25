@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@XStreamAlias("NQueens")
 public class NQueens extends AbstractPersistable implements Solution<SimpleScore> {
 
     private int n;
