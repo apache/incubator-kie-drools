@@ -6,7 +6,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.kie.planner.examples.cloudbalancing.domain.CloudBalance</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</xstreamAnnotatedClass>
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/cb-0002comp-0006proc.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/cb-0003comp-0009proc.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/cloudbalancing/unsolved/cb-0004comp-0012proc.xml</inputSolutionFile>-->
@@ -18,8 +18,8 @@
     </problemBenchmarks>
 
     <solver>
-      <solutionClass>org.kie.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>

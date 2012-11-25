@@ -1,6 +1,6 @@
-<%@ page import="org.kie.planner.webexamples.vehiclerouting.VrpWebAction" %>
+<%@ page import="org.drools.planner.webexamples.vehiclerouting.VrpWebAction" %>
 <%
-  new org.kie.planner.webexamples.vehiclerouting.VrpWebAction().terminateEarly(session);
+  new org.drools.planner.webexamples.vehiclerouting.VrpWebAction().terminateEarly(session);
 %>
 <!DOCTYPE html>
 <html lang="en">

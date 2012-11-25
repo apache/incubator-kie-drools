@@ -6,7 +6,7 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <problemIOClass>org.kie.planner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
+      <problemIOClass>org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
       <!--<inputSolutionFile>data/machinereassignment/input/model_a1_1.txt</inputSolutionFile>-->
       <!--<inputSolutionFile>data/machinereassignment/input/model_a1_2.txt</inputSolutionFile>-->
       <!--<inputSolutionFile>data/machinereassignment/input/model_a1_3.txt</inputSolutionFile>-->
@@ -34,12 +34,12 @@
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
-      <solutionClass>org.kie.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
-      <planningEntityClass>org.kie.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+      <solutionClass>org.drools.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
 
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
-        <incrementalScoreCalculatorClass>org.kie.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <incrementalScoreCalculatorClass>org.drools.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
         <!--<scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
       </scoreDirectorFactory>
       <termination>
@@ -52,7 +52,7 @@
     <name>original</name>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.kie.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
     </solver>
   </solverBenchmark>
@@ -62,7 +62,7 @@
     <name>entityTabu${planningEntityTabuSize}-mas${minimalAcceptedSelection}</name>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.kie.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <unionMoveSelector>
@@ -84,7 +84,7 @@
     <name>lateAcceptance${lateAcceptanceSize}-mas${minimalAcceptedSelection}</name>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.kie.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <unionMoveSelector>
