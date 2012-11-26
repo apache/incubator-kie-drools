@@ -13,17 +13,17 @@
     <dependencies>
         <dependency>
             <groupId>org.uberfire</groupId>
-            <artifactId>vfs-api</artifactId>
+            <artifactId>uberfire-vfs-api</artifactId>
             <version>${uberfire.version}</version>
         </dependency>
         <dependency>
             <groupId>org.uberfire</groupId>
-            <artifactId>vfs-jgit</artifactId>
+            <artifactId>uberfire-vfs-jgit</artifactId>
             <version>${uberfire.version}</version>
         </dependency>
         <dependency>
             <groupId>org.uberfire</groupId>
-            <artifactId>vfs-fs</artifactId>
+            <artifactId>uberfire-vfs-fs</artifactId>
             <version>${uberfire.version}</version>
         </dependency>
 

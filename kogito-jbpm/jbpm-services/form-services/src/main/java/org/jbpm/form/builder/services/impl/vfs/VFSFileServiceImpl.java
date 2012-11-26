@@ -18,7 +18,6 @@ package org.jbpm.form.builder.services.impl.vfs;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.inject.Alternative;
 
 import org.jbpm.form.builder.services.api.FileException;
 import org.uberfire.java.nio.IOException;
