@@ -1,5 +1,7 @@
 package org.drools.scanner;
 
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.model.Dependency;
 import org.sonatype.aether.artifact.Artifact;
 
@@ -10,12 +12,14 @@ class DependencyDescriptor {
     private final String artifactId;
     private final String version;
     private final String type;
+    private final ArtifactVersion artifactVersion;
 
     public DependencyDescriptor(Dependency dependency, Properties projectProperties) {
         groupId = dependency.getGroupId();
         artifactId = dependency.getArtifactId();
         version = resolve(dependency.getVersion(), projectProperties);
         type = dependency.getType();
+        artifactVersion = new DefaultArtifactVersion(version);
     }
 
     public DependencyDescriptor(Artifact artifact) {
@@ -23,6 +27,7 @@ class DependencyDescriptor {
         artifactId = artifact.getArtifactId();
         version = artifact.isSnapshot() ? artifact.getBaseVersion() : artifact.getVersion();
         type = artifact.getExtension();
+        artifactVersion = new DefaultArtifactVersion(artifact.getVersion());
     }
 
     public DependencyDescriptor(String groupId, String artifactId, String version, String type) {
@@ -30,6 +35,7 @@ class DependencyDescriptor {
         this.artifactId = artifactId;
         this.version = version;
         this.type = type;
+        artifactVersion = new DefaultArtifactVersion(version);
     }
 
     public String getGroupId() {
@@ -98,5 +104,9 @@ class DependencyDescriptor {
         result = 31 * result + (version != null ? version.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
+    }
+
+    public boolean isNewerThan(DependencyDescriptor o) {
+        return artifactVersion.compareTo(o.artifactVersion) > 0;
     }
 }

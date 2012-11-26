@@ -22,12 +22,18 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.drools.kproject.KBaseImpl.getFiles;
+import static org.drools.builder.impl.KnowledgeContainerImpl.KPROJECT_JAR_PATH;
 
 public class KBaseUnitImpl implements KBaseUnit {
 
@@ -43,8 +49,8 @@ public class KBaseUnitImpl implements KBaseUnit {
 
     private List<KBase> includes = null;
 
-    public KBaseUnitImpl(String url, KBase kBase) {
-        this(url, kBase, null);
+    public KBaseUnitImpl(URL url, KBase kBase) {
+        this(fixURL(url), kBase, new URLClassLoader( new URL[] { url }));
     }
 
     public KBaseUnitImpl(String url, KBase kBase, ClassLoader classLoader) {
@@ -62,7 +68,7 @@ public class KBaseUnitImpl implements KBaseUnit {
             return null;
         }
 
-        knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( getKnowledgeBaseConfiguration() );
+        knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( getKnowledgeBaseConfiguration(null, classLoader) );
         knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return knowledgeBase;
     }
@@ -103,12 +109,8 @@ public class KBaseUnitImpl implements KBaseUnit {
             return kbuilder;
         }
 
-        if (classLoader != null) {
-            KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kConf);
-        } else {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        }
+        KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kConf);
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
         buildKBaseFiles(ckbuilder, kBase);
         if (includes != null) {
@@ -171,8 +173,8 @@ public class KBaseUnitImpl implements KBaseUnit {
         return kSession;
     }
 
-    private KnowledgeBaseConfiguration getKnowledgeBaseConfiguration() {
-        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+    private KnowledgeBaseConfiguration getKnowledgeBaseConfiguration(Properties properties, ClassLoader... classLoaders) {
+        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(properties, classLoader);
         kbConf.setOption(kBase.getEqualsBehavior());
         kbConf.setOption(kBase.getEventProcessingMode());
         return kbConf;
@@ -183,5 +185,46 @@ public class KBaseUnitImpl implements KBaseUnit {
         KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksConf.setOption(kSession.getClockType());
         return ksConf;
+    }
+
+    private static String fixURL(URL url) {
+        String urlPath = url.toExternalForm();
+
+        // determine resource type (eg: jar, file, bundle)
+        String urlType = "file";
+        int colonIndex = urlPath.indexOf( ":" );
+        if ( colonIndex != -1 ) {
+            urlType = urlPath.substring( 0, colonIndex );
+        }
+
+        urlPath = url.getPath();
+
+
+        if ( "jar".equals( urlType ) ) {
+            // switch to using getPath() instead of toExternalForm()
+
+            if ( urlPath.indexOf( '!' ) > 0 ) {
+                urlPath = urlPath.substring( 0, urlPath.indexOf( '!' ) );
+            }
+        } else if (urlPath.endsWith(KPROJECT_JAR_PATH)) {
+            urlPath = urlPath.substring( 0, urlPath.length() - KPROJECT_JAR_PATH.length() - 1 );
+        }
+
+
+        // remove any remaining protocols, normally only if it was a jar
+        colonIndex = urlPath.lastIndexOf( ":" );
+        if ( colonIndex >= 0 ) {
+            urlPath = urlPath.substring( colonIndex +  1  );
+        }
+
+        try {
+            urlPath = URLDecoder.decode(urlPath, "UTF-8");
+        } catch ( UnsupportedEncodingException e ) {
+            throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8", e );
+        }
+
+        log.debug( "KProject URL Type + URL: " + urlType + ":" + urlPath );
+
+        return urlPath;
     }
 }

@@ -10,10 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,7 +27,7 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
 
     private final KnowledgeContainer knowledgeContainer;
 
-    private Map<DependencyDescriptor, Long> latestDependencies;
+    private Set<DependencyDescriptor> usedDependencies;
 
     private PomParser pomParser = new XmlPomParser();
 
@@ -56,7 +54,7 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
             log.info("There's no artifacts containing a kjar: shutdown the scanner");
             return false;
         }
-        latestDependencies = indexAtifacts(artifacts);
+        usedDependencies = indexAtifacts(artifacts);
         return true;
     }
 
@@ -71,45 +69,44 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
     }
 
     public void scanNow() {
-        if (latestDependencies == null) {
+        if (usedDependencies == null) {
             return;
         }
-        Collection<Artifact> updatedArtifacts = scanForUpdates(latestDependencies);
-        if (latestDependencies == updatedArtifacts) {
+        Collection<Artifact> updatedArtifacts = scanForUpdates(usedDependencies);
+        if (updatedArtifacts.isEmpty()) {
             return;
         }
         File[] kJars = new File[updatedArtifacts.size()];
         int i = 0;
         for (Artifact artifact : updatedArtifacts) {
             kJars[i++] = artifact.getFile();
-            indexArtifact(latestDependencies, artifact);
+            DependencyDescriptor depDescr = new DependencyDescriptor(artifact);
+            usedDependencies.remove(depDescr);
+            usedDependencies.add(depDescr);
         }
         knowledgeContainer.deploy(kJars);
         log.info("The following artifacts have been updated: " + updatedArtifacts);
     }
 
-    private Collection<Artifact> scanForUpdates(Map<DependencyDescriptor, Long> artifactsMap) {
+    private Collection<Artifact> scanForUpdates(Collection<DependencyDescriptor> dependencies) {
         List<Artifact> newArtifacts = new ArrayList<Artifact>();
         Repository repository = new Repository();
-        for (Map.Entry<DependencyDescriptor, Long> entry : artifactsMap.entrySet()) {
-            Artifact newArtifact = repository.resolveArtifact(entry.getKey().toResolvableString());
-            if (newArtifact.getFile().lastModified() > entry.getValue()) {
+        for (DependencyDescriptor dependency : dependencies) {
+            Artifact newArtifact = repository.resolveArtifact(dependency.toResolvableString());
+            DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
+            if (resolvedDep.isNewerThan(dependency)) {
                 newArtifacts.add(newArtifact);
             }
         }
         return newArtifacts;
     }
 
-    private Map<DependencyDescriptor, Long> indexAtifacts(Collection<Artifact> artifacts) {
-        Map<DependencyDescriptor, Long> map = new HashMap<DependencyDescriptor, Long>();
+    private Set<DependencyDescriptor> indexAtifacts(Collection<Artifact> artifacts) {
+        Set<DependencyDescriptor> deps = new HashSet<DependencyDescriptor>();
         for (Artifact artifact : artifacts) {
-            indexArtifact(map, artifact);
+            deps.add(new DependencyDescriptor(artifact));
         }
-        return map;
-    }
-
-    private void indexArtifact(Map<DependencyDescriptor, Long> map, Artifact artifact) {
-        map.put(new DependencyDescriptor(artifact), artifact.getFile().lastModified());
+        return deps;
     }
 
     private Collection<Artifact> findKJarAtifacts() {

@@ -17,10 +17,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
 
     private final Map<String, KBase> kBases = new HashMap<String, KBase>();
     private final Map<String, String> kSessions = new HashMap<String, String>();
-    private final Map<String, String> urls = new HashMap<String, String>();
+    private final Map<String, URL> urls = new HashMap<String, URL>();
 
     private final ClassLoader classLoader;
 
@@ -78,10 +77,18 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         }
         ZipEntry zipEntry = zipFile.getEntry( KPROJECT_JAR_PATH );
         if (zipEntry != null) {
+            InputStream zipStream = null;
             try {
-                indexKSessions(fromXML(zipFile.getInputStream( zipEntry )), fixURL(kJar.toURI().toURL()), true);
+                zipStream = zipFile.getInputStream( zipEntry );
+                indexKSessions(fromXML(zipStream), kJar.toURI().toURL(), true);
             } catch (IOException e) {
                 log.error("Unable to access kJar " + kJar.getAbsolutePath() + " caused by: " + e.getLocalizedMessage());
+            } finally {
+                if (zipStream != null) {
+                    try {
+                        zipStream.close();
+                    } catch (IOException e) { }
+                }
             }
         }
     }
@@ -90,7 +97,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         File kProkjectFile = new File(kJar, KPROJECT_JAR_PATH);
         if (kProkjectFile.exists()) {
             try {
-                indexKSessions(fromXML(kProkjectFile), fixURL(kProkjectFile.toURI().toURL()), true);
+                indexKSessions(fromXML(kProkjectFile), kProkjectFile.toURI().toURL(), true);
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -172,11 +179,11 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
 
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();
-            indexKSessions(fromXML(url), fixURL(url), false);
+            indexKSessions(fromXML(url), url, false);
         }
     }
 
-    private void indexKSessions(KProject kProject, String url, boolean doEvict) {
+    private void indexKSessions(KProject kProject, URL url, boolean doEvict) {
         for (KBase kBase : kProject.getKBases().values()) {
             cleanUpExistingKBase(kBase, doEvict);
             kBases.put(kBase.getName(), kBase);
@@ -249,46 +256,5 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
             out.closeEntry();
             fis.close();
         }
-    }
-
-    private String fixURL(URL url) {
-        String urlPath = url.toExternalForm();
-
-        // determine resource type (eg: jar, file, bundle)
-        String urlType = "file";
-        int colonIndex = urlPath.indexOf( ":" );
-        if ( colonIndex != -1 ) {
-            urlType = urlPath.substring( 0, colonIndex );
-        }
-
-        urlPath = url.getPath();
-
-
-        if ( "jar".equals( urlType ) ) {
-            // switch to using getPath() instead of toExternalForm()
-
-            if ( urlPath.indexOf( '!' ) > 0 ) {
-                urlPath = urlPath.substring( 0, urlPath.indexOf( '!' ) );
-            }
-        } else if (urlPath.endsWith(KPROJECT_JAR_PATH)) {
-            urlPath = urlPath.substring( 0, urlPath.length() - KPROJECT_JAR_PATH.length() - 1 );
-        }
-
-
-        // remove any remaining protocols, normally only if it was a jar
-        colonIndex = urlPath.lastIndexOf( ":" );
-        if ( colonIndex >= 0 ) {
-            urlPath = urlPath.substring( colonIndex +  1  );
-        }
-
-        try {
-            urlPath = URLDecoder.decode(urlPath, "UTF-8");
-        } catch ( UnsupportedEncodingException e ) {
-            throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8", e );
-        }
-
-        log.debug( "KProject URL Type + URL: " + urlType + ":" + urlPath );
-
-        return urlPath;
     }
 }
