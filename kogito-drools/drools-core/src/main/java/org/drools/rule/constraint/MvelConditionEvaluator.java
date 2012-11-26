@@ -61,12 +61,6 @@ public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionE
                                        workingMemory.getGlobalResolver(),
                                        factory );
 
-        org.drools.rule.Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
-        if ( pkg != null ) {
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("mvel");
-            factory.setNextFactory( data.getFunctionFactory() );
-        }
-
         return (Boolean) MVEL.executeExpression( statement, object, factory );
     }
 
