@@ -340,5 +340,23 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.retract(fact3);
 
         ksession.dispose();
+
+    }
+
+    @Test
+    public void testBooleanPropertyStartingWithEmpty() {
+        // JBRULES-3690
+        String str =
+                "declare Fact\n" +
+                "   emptyx : boolean\n" +
+                "end\n" +
+                "\n" +
+                "rule \"R1\"\n" +
+                "   when\n" +
+                "   Fact(emptyx == false)" +
+                "   then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
     }
 }

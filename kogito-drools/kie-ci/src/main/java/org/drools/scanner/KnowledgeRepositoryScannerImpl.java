@@ -1,10 +1,5 @@
 package org.drools.scanner;
 
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.kie.builder.KnowledgeContainer;
 import org.kie.builder.KnowledgeRepositoryScanner;
 import org.slf4j.Logger;
@@ -12,8 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
