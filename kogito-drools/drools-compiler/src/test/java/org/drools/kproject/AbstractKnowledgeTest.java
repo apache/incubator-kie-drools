@@ -126,7 +126,7 @@ public class AbstractKnowledgeTest {
         inputClasses.add( "org/drools/cdi/test/KProjectTestClass" + namespace + ".java" );
 
         //writeFs(namespace + "mod", srcMfs );
-        final List<String> classes = compile( kproj, srcMfs, trgMfs, inputClasses );
+        compile( kproj, srcMfs, trgMfs, inputClasses );
 
         if ( createJar ) {
             trgMfs.writeAsJar(fileManager.getRootDirectory(), namespace);
@@ -222,11 +222,6 @@ public class AbstractKnowledgeTest {
 
         copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
 
-        //printFs(trgMfs, trgMfs.getRootFolder());
-        // populateClasses(kproj, classes);
-
-        System.out.println( classes );
-
         EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
         settings.setSourceVersion( "1.5" );
         settings.setTargetVersion( "1.5" );
@@ -235,7 +230,6 @@ public class AbstractKnowledgeTest {
 
         if ( res.getErrors().length > 0 ) {
             fail( res.getErrors()[0].getMessage() );
-            //fail(res.getErrors().toString());
         }
 
         List<String> classes2 = new ArrayList<String>( classes.size() );

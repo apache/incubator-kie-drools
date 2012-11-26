@@ -4,6 +4,7 @@ import org.drools.kproject.KBase;
 import org.kie.KBaseUnit;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 
+import java.net.URL;
 import java.util.Map;
 
 import static org.drools.builder.impl.EvictionCache.MINUTE;
@@ -14,7 +15,7 @@ public class KBaseUnitCachingFactory {
 
     private static final Map<String, KBaseUnitImpl> cache = new EvictionCache<String, KBaseUnitImpl>(EVICTION_TIME);
 
-    static KBaseUnitImpl getOrCreateKBaseUnit(String url, KBase kBase) {
+    static KBaseUnitImpl getOrCreateKBaseUnit(URL url, KBase kBase) {
         String kBaseName = kBase.getName();
         KBaseUnitImpl unit = cache.get(kBaseName);
         if (unit == null) {

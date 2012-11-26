@@ -581,10 +581,7 @@ abstract public class AbstractRuleBase
                         }
                     }
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                    throw new RuntimeDroolsException(
-                                                      "unable to resolve Type Declaration class '" + lastType +
-                                                              "'" );
+                    throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType + "'", e );
                 }
             }
 

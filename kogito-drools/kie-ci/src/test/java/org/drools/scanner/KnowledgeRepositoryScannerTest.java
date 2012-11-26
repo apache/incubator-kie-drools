@@ -1,11 +1,16 @@
 package org.drools.scanner;
 
 import org.drools.builder.impl.KnowledgeContainerImpl;
+import org.drools.commons.jci.compilers.CompilationResult;
+import org.drools.commons.jci.compilers.EclipseJavaCompiler;
+import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.core.util.FileManager;
+import org.drools.kproject.Folder;
 import org.drools.kproject.KBase;
 import org.drools.kproject.KProject;
 import org.drools.kproject.KProjectImpl;
 import org.drools.kproject.KSession;
+import org.drools.kproject.memory.MemoryFileSystem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +23,7 @@ import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +32,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class KnowledgeRepositoryScannerTest {
 
@@ -83,6 +90,52 @@ public class KnowledgeRepositoryScannerTest {
         checkKSession(ksession2, "rule2", "rule3");
     }
 
+    @Test @Ignore
+    public void testKScannerWithKJarContainingClasses() throws Exception {
+        File kJar1 = createKJarWithClass("test1", 2, 7);
+
+        KnowledgeContainer kContainer = KnowledgeContainerFactory.newKnowledgeContainer();
+        kContainer.deploy(kJar1);
+
+        if (kContainer.getKBaseUnit("KBase1").hasErrors()) {
+            fail(kContainer.getKBaseUnit("KBase1").getErrors().toString());
+        }
+
+        Repository repository = new Repository();
+        repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar1, createKPom());
+
+        // -1 means no automatic scheduled scanning
+        KnowledgeRepositoryScanner scanner = KnowledgeContainerFactory.newKnowledgeScanner(kContainer, -1);
+
+        // set a fake PomParser to allow to discover the dependency that normally should be declared in the pom file
+        ((KnowledgeRepositoryScannerImpl)scanner).setPomParser(new PomParser() {
+            public List<DependencyDescriptor> getPomDirectDependencies() {
+                return new ArrayList<DependencyDescriptor>() {{
+                    add(new DependencyDescriptor("org.drools", "scanner-test", "1.0-SNAPSHOT", "jar"));
+                }};
+            }
+        });
+
+        // create a ksesion and check it works as expected
+        StatefulKnowledgeSession ksession = kContainer.getStatefulKnowlegeSession("KSession1");
+        checkKSession(ksession, 14);
+
+        resetFileManager();
+
+        // create a new kjar
+        File kJar2 = createKJarWithClass("test1", 3, 5);
+
+        // deploy it on maven
+        repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar2, createKPom());
+
+        // scan the maven repo to get the new kjar version and deploy it on the kcontainer
+        scanner.scanNow();
+
+        // create a ksesion and check it works as expected
+        StatefulKnowledgeSession ksession2 = kContainer.getStatefulKnowlegeSession("KSession1");
+        checkKSession(ksession2, 15);
+    }
+
     private void resetFileManager() {
         this.fileManager.tearDown();
         this.fileManager = new FileManager();
@@ -138,15 +191,105 @@ public class KnowledgeRepositoryScannerTest {
                 "end\n";
     }
 
-    private void checkKSession(StatefulKnowledgeSession ksession, String... rules) {
+    private void checkKSession(StatefulKnowledgeSession ksession, Object... results) {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( rules.length, list.size() );
-        for (String rule : rules) {
-            assertTrue( list.contains( rule ) );
+        assertEquals( results.length, list.size() );
+        for (Object result : results) {
+            assertTrue( list.contains( result ) );
         }
+    }
+
+    private File createKJarWithClass(String kjarName, int value, int factor) throws IOException {
+        MemoryFileSystem mfs = new MemoryFileSystem();
+
+        KProject kproj = new KProjectImpl();
+        KBase kBase1 = kproj.newKBase("KBase1")
+                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEventProcessingMode( EventProcessingOption.STREAM );
+
+        KSession ksession1 = kBase1.newKSession( "KSession1" )
+                .setType( "stateful" )
+                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
+                .setClockType( ClockTypeOption.get("realtime") );
+
+        Folder metaInf = mfs.getFolder( "META-INF" );
+        metaInf.create();
+        org.drools.kproject.File kprojectFile = metaInf.getFile( "kproject.xml" );
+        kprojectFile.create(new ByteArrayInputStream(((KProjectImpl) kproj).toXML().getBytes()));
+
+        String fldKB1 = kBase1.getName();
+        mfs.getFolder( fldKB1 ).create();
+        mfs.getFile( fldKB1 + "/rule1.drl" ).create( new ByteArrayInputStream( createDRLForJavaSource(value).getBytes() ) );
+
+        createClass(mfs, factor);
+
+        return mfs.writeAsJar(fileManager.getRootDirectory(), kjarName);
+    }
+
+    private void createClass(MemoryFileSystem mfs, int factor) {
+        try {
+            mfs.getFolder( "org/kie/test" ).create();
+            mfs.getFile( "org/kie/test/Bean.java" ).create( new ByteArrayInputStream( createJavaSource(factor).getBytes() ) );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        compile(mfs, "org/kie/test/Bean.java");
+    }
+
+    private String createJavaSource(int factor) {
+        return "package org.kie.test;\n" +
+                "public class Bean {\n" +
+                "   private final int value;\n" +
+                "   public Bean(int value) {\n" +
+                "       this.value = value;\n" +
+                "   }\n" +
+                "   public int getValue() {\n" +
+                "       return value * " + factor + ";\n" +
+                "   }\n" +
+                "}";
+    }
+
+    private String createDRLForJavaSource(int value) {
+        return "package org.kie.test\n" +
+                //"import org.kie.test.Bean;\n" +
+                "global java.util.List list\n" +
+                "rule Init\n" +
+                "when\n" +
+                "then\n" +
+                "insert( new Bean(" + value + ") );\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "   $b : Bean()\n" +
+                "then\n" +
+                "   list.add( $b.getValue() );\n" +
+                "end\n";
+    }
+
+    public List<String> compile(MemoryFileSystem mfs, String... sourceFile) {
+        EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
+        settings.setSourceVersion( "1.5" );
+        settings.setTargetVersion( "1.5" );
+        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings );
+        CompilationResult res = compiler.compile( sourceFile, mfs, mfs );
+
+        if ( res.getErrors().length > 0 ) {
+            fail( res.getErrors()[0].getMessage() );
+        }
+
+        List<String> classes2 = new ArrayList<String>( sourceFile.length );
+        for ( String str : sourceFile ) {
+            classes2.add( filenameToClassname( str ) );
+        }
+
+        return classes2;
+    }
+
+    public static String filenameToClassname(String filename) {
+        return filename.substring( 0, filename.lastIndexOf( ".java" ) ).replace( '/', '.' ).replace( '\\', '.' );
     }
 }
