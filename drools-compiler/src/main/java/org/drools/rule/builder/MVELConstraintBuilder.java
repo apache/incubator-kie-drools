@@ -175,9 +175,10 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
 
         // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
-        if (expr.startsWith("empty") && (operator.equals("==") || operator.equals("!="))) {
+        if (expr.startsWith("empty") && (operator.equals("==") || operator.equals("!=")) && !Character.isJavaIdentifierPart(expr.charAt(5))) {
             expr = "isEmpty()" + expr.substring(5);
         }
+
         return expr;
     }
 

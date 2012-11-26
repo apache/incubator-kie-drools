@@ -8,8 +8,8 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.BitMaskUtil;
-import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.MemoryUtil;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
@@ -26,7 +26,6 @@ import org.drools.rule.constraint.ConditionAnalyzer.Invocation;
 import org.drools.rule.constraint.ConditionAnalyzer.MethodInvocation;
 import org.drools.rule.constraint.ConditionAnalyzer.SingleCondition;
 import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.Constraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.kie.concurrent.ExecutorProviderFactory;
@@ -370,6 +369,15 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             extractFirstIdentifier(simpleExpression, propertyNameBuilder, cursor);
             propertyName = propertyNameBuilder.toString();
         }
+
+        if (propertyName.startsWith("is") || propertyName.startsWith("get")) {
+            int exprPos = simpleExpression.indexOf(propertyName);
+            int propNameEnd = exprPos + propertyName.length();
+            if (simpleExpression.length() > propNameEnd + 2 && simpleExpression.charAt(propNameEnd) == '(') {
+                propertyName = getter2property(propertyName);
+            }
+        }
+
         return propertyName;
     }
 

@@ -89,7 +89,7 @@ public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionE
 
     private void ensureCompleteEvaluation(ASTNode node, Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         node = unwrap(node);
-        if (node == null || !(node instanceof And || node instanceof Or)) {
+        if (!(node instanceof And || node instanceof Or)) {
             return;
         }
         ensureBranchEvaluation(object, workingMemory, leftTuple, ((BooleanNode)node).getLeft());
