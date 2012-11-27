@@ -40,6 +40,7 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.Swimlane;
+import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.impl.CancelNodeInstanceAction;
@@ -53,12 +54,17 @@ import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.ConstraintTrigger;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.StateNode;
+import org.jbpm.workflow.core.node.Trigger;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.NodeContainer;
 import org.xml.sax.Attributes;
@@ -575,8 +581,60 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     stateNode.setConstraint(connection, constraint);
                 }
             } else if (node instanceof NodeContainer) {
+                // prepare event sub process
+                if (node instanceof EventSubProcessNode) {
+                    EventSubProcessNode eventSubProcessNode = (EventSubProcessNode) node;
+                    
+                    Node[] nodes = eventSubProcessNode.getNodes();
+                    for (Node subNode : nodes) {
+                        if (subNode instanceof StartNode) {
+                            StartNode startNode = (StartNode) subNode;
+                            if (startNode != null) {
+                                List<Trigger> triggers = startNode.getTriggers();
+                                if ( triggers != null ) {
+                                    for ( Trigger trigger : triggers ) {
+                                        if ( trigger instanceof EventTrigger ) {
+                                            final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
+                                            
+                                            for ( EventFilter filter : filters ) {
+                                                if ( filter instanceof EventTypeFilter ) {
+                                                    String type = ((EventTypeFilter) filter).getType();
+                                                    eventSubProcessNode.addEvent(type);
+                                                    
+                                                    if (type.startsWith("Error-") || type.startsWith("Escalation-")) {
+                                                        String replaceRegExp = "Error-|Escalation-";
+                                                        final String signalType = type;
+                                                        
+                                                        ExceptionScope exceptionScope = (ExceptionScope) ((ContextContainer) eventSubProcessNode.getNodeContainer()).getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+                                                        if (exceptionScope == null) {
+                                                            exceptionScope = new ExceptionScope();
+                                                            ((ContextContainer) eventSubProcessNode.getNodeContainer()).addContext(exceptionScope);
+                                                            ((ContextContainer) eventSubProcessNode.getNodeContainer()).setDefaultContext(exceptionScope);
+                                                        }
+                                                        ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
+                                                        DroolsConsequenceAction action = new DroolsConsequenceAction("java", "kcontext.getProcessInstance().signalEvent(\""+signalType+"\", null);");
+                                                        exceptionHandler.setAction(action);
+                                                        exceptionScope.setExceptionHandler(type.replaceFirst(replaceRegExp, ""), exceptionHandler);
+                                                    }
+                                                }
+                                            }
+                                        } else if (trigger instanceof ConstraintTrigger) {
+                                            ConstraintTrigger constraintTrigger = (ConstraintTrigger) trigger;
+                                            
+                                            if (constraintTrigger.getConstraint() != null) {
+                                                String processId = ((RuleFlowProcess) container).getId();
+                                                eventSubProcessNode.addEvent("RuleFlowStateEventSubProcess-" + processId + "-" + eventSubProcessNode.getUniqueId());
+                                                
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 postProcessNodes((NodeContainer) node);
-            }
+            } 
         }
     }
     

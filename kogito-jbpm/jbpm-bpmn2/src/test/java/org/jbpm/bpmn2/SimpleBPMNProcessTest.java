@@ -75,6 +75,7 @@ import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.process.Process;
 import org.kie.event.process.DefaultProcessEventListener;
+import org.kie.event.process.ProcessEventListener;
 import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
@@ -3312,7 +3313,360 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
+    
+    public void testEventSubprocessSignal() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessSignal.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
 
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessSignal");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.addEventListener(listener);
+        
+        ksession.signalEvent("MySignal", null, processInstance.getId());
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        ksession.signalEvent("MySignal", null);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        ksession.signalEvent("MySignal", null);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        ksession.signalEvent("MySignal", null);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(4, executednodes.size());
+    }
+    
+    public void testEventSubprocessSignalWithStateNode() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessSignalWithStateNode.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("User Task 2")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessSignal");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.addEventListener(listener);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);        
+        
+        WorkItem workItemTopProcess = workItemHandler.getWorkItem();
+        
+        ksession.signalEvent("MySignal", null, processInstance.getId());
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        ksession.signalEvent("MySignal", null);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        ksession.signalEvent("MySignal", null);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        ksession.signalEvent("MySignal", null);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        assertNotNull(workItemTopProcess);
+        ksession.getWorkItemManager().completeWorkItem(workItemTopProcess.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "User Task 2", "end-sub");
+        assertEquals(4, executednodes.size());
+    }
+    
+    public void testEventSubprocessSignalInterrupting() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessSignalInterrupting.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessSignal");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.addEventListener(listener);
+        
+        ksession.signalEvent("MySignal", null, processInstance.getId());
+        
+        assertProcessInstanceAborted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(1, executednodes.size());
+    }
+ 
+    public void testEventSubprocessMessage() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessMessage.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessMessage");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.addEventListener(listener);
+        
+        ksession.signalEvent("Message-HelloMessage", null, processInstance.getId());
+        ksession.signalEvent("Message-HelloMessage", null);
+        ksession.signalEvent("Message-HelloMessage", null);
+        ksession.signalEvent("Message-HelloMessage", null);
+        ksession.getProcessInstance(processInstance.getId());
+        ksession.getProcessInstance(processInstance.getId());
+        ksession.getProcessInstance(processInstance.getId());
+        ksession.getProcessInstance(processInstance.getId());
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(4, executednodes.size());
+    }
+    
+    public void testEventSubprocessEscalation() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessEscalation.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessEscalation");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.addEventListener(listener);
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(1, executednodes.size());
+    }
+    
+    public void testEventSubprocessError() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessError.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessError");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.addEventListener(listener);
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(1, executednodes.size());
+    }
+
+    public void testEventSubprocessCompensation() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessCompensation.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessCompensation");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.addEventListener(listener);
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(1, executednodes.size());
+    }
+
+    public void testEventSubprocessTimer() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessTimer.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessTimer");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(1000);
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(1, executednodes.size());
+    }
+    
+    public void testEventSubprocessTimerCycle() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessTimerCycle.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessTimer");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(2000);
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(4, executednodes.size());
+    }
+    
+    public void testEventSubprocessConditional() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventSubprocessConditional.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+            
+        };
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessConditional");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+       
+        Person person = new Person();
+        person.setName("john");
+        ksession.insert(person);
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(1, executednodes.size());
+    }
+    
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBaseFactory
 				.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());

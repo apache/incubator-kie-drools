@@ -25,6 +25,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.kie.definition.process.Connection;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.xml.sax.Attributes;
 
 public class CompositeContextNodeHandler extends AbstractNodeHandler {
@@ -45,6 +46,9 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
     		nodeType = "transaction";
     	}
 		writeNode(nodeType, compositeNode, xmlDump, metaDataType);
+		if (compositeNode instanceof EventSubProcessNode) {
+		    xmlDump.append(" triggeredByEvent=\"true\" ");
+		}
 		xmlDump.append(" >" + EOL);
         // variables
 		VariableScope variableScope = (VariableScope) 

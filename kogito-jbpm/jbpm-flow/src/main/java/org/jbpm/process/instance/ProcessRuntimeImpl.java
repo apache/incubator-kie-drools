@@ -335,7 +335,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                     // new activations of the rule associate with a state node
                     // signal process instances of that state node
                     String ruleName = event.getMatch().getRule().getName();
-                    if ( ruleName.startsWith( "RuleFlowStateNode-" ) || ruleName.startsWith( "RuleFlowStateEvent-" ) ) {
+                    if ( ruleName.startsWith( "RuleFlowStateNode-" ) || ruleName.startsWith( "RuleFlowStateEvent-" )) {
                         int index = ruleName.indexOf( "-",
                                                       18 );
                         index = ruleName.indexOf( "-",
@@ -344,6 +344,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                                                                index );
                         signalManager.signalEvent( eventType,
                                                    event );
+                    } else if (ruleName.startsWith( "RuleFlowStateEventSubProcess-" )) {
+                        signalManager.signalEvent( ruleName,  event );
                     }
                 }
 			}

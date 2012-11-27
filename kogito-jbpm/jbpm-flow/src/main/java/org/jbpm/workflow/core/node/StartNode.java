@@ -35,6 +35,7 @@ public class StartNode extends ExtendedNodeImpl {
     private static final long serialVersionUID = 510l;
     
     private List<Trigger> triggers;
+    private boolean isInterupting;
 
 	public void addTrigger(Trigger trigger) {
 		if (triggers == null) {
@@ -81,6 +82,14 @@ public class StartNode extends ExtendedNodeImpl {
             throw new IllegalArgumentException(
                 "This type of node cannot have more than one outgoing connection!");
         }
+    }
+
+    public boolean isInterupting() {
+        return isInterupting;
+    }
+
+    public void setInterupting(boolean isInterupting) {
+        this.isInterupting = isInterupting;
     }
     
 }

@@ -14,7 +14,7 @@
   <process processType="Private" isExecutable="true" id="Minimal" name="&lt; &amp; &gt;" tns:packageName="com.sample" >
 
     <!-- nodes -->
-    <startEvent id="Node1" name="StartProcess" />
+    <startEvent id="Node1" name="StartProcess" isInterrupting="true"/>
     <scriptTask id="_2" name="Hello" >
       <script>System.out.println("Hello World");</script>
     </scriptTask>

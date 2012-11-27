@@ -118,6 +118,7 @@ public final class JBPMMessages {
       COMPOSITE_CONTEXT_NODE(9, 9),
       FOR_EACH_NODE(10, 10),
       DYNAMIC_NODE(11, 11),
+      EVENT_SUBPROCESS_NODE(12, 12),
       ;
       
       public static final int RULE_SET_NODE_VALUE = 0;
@@ -132,6 +133,7 @@ public final class JBPMMessages {
       public static final int COMPOSITE_CONTEXT_NODE_VALUE = 9;
       public static final int FOR_EACH_NODE_VALUE = 10;
       public static final int DYNAMIC_NODE_VALUE = 11;
+      public static final int EVENT_SUBPROCESS_NODE_VALUE = 12;
       
       
       public final int getNumber() { return value; }
@@ -150,6 +152,7 @@ public final class JBPMMessages {
           case 9: return COMPOSITE_CONTEXT_NODE;
           case 10: return FOR_EACH_NODE;
           case 11: return DYNAMIC_NODE;
+          case 12: return EVENT_SUBPROCESS_NODE;
           default: return null;
         }
       }
@@ -180,7 +183,7 @@ public final class JBPMMessages {
       }
       
       private static final NodeInstanceType[] VALUES = {
-        RULE_SET_NODE, HUMAN_TASK_NODE, WORK_ITEM_NODE, SUBPROCESS_NODE, MILESTONE_NODE, EVENT_NODE, TIMER_NODE, JOIN_NODE, STATE_NODE, COMPOSITE_CONTEXT_NODE, FOR_EACH_NODE, DYNAMIC_NODE, 
+        RULE_SET_NODE, HUMAN_TASK_NODE, WORK_ITEM_NODE, SUBPROCESS_NODE, MILESTONE_NODE, EVENT_NODE, TIMER_NODE, JOIN_NODE, STATE_NODE, COMPOSITE_CONTEXT_NODE, FOR_EACH_NODE, DYNAMIC_NODE, EVENT_SUBPROCESS_NODE, 
       };
       
       public static NodeInstanceType valueOf(
@@ -14527,7 +14530,7 @@ public final class JBPMMessages {
     java.lang.String[] descriptorData = {
       "\n\'org/jbpm/marshalling/jbpmmessages.prot" +
       "o\022\024org.jbpm.marshalling\032+org/drools/mars" +
-      "halling/droolsmessages.proto\"\347\027\n\017Process" +
+      "halling/droolsmessages.proto\"\202\030\n\017Process" +
       "Instance\022\024\n\014process_type\030\001 \001(\t\022\n\n\002id\030\002 \001" +
       "(\003\022\022\n\nprocess_id\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\022\035\n" +
       "\025node_instance_counter\030\005 \001(\003\022W\n\020swimlane" +
@@ -14597,38 +14600,38 @@ public final class JBPMMessages {
       "rg.jbpm.marshalling.ProcessInstance.Excl",
       "usiveGroupInstance\032X\n\013ForEachNode\022I\n\rnod" +
       "e_instance\030\001 \003(\01322.org.jbpm.marshalling." +
-      "ProcessInstance.NodeInstance\"\367\001\n\020NodeIns" +
+      "ProcessInstance.NodeInstance\"\222\002\n\020NodeIns" +
       "tanceType\022\021\n\rRULE_SET_NODE\020\000\022\023\n\017HUMAN_TA" +
       "SK_NODE\020\001\022\022\n\016WORK_ITEM_NODE\020\002\022\023\n\017SUBPROC" +
       "ESS_NODE\020\003\022\022\n\016MILESTONE_NODE\020\004\022\016\n\nEVENT_" +
       "NODE\020\005\022\016\n\nTIMER_NODE\020\006\022\r\n\tJOIN_NODE\020\007\022\016\n" +
       "\nSTATE_NODE\020\010\022\032\n\026COMPOSITE_CONTEXT_NODE\020" +
-      "\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014DYNAMIC_NODE\020\013\"?" +
-      "\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n\016strategy_ind",
-      "ex\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\203\001\n\010WorkItem\022\n\n\002" +
-      "id\030\001 \001(\003\022\034\n\024process_instances_id\030\002 \001(\003\022\014" +
-      "\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010variable\030" +
-      "\005 \003(\0132\036.org.jbpm.marshalling.Variable\"\235\002" +
-      "\n\014ProcessTimer\022?\n\005timer\030\001 \001(\01320.org.jbpm" +
-      ".marshalling.ProcessTimer.TimerInstance\022" +
-      "0\n\007trigger\030\002 \001(\0132\037.org.drools.marshallin" +
-      "g.Trigger\032\231\001\n\rTimerInstance\022\n\n\002id\030\001 \001(\003\022" +
-      "\020\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006peri" +
-      "od\030\004 \001(\003\022\033\n\023process_instance_id\030\005 \001(\003\022\026\n",
-      "\016activated_time\030\006 \001(\003\022\026\n\016last_triggered\030" +
-      "\007 \001(\003:d\n\020process_instance\022#.org.drools.m" +
-      "arshalling.ProcessData\030\n \003(\0132%.org.jbpm." +
-      "marshalling.ProcessInstance:V\n\twork_item" +
-      "\022#.org.drools.marshalling.ProcessData\030\013 " +
-      "\003(\0132\036.org.jbpm.marshalling.WorkItem:5\n\010t" +
-      "imer_id\022#.org.drools.marshalling.Process" +
-      "Data\030\r \001(\003:^\n\rprocess_timer\022#.org.drools" +
-      ".marshalling.ProcessData\030\014 \003(\0132\".org.jbp" +
-      "m.marshalling.ProcessTimer:\\\n\nproc_timer",
-      "\022$.org.drools.marshalling.Timers.Timer\030d" +
-      " \001(\0132\".org.jbpm.marshalling.ProcessTimer" +
-      "B)\n\031org.jbpm.marshalling.implB\014JBPMMessa" +
-      "ges"
+      "\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014DYNAMIC_NODE\020\013\022\031" +
+      "\n\025EVENT_SUBPROCESS_NODE\020\014\"?\n\010Variable\022\014\n",
+      "\004name\030\001 \001(\t\022\026\n\016strategy_index\030\002 \001(\005\022\r\n\005v" +
+      "alue\030\003 \001(\014\"\203\001\n\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024p" +
+      "rocess_instances_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022" +
+      "\r\n\005state\030\004 \001(\005\0220\n\010variable\030\005 \003(\0132\036.org.j" +
+      "bpm.marshalling.Variable\"\235\002\n\014ProcessTime" +
+      "r\022?\n\005timer\030\001 \001(\01320.org.jbpm.marshalling." +
+      "ProcessTimer.TimerInstance\0220\n\007trigger\030\002 " +
+      "\001(\0132\037.org.drools.marshalling.Trigger\032\231\001\n" +
+      "\rTimerInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002" +
+      " \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023p",
+      "rocess_instance_id\030\005 \001(\003\022\026\n\016activated_ti" +
+      "me\030\006 \001(\003\022\026\n\016last_triggered\030\007 \001(\003:d\n\020proc" +
+      "ess_instance\022#.org.drools.marshalling.Pr" +
+      "ocessData\030\n \003(\0132%.org.jbpm.marshalling.P" +
+      "rocessInstance:V\n\twork_item\022#.org.drools" +
+      ".marshalling.ProcessData\030\013 \003(\0132\036.org.jbp" +
+      "m.marshalling.WorkItem:5\n\010timer_id\022#.org" +
+      ".drools.marshalling.ProcessData\030\r \001(\003:^\n" +
+      "\rprocess_timer\022#.org.drools.marshalling." +
+      "ProcessData\030\014 \003(\0132\".org.jbpm.marshalling",
+      ".ProcessTimer:\\\n\nproc_timer\022$.org.drools" +
+      ".marshalling.Timers.Timer\030d \001(\0132\".org.jb" +
+      "pm.marshalling.ProcessTimerB)\n\031org.jbpm." +
+      "marshalling.implB\014JBPMMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

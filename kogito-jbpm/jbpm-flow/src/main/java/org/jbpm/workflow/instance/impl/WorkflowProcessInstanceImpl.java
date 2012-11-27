@@ -27,27 +27,31 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.common.InternalKnowledgeRuntime;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
-import org.kie.definition.process.WorkflowProcess;
-import org.kie.runtime.process.EventListener;
-import org.kie.runtime.process.NodeInstanceContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.jbpm.workflow.instance.node.EndNodeInstance;
 import org.jbpm.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstanceInterface;
-import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
+import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
+import org.kie.definition.process.WorkflowProcess;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.NodeInstanceContainer;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -269,17 +273,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		setState(state, null);
 	}
 
-	public void disconnect() {
-		removeEventListeners();
-		unregisterExternalEventNodeListeners();
-		
-		for (NodeInstance nodeInstance : nodeInstances) {
-			if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
-				((EventBasedNodeInstanceInterface) nodeInstance).removeEventListeners();
-			}
-		}
-		super.disconnect();
-	}
+    public void disconnect() {
+        removeEventListeners();
+        unregisterExternalEventNodeListeners();
+        
+        for (NodeInstance nodeInstance : nodeInstances) {
+            if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
+                ((EventBasedNodeInstanceInterface) nodeInstance).removeEventListeners();
+            }
+        }
+        super.disconnect();
+    }
 
 	public void reconnect() {
 		super.reconnect();
@@ -306,6 +310,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	public void start() {
 		synchronized (this) {
 			registerExternalEventNodeListeners();
+			// activate timer event sub processes
+	        Node[] nodes = getNodeContainer().getNodes();
+	        for (Node node : nodes) {
+	            if (node instanceof EventSubProcessNode) {
+	                Map<Timer, DroolsAction> timers = ((EventSubProcessNode) node).getTimers();
+	                if (timers != null && !timers.isEmpty()) {
+	                    EventSubProcessNodeInstance eventSubprocess = (EventSubProcessNodeInstance) getNodeInstance(node);
+	                    eventSubprocess.trigger(null, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+	                }
+	            }
+	        }
 			super.start();
 		}
 	}
@@ -317,7 +332,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 					addEventListener(((EventNode) node).getType(),
 						new ExternalEventListener(), true);
 				}
-			}
+            } else if (node instanceof EventSubProcessNode) {
+                List<String> events = ((EventSubProcessNode) node).getEvents();
+                for (String type : events) {
+                    addEventListener(type, new ExternalEventListener(), true);
+                }
+            }	         
 		}
 	}
 	
@@ -332,7 +352,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void signalEvent(String type, Object event) {
-		synchronized (this) {
+	    synchronized (this) {
 			if (getState() != ProcessInstance.STATE_ACTIVE) {
 				return;
 			}
@@ -354,7 +374,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 						if (node instanceof EventNode && ((EventNode) node).getFrom() == null) {
 							EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
 							eventNodeInstance.signalEvent(type, event);
-						} else {
+						} else if (node instanceof EventSubProcessNode ) {
+						    EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);
+                            eventNodeInstance.signalEvent(type, event);
+                        } else {
 							List<NodeInstance> nodeInstances = getNodeInstances(node
 									.getId());
 							if (nodeInstances != null && !nodeInstances.isEmpty()) {
@@ -429,9 +452,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	
 	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
         if (nodeInstance instanceof EndNodeInstance || 
-        		((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()) {
+        		((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()
+        		|| nodeInstance instanceof CompositeNodeInstance) {
             if (((org.jbpm.workflow.core.WorkflowProcess) getProcess()).isAutoComplete()) {
-                if (nodeInstances.isEmpty()) {
+                if (canComplete()) {
                     setState(ProcessInstance.STATE_COMPLETED);
                 }
             }
@@ -449,5 +473,24 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		public void signalEvent(String type,
 				Object event) {
 		}		
+	}
+	
+	private boolean canComplete() {
+	    if (nodeInstances.isEmpty()) {
+	        return true;
+	    } else {
+	        int eventSubprocessCounter = 0;
+	        for (NodeInstance nodeInstance : nodeInstances) {
+	            Node node = nodeInstance.getNode();
+	            if (node instanceof EventSubProcessNode) {
+	                if (((EventSubProcessNodeInstance) nodeInstance).getNodeInstances().isEmpty()) {
+	                    eventSubprocessCounter++;
+	                }
+	            } else {
+	                return false;
+	            }
+	        }	        
+	        return eventSubprocessCounter == nodeInstances.size();
+	    }
 	}
 }

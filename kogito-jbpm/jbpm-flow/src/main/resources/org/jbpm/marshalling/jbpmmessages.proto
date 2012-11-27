@@ -131,6 +131,7 @@ message ProcessInstance {
         COMPOSITE_CONTEXT_NODE = 9;
         FOR_EACH_NODE = 10;
         DYNAMIC_NODE = 11;
+        EVENT_SUBPROCESS_NODE = 12;
     }
 }
 

@@ -30,6 +30,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -40,7 +41,11 @@ public class SubProcessHandler extends AbstractNodeHandler {
     
     
     protected Node createNode(Attributes attrs) {
-    	CompositeContextNode result = new CompositeContextNode();
+    	CompositeContextNode result = new CompositeContextNode();    	
+        String eventSubprocessAttribute = attrs.getValue("triggeredByEvent");
+        if (eventSubprocessAttribute != null && Boolean.parseBoolean(eventSubprocessAttribute)) {            
+            result = new EventSubProcessNode();
+    	}
         VariableScope variableScope = new VariableScope();
         result.addContext(variableScope);
         result.setDefaultContext(variableScope);
@@ -58,7 +63,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
 		Node node = (Node) parser.getCurrent();
 		// determine type of event definition, so the correct type of node
 		// can be generated
-		boolean found = false;
+		boolean found = false;		
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
 			String nodeName = xmlNode.getNodeName();

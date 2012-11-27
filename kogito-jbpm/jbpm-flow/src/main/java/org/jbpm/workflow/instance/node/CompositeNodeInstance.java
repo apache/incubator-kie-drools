@@ -23,12 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
-import org.kie.runtime.process.EventListener;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
@@ -39,6 +34,10 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactory;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.kie.definition.process.Connection;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.NodeContainer;
+import org.kie.runtime.process.EventListener;
 
 /**
  * Runtime counterpart of a composite node.
@@ -103,7 +102,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     	                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance)
     	                	.trigger(null, null);
     	                found = true;
-        			}
+        			}      	
         		}
         	}
         	if (found) {
@@ -114,6 +113,10 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 	        throw new IllegalArgumentException(
 	            "Could not find start for composite node: " + type);
         }
+    }
+    
+    protected void internalTriggerOnlyParent(final org.kie.runtime.process.NodeInstance from, String type) {
+        super.internalTrigger(from, type);
     }
     
     protected boolean isLinkedIncomingNodeRequired() {
@@ -304,7 +307,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
 	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
 	    if (nodeInstance instanceof EndNodeInstance) {
-            if (((org.jbpm.workflow.core.WorkflowProcess) getProcessInstance().getProcess()).isAutoComplete()) {
+             if (((org.jbpm.workflow.core.WorkflowProcess) getProcessInstance().getProcess()).isAutoComplete()) {
                 if (nodeInstances.isEmpty()) {
                     triggerCompleted(
                         org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
@@ -327,10 +330,15 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     
     public void setState(final int state) {
         this.state = state;
+        if (state == ProcessInstance.STATE_ABORTED) {
+            cancel();
+        }
     }
 
     public int getState() {
         return this.state;
     }
+
+
 
 }

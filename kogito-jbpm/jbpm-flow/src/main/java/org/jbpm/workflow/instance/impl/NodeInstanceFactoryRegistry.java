@@ -27,6 +27,7 @@ import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.FaultNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
@@ -49,6 +50,7 @@ import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.EndNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
+import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.FaultNodeInstance;
 import org.jbpm.workflow.instance.node.ForEachNodeInstance;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
@@ -95,6 +97,8 @@ public class NodeInstanceFactoryRegistry {
                   new CreateNewNodeFactory( TimerNodeInstance.class ) );
         register( FaultNode.class,
                   new CreateNewNodeFactory( FaultNodeInstance.class ) );
+        register(EventSubProcessNode.class, 
+                  new CreateNewNodeFactory(EventSubProcessNodeInstance.class));
         register( CompositeNode.class,
                   new CreateNewNodeFactory( CompositeNodeInstance.class ) );
         register( CompositeContextNode.class,
@@ -114,6 +118,8 @@ public class NodeInstanceFactoryRegistry {
 				CatchLinkNodeInstance.class));
 		register(ThrowLinkNode.class, new CreateNewNodeFactory(
 				ThrowLinkNodeInstance.class));
+		
+		
     }
 
     public void register(Class< ? extends Node> cls,

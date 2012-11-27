@@ -41,6 +41,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     private Map<String, CompositeNode.NodeAndType> inConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
     private Map<String, CompositeNode.NodeAndType> outConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
 	private boolean cancelRemainingInstances = true;
+
 	
     public CompositeNode() {
         this.nodeContainer = new NodeContainerImpl();

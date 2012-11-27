@@ -47,6 +47,7 @@ import org.jbpm.workflow.core.node.CompositeNode.NodeAndType;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.FaultNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.Join;
@@ -487,9 +488,9 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
         for ( final Iterator<Node> it = processNodes.keySet().iterator(); it.hasNext(); ) {
             final Node node = it.next();
-            if (Boolean.FALSE.equals(processNodes.get(node)) && !(node instanceof StartNode)) {
+            if (Boolean.FALSE.equals(processNodes.get(node)) && !(node instanceof StartNode) && !(node instanceof EventSubProcessNode)) {                
                 errors.add(new ProcessValidationErrorImpl(process,
-                    "Node '" + node.getName() + "' [" + node.getId() + "] has no connection to the start node."));
+                "Node '" + node.getName() + "' [" + node.getId() + "] has no connection to the start node."));                
             }
         }
     }
