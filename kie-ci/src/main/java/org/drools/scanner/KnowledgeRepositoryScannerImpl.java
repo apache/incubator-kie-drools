@@ -1,5 +1,6 @@
 package org.drools.scanner;
 
+import org.drools.scanner.embedder.EmbeddedPomParser;
 import org.kie.builder.KnowledgeContainer;
 import org.kie.builder.KnowledgeRepositoryScanner;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
 
     private Set<DependencyDescriptor> usedDependencies;
 
-    private PomParser pomParser = new XmlPomParser();
+    private PomParser pomParser = new EmbeddedPomParser();
 
     public KnowledgeRepositoryScannerImpl(KnowledgeContainer knowledgeContainer) {
         this(knowledgeContainer, DEFAULT_POLLING_INTERVAL);

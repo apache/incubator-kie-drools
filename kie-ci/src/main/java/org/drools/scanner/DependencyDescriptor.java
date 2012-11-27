@@ -5,19 +5,17 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.model.Dependency;
 import org.sonatype.aether.artifact.Artifact;
 
-import java.util.Properties;
-
-class DependencyDescriptor {
+public class DependencyDescriptor {
     private final String groupId;
     private final String artifactId;
     private final String version;
     private final String type;
     private final ArtifactVersion artifactVersion;
 
-    public DependencyDescriptor(Dependency dependency, Properties projectProperties) {
+    public DependencyDescriptor(Dependency dependency) {
         groupId = dependency.getGroupId();
         artifactId = dependency.getArtifactId();
-        version = resolve(dependency.getVersion(), projectProperties);
+        version = dependency.getVersion();
         type = dependency.getType();
         artifactVersion = new DefaultArtifactVersion(version);
     }
@@ -64,13 +62,6 @@ class DependencyDescriptor {
 
     public boolean isValid() {
         return version != null;
-    }
-
-    private String resolve(String value, Properties projectProperties) {
-        if (value == null) {
-            return null;
-        }
-        return value.startsWith("${") ? (String)projectProperties.get(value.substring(2, value.length()-1)) : value;
     }
 
     @Override
