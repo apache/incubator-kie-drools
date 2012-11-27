@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.agent.FileLoader;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
@@ -15,9 +14,7 @@ import org.drools.rule.Package;
 /**
  * This is used by the agent when a source file is encountered.
  */
-public class SourcePackageProvider
-    implements
-    FileLoader {
+public class SourcePackageProvider {
 
     public Package loadPackage(File rm) throws IOException {
         final FileInputStream fin = new FileInputStream( rm );

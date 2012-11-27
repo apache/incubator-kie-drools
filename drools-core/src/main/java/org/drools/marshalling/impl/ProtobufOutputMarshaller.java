@@ -114,11 +114,6 @@ public class ProtobufOutputMarshaller {
 
         ProtobufMessages.RuleData.Builder _ruleData = ProtobufMessages.RuleData.newBuilder();
 
-        final boolean multithread = wm.isPartitionManagersActive();
-        if ( multithread ) {
-            wm.stopPartitionManagers();
-        }
-
         long time = 0;
         if ( context.wm.getTimerService() instanceof PseudoClockScheduler ) {
             time = context.clockTime;
@@ -156,7 +151,7 @@ public class ProtobufOutputMarshaller {
                           _ruleData );
 
         ProtobufMessages.KnowledgeSession.Builder _session = ProtobufMessages.KnowledgeSession.newBuilder()
-                .setMultithread( multithread )
+                .setMultithread( false )
                 .setTime( time )
                 .setRuleData( _ruleData.build() );
 
@@ -183,10 +178,6 @@ public class ProtobufOutputMarshaller {
                                       context );
         if ( _timers != null ) {
             _session.setTimers( _timers );
-        }
-
-        if ( multithread ) {
-            wm.startPartitionManagers();
         }
 
         return _session.build();

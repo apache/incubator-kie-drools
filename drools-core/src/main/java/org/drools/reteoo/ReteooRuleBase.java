@@ -42,8 +42,6 @@ import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
-import org.drools.concurrent.CommandExecutor;
-import org.drools.concurrent.ExecutorService;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -56,7 +54,6 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.WindowDeclaration;
-import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.kie.conf.EventProcessingOption;
@@ -64,7 +61,6 @@ import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
@@ -396,17 +392,13 @@ public class ReteooRuleBase extends AbstractRuleBase {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
 
-        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.getConfiguration().getExecutorService() );
         readLock();
         try {
             ReteooStatefulSession session = new ReteooStatefulSession( id,
                                                                        this,
-                                                                       executor,
                                                                        sessionConfig,
                                                                        environment );
             new StatefulKnowledgeSessionImpl(session);
-
-            executor.setCommandExecutor( new CommandExecutor( session ) );
 
             if ( sessionConfig.isKeepReference() ) {
                 super.addStatefulSession( session );
@@ -414,8 +406,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
                     addEventListener((RuleBaseEventListener) listener);
                 }
             }
-
-            session.startPartitionManagers();
 
             session.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( session.getInitialFactHandle(),
                                                                                  false,

@@ -27,16 +27,13 @@ import org.drools.SessionConfiguration;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Scheduler.ActivationTimerInputMarshaller;
-import org.drools.concurrent.CommandExecutor;
-import org.drools.concurrent.ExecutorService;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
-import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.GlobalResolver;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -102,14 +99,11 @@ public class DefaultMarshaller
 
         int id = ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).nextWorkingMemoryCounter();
         RuleBaseConfiguration conf = ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getConfiguration();
-        ExecutorService executor = ExecutorServiceFactory.createExecutorService( conf.getExecutorService() );
 
         ReteooStatefulSession session = InputMarshaller.readSession( context,
                                                                      id,
-                                                                     executor,
                                                                      environment,
                                                                      (SessionConfiguration) config );
-        executor.setCommandExecutor( new CommandExecutor( session ) );
         context.close();
         if ( ((SessionConfiguration) config).isKeepReference() ) {
             ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).addStatefulSession( session );

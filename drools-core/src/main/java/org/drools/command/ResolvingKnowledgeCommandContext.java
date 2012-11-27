@@ -4,7 +4,6 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeContainer;
 import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.command.Context;

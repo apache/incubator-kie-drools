@@ -1,7 +1,20 @@
 package org.drools.integrationtests;
 
-import org.junit.After;
-import org.junit.Before;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Future;
+
+import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
+import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
+import org.drools.compiler.PackageBuilder;
+import org.drools.rule.Package;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -13,53 +26,10 @@ import org.kie.command.CommandFactory;
 import org.kie.io.ResourceFactory;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
-
-import static org.junit.Assert.*;
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.compiler.PackageBuilder;
-import org.drools.concurrent.Future;
-import org.drools.rule.Package;
-import org.drools.runtime.impl.ExecutionResultImpl;
-
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class StatefulSessionTest extends CommonTestMethodBase {
     final List list = new ArrayList();
 
-    @Test
-    public void testSingleObjectAssert() throws Exception {
-        StatefulSession session = getSession();
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-
-        Future futureAssert = session.asyncInsert( stilton );
-        Future futureFireAllRules = session.asyncFireAllRules();
-        
-        int i = 0;
-        while ( !futureFireAllRules.isDone() ) {
-            Thread.sleep( 100 );
-            if (i++ > 5) {
-                fail( "Future should have finished by now" );
-            }
-        }
-               
-        assertTrue( futureAssert.getObject() instanceof FactHandle );
-        assertEquals( "stilton",
-                      list.get( 0 ) );
-        
-    }
-    
     @Test
     public void testInsertObject() throws Exception {
         String str = "";
@@ -94,134 +64,6 @@ public class StatefulSessionTest extends CommonTestMethodBase {
         
         Object o = ksession.getObject( (FactHandle) result.getFactHandle( "outStilton" ) );
         assertSame( o, stilton );
-    }
-    
-    @Test
-    public void testArrayObjectAssert() throws Exception {
-        StatefulSession session = getSession();
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-
-        Future futureAssert = session.asyncInsert( new Object[] { stilton } );
-        Future futureFireAllRules = session.asyncFireAllRules();
-        
-        int i = 0;
-        while ( !futureFireAllRules.isDone() ) {
-            Thread.sleep( 100 );
-            if (i++ > 5) {
-                fail( "Future should have finished by now" );
-            }
-        }
-               
-        
-        assertTrue( futureAssert.getObject() instanceof List );
-        assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
-
-        assertEquals( "stilton",
-                      list.get( 0 ) );
-    }
-    
-    @Test
-    public void testCollectionObjectAssert() throws Exception {
-        StatefulSession session = getSession();
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-
-        List collection = new ArrayList();
-        collection.add( stilton );
-        Future futureAssert = session.asyncInsert( collection );
-        
-        Future futureFireAllRules = session.asyncFireAllRules();
-        int i = 0;
-        while ( !futureFireAllRules.isDone() ) {
-            Thread.sleep( 100 );
-            if (i++ > 5) {
-                fail( "Future should have finished by now" );
-            }
-        }
-               
-        assertTrue( futureAssert.getObject() instanceof List );
-        assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
-        
-        assertEquals( "stilton",
-                      list.get( 0 ) );
-    }
-    
-    @Test
-    public void testHasExceptionSingleAssert()throws Exception {
-
-        StatefulSession session = getExceptionSession();
-
-        final Cheese brie = new Cheese( "brie",
-                                        12 );
-
-        Future futureAssert = session.asyncInsert( brie );
-
-        Future futureFireAllRules = session.asyncFireAllRules();
-        int i = 0;
-        while ( !futureFireAllRules.isDone() ) {
-            Thread.sleep( 100 );
-            if (i++ > 5) {
-                fail( "Future should have finished by now" );
-            }
-        }
-        
-
-        assertTrue( futureAssert.getObject() instanceof FactHandle );
-        assertTrue( futureFireAllRules.exceptionThrown() );
-        assertTrue( futureFireAllRules.getException() instanceof Exception );
-    }
-    
-    @Test
-    public void testHasExceptionArrayAssert()throws Exception {
-
-        StatefulSession session = getExceptionSession();
-
-        final Cheese brie = new Cheese( "brie",
-                                        12 );
-
-        Future futureAssert = session.asyncInsert( new Object[] { brie } );
-        Future futureFireAllRules = session.asyncFireAllRules();
-        
-        int i = 0;
-        while ( !futureFireAllRules.isDone() ) {
-            Thread.sleep( 300 );
-            if (i++ > 5) {
-                fail( "Future should have finished by now" );
-            }
-        }
-                       
-        assertTrue( futureAssert.getObject() instanceof List );
-        assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
-        assertTrue( futureFireAllRules.getException() instanceof Exception );
-    }
-    
-    @Test
-    public void testHasExceptionCollectionAssert()throws Exception {
-
-        StatefulSession session = getExceptionSession();
-
-        final Cheese brie = new Cheese( "brie",
-                                        12 );
-
-        List collection = new ArrayList();
-        collection.add( brie );
-        Future futureAssert = session.asyncInsert( collection );
-        Future futureFireAllRules = session.asyncFireAllRules();
-        
-        int i = 0;
-        while ( !futureFireAllRules.isDone() ) {
-            Thread.sleep( 100 );
-            if (i++ > 5) {
-                fail( "Future should have finished by now" );
-            }
-        }
-                       
-        assertTrue( futureAssert.getObject() instanceof List );
-        assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
-        assertTrue( futureFireAllRules.getException() instanceof Exception );
     }
     
     @Test

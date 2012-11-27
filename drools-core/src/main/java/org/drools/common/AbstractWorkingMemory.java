@@ -28,10 +28,8 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -41,14 +39,12 @@ import org.drools.FactHandle;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.base.CalendarsImpl;
 import org.drools.base.MapGlobalResolver;
-import org.drools.concurrent.ExternalExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -61,8 +57,6 @@ import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.PartitionManager;
-import org.drools.reteoo.PartitionTaskManager;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -163,10 +157,6 @@ public abstract class AbstractWorkingMemory
     protected InternalFactHandle                                 initialFactHandle;
 
     protected SessionConfiguration                               config;
-
-    protected PartitionManager                                   partitionManager;
-
-    protected transient AtomicReference<ExternalExecutorService> threadPool = new AtomicReference<ExternalExecutorService>();
 
     private InternalKnowledgeRuntime                             kruntime;
 
@@ -317,7 +307,6 @@ public abstract class AbstractWorkingMemory
 
         this.firing = new AtomicBoolean( false );
 
-        initPartitionManagers();
         initTransient();
 
         this.opCounter = new AtomicLong( 0 );
@@ -384,63 +373,6 @@ public abstract class AbstractWorkingMemory
                 entryPoints.remove(removedNode.getEntryPoint().getEntryPointId());
             }
         }
-    }
-
-    /**
-     * Creates the actual partition managers and their tasks for multi-thread
-     * processing
-     */
-    private void initPartitionManagers() {
-        if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-            this.partitionManager = new PartitionManager( this );
-
-            for ( RuleBasePartitionId partitionId : this.ruleBase.getPartitionIds() ) {
-                this.partitionManager.manage( partitionId );
-            }
-        }
-    }
-
-    /**
-     * This method is called to start the multiple partition threads when
-     * running in multi-thread mode
-     */
-    public void startPartitionManagers() {
-        startOperation();
-        try {
-            if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-                int maxThreads = (this.ruleBase.getConfiguration().getMaxThreads() > 0) ? this.ruleBase.getConfiguration().getMaxThreads() : this.ruleBase.getPartitionIds().size();
-                if ( this.threadPool.compareAndSet( null,
-                                                    createExecutorService( maxThreads ) ) ) {
-                    this.partitionManager.setPool( this.threadPool.get() );
-                }
-            }
-        } finally {
-            endOperation();
-        }
-    }
-
-    private ExternalExecutorService createExecutorService(final int maxThreads) {
-        return new ExternalExecutorService( Executors.newFixedThreadPool( maxThreads ) );
-    }
-
-    public void stopPartitionManagers() {
-        startOperation();
-        try {
-            if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-                ExternalExecutorService service = this.threadPool.get();
-                if ( this.threadPool.compareAndSet( service,
-                                                    null ) ) {
-                    service.shutdown();
-                    partitionManager.shutdown();
-                }
-            }
-        } finally {
-            endOperation();
-        }
-    }
-
-    public boolean isPartitionManagersActive() {
-        return this.threadPool.get() != null;
     }
 
     private void initTransient() {
@@ -1204,10 +1136,6 @@ public abstract class AbstractWorkingMemory
         return (SessionClock) this.timerService;
     }
 
-    public PartitionTaskManager getPartitionTaskManager(final RuleBasePartitionId partitionId) {
-        return partitionManager.getPartitionTaskManager( partitionId );
-    }
-
     public void startBatchExecution(ExecutionResultImpl results) {
         this.ruleBase.readLock();
         this.lock.lock();
@@ -1236,7 +1164,6 @@ public abstract class AbstractWorkingMemory
         for ( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
             this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
         }
-        this.stopPartitionManagers();
         if ( processRuntime != null ) {
             this.processRuntime.dispose();
         }
@@ -1366,6 +1293,12 @@ public abstract class AbstractWorkingMemory
         return this.lastIdleTimestamp.get();
     }
 
+    public void prepareToFireActivation() {
+    }
+
+    public void activationFired() {
+    }
+    
     /**
      * Returns the number of time units (usually ms) to
      * the next scheduled job
@@ -1375,19 +1308,6 @@ public abstract class AbstractWorkingMemory
      */
     public long getTimeToNextJob() {
         return this.timerService.getTimeToNextJob();
-    }
-
-    public void prepareToFireActivation() {
-        if ( this.partitionManager != null ) {
-            this.partitionManager.holdTasks();
-            this.partitionManager.waitForPendingTasks();
-        }
-    }
-
-    public void activationFired() {
-        if ( this.partitionManager != null ) {
-            this.partitionManager.releaseTasks();
-        }
     }
 
     public ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore() {

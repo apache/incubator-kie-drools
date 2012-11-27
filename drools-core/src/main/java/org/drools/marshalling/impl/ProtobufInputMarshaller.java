@@ -16,7 +16,16 @@
 
 package org.drools.marshalling.impl;
 
-import com.google.protobuf.ExtensionRegistry;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.SessionConfiguration;
 import org.drools.common.ActivationsFilter;
 import org.drools.common.DefaultAgenda;
@@ -34,7 +43,6 @@ import org.drools.common.QueryElementFactHandle;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.concurrent.ExecutorService;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance;
@@ -63,15 +71,7 @@ import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.TimeUnit;
+import com.google.protobuf.ExtensionRegistry;
 
 /**
  * An input marshaller that uses protobuf. 
@@ -128,12 +128,10 @@ public class ProtobufInputMarshaller {
      * @throws ClassNotFoundException
      */
     public static ReteooStatefulSession readSession(MarshallerReaderContext context,
-                                                    int id,
-                                                    ExecutorService executor) throws IOException,
+                                                    int id) throws IOException,
                                                                              ClassNotFoundException {
         ReteooStatefulSession session = readSession( context,
                                                      id,
-                                                     executor,
                                                      EnvironmentFactory.newEnvironment(),
                                                      SessionConfiguration.getDefaultInstance() );
         return session;
@@ -141,7 +139,6 @@ public class ProtobufInputMarshaller {
 
     public static ReteooStatefulSession readSession(MarshallerReaderContext context,
                                                     int id,
-                                                    ExecutorService executor,
                                                     Environment environment,
                                                     SessionConfiguration config) throws IOException,
                                                                                 ClassNotFoundException {
@@ -150,7 +147,6 @@ public class ProtobufInputMarshaller {
 
         ReteooStatefulSession session = createAndInitializeSession( context,
                                                                     id,
-                                                                    executor,
                                                                     environment,
                                                                     config,
                                                                     _session );
@@ -177,7 +173,6 @@ public class ProtobufInputMarshaller {
 
     private static ReteooStatefulSession createAndInitializeSession(MarshallerReaderContext context,
                                                                     int id,
-                                                                    ExecutorService executor,
                                                                     Environment environment,
                                                                     SessionConfiguration config,
                                                                     ProtobufMessages.KnowledgeSession _session) throws IOException {
@@ -198,7 +193,6 @@ public class ProtobufInputMarshaller {
 
         ReteooStatefulSession session = new ReteooStatefulSession( id,
                                                                    context.ruleBase,
-                                                                   executor,
                                                                    handleFactory,
                                                                    initialFactHandle,
                                                                    0,
@@ -292,10 +286,6 @@ public class ProtobufInputMarshaller {
 
         // remove the activations filter
         agenda.setActivationsFilter( null );
-
-        if ( _session.getMultithread() ) {
-            session.startPartitionManagers();
-        }
 
         return session;
     }

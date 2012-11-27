@@ -109,14 +109,7 @@ public class OutputMarshaller {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
         wm.getAgenda().unstageActivations();
 
-        final boolean multithread = wm.isPartitionManagersActive();
-        // is multi-thread active?
-        if ( multithread ) {
-            context.writeBoolean( true );
-            wm.stopPartitionManagers();
-        } else {
-            context.writeBoolean( false );
-        }        
+        context.writeBoolean( false );
         
         long time = 0;
         if ( context.wm.getTimerService() instanceof PseudoClockScheduler ) {
@@ -183,10 +176,6 @@ public class OutputMarshaller {
         // Only works for JpaJDKTimerService
         writeTimers( context.wm.getTimerService().getTimerJobInstances(), context );
 
-        if ( multithread ) {
-            wm.startPartitionManagers();
-        }
-        
         //context.out.println( "--- write session --- END");
     }
 

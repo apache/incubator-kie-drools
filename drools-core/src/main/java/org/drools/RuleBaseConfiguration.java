@@ -16,15 +16,22 @@
 
 package org.drools;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
-import org.drools.concurrent.DefaultExecutorService;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.factmodel.ClassBuilderFactory;
-import org.drools.reteoo.LeftTupleSinkNode;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.spi.ConflictResolver;
@@ -41,7 +48,6 @@ import org.kie.conf.IndexLeftBetaMemoryOption;
 import org.kie.conf.IndexPrecedenceOption;
 import org.kie.conf.IndexRightBetaMemoryOption;
 import org.kie.conf.KnowledgeBaseOption;
-import org.kie.conf.LogicalOverrideOption;
 import org.kie.conf.MBeansOption;
 import org.kie.conf.MaintainTMSOption;
 import org.kie.conf.MaxThreadsOption;
@@ -61,16 +67,6 @@ import org.kie.util.CompositeClassLoader;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * RuleBaseConfiguration
@@ -309,8 +305,6 @@ public class RuleBaseConfiguration
             setIndexPrecedenceOption(StringUtils.isEmpty(value) ? IndexPrecedenceOption.EQUALITY_PRIORITY : IndexPrecedenceOption.determineIndexPrecedence(value));
         } else if ( name.equals( AssertBehaviorOption.PROPERTY_NAME ) ) {
             setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(StringUtils.isEmpty(value) ? "identity" : value));
-        } else if ( name.equals( "drools.executorService" ) ) {
-            setExecutorService(StringUtils.isEmpty(value) ? DefaultExecutorService.class.getName() : value);
         } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
             setConsequenceExceptionHandler(StringUtils.isEmpty(value) ? DefaultConsequenceExceptionHandler.class.getName() : value);
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {

@@ -34,11 +34,10 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemories;
 import org.drools.common.MemoryFactory;
+import org.drools.common.NodeMemories;
 import org.drools.common.ObjectStore;
 import org.drools.common.ObjectTypeConfigurationRegistry;
-import org.drools.common.RuleBasePartitionId;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.AgendaEventListener;
@@ -187,10 +186,6 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
     }
 
     public TimerService getTimerService() {
-        throw new IllegalStateException( ERRORMSG );
-    }
-
-    public PartitionTaskManager getPartitionTaskManager( RuleBasePartitionId partitionId ) {
         throw new IllegalStateException( ERRORMSG );
     }
 

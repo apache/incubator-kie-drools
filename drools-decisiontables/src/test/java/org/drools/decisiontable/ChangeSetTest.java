@@ -11,14 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.drools.agent.impl.FailureDetectingSystemEventListener;
 import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.SystemEventListenerFactory;
 import org.kie.agent.KnowledgeAgent;
 import org.kie.agent.KnowledgeAgentFactory;
 import org.kie.builder.KnowledgeBuilder;
@@ -134,8 +132,6 @@ public class ChangeSetTest {
 
     @Test
     public void testCSVByKnowledgeAgentWithFileReader() throws IOException {
-        FailureDetectingSystemEventListener systemEventListener = new FailureDetectingSystemEventListener();
-        SystemEventListenerFactory.setSystemEventListener(systemEventListener);
 
         try {
             File targetTestFilesDir = new File("target/testFiles");
@@ -144,19 +140,12 @@ public class ChangeSetTest {
             FileUtils.copyURLToFile(getClass().getResource("changeSetTestCSV.xml"), changeSetFile);
 
             KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("csv agent");
-            kagent.setSystemEventListener(systemEventListener);
             kagent.applyChangeSet(ResourceFactory.newFileResource(changeSetFile));
             KnowledgeBase kbase = kagent.getKnowledgeBase();
 
             assertEquals(1, kbase.getKnowledgePackages().size());
             assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
 
-            if (!systemEventListener.isSuccessful()) {
-                for (Throwable throwable : systemEventListener.getExceptionList()) {
-                    throwable.printStackTrace();
-                }
-                fail("The scanner ran into exceptions");
-            }
         } catch(Throwable t) {
             t.printStackTrace();
             fail( t.getMessage() );
