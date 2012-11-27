@@ -19,6 +19,8 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drools.scanner.embedder.MavenProjectLoader.loadMavenProject;
+
 class Aether {
 
     private static final String M2_REPO = System.getProperty( "user.home" ) + "/.m2/repository";
@@ -41,7 +43,7 @@ class Aether {
 
     private List<RemoteRepository> initRepositories() {
         List<RemoteRepository> reps = new ArrayList<RemoteRepository>();
-        reps.add(newCentralRepository());
+        reps.addAll(loadMavenProject().getRemoteProjectRepositories());
         RemoteRepository localRepo = newLocalRepository();
         if (localRepo != null) {
             reps.add(localRepo);
