@@ -23,14 +23,12 @@ import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemories;
 import org.drools.common.MemoryFactory;
+import org.drools.common.NodeMemories;
 import org.drools.common.ObjectStore;
 import org.drools.common.ObjectTypeConfigurationRegistry;
-import org.drools.common.RuleBasePartitionId;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -40,7 +38,6 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.runtime.impl.ExecutionResultImpl;
@@ -57,7 +54,6 @@ import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
 import org.kie.runtime.ExitPoint;
-import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.time.SessionClock;
@@ -112,11 +108,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public ExecutorService getExecutorService() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public FactHandle getFactHandleByIdentity(Object object) {
         // TODO Auto-generated method stub
         return null;
@@ -162,11 +153,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public PartitionTaskManager getPartitionTaskManager(RuleBasePartitionId partitionId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
     public TimerService getTimerService() {
         // TODO Auto-generated method stub
         return null;
@@ -207,11 +193,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void setExecutorService(ExecutorService executor) {
         // TODO Auto-generated method stub
         
     }

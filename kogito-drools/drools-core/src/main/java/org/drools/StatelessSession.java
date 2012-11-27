@@ -83,25 +83,6 @@ public interface StatelessSession extends WorkingMemoryEventManager {
     void execute(Collection collection);
     
     /**
-     * This will assert the object in the background. This is
-     * "send and forget" execution.
-     */
-    void asyncExecute(Object object);
-
-    /**
-     * This will assert the object array (as SEPARATE facts) in the background. This is
-     * "send and forget" execution.
-     */
-    void asyncExecute(Object[] array);
-
-    /**
-     * This will assert the object List (as SEPARATE facts) in the background. This is
-     * "send and forget" execution.
-     */    
-    void asyncExecute(Collection collection);
-    
-    
-    /**
      * Similar to the normal execute method, but this will return
      * "results". 
      */

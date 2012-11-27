@@ -871,18 +871,13 @@ this.leftInput.remove( context,
     public RightTuple createRightTuple(InternalFactHandle handle,
                                        RightTupleSink sink,
                                        PropagationContext context) {
-        if ( !this.concurrentRightTupleMemory ) {
-            if ( context.getActiveWindowTupleList() == null ) {
-                return new RightTuple( handle,
-                                       sink );
-            } else {
-                return new WindowTuple( handle,
-                                        sink,
-                                        context.getActiveWindowTupleList() );
-            }
+        if ( context.getActiveWindowTupleList() == null ) {
+            return new RightTuple( handle,
+                                   sink );
         } else {
-            return new ConcurrentRightTuple( handle,
-                                             sink );
+            return new WindowTuple( handle,
+                                    sink,
+                                    context.getActiveWindowTupleList() );
         }
     }
     

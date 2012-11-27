@@ -16,7 +16,6 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemoryEntryPoint;
-import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.WorkingMemoryEventListener;
@@ -252,38 +251,6 @@ public class ExternalSheetListenerTest {
 
                 @SuppressWarnings("unchecked")
                 public Iterator iterateObjects(ObjectFilter filter) {
-                    return null;
-                }
-
-                public Future asyncInsert(Object object) {
-                    return null;
-                }
-
-                public Future asyncInsert(Object[] list) {
-                    return null;
-                }
-
-                @SuppressWarnings("unchecked")
-                public Future asyncInsert(Collection collection) {
-                    return null;
-                }
-
-                public Future asyncFireAllRules() {
-                    return null;
-                }
-
-                public Future asyncFireAllRules(AgendaFilter agendaFilter) {
-                    return null;
-                }
-
-                public Future asyncUpdate(FactHandle factHandle,
-                                                Object object) {
-
-                    return null;
-                }
-
-                public Future asyncRetract(FactHandle factHandle) {
-                    
                     return null;
                 }
 

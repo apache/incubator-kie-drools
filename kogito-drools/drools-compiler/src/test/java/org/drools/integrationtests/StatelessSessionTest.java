@@ -341,36 +341,6 @@ public class StatelessSessionTest extends CommonTestMethodBase {
 //    }
     
     @Test
-    public void testAsynSingleOjbectcAssert() throws Exception {
-        StatelessSession session = getSession();
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-
-        session.asyncExecute( stilton );
-
-        Thread.sleep( 300 );
-
-        assertEquals( "stilton",
-                      list.get( 0 ) );
-    }
-
-    @Test
-    public void testAsynArrayOjbectcAssert() throws Exception {
-        StatelessSession session = getSession();
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-
-        session.asyncExecute( new Object[]{stilton} );
-
-        Thread.sleep( 100 );
-
-        assertEquals( "stilton",
-                      list.get( 0 ) );
-    }
-
-    @Test
     public void testAsynCollectionOjbectcAssert() throws Exception {
         StatelessSession session = getSession();
 

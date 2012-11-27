@@ -38,6 +38,8 @@ import org.drools.time.SessionPseudoClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
 import org.kie.SystemEventListenerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A PseudoClockScheduler is a scheduler based on a user controlled clock 
@@ -50,6 +52,8 @@ public class PseudoClockScheduler
     Externalizable,
     InternalSchedulerService,
     AcceptsTimerJobFactoryManager {
+    
+    private Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class ); 
 
     private AtomicLong                      timer;
     private PriorityQueue<Callable<Void>>   queue;
@@ -206,7 +210,7 @@ public class PseudoClockScheduler
                 // execute the call
                 ((Callable<Void>) item).call();
             } catch ( Exception e ) {
-                SystemEventListenerFactory.getSystemEventListener().exception( e );
+                logger.error( "Exception running callbacks: ", e );
             }
             // get next head
             synchronized( queue ) {
