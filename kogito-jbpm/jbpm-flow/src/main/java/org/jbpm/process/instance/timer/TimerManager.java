@@ -319,7 +319,11 @@ public class TimerManager {
                 }
     
                 ctx.getTimer().setLastTriggered( new Date( ctx.getKnowledgeRuntime().<SessionClock>getSessionClock().getCurrentTime() ) );
-
+                
+                // if there is no more trigger reset period on timer so its node instance can be removed
+                if (ctx.getTrigger().hasNextFireTime() == null) {
+                    ctx.getTimer().setPeriod(0);
+                }
                 ((InternalProcessRuntime) kruntime.getProcessRuntime())
                 	.getSignalManager().signalEvent( processInstanceId,
                                                      "timerTriggered",
@@ -330,6 +334,7 @@ public class TimerManager {
                 if ( ctx.getTimer().getPeriod() == 0 ) {
                     tm.getTimerMap().remove( ctx.getTimer().getId() );
                 }
+                
             } catch (Throwable e) {
                 logger.error("Error when executing timer job", e);
                 WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) kruntime.getProcessInstance(processInstanceId);
