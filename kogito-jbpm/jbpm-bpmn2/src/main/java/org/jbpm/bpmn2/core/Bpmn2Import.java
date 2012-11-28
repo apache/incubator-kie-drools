@@ -15,8 +15,12 @@
  */
 package org.jbpm.bpmn2.core;
 
-public class Bpmn2Import {
+import java.io.Serializable;
 
+public class Bpmn2Import implements Serializable{
+
+    private static final long serialVersionUID = 6625038042886559671L;
+    
     private String type;
     private String location;
     private String namespace;
