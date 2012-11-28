@@ -8,7 +8,7 @@ public interface KieFileSystem {
     KieFileSystem write(String path, String text);
     KieFileSystem write(String path, Resource resource);
 
-    KieFileSystem delete(String... path);
+    void delete(String... paths);
 
-    byte[] read(String Path);
+    byte[] read(String path);
 }

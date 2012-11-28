@@ -4,13 +4,11 @@ import java.util.List;
 
 public interface KieBuilder {
 
-    List<Problem> build();
+    List<Message> build();
 
-    boolean hasProblems();
+    boolean hasMessages();
 
-    Problems getProblems();
+    Messages getMessages();
 
     KieJar getKieJar();
-
-    KieBuilder add(KieFileSystem kieFileSystem);
 }
