@@ -20,11 +20,13 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.conf.LRUnlinkingOption;
 
+@Ignore
 public class NodeSegmentUnlinkingTest {
     ReteooRuleBase       ruleBase;
     BuildContext         buildContext;
