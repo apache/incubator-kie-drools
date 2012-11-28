@@ -179,7 +179,7 @@ public class CompilerIndependenceTest {
 //            }
 //
 //            public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
-//                System.out.println("KBase was updated");
+//                System.out.println("KieBaseDescr was updated");
 //                synchronized (lock) {
 //                    kbaseUpdated = true;
 //                    lock.notifyAll();

@@ -168,7 +168,7 @@ String drl = converter.compile( objs, templateStream );</programlisting>
         resulting Knowledge Packages.
 
         <programlisting language="java">
-KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+KnowledgeBase kieBaseDescr = KnowledgeBaseFactory.newKnowledgeBase();
 KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 Reader rdr = new StringReader( drl );
 kBuilder.add( ResourceFactory.newReaderResource( rdr ), ResourceType.DRL );
@@ -176,7 +176,7 @@ if( kBuilder.hasErrors() ){
     // ...
     throw new IllegalStateException( "DRL errors" );
 }
-kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );</programlisting>
+kieBaseDescr.addKnowledgePackages( kBuilder.getKnowledgePackages() );</programlisting>
       </section>
 
       <section>
@@ -283,7 +283,7 @@ public class ParamSet {
         <programlisting language="java">
 public class Expander {
 
-    public void expand( KnowledgeBase kBase, InputStream is, Collection&lt;?&gt; act )
+    public void expand( KnowledgeBase kieBaseDescr, InputStream is, Collection&lt;?&gt; act )
         throws Exception {
         ObjectDataCompiler converter = new ObjectDataCompiler();
         String drl = converter.compile( act, is );
@@ -297,7 +297,7 @@ public class Expander {
             }
             throw new IllegalStateException( "DRL errors" );
         }
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        kieBaseDescr.addKnowledgePackages( kBuilder.getKnowledgePackages() );
     }
 }</programlisting>
 
@@ -313,12 +313,12 @@ Collection&lt;ParamSet&gt; cfl = new ArrayList&lt;ParamSet&gt;();
 cfl.add( new ParamSet( "weight",  10,  99, EnumSet.of( ItemCode.LOCK, ItemCode.STOCK ) ) );
 cfl.add( new ParamSet( "price",   10,  50, EnumSet.of( ItemCode.BARREL ) ) );
 
-KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+KnowledgeBase kieBaseDescr = KnowledgeBaseFactory.newKnowledgeBase();
 Expander ex = new Expander();
 InputStream dis = new FileInputStream( new File( "rangeTemp.drl" ) );
-ex.expand( kBase, dis, cfl );
+ex.expand( kieBaseDescr, dis, cfl );
         
-StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
+StatefulKnowledgeSession session = kieBaseDescr.newStatefulKnowledgeSession();
 session.insert( new Item( "A", 130,  42, ItemCode.LOCK ) );
 session.insert( new Item( "B",  44, 100, ItemCode.STOCK ) );
 session.insert( new Item( "C", 123, 180, ItemCode.BARREL ) );

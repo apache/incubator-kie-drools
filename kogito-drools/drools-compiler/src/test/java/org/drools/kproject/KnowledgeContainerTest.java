@@ -3,6 +3,9 @@ package org.drools.kproject;
 import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.core.util.FileManager;
 import org.junit.Test;
+import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionDescr;
 import org.kie.builder.KnowledgeContainer;
 import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.conf.AssertBehaviorOption;
@@ -90,17 +93,17 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
             fileManager.write(fileManager.newFile("src/kbases/KBase1/" + file), createDRL(rule));
         }
 
-        KProject kproj = new KProjectImpl();
-        KBase kBase1 = kproj.newKBase("KBase1")
+        KieProject kproj = new KieProjectImpl();
+        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( "KSession1" )
+        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KProjectImpl)kproj).toXML() );
+        fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KieProjectImpl)kproj).toXML() );
 
         return kContainer.buildKJar(fileManager.getRootDirectory(), fileManager.getRootDirectory(), kjarName);
     }

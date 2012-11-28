@@ -6,10 +6,10 @@ import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.core.util.FileManager;
 import org.drools.kproject.Folder;
-import org.drools.kproject.KBase;
-import org.drools.kproject.KProject;
-import org.drools.kproject.KProjectImpl;
-import org.drools.kproject.KSession;
+import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieProject;
+import org.drools.kproject.KieProjectImpl;
+import org.kie.builder.KieSessionDescr;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.junit.After;
 import org.junit.Before;
@@ -55,7 +55,7 @@ public class KnowledgeRepositoryScannerTest {
         File kJar1 = createKJar(kContainer, "test1.jar", "rule1", "rule2");
         kContainer.deploy(kJar1);
 
-        Repository repository = new Repository();
+        MavenRepository repository = new MavenRepository();
         repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar1, createKPom());
 
         // -1 means no automatic scheduled scanning
@@ -101,7 +101,7 @@ public class KnowledgeRepositoryScannerTest {
             fail(kContainer.getKBaseUnit("KBase1").getErrors().toString());
         }
 
-        Repository repository = new Repository();
+        MavenRepository repository = new MavenRepository();
         repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar1, createKPom());
 
         // -1 means no automatic scheduled scanning
@@ -166,17 +166,17 @@ public class KnowledgeRepositoryScannerTest {
             fileManager.write(fileManager.newFile("src/kbases/KBase1/" + file), createDRL(rule));
         }
 
-        KProject kproj = new KProjectImpl();
-        KBase kBase1 = kproj.newKBase("KBase1")
+        KieProject kproj = new KieProjectImpl();
+        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( "KSession1" )
+        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KProjectImpl)kproj).toXML() );
+        fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), kproj.toXML());
 
         return kContainer.buildKJar(fileManager.getRootDirectory(), fileManager.getRootDirectory(), kjarName);
     }
@@ -197,7 +197,7 @@ public class KnowledgeRepositoryScannerTest {
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( results.length, list.size() );
+        assertEquals(results.length, list.size());
         for (Object result : results) {
             assertTrue( list.contains( result ) );
         }
@@ -206,12 +206,12 @@ public class KnowledgeRepositoryScannerTest {
     private File createKJarWithClass(String kjarName, int value, int factor) throws IOException {
         MemoryFileSystem mfs = new MemoryFileSystem();
 
-        KProject kproj = new KProjectImpl();
-        KBase kBase1 = kproj.newKBase("KBase1")
+        KieProject kproj = new KieProjectImpl();
+        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( "KSession1" )
+        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
@@ -219,11 +219,11 @@ public class KnowledgeRepositoryScannerTest {
         Folder metaInf = mfs.getFolder( "META-INF" );
         metaInf.create();
         org.drools.kproject.File kprojectFile = metaInf.getFile( "kproject.xml" );
-        kprojectFile.create(new ByteArrayInputStream(((KProjectImpl) kproj).toXML().getBytes()));
+        kprojectFile.create(new ByteArrayInputStream(kproj.toXML().getBytes()));
 
-        String fldKB1 = kBase1.getName();
+        String fldKB1 = kieBaseDescr1.getName();
         mfs.getFolder( fldKB1 ).create();
-        mfs.getFile( fldKB1 + "/rule1.drl" ).create( new ByteArrayInputStream( createDRLForJavaSource(value).getBytes() ) );
+        mfs.getFile( fldKB1 + "/rule1.drl" ).create(new ByteArrayInputStream(createDRLForJavaSource(value).getBytes()));
 
         createClass(mfs, factor);
 
@@ -233,7 +233,7 @@ public class KnowledgeRepositoryScannerTest {
     private void createClass(MemoryFileSystem mfs, int factor) {
         try {
             mfs.getFolder( "org/kie/test" ).create();
-            mfs.getFile( "org/kie/test/Bean.java" ).create( new ByteArrayInputStream( createJavaSource(factor).getBytes() ) );
+            mfs.getFile( "org/kie/test/Bean.java" ).create(new ByteArrayInputStream(createJavaSource(factor).getBytes()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

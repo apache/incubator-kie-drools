@@ -8,6 +8,9 @@ import org.drools.kproject.memory.MemoryFile;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.junit.After;
 import org.junit.Before;
+import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionDescr;
 import org.kie.KnowledgeBase;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -43,46 +46,46 @@ public class AbstractKnowledgeTest {
                                   boolean createJar) throws IOException,
             ClassNotFoundException,
             InterruptedException {
-        KProject kproj = new KProjectImpl();
+        KieProject kproj = new KieProjectImpl();
 
         kproj.setGroupArtifactVersion( new GroupArtifactVersion( "org.test", namespace, "0.1" ) );
 
         kproj.setKProjectPath( "src/main/resources/" );
         kproj.setKBasesPath( "src/kbases" );
 
-        KBase kBase1 = kproj.newKBase( namespace + ".KBase1" )
+        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr(namespace + ".KBase1")
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( namespace + ".KSession1" )
+        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr(namespace + ".KSession1")
                 .setType( "stateless" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        KSession ksession2 = kBase1.newKSession( namespace + ".KSession2" )
+        KieSessionDescr ksession2 = kieBaseDescr1.newKieSessionDescr(namespace + ".KSession2")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KBase kBase2 = kproj.newKBase( namespace + ".KBase2" )
+        KieBaseDescr kieBaseDescr2 = kproj.newKieBaseDescr(namespace + ".KBase2")
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KSession ksession3 = kBase2.newKSession( namespace + ".KSession3" )
+        KieSessionDescr ksession3 = kieBaseDescr2.newKieSessionDescr(namespace + ".KSession3")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KBase kBase3 = kproj.newKBase( namespace + ".KBase3" )
-                .addInclude( kBase1.getName() )
-                .addInclude( kBase2.getName() )
+        KieBaseDescr kieBaseDescr3 = kproj.newKieBaseDescr(namespace + ".KBase3")
+                .addInclude( kieBaseDescr1.getName() )
+                .addInclude( kieBaseDescr2.getName() )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KSession ksession4 = kBase3.newKSession( namespace + ".KSession4" )
+        KieSessionDescr ksession4 = kieBaseDescr3.newKieSessionDescr(namespace + ".KSession4")
                 .setType( "stateless" )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
@@ -95,7 +98,7 @@ public class AbstractKnowledgeTest {
         fle2.create( new ByteArrayInputStream( generateBeansXML( kproj ).getBytes() ) );
 
         fle2 = fld2.getFile( "kproject.xml" );
-        fle2.create( new ByteArrayInputStream( ((KProjectImpl)kproj).toXML().getBytes() ) );
+        fle2.create( new ByteArrayInputStream( ((KieProjectImpl)kproj).toXML().getBytes() ) );
 
         String kBase1R1 = getRule( namespace + ".test1", "rule1" );
         String kBase1R2 = getRule( namespace + ".test1", "rule2" );
@@ -103,8 +106,8 @@ public class AbstractKnowledgeTest {
         String kbase2R1 = getRule( namespace + ".test2", "rule1" );
         String kbase2R2 = getRule( namespace + ".test2", "rule2" );
 
-        String fldKB1 = kproj.getKBasesPath() + "/" + kBase1.getName();
-        String fldKB2 = kproj.getKBasesPath() + "/" + kBase2.getName();
+        String fldKB1 = kproj.getKBasesPath() + "/" + kieBaseDescr1.getName();
+        String fldKB2 = kproj.getKBasesPath() + "/" + kieBaseDescr2.getName();
 
         mfs.getFolder( fldKB1 ).create();
         mfs.getFolder( fldKB2 ).create();
@@ -147,13 +150,13 @@ public class AbstractKnowledgeTest {
         return s;
     }
 
-    public String generateBeansXML(KProject kproject) {
+    public String generateBeansXML(KieProject kproject) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n" +
                 "</beans>";
     }
 
-    public String generateKProjectTestClass(KProject kproject,
+    public String generateKProjectTestClass(KieProject kproject,
                                             String namespace) {
 
         return "package org.drools.cdi.test;\n" +
@@ -205,11 +208,11 @@ public class AbstractKnowledgeTest {
                 "}\n";
     }
 
-    public List<String> compile(KProject kproj,
+    public List<String> compile(KieProject kproj,
                                 MemoryFileSystem srcMfs,
                                 MemoryFileSystem trgMfs,
                                 List<String> classes) {
-        for ( KBase kbase : kproj.getKBases().values() ) {
+        for ( KieBaseDescr kbase : kproj.getKieBaseDescrs().values() ) {
             Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getName() );
             Folder trgFolder = trgMfs.getFolder(kbase.getName());
 
@@ -248,7 +251,7 @@ public class AbstractKnowledgeTest {
                            Folder srcFolder,
                            MemoryFileSystem trgMfs,
                            Folder trgFolder,
-                           KProject kproj) {
+                           KieProject kproj) {
         if ( !trgFolder.exists() ) {
             trgMfs.getFolder( trgFolder.getPath() ).create();
         }

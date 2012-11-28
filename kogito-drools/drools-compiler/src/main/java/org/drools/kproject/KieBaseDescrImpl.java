@@ -6,6 +6,9 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.Predicate;
+import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionDescr;
 import org.kie.builder.ResourceType;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -25,9 +28,9 @@ import java.util.zip.ZipFile;
 
 import static org.drools.core.util.IoUtils.recursiveListFile;
 
-public class KBaseImpl
+public class KieBaseDescrImpl
         implements
-        KBase {
+        KieBaseDescr {
     private String                           name;
     
     private Set<String>                      includes;
@@ -38,45 +41,45 @@ public class KBaseImpl
 
     private EventProcessingOption            eventProcessingMode;
 
-    private Map<String, KSession>            kSessions;
+    private Map<String, KieSessionDescr>            kSessions;
 
-    private KProjectImpl                     kProject;
+    private KieProjectImpl kProject;
 
     private transient PropertyChangeListener listener;
 
-    private KBaseImpl() {
+    private KieBaseDescrImpl() {
         this.includes = new HashSet<String>();
     }
 
-    public KBaseImpl(KProjectImpl kProject, String name) {
+    public KieBaseDescrImpl(KieProjectImpl kProject, String name) {
         this.kProject = kProject;
         this.includes = new HashSet<String>();
         this.name = name;
         this.kSessions = Collections.emptyMap();
     }
 
-    public KProjectImpl getKProject() {
+    public KieProjectImpl getKProject() {
         return kProject;
     }
     
-    public void setKProject(KProject kProject) {
-        this.kProject = (KProjectImpl) kProject;
+    public void setKProject(KieProject kieProject) {
+        this.kProject = (KieProjectImpl) kieProject;
     }    
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#getKSessions()
+     * @see org.kie.kproject.KieBaseDescr#getKieSessionDescrs()
      */
-    public Map<String, KSession> getKSessions() {
+    public Map<String, KieSessionDescr> getKieSessionDescrs() {
         return Collections.unmodifiableMap( kSessions );
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#setKSessions(java.util.Map)
+     * @see org.kie.kproject.KieBaseDescr#setKSessions(java.util.Map)
      */
-    private void setKSessions(Map<String, KSession> kSessions) {
+    private void setKSessions(Map<String, KieSessionDescr> kSessions) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "kSessions", this.kSessions, kSessions ) );
-            for ( KSession ksession : kSessions.values() ) {
+            for ( KieSessionDescr ksession : kSessions.values() ) {
                 // make sure the listener is set for each ksession
                 ksession.setListener( listener );
             }
@@ -85,23 +88,23 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#addKSession(org.kie.kproject.KSessionImpl)
+     * @see org.kie.kproject.KieBaseDescr#addKSession(org.kie.kproject.KieSessionDescrImpl)
      */
-    public KSession newKSession(String name) {
-        KSession kSession = new KSessionImpl( this, name );
-        Map<String, KSession> newMap = new HashMap<String, KSession>();
+    public KieSessionDescr newKieSessionDescr(String name) {
+        KieSessionDescr kieSessionDescr = new KieSessionDescrImpl( this, name );
+        Map<String, KieSessionDescr> newMap = new HashMap<String, KieSessionDescr>();
         newMap.putAll( this.kSessions );
-        newMap.put( kSession.getName(), kSession );
+        newMap.put( kieSessionDescr.getName(), kieSessionDescr);
         setKSessions( newMap );
 
-        return kSession;
+        return kieSessionDescr;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#removeKSession(org.kie.kproject.KSessionImpl)
+     * @see org.kie.kproject.KieBaseDescr#removeKieSessionDescr(org.kie.kproject.KieSessionDescrImpl)
      */
-    public KBase removeKSession(String qName) {
-        Map<String, KSession> newMap = new HashMap<String, KSession>();
+    public KieBaseDescr removeKieSessionDescr(String qName) {
+        Map<String, KieSessionDescr> newMap = new HashMap<String, KieSessionDescr>();
         newMap.putAll( this.kSessions );
         newMap.remove( qName );
         setKSessions( newMap );
@@ -110,26 +113,26 @@ public class KBaseImpl
 
     public void moveKSession(String oldQName,
                              String newQName) {
-        Map<String, KSession> newMap = new HashMap<String, KSession>();
+        Map<String, KieSessionDescr> newMap = new HashMap<String, KieSessionDescr>();
         newMap.putAll( this.kSessions );
-        KSession kSession = newMap.remove( oldQName );
-        newMap.put( newQName, kSession );
+        KieSessionDescr kieSessionDescr = newMap.remove( oldQName );
+        newMap.put( newQName, kieSessionDescr);
         setKSessions( newMap );
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#getListener()
+     * @see org.kie.kproject.KieBaseDescr#getListener()
      */
     public PropertyChangeListener getListener() {
         return listener;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#setListener(java.beans.PropertyChangeListener)
+     * @see org.kie.kproject.KieBaseDescr#setListener(java.beans.PropertyChangeListener)
      */
-    public KBase setListener(PropertyChangeListener listener) {
+    public KieBaseDescr setListener(PropertyChangeListener listener) {
         this.listener = listener;
-        for ( KSession ksession : kSessions.values() ) {
+        for ( KieSessionDescr ksession : kSessions.values() ) {
             // make sure the listener is set for each ksession
             ksession.setListener( listener );
         }
@@ -137,16 +140,16 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#getName()
+     * @see org.kie.kproject.KieBaseDescr#getName()
      */
     public String getName() {
         return name;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#setName(java.lang.String)
+     * @see org.kie.kproject.KieBaseDescr#setName(java.lang.String)
      */
-    public KBase setName(String name) {
+    public KieBaseDescr setName(String name) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "name", this.name, name ) );
         }
@@ -158,27 +161,27 @@ public class KBaseImpl
         return Collections.unmodifiableSet( includes );
     }
 
-    public KBase addInclude(String kBaseQName) {
+    public KieBaseDescr addInclude(String kBaseQName) {
         this.includes.add( kBaseQName );
         return this;
     }
     
-    public KBase removeInclude(String kBaseQName) {
+    public KieBaseDescr removeInclude(String kBaseQName) {
         this.includes.remove( kBaseQName );
         return this;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#getEqualsBehavior()
+     * @see org.kie.kproject.KieBaseDescr#getEqualsBehavior()
      */
     public AssertBehaviorOption getEqualsBehavior() {
         return equalsBehavior;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#setEqualsBehavior(org.kie.conf.AssertBehaviorOption)
+     * @see org.kie.kproject.KieBaseDescr#setEqualsBehavior(org.kie.conf.AssertBehaviorOption)
      */
-    public KBase setEqualsBehavior(AssertBehaviorOption equalsBehaviour) {
+    public KieBaseDescr setEqualsBehavior(AssertBehaviorOption equalsBehaviour) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "equalsBehavior", this.equalsBehavior, equalsBehavior ) );
         }
@@ -187,16 +190,16 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#getEventProcessingMode()
+     * @see org.kie.kproject.KieBaseDescr#getEventProcessingMode()
      */
     public EventProcessingOption getEventProcessingMode() {
         return eventProcessingMode;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#setEventProcessingMode(org.kie.conf.EventProcessingOption)
+     * @see org.kie.kproject.KieBaseDescr#setEventProcessingMode(org.kie.conf.EventProcessingOption)
      */
-    public KBase setEventProcessingMode(EventProcessingOption eventProcessingMode) {
+    public KieBaseDescr setEventProcessingMode(EventProcessingOption eventProcessingMode) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "eventProcessingMode", this.eventProcessingMode, eventProcessingMode ) );
         }
@@ -205,16 +208,16 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#getAnnotations()
+     * @see org.kie.kproject.KieBaseDescr#getAnnotations()
      */
     public List<String> getAnnotations() {
         return annotations;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#setAnnotations(java.util.List)
+     * @see org.kie.kproject.KieBaseDescr#setAnnotations(java.util.List)
      */
-    public KBase setAnnotations(List<String> annotations) {
+    public KieBaseDescr setAnnotations(List<String> annotations) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "annotations", this.annotations, annotations ) );
         }
@@ -223,11 +226,11 @@ public class KBaseImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KBase#toString()
+     * @see org.kie.kproject.KieBaseDescr#toString()
      */
     @Override
     public String toString() {
-        return "KBase [name=" + name + ", annotations=" + annotations + ", equalsBehaviour=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", ksessions=" + kSessions + "]";
+        return "KieBaseDescr [name=" + name + ", annotations=" + annotations + ", equalsBehaviour=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", ksessions=" + kSessions + "]";
     }
 
     public static List<String> getFiles(String kBaseName, ZipFile zipFile) {
@@ -259,7 +262,7 @@ public class KBaseImpl
         }
 
         if (kBaseRoot == null) {
-            throw new RuntimeException("Unable to find KBase " + kBaseName + " in " + root);
+            throw new RuntimeException("Unable to find KieBaseDescr " + kBaseName + " in " + root);
         }
 
         return recursiveListFile(kBaseRoot, prefix, new Predicate<java.io.File>() {
@@ -278,11 +281,11 @@ public class KBaseImpl
     public static class KBaseConverter extends AbstractXStreamConverter {
 
         public KBaseConverter() {
-            super(KBaseImpl.class);
+            super(KieBaseDescrImpl.class);
         }
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-            KBaseImpl kBase = (KBaseImpl) value;
+            KieBaseDescrImpl kBase = (KieBaseDescrImpl) value;
             writer.addAttribute("name", kBase.getName());
             if (kBase.getEventProcessingMode() != null) {
                 writer.addAttribute("eventProcessingMode", kBase.getEventProcessingMode().getMode());
@@ -292,11 +295,11 @@ public class KBaseImpl
             }
             // writeList(writer, "files", "file", kBase.getFiles());
             writeList(writer, "includes", "include", kBase.getIncludes());
-            writeObjectList(writer, context, "ksessions", "ksession", kBase.getKSessions().values());
+            writeObjectList(writer, context, "ksessions", "ksession", kBase.getKieSessionDescrs().values());
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
-            final KBaseImpl kBase = new KBaseImpl();
+            final KieBaseDescrImpl kBase = new KieBaseDescrImpl();
             kBase.setName(reader.getAttribute("name"));
 
             String eventMode = reader.getAttribute("eventProcessingMode");
@@ -311,8 +314,8 @@ public class KBaseImpl
             readNodes(reader, new AbstractXStreamConverter.NodeReader() {
                 public void onNode(HierarchicalStreamReader reader, String name, String value) {
                     if ("ksessions".equals(name)) {
-                        Map<String, KSession> kSessions = new HashMap<String, KSession>();
-                        for (KSessionImpl kSession : readObjectList(reader, context, KSessionImpl.class)) {
+                        Map<String, KieSessionDescr> kSessions = new HashMap<String, KieSessionDescr>();
+                        for (KieSessionDescrImpl kSession : readObjectList(reader, context, KieSessionDescrImpl.class)) {
                             kSession.setKBase(kBase);
                             kSessions.put( kSession.getName(), kSession );
                         }

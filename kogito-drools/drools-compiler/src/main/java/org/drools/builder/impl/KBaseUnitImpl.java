@@ -1,8 +1,7 @@
 package org.drools.builder.impl;
 
-import org.drools.kproject.KBase;
-import org.drools.kproject.KBaseImpl;
-import org.drools.kproject.KSession;
+import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieSessionDescr;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
@@ -32,7 +31,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.drools.kproject.KBaseImpl.getFiles;
+import static org.drools.kproject.KieBaseDescrImpl.getFiles;
 import static org.drools.builder.impl.KnowledgeContainerImpl.KPROJECT_JAR_PATH;
 
 public class KBaseUnitImpl implements KBaseUnit {
@@ -41,21 +40,21 @@ public class KBaseUnitImpl implements KBaseUnit {
 
     private final String url;
 
-    private final KBase kBase;
+    private final KieBaseDescr kieBaseDescr;
     private final ClassLoader classLoader;
 
     private KnowledgeBuilder kbuilder;
     private KnowledgeBase knowledgeBase;
 
-    private List<KBase> includes = null;
+    private List<KieBaseDescr> includes = null;
 
-    public KBaseUnitImpl(URL url, KBase kBase) {
-        this(fixURL(url), kBase, new URLClassLoader( new URL[] { url }));
+    public KBaseUnitImpl(URL url, KieBaseDescr kieBaseDescr) {
+        this(fixURL(url), kieBaseDescr, new URLClassLoader( new URL[] { url }));
     }
 
-    public KBaseUnitImpl(String url, KBase kBase, ClassLoader classLoader) {
+    public KBaseUnitImpl(String url, KieBaseDescr kieBaseDescr, ClassLoader classLoader) {
         this.url = url;
-        this.kBase = kBase;
+        this.kieBaseDescr = kieBaseDescr;
         this.classLoader = classLoader;
     }
 
@@ -73,11 +72,11 @@ public class KBaseUnitImpl implements KBaseUnit {
         return knowledgeBase;
     }
 
-    void addInclude(KBase kBase) {
+    void addInclude(KieBaseDescr kieBaseDescr) {
         if (includes == null) {
-            includes = new ArrayList<KBase>();
+            includes = new ArrayList<KieBaseDescr>();
         }
-        includes.add(kBase);
+        includes.add(kieBaseDescr);
     }
 
     boolean hasIncludes() {
@@ -85,7 +84,7 @@ public class KBaseUnitImpl implements KBaseUnit {
     }
 
     public String getKBaseName() {
-        return kBase.getName();
+        return kieBaseDescr.getName();
     }
 
     public boolean hasErrors() {
@@ -112,9 +111,9 @@ public class KBaseUnitImpl implements KBaseUnit {
         KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kConf);
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
-        buildKBaseFiles(ckbuilder, kBase);
+        buildKBaseFiles(ckbuilder, kieBaseDescr);
         if (includes != null) {
-            for (KBase include : includes) {
+            for (KieBaseDescr include : includes) {
                 buildKBaseFiles(ckbuilder, include);
             }
         }
@@ -122,7 +121,7 @@ public class KBaseUnitImpl implements KBaseUnit {
         return kbuilder;
     }
 
-    private void buildKBaseFiles(CompositeKnowledgeBuilder ckbuilder, KBase kBase) {
+    private void buildKBaseFiles(CompositeKnowledgeBuilder ckbuilder, KieBaseDescr kieBaseDescr) {
         String rootPath = url;
         if ( rootPath.lastIndexOf( ':' ) > 0 ) {
             rootPath = url.substring( rootPath.lastIndexOf( ':' ) + 1 );
@@ -131,18 +130,18 @@ public class KBaseUnitImpl implements KBaseUnit {
         if ( url.endsWith( ".jar" ) ) {
             File actualZipFile = new File( rootPath );
             if ( !actualZipFile.exists() ) {
-                log.error( "Unable to build KBase:" + kBase.getName() + " as jarPath cannot be found\n" + rootPath );
+                log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jarPath cannot be found\n" + rootPath );
             }
 
             ZipFile zipFile = null;
             try {
                 zipFile = new ZipFile( actualZipFile );
             } catch ( Exception e ) {
-                log.error( "Unable to build KBase:" + kBase.getName() + " as jar cannot be opened\n" + e.getMessage() );
+                log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jar cannot be opened\n" + e.getMessage() );
             }
 
             try {
-                for ( String file : getFiles(kBase.getName(), zipFile) ) {
+                for ( String file : getFiles(kieBaseDescr.getName(), zipFile) ) {
                     ZipEntry zipEntry = zipFile.getEntry( file );
                     ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.determineResourceType( file ) );
                 }
@@ -152,38 +151,38 @@ public class KBaseUnitImpl implements KBaseUnit {
                 } catch ( IOException e1 ) {
 
                 }
-                log.error( "Unable to build KBase:" + kBase.getName() + " as jar cannot be read\n" + e.getMessage() );
+                log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jar cannot be read\n" + e.getMessage() );
             }
         } else {
             try {
-                for ( String file : getFiles(kBase.getName(), new File(rootPath)) ) {
+                for ( String file : getFiles(kieBaseDescr.getName(), new File(rootPath)) ) {
                     ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ),ResourceType.determineResourceType( file ) );
                 }
             } catch ( Exception e) {
-                log.error( "Unable to build KBase:" + kBase.getName() + "\n" + e.getMessage() );
+                log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + "\n" + e.getMessage() );
             }
         }
     }
 
-    private KSession getKSession(String ksessionName) {
-        KSession kSession = kBase.getKSessions().get(ksessionName);
-        if (kSession == null) {
+    private KieSessionDescr getKSession(String ksessionName) {
+        KieSessionDescr kieSessionDescr = kieBaseDescr.getKieSessionDescrs().get(ksessionName);
+        if (kieSessionDescr == null) {
             throw new RuntimeException("Unknown Knowledge Session: " + ksessionName + " in Knowledge Base: " + getKBaseName());
         }
-        return kSession;
+        return kieSessionDescr;
     }
 
     private KnowledgeBaseConfiguration getKnowledgeBaseConfiguration(Properties properties, ClassLoader... classLoaders) {
         KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(properties, classLoader);
-        kbConf.setOption(kBase.getEqualsBehavior());
-        kbConf.setOption(kBase.getEventProcessingMode());
+        kbConf.setOption(kieBaseDescr.getEqualsBehavior());
+        kbConf.setOption(kieBaseDescr.getEventProcessingMode());
         return kbConf;
     }
 
     private KnowledgeSessionConfiguration getKnowledgeSessionConfiguration(String ksessionName) {
-        KSession kSession = getKSession(ksessionName);
+        KieSessionDescr kieSessionDescr = getKSession(ksessionName);
         KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksConf.setOption(kSession.getClockType());
+        ksConf.setOption(kieSessionDescr.getClockType());
         return ksConf;
     }
 
@@ -223,7 +222,7 @@ public class KBaseUnitImpl implements KBaseUnit {
             throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8", e );
         }
 
-        log.debug( "KProject URL Type + URL: " + urlType + ":" + urlPath );
+        log.debug( "KieProject URL Type + URL: " + urlType + ":" + urlPath );
 
         return urlPath;
     }

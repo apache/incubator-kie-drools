@@ -91,7 +91,7 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
 
     private Collection<Artifact> scanForUpdates(Collection<DependencyDescriptor> dependencies) {
         List<Artifact> newArtifacts = new ArrayList<Artifact>();
-        Repository repository = new Repository();
+        MavenRepository repository = new MavenRepository();
         for (DependencyDescriptor dependency : dependencies) {
             Artifact newArtifact = repository.resolveArtifact(dependency.toResolvableString());
             DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
@@ -118,7 +118,7 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
     }
 
     private Collection<DependencyDescriptor> getAllDependecies() {
-        Repository repository = new Repository();
+        MavenRepository repository = new MavenRepository();
         Set<DependencyDescriptor> dependencies = new HashSet<DependencyDescriptor>();
         for (DependencyDescriptor dep : pomParser.getPomDirectDependencies()) {
             dependencies.addAll(repository.getArtifactDependecies(dep.toString()));
@@ -137,7 +137,7 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
     }
 
     private List<Artifact> resolveArtifacts(Collection<DependencyDescriptor> dependencies) {
-        Repository repository = new Repository();
+        MavenRepository repository = new MavenRepository();
         List<Artifact> artifacts = new ArrayList<Artifact>();
         for (DependencyDescriptor dep : dependencies) {
             Artifact artifact = repository.resolveArtifact(dep.toString());

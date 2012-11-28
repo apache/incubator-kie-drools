@@ -1,8 +1,5 @@
 package org.drools.kproject;
 
-import org.drools.commons.jci.compilers.CompilationResult;
-import org.drools.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.kproject.memory.MemoryFile;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.drools.kproject.memory.MemorytURLStreamHandler;
@@ -15,6 +12,9 @@ import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.Test;
+import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionDescr;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 
@@ -171,14 +171,14 @@ public class KProjectTest extends AbstractKnowledgeTest {
         assertTrue( list.contains( jarName + ".test2:rule2" ) );
     }
 
-    public void populateClasses(KProject kproject,
+    public void populateClasses(KieProject kproject,
                                 List<String> classes) {
-        for ( KBase kBase : kproject.getKBases().values() ) {
-            classes.add(kBase.getName() + "Producer.java");
-            classes.add(kBase.getName() + ".java" );
-            for ( KSession kSession : kBase.getKSessions().values() ) {
-                classes.add( kSession.getName() + "Producer.java" );
-                classes.add( kSession.getName() + ".java" );
+        for ( KieBaseDescr kieBaseDescr : kproject.getKieBaseDescrs().values() ) {
+            classes.add(kieBaseDescr.getName() + "Producer.java");
+            classes.add(kieBaseDescr.getName() + ".java" );
+            for ( KieSessionDescr kieSessionDescr : kieBaseDescr.getKieSessionDescrs().values() ) {
+                classes.add( kieSessionDescr.getName() + "Producer.java" );
+                classes.add( kieSessionDescr.getName() + ".java" );
             }
         }
     }

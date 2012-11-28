@@ -1,6 +1,8 @@
 package org.drools.kproject;
 
-public class GroupArtifactVersion {
+import org.kie.builder.GAV;
+
+public class GroupArtifactVersion implements GAV {
     private String groupId;
     private String artifactId;
     private String version;                

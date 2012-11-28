@@ -5,6 +5,8 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
+import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieSessionDescr;
 import org.kie.runtime.conf.ClockTypeOption;
 
 import java.beans.PropertyChangeEvent;
@@ -12,9 +14,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KSessionImpl
+public class KieSessionDescrImpl
         implements
-        KSession {
+        KieSessionDescr {
     private String                           name;
 
     private String                           type;
@@ -22,52 +24,52 @@ public class KSessionImpl
 
     private List<String>                     annotations;
 
-    private KBaseImpl                        kBase;
+    private KieBaseDescrImpl kBase;
     
     private transient PropertyChangeListener listener;
 
-    private KSessionImpl() { }
+    private KieSessionDescrImpl() { }
 
-    public KSessionImpl(KBaseImpl kBase, String name) {
+    public KieSessionDescrImpl(KieBaseDescrImpl kBase, String name) {
         this.kBase = kBase;
         this.name = name;
         this.annotations = new ArrayList<String>();
     }
     
-    public KBaseImpl getKBase() {
+    public KieBaseDescrImpl getKBase() {
         return kBase;
     }
     
-    public void setKBase(KBase kBase) {
-        this.kBase = ( KBaseImpl ) kBase;
+    public void setKBase(KieBaseDescr kieBaseDescr) {
+        this.kBase = (KieBaseDescrImpl) kieBaseDescr;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#getListener()
+     * @see org.kie.kproject.KieSessionDescr#getListener()
      */
     public PropertyChangeListener getListener() {
         return listener;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#setListener(java.beans.PropertyChangeListener)
+     * @see org.kie.kproject.KieSessionDescr#setListener(java.beans.PropertyChangeListener)
      */
-    public KSession setListener(PropertyChangeListener listener) {
+    public KieSessionDescr setListener(PropertyChangeListener listener) {
         this.listener = listener;
         return this;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#getName()
+     * @see org.kie.kproject.KieSessionDescr#getName()
      */
     public String getName() {
         return name;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#setName(java.lang.String)
+     * @see org.kie.kproject.KieSessionDescr#setName(java.lang.String)
      */
-    public KSession setName(String name) {
+    public KieSessionDescr setName(String name) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "name", this.name, name ) );
         }
@@ -76,16 +78,16 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#getType()
+     * @see org.kie.kproject.KieSessionDescr#getType()
      */
     public String getType() {
         return type;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#setType(java.lang.String)
+     * @see org.kie.kproject.KieSessionDescr#setType(java.lang.String)
      */
-    public KSession setType(String type) {
+    public KieSessionDescr setType(String type) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "type", this.type, type ) );
         }
@@ -94,16 +96,16 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#getClockType()
+     * @see org.kie.kproject.KieSessionDescr#getClockType()
      */
     public ClockTypeOption getClockType() {
         return clockType;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#setClockType(org.kie.runtime.conf.ClockTypeOption)
+     * @see org.kie.kproject.KieSessionDescr#setClockType(org.kie.runtime.conf.ClockTypeOption)
      */
-    public KSession setClockType(ClockTypeOption clockType) {
+    public KieSessionDescr setClockType(ClockTypeOption clockType) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "clockType", this.clockType, clockType ) );
         }
@@ -112,16 +114,16 @@ public class KSessionImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#getAnnotations()
+     * @see org.kie.kproject.KieSessionDescr#getAnnotations()
      */
     public List<String> getAnnotations() {
         return annotations;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KSession#setAnnotations(java.util.List)
+     * @see org.kie.kproject.KieSessionDescr#setAnnotations(java.util.List)
      */
-    public KSession setAnnotations(List<String> annotations) {
+    public KieSessionDescr setAnnotations(List<String> annotations) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "annotations", this.annotations, annotations ) );
         }
@@ -131,17 +133,17 @@ public class KSessionImpl
 
     @Override
     public String toString() {
-        return "KSession [name=" + name + ", clockType=" + clockType + ", annotations=" + annotations + "]";
+        return "KieSessionDescr [name=" + name + ", clockType=" + clockType + ", annotations=" + annotations + "]";
     }
 
     public static class KSessionConverter extends AbstractXStreamConverter {
 
         public KSessionConverter() {
-            super(KSessionImpl.class);
+            super(KieSessionDescrImpl.class);
         }
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-            KSessionImpl kSession = (KSessionImpl) value;
+            KieSessionDescrImpl kSession = (KieSessionDescrImpl) value;
             writer.addAttribute("name", kSession.getName());
             writer.addAttribute("type", kSession.getType());
             if (kSession.getClockType() != null) {
@@ -150,7 +152,7 @@ public class KSessionImpl
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-            KSessionImpl kSession = new KSessionImpl();
+            KieSessionDescrImpl kSession = new KieSessionDescrImpl();
             kSession.setName(reader.getAttribute("name"));
             kSession.setType(reader.getAttribute("type"));
 
