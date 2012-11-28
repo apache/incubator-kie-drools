@@ -4,7 +4,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.drools.builder.impl.KnowledgeContainerImpl;
-import org.drools.kproject.KProjectImpl;
+import org.drools.kproject.KieProjectImpl;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -50,12 +50,12 @@ public class KProjectMojo extends AbstractMojo {
             return;
         }
 
-        KProjectImpl kproj = new KProjectImpl();
+        KieProjectImpl kproj = new KieProjectImpl();
 
         for (File kBaseFolder : sourceFolder.listFiles()) {
             String kBaseName = kBaseFolder.getName();
-            kproj.newKBase(kBaseName)
-                    .newKSession(kBaseName + ".session")
+            kproj.newKieBaseDescr(kBaseName)
+                    .newKieSessionDescr(kBaseName + ".session")
                     .setType("stateful");
         }
 

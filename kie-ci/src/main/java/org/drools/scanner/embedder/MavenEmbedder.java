@@ -439,7 +439,7 @@ public class MavenEmbedder {
         }
     }
     // ----------------------------------------------------------------------
-    // Local Repository
+    // Local MavenRepository
     // ----------------------------------------------------------------------
 
     public static final String DEFAULT_LOCAL_REPO_ID = "local";

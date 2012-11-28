@@ -1,5 +1,37 @@
 package org.drools.cdi;
 
+import org.drools.kproject.KieBaseDescrImpl;
+import org.drools.kproject.KieProjectImpl;
+import org.drools.kproject.KieSessionDescrImpl;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.CompositeKnowledgeBuilder;
+import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.cdi.KBase;
+import org.kie.cdi.KSession;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import javax.enterprise.util.AnnotationLiteral;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -17,38 +49,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.util.AnnotationLiteral;
-
-import org.drools.kproject.KBaseImpl;
-import org.drools.kproject.KProject;
-import org.drools.kproject.KProjectImpl;
-import org.drools.kproject.KSessionImpl;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.CompositeKnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.cdi.KBase;
-import org.kie.cdi.KSession;
-import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.drools.kproject.KBaseImpl.getFiles;
+import static org.drools.kproject.KieBaseDescrImpl.getFiles;
 
 public class KProjectExtension
         implements
@@ -60,17 +61,17 @@ public class KProjectExtension
     private Set<String>                               kSessionNames;
 
     private Map<String, String>                       kBaseURLs;
-    private Map<String, KProject>                     kProjects;
-    private Map<String, org.drools.kproject.KBase>    kBases;
-    private Map<String, org.drools.kproject.KSession> kSessions;
+    private Map<String, KieProject>                     kProjects;
+    private Map<String, KieBaseDescr>    kBases;
+    private Map<String, KieSessionDescr> kSessions;
 
     public KProjectExtension() {}
 
     public void init() {
         kBaseURLs = new HashMap<String, String>();
-        kProjects = new HashMap<String, KProject>();
-        kBases = new HashMap<String, org.drools.kproject.KBase>();
-        kSessions = new HashMap<String, org.drools.kproject.KSession>();
+        kProjects = new HashMap<String, KieProject>();
+        kBases = new HashMap<String, KieBaseDescr>();
+        kSessions = new HashMap<String, KieSessionDescr>();
         buildKProjects();
     }
 
@@ -79,7 +80,7 @@ public class KProjectExtension
             init();
         }
 
-        // Find all uses of KBase and KSession and add to Set index
+        // Find all uses of KieBaseDescr and KieSessionDescr and add to Set index
         if ( !pit.getInjectionTarget().getInjectionPoints().isEmpty() ) {
             for ( InjectionPoint ip : pit.getInjectionTarget().getInjectionPoints() ) {
                 KBase kBase = ip.getAnnotated().getAnnotation( KBase.class );
@@ -121,15 +122,15 @@ public class KProjectExtension
 
             if ( kSessionNames != null ) {
                 for ( String kSessionName : kSessionNames) {
-                    org.drools.kproject.KSession kSession = kSessions.get( kSessionName );
-                    if (kSession == null) {
+                    KieSessionDescr kieSessionDescr = kSessions.get( kSessionName );
+                    if (kieSessionDescr == null) {
                         throw new RuntimeException("Unknown KnowledgeSession: " + kSessionName);
                     }
-                    KBaseBean bean = kBaseBeans.get( ((KSessionImpl)kSession).getKBase().getName() );
-                    if ( "stateless".equals( kSession.getType() ) ) {
-                        abd.addBean( new StatelessKSessionBean( kSession, bean ) );
+                    KBaseBean bean = kBaseBeans.get( ((KieSessionDescrImpl) kieSessionDescr).getKBase().getName() );
+                    if ( "stateless".equals( kieSessionDescr.getType() ) ) {
+                        abd.addBean( new StatelessKSessionBean(kieSessionDescr, bean ) );
                     } else {
-                        abd.addBean( new StatefulKSessionBean( kSession, bean ) );
+                        abd.addBean( new StatefulKSessionBean(kieSessionDescr, bean ) );
                     }
                 }
             }
@@ -150,16 +151,16 @@ public class KProjectExtension
         private Set<Annotation>           qualifiers;
 
         private String                    urlPath;
-        private org.drools.kproject.KBase kBaseModel;
+        private KieBaseDescr kieBaseDescrModel;
 
         private KnowledgeBase             kBase;
         
         private Map<String, KBaseBean>    kBaseBeans;
 
-        public KBaseBean(final org.drools.kproject.KBase kBaseModel,
+        public KBaseBean(final KieBaseDescr kieBaseDescrModel,
                          String urlPath, 
                          Map<String, KBaseBean> kBaseBeans) {
-            this.kBaseModel = kBaseModel;            
+            this.kieBaseDescrModel = kieBaseDescrModel;
             this.urlPath = urlPath;
             this.kBaseBeans = kBaseBeans;
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
@@ -170,7 +171,7 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kBaseModel.getName();
+                                                                                                           return kieBaseDescrModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
@@ -180,14 +181,14 @@ public class KProjectExtension
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
             
-            Set<String> includes = kBaseModel.getIncludes();
+            Set<String> includes = kieBaseDescrModel.getIncludes();
             if ( includes != null && !includes.isEmpty() ) {
                 for ( String include : includes ) {
                     KBaseBean includeBean = kBaseBeans.get( include );
-                    addFiles(ckbuilder, includeBean.getkBaseModel(), includeBean.getUrlPath() );
+                    addFiles(ckbuilder, includeBean.getKieBaseDescrModel(), includeBean.getUrlPath() );
                 }
             }
-            addFiles(ckbuilder, kBaseModel, urlPath);
+            addFiles(ckbuilder, kieBaseDescrModel, urlPath);
 
             ckbuilder.build();
 
@@ -197,7 +198,7 @@ public class KProjectExtension
             return this.kBase;
         }
 
-        private void addFiles(CompositeKnowledgeBuilder ckbuilder, org.drools.kproject.KBase kBase, String urlPathToAdd) {
+        private void addFiles(CompositeKnowledgeBuilder ckbuilder, KieBaseDescr kieBaseDescr, String urlPathToAdd) {
             String rootPath = urlPathToAdd;
             if ( rootPath.lastIndexOf( ':' ) > 0 ) {
                 rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
@@ -206,7 +207,7 @@ public class KProjectExtension
             if ( urlPathToAdd.endsWith( ".jar" ) ) {  
                 File actualZipFile = new File( rootPath );
                 if ( !actualZipFile.exists() ) {
-                    log.error( "Unable to build KBase:" + kBase.getName() + " as jarPath cannot be found\n" + rootPath );
+                    log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jarPath cannot be found\n" + rootPath );
                    // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
                 
@@ -214,12 +215,12 @@ public class KProjectExtension
                 try {
                     zipFile = new ZipFile( actualZipFile );
                 } catch ( Exception e ) {
-                    log.error( "Unable to build KBase:" + kBase.getName() + " as jar cannot be opened\n" + e.getMessage() );
+                    log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jar cannot be opened\n" + e.getMessage() );
                     // return KnowledgeBaseFactory.newKnowledgeBase();
                 }  
        
                 try {
-                    for ( String file : getFiles(kBase.getName(), zipFile) ) {
+                    for ( String file : getFiles(kieBaseDescr.getName(), zipFile) ) {
                         ZipEntry zipEntry = zipFile.getEntry( file );
                         ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.DRL );
                     }
@@ -229,22 +230,22 @@ public class KProjectExtension
                     } catch ( IOException e1 ) {
     
                     }
-                    log.error( "Unable to build KBase:" + kBase.getName() + " as jar cannot be read\n" + e.getMessage() );
+                    log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jar cannot be read\n" + e.getMessage() );
                     // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
             } else {
                 try {
-                    for ( String file : getFiles(kBase.getName(), new File(rootPath)) ) {
+                    for ( String file : getFiles(kieBaseDescr.getName(), new File(rootPath)) ) {
                         ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
                     }
                 } catch ( Exception e) {
-                    log.error( "Unable to build KBase:" + kBase.getName() + "\n" + e.getMessage() );
+                    log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + "\n" + e.getMessage() );
                 }
             }
         }
 
-        public org.drools.kproject.KBase getkBaseModel() {
-            return kBaseModel;
+        public KieBaseDescr getKieBaseDescrModel() {
+            return kieBaseDescrModel;
         }
 
         public String getUrlPath() {
@@ -309,15 +310,15 @@ public class KProjectExtension
 
         private Set<Annotation>              qualifiers;
 
-        private org.drools.kproject.KBase    kBaseModel;
-        private org.drools.kproject.KSession kSessionModel;
+        private KieBaseDescr kieBaseDescrModel;
+        private KieSessionDescr kieSessionDescrModel;
         
         private KBaseBean                    kBaseBean;
 
-        public StatelessKSessionBean(final org.drools.kproject.KSession kSessionModel, KBaseBean kBaseBean) {
-            this.kSessionModel = kSessionModel;
+        public StatelessKSessionBean(final KieSessionDescr kieSessionDescrModel, KBaseBean kBaseBean) {
+            this.kieSessionDescrModel = kieSessionDescrModel;
             this.kBaseBean = kBaseBean;
-            this.kBaseModel = ((KSessionImpl) kSessionModel).getKBase();
+            this.kieBaseDescrModel = ((KieSessionDescrImpl) kieSessionDescrModel).getKBase();
 
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
                                                                                                    new AnnotationLiteral<Any>() {},
@@ -327,7 +328,7 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kSessionModel.getName();
+                                                                                                           return kieSessionDescrModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
@@ -387,14 +388,14 @@ public class KProjectExtension
 
         private Set<Annotation>              qualifiers;
 
-        private org.drools.kproject.KBase    kBaseModel;
-        private org.drools.kproject.KSession kSessionModel;
+        private KieBaseDescr kieBaseDescrModel;
+        private KieSessionDescr kieSessionDescrModel;
         
         private KBaseBean                    kBaseBean;
 
-        public StatefulKSessionBean(final org.drools.kproject.KSession kSessionModel, KBaseBean kBaseBean) {
-            this.kSessionModel = kSessionModel;
-            this.kBaseModel = ((KSessionImpl) kSessionModel).getKBase();
+        public StatefulKSessionBean(final KieSessionDescr kieSessionDescrModel, KBaseBean kBaseBean) {
+            this.kieSessionDescrModel = kieSessionDescrModel;
+            this.kieBaseDescrModel = ((KieSessionDescrImpl) kieSessionDescrModel).getKBase();
             this.kBaseBean = kBaseBean;
 
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
@@ -405,7 +406,7 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kSessionModel.getName();
+                                                                                                           return kieSessionDescrModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
@@ -474,26 +475,26 @@ public class KProjectExtension
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();;
             try {
-                KProject kProject = KProjectImpl.fromXML(url);
-                String kProjectId = kProject.getGroupArtifactVersion().getGroupId() + ":" + kProject.getGroupArtifactVersion().getArtifactId();
+                KieProject kieProject = KieProjectImpl.fromXML(url);
+                String kProjectId = kieProject.getGroupArtifactVersion().getGroupId() + ":" + kieProject.getGroupArtifactVersion().getArtifactId();
                 urls.put( kProjectId, fixURL( url ) );
-                kProjects.put( kProjectId, kProject );
+                kProjects.put( kProjectId, kieProject);
             } catch ( Exception exc ) {
                 log.error( "Unable to build and build index of kproject.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
             }
         }
 
-        for ( KProject kProject : kProjects.values() ) {
-            for ( org.drools.kproject.KBase kBase : kProject.getKBases().values() ) {
-                kBases.put( kBase.getName(), kBase );
-                ((KBaseImpl) kBase).setKProject( kProject ); // should already be set, but just in case
+        for ( KieProject kieProject : kProjects.values() ) {
+            for ( KieBaseDescr kieBaseDescr : kieProject.getKieBaseDescrs().values() ) {
+                kBases.put( kieBaseDescr.getName(), kieBaseDescr);
+                ((KieBaseDescrImpl) kieBaseDescr).setKProject(kieProject); // should already be set, but just in case
 
-                String kProjectId = kProject.getGroupArtifactVersion().getGroupId() + ":" + kProject.getGroupArtifactVersion().getArtifactId();
-                kBaseURLs.put( kBase.getName(), urls.get( kProjectId ) );
-                for ( org.drools.kproject.KSession kSession : kBase.getKSessions().values() ) {
-                    ((KSessionImpl) kSession).setKBase( kBase ); // should already be set, but just in case
-                    kSessions.put( kSession.getName(),
-                                   kSession );
+                String kProjectId = kieProject.getGroupArtifactVersion().getGroupId() + ":" + kieProject.getGroupArtifactVersion().getArtifactId();
+                kBaseURLs.put( kieBaseDescr.getName(), urls.get( kProjectId ) );
+                for ( KieSessionDescr kieSessionDescr : kieBaseDescr.getKieSessionDescrs().values() ) {
+                    ((KieSessionDescrImpl) kieSessionDescr).setKBase(kieBaseDescr); // should already be set, but just in case
+                    kSessions.put( kieSessionDescr.getName(),
+                            kieSessionDescr);
                 }
             }
         }
@@ -535,7 +536,7 @@ public class KProjectExtension
             throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8", e );
         }
 
-        log.debug( "KProject URL Type + URL: " + urlType + ":" + urlPath );
+        log.debug( "KieProject URL Type + URL: " + urlType + ":" + urlPath );
 
         return urlPath;
     }

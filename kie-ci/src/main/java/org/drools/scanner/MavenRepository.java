@@ -20,11 +20,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-class Repository {
+class MavenRepository {
 
     private final Aether aether;
 
-    public Repository() {
+    public MavenRepository() {
         this.aether = Aether.INSTANCE;
     }
 

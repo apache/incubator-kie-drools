@@ -5,7 +5,10 @@ import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.builder.KieBaseDescr;
 import org.kie.KBaseUnit;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionDescr;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeContainer;
@@ -101,17 +104,17 @@ public class KJarTest {
         fileManager.write(fileManager.newFile("src/kbases/KBase1/org/test/decA.drl"), declarationA);
         fileManager.write(fileManager.newFile("src/kbases/KBase1/org/test/decB.drl"), declarationB);
 
-        KProject kproj = new KProjectImpl();
-        KBase kBase1 = kproj.newKBase("KBase1")
+        KieProject kproj = new KieProjectImpl();
+        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( "KSession1" )
+        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        fileManager.write( fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KProjectImpl)kproj).toXML() );
+        fileManager.write( fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KieProjectImpl)kproj).toXML() );
 
         KnowledgeContainer kcontainer = KnowledgeContainerFactory.newKnowledgeContainer();
 

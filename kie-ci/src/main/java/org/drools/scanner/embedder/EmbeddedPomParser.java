@@ -10,7 +10,7 @@ import java.util.List;
 import static org.drools.scanner.embedder.MavenProjectLoader.loadMavenProject;
 
 public class EmbeddedPomParser implements PomParser {
-    
+
     public List<DependencyDescriptor> getPomDirectDependencies() {
         List<DependencyDescriptor> deps = new ArrayList<DependencyDescriptor>();
         for (Dependency dep : loadMavenProject().getDependencies()) {
