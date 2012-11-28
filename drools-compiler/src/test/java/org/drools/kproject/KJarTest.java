@@ -5,10 +5,10 @@ import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 import org.kie.KBaseUnit;
 import org.kie.builder.KieProject;
-import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KieSessionModel;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeContainer;
@@ -105,11 +105,11 @@ public class KJarTest {
         fileManager.write(fileManager.newFile("src/kbases/KBase1/org/test/decB.drl"), declarationB);
 
         KieProject kproj = new KieProjectImpl();
-        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );

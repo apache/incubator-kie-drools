@@ -8,7 +8,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.GAV;
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProject;
 
 import java.beans.PropertyChangeEvent;
@@ -29,7 +29,7 @@ public class KieProjectImpl implements KieProject {
     private String              kProjectPath;
     private String              kBasesPath;
 
-    private Map<String, KieBaseDescr>  kBases;
+    private Map<String, KieBaseModel>  kBases;
     
     private  transient PropertyChangeListener listener;
     
@@ -57,7 +57,7 @@ public class KieProjectImpl implements KieProject {
      */
     public KieProject setListener(PropertyChangeListener listener) {
         this.listener = listener;
-        for ( KieBaseDescr kbase : kBases.values() ) {
+        for ( KieBaseModel kbase : kBases.values() ) {
             // make sure the listener is set for each kbase
             kbase.setListener( listener );
         }
@@ -103,11 +103,11 @@ public class KieProjectImpl implements KieProject {
     }  
     
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#addKBase(org.kie.kproject.KieBaseDescrImpl)
+     * @see org.kie.kproject.KieProject#addKBase(org.kie.kproject.KieBaseModelImpl)
      */
-    public KieBaseDescr newKieBaseDescr(String name) {
-        KieBaseDescr kbase = new KieBaseDescrImpl(this, name);
-        Map<String, KieBaseDescr> newMap = new HashMap<String, KieBaseDescr>();
+    public KieBaseModel newKieBaseModel(String name) {
+        KieBaseModel kbase = new KieBaseModelImpl(this, name);
+        Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
         newMap.putAll( this.kBases );        
         newMap.put( kbase.getName(), kbase );
         setKBases( newMap );   
@@ -116,41 +116,41 @@ public class KieProjectImpl implements KieProject {
     }
     
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#removeKieBaseDescr(org.kie.kproject.KieBaseDescr)
+     * @see org.kie.kproject.KieProject#removeKieBaseModel(org.kie.kproject.KieBaseModel)
      */
-    public void removeKieBaseDescr(String qName) {
-        Map<String, KieBaseDescr> newMap = new HashMap<String, KieBaseDescr>();
+    public void removeKieBaseModel(String qName) {
+        Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
         newMap.putAll( this.kBases );
         newMap.remove( qName );
         setKBases( newMap );
     }    
     
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#removeKieBaseDescr(org.kie.kproject.KieBaseDescr)
+     * @see org.kie.kproject.KieProject#removeKieBaseModel(org.kie.kproject.KieBaseModel)
      */
     public void moveKBase(String oldQName, String newQName) {
-        Map<String, KieBaseDescr> newMap = new HashMap<String, KieBaseDescr>();
+        Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
         newMap.putAll( this.kBases );
-        KieBaseDescr kieBaseDescr = newMap.remove( oldQName );
-        newMap.put( newQName, kieBaseDescr);
+        KieBaseModel kieBaseModel = newMap.remove( oldQName );
+        newMap.put( newQName, kieBaseModel);
         setKBases( newMap );
     }        
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#getKieBaseDescrs()
+     * @see org.kie.kproject.KieProject#getKieBaseModels()
      */
-    public Map<String, KieBaseDescr> getKieBaseDescrs() {
+    public Map<String, KieBaseModel> getKieBaseModels() {
         return Collections.unmodifiableMap( kBases );
     }
 
     /* (non-Javadoc)
      * @see org.kie.kproject.KieProject#setKBases(java.util.Map)
      */
-    private void setKBases(Map<String, KieBaseDescr> kBases) {
+    private void setKBases(Map<String, KieBaseModel> kBases) {
         if ( listener != null ) {
             listener.propertyChange( new PropertyChangeEvent( this, "kBases", this.kBases, kBases ) );
             
-            for ( KieBaseDescr kbase : kBases.values() ) {
+            for ( KieBaseModel kbase : kBases.values() ) {
                 // make sure the listener is set for each kbase
                 kbase.setListener( listener );
             }
@@ -207,11 +207,11 @@ public class KieProjectImpl implements KieProject {
 
         private KProjectMarshaller() {
             xStream.registerConverter(new KProjectConverter());
-            xStream.registerConverter(new KieBaseDescrImpl.KBaseConverter());
-            xStream.registerConverter(new KieSessionDescrImpl.KSessionConverter());
+            xStream.registerConverter(new KieBaseModelImpl.KBaseConverter());
+            xStream.registerConverter(new KieSessionModelImpl.KSessionConverter());
             xStream.alias("kproject", KieProjectImpl.class);
-            xStream.alias("kbase", KieBaseDescrImpl.class);
-            xStream.alias("ksession", KieSessionDescrImpl.class);
+            xStream.alias("kbase", KieBaseModelImpl.class);
+            xStream.alias("ksession", KieSessionModelImpl.class);
         }
 
         public String toXML(KieProject kieProject) {
@@ -242,7 +242,7 @@ public class KieProjectImpl implements KieProject {
             writeAttribute(writer, "kBasesPath", kProject.getKBasesPath());
             writeAttribute(writer, "kProjectPath", kProject.getKProjectPath());
             writeObject(writer, context, "groupArtifactVersion", kProject.getGroupArtifactVersion());
-            writeObjectList(writer, context, "kbases", "kbase", kProject.getKieBaseDescrs().values());
+            writeObjectList(writer, context, "kbases", "kbase", kProject.getKieBaseModels().values());
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
@@ -255,8 +255,8 @@ public class KieProjectImpl implements KieProject {
                     if ("groupArtifactVersion".equals(name)) {
                         kProject.setGroupArtifactVersion((GroupArtifactVersion) context.convertAnother(reader.getValue(), GroupArtifactVersion.class));
                     } else if ("kbases".equals(name)) {
-                        Map<String, KieBaseDescr> kBases = new HashMap<String, KieBaseDescr>();
-                        for (KieBaseDescrImpl kBase : readObjectList(reader, context, KieBaseDescrImpl.class)) {
+                        Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();
+                        for (KieBaseModelImpl kBase : readObjectList(reader, context, KieBaseModelImpl.class)) {
                             kBase.setKProject(kProject);
                             kBases.put(kBase.getName(), kBase);
                         }

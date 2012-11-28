@@ -5,7 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieFileSystem;
@@ -13,7 +13,7 @@ import org.kie.builder.KieJar;
 import org.kie.builder.KieProject;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
-import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KieSessionModel;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
@@ -130,18 +130,18 @@ public class KieRepositoryScannerTest {
         }
 
         KieProject kproj = ks.newKieProject();
-        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kfs.write(KieContainer.KPROJECT_RELATIVE_PATH, kproj.toXML());
 
-        KieBuilder kieBuilder = ks.newKieBuilder();
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         assertTrue(kieBuilder.build().isEmpty());
         return kieBuilder.getKieJar();
     }
@@ -172,21 +172,21 @@ public class KieRepositoryScannerTest {
         KieFileSystem kieFileSystem = ks.newKieFileSystem();
 
         KieProject kproj = ks.newKieProject();
-        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kieFileSystem
                 .write(KieContainer.KPROJECT_RELATIVE_PATH, kproj.toXML())
-                .write("src/kbases/" + kieBaseDescr1.getName() + "/rule1.drl", createDRLForJavaSource(value))
+                .write("src/kbases/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
                 .write("org/kie/test/Bean.java", createJavaSource(factor));
 
-        KieBuilder kieBuilder = ks.newKieBuilder();
+        KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);
         assertTrue(kieBuilder.build().isEmpty());
         return kieBuilder.getKieJar();
     }

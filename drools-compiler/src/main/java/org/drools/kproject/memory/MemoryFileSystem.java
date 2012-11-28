@@ -11,6 +11,7 @@ import org.drools.kproject.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,10 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
     
     public File getFile(Path path) {
         return getFile(path.toPortableString());
+    }
+
+    public Collection<String> getFileNames() {
+        return fileContents.keySet();
     }
     
     public File getFile(String path) {

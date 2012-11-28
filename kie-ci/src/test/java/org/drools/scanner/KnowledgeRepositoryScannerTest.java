@@ -6,10 +6,10 @@ import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.core.util.FileManager;
 import org.drools.kproject.Folder;
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProject;
 import org.drools.kproject.KieProjectImpl;
-import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KieSessionModel;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.junit.After;
 import org.junit.Before;
@@ -167,11 +167,11 @@ public class KnowledgeRepositoryScannerTest {
         }
 
         KieProject kproj = new KieProjectImpl();
-        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
@@ -207,11 +207,11 @@ public class KnowledgeRepositoryScannerTest {
         MemoryFileSystem mfs = new MemoryFileSystem();
 
         KieProject kproj = new KieProjectImpl();
-        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
@@ -221,7 +221,7 @@ public class KnowledgeRepositoryScannerTest {
         org.drools.kproject.File kprojectFile = metaInf.getFile( "kproject.xml" );
         kprojectFile.create(new ByteArrayInputStream(kproj.toXML().getBytes()));
 
-        String fldKB1 = kieBaseDescr1.getName();
+        String fldKB1 = kieBaseModel1.getName();
         mfs.getFolder( fldKB1 ).create();
         mfs.getFile( fldKB1 + "/rule1.drl" ).create(new ByteArrayInputStream(createDRLForJavaSource(value).getBytes()));
 
@@ -270,7 +270,7 @@ public class KnowledgeRepositoryScannerTest {
                 "end\n";
     }
 
-    public List<String> compile(MemoryFileSystem mfs, String... sourceFile) {
+    public void compile(MemoryFileSystem mfs, String... sourceFile) {
         EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
         settings.setSourceVersion( "1.5" );
         settings.setTargetVersion( "1.5" );
@@ -280,16 +280,5 @@ public class KnowledgeRepositoryScannerTest {
         if ( res.getErrors().length > 0 ) {
             fail( res.getErrors()[0].getMessage() );
         }
-
-        List<String> classes2 = new ArrayList<String>( sourceFile.length );
-        for ( String str : sourceFile ) {
-            classes2.add( filenameToClassname( str ) );
-        }
-
-        return classes2;
-    }
-
-    public static String filenameToClassname(String filename) {
-        return filename.substring( 0, filename.lastIndexOf( ".java" ) ).replace( '/', '.' ).replace( '\\', '.' );
     }
 }
