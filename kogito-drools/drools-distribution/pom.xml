@@ -80,15 +80,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-clips</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-clips</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-verifier</artifactId>
     </dependency>
     <dependency>
