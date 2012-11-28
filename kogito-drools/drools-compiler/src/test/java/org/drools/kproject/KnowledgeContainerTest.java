@@ -3,9 +3,9 @@ package org.drools.kproject;
 import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.core.util.FileManager;
 import org.junit.Test;
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProject;
-import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeContainer;
 import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.conf.AssertBehaviorOption;
@@ -94,11 +94,11 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
         }
 
         KieProject kproj = new KieProjectImpl();
-        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr("KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr("KSession1")
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );

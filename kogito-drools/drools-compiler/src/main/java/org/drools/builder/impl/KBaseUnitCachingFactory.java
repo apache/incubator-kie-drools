@@ -1,6 +1,6 @@
 package org.drools.builder.impl;
 
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 
 import java.net.URL;
 import java.util.Map;
@@ -13,11 +13,11 @@ public class KBaseUnitCachingFactory {
 
     private static final Map<String, KBaseUnitImpl> cache = new EvictionCache<String, KBaseUnitImpl>(EVICTION_TIME);
 
-    static KBaseUnitImpl getOrCreateKBaseUnit(URL url, KieBaseDescr kieBaseDescr) {
-        String kBaseName = kieBaseDescr.getName();
+    static KBaseUnitImpl getOrCreateKBaseUnit(URL url, KieBaseModel kieBaseModel) {
+        String kBaseName = kieBaseModel.getName();
         KBaseUnitImpl unit = cache.get(kBaseName);
         if (unit == null) {
-            unit = new KBaseUnitImpl(url, kieBaseDescr);
+            unit = new KBaseUnitImpl(url, kieBaseModel);
             cache.put(kBaseName, unit);
         }
         return unit;

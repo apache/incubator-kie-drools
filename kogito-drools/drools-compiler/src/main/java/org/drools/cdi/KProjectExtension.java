@@ -1,14 +1,14 @@
 package org.drools.cdi;
 
-import org.drools.kproject.KieBaseDescrImpl;
+import org.drools.kproject.KieBaseModelImpl;
 import org.drools.kproject.KieProjectImpl;
-import org.drools.kproject.KieSessionDescrImpl;
+import org.drools.kproject.KieSessionModelImpl;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProject;
-import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
@@ -49,7 +49,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.drools.kproject.KieBaseDescrImpl.getFiles;
+import static org.drools.kproject.KieBaseModelImpl.getFiles;
 
 public class KProjectExtension
         implements
@@ -62,16 +62,16 @@ public class KProjectExtension
 
     private Map<String, String>                       kBaseURLs;
     private Map<String, KieProject>                     kProjects;
-    private Map<String, KieBaseDescr>    kBases;
-    private Map<String, KieSessionDescr> kSessions;
+    private Map<String, KieBaseModel>    kBases;
+    private Map<String, KieSessionModel> kSessions;
 
     public KProjectExtension() {}
 
     public void init() {
         kBaseURLs = new HashMap<String, String>();
         kProjects = new HashMap<String, KieProject>();
-        kBases = new HashMap<String, KieBaseDescr>();
-        kSessions = new HashMap<String, KieSessionDescr>();
+        kBases = new HashMap<String, KieBaseModel>();
+        kSessions = new HashMap<String, KieSessionModel>();
         buildKProjects();
     }
 
@@ -80,7 +80,7 @@ public class KProjectExtension
             init();
         }
 
-        // Find all uses of KieBaseDescr and KieSessionDescr and add to Set index
+        // Find all uses of KieBaseModel and KieSessionModel and add to Set index
         if ( !pit.getInjectionTarget().getInjectionPoints().isEmpty() ) {
             for ( InjectionPoint ip : pit.getInjectionTarget().getInjectionPoints() ) {
                 KBase kBase = ip.getAnnotated().getAnnotation( KBase.class );
@@ -122,15 +122,15 @@ public class KProjectExtension
 
             if ( kSessionNames != null ) {
                 for ( String kSessionName : kSessionNames) {
-                    KieSessionDescr kieSessionDescr = kSessions.get( kSessionName );
-                    if (kieSessionDescr == null) {
+                    KieSessionModel kieSessionModel = kSessions.get( kSessionName );
+                    if (kieSessionModel == null) {
                         throw new RuntimeException("Unknown KnowledgeSession: " + kSessionName);
                     }
-                    KBaseBean bean = kBaseBeans.get( ((KieSessionDescrImpl) kieSessionDescr).getKBase().getName() );
-                    if ( "stateless".equals( kieSessionDescr.getType() ) ) {
-                        abd.addBean( new StatelessKSessionBean(kieSessionDescr, bean ) );
+                    KBaseBean bean = kBaseBeans.get( ((KieSessionModelImpl) kieSessionModel).getKBase().getName() );
+                    if ( "stateless".equals( kieSessionModel.getType() ) ) {
+                        abd.addBean( new StatelessKSessionBean(kieSessionModel, bean ) );
                     } else {
-                        abd.addBean( new StatefulKSessionBean(kieSessionDescr, bean ) );
+                        abd.addBean( new StatefulKSessionBean(kieSessionModel, bean ) );
                     }
                 }
             }
@@ -151,16 +151,16 @@ public class KProjectExtension
         private Set<Annotation>           qualifiers;
 
         private String                    urlPath;
-        private KieBaseDescr kieBaseDescrModel;
+        private KieBaseModel kieBaseModelModel;
 
         private KnowledgeBase             kBase;
         
         private Map<String, KBaseBean>    kBaseBeans;
 
-        public KBaseBean(final KieBaseDescr kieBaseDescrModel,
+        public KBaseBean(final KieBaseModel kieBaseModelModel,
                          String urlPath, 
                          Map<String, KBaseBean> kBaseBeans) {
-            this.kieBaseDescrModel = kieBaseDescrModel;
+            this.kieBaseModelModel = kieBaseModelModel;
             this.urlPath = urlPath;
             this.kBaseBeans = kBaseBeans;
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
@@ -171,7 +171,7 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kieBaseDescrModel.getName();
+                                                                                                           return kieBaseModelModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
@@ -181,14 +181,14 @@ public class KProjectExtension
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
             
-            Set<String> includes = kieBaseDescrModel.getIncludes();
+            Set<String> includes = kieBaseModelModel.getIncludes();
             if ( includes != null && !includes.isEmpty() ) {
                 for ( String include : includes ) {
                     KBaseBean includeBean = kBaseBeans.get( include );
-                    addFiles(ckbuilder, includeBean.getKieBaseDescrModel(), includeBean.getUrlPath() );
+                    addFiles(ckbuilder, includeBean.getKieBaseModelModel(), includeBean.getUrlPath() );
                 }
             }
-            addFiles(ckbuilder, kieBaseDescrModel, urlPath);
+            addFiles(ckbuilder, kieBaseModelModel, urlPath);
 
             ckbuilder.build();
 
@@ -198,7 +198,7 @@ public class KProjectExtension
             return this.kBase;
         }
 
-        private void addFiles(CompositeKnowledgeBuilder ckbuilder, KieBaseDescr kieBaseDescr, String urlPathToAdd) {
+        private void addFiles(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String urlPathToAdd) {
             String rootPath = urlPathToAdd;
             if ( rootPath.lastIndexOf( ':' ) > 0 ) {
                 rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
@@ -207,7 +207,7 @@ public class KProjectExtension
             if ( urlPathToAdd.endsWith( ".jar" ) ) {  
                 File actualZipFile = new File( rootPath );
                 if ( !actualZipFile.exists() ) {
-                    log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jarPath cannot be found\n" + rootPath );
+                    log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + " as jarPath cannot be found\n" + rootPath );
                    // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
                 
@@ -215,12 +215,12 @@ public class KProjectExtension
                 try {
                     zipFile = new ZipFile( actualZipFile );
                 } catch ( Exception e ) {
-                    log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jar cannot be opened\n" + e.getMessage() );
+                    log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + " as jar cannot be opened\n" + e.getMessage() );
                     // return KnowledgeBaseFactory.newKnowledgeBase();
                 }  
        
                 try {
-                    for ( String file : getFiles(kieBaseDescr.getName(), zipFile) ) {
+                    for ( String file : getFiles(kieBaseModel.getName(), zipFile) ) {
                         ZipEntry zipEntry = zipFile.getEntry( file );
                         ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.DRL );
                     }
@@ -230,22 +230,22 @@ public class KProjectExtension
                     } catch ( IOException e1 ) {
     
                     }
-                    log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jar cannot be read\n" + e.getMessage() );
+                    log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + " as jar cannot be read\n" + e.getMessage() );
                     // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
             } else {
                 try {
-                    for ( String file : getFiles(kieBaseDescr.getName(), new File(rootPath)) ) {
+                    for ( String file : getFiles(kieBaseModel.getName(), new File(rootPath)) ) {
                         ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
                     }
                 } catch ( Exception e) {
-                    log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + "\n" + e.getMessage() );
+                    log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + "\n" + e.getMessage() );
                 }
             }
         }
 
-        public KieBaseDescr getKieBaseDescrModel() {
-            return kieBaseDescrModel;
+        public KieBaseModel getKieBaseModelModel() {
+            return kieBaseModelModel;
         }
 
         public String getUrlPath() {
@@ -310,15 +310,15 @@ public class KProjectExtension
 
         private Set<Annotation>              qualifiers;
 
-        private KieBaseDescr kieBaseDescrModel;
-        private KieSessionDescr kieSessionDescrModel;
+        private KieBaseModel kieBaseModelModel;
+        private KieSessionModel kieSessionModelModel;
         
         private KBaseBean                    kBaseBean;
 
-        public StatelessKSessionBean(final KieSessionDescr kieSessionDescrModel, KBaseBean kBaseBean) {
-            this.kieSessionDescrModel = kieSessionDescrModel;
+        public StatelessKSessionBean(final KieSessionModel kieSessionModelModel, KBaseBean kBaseBean) {
+            this.kieSessionModelModel = kieSessionModelModel;
             this.kBaseBean = kBaseBean;
-            this.kieBaseDescrModel = ((KieSessionDescrImpl) kieSessionDescrModel).getKBase();
+            this.kieBaseModelModel = ((KieSessionModelImpl) kieSessionModelModel).getKBase();
 
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
                                                                                                    new AnnotationLiteral<Any>() {},
@@ -328,7 +328,7 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kieSessionDescrModel.getName();
+                                                                                                           return kieSessionModelModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
@@ -388,14 +388,14 @@ public class KProjectExtension
 
         private Set<Annotation>              qualifiers;
 
-        private KieBaseDescr kieBaseDescrModel;
-        private KieSessionDescr kieSessionDescrModel;
+        private KieBaseModel kieBaseModelModel;
+        private KieSessionModel kieSessionModelModel;
         
         private KBaseBean                    kBaseBean;
 
-        public StatefulKSessionBean(final KieSessionDescr kieSessionDescrModel, KBaseBean kBaseBean) {
-            this.kieSessionDescrModel = kieSessionDescrModel;
-            this.kieBaseDescrModel = ((KieSessionDescrImpl) kieSessionDescrModel).getKBase();
+        public StatefulKSessionBean(final KieSessionModel kieSessionModelModel, KBaseBean kBaseBean) {
+            this.kieSessionModelModel = kieSessionModelModel;
+            this.kieBaseModelModel = ((KieSessionModelImpl) kieSessionModelModel).getKBase();
             this.kBaseBean = kBaseBean;
 
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
@@ -406,7 +406,7 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kieSessionDescrModel.getName();
+                                                                                                           return kieSessionModelModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
@@ -485,16 +485,16 @@ public class KProjectExtension
         }
 
         for ( KieProject kieProject : kProjects.values() ) {
-            for ( KieBaseDescr kieBaseDescr : kieProject.getKieBaseDescrs().values() ) {
-                kBases.put( kieBaseDescr.getName(), kieBaseDescr);
-                ((KieBaseDescrImpl) kieBaseDescr).setKProject(kieProject); // should already be set, but just in case
+            for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
+                kBases.put( kieBaseModel.getName(), kieBaseModel);
+                ((KieBaseModelImpl) kieBaseModel).setKProject(kieProject); // should already be set, but just in case
 
                 String kProjectId = kieProject.getGroupArtifactVersion().getGroupId() + ":" + kieProject.getGroupArtifactVersion().getArtifactId();
-                kBaseURLs.put( kieBaseDescr.getName(), urls.get( kProjectId ) );
-                for ( KieSessionDescr kieSessionDescr : kieBaseDescr.getKieSessionDescrs().values() ) {
-                    ((KieSessionDescrImpl) kieSessionDescr).setKBase(kieBaseDescr); // should already be set, but just in case
-                    kSessions.put( kieSessionDescr.getName(),
-                            kieSessionDescr);
+                kBaseURLs.put( kieBaseModel.getName(), urls.get( kProjectId ) );
+                for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
+                    ((KieSessionModelImpl) kieSessionModel).setKBase(kieBaseModel); // should already be set, but just in case
+                    kSessions.put( kieSessionModel.getName(),
+                            kieSessionModel);
                 }
             }
         }

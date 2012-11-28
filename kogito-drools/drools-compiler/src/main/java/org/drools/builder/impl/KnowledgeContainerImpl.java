@@ -1,9 +1,9 @@
 package org.drools.builder.impl;
 
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProject;
-import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KieSessionModel;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -32,7 +32,7 @@ import java.util.zip.ZipOutputStream;
 import static org.drools.builder.impl.KBaseUnitCachingFactory.evictKBaseUnit;
 import static org.drools.builder.impl.KBaseUnitCachingFactory.getOrCreateKBaseUnit;
 import static org.drools.core.util.IoUtils.copyFile;
-import static org.drools.kproject.KieBaseDescrImpl.getFiles;
+import static org.drools.kproject.KieBaseModelImpl.getFiles;
 import static org.drools.kproject.KieProjectImpl.fromXML;
 
 public class KnowledgeContainerImpl implements KnowledgeContainer {
@@ -43,7 +43,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     public static final String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
     public static final String KPROJECT_RELATIVE_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
 
-    private final Map<String, KieBaseDescr> kBases = new HashMap<String, KieBaseDescr>();
+    private final Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();
     private final Map<String, String> kSessions = new HashMap<String, String>();
     private final Map<String, URL> urls = new HashMap<String, URL>();
 
@@ -111,8 +111,8 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
 
     public List<KBaseUnit> getKBaseUnits() {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
-        for (KieBaseDescr kieBaseDescr : kBases.values()) {
-            units.add(getOrCreateKBaseUnit(urls.get(kieBaseDescr.getName()), kieBaseDescr));
+        for (KieBaseModel kieBaseModel : kBases.values()) {
+            units.add(getOrCreateKBaseUnit(urls.get(kieBaseModel.getName()), kieBaseModel));
         }
         return units;
     }
@@ -120,8 +120,8 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     public List<KBaseUnit> getKBaseUnits(File rootFolder, File sourceFolder) {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
         KieProject kieProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
-        for (KieBaseDescr kieBaseDescr : kieProject.getKieBaseDescrs().values()) {
-            units.add(new KBaseUnitImpl( sourceFolder.getAbsolutePath() + "/" + kieBaseDescr.getName(), kieBaseDescr, classLoader ));
+        for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
+            units.add(new KBaseUnitImpl( sourceFolder.getAbsolutePath() + "/" + kieBaseModel.getName(), kieBaseModel, classLoader ));
         }
         return units;
     }
@@ -131,21 +131,21 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         KieProject kieProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
         copyFile(kProjectFile, new File(outputFolder, KPROJECT_JAR_PATH));
 
-        for (KieBaseDescr kieBaseDescr : kieProject.getKieBaseDescrs().values()) {
-            for (String kBaseFile : getFiles(kieBaseDescr.getName(), new File(rootFolder, KBASES_FOLDER))) {
+        for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
+            for (String kBaseFile : getFiles(kieBaseModel.getName(), new File(rootFolder, KBASES_FOLDER))) {
                 copyFile(new File(rootFolder, KBASES_FOLDER + "/" + kBaseFile), new File(outputFolder, kBaseFile));
             }
         }
     }
 
     public KBaseUnit getKBaseUnit(String kBaseName) {
-        KieBaseDescr kieBaseDescr = kBases.get(kBaseName);
-        if (kieBaseDescr == null) {
+        KieBaseModel kieBaseModel = kBases.get(kBaseName);
+        if (kieBaseModel == null) {
             throw new RuntimeException("Unknown KnowledgeBase: " + kBaseName);
         }
-        KBaseUnitImpl unit = getOrCreateKBaseUnit(urls.get(kBaseName), kieBaseDescr);
-        if (!unit.hasIncludes() && kieBaseDescr.getIncludes() != null) {
-            for ( String include : kieBaseDescr.getIncludes() ) {
+        KBaseUnitImpl unit = getOrCreateKBaseUnit(urls.get(kBaseName), kieBaseModel);
+        if (!unit.hasIncludes() && kieBaseModel.getIncludes() != null) {
+            for ( String include : kieBaseModel.getIncludes() ) {
                 unit.addInclude(kBases.get(include));
             }
         }
@@ -184,25 +184,25 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     }
 
     private void indexKSessions(KieProject kieProject, URL url, boolean doEvict) {
-        for (KieBaseDescr kieBaseDescr : kieProject.getKieBaseDescrs().values()) {
-            cleanUpExistingKBase(kieBaseDescr, doEvict);
-            kBases.put(kieBaseDescr.getName(), kieBaseDescr);
-            urls.put(kieBaseDescr.getName(), url);
-            for (KieSessionDescr kieSessionDescr : kieBaseDescr.getKieSessionDescrs().values()) {
-                kSessions.put(kieSessionDescr.getName(), kieBaseDescr.getName());
+        for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
+            cleanUpExistingKBase(kieBaseModel, doEvict);
+            kBases.put(kieBaseModel.getName(), kieBaseModel);
+            urls.put(kieBaseModel.getName(), url);
+            for (KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values()) {
+                kSessions.put(kieSessionModel.getName(), kieBaseModel.getName());
             }
         }
     }
 
-    private void cleanUpExistingKBase(KieBaseDescr kieBaseDescr, boolean doEvict) {
+    private void cleanUpExistingKBase(KieBaseModel kieBaseModel, boolean doEvict) {
         if (doEvict) {
-            evictKBaseUnit(kieBaseDescr.getName());
+            evictKBaseUnit(kieBaseModel.getName());
         }
-        KieBaseDescr oldKbase = kBases.get(kieBaseDescr.getName());
+        KieBaseModel oldKbase = kBases.get(kieBaseModel.getName());
         if (oldKbase != null) {
             urls.remove(oldKbase.getName());
-            for (KieSessionDescr kieSessionDescr : oldKbase.getKieSessionDescrs().values()) {
-                kSessions.remove(kieSessionDescr.getName());
+            for (KieSessionModel kieSessionModel : oldKbase.getKieSessionModels().values()) {
+                kSessions.remove(kieSessionModel.getName());
             }
         }
     }
@@ -211,8 +211,8 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         File kBasesFolder = new File(rootFolder, KBASES_FOLDER);
         Map<String, String> jarEntries = new HashMap<String, String>();
         jarEntries.put(KPROJECT_RELATIVE_PATH, KPROJECT_JAR_PATH);
-        for (KieBaseDescr kieBaseDescr : kieProject.getKieBaseDescrs().values()) {
-            for (String kBaseFile : getFiles(kieBaseDescr.getName(), kBasesFolder)) {
+        for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
+            for (String kBaseFile : getFiles(kieBaseModel.getName(), kBasesFolder)) {
                 jarEntries.put(KBASES_FOLDER + "/" + kBaseFile, kBaseFile);
             }
         }

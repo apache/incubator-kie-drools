@@ -54,8 +54,8 @@ public class KProjectMojo extends AbstractMojo {
 
         for (File kBaseFolder : sourceFolder.listFiles()) {
             String kBaseName = kBaseFolder.getName();
-            kproj.newKieBaseDescr(kBaseName)
-                    .newKieSessionDescr(kBaseName + ".session")
+            kproj.newKieBaseModel(kBaseName)
+                    .newKieSessionModel(kBaseName + ".session")
                     .setType("stateful");
         }
 

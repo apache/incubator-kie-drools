@@ -12,9 +12,9 @@ import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.Test;
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProject;
-import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KieSessionModel;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 
@@ -173,12 +173,12 @@ public class KProjectTest extends AbstractKnowledgeTest {
 
     public void populateClasses(KieProject kproject,
                                 List<String> classes) {
-        for ( KieBaseDescr kieBaseDescr : kproject.getKieBaseDescrs().values() ) {
-            classes.add(kieBaseDescr.getName() + "Producer.java");
-            classes.add(kieBaseDescr.getName() + ".java" );
-            for ( KieSessionDescr kieSessionDescr : kieBaseDescr.getKieSessionDescrs().values() ) {
-                classes.add( kieSessionDescr.getName() + "Producer.java" );
-                classes.add( kieSessionDescr.getName() + ".java" );
+        for ( KieBaseModel kieBaseModel : kproject.getKieBaseModels().values() ) {
+            classes.add(kieBaseModel.getName() + "Producer.java");
+            classes.add(kieBaseModel.getName() + ".java" );
+            for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
+                classes.add( kieSessionModel.getName() + "Producer.java" );
+                classes.add( kieSessionModel.getName() + ".java" );
             }
         }
     }

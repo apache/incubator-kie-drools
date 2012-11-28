@@ -8,9 +8,9 @@ import org.drools.kproject.memory.MemoryFile;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.junit.After;
 import org.junit.Before;
-import org.kie.builder.KieBaseDescr;
+import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProject;
-import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KieSessionModel;
 import org.kie.KnowledgeBase;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -53,39 +53,39 @@ public class AbstractKnowledgeTest {
         kproj.setKProjectPath( "src/main/resources/" );
         kproj.setKBasesPath( "src/kbases" );
 
-        KieBaseDescr kieBaseDescr1 = kproj.newKieBaseDescr(namespace + ".KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KieSessionDescr ksession1 = kieBaseDescr1.newKieSessionDescr(namespace + ".KSession1")
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(namespace + ".KSession1")
                 .setType( "stateless" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        KieSessionDescr ksession2 = kieBaseDescr1.newKieSessionDescr(namespace + ".KSession2")
+        KieSessionModel ksession2 = kieBaseModel1.newKieSessionModel(namespace + ".KSession2")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KieBaseDescr kieBaseDescr2 = kproj.newKieBaseDescr(namespace + ".KBase2")
+        KieBaseModel kieBaseModel2 = kproj.newKieBaseModel(namespace + ".KBase2")
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KieSessionDescr ksession3 = kieBaseDescr2.newKieSessionDescr(namespace + ".KSession3")
+        KieSessionModel ksession3 = kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
                 .setType( "stateful" )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KieBaseDescr kieBaseDescr3 = kproj.newKieBaseDescr(namespace + ".KBase3")
-                .addInclude( kieBaseDescr1.getName() )
-                .addInclude( kieBaseDescr2.getName() )
+        KieBaseModel kieBaseModel3 = kproj.newKieBaseModel(namespace + ".KBase3")
+                .addInclude( kieBaseModel1.getName() )
+                .addInclude( kieBaseModel2.getName() )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KieSessionDescr ksession4 = kieBaseDescr3.newKieSessionDescr(namespace + ".KSession4")
+        KieSessionModel ksession4 = kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
                 .setType( "stateless" )
                 .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
@@ -106,8 +106,8 @@ public class AbstractKnowledgeTest {
         String kbase2R1 = getRule( namespace + ".test2", "rule1" );
         String kbase2R2 = getRule( namespace + ".test2", "rule2" );
 
-        String fldKB1 = kproj.getKBasesPath() + "/" + kieBaseDescr1.getName();
-        String fldKB2 = kproj.getKBasesPath() + "/" + kieBaseDescr2.getName();
+        String fldKB1 = kproj.getKBasesPath() + "/" + kieBaseModel1.getName();
+        String fldKB2 = kproj.getKBasesPath() + "/" + kieBaseModel2.getName();
 
         mfs.getFolder( fldKB1 ).create();
         mfs.getFolder( fldKB2 ).create();
@@ -212,7 +212,7 @@ public class AbstractKnowledgeTest {
                                 MemoryFileSystem srcMfs,
                                 MemoryFileSystem trgMfs,
                                 List<String> classes) {
-        for ( KieBaseDescr kbase : kproj.getKieBaseDescrs().values() ) {
+        for ( KieBaseModel kbase : kproj.getKieBaseModels().values() ) {
             Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getName() );
             Folder trgFolder = trgMfs.getFolder(kbase.getName());
 

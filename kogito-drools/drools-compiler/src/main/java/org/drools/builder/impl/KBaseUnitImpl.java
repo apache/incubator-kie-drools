@@ -1,7 +1,7 @@
 package org.drools.builder.impl;
 
-import org.kie.builder.KieBaseDescr;
-import org.kie.builder.KieSessionDescr;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieSessionModel;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
@@ -31,7 +31,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.drools.kproject.KieBaseDescrImpl.getFiles;
+import static org.drools.kproject.KieBaseModelImpl.getFiles;
 import static org.drools.builder.impl.KnowledgeContainerImpl.KPROJECT_JAR_PATH;
 
 public class KBaseUnitImpl implements KBaseUnit {
@@ -40,21 +40,21 @@ public class KBaseUnitImpl implements KBaseUnit {
 
     private final String url;
 
-    private final KieBaseDescr kieBaseDescr;
+    private final KieBaseModel kieBaseModel;
     private final ClassLoader classLoader;
 
     private KnowledgeBuilder kbuilder;
     private KnowledgeBase knowledgeBase;
 
-    private List<KieBaseDescr> includes = null;
+    private List<KieBaseModel> includes = null;
 
-    public KBaseUnitImpl(URL url, KieBaseDescr kieBaseDescr) {
-        this(fixURL(url), kieBaseDescr, new URLClassLoader( new URL[] { url }));
+    public KBaseUnitImpl(URL url, KieBaseModel kieBaseModel) {
+        this(fixURL(url), kieBaseModel, new URLClassLoader( new URL[] { url }));
     }
 
-    public KBaseUnitImpl(String url, KieBaseDescr kieBaseDescr, ClassLoader classLoader) {
+    public KBaseUnitImpl(String url, KieBaseModel kieBaseModel, ClassLoader classLoader) {
         this.url = url;
-        this.kieBaseDescr = kieBaseDescr;
+        this.kieBaseModel = kieBaseModel;
         this.classLoader = classLoader;
     }
 
@@ -72,11 +72,11 @@ public class KBaseUnitImpl implements KBaseUnit {
         return knowledgeBase;
     }
 
-    void addInclude(KieBaseDescr kieBaseDescr) {
+    void addInclude(KieBaseModel kieBaseModel) {
         if (includes == null) {
-            includes = new ArrayList<KieBaseDescr>();
+            includes = new ArrayList<KieBaseModel>();
         }
-        includes.add(kieBaseDescr);
+        includes.add(kieBaseModel);
     }
 
     boolean hasIncludes() {
@@ -84,7 +84,7 @@ public class KBaseUnitImpl implements KBaseUnit {
     }
 
     public String getKBaseName() {
-        return kieBaseDescr.getName();
+        return kieBaseModel.getName();
     }
 
     public boolean hasErrors() {
@@ -111,9 +111,9 @@ public class KBaseUnitImpl implements KBaseUnit {
         KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kConf);
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
-        buildKBaseFiles(ckbuilder, kieBaseDescr);
+        buildKBaseFiles(ckbuilder, kieBaseModel);
         if (includes != null) {
-            for (KieBaseDescr include : includes) {
+            for (KieBaseModel include : includes) {
                 buildKBaseFiles(ckbuilder, include);
             }
         }
@@ -121,7 +121,7 @@ public class KBaseUnitImpl implements KBaseUnit {
         return kbuilder;
     }
 
-    private void buildKBaseFiles(CompositeKnowledgeBuilder ckbuilder, KieBaseDescr kieBaseDescr) {
+    private void buildKBaseFiles(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel) {
         String rootPath = url;
         if ( rootPath.lastIndexOf( ':' ) > 0 ) {
             rootPath = url.substring( rootPath.lastIndexOf( ':' ) + 1 );
@@ -130,18 +130,18 @@ public class KBaseUnitImpl implements KBaseUnit {
         if ( url.endsWith( ".jar" ) ) {
             File actualZipFile = new File( rootPath );
             if ( !actualZipFile.exists() ) {
-                log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jarPath cannot be found\n" + rootPath );
+                log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + " as jarPath cannot be found\n" + rootPath );
             }
 
             ZipFile zipFile = null;
             try {
                 zipFile = new ZipFile( actualZipFile );
             } catch ( Exception e ) {
-                log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jar cannot be opened\n" + e.getMessage() );
+                log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + " as jar cannot be opened\n" + e.getMessage() );
             }
 
             try {
-                for ( String file : getFiles(kieBaseDescr.getName(), zipFile) ) {
+                for ( String file : getFiles(kieBaseModel.getName(), zipFile) ) {
                     ZipEntry zipEntry = zipFile.getEntry( file );
                     ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.determineResourceType( file ) );
                 }
@@ -151,38 +151,38 @@ public class KBaseUnitImpl implements KBaseUnit {
                 } catch ( IOException e1 ) {
 
                 }
-                log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + " as jar cannot be read\n" + e.getMessage() );
+                log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + " as jar cannot be read\n" + e.getMessage() );
             }
         } else {
             try {
-                for ( String file : getFiles(kieBaseDescr.getName(), new File(rootPath)) ) {
+                for ( String file : getFiles(kieBaseModel.getName(), new File(rootPath)) ) {
                     ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ),ResourceType.determineResourceType( file ) );
                 }
             } catch ( Exception e) {
-                log.error( "Unable to build KieBaseDescr:" + kieBaseDescr.getName() + "\n" + e.getMessage() );
+                log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + "\n" + e.getMessage() );
             }
         }
     }
 
-    private KieSessionDescr getKSession(String ksessionName) {
-        KieSessionDescr kieSessionDescr = kieBaseDescr.getKieSessionDescrs().get(ksessionName);
-        if (kieSessionDescr == null) {
+    private KieSessionModel getKSession(String ksessionName) {
+        KieSessionModel kieSessionModel = kieBaseModel.getKieSessionModels().get(ksessionName);
+        if (kieSessionModel == null) {
             throw new RuntimeException("Unknown Knowledge Session: " + ksessionName + " in Knowledge Base: " + getKBaseName());
         }
-        return kieSessionDescr;
+        return kieSessionModel;
     }
 
     private KnowledgeBaseConfiguration getKnowledgeBaseConfiguration(Properties properties, ClassLoader... classLoaders) {
         KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(properties, classLoader);
-        kbConf.setOption(kieBaseDescr.getEqualsBehavior());
-        kbConf.setOption(kieBaseDescr.getEventProcessingMode());
+        kbConf.setOption(kieBaseModel.getEqualsBehavior());
+        kbConf.setOption(kieBaseModel.getEventProcessingMode());
         return kbConf;
     }
 
     private KnowledgeSessionConfiguration getKnowledgeSessionConfiguration(String ksessionName) {
-        KieSessionDescr kieSessionDescr = getKSession(ksessionName);
+        KieSessionModel kieSessionModel = getKSession(ksessionName);
         KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksConf.setOption(kieSessionDescr.getClockType());
+        ksConf.setOption(kieSessionModel.getClockType());
         return ksConf;
     }
 
