@@ -22,11 +22,11 @@ public interface KieProject {
 
     KieProject setKBasesPath(String kprojectPath);
 
-    KieBaseDescr newKieBaseDescr(String name);
+    KieBaseModel newKieBaseModel(String name);
     
-    void removeKieBaseDescr(String qName);
+    void removeKieBaseModel(String qName);
 
-    Map<String, KieBaseDescr> getKieBaseDescrs();
+    Map<String, KieBaseModel> getKieBaseModels();
 
     String toXML();
 }

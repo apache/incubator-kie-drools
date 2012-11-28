@@ -1,6 +1,6 @@
 package org.kie.builder;
 
-public interface Problem {
+public interface Message {
     long getId();
 
     Level getLevel();
