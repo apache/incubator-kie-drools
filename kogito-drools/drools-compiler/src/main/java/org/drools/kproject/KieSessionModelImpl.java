@@ -9,9 +9,6 @@ import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.conf.ClockTypeOption;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class KieSessionModelImpl
         implements
         KieSessionModel {

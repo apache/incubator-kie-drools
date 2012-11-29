@@ -59,16 +59,16 @@ public class KnowledgeRepositoryScannerTest {
 
         // -1 means no automatic scheduled scanning
         KnowledgeRepositoryScanner scanner = KnowledgeContainerFactory.newKnowledgeScanner(kContainer, -1);
-
+/*
         // set a fake PomParser to allow to discover the dependency that normally should be declared in the pom file
-        ((KnowledgeRepositoryScannerImpl)scanner).setPomParser(new PomParser() {
+        ((KieRepositoryScannerImpl)scanner).setPomParser(new PomParser() {
             public List<DependencyDescriptor> getPomDirectDependencies() {
                 return new ArrayList<DependencyDescriptor>() {{
                     add(new DependencyDescriptor("org.drools", "scanner-test", "1.0-SNAPSHOT", "jar"));
                 }};
             }
         });
-
+*/
         // create a ksesion and check it works as expected
         StatefulKnowledgeSession ksession = kContainer.getStatefulKnowlegeSession("KSession1");
         checkKSession(ksession, "rule1", "rule2");
@@ -105,16 +105,16 @@ public class KnowledgeRepositoryScannerTest {
 
         // -1 means no automatic scheduled scanning
         KnowledgeRepositoryScanner scanner = KnowledgeContainerFactory.newKnowledgeScanner(kContainer, -1);
-
+/*
         // set a fake PomParser to allow to discover the dependency that normally should be declared in the pom file
-        ((KnowledgeRepositoryScannerImpl)scanner).setPomParser(new PomParser() {
+        ((KieRepositoryScannerImpl)scanner).setPomParser(new PomParser() {
             public List<DependencyDescriptor> getPomDirectDependencies() {
                 return new ArrayList<DependencyDescriptor>() {{
                     add(new DependencyDescriptor("org.drools", "scanner-test", "1.0-SNAPSHOT", "jar"));
                 }};
             }
         });
-
+*/
         // create a ksesion and check it works as expected
         StatefulKnowledgeSession ksession = kContainer.getStatefulKnowlegeSession("KSession1");
         checkKSession(ksession, 14);
