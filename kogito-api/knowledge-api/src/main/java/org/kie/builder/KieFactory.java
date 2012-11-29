@@ -31,15 +31,9 @@ public interface KieFactory {
     
     KieFileSystem newKieFileSystem( );
 
-    KieFileSystem newKieFileSystem( KieProject kp );
-
     KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
     
     KieProject newKieProject();
-
-    KieProject newSimpleKieProject( GAV gav );
-    
-    KieProject newSimpleKieProject();
 
     public static class Factory {
         private static KieFactory INSTANCE;
