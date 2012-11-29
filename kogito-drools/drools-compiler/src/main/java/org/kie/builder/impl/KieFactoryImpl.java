@@ -50,4 +50,8 @@ public class KieFactoryImpl implements KieFactory {
         return new SimpleKieProjectImpl( gav );
     }
 
+    public KieProject newSimpleKieProject() {
+        return new SimpleKieProjectImpl();
+    }
+
 }

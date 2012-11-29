@@ -1,17 +1,6 @@
 package org.drools.kproject;
 
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.drools.core.util.AbstractXStreamConverter;
-import org.drools.core.util.Predicate;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProject;
-import org.kie.builder.KieSessionModel;
-import org.kie.builder.ResourceType;
-import org.kie.conf.AssertBehaviorOption;
-import org.kie.conf.EventProcessingOption;
+import static org.drools.core.util.IoUtils.recursiveListFile;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +13,19 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.drools.core.util.IoUtils.recursiveListFile;
+import org.drools.core.util.AbstractXStreamConverter;
+import org.drools.core.util.Predicate;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionModel;
+import org.kie.builder.ResourceType;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
+
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class KieBaseModelImpl
         implements
@@ -39,25 +40,25 @@ public class KieBaseModelImpl
 
     private Map<String, KieSessionModel>            kSessions;
 
-    private KieProjectImpl kProject;
+    private KieProject kProject;
 
     private KieBaseModelImpl() {
         this.includes = new HashSet<String>();
     }
 
-    public KieBaseModelImpl(KieProjectImpl kProject, String name) {
+    public KieBaseModelImpl(KieProject kProject, String name) {
         this.kProject = kProject;
         this.includes = new HashSet<String>();
         this.name = name;
         this.kSessions = Collections.emptyMap();
     }
 
-    public KieProjectImpl getKProject() {
+    public KieProject getKProject() {
         return kProject;
     }
     
     public void setKProject(KieProject kieProject) {
-        this.kProject = (KieProjectImpl) kieProject;
+        this.kProject = kieProject;
     }    
 
     /* (non-Javadoc)
