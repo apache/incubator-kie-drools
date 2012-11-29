@@ -30,21 +30,20 @@
 
 package org.kie.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
 import org.kie.KnowledgeBaseFactoryService;
 import org.kie.Service;
 import org.kie.SystemEventListenerService;
+import org.kie.builder.KieFactory;
 import org.kie.builder.KieServices;
-import org.kie.builder.KnowledgeBuilderFactoryService;
-import org.kie.builder.KnowledgeContainerFactoryService;
 import org.kie.concurrent.ExecutorProvider;
 import org.kie.io.ResourceFactoryService;
 import org.kie.marshalling.MarshallerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * This is an internal class, not for public consumption.
@@ -52,15 +51,15 @@ import org.slf4j.LoggerFactory;
 public class ServiceRegistryImpl
         implements
         ServiceRegistry {
-    private static ServiceRegistry          instance        = new ServiceRegistryImpl();
+    private static final ServiceRegistry          instance        = new ServiceRegistryImpl();
 
     protected static final transient Logger logger          = LoggerFactory.getLogger( ServiceRegistryImpl.class );
 
-    private Map<String, Callable< ? >>      registry        = new HashMap<String, Callable< ? >>();
-    private Map<String, Callable< ? >>      defaultServices = new HashMap<String, Callable< ? >>();
+    private final Map<String, Callable< ? >>      registry        = new HashMap<String, Callable< ? >>();
+    private final Map<String, Callable< ? >>      defaultServices = new HashMap<String, Callable< ? >>();
 
     public static synchronized ServiceRegistry getInstance() {
-        return ServiceRegistryImpl.instance;
+        return instance;
     }
 
     public ServiceRegistryImpl() {
@@ -174,10 +173,10 @@ public class ServiceRegistryImpl
     }
 
     private void init() {
-        addDefault( KnowledgeBuilderFactoryService.class,
+        addDefault( "org.kie.builder.KnowledgeBuilderFactoryService",
                     "org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
 
-        addDefault( KnowledgeContainerFactoryService.class,
+        addDefault( "org.kie.builder.KnowledgeContainerFactoryService",
                     "org.drools.builder.impl.KnowledgeContainerFactoryServiceImpl" );
 
         addDefault( KnowledgeBaseFactoryService.class,
@@ -194,21 +193,26 @@ public class ServiceRegistryImpl
                      "org.drools.concurrent.ExecutorProviderImpl");
         addDefault(  KieServices.class,
                      "org.kie.builder.impl.KieServicesImpl");
-        addDefault(  KieFactory.class,
-                     "org.kie.builder.impl.KieFactoryImpl");
+        addDefault( KieFactory.class,
+                    "org.kie.builder.impl.KieFactoryImpl");
     }
 
     public synchronized void addDefault(Class cls,
                                         String impl) {
+        addDefault(cls.getName(), impl);
+    }
+
+    private synchronized void addDefault(String service,
+                                        String impl) {
         ReflectionInstantiator<Service> resourceRi = new ReflectionInstantiator<Service>( impl );
-        defaultServices.put( cls.getName(),
+        defaultServices.put( service,
                              resourceRi );
     }
 
     static class ReflectionInstantiator<V>
             implements
             Callable<V> {
-        private String name;
+        private final String name;
 
         public ReflectionInstantiator(String name) {
             this.name = name;
@@ -232,7 +236,7 @@ public class ServiceRegistryImpl
     static class ReturnInstance<V>
             implements
             Callable<V> {
-        private Service service;
+        private final Service service;
 
         public ReturnInstance(Service service) {
             this.service = service;

@@ -1,7 +1,5 @@
 package org.kie;
 
-import org.kie.KnowledgeBase;
-import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 
@@ -29,12 +27,6 @@ public interface KBaseUnit {
      * @return
      */
     boolean hasErrors();
-
-    /**
-     * Return the errors that occurred during the build process of the KnowledgeBase wrapped by this KBaseUnit
-     * @return
-     */
-    KnowledgeBuilderErrors getErrors();
 
     /**
      * Instance a new StatefulKnowledgeSession identified by the gievn name from the KnowledgeBase wrapped by this KBaseUnit

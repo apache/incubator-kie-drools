@@ -16,17 +16,17 @@
 
 package org.kie.builder;
 
-import java.util.List;
-
 import com.sun.tools.xjc.Options;
+
+import java.util.List;
 
 public interface JaxbConfiguration
     extends
     ResourceConfiguration {
 
     public Options getXjcOpts();
-    
-    
+
+
     public String getSystemId();
 
 
