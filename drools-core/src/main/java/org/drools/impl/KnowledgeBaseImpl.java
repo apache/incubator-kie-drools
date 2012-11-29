@@ -82,8 +82,10 @@ import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
 import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
 import org.kie.runtime.Environment;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 
 public class KnowledgeBaseImpl
@@ -366,6 +368,27 @@ public class KnowledgeBaseImpl
 			this.listener.afterProcessRemoved(new AfterProcessRemovedEventImpl( this.kbase,
                                                                                 event.getProcess() ));
 		}
+    }
+
+    public KieSession newKieSession(KnowledgeSessionConfiguration conf,
+                                    Environment environment) {
+        return newStatefulKnowledgeSession( conf, environment );
+    }
+
+    public KieSession newKieSession() {
+        return newStatefulKnowledgeSession();
+    }
+
+    public Collection<? extends KieSession> getKieSessions() {
+        return getStatefulKnowledgeSessions();
+    }
+
+    public StatelessKieSession newStatelessKieSession(KnowledgeSessionConfiguration conf) {
+        return newStatelessKnowledgeSession( conf );
+    }
+
+    public StatelessKieSession newStatelessKieSession() {
+        return newStatelessKnowledgeSession();
     }
 
 }
