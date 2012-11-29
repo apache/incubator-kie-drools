@@ -1,7 +1,6 @@
 package org.drools.builder.impl;
 
-import java.util.Properties;
-
+import com.sun.tools.xjc.Options;
 import org.drools.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.compiler.PackageBuilder;
@@ -12,11 +11,9 @@ import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.JaxbConfiguration;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeBuilderFactoryService;
-import org.kie.builder.KnowledgeContainer;
 
-import com.sun.tools.xjc.Options;
+import java.util.Properties;
 
 public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFactoryService {
     

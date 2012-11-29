@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
+import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieJar;
 import org.kie.builder.KieProject;
@@ -49,23 +50,24 @@ public class KieRepositoryScannerTest {
     @Test @Ignore
     public void testKScanner() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        KieContainer kieContainer = ks.getKieContainer(ks.newGav("org.drools", "scanner-test", "1.0-SNAPSHOT"));
+        KieFactory kf = KieFactory.Factory.get();
+        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.drools", "scanner-test", "1.0-SNAPSHOT"));
 
-        KieJar kJar1 = createKieJar(ks, "rule1", "rule2");
+        KieJar kJar1 = createKieJar(kf, "rule1", "rule2");
         kieContainer.deploy(kJar1);
 
         MavenRepository repository = new MavenRepository();
         repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar1.asFile(), kPom);
 
         // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
-        KieScanner scanner = ks.newKieScanner(kieContainer);
+        KieScanner scanner = kf.newKieScanner(kieContainer);
 
         // create a ksesion and check it works as expected
         KieSession ksession = kieContainer.getKieSession("KSession1");
         checkKSession(ksession, "rule1", "rule2");
 
         // create a new kjar
-        KieJar kJar2 = createKieJar(ks, "rule2", "rule3");
+        KieJar kJar2 = createKieJar(kf, "rule2", "rule3");
 
         // deploy it on maven
         repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar2.asFile(), kPom);
@@ -81,20 +83,21 @@ public class KieRepositoryScannerTest {
     @Test @Ignore
     public void testKScannerWithKJarContainingClasses() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        KieContainer kieContainer = ks.getKieContainer(ks.newGav("org.drools", "scanner-test", "1.0-SNAPSHOT"));
+        KieFactory kf = KieFactory.Factory.get();
+        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.drools", "scanner-test", "1.0-SNAPSHOT"));
 
-        KieJar kJar1 = createKieJarWithClass(ks, 2, 7);
+        KieJar kJar1 = createKieJarWithClass(kf, 2, 7);
         kieContainer.deploy(kJar1);
 
         MavenRepository repository = new MavenRepository();
         repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar1.asFile(), kPom);
 
-        KieScanner scanner = ks.newKieScanner(kieContainer);
+        KieScanner scanner = kf.newKieScanner(kieContainer);
 
         KieSession ksession = kieContainer.getKieSession("KSession1");
         checkKSession(ksession, 14);
 
-        KieJar kJar2 = createKieJarWithClass(ks, 3, 5);
+        KieJar kJar2 = createKieJarWithClass(kf, 3, 5);
 
         repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar2.asFile(), kPom);
 
@@ -122,14 +125,14 @@ public class KieRepositoryScannerTest {
         return pomFile;
     }
 
-    private KieJar createKieJar(KieServices ks, String... rules) throws IOException {
-        KieFileSystem kfs = ks.newKieFileSystem();
+    private KieJar createKieJar(KieFactory kf, String... rules) throws IOException {
+        KieFileSystem kfs = kf.newKieFileSystem();
         for (String rule : rules) {
             String file = "org/test/" + rule + ".drl";
             kfs.write("src/kbases/KBase1/" + file, createDRL(rule));
         }
 
-        KieProject kproj = ks.newKieProject();
+        KieProject kproj = kf.newKieProject();
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
@@ -141,7 +144,7 @@ public class KieRepositoryScannerTest {
 
         kfs.write(KieContainer.KPROJECT_RELATIVE_PATH, kproj.toXML());
 
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        KieBuilder kieBuilder = kf.newKieBuilder(kfs);
         assertTrue(kieBuilder.build().isEmpty());
         return kieBuilder.getKieJar();
     }
@@ -168,10 +171,10 @@ public class KieRepositoryScannerTest {
         }
     }
 
-    private KieJar createKieJarWithClass(KieServices ks, int value, int factor) throws IOException {
-        KieFileSystem kieFileSystem = ks.newKieFileSystem();
+    private KieJar createKieJarWithClass(KieFactory kf, int value, int factor) throws IOException {
+        KieFileSystem kieFileSystem = kf.newKieFileSystem();
 
-        KieProject kproj = ks.newKieProject();
+        KieProject kproj = kf.newKieProject();
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
@@ -186,7 +189,7 @@ public class KieRepositoryScannerTest {
                 .write("src/kbases/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
                 .write("org/kie/test/Bean.java", createJavaSource(factor));
 
-        KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);
+        KieBuilder kieBuilder = kf.newKieBuilder(kieFileSystem);
         assertTrue(kieBuilder.build().isEmpty());
         return kieBuilder.getKieJar();
     }

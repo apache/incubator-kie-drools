@@ -98,7 +98,7 @@ public class KnowledgeRepositoryScannerTest {
         kContainer.deploy(kJar1);
 
         if (kContainer.getKBaseUnit("KBase1").hasErrors()) {
-            fail(kContainer.getKBaseUnit("KBase1").getErrors().toString());
+            fail("Failure Compiling KBase1");
         }
 
         MavenRepository repository = new MavenRepository();

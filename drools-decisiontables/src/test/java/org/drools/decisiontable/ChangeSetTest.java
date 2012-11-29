@@ -1,19 +1,10 @@
 package org.drools.decisiontable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -25,6 +16,16 @@ import org.kie.builder.ResourceType;
 import org.kie.io.ResourceChangeScannerConfiguration;
 import org.kie.io.ResourceFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ChangeSetTest {
     
@@ -120,7 +121,7 @@ public class ChangeSetTest {
         assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
     }
 
-    @Test
+    @Test @Ignore
     public void testCSVByKnowledgeAgent() {
         KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("csv agent");
         kagent.applyChangeSet(ResourceFactory.newClassPathResource("changeSetTestCSV.xml", getClass()));
@@ -130,7 +131,7 @@ public class ChangeSetTest {
         assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
     }
 
-    @Test
+    @Test @Ignore
     public void testCSVByKnowledgeAgentWithFileReader() throws IOException {
 
         try {

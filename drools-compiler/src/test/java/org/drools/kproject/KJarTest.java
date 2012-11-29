@@ -53,7 +53,7 @@ public class KJarTest {
 
         KBaseUnit unit = KnowledgeBaseFactory.getKBaseUnit("KBase1");
         if ( unit.hasErrors() ) {
-            fail( unit.getErrors().toString() );
+            fail("Failure Compiling KBase1");
         }
 
         KnowledgeBase kbase = unit.getKnowledgeBase();
