@@ -9,8 +9,6 @@ public interface KieContainer {
     String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
     String KPROJECT_RELATIVE_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
 
-    void deploy(KieJar kieJar);
-
     GAV getGAV();
 
     void updateToVersion(String version);

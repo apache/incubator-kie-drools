@@ -3,8 +3,6 @@ package org.kie.builder;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 
-import java.beans.PropertyChangeListener;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,10 +20,6 @@ public interface KieBaseModel {
 
     KieBaseModel removeInclude(String kBaseQName);
 
-    PropertyChangeListener getListener();
-
-    KieBaseModel setListener(PropertyChangeListener listener);
-
     String getName();
 
     KieBaseModel setName(String name);
@@ -37,8 +31,4 @@ public interface KieBaseModel {
     EventProcessingOption getEventProcessingMode();
 
     KieBaseModel setEventProcessingMode(EventProcessingOption eventProcessingMode);
-
-    List<String> getAnnotations();
-
-    KieBaseModel setAnnotations(List<String> annotations);
 }
