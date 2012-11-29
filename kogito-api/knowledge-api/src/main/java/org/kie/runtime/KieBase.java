@@ -133,7 +133,7 @@ public interface KieBase extends KnowledgeBaseEventManager {
      * 
      * @return a Collection of StatefulKnowledgeSessions
      */
-    Collection<KieSession> getKieSessions();
+    Collection<? extends KieSession> getKieSessions();
 
     /**
      * Create a new StatelessKnowledgeSession using the given session configuration.

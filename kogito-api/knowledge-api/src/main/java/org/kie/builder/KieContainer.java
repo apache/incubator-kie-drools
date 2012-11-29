@@ -2,7 +2,7 @@ package org.kie.builder;
 
 import org.kie.runtime.KieBase;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KieStatelessSession;
+import org.kie.runtime.StatelessKieSession;
 
 public interface KieContainer {
 
@@ -17,7 +17,7 @@ public interface KieContainer {
 
     KieSession getKieSession(String kSessionName);
 
-    KieStatelessSession getKieStatelessSession(String kSessionName);
+    StatelessKieSession getKieStatelessSession(String kSessionName);
 
     void dispose();
 }
