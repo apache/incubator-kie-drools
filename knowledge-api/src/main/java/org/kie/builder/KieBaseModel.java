@@ -21,8 +21,14 @@ public interface KieBaseModel {
     KieBaseModel removeInclude(String kBaseQName);
 
     String getName();
-
+    
     KieBaseModel setName(String name);
+
+    Set<String> getPackages();
+    
+    KieBaseModel addPackage(String pkg);
+    
+    KieBaseModel removePackage(String pkg);
 
     AssertBehaviorOption getEqualsBehavior();
 

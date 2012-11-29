@@ -13,6 +13,8 @@ public interface KieContainer {
 
     void updateToVersion(String version);
 
+    KieBase getKieBase();
+
     KieBase getKieBase(String kBaseName);
 
     KieSession getKieSession(String kSessionName);
