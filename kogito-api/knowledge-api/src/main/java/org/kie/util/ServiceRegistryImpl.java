@@ -37,6 +37,7 @@ import java.util.concurrent.Callable;
 import org.kie.KnowledgeBaseFactoryService;
 import org.kie.Service;
 import org.kie.SystemEventListenerService;
+import org.kie.builder.KieServices;
 import org.kie.builder.KnowledgeBuilderFactoryService;
 import org.kie.builder.KnowledgeContainerFactoryService;
 import org.kie.concurrent.ExecutorProvider;
@@ -49,14 +50,14 @@ import org.slf4j.LoggerFactory;
  * This is an internal class, not for public consumption.
  */
 public class ServiceRegistryImpl
-    implements
-    ServiceRegistry {
-    private static ServiceRegistry instance = new ServiceRegistryImpl();
+        implements
+        ServiceRegistry {
+    private static ServiceRegistry          instance        = new ServiceRegistryImpl();
 
-    protected static final transient Logger logger = LoggerFactory.getLogger(ServiceRegistryImpl.class);
+    protected static final transient Logger logger          = LoggerFactory.getLogger( ServiceRegistryImpl.class );
 
-    private Map<String, Callable< ? >> registry        = new HashMap<String, Callable< ? >>();
-    private Map<String, Callable< ? >> defaultServices = new HashMap<String, Callable< ? >>();
+    private Map<String, Callable< ? >>      registry        = new HashMap<String, Callable< ? >>();
+    private Map<String, Callable< ? >>      defaultServices = new HashMap<String, Callable< ? >>();
 
     public static synchronized ServiceRegistry getInstance() {
         return ServiceRegistryImpl.instance;
@@ -69,7 +70,8 @@ public class ServiceRegistryImpl
     /* (non-Javadoc)
      * @see org.kie.util.internal.ServiceRegistry#registerLocator(java.lang.String, java.util.concurrent.Callable)
      */
-    public synchronized void registerLocator(Class cls, Callable cal) {
+    public synchronized void registerLocator(Class cls,
+                                             Callable cal) {
         this.registry.put( cls.getName(),
                            cal );
     }
@@ -80,74 +82,75 @@ public class ServiceRegistryImpl
     public synchronized void unregisterLocator(Class cls) {
         this.registry.remove( cls.getName() );
     }
-    
-    synchronized void registerInstance(Service service, Map map) {
+
+    synchronized void registerInstance(Service service,
+                                       Map map) {
         //this.context.getProperties().put( "org.dr, value )
         logger.info( "regInstance : " + map );
-        String[] values = ( String[] ) map.get( "objectClass" );
+        String[] values = (String[]) map.get( "objectClass" );
 
         for ( String v : values ) {
             logger.info( v );
         }
-       // logger.info( "register : " + service );
+        // logger.info( "register : " + service );
         this.registry.put( service.getClass().getInterfaces()[0].getName(),
                            new ReturnInstance<Service>( service ) );
-        
 
-//        
-//        BundleContext bc = this.context.getBundleContext();
-//        ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
-//        ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
-//        
-//        try {
-//            Configuration conf = admin.getConfiguration( (String) confAdminRef.getProperty( "service.id" ) );
-//            Dictionary properties = conf.getProperties();
-//            properties.put( values[0], "true" );
-//            conf.update( properties );
-//        } catch ( IOException e ) {
-//            logger.error("error", e);
-//        }
+        //        
+        //        BundleContext bc = this.context.getBundleContext();
+        //        ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
+        //        ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
+        //        
+        //        try {
+        //            Configuration conf = admin.getConfiguration( (String) confAdminRef.getProperty( "service.id" ) );
+        //            Dictionary properties = conf.getProperties();
+        //            properties.put( values[0], "true" );
+        //            conf.update( properties );
+        //        } catch ( IOException e ) {
+        //            logger.error("error", e);
+        //        }
     }
 
     /* (non-Javadoc)
      * @see org.kie.util.internal.ServiceRegistry#unregisterLocator(java.lang.String)
      */
-    synchronized void unregisterInstance(Service service, Map map) {
+    synchronized void unregisterInstance(Service service,
+                                         Map map) {
         logger.info( "unregister : " + map );
         String name = service.getClass().getInterfaces()[0].getName();
         this.registry.remove( name );
         this.registry.put( name,
                            this.defaultServices.get( name ) );
     }
-    
-//    ConfigurationAdmin confAdmin;
-//    synchronized void setConfigurationAdmin(ConfigurationAdmin confAdmin) {
-//        this.confAdmin = confAdmin;
-//        logger.info( "ConfAdmin : " + this.confAdmin );
-//    }
-//    
-//    synchronized void unsetConfigurationAdmin(ConfigurationAdmin confAdmin) {
-//        this.confAdmin = null;
-//    }
-    
-//    private ComponentContext context;
-//    void activate(ComponentContext context) {
-//        logger.info( "reg comp" + context.getProperties() );
-//        this.context = context;
-//        
-//       
-//        
-//      BundleContext bc = this.context.getBundleContext();
-//      
-//      ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
-//      ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
-//      logger.info( "conf admin : " + admin );
-//        //context.
-//    //    log = (LogService) context.locateService("LOG");
-//        }
-//    void deactivate(ComponentContext context ){
-//        
-//    }
+
+    //    ConfigurationAdmin confAdmin;
+    //    synchronized void setConfigurationAdmin(ConfigurationAdmin confAdmin) {
+    //        this.confAdmin = confAdmin;
+    //        logger.info( "ConfAdmin : " + this.confAdmin );
+    //    }
+    //    
+    //    synchronized void unsetConfigurationAdmin(ConfigurationAdmin confAdmin) {
+    //        this.confAdmin = null;
+    //    }
+
+    //    private ComponentContext context;
+    //    void activate(ComponentContext context) {
+    //        logger.info( "reg comp" + context.getProperties() );
+    //        this.context = context;
+    //        
+    //       
+    //        
+    //      BundleContext bc = this.context.getBundleContext();
+    //      
+    //      ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
+    //      ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
+    //      logger.info( "conf admin : " + admin );
+    //        //context.
+    //    //    log = (LogService) context.locateService("LOG");
+    //        }
+    //    void deactivate(ComponentContext context ){
+    //        
+    //    }
 
     public synchronized <T> T get(Class<T> cls) {
 
@@ -189,20 +192,22 @@ public class ServiceRegistryImpl
                      "org.drools.marshalling.impl.MarshallerProviderImpl");
         addDefault(  ExecutorProvider.class,
                      "org.drools.concurrent.ExecutorProviderImpl");
-//        addDefault( SystemE.class,
-//        "org.kie.io.impl.ResourceFactoryServiceImpl" );
+        addDefault(  KieServices.class,
+                     "org.kie.builder.impl.KieServicesImpl");
+        addDefault(  KieFactory.class,
+                     "org.kie.builder.impl.KieFactoryImpl");
     }
 
     public synchronized void addDefault(Class cls,
-                           String impl) {
+                                        String impl) {
         ReflectionInstantiator<Service> resourceRi = new ReflectionInstantiator<Service>( impl );
         defaultServices.put( cls.getName(),
                              resourceRi );
     }
 
     static class ReflectionInstantiator<V>
-        implements
-        Callable<V> {
+            implements
+            Callable<V> {
         private String name;
 
         public ReflectionInstantiator(String name) {
@@ -212,7 +217,7 @@ public class ServiceRegistryImpl
         public V call() throws Exception {
             return (V) newInstance( name );
         }
-        
+
         static <T> T newInstance(String name) {
             try {
                 Class<T> cls = (Class<T>) Class.forName( name );
@@ -225,8 +230,8 @@ public class ServiceRegistryImpl
     }
 
     static class ReturnInstance<V>
-        implements
-        Callable<V> {
+            implements
+            Callable<V> {
         private Service service;
 
         public ReturnInstance(Service service) {
@@ -237,7 +242,5 @@ public class ServiceRegistryImpl
             return (V) service;
         }
     }
-
-
 
 }
