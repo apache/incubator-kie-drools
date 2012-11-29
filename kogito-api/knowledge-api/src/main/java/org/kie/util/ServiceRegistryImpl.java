@@ -34,6 +34,7 @@ import org.kie.KnowledgeBaseFactoryService;
 import org.kie.Service;
 import org.kie.SystemEventListenerService;
 import org.kie.builder.KieFactory;
+import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.concurrent.ExecutorProvider;
 import org.kie.io.ResourceFactoryService;
@@ -195,6 +196,8 @@ public class ServiceRegistryImpl
                      "org.kie.builder.impl.KieServicesImpl");
         addDefault( KieFactory.class,
                     "org.kie.builder.impl.KieFactoryImpl");
+        addDefault( KieScanner.class,
+                    "org.drools.scanner.KieRepositoryScannerImpl");
     }
 
     public synchronized void addDefault(Class cls,
