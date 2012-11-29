@@ -60,7 +60,6 @@ public class BuildMojo extends AbstractMojo {
 
         for (KBaseUnit kBaseUnit : kbuilder.getKBaseUnits(rootFolder, sourceFolder)) {
             if (kBaseUnit.hasErrors()) {
-                getLog().error(kBaseUnit.getErrors().toString());
                 throw new MojoFailureException(kBaseUnit.getKBaseName() + " build failed!");
             }
 

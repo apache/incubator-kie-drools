@@ -1,15 +1,14 @@
 package org.drools.builder.impl;
 
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieSessionModel;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
@@ -31,8 +30,8 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.drools.kproject.KieBaseModelImpl.getFiles;
 import static org.drools.builder.impl.KnowledgeContainerImpl.KPROJECT_JAR_PATH;
+import static org.drools.kproject.KieBaseModelImpl.getFiles;
 
 public class KBaseUnitImpl implements KBaseUnit {
 
@@ -89,10 +88,6 @@ public class KBaseUnitImpl implements KBaseUnit {
 
     public boolean hasErrors() {
         return getKBuilder().hasErrors();
-    }
-
-    public KnowledgeBuilderErrors getErrors() {
-        return getKBuilder().getErrors();
     }
 
     public StatefulKnowledgeSession newStatefulKnowledegSession(String ksessionName) {
