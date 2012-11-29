@@ -27,7 +27,7 @@ public interface KieFactory {
 
     GAV newGav(String groupId, String artifactId, String version);
     
-    GAV newDefaultGav();
+    GAV getDefaultGav();
     
     KieFileSystem newKieFileSystem( );
 
