@@ -1,9 +1,17 @@
 package org.kie.runtime;
 
-public interface KieSession extends KieRuleSession {
-    
+import org.kie.runtime.process.StatefulProcessSession;
+import org.kie.runtime.rule.StatefulRuleSession;
+
+public interface KieSession
+        extends
+        StatefulRuleSession,
+        StatefulProcessSession,
+        CommandExecutor,
+        KnowledgeRuntime {
+
     int getId();
-    
+
     /**
      * Releases all the current session resources, setting up the session for garbage collection.
      * This method <b>must</b> always be called after finishing using the session, or the engine

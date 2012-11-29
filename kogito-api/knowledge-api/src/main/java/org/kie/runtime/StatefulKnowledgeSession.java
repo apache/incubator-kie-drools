@@ -98,10 +98,6 @@ import org.kie.runtime.rule.StatefulRuleSession;
  */
 public interface StatefulKnowledgeSession
     extends
-    StatefulRuleSession,
-    StatefulProcessSession,
-    CommandExecutor,
-    KnowledgeRuntime,
     KieSession {
 
 }
