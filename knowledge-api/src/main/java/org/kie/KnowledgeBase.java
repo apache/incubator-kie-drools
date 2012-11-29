@@ -24,8 +24,8 @@ import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
-import org.kie.event.knowledgebase.KnowledgeBaseEventManager;
 import org.kie.runtime.Environment;
+import org.kie.runtime.KieBase;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
@@ -59,7 +59,7 @@ import org.kie.runtime.StatelessKnowledgeSession;
  */
 public interface KnowledgeBase
     extends
-    KnowledgeBaseEventManager {
+    KieBase {
 
     /**
      * Add the collection of KnowledgePackages to the KnowledgeBase. It is recommended that you
