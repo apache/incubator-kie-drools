@@ -26,7 +26,12 @@ public class GroupArtifactVersion implements GAV {
     public String getVersion() {
         return version;
     }
-    
+
+    @Override
+    public String toString() {
+        return groupId + ":" + artifactId + ":" + version;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

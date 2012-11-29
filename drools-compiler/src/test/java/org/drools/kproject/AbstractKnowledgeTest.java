@@ -50,44 +50,36 @@ public class AbstractKnowledgeTest {
 
         kproj.setGroupArtifactVersion( new GroupArtifactVersion( "org.test", namespace, "0.1" ) );
 
-        kproj.setKProjectPath( "src/main/resources/" );
         kproj.setKBasesPath( "src/kbases" );
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(namespace + ".KSession1")
                 .setType( "stateless" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         KieSessionModel ksession2 = kieBaseModel1.newKieSessionModel(namespace + ".KSession2")
                 .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         KieBaseModel kieBaseModel2 = kproj.newKieBaseModel(namespace + ".KBase2")
-                .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         KieSessionModel ksession3 = kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
                 .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         KieBaseModel kieBaseModel3 = kproj.newKieBaseModel(namespace + ".KBase3")
                 .addInclude( kieBaseModel1.getName() )
                 .addInclude( kieBaseModel2.getName() )
-                .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         KieSessionModel ksession4 = kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
                 .setType( "stateless" )
-                .setAnnotations( asList( "@ApplicationScoped" ) )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         MemoryFileSystem mfs = new MemoryFileSystem();

@@ -31,8 +31,6 @@ public class KieProjectImpl implements KieProject {
 
     private Map<String, KieBaseModel>  kBases;
     
-    private  transient PropertyChangeListener listener;
-    
     public KieProjectImpl() {
         kBases = Collections.emptyMap();
     }    
@@ -41,30 +39,10 @@ public class KieProjectImpl implements KieProject {
         return groupArtifactVersion;
     }
 
-    public void setGroupArtifactVersion(GAV groupArtifactVersion) {
+    public KieProject setGroupArtifactVersion(GAV groupArtifactVersion) {
         this.groupArtifactVersion = groupArtifactVersion;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#getListener()
-     */
-    public PropertyChangeListener getListener() {
-        return listener;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#setListener(java.beans.PropertyChangeListener)
-     */
-    public KieProject setListener(PropertyChangeListener listener) {
-        this.listener = listener;
-        for ( KieBaseModel kbase : kBases.values() ) {
-            // make sure the listener is set for each kbase
-            kbase.setListener( listener );
-        }
         return this;
     }
-
-
 
     /* (non-Javadoc)
      * @see org.kie.kproject.KieProject#getKProjectPath()
@@ -77,9 +55,6 @@ public class KieProjectImpl implements KieProject {
      * @see org.kie.kproject.KieProject#setKProjectPath(java.lang.String)
      */
     public KieProject setKProjectPath(String kprojectPath) {
-        if ( listener != null ) {
-            listener.propertyChange( new java.beans.PropertyChangeEvent( this, "kProjectPath", this.kProjectPath, kProjectPath ) );
-        }
         this.kProjectPath = kprojectPath;
         return this;
     }
@@ -95,9 +70,6 @@ public class KieProjectImpl implements KieProject {
      * @see org.kie.kproject.KieProject#setKBasesPath(java.lang.String)
      */
     public KieProject setKBasesPath(String kprojectPath) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "kBasesPath", this.kBasesPath, kBasesPath ) );     
-        }
         this.kBasesPath = kprojectPath;
         return this;
     }  
@@ -147,15 +119,6 @@ public class KieProjectImpl implements KieProject {
      * @see org.kie.kproject.KieProject#setKBases(java.util.Map)
      */
     private void setKBases(Map<String, KieBaseModel> kBases) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "kBases", this.kBases, kBases ) );
-            
-            for ( KieBaseModel kbase : kBases.values() ) {
-                // make sure the listener is set for each kbase
-                kbase.setListener( listener );
-            }
-        }
-        
         this.kBases = kBases;
     }
 

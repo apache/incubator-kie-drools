@@ -16,16 +16,11 @@
 
 package org.drools.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.drools.SessionConfiguration;
 import org.drools.base.MapGlobalResolver;
 import org.drools.command.impl.ContextImpl;
-import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
+import org.drools.command.impl.GenericCommand;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.common.InternalFactHandle;
@@ -49,14 +44,20 @@ import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.Environment;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.Globals;
+import org.kie.runtime.KieStatelessSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.rule.AgendaFilter;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 public class StatelessKnowledgeSessionImpl
     implements
-    StatelessKnowledgeSession {
+    StatelessKnowledgeSession, KieStatelessSession {
 
     private InternalRuleBase                                                  ruleBase;
     private KnowledgeAgent                                                    kagent;

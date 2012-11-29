@@ -13,8 +13,6 @@ import org.kie.builder.ResourceType;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -35,8 +33,6 @@ public class KieBaseModelImpl
     
     private Set<String>                      includes;
 
-    private List<String>                     annotations;
-
     private AssertBehaviorOption             equalsBehavior;
 
     private EventProcessingOption            eventProcessingMode;
@@ -44,8 +40,6 @@ public class KieBaseModelImpl
     private Map<String, KieSessionModel>            kSessions;
 
     private KieProjectImpl kProject;
-
-    private transient PropertyChangeListener listener;
 
     private KieBaseModelImpl() {
         this.includes = new HashSet<String>();
@@ -77,13 +71,6 @@ public class KieBaseModelImpl
      * @see org.kie.kproject.KieBaseModel#setKSessions(java.util.Map)
      */
     private void setKSessions(Map<String, KieSessionModel> kSessions) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "kSessions", this.kSessions, kSessions ) );
-            for ( KieSessionModel ksession : kSessions.values() ) {
-                // make sure the listener is set for each ksession
-                ksession.setListener( listener );
-            }
-        }
         this.kSessions = kSessions;
     }
 
@@ -121,25 +108,6 @@ public class KieBaseModelImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieBaseModel#getListener()
-     */
-    public PropertyChangeListener getListener() {
-        return listener;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieBaseModel#setListener(java.beans.PropertyChangeListener)
-     */
-    public KieBaseModel setListener(PropertyChangeListener listener) {
-        this.listener = listener;
-        for ( KieSessionModel ksession : kSessions.values() ) {
-            // make sure the listener is set for each ksession
-            ksession.setListener( listener );
-        }
-        return this;
-    }
-
-    /* (non-Javadoc)
      * @see org.kie.kproject.KieBaseModel#getName()
      */
     public String getName() {
@@ -150,9 +118,6 @@ public class KieBaseModelImpl
      * @see org.kie.kproject.KieBaseModel#setName(java.lang.String)
      */
     public KieBaseModel setName(String name) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "name", this.name, name ) );
-        }
         this.name = name;
         return this;
     }
@@ -182,9 +147,6 @@ public class KieBaseModelImpl
      * @see org.kie.kproject.KieBaseModel#setEqualsBehavior(org.kie.conf.AssertBehaviorOption)
      */
     public KieBaseModel setEqualsBehavior(AssertBehaviorOption equalsBehaviour) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "equalsBehavior", this.equalsBehavior, equalsBehavior ) );
-        }
         this.equalsBehavior = equalsBehaviour;
         return this;
     }
@@ -200,28 +162,7 @@ public class KieBaseModelImpl
      * @see org.kie.kproject.KieBaseModel#setEventProcessingMode(org.kie.conf.EventProcessingOption)
      */
     public KieBaseModel setEventProcessingMode(EventProcessingOption eventProcessingMode) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "eventProcessingMode", this.eventProcessingMode, eventProcessingMode ) );
-        }
         this.eventProcessingMode = eventProcessingMode;
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieBaseModel#getAnnotations()
-     */
-    public List<String> getAnnotations() {
-        return annotations;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieBaseModel#setAnnotations(java.util.List)
-     */
-    public KieBaseModel setAnnotations(List<String> annotations) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "annotations", this.annotations, annotations ) );
-        }
-        this.annotations = annotations;
         return this;
     }
 
@@ -230,7 +171,7 @@ public class KieBaseModelImpl
      */
     @Override
     public String toString() {
-        return "KieBaseModel [name=" + name + ", annotations=" + annotations + ", equalsBehaviour=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", ksessions=" + kSessions + "]";
+        return "KieBaseModel [name=" + name + ", equalsBehaviour=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", ksessions=" + kSessions + "]";
     }
 
     public static List<String> getFiles(String kBaseName, ZipFile zipFile) {

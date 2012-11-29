@@ -15,6 +15,7 @@ import org.kie.builder.KieProject;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.impl.InternalKieJar;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -51,16 +51,12 @@ public class KieRepositoryScannerTest {
     public void testKScanner() throws Exception {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
-        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.drools", "scanner-test", "1.0-SNAPSHOT"));
 
         KieJar kJar1 = createKieJar(kf, "rule1", "rule2");
-        kieContainer.deploy(kJar1);
+        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
         MavenRepository repository = new MavenRepository();
-        repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar1.asFile(), kPom);
-
-        // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
-        KieScanner scanner = kf.newKieScanner(kieContainer);
+        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar1).asFile(), kPom);
 
         // create a ksesion and check it works as expected
         KieSession ksession = kieContainer.getKieSession("KSession1");
@@ -70,7 +66,10 @@ public class KieRepositoryScannerTest {
         KieJar kJar2 = createKieJar(kf, "rule2", "rule3");
 
         // deploy it on maven
-        repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar2.asFile(), kPom);
+        repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar2).asFile(), kPom);
+
+        // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
+        KieScanner scanner = kf.newKieScanner(kieContainer);
 
         // scan the maven repo to get the new kjar version and deploy it on the kcontainer
         scanner.scanNow();
@@ -84,13 +83,12 @@ public class KieRepositoryScannerTest {
     public void testKScannerWithKJarContainingClasses() throws Exception {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
-        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.drools", "scanner-test", "1.0-SNAPSHOT"));
 
         KieJar kJar1 = createKieJarWithClass(kf, 2, 7);
-        kieContainer.deploy(kJar1);
+        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
         MavenRepository repository = new MavenRepository();
-        repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar1.asFile(), kPom);
+        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar1).asFile(), kPom);
 
         KieScanner scanner = kf.newKieScanner(kieContainer);
 
@@ -99,7 +97,7 @@ public class KieRepositoryScannerTest {
 
         KieJar kJar2 = createKieJarWithClass(kf, 3, 5);
 
-        repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", kJar2.asFile(), kPom);
+        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar2).asFile(), kPom);
 
         scanner.scanNow();
 
@@ -129,17 +127,18 @@ public class KieRepositoryScannerTest {
         KieFileSystem kfs = kf.newKieFileSystem();
         for (String rule : rules) {
             String file = "org/test/" + rule + ".drl";
-            kfs.write("src/kbases/KBase1/" + file, createDRL(rule));
+            kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
         }
 
-        KieProject kproj = kf.newKieProject();
+        KieProject kproj = kf.newKieProject()
+                .setGroupArtifactVersion(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
+
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kfs.write(KieContainer.KPROJECT_RELATIVE_PATH, kproj.toXML());
@@ -174,14 +173,15 @@ public class KieRepositoryScannerTest {
     private KieJar createKieJarWithClass(KieFactory kf, int value, int factor) throws IOException {
         KieFileSystem kieFileSystem = kf.newKieFileSystem();
 
-        KieProject kproj = kf.newKieProject();
+        KieProject kproj = kf.newKieProject()
+                .setGroupArtifactVersion(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
+
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kieFileSystem

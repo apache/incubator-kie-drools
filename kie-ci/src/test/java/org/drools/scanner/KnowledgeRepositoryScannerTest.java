@@ -6,15 +6,15 @@ import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.core.util.FileManager;
 import org.drools.kproject.Folder;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProject;
 import org.drools.kproject.KieProjectImpl;
-import org.kie.builder.KieSessionModel;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeContainer;
 import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.builder.KnowledgeRepositoryScanner;
@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -173,7 +172,6 @@ public class KnowledgeRepositoryScannerTest {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), kproj.toXML());
@@ -213,7 +211,6 @@ public class KnowledgeRepositoryScannerTest {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         Folder metaInf = mfs.getFolder( "META-INF" );

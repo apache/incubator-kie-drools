@@ -9,7 +9,7 @@ public class KieFileSystemImpl implements KieFileSystem {
     private final MemoryFileSystem mfs = new MemoryFileSystem();
 
     public KieFileSystem write(String path, byte[] content) {
-        mfs.write(path, content);
+        mfs.write(path, content, true);
         return this;
     }
 

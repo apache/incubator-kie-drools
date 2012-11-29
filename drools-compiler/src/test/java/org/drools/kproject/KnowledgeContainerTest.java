@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -100,7 +99,6 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KieProjectImpl)kproj).toXML() );

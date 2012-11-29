@@ -1,6 +1,7 @@
 package org.kie.builder.impl;
 
 import org.drools.commons.jci.problems.CompilationProblem;
+import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.Message;
 
 public class MessageImpl implements Message {
@@ -19,6 +20,24 @@ public class MessageImpl implements Message {
         line = problem.getStartLine();
         column = problem.getStartColumn();
         text = problem.getMessage();
+    }
+
+    public MessageImpl(long id, KnowledgeBuilderResult result) {
+        this.id = id;
+        switch (result.getSeverity()) {
+            case ERROR:
+                level = Level.ERROR;
+                break;
+            case WARNING:
+                level = Level.WARNING;
+                break;
+            default:
+                level = Level.INFO;
+        }
+        path = ""; // TODO ?
+        line = result.getLines()[0];
+        column = 0;
+        text = result.getMessage();
     }
 
     public long getId() {
