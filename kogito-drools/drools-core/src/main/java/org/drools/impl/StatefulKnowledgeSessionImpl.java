@@ -16,14 +16,6 @@
 
 package org.drools.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-
 import org.drools.FactException;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
@@ -31,7 +23,6 @@ import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
-import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
@@ -87,6 +78,7 @@ import org.kie.runtime.Environment;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.ExitPoint;
 import org.kie.runtime.Globals;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
@@ -100,11 +92,20 @@ import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+
 public class StatefulKnowledgeSessionImpl
         implements
         StatefulKnowledgeSession,
         InternalWorkingMemoryEntryPoint,
-        InternalKnowledgeRuntime {
+        InternalKnowledgeRuntime,
+        KieSession {
 
     public ReteooWorkingMemoryInterface session;
     public KnowledgeBase                kbase;

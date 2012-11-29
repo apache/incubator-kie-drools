@@ -9,8 +9,6 @@ import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.conf.ClockTypeOption;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,18 +20,13 @@ public class KieSessionModelImpl
     private String                           type;
     private ClockTypeOption                  clockType;
 
-    private List<String>                     annotations;
-
     private KieBaseModelImpl kBase;
     
-    private transient PropertyChangeListener listener;
-
     private KieSessionModelImpl() { }
 
     public KieSessionModelImpl(KieBaseModelImpl kBase, String name) {
         this.kBase = kBase;
         this.name = name;
-        this.annotations = new ArrayList<String>();
     }
     
     public KieBaseModelImpl getKBase() {
@@ -42,21 +35,6 @@ public class KieSessionModelImpl
     
     public void setKBase(KieBaseModel kieBaseModel) {
         this.kBase = (KieBaseModelImpl) kieBaseModel;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieSessionModel#getListener()
-     */
-    public PropertyChangeListener getListener() {
-        return listener;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieSessionModel#setListener(java.beans.PropertyChangeListener)
-     */
-    public KieSessionModel setListener(PropertyChangeListener listener) {
-        this.listener = listener;
-        return this;
     }
 
     /* (non-Javadoc)
@@ -70,9 +48,6 @@ public class KieSessionModelImpl
      * @see org.kie.kproject.KieSessionModel#setName(java.lang.String)
      */
     public KieSessionModel setName(String name) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "name", this.name, name ) );
-        }
         this.name = name;
         return this;
     }
@@ -88,9 +63,6 @@ public class KieSessionModelImpl
      * @see org.kie.kproject.KieSessionModel#setType(java.lang.String)
      */
     public KieSessionModel setType(String type) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "type", this.type, type ) );
-        }
         this.type = type;
         return this;
     }
@@ -106,34 +78,13 @@ public class KieSessionModelImpl
      * @see org.kie.kproject.KieSessionModel#setClockType(org.kie.runtime.conf.ClockTypeOption)
      */
     public KieSessionModel setClockType(ClockTypeOption clockType) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "clockType", this.clockType, clockType ) );
-        }
         this.clockType = clockType;
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieSessionModel#getAnnotations()
-     */
-    public List<String> getAnnotations() {
-        return annotations;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieSessionModel#setAnnotations(java.util.List)
-     */
-    public KieSessionModel setAnnotations(List<String> annotations) {
-        if ( listener != null ) {
-            listener.propertyChange( new PropertyChangeEvent( this, "annotations", this.annotations, annotations ) );
-        }
-        this.annotations = annotations;
         return this;
     }
 
     @Override
     public String toString() {
-        return "KieSessionModel [name=" + name + ", clockType=" + clockType + ", annotations=" + annotations + "]";
+        return "KieSessionModel [name=" + name + ", clockType=" + clockType + "]";
     }
 
     public static class KSessionConverter extends AbstractXStreamConverter {

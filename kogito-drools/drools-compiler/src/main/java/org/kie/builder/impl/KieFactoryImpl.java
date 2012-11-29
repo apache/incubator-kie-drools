@@ -1,6 +1,7 @@
 package org.kie.builder.impl;
 
 import org.drools.kproject.GroupArtifactVersion;
+import org.drools.kproject.KieProjectImpl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
@@ -28,6 +29,6 @@ public class KieFactoryImpl implements KieFactory {
     }
 
     public KieProject newKieProject() {
-        throw new UnsupportedOperationException("org.kie.builder.impl.KieFactoryImpl.newKieProject -> TODO");
+        return new KieProjectImpl();
     }
 }

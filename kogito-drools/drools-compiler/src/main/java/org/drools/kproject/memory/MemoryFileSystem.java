@@ -184,14 +184,23 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
         return getFileContents((MemoryFile) getFile(pResourceName));
     }
 
-    public void write(String pResourceName,
-                      byte[] pResourceData) {
+    public void write(String pResourceName, byte[] pResourceData) {
+        write(pResourceName, pResourceData, false);
+    }
+
+    public void write(String pResourceName, byte[] pResourceData, boolean createFolder) {
+        MemoryFile memoryFile = ( MemoryFile ) getFile( pResourceName );
+        if (createFolder) {
+            String folderPath = memoryFile.getFolder().getPath().toPortableString();
+            if (!existsFolder(folderPath)) {
+                memoryFile.getFolder().create();
+            }
+        }
         try {
-            setFileContents( ( MemoryFile ) getFile( pResourceName ), pResourceData );
+            setFileContents( memoryFile, pResourceData );
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }
-        
     }
 
     public byte[] read(String pResourceName) {
@@ -238,8 +247,8 @@ public class MemoryFileSystem implements FileSystem, ResourceReader, ResourceSto
                     out.write( buf, 0, len );
                 }
 
-                out.closeEntry();
                 bais.close();
+                out.closeEntry();
             }
         }
     }

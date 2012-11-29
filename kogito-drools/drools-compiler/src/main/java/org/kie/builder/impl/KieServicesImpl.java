@@ -13,7 +13,7 @@ public class KieServicesImpl implements KieServices {
     }
 
     public KieRepository getKieRepository() {
-        throw new UnsupportedOperationException("org.kie.builder.impl.KieServicesImpl.getKieRepository -> TODO");
+        return KieRepositoryImpl.INSTANCE;
     }
 
     public KieContainer getKieContainer(GAV gav) {

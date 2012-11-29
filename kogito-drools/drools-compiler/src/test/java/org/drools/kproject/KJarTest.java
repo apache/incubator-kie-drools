@@ -5,12 +5,12 @@ import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.builder.KieBaseModel;
 import org.kie.KBaseUnit;
-import org.kie.builder.KieProject;
-import org.kie.builder.KieSessionModel;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeContainer;
 import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.conf.AssertBehaviorOption;
@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -111,7 +110,6 @@ public class KJarTest {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         fileManager.write( fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KieProjectImpl)kproj).toXML() );
