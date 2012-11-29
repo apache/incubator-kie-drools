@@ -68,4 +68,17 @@ public interface KnowledgeRuntime
     
     KnowledgeSessionConfiguration getSessionConfiguration();
 
+    /**
+     * @deprecated Use {@link #registerChannel(String, Channel)} instead.
+     */
+    @Deprecated
+    void registerExitPoint(String name,
+                           ExitPoint exitPoint);
+
+    /**
+     * @deprecated Use {@link #unregisterChannel(String)} instead.
+     */
+    @Deprecated
+    void unregisterExitPoint(String name);
+
 }
