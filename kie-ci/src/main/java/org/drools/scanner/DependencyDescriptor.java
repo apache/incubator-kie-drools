@@ -3,6 +3,8 @@ package org.drools.scanner;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.model.Dependency;
+import org.drools.kproject.GroupArtifactVersion;
+import org.kie.builder.GAV;
 import org.sonatype.aether.artifact.Artifact;
 
 public class DependencyDescriptor {
@@ -36,6 +38,14 @@ public class DependencyDescriptor {
         artifactVersion = new DefaultArtifactVersion(version);
     }
 
+    public DependencyDescriptor(GAV gav) {
+        groupId = gav.getGroupId();
+        artifactId = gav.getArtifactId();
+        version = gav.getVersion();
+        type = "jar";
+        artifactVersion = new DefaultArtifactVersion(version);
+    }
+
     public String getGroupId() {
         return groupId;
     }
@@ -46,6 +56,10 @@ public class DependencyDescriptor {
 
     public String getVersion() {
         return version;
+    }
+
+    public GAV getGav() {
+        return new GroupArtifactVersion(groupId, artifactId, version);
     }
 
     public String getType() {

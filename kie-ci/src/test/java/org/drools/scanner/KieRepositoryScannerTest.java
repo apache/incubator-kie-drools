@@ -19,7 +19,6 @@ import org.kie.builder.impl.InternalKieJar;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 
 import java.io.File;
@@ -141,7 +140,7 @@ public class KieRepositoryScannerTest {
                 .setType( "stateful" )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        kfs.write(KieContainer.KPROJECT_RELATIVE_PATH, kproj.toXML());
+        kfs.write(KieContainer.KPROJECT_JAR_PATH, kproj.toXML());
 
         KieBuilder kieBuilder = kf.newKieBuilder(kfs);
         assertTrue(kieBuilder.build().isEmpty());
@@ -158,7 +157,7 @@ public class KieRepositoryScannerTest {
                 "end\n";
     }
 
-    private void checkKSession(StatefulKnowledgeSession ksession, Object... results) {
+    private void checkKSession(KieSession ksession, Object... results) {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
@@ -185,7 +184,7 @@ public class KieRepositoryScannerTest {
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kieFileSystem
-                .write(KieContainer.KPROJECT_RELATIVE_PATH, kproj.toXML())
+                .write(KieContainer.KPROJECT_JAR_PATH, kproj.toXML())
                 .write("src/kbases/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
                 .write("org/kie/test/Bean.java", createJavaSource(factor));
 

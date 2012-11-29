@@ -10,6 +10,7 @@ import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieProject;
 import org.kie.builder.KieScanner;
+import org.kie.util.ServiceRegistryImpl;
 
 public class KieFactoryImpl implements KieFactory {
 
@@ -22,8 +23,9 @@ public class KieFactoryImpl implements KieFactory {
     }
 
     public KieScanner newKieScanner(KieContainer kieContainer) {
-        throw new UnsupportedOperationException("org.kie.builder.impl.KieFactoryImpl.newKieScanner -> TODO");
-
+        InternalKieScanner scanner = (InternalKieScanner)ServiceRegistryImpl.getInstance().get( KieScanner.class );
+        scanner.setKieContainer(kieContainer);
+        return scanner;
     }
 
     public GAV newDefaultGav() {

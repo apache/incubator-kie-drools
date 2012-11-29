@@ -134,6 +134,9 @@ public class KieBuilderImpl implements KieBuilder {
 
     private KieProject getKieProject() {
         byte[] bytes = kieFileSystem.read(KieContainer.KPROJECT_RELATIVE_PATH);
+        if (bytes == null) {
+            bytes = kieFileSystem.read(KieContainer.KPROJECT_JAR_PATH);
+        }
         return KieProjectImpl.fromXML(new ByteArrayInputStream(bytes));
     }
 

@@ -1,12 +1,10 @@
 package org.kie.builder.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.drools.kproject.GroupArtifactVersion;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieContainer;
+import org.kie.builder.KieJar;
 import org.kie.builder.KieProject;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
@@ -15,9 +13,12 @@ import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 
-public class KieContainerImpl implements KieContainer {
+import java.util.HashMap;
+import java.util.Map;
 
-    private final GAV gav;
+public class KieContainerImpl implements InternalKieContainer {
+
+    private GAV gav;
     private AbstractKieJar kieJar;
     private Map<String, KieBaseModel> kSessions;
 
@@ -30,7 +31,13 @@ public class KieContainerImpl implements KieContainer {
     }
 
     public void updateToVersion(String version) {
-        throw new UnsupportedOperationException("org.kie.builder.impl.KieContainerImpl.updateToVersion -> TODO");
+        reset();
+        gav = new GroupArtifactVersion(gav.getGroupId(), gav.getArtifactId(), version);
+    }
+
+    public void updateKieJar(KieJar kieJar) {
+        reset();
+        this.kieJar = (AbstractKieJar) kieJar;
     }
 
     public KieBase getKieBase(String kBaseName) {
@@ -40,13 +47,13 @@ public class KieContainerImpl implements KieContainer {
     public KieSession getKieSession(String kSessionName) {
         KieBaseModel kieBaseModel = getKieBaseForSession(kSessionName);
         KieBase kieBase = getKieBase(kieBaseModel.getName());
-        return (KieSession) kieBase.newKieSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName), null);
+        return kieBase.newKieSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName), null);
     }
 
     public StatelessKieSession getKieStatelessSession(String kSessionName) {
         KieBaseModel kieBaseModel = getKieBaseForSession(kSessionName);
         KieBase kieBase = getKieBase(kieBaseModel.getName());
-        return (StatelessKieSession) kieBase.newStatelessKieSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName));
+        return kieBase.newStatelessKieSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName));
     }
 
     public void dispose() {

@@ -1,8 +1,11 @@
 package org.drools.scanner;
 
 import org.drools.scanner.embedder.EmbeddedPomParser;
-import org.kie.builder.KnowledgeContainer;
-import org.kie.builder.KnowledgeRepositoryScanner;
+import org.kie.builder.KieContainer;
+import org.kie.builder.KieScanner;
+import org.kie.builder.impl.FileKieJar;
+import org.kie.builder.impl.InternalKieContainer;
+import org.kie.builder.impl.InternalKieScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
@@ -19,32 +22,42 @@ import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanner {
+public class KieRepositoryScannerImpl implements InternalKieScanner {
 
-    private static final long DEFAULT_POLLING_INTERVAL = 60 * 1000L; // 1 minute
-    private final long pollingInterval;
+    private long pollingInterval;
 
-    private static final Logger log = LoggerFactory.getLogger(KnowledgeRepositoryScanner.class);
+    private Timer timer;
 
-    private final KnowledgeContainer knowledgeContainer;
+    private static final Logger log = LoggerFactory.getLogger(KieScanner.class);
 
-    private Set<DependencyDescriptor> usedDependencies;
+    private KieContainer kieContainer;
+
+    private final Set<DependencyDescriptor> usedDependencies = new HashSet<DependencyDescriptor>();
 
     private PomParser pomParser = new EmbeddedPomParser();
 
-    public KnowledgeRepositoryScannerImpl(KnowledgeContainer knowledgeContainer) {
-        this(knowledgeContainer, DEFAULT_POLLING_INTERVAL);
+    public void setKieContainer(KieContainer kieContainer) {
+        this.kieContainer = kieContainer;
+        DependencyDescriptor projectDescr = new DependencyDescriptor(kieContainer.getGAV());
+        if (!projectDescr.isFixedVersion()) {
+            usedDependencies.add(projectDescr);
+        }
     }
 
-    public KnowledgeRepositoryScannerImpl(KnowledgeContainer knowledgeContainer, long pollingInterval) {
-        this.knowledgeContainer = knowledgeContainer;
+    public void start(long pollingInterval) {
+        if (timer != null) {
+            throw new IllegalStateException("The scanner is already running");
+        }
         this.pollingInterval = pollingInterval;
-        start();
-    }
-
-    private void start() {
         if (init() && pollingInterval > 0) {
             startScanTask();
+        }
+    }
+
+    public void stop() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
     }
 
@@ -55,12 +68,13 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
             log.info("There's no artifacts containing a kjar: shutdown the scanner");
             return false;
         }
-        usedDependencies = indexAtifacts(artifacts);
-        return true;
+        indexAtifacts(artifacts);
+        return !usedDependencies.isEmpty();
     }
 
     private void startScanTask() {
-        new Timer(true).schedule(new ScanTask(), pollingInterval, pollingInterval);
+        timer = new Timer(true);
+        timer.schedule(new ScanTask(), pollingInterval, pollingInterval);
     }
 
     private class ScanTask extends TimerTask {
@@ -77,15 +91,15 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
         if (updatedArtifacts.isEmpty()) {
             return;
         }
-        File[] kJars = new File[updatedArtifacts.size()];
-        int i = 0;
         for (Artifact artifact : updatedArtifacts) {
-            kJars[i++] = artifact.getFile();
+            File kJar = artifact.getFile();
             DependencyDescriptor depDescr = new DependencyDescriptor(artifact);
             usedDependencies.remove(depDescr);
             usedDependencies.add(depDescr);
+            if (kieContainer.getGAV().equals(depDescr.getGav())) {
+                ((InternalKieContainer)kieContainer).updateKieJar(new FileKieJar(kJar));
+            }
         }
-        knowledgeContainer.deploy(kJars);
         log.info("The following artifacts have been updated: " + updatedArtifacts);
     }
 
@@ -102,12 +116,10 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
         return newArtifacts;
     }
 
-    private Set<DependencyDescriptor> indexAtifacts(Collection<Artifact> artifacts) {
-        Set<DependencyDescriptor> deps = new HashSet<DependencyDescriptor>();
+    private void indexAtifacts(Collection<Artifact> artifacts) {
         for (Artifact artifact : artifacts) {
-            deps.add(new DependencyDescriptor(artifact));
+            usedDependencies.add(new DependencyDescriptor(artifact));
         }
-        return deps;
     }
 
     private Collection<Artifact> findKJarAtifacts() {
@@ -168,11 +180,5 @@ public class KnowledgeRepositoryScannerImpl implements KnowledgeRepositoryScanne
         }
         ZipEntry zipEntry = zipFile.getEntry( KPROJECT_JAR_PATH );
         return zipEntry != null;
-    }
-
-    // Only for testing purpose
-    void setPomParser(PomParser pomParser) {
-        this.pomParser = pomParser;
-        start();
     }
 }
