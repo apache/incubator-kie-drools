@@ -11,7 +11,6 @@ public interface KieServices {
 
     KieContainer getKieContainer(GAV gav);
 
-
     public static class Factory {
         private static KieServices INSTANCE;
 
