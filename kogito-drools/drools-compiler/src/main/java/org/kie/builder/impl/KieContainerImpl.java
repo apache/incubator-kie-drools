@@ -1,5 +1,8 @@
 package org.kie.builder.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
@@ -9,11 +12,8 @@ import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.KieBase;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KieStatelessSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.runtime.StatelessKieSession;
 
 public class KieContainerImpl implements KieContainer {
 
@@ -40,13 +40,13 @@ public class KieContainerImpl implements KieContainer {
     public KieSession getKieSession(String kSessionName) {
         KieBaseModel kieBaseModel = getKieBaseForSession(kSessionName);
         KieBase kieBase = getKieBase(kieBaseModel.getName());
-        return (KieSession) kieBase.newStatefulKnowledgeSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName), null);
+        return (KieSession) kieBase.newKieSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName), null);
     }
 
-    public KieStatelessSession getKieStatelessSession(String kSessionName) {
+    public StatelessKieSession getKieStatelessSession(String kSessionName) {
         KieBaseModel kieBaseModel = getKieBaseForSession(kSessionName);
         KieBase kieBase = getKieBase(kieBaseModel.getName());
-        return (KieStatelessSession) kieBase.newStatelessKnowledgeSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName));
+        return (StatelessKieSession) kieBase.newStatelessKieSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName));
     }
 
     public void dispose() {
