@@ -53,8 +53,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieBuilder kb = kf.newKieBuilder( kfs );
         kb.build();
         
-        KieContainer kc = ks.getKieContainer( kf.newDefaultGav() );
-        KieBase kieBase = kc.getKieBase( "org.default.KBase" );
+        KieContainer kc = ks.getKieContainer( kf.getDefaultGav() );
+        KieBase kieBase = kc.getKieBase();
         KieSession ksession = kieBase.newKieSession();
         
         //ksession.insert( new Message("Hello World") );

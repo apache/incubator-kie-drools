@@ -13,9 +13,9 @@ import org.kie.util.ServiceRegistryImpl;
 
 public class KieFactoryImpl implements KieFactory {
 
-    private static final String DEFAULT_VERSION = "1.0";
+    private static final String DEFAULT_VERSION = "1.0.0-SNAPSHOT";
     private static final String DEFAULT_ARTIFACT = "default";
-    private static final String DEFAULT_GROUP = "org.user";
+    private static final String DEFAULT_GROUP = "default";
 
     public KieBuilder newKieBuilder(KieFileSystem kieFileSystem) {
         return new KieBuilderImpl(kieFileSystem);
@@ -27,7 +27,7 @@ public class KieFactoryImpl implements KieFactory {
         return scanner;
     }
 
-    public GAV newDefaultGav() {
+    public GAV getDefaultGav() {
         return new GroupArtifactVersion( DEFAULT_GROUP, DEFAULT_ARTIFACT, DEFAULT_VERSION);
     }
 
