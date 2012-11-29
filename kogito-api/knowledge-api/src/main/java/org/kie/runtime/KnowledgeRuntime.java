@@ -16,48 +16,16 @@
 
 package org.kie.runtime;
 
-import java.util.Map;
-
-import org.kie.KnowledgeBase;
 import org.kie.event.KnowledgeRuntimeEventManager;
 import org.kie.runtime.process.ProcessRuntime;
 import org.kie.runtime.rule.WorkingMemory;
-import org.kie.time.SessionClock;
 
 public interface KnowledgeRuntime
     extends
     WorkingMemory,
     ProcessRuntime,
-    KnowledgeRuntimeEventManager {
-
-    /**
-     * Returns the session clock instance assigned to this session
-     * @return
-     */
-    public <T extends SessionClock> T getSessionClock();
-
-    /**
-     * Sets a global value on the internal collection
-     * @param identifier the global identifier
-     * @param value the value assigned to the global identifier
-     */
-    void setGlobal(String identifier,
-                   Object value);
-
-    Object getGlobal(String identifier);
-
-    Globals getGlobals();
-
-    Calendars getCalendars();
-
-    Environment getEnvironment();
-
-    /**
-     * Returns the KnowledgeBase reference from which this stateful session was created.
-     * 
-     * @return
-     */
-    KnowledgeBase getKnowledgeBase();
+    KnowledgeRuntimeEventManager,
+    KieRuntime {
 
     /**
      * @deprecated Use {@link #registerChannel(String, Channel)} instead.
@@ -71,14 +39,5 @@ public interface KnowledgeRuntime
      */
     @Deprecated
     void unregisterExitPoint(String name);
-
-    void registerChannel(String name,
-                         Channel channel);
-
-    void unregisterChannel(String name);
-
-    Map< String, Channel> getChannels();
-    
-    KnowledgeSessionConfiguration getSessionConfiguration();
 
 }
