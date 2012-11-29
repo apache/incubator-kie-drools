@@ -2,7 +2,6 @@ package org.kie.builder.impl;
 
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieProject;
 import org.kie.io.Resource;
 
 public class KieFileSystemImpl
@@ -10,13 +9,8 @@ public class KieFileSystemImpl
         KieFileSystem {
 
     private final MemoryFileSystem mfs = new MemoryFileSystem();
-    private KieProject       kp;
 
     public KieFileSystemImpl() {
-    }
-
-    public KieFileSystemImpl(KieProject kp) {
-        this.kp = kp;
     }
 
     public KieFileSystem write(String path,

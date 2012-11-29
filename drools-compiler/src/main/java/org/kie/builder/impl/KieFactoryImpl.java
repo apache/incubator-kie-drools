@@ -2,7 +2,6 @@ package org.kie.builder.impl;
 
 import org.drools.kproject.GroupArtifactVersion;
 import org.drools.kproject.KieProjectImpl;
-import org.drools.kproject.SimpleKieProjectImpl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
@@ -44,16 +43,4 @@ public class KieFactoryImpl implements KieFactory {
         return new KieFileSystemImpl();
     }
     
-    public KieFileSystem newKieFileSystem(KieProject kp) {
-        return new KieFileSystemImpl( kp );
-    }
-
-    public KieProject newSimpleKieProject(GAV gav) {
-        return new SimpleKieProjectImpl( gav );
-    }
-
-    public KieProject newSimpleKieProject() {
-        return new SimpleKieProjectImpl();
-    }
-
 }

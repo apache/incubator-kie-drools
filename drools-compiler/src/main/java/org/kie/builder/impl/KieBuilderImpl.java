@@ -13,6 +13,7 @@ import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
+import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieJar;
 import org.kie.builder.KieProject;
@@ -137,7 +138,12 @@ public class KieBuilderImpl implements KieBuilder {
         if (bytes == null) {
             bytes = kieFileSystem.read(KieContainer.KPROJECT_JAR_PATH);
         }
-        return KieProjectImpl.fromXML(new ByteArrayInputStream(bytes));
+        if( bytes == null ) {
+            // no kieProject available, create one dynamically
+            return KieFactory.Factory.get().newKieProject();
+        } else {
+            return KieProjectImpl.fromXML(new ByteArrayInputStream(bytes));
+        }
     }
 
     private void compileJavaClasses() {
