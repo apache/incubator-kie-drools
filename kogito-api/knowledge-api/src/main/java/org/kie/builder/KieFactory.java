@@ -27,11 +27,17 @@ public interface KieFactory {
 
     GAV newGav(String groupId, String artifactId, String version);
     
-    KieFileSystem newKieFileSystem();
+    GAV newDefaultGav();
+    
+    KieFileSystem newKieFileSystem( );
+
+    KieFileSystem newKieFileSystem( KieProject kp );
 
     KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
     
     KieProject newKieProject();
+
+    KieProject newSimpleKieProject( GAV gav );
 
     public static class Factory {
         private static KieFactory INSTANCE;
@@ -48,4 +54,5 @@ public interface KieFactory {
             return INSTANCE;
         }
     }
+
 }
