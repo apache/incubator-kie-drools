@@ -16,28 +16,56 @@
 
 package org.kie.runtime;
 
+import java.util.Map;
+
+import org.kie.KnowledgeBase;
 import org.kie.event.KnowledgeRuntimeEventManager;
 import org.kie.runtime.process.ProcessRuntime;
 import org.kie.runtime.rule.WorkingMemory;
+import org.kie.time.SessionClock;
 
 public interface KnowledgeRuntime
     extends
     WorkingMemory,
     ProcessRuntime,
-    KnowledgeRuntimeEventManager,
-    KieRuntime {
+    KnowledgeRuntimeEventManager {
 
     /**
-     * @deprecated Use {@link #registerChannel(String, Channel)} instead.
+     * Returns the session clock instance assigned to this session
+     * @return
      */
-    @Deprecated
-    void registerExitPoint(String name,
-                           ExitPoint exitPoint);
+    public <T extends SessionClock> T getSessionClock();
 
     /**
-     * @deprecated Use {@link #unregisterChannel(String)} instead.
+     * Sets a global value on the internal collection
+     * @param identifier the global identifier
+     * @param value the value assigned to the global identifier
      */
-    @Deprecated
-    void unregisterExitPoint(String name);
+    void setGlobal(String identifier,
+                   Object value);
+
+    Object getGlobal(String identifier);
+
+    Globals getGlobals();
+
+    Calendars getCalendars();
+
+    Environment getEnvironment();
+
+    /**
+     * Returns the KnowledgeBase reference from which this stateful session was created.
+     * 
+     * @return
+     */
+    KnowledgeBase getKnowledgeBase();
+
+    void registerChannel(String name,
+                         Channel channel);
+
+    void unregisterChannel(String name);
+
+    Map< String, Channel> getChannels();
+    
+    KnowledgeSessionConfiguration getSessionConfiguration();
 
 }
