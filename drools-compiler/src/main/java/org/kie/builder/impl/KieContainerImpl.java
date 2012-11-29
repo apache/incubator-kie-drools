@@ -4,6 +4,7 @@ import org.drools.kproject.GroupArtifactVersion;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieFactory;
 import org.kie.builder.KieJar;
 import org.kie.builder.KieProject;
 import org.kie.builder.KieServices;
@@ -91,5 +92,9 @@ public class KieContainerImpl implements InternalKieContainer {
         KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksConf.setOption(kieSessionModel.getClockType());
         return ksConf;
+    }
+
+    public KieBase getKieBase() {
+        return loadKieJar().getKieBase( KieFactory.Factory.get().getDefaultGav().toExternalForm() );
     }
 }
