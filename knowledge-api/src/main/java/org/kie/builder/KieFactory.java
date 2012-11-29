@@ -38,6 +38,8 @@ public interface KieFactory {
     KieProject newKieProject();
 
     KieProject newSimpleKieProject( GAV gav );
+    
+    KieProject newSimpleKieProject();
 
     public static class Factory {
         private static KieFactory INSTANCE;
