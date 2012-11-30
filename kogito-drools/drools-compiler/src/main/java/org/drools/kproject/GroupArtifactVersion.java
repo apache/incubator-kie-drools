@@ -35,6 +35,10 @@ public class GroupArtifactVersion implements GAV {
     public String toExternalForm() {
         return toString();
     }
+    
+    public String toJarPath() {
+        return "META-INF/maven/" + groupId + "/" + artifactId; 
+    }
 
     @Override
     public boolean equals(Object o) {

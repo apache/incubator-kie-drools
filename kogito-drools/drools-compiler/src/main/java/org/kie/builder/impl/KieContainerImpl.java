@@ -17,10 +17,12 @@ import org.kie.runtime.StatelessKieSession;
 import java.util.HashMap;
 import java.util.Map;
 
-public class KieContainerImpl implements InternalKieContainer {
+public class KieContainerImpl
+    implements
+    InternalKieContainer {
 
-    private GAV gav;
-    private AbstractKieJar kieJar;
+    private GAV                       gav;
+    private AbstractKieJar            kieJar;
     private Map<String, KieBaseModel> kSessions;
 
     public KieContainerImpl(GAV gav) {
@@ -33,7 +35,9 @@ public class KieContainerImpl implements InternalKieContainer {
 
     public void updateToVersion(String version) {
         reset();
-        gav = new GroupArtifactVersion(gav.getGroupId(), gav.getArtifactId(), version);
+        gav = new GroupArtifactVersion( gav.getGroupId(),
+                                        gav.getArtifactId(),
+                                        version );
     }
 
     public void updateKieJar(KieJar kieJar) {
@@ -42,44 +46,48 @@ public class KieContainerImpl implements InternalKieContainer {
     }
 
     public KieBase getKieBase(String kBaseName) {
-        return loadKieJar().getKieBase(kBaseName);
+        return loadKieJar().getKieBase( kBaseName );
     }
 
     public KieSession getKieSession(String kSessionName) {
-        KieBaseModel kieBaseModel = getKieBaseForSession(kSessionName);
-        KieBase kieBase = getKieBase(kieBaseModel.getName());
-        return kieBase.newKieSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName), null);
+        KieBaseModel kieBaseModel = getKieBaseForSession( kSessionName );
+        KieBase kieBase = getKieBase( kieBaseModel.getName() );
+        return kieBase.newKieSession( getKnowledgeSessionConfiguration( kieBaseModel,
+                                                                        kSessionName ),
+                                      null );
     }
 
     public StatelessKieSession getKieStatelessSession(String kSessionName) {
-        KieBaseModel kieBaseModel = getKieBaseForSession(kSessionName);
-        KieBase kieBase = getKieBase(kieBaseModel.getName());
-        return kieBase.newStatelessKieSession(getKnowledgeSessionConfiguration(kieBaseModel, kSessionName));
+        KieBaseModel kieBaseModel = getKieBaseForSession( kSessionName );
+        KieBase kieBase = getKieBase( kieBaseModel.getName() );
+        return kieBase.newStatelessKieSession( getKnowledgeSessionConfiguration( kieBaseModel,
+                                                                                 kSessionName ) );
     }
 
     public void dispose() {
         reset();
-        throw new UnsupportedOperationException("org.kie.builder.impl.KieContainerImpl.dispose -> TODO");
+        throw new UnsupportedOperationException( "org.kie.builder.impl.KieContainerImpl.dispose -> TODO" );
     }
 
     private AbstractKieJar loadKieJar() {
-        if (kieJar == null) {
-            kieJar = (AbstractKieJar) KieServices.Factory.get().getKieRepository().getKieJar(gav);
+        if ( kieJar == null ) {
+            kieJar = (AbstractKieJar) KieServices.Factory.get().getKieRepository().getKieJar( gav );
         }
         return kieJar;
     }
 
     private KieBaseModel getKieBaseForSession(String kSessionName) {
-        if (kSessions == null) {
+        if ( kSessions == null ) {
             kSessions = new HashMap<String, KieBaseModel>();
             KieProject kieProject = loadKieJar().kieProject;
-            for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
-                for (KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values()) {
-                    kSessions.put(kieSessionModel.getName(), kieBaseModel);
+            for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
+                for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
+                    kSessions.put( kieSessionModel.getName(),
+                                   kieBaseModel );
                 }
             }
         }
-        return kSessions.get(kSessionName);
+        return kSessions.get( kSessionName );
     }
 
     private void reset() {
@@ -87,14 +95,15 @@ public class KieContainerImpl implements InternalKieContainer {
         kSessions = null;
     }
 
-    private KnowledgeSessionConfiguration getKnowledgeSessionConfiguration(KieBaseModel kieBaseModel, String ksessionName) {
-        KieSessionModel kieSessionModel = kieBaseModel.getKieSessionModels().get(ksessionName);
+    private KnowledgeSessionConfiguration getKnowledgeSessionConfiguration(KieBaseModel kieBaseModel,
+                                                                           String ksessionName) {
+        KieSessionModel kieSessionModel = kieBaseModel.getKieSessionModels().get( ksessionName );
         KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        ksConf.setOption(kieSessionModel.getClockType());
+        ksConf.setOption( kieSessionModel.getClockType() );
         return ksConf;
     }
 
     public KieBase getKieBase() {
-        return loadKieJar().getKieBase( KieFactory.Factory.get().getDefaultGav().toExternalForm() );
+        return loadKieJar().getKieBase( KieServices.Factory.get().getKieRepository().getDefaultGAV().toExternalForm() );
     }
 }

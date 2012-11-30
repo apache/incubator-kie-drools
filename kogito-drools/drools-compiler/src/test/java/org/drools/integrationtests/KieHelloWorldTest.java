@@ -47,17 +47,17 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
         
-        KieFileSystem kfs = kf.newKieFileSystem();
-        kfs.write( "src/main/resources/org/domain/r1.drl", drl );
+        KieFileSystem kfs = kf.newKieFileSystem()
+                              .write( "src/main/resources/org/domain/r1.drl", drl );
         
-        KieBuilder kb = kf.newKieBuilder( kfs );
+        KieBuilder kb = ks.newKieBuilder( kfs );
         kb.build();
         
-        KieContainer kc = ks.getKieContainer( kf.getDefaultGav() );
+        KieContainer kc = ks.getKieContainer( );
         KieBase kieBase = kc.getKieBase();
         KieSession ksession = kieBase.newKieSession();
         
-        //ksession.insert( new Message("Hello World") );
+
         int count = ksession.fireAllRules();
          
         assertEquals( 1, count );

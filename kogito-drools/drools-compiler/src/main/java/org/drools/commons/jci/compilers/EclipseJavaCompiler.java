@@ -49,19 +49,34 @@ import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
  * Eclipse compiler implementation
  */
 public final class EclipseJavaCompiler extends AbstractJavaCompiler {
+    
+    private String prefix = "";
 
     private final EclipseJavaCompilerSettings defaultSettings;
 
     public EclipseJavaCompiler() {
-        this(new EclipseJavaCompilerSettings());
+        this(new EclipseJavaCompilerSettings(), "");
     }
 
     public EclipseJavaCompiler( final Map pSettings ) {
         defaultSettings = new EclipseJavaCompilerSettings(pSettings);
     }
 
-    public EclipseJavaCompiler( final EclipseJavaCompilerSettings pSettings ) {
+    public EclipseJavaCompiler( final EclipseJavaCompilerSettings pSettings, String prefix ) {
         defaultSettings = pSettings;
+        this.prefix = prefix;
+    }
+    
+    public String getPathName(String fullPath) {
+        if ( prefix.length() == 0 ) {
+            return fullPath;
+        }
+        
+        if ( fullPath.charAt( 0 )  == '/') {
+             return fullPath.substring( prefix.length() + 1 );
+        } else {
+            return fullPath.substring( prefix.length() );
+        }
     }
 
     final class CompilationUnit implements ICompilationUnit {
@@ -74,7 +89,9 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         CompilationUnit( final ResourceReader pReader, final String pSourceFile ) {
             reader = pReader;
-            clazzName = ClassUtils.convertResourceToClassName(pSourceFile);
+            
+            clazzName = ClassUtils.convertResourceToClassName( getPathName( pSourceFile ) );
+            
             fileName = pSourceFile;
             int dot = clazzName.lastIndexOf('.');
             if (dot > 0) {
@@ -218,7 +235,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
             private NameEnvironmentAnswer findType( final String pClazzName ) {
 
-                final String resourceName = ClassUtils.convertClassToResourcePath(pClazzName);
+                final String resourceName = ClassUtils.convertClassToResourcePath( pClazzName);
 
                 final byte[] clazzBytes = pStore.read( resourceName );
                 if (clazzBytes != null) {
@@ -282,7 +299,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 }
             }
 
-            private NameEnvironmentAnswer createNameEnvironmentAnswer(final String pClazzName, final byte[] clazzBytes) throws ClassFormatException {
+            private NameEnvironmentAnswer createNameEnvironmentAnswer(final String pClazzName, final byte[] clazzBytes) throws ClassFormatException {                
                 final char[] fileName = pClazzName.toCharArray();
                 final ClassFileReader classFileReader = new ClassFileReader(clazzBytes, fileName, true);
                 return new NameEnvironmentAnswer(classFileReader, null);
@@ -292,7 +309,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 // FIXME: this should not be tied to the extension
                 final String javaSource = pClazzName.replace('.', '/') + ".java";
                 final String classSource = pClazzName.replace('.', '/') + ".class";
-                return pReader.isAvailable(javaSource) || pReader.isAvailable(classSource);
+                return pReader.isAvailable( prefix + javaSource ) || pReader.isAvailable(prefix + classSource );
             }
 
             private boolean isPackage( final String pClazzName ) {

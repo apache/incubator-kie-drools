@@ -18,26 +18,46 @@ package org.drools.core.util;
 
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public final class ClassUtils {
+    private static final ProtectionDomain  PROTECTION_DOMAIN;
+
+    static {
+        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
+
+            public Object run() {
+                return ClassLoaderUtil.class.getProtectionDomain();
+            }
+        } );
+    }
+    
     private static Map<String, Class<?>> classes = Collections.synchronizedMap( new HashMap() );
 
     private static final String STAR    = "*";
@@ -409,6 +429,97 @@ public final class ClassUtils {
     public static boolean isOSX() {
         String os =  System.getProperty("os.name");
         return os.toUpperCase().contains( "MAC OS X" );
+    }
+    
+    /**
+     * This is an Internal Drools Class
+     */
+    public static class MapClassLoader extends ClassLoader  {
+
+        private Map<String, byte[]> map;
+        
+        public MapClassLoader(Map<String, byte[]> map, ClassLoader parent) {
+            super( parent );
+            this.map = map;
+        }
+
+        public Class<?> loadClass( final String name,
+                final boolean resolve ) throws ClassNotFoundException {
+            Class<?> cls = fastFindClass( name );
+
+            if (cls == null) {
+                final CompositeClassLoader parent = (CompositeClassLoader) getParent();
+                cls = parent.loadClass( name,
+                                        resolve,
+                                        this );
+            }
+
+            if (cls == null) {
+                throw new ClassNotFoundException( "Unable to load class: " + name );
+            }
+
+            return cls;
+        }
+
+        public Class<?> fastFindClass( final String name ) {
+            Class<?> cls = findLoadedClass( name );
+
+            if (cls == null) {
+                final byte[] clazzBytes = this.map.get( convertClassToResourcePath( name ) );
+                if (clazzBytes != null) {
+                    String pkgName = name.substring( 0,
+                                                     name.lastIndexOf( '.' ) );
+                    if (getPackage( pkgName ) == null) {
+                        definePackage( pkgName,
+                                       "",
+                                       "",
+                                       "",
+                                       "",
+                                       "",
+                                       "",
+                                       null );
+                    }
+
+                    cls = defineClass( name,
+                                       clazzBytes,
+                                       0,
+                                       clazzBytes.length,
+                                       PROTECTION_DOMAIN );
+                }
+
+                if (cls != null) {
+                    resolveClass( cls );
+                }
+            }
+
+            return cls;
+        }
+
+        public InputStream getResourceAsStream( final String name ) {
+            final byte[] clsBytes =  this.map.get( name );
+            if (clsBytes != null) {
+                return new ByteArrayInputStream( clsBytes );
+            }
+            return null;
+        }
+
+        public URL getResource( String name ) {
+            return null;
+        }
+
+        public Enumeration<URL> getResources( String name ) throws IOException {
+            return new Enumeration<URL>() {
+
+                public boolean hasMoreElements() {
+                    return false;
+                }
+
+                public URL nextElement() {
+                    throw new NoSuchElementException();
+                }
+            };
+        }
 
     }
+    
 }
