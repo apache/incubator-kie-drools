@@ -38,6 +38,12 @@
         <literal>Solver.getBestSolution()</literal>.</para>
       </listitem>
     </orderedlist>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Planner_configuration/inputOutputOverview.png"/>
+      </imageobject>
+    </mediaobject>
   </section>
 
   <section>
