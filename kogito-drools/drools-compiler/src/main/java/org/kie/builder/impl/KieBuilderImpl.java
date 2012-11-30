@@ -85,8 +85,8 @@ public class KieBuilderImpl
 
     public void init() {
         messages   = new ArrayList<Message>();
+        gav = getGAV();        
         kieProject = getKieProject();
-        gav = getGAV();
     }
 
     private GAV getGAV() {
@@ -239,7 +239,7 @@ public class KieBuilderImpl
         
         if ( bytes != null ) {
             try {
-                return KieProjectImpl.fromXML( new ByteArrayInputStream( bytes ) );
+                return ( KieProjectImpl ) KieProjectImpl.fromXML( new ByteArrayInputStream( bytes ) );
             } catch ( Exception e) {
                 invalidKieProject = true;  
                 messages.add( new MessageImpl( idGenerator++,
@@ -267,7 +267,7 @@ public class KieBuilderImpl
         KieRepository kr = KieServices.Factory.get().getKieRepository();
         if ( gav == null ) {
             gav = kr.getDefaultGAV();
-        }
+        }        
         
         if ( !invalidPomXml ) {
             if ( pomXml == null  ) {
@@ -288,7 +288,10 @@ public class KieBuilderImpl
                 kieProject.newKieBaseModel(gav.toExternalForm() );
             }
             trgMfs.write( "META-INF/kproject.xml", kieProject.toXML().getBytes(), true );
-        }        
+        }    
+        if ( kieProject != null ) {
+            kieProject.setGroupArtifactVersion( this.gav );
+        }
     }
    
    public String generatePomXml(GAV gav) {
