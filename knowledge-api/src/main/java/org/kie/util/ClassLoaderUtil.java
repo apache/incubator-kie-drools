@@ -16,7 +16,32 @@
 
 package org.kie.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
 public class ClassLoaderUtil {
+    private static final ProtectionDomain  PROTECTION_DOMAIN;
+
+
+    static {
+        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
+
+            public Object run() {
+                return ClassLoaderUtil.class.getProtectionDomain();
+            }
+        } );
+    }
+    
     public static CompositeClassLoader getClassLoader(final ClassLoader[] classLoaders,
                                                       final Class< ? > cls,
                                                       final boolean enableCache) {
@@ -57,4 +82,5 @@ public class ClassLoaderUtil {
 
         return cl;
     }
+    
 }

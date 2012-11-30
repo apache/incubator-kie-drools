@@ -15,6 +15,8 @@
  */
 package org.kie.builder;
 
+import java.io.File;
+
 import org.kie.util.ServiceRegistryImpl;
 
 /**
@@ -22,22 +24,14 @@ import org.kie.util.ServiceRegistryImpl;
  *
  */
 public interface KieFactory {
-
-    KieScanner newKieScanner(KieContainer kieContainer);
-
     GAV newGav(String groupId, String artifactId, String version);
     
-    GAV getDefaultGav();
-    
     KieFileSystem newKieFileSystem( );
-
-    KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
     
     KieProject newKieProject();
 
     public static class Factory {
         private static KieFactory INSTANCE;
-
         static {
             try {
                 INSTANCE = ServiceRegistryImpl.getInstance().get( KieFactory.class );
@@ -45,7 +39,6 @@ public interface KieFactory {
                 throw new RuntimeException("Unable to instance KieFactory", e);
             }
         }
-
         public static KieFactory get() {
             return INSTANCE;
         }
