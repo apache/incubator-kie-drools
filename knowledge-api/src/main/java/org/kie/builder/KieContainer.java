@@ -6,9 +6,6 @@ import org.kie.runtime.StatelessKieSession;
 
 public interface KieContainer {
 
-    String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
-    String KPROJECT_RELATIVE_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
-
     GAV getGAV();
 
     void updateToVersion(String version);
@@ -16,6 +13,8 @@ public interface KieContainer {
     KieBase getKieBase();
 
     KieBase getKieBase(String kBaseName);
+
+    KieSession getKieSession();
 
     KieSession getKieSession(String kSessionName);
 
