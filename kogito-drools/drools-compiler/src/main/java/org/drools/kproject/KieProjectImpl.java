@@ -84,6 +84,13 @@ public class KieProjectImpl implements KieProject {
         
         return kbase;
     }
+
+    public KieBaseModel newDefaultKieBaseModel() {
+        if ( kBases.containsKey(KieBaseModelImpl.DEFAULT_KIEBASE_NAME) ) {
+            throw new RuntimeException("This project already contains a default kie base");
+        }
+        return newKieBaseModel(KieBaseModelImpl.DEFAULT_KIEBASE_NAME);
+    }
     
     /* (non-Javadoc)
      * @see org.kie.kproject.KieProject#removeKieBaseModel(org.kie.kproject.KieBaseModel)
@@ -125,15 +132,6 @@ public class KieProjectImpl implements KieProject {
         if ( kProjectPath == null) {
             problems.add( "A path to the kproject.properties file must be specified" );
         }
-//
-//        // check valid kbase relative paths
-//        for ( Entry<String, String> entry : kbasePaths.entrySet() ) {
-//
-//        }
-
-        // validate valid kbases
-        //for ( Entry<String, >)
-
         return problems;
     }
 

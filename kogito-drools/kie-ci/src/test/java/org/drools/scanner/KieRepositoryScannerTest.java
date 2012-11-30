@@ -140,7 +140,7 @@ public class KieRepositoryScannerTest {
                 .setType( "stateful" )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        kfs.write(KieContainer.KPROJECT_JAR_PATH, kproj.toXML());
+        kfs.write(KieProject.KPROJECT_JAR_PATH, kproj.toXML());
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
@@ -184,7 +184,7 @@ public class KieRepositoryScannerTest {
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kieFileSystem
-                .write(KieContainer.KPROJECT_JAR_PATH, kproj.toXML())
+                .write(KieProject.KPROJECT_JAR_PATH, kproj.toXML())
                 .write("src/kbases/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
                 .write("org/kie/test/Bean.java", createJavaSource(factor));
 

@@ -1,10 +1,10 @@
 package org.kie.builder.impl;
 
 import org.drools.kproject.GroupArtifactVersion;
+import org.drools.kproject.KieBaseModelImpl;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieJar;
 import org.kie.builder.KieProject;
 import org.kie.builder.KieServices;
@@ -45,8 +45,16 @@ public class KieContainerImpl
         this.kieJar = (AbstractKieJar) kieJar;
     }
 
+    public KieBase getKieBase() {
+        return getKieBase(KieBaseModelImpl.DEFAULT_KIEBASE_NAME);
+    }
+
     public KieBase getKieBase(String kBaseName) {
         return loadKieJar().getKieBase( kBaseName );
+    }
+
+    public KieSession getKieSession() {
+        return getKieBase().newKieSession();
     }
 
     public KieSession getKieSession(String kSessionName) {
@@ -101,9 +109,5 @@ public class KieContainerImpl
         KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksConf.setOption( kieSessionModel.getClockType() );
         return ksConf;
-    }
-
-    public KieBase getKieBase() {
-        return loadKieJar().getKieBase( KieServices.Factory.get().getKieRepository().getDefaultGAV().toExternalForm() );
     }
 }

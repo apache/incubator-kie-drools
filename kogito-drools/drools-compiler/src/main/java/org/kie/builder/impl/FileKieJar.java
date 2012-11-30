@@ -1,6 +1,5 @@
 package org.kie.builder.impl;
 
-import org.kie.builder.KieContainer;
 import org.kie.builder.KieProject;
 
 import java.io.File;
@@ -52,7 +51,7 @@ public class FileKieJar extends AbstractKieJar {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ZipEntry zipEntry = zipFile.getEntry( KieContainer.KPROJECT_JAR_PATH );
+        ZipEntry zipEntry = zipFile.getEntry( KieProject.KPROJECT_JAR_PATH );
         if (zipEntry != null) {
             InputStream zipStream = null;
             try {
