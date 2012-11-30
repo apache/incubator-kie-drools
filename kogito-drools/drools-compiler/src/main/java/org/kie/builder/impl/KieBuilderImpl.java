@@ -58,7 +58,7 @@ public class KieBuilderImpl
 
     private long                 idGenerator = 1L;
 
-    private MemoryKieJar         kieJar;
+    private InternalKieJar       kieJar;
 
     private KieProject           kieProject;
     private byte[]               pomXml;
@@ -81,7 +81,7 @@ public class KieBuilderImpl
         messages = new ArrayList<Message>();
         gav = getGAV();        
         kieProject = getKieProject();
-        if (gav == null && kieProject != null) {
+        if (!invalidPomXml && gav == null && kieProject != null) {
             gav = kieProject.getGroupArtifactVersion();
         }
     }
@@ -181,8 +181,10 @@ public class KieBuilderImpl
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( filterFileInKBase( kieBase,
                                     fileName ) ) {
+                byte[] bytes = srcMfs.getBytes(fileName);
                 ckbuilder.add( ResourceFactory.newByteArrayResource( srcMfs.getBytes( fileName ) ),
                                ResourceType.determineResourceType( fileName ) );
+                trgMfs.write( fileName, bytes, true );
             }
         }
     }
@@ -217,26 +219,34 @@ public class KieBuilderImpl
     }
 
     public boolean hasMessages(Level... levels) {
-        build();
+        if ( !isBuilt() ) {
+            build();
+        }
         return !MessageImpl.filterMessages( messages,
                                             levels ).isEmpty();
     }
 
     public Messages getMessages(Level... levels) {
-        build();
+        if ( !isBuilt() ) {
+            build();
+        }
         return new MessagesImpl( MessageImpl.filterMessages( messages,
                                                              levels ),
                                  null );
     }
 
     public Messages getMessages() {
-        build();
+        if ( !isBuilt() ) {
+            build();
+        }
         return new MessagesImpl( messages,
                                  null );
     }
 
     public KieJar getKieJar() {
-        build();
+        if ( !isBuilt() ) {
+            build();
+        }
         if ( hasMessages( Level.ERROR ) || kieJar == null ) {
             throw new RuntimeException( "Unable to get KieJar, Errors Existed" );
         }
@@ -352,14 +362,22 @@ public class KieBuilderImpl
    }
     
     private ClassLoader compileJavaClasses() {
+        List<String> classFiles = new ArrayList<String>();
+        for ( String fileName : srcMfs.getFileNames() ) {
+            if ( fileName.endsWith( ".class" ) ) {
+                trgMfs.write(fileName, srcMfs.getBytes(fileName), true);
+                classFiles.add(fileName.substring(0, fileName.length() - ".class".length()));
+            }
+        }
+
         List<String> javaFiles = new ArrayList<String>();
         for ( String fileName : srcMfs.getFileNames() ) {
-            if ( fileName.endsWith( ".java" ) ) {
+            if ( fileName.endsWith( ".java" ) && !classFiles.contains(fileName.substring(0, fileName.length() - ".java".length())) ) {
                 javaFiles.add( fileName );
             }
         }
         if ( javaFiles.isEmpty() ) {
-            return getClass().getClassLoader();
+            return getCompositeClassLoader();
         }
 
         String[] sourceFiles = javaFiles.toArray( new String[javaFiles.size()] );
@@ -378,15 +396,16 @@ public class KieBuilderImpl
                                            problem ) );
         }
 
-        if ( res.getErrors().length == 0 ) {
-            CompositeClassLoader ccl = ClassLoaderUtil.getClassLoader( null,
-                                                                       getClass(),
-                                                                       true );
-            ccl.addClassLoader( new ClassUtils.MapClassLoader( trgMfs.getMap(),
-                                                               ccl ) );
-            return ccl;
-        }
-        return getClass().getClassLoader();
+        return res.getErrors().length == 0 ? getCompositeClassLoader() : getClass().getClassLoader();
+    }
+
+    private CompositeClassLoader getCompositeClassLoader() {
+        CompositeClassLoader ccl = ClassLoaderUtil.getClassLoader(null,
+                getClass(),
+                true);
+        ccl.addClassLoader( new ClassUtils.MapClassLoader( trgMfs.getMap(),
+                                                           ccl ) );
+        return ccl;
     }
 
     private EclipseJavaCompiler createCompiler(String prefix) {

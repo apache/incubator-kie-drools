@@ -1,13 +1,15 @@
 package org.drools.kproject.memory;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.File;
 import org.drools.kproject.Folder;
 import org.drools.kproject.Path;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.drools.core.util.IoUtils.getBytesFromInputStream;
 
 public class MemoryFile implements File {
     private String name;
@@ -64,8 +66,8 @@ public class MemoryFile implements File {
         if ( exists() ) {
             throw new IOException( "File does already exists, cannot create contents" );
         }
-        
-        mfs.setFileContents( this, StringUtils.toString( is ).getBytes() );
+
+        mfs.setFileContents( this, getBytesFromInputStream(is) );
     }
 
     @Override

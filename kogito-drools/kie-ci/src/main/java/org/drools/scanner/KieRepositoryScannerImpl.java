@@ -1,11 +1,13 @@
 package org.drools.scanner;
 
 import org.drools.scanner.embedder.EmbeddedPomParser;
+import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieScanner;
-import org.kie.builder.impl.FileKieJar;
+import org.kie.builder.KieServices;
 import org.kie.builder.impl.InternalKieContainer;
 import org.kie.builder.impl.InternalKieScanner;
+import org.kie.builder.impl.KieFileSystemImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
@@ -21,6 +23,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import static org.drools.kproject.memory.MemoryFileSystem.readFromJar;
 
 public class KieRepositoryScannerImpl implements InternalKieScanner {
 
@@ -97,10 +101,16 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             usedDependencies.remove(depDescr);
             usedDependencies.add(depDescr);
             if (kieContainer.getGAV().equals(depDescr.getGav())) {
-                ((InternalKieContainer)kieContainer).updateKieJar(new FileKieJar(kJar));
+                updateKieJar(kJar);
             }
         }
         log.info("The following artifacts have been updated: " + updatedArtifacts);
+    }
+
+    private void updateKieJar(File kJar) {
+        KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(new KieFileSystemImpl(readFromJar(kJar)));
+        kieBuilder.build();
+        ((InternalKieContainer)kieContainer).updateKieJar(kieBuilder.getKieJar());
     }
 
     private Collection<Artifact> scanForUpdates(Collection<DependencyDescriptor> dependencies) {

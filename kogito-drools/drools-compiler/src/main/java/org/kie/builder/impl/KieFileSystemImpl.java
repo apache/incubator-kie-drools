@@ -8,9 +8,14 @@ public class KieFileSystemImpl
         implements
         KieFileSystem {
 
-    private final MemoryFileSystem mfs = new MemoryFileSystem();
+    private final MemoryFileSystem mfs;
 
     public KieFileSystemImpl() {
+        this(new MemoryFileSystem());
+    }
+
+    public KieFileSystemImpl(MemoryFileSystem mfs) {
+        this.mfs = mfs;
     }
 
     public KieFileSystem write(String path,
