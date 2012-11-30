@@ -1,7 +1,5 @@
 package org.drools.kproject.memory;
 
-import static org.junit.Assert.fail;
-
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.commons.jci.stores.ResourceStore;
 import org.drools.core.util.FileManager;

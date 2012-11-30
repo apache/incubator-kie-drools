@@ -51,7 +51,7 @@ public class KieRepositoryScannerTest {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
 
-        KieJar kJar1 = createKieJar(kf, "rule1", "rule2");
+        KieJar kJar1 = createKieJar(ks, kf, "rule1", "rule2");
         KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
         MavenRepository repository = new MavenRepository();
@@ -62,13 +62,13 @@ public class KieRepositoryScannerTest {
         checkKSession(ksession, "rule1", "rule2");
 
         // create a new kjar
-        KieJar kJar2 = createKieJar(kf, "rule2", "rule3");
+        KieJar kJar2 = createKieJar(ks, kf, "rule2", "rule3");
 
         // deploy it on maven
         repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar2).asFile(), kPom);
 
         // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
-        KieScanner scanner = kf.newKieScanner(kieContainer);
+        KieScanner scanner = ks.newKieScanner(kieContainer);
 
         // scan the maven repo to get the new kjar version and deploy it on the kcontainer
         scanner.scanNow();
@@ -83,18 +83,18 @@ public class KieRepositoryScannerTest {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
 
-        KieJar kJar1 = createKieJarWithClass(kf, 2, 7);
+        KieJar kJar1 = createKieJarWithClass(ks, kf, 2, 7);
         KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
         MavenRepository repository = new MavenRepository();
         repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar1).asFile(), kPom);
 
-        KieScanner scanner = kf.newKieScanner(kieContainer);
+        KieScanner scanner = ks.newKieScanner(kieContainer);
 
         KieSession ksession = kieContainer.getKieSession("KSession1");
         checkKSession(ksession, 14);
 
-        KieJar kJar2 = createKieJarWithClass(kf, 3, 5);
+        KieJar kJar2 = createKieJarWithClass(ks, kf, 3, 5);
 
         repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar2).asFile(), kPom);
 
@@ -122,7 +122,7 @@ public class KieRepositoryScannerTest {
         return pomFile;
     }
 
-    private KieJar createKieJar(KieFactory kf, String... rules) throws IOException {
+    private KieJar createKieJar(KieServices ks, KieFactory kf, String... rules) throws IOException {
         KieFileSystem kfs = kf.newKieFileSystem();
         for (String rule : rules) {
             String file = "org/test/" + rule + ".drl";
@@ -142,8 +142,8 @@ public class KieRepositoryScannerTest {
 
         kfs.write(KieContainer.KPROJECT_JAR_PATH, kproj.toXML());
 
-        KieBuilder kieBuilder = kf.newKieBuilder(kfs);
-        assertTrue(kieBuilder.build().isEmpty());
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
         return kieBuilder.getKieJar();
     }
 
@@ -169,7 +169,7 @@ public class KieRepositoryScannerTest {
         }
     }
 
-    private KieJar createKieJarWithClass(KieFactory kf, int value, int factor) throws IOException {
+    private KieJar createKieJarWithClass(KieServices ks, KieFactory kf, int value, int factor) throws IOException {
         KieFileSystem kieFileSystem = kf.newKieFileSystem();
 
         KieProject kproj = kf.newKieProject()
@@ -188,8 +188,8 @@ public class KieRepositoryScannerTest {
                 .write("src/kbases/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
                 .write("org/kie/test/Bean.java", createJavaSource(factor));
 
-        KieBuilder kieBuilder = kf.newKieBuilder(kieFileSystem);
-        assertTrue(kieBuilder.build().isEmpty());
+        KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);
+        assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
         return kieBuilder.getKieJar();
     }
 
