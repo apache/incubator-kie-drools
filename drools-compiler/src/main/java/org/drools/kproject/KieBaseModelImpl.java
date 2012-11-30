@@ -46,6 +46,7 @@ public class KieBaseModelImpl
 
     private KieBaseModelImpl() {
         this.includes = new HashSet<String>();
+        this.kSessions = Collections.emptyMap();
     }
 
     public KieBaseModelImpl(KieProject kProject,
@@ -270,7 +271,11 @@ public class KieBaseModelImpl
             }
             // writeList(writer, "files", "file", kBase.getFiles());
             writeList( writer, "includes", "include", kBase.getIncludes() );
-            writeObjectList( writer, context, "ksessions", "ksession", kBase.getKieSessionModels().values() );
+            
+            Map<String, KieSessionModel> ksessions =  kBase.getKieSessionModels();
+            if ( !ksessions.isEmpty() ) {
+                writeObjectList( writer, context, "ksessions", "ksession", kBase.getKieSessionModels().values() );
+            }
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,

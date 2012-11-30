@@ -115,9 +115,10 @@ public class KieBuilderImpl
     public Messages build() {
         if ( !isBuilt() ) {
             trgMfs = new MemoryFileSystem();
+            writePomAndKProject();
+            
             kieJar = new MemoryKieJar( kieProject,
                                        trgMfs );
-            writePomAndKProject();
             compileJavaClasses();
             compileKieFiles();
             if ( !hasMessages( Level.ERROR ) ) {
@@ -264,7 +265,9 @@ public class KieBuilderImpl
     public void writePomAndKProject() {
         KieFactory kf = KieFactory.Factory.get();
         KieRepository kr = KieServices.Factory.get().getKieRepository();
-        gav = kr.getDefaultGAV();
+        if ( gav == null ) {
+            gav = kr.getDefaultGAV();
+        }
         
         if ( !invalidPomXml ) {
             if ( pomXml == null  ) {
@@ -280,9 +283,11 @@ public class KieBuilderImpl
         if ( !invalidKieProject ) {
             if ( kieProject == null  ) {
                 kieProject = kf.newKieProject();
-                kieProject.newKieBaseModel( gav.getGroupId() + "." + gav.getArtifactId() );           
+                //kieProject.newKieBaseModel( gav.getGroupId() + "." + gav.getArtifactId() );           
+                
+                kieProject.newKieBaseModel(gav.toExternalForm() );
             }
-            trgMfs.write( "META-INF/kproject.xml", kieProject.toXML().getBytes(), true );            
+            trgMfs.write( "META-INF/kproject.xml", kieProject.toXML().getBytes(), true );
         }        
     }
    
