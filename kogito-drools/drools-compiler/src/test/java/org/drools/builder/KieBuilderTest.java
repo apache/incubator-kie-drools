@@ -1,15 +1,6 @@
 package org.drools.builder;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.util.FileManager;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.junit.After;
@@ -26,12 +17,20 @@ import org.kie.builder.KieProject;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
 import org.kie.builder.Message.Level;
-import org.kie.builder.impl.KieFactoryImpl;
 import org.kie.builder.impl.KieFileSystemImpl;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieBase;
 import org.kie.runtime.KieSession;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class KieBuilderTest {
     protected FileManager fileManager;
@@ -74,7 +73,6 @@ public class KieBuilderTest {
     }
     
     public KieProject createKieProject(String namespace) {        
-        KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
         
         KieProject kProj = kf.newKieProject();
@@ -90,7 +88,6 @@ public class KieBuilderTest {
     }    
 
     public KieFileSystem createProjectSource(String namespace, KieProject kProj) {
-        KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
         
         KieFileSystem kfs = kf.newKieFileSystem();

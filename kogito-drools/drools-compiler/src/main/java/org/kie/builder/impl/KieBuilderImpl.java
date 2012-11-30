@@ -77,10 +77,13 @@ public class KieBuilderImpl
         init();
     }
 
-    public void init() {
-        messages   = new ArrayList<Message>();
+    private void init() {
+        messages = new ArrayList<Message>();
         gav = getGAV();        
         kieProject = getKieProject();
+        if (gav == null) {
+            gav = kieProject.getGroupArtifactVersion();
+        }
     }
 
     private GAV getGAV() {
