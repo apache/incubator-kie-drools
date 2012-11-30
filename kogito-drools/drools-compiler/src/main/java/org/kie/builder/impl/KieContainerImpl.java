@@ -80,6 +80,9 @@ public class KieContainerImpl
     private AbstractKieJar loadKieJar() {
         if ( kieJar == null ) {
             kieJar = (AbstractKieJar) KieServices.Factory.get().getKieRepository().getKieJar( gav );
+            if ( kieJar == null ) {
+                throw new RuntimeException("It doesn't exist any KieJar with gav: " + gav);
+            }
         }
         return kieJar;
     }

@@ -81,7 +81,7 @@ public class KieBuilderImpl
         messages = new ArrayList<Message>();
         gav = getGAV();        
         kieProject = getKieProject();
-        if (gav == null) {
+        if (gav == null && kieProject != null) {
             gav = kieProject.getGroupArtifactVersion();
         }
     }
@@ -189,14 +189,26 @@ public class KieBuilderImpl
 
     private boolean filterFileInKBase(KieBaseModel kieBase,
                                       String fileName) {
-        if (((KieBaseModelImpl)kieBase).isDefault()) {
-            return isKieExtension(fileName);
+        if (!isKieExtension(fileName)) {
+            return false;
         }
-        String kBaseName = kieBase.getName();
-        String pathName = kBaseName.replace( '.',
-                                             '/' );
-        return (fileName.startsWith( "src/main/resoureces/" + pathName + "/" ) || fileName.contains( "/" + pathName + "/" )) &&
-                isKieExtension(fileName);
+        if (((KieBaseModelImpl)kieBase).isDefault()) {
+            return true;
+        }
+        if (kieBase.getPackages().isEmpty()) {
+            return isFileInKiePackage(fileName, kieBase.getName());
+        }
+        for (String pkg : kieBase.getPackages()) {
+            if (isFileInKiePackage(fileName, pkg)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFileInKiePackage(String fileName, String pkgName) {
+        String pathName = pkgName.replace( '.', '/' );
+        return (fileName.startsWith( "src/main/resources/" + pathName + "/" ) || fileName.contains( "/" + pathName + "/" ));
     }
 
     private boolean isKieExtension(String fileName) {
