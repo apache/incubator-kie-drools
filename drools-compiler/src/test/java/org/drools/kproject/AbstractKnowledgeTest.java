@@ -220,7 +220,7 @@ public class AbstractKnowledgeTest {
         EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
         settings.setSourceVersion( "1.5" );
         settings.setTargetVersion( "1.5" );
-        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings );
+        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings, "" );
         CompilationResult res = compiler.compile( classes.toArray( new String[classes.size()] ), trgMfs, trgMfs );
 
         if ( res.getErrors().length > 0 ) {

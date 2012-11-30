@@ -1,8 +1,13 @@
 package org.kie.builder.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.Message;
+import org.kie.builder.Message.Level;
 
 public class MessageImpl implements Message {
 
@@ -13,6 +18,15 @@ public class MessageImpl implements Message {
     private final int column;
     private final String text;
 
+    public MessageImpl(long id, Level level, String path, String text) {
+        this.id = id;
+        this.level = level;
+        this.path = path;
+        this.text = text;
+        this.line = 0;
+        this.column = 0;
+    }
+    
     public MessageImpl(long id, CompilationProblem problem) {
         this.id = id;
         level = problem.isError() ? Level.ERROR : Level.WARNING;
@@ -63,4 +77,25 @@ public class MessageImpl implements Message {
     public String getText() {
         return text;
     }
+    
+    public static List<Message> filterMessages(List<Message> messages, Level... levels) {
+        List<Message> filteredMsgs = new ArrayList<Message>(); 
+        if ( levels != null && levels.length > 0 ) {            
+            for ( Level level : levels )  {
+                for ( Message msg : messages ) {
+                    if ( msg.getLevel() == level ) {
+                        filteredMsgs.add( msg );
+                    }
+                }
+            }
+        }    
+        return filteredMsgs;
+    }
+
+    @Override
+    public String toString() {
+        return "Message [id=" + id + ", level=" + level + ", path=" + path + ", line=" + line + ", column=" + column + "\n   text=" + text + "]";
+    }
+    
+
 }

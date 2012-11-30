@@ -9,12 +9,22 @@ import java.util.Map;
 
 public abstract class AbstractKieJar implements InternalKieJar {
 
+    private ClassLoader classLoader;
+    
     private final Map<String, KieBase> kbases = new HashMap<String, KieBase>();
 
     protected final KieProject kieProject;
 
     public AbstractKieJar(KieProject kieProject) {
         this.kieProject = kieProject;
+    }        
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     public GAV getGAV() {

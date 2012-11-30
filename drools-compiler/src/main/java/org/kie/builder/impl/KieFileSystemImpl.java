@@ -39,7 +39,7 @@ public class KieFileSystemImpl
         return mfs.read( path );
     }
 
-    MemoryFileSystem asMemoryFileSystem() {
+    public MemoryFileSystem asMemoryFileSystem() {
         return mfs;
     }
 }
