@@ -1,13 +1,5 @@
 package org.kie.builder.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import org.drools.builder.xml.PomModelParserTest;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
@@ -47,8 +39,13 @@ import org.kie.io.ResourceFactory;
 import org.kie.runtime.KieBase;
 import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
-
 import sun.io.MalformedInputException;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 public class KieBuilderImpl
     implements
@@ -166,7 +163,7 @@ public class KieBuilderImpl
                                                                                                             null,
                                                                                                             classLoader ) );
         knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return (KieBase) knowledgeBase;
+        return knowledgeBase;
     }
 
     private KnowledgeBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModel kieBase,
@@ -239,7 +236,7 @@ public class KieBuilderImpl
         
         if ( bytes != null ) {
             try {
-                return ( KieProjectImpl ) KieProjectImpl.fromXML( new ByteArrayInputStream( bytes ) );
+                return KieProjectImpl.fromXML( new ByteArrayInputStream( bytes ) );
             } catch ( Exception e) {
                 invalidKieProject = true;  
                 messages.add( new MessageImpl( idGenerator++,
@@ -257,9 +254,8 @@ public class KieBuilderImpl
         if ( pomXml == null) {
             return null;
         }
-        
-        PomModel pomModel = MinimalPomParser.parse( "pom.xml", new ByteArrayInputStream( pomXml ) );
-        return pomModel;
+
+        return MinimalPomParser.parse( "pom.xml", new ByteArrayInputStream( pomXml ) );
     }
     
     public void writePomAndKProject() {
