@@ -9,6 +9,7 @@ import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.GroupArtifactVersion;
+import org.drools.kproject.KieBaseModelImpl;
 import org.drools.kproject.KieProjectImpl;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.drools.xml.MinimalPomParser;
@@ -20,7 +21,6 @@ import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
-import org.kie.builder.KieContainer;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieJar;
@@ -39,7 +39,6 @@ import org.kie.io.ResourceFactory;
 import org.kie.runtime.KieBase;
 import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
-import sun.io.MalformedInputException;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -60,8 +59,6 @@ public class KieBuilderImpl
     private long                 idGenerator = 1L;
 
     private MemoryKieJar         kieJar;
-
-    private ClassLoader          classLoader;
 
     private KieProject           kieProject;
     private byte[]               pomXml;
@@ -94,7 +91,7 @@ public class KieBuilderImpl
             }
             
             if ( StringUtils.isEmpty( pomModel.getGroupId()  ) || StringUtils.isEmpty( pomModel.getArtifactId() ) || StringUtils.isEmpty(  pomModel.getVersion()  ) ) {
-                throw new MalformedInputException("Maven pom.properties exists but content malformed");          
+                throw new RuntimeException("Maven pom.properties exists but content malformed");
             }
 
             KieFactory kf = KieFactory.Factory.get();
@@ -116,8 +113,8 @@ public class KieBuilderImpl
             
             kieJar = new MemoryKieJar( kieProject,
                                        trgMfs );
-            compileJavaClasses();
-            compileKieFiles();
+            ClassLoader classLoader = compileJavaClasses();
+            compileKieFiles(classLoader);
             if ( !hasMessages( Level.ERROR ) ) {
                 KieServices.Factory.get().getKieRepository().addKieJar( kieJar );
             }
@@ -126,9 +123,9 @@ public class KieBuilderImpl
                                  null );
     }
 
-    private void compileKieFiles() {
+    private void compileKieFiles(ClassLoader classLoader) {
         for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
-            KieBase kieBase = buildKieBase( kieBaseModel );
+            KieBase kieBase = buildKieBase( classLoader, kieBaseModel );
             if ( kieBase != null ) {
                 kieJar.addKieBase( kieBaseModel.getName(),
                                    kieBase );
@@ -136,7 +133,7 @@ public class KieBuilderImpl
         }
     }
 
-    public KieBase buildKieBase(KieBaseModel kieBase) {
+    public KieBase buildKieBase(ClassLoader classLoader, KieBaseModel kieBase) {
         KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
                                                                                                         classLoader );
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kConf );
@@ -179,7 +176,7 @@ public class KieBuilderImpl
     private void addKBaseFileToBuilder(CompositeKnowledgeBuilder ckbuilder,
                                        KieBaseModel kieBase) {
         for ( String fileName : srcMfs.getFileNames() ) {
-            if ( filterFileInKBase( kieBase.getName(),
+            if ( filterFileInKBase( kieBase,
                                     fileName ) ) {
                 ckbuilder.add( ResourceFactory.newByteArrayResource( srcMfs.getBytes( fileName ) ),
                                ResourceType.determineResourceType( fileName ) );
@@ -187,12 +184,21 @@ public class KieBuilderImpl
         }
     }
 
-    private boolean filterFileInKBase(String kBaseName,
+    private boolean filterFileInKBase(KieBaseModel kieBase,
                                       String fileName) {
+        if (((KieBaseModelImpl)kieBase).isDefault()) {
+            return isKieExtension(fileName);
+        }
+        String kBaseName = kieBase.getName();
         String pathName = kBaseName.replace( '.',
                                              '/' );
         return (fileName.startsWith( "src/main/resoureces/" + pathName + "/" ) || fileName.contains( "/" + pathName + "/" )) &&
-               (fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) || fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() ));
+                isKieExtension(fileName);
+    }
+
+    private boolean isKieExtension(String fileName) {
+        return fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) ||
+                fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() );
     }
 
     public boolean hasMessages(Level... levels) {
@@ -227,13 +233,12 @@ public class KieBuilderImpl
     }
 
     private KieProject getKieProject() {
-        byte[] bytes = srcMfs.getBytes( KieContainer.KPROJECT_RELATIVE_PATH );
+        byte[] bytes = srcMfs.getBytes( KieProject.KPROJECT_RELATIVE_PATH );
         
         if ( bytes == null ) {
-            bytes = srcMfs.getBytes( KieContainer.KPROJECT_JAR_PATH );
+            bytes = srcMfs.getBytes( KieProject.KPROJECT_JAR_PATH );
         }
-        
-        
+
         if ( bytes != null ) {
             try {
                 return KieProjectImpl.fromXML( new ByteArrayInputStream( bytes ) );
@@ -279,11 +284,9 @@ public class KieBuilderImpl
         if ( !invalidKieProject ) {
             if ( kieProject == null  ) {
                 kieProject = kf.newKieProject();
-                //kieProject.newKieBaseModel( gav.getGroupId() + "." + gav.getArtifactId() );           
-                
-                kieProject.newKieBaseModel(gav.toExternalForm() );
+                ((KieProjectImpl)kieProject).newDefaultKieBaseModel();
             }
-            trgMfs.write( "META-INF/kproject.xml", kieProject.toXML().getBytes(), true );
+            trgMfs.write( KieProject.KPROJECT_JAR_PATH, kieProject.toXML().getBytes(), true );
         }    
         if ( kieProject != null ) {
             kieProject.setGroupArtifactVersion( this.gav );
@@ -301,11 +304,11 @@ public class KieBuilderImpl
        sBuilder.append( "</groupId> \n");
 
        sBuilder.append( "    <artifactId>" );
-       sBuilder.append( gav.getGroupId() );
+       sBuilder.append( gav.getArtifactId() );
        sBuilder.append( "</artifactId> \n");
        
        sBuilder.append( "    <version>" );
-       sBuilder.append( gav.getGroupId() );
+       sBuilder.append( gav.getVersion() );
        sBuilder.append( "</version> \n");
        
        sBuilder.append( "    <packaging>jar</packaging> \n");
@@ -323,17 +326,17 @@ public class KieBuilderImpl
        sBuilder.append( "\n");
 
        sBuilder.append( "artifactId=" );
-       sBuilder.append( gav.getGroupId() );
+       sBuilder.append( gav.getArtifactId() );
        sBuilder.append( "\n");
        
        sBuilder.append( "version=" );
-       sBuilder.append( gav.getGroupId() );
+       sBuilder.append( gav.getVersion() );
        sBuilder.append( "\n");
        
        return sBuilder.toString();
    }
     
-    private void compileJavaClasses() {
+    private ClassLoader compileJavaClasses() {
         List<String> javaFiles = new ArrayList<String>();
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".java" ) ) {
@@ -341,7 +344,7 @@ public class KieBuilderImpl
             }
         }
         if ( javaFiles.isEmpty() ) {
-            return;
+            return getClass().getClassLoader();
         }
 
         String[] sourceFiles = javaFiles.toArray( new String[javaFiles.size()] );
@@ -366,8 +369,9 @@ public class KieBuilderImpl
                                                                        true );
             ccl.addClassLoader( new ClassUtils.MapClassLoader( trgMfs.getMap(),
                                                                ccl ) );
-            this.classLoader = ccl;
+            return ccl;
         }
+        return getClass().getClassLoader();
     }
 
     private EclipseJavaCompiler createCompiler(String prefix) {

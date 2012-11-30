@@ -1,6 +1,17 @@
 package org.drools.kproject;
 
-import static org.drools.core.util.IoUtils.recursiveListFile;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.core.util.AbstractXStreamConverter;
+import org.drools.core.util.Predicate;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieProject;
+import org.kie.builder.KieSessionModel;
+import org.kie.builder.ResourceType;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,23 +24,14 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.drools.core.util.AbstractXStreamConverter;
-import org.drools.core.util.Predicate;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProject;
-import org.kie.builder.KieSessionModel;
-import org.kie.builder.ResourceType;
-import org.kie.conf.AssertBehaviorOption;
-import org.kie.conf.EventProcessingOption;
-
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import static org.drools.core.util.IoUtils.recursiveListFile;
 
 public class KieBaseModelImpl
         implements
         KieBaseModel {
+
+    public static final String DEFAULT_KIEBASE_NAME = "!DeFaUlT!";
+
     private String                       name;
 
     private Set<String>                  includes;
@@ -55,6 +57,10 @@ public class KieBaseModelImpl
         this.includes = new HashSet<String>();
         this.name = name;
         this.kSessions = Collections.emptyMap();
+    }
+
+    public boolean isDefault() {
+        return name == DEFAULT_KIEBASE_NAME;
     }
 
     @SuppressWarnings("unchecked")
@@ -322,7 +328,7 @@ public class KieBaseModelImpl
 
     @Override
     public String toString() {
-        return "KieBaseModelImpl [name=" + name + ", includes=" + includes + ", packages=" + getPackages() + ", equalsBehavior=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", kSessions=" + kSessions + ", kProject=" + kProject + "]";
+        return "KieBaseModelImpl [name=" + name + ", includes=" + includes + ", packages=" + getPackages() + ", equalsBehavior=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", kSessions=" + kSessions + "]";
     }
 
 }
