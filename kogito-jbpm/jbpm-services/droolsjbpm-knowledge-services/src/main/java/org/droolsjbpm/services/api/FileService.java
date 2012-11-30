@@ -24,7 +24,7 @@ import org.kie.commons.java.nio.file.Path;
  */
 public interface FileService {
 
-    void checkFileSystem() throws FileException;
+//    void checkFileSystem() throws FileException;
     
     public void fetchChanges();
 

@@ -15,20 +15,23 @@
  */
 package org.droolsjbpm.services.impl.vfs;
 
-import org.droolsjbpm.services.api.FileService;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+
 import org.droolsjbpm.services.api.FileException;
+import org.droolsjbpm.services.api.FileService;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.FileSystem;
-import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
+import org.kie.commons.java.nio.file.FileSystemNotFoundException;
 import org.kie.commons.java.nio.file.FileSystems;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.commons.java.nio.file.Paths;
+
+import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
  *
@@ -37,65 +40,54 @@ import org.kie.commons.java.nio.file.Paths;
 public class VFSFileServiceImpl implements FileService {
 
     private static final String REPO_PLAYGROUND = "git://jbpm-playground";
-    private static final String ORIGIN_URL = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
-    private FileSystem fileSystem = null;
+    private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
 
-    @Override
-    public void checkFileSystem() {
-
+    @PostConstruct
+    public void init() {
         try {
-            if (FileSystems.getFileSystem(URI.create(REPO_PLAYGROUND)) == null) {
-                final String userName = "guvnorngtestuser1";
-                final String password = "test1234";
-                final URI fsURI = URI.create("git://jbpm-playground" + "?fetch");
+            FileSystems.getFileSystem( URI.create( REPO_PLAYGROUND ) );
+            fetchChanges();
+        } catch ( FileSystemNotFoundException e ) {
+            final String userName = "guvnorngtestuser1";
+            final String password = "test1234";
+            final URI fsURI = URI.create( "git://jbpm-playground" );
 
-                final Map<String, Object> env = new HashMap<String, Object>();
-                env.put("username", userName);
-                env.put("password", password);
-                env.put("origin", ORIGIN_URL);
-                fileSystem = FileSystems.newFileSystem(fsURI, env);
-            }
-
-        } catch (Exception e) {
-            System.out.println(">>>>>>>>>>>>>>>>>>> E " + e.getMessage());
+            final Map<String, Object> env = new HashMap<String, Object>();
+            env.put( "username", userName );
+            env.put( "password", password );
+            env.put( "origin", ORIGIN_URL );
+            FileSystems.newFileSystem( fsURI, env );
+        } catch ( Exception e ) {
+            System.out.println( ">>>>>>>>>>>>>>>>>>> E " + e.getMessage() );
         }
     }
 
     public void fetchChanges() {
-        fileSystem = FileSystems.getFileSystem(URI.create(REPO_PLAYGROUND + "?fetch"));
+        FileSystems.getFileSystem( URI.create( REPO_PLAYGROUND + "?fetch" ) );
     }
 
     @Override
-    public byte[] loadFile(final Path file) throws FileException {
-        if (file == null) {
-            throw new IllegalArgumentException();
-        }
-
-        checkFileSystem();
-
-        if (!file.getFileSystem().equals(fileSystem)) {
-            throw new IllegalStateException("file's fileSystem not supported.");
-        }
+    public byte[] loadFile( final Path file ) throws FileException {
+        checkNotNull( "file", file );
 
         try {
-            return Files.readAllBytes(file);
-        } catch (IOException ex) {
-            throw new FileException(ex.getMessage(), ex);
+            return Files.readAllBytes( file );
+        } catch ( IOException ex ) {
+            throw new FileException( ex.getMessage(), ex );
         }
     }
 
     @Override
-    public Iterable<Path> loadFilesByType(final String path, final String fileType) {
-        checkFileSystem();
-
-        return Files.newDirectoryStream(Paths.get("git://jbpm-playground/" + path), new DirectoryStream.Filter<Path>() {
+    public Iterable<Path> loadFilesByType( final String path,
+                                           final String fileType ) {
+        return Files.newDirectoryStream( Paths.get( "git://jbpm-playground/" + path ), new DirectoryStream.Filter<Path>() {
             @Override
-            public boolean accept(final Path entry) throws IOException {
-                if (entry.getFileName().toString().endsWith(fileType)) {
+            public boolean accept( final Path entry ) throws IOException {
+                if ( entry.getFileName().toString().endsWith( fileType ) ) {
                     return true;
                 }
                 return false;
             }
-        });
+        } );
     }
 }
