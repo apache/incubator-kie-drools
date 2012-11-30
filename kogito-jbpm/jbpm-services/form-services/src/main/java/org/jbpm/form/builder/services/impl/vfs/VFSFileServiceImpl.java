@@ -15,25 +15,25 @@
  */
 package org.jbpm.form.builder.services.impl.vfs;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.form.builder.services.api.FileException;
-import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystems;
-import org.uberfire.java.nio.file.Files;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.Paths;
+import org.kie.commons.java.nio.file.DirectoryStream;
+import org.kie.commons.java.nio.file.FileSystem;
+import org.kie.commons.java.nio.file.Path;
+import org.kie.commons.java.nio.file.FileSystems;
+import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.java.nio.file.Paths;
 
 /**
  *
  */
 public class VFSFileServiceImpl {
 
-    private static final String REPO_PLAYGROUND = "jgit:///playground";
+    private static final String REPO_PLAYGROUND = "git:///playground";
     private static final String ORIGIN_URL = "https://github.com/guvnorngtestuser1/formbuilder-playground.git";
     private FileSystem fileSystem = null;
 
@@ -43,11 +43,13 @@ public class VFSFileServiceImpl {
             final String password = "test1234";
             final URI fsURI = URI.create(REPO_PLAYGROUND);
 
-            final Map<String, Object> env = new HashMap<String, Object>() {{
-                put("username", userName);
-                put("password", password);
-                put("giturl", ORIGIN_URL);
-            }};
+            final Map<String, Object> env = new HashMap<String, Object>() {
+                {
+                    put("username", userName);
+                    put("password", password);
+                    put("giturl", ORIGIN_URL);
+                }
+            };
 
             fileSystem = FileSystems.newFileSystem(fsURI, env);
         }
@@ -61,14 +63,10 @@ public class VFSFileServiceImpl {
         checkFileSystem();
 
         if (!file.getFileSystem().equals(fileSystem)) {
-            throw new IllegalStateException( "file's fileSystem not supported.");
+            throw new IllegalStateException("file's fileSystem not supported.");
         }
+        return Files.readAllBytes(file);
 
-        try {
-            return Files.readAllBytes(file);
-        } catch (IOException ex) {
-            throw new FileException(ex.getMessage(), ex);
-        }
     }
 
     public Iterable<Path> loadFilesByType(final String fileType) throws FileException {
@@ -76,7 +74,7 @@ public class VFSFileServiceImpl {
 
         return Files.newDirectoryStream(Paths.get("default:///playground"), new DirectoryStream.Filter<Path>() {
             @Override
-            public boolean accept(final Path entry) throws IOException {
+            public boolean accept(final Path entry) {
                 if (entry.getFileName().toString().endsWith(fileType)) {
                     return true;
                 }

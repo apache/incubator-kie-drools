@@ -116,7 +116,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         iterator = processInstanceHistory.iterator();
         assertEquals("Start", iterator.next().getName());
         assertEquals("Write a Document", iterator.next().getName());
-        assertEquals("Translate and Review", iterator.next().getName());
+        assertEquals("Review and Translate", iterator.next().getName());
         String taskName = iterator.next().getName();
         assertTrue(("Translate Document".equals(taskName) || "Review Document".equals(taskName)));
         taskName = iterator.next().getName();
@@ -144,13 +144,13 @@ public abstract class DomainKnowledgeServiceBaseTest {
         iterator = processInstanceHistory.iterator();
         assertEquals("Start", iterator.next().getName());
         assertEquals("Write a Document", iterator.next().getName());
-        assertEquals("Translate and Review", iterator.next().getName());
+        assertEquals("Review and Translate", iterator.next().getName());
         taskName = iterator.next().getName();
         assertTrue(("Translate Document".equals(taskName) || "Review Document".equals(taskName)));
         taskName = iterator.next().getName();
         assertTrue("Translate Document".equals(taskName) || "Review Document".equals(taskName));
         
-        assertEquals("Waiting for Translation and Revision", iterator.next().getName());
+        assertEquals("Reviewed and Translated", iterator.next().getName());
 
         variablesCurrentState = dataService.getVariablesCurrentState(processInstance.getId());
         assertEquals(2, variablesCurrentState.size());
@@ -178,13 +178,13 @@ public abstract class DomainKnowledgeServiceBaseTest {
         iterator = processInstanceHistory.iterator();
         assertEquals("Start", iterator.next().getName());
         assertEquals("Write a Document", iterator.next().getName());
-        assertEquals("Translate and Review", iterator.next().getName());
+        assertEquals("Review and Translate", iterator.next().getName());
         taskName = iterator.next().getName();
         assertTrue("Translate Document".equals(taskName) || "Review Document".equals(taskName));
         taskName = iterator.next().getName();
         assertTrue("Translate Document".equals(taskName) || "Review Document".equals(taskName));
-        assertEquals("Waiting for Translation and Revision", iterator.next().getName());
-        assertEquals("Waiting for Translation and Revision", iterator.next().getName());
+        assertEquals("Reviewed and Translated", iterator.next().getName());
+        assertEquals("Reviewed and Translated", iterator.next().getName());
         assertEquals("Report", iterator.next().getName());
         assertEquals("End", iterator.next().getName());
 

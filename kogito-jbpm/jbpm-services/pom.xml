@@ -12,6 +12,7 @@
     <name>jBPM :: Services</name>
     <packaging>pom</packaging>
     <properties>
+        <kie-commons.version>0.1.0-SNAPSHOT</kie-commons.version>
         <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
     
         <maven.tx.type>RESOURCE_LOCAL</maven.tx.type>
@@ -23,6 +24,7 @@
     
         <!-- H2
         -->
+        
         <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
         <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
         <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
@@ -123,6 +125,22 @@
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate.4.validator.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kie.commons</groupId>	
+            <artifactId>kie-commons-data</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.commons</groupId>	
+            <artifactId>kie-nio2-jgit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.commons</groupId>
+            <artifactId>kie-nio2-fs</artifactId>	
+        </dependency>
+         <dependency>
+            <groupId>org.kie.commons</groupId>
+            <artifactId>kie-nio2-model</artifactId>
+            <version>0.1.0-SNAPSHOT</version>	
+        </dependency>
     </dependencies>
-    
 </project>

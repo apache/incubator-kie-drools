@@ -15,8 +15,8 @@
  */
 package org.droolsjbpm.services.impl;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import org.droolsjbpm.services.api.FileException;
+import org.droolsjbpm.services.api.FileService;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +27,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.io.IOUtils;
-import org.drools.io.impl.ClassPathResource;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
+import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
@@ -38,11 +37,15 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
+import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.java.nio.file.Path;
 import org.kie.io.ResourceFactory;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
-
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+
+
 
 /**
  *
@@ -62,6 +65,13 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
     @Inject
     private CDIKbaseEventListener kbaseEventListener;
     // This must be replaced by the VFS
+    
+    @Inject
+    private BPMN2DataService bpmn2Service;
+    
+    @Inject
+    private FileService fs;
+    
     private Map<String, String> availableProcesses = new HashMap<String, String>();
     
     private long   id;
@@ -76,30 +86,26 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
     
     
     @PostConstruct
-    public void init(){
+    public void createDomain(){
+
         kbaseEventListener.setDomainName(domainName);
         processListener.setDomainName(domainName);
+        
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        String[] processLocation = {"example/humanTask.bpmn", "example/signal.bpmn"};
-        String[] processId = {"org.jbpm.writedocument", "signal"};
-        ClassPathResource classPathResource = null;
-        StringWriter writer = null;
-        int currentIndex = 0;
-        for (String location : processLocation) {
-            classPathResource = new ClassPathResource(location);
-            
-            writer = new StringWriter();
-            try {
-                IOUtils.copy(classPathResource.getInputStream(), writer, "UTF-8");
-            } catch (IOException ex) {
-                Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            String processString = writer.toString();
-            availableProcesses.put(processId[currentIndex], processString);
-            
-            kbuilder.add(ResourceFactory.newClassPathResource(location), ResourceType.BPMN2);
-            currentIndex++;
+        Iterable<Path> loadFilesByType = null;
+        try {
+            loadFilesByType = fs.loadFilesByType("bpmn2/","bpmn");
+        } catch (FileException ex) {
+            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+        for(Path p: loadFilesByType){
+            System.out.println(" >>>>>>>>>>>>>>>>>>>>>>>>>>> Loading -> "+p.toString());
+            String processString = new String(Files.readAllBytes(p));
+            availableProcesses.put(bpmn2Service.getProcessDesc(processString).getId(), processString);
+            kbuilder.add(ResourceFactory.newByteArrayResource(Files.readAllBytes(p)), ResourceType.BPMN2);
+            
+        }
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addEventListener(kbaseEventListener);
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());

@@ -54,11 +54,16 @@ public class DomainKnowledgeServiceCDITest extends DomainKnowledgeServiceBaseTes
                 .addPackage("org.droolsjbpm.services.api.bpmn2")
                 .addPackage("org.droolsjbpm.services.impl")
                 .addPackage("org.droolsjbpm.services.impl.bpmn2")
+                .addPackage("org.droolsjbpm.services.impl.vfs")
+                //.addPackage("org.eclipse.jgit")
+                .addPackage("org.kie.commons.java.nio.fs.jgit")
+                //.addPackage("org.kie.commons")
                 .addPackage("org.droolsjbpm.services.test")
                 .addPackage("org.droolsjbpm.services.impl.event.listeners")
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
-                .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
+                .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"))
+                .addAsManifestResource("META-INF/services/org.kie.commons.java.nio.file.spi.FileSystemProvider", ArchivePaths.create("org.kie.commons.java.nio.file.spi.FileSystemProvider"));
 
     }
     

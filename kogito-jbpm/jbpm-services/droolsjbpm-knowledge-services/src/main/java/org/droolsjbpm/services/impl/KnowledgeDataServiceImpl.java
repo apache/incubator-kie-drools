@@ -83,7 +83,7 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
     }
 
     public Collection<ProcessDesc> getProcesses() {
-        List<ProcessDesc> processes = em.createQuery("select pd from ProcessDesc pd GROUP BY pd.id ORDER BY pd.dataTimeStamp DESC").getResultList();
+        List<ProcessDesc> processes = em.createQuery("select pd from ProcessDesc pd where pd.pki = (select max(pdd.pki) FROM ProcessDesc pdd WHERE pdd.id = pd.id ) GROUP BY pd.id ORDER BY pd.dataTimeStamp DESC)").getResultList();
         return processes;
     }
 

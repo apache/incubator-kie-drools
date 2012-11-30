@@ -50,4 +50,6 @@ public interface KnowledgeDomainService {
     void setParentId(Long parentId);
     
     Map<String, String> getAvailableProcesses();
+    
+    void createDomain();
 }
