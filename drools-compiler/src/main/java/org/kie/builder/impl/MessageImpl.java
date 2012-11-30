@@ -1,13 +1,11 @@
 package org.kie.builder.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.Message;
-import org.kie.builder.Message.Level;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageImpl implements Message {
 
@@ -79,8 +77,8 @@ public class MessageImpl implements Message {
     }
     
     public static List<Message> filterMessages(List<Message> messages, Level... levels) {
-        List<Message> filteredMsgs = new ArrayList<Message>(); 
-        if ( levels != null && levels.length > 0 ) {            
+        List<Message> filteredMsgs = new ArrayList<Message>();
+        if ( levels != null && levels.length > 0 ) {
             for ( Level level : levels )  {
                 for ( Message msg : messages ) {
                     if ( msg.getLevel() == level ) {
@@ -88,7 +86,7 @@ public class MessageImpl implements Message {
                     }
                 }
             }
-        }    
+        }
         return filteredMsgs;
     }
 
