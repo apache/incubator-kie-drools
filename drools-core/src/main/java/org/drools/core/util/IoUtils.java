@@ -3,10 +3,10 @@ package org.drools.core.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
@@ -128,5 +128,13 @@ public class IoUtils {
                 files.add(relativePath + file.getName());
             }
         }
+    }
+
+    public static byte[] getBytesFromInputStream(InputStream is) throws IOException {
+        long length = is.available();
+        byte[] bytes = new byte[(int) length];
+        is.read(bytes);
+        is.close();
+        return bytes;
     }
 }

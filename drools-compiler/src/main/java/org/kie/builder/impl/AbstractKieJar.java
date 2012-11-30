@@ -31,11 +31,11 @@ public abstract class AbstractKieJar implements InternalKieJar {
         return kieProject.getGroupArtifactVersion();
     }
 
-    void addKieBase(String kBaseName, KieBase kBase) {
+    public void addKieBase(String kBaseName, KieBase kBase) {
         kbases.put(kBaseName, kBase);
     }
 
-    KieBase getKieBase(String kBaseName) {
+    public KieBase getKieBase(String kBaseName) {
         return kbases.get(kBaseName);
     }
 }

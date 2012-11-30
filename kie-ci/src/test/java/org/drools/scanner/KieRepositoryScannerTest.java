@@ -65,7 +65,7 @@ public class KieRepositoryScannerTest {
         KieJar kJar2 = createKieJar(ks, kf, "rule2", "rule3");
 
         // deploy it on maven
-        repository.deployArtifact("org.drools", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar2).asFile(), kPom);
+        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar2).asFile(), kPom);
 
         // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
         KieScanner scanner = ks.newKieScanner(kieContainer);
@@ -111,7 +111,7 @@ public class KieRepositoryScannerTest {
                 "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
                 "  <modelVersion>4.0.0</modelVersion>\n" +
                 "\n" +
-                "  <groupId>org.drools</groupId>\n" +
+                "  <groupId>org.kie</groupId>\n" +
                 "  <artifactId>scanner-test</artifactId>\n" +
                 "  <version>1.0-SNAPSHOT</version>\n" +
                 "\n" +
@@ -186,7 +186,7 @@ public class KieRepositoryScannerTest {
         kieFileSystem
                 .write(KieProject.KPROJECT_JAR_PATH, kproj.toXML())
                 .write("src/kbases/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
-                .write("org/kie/test/Bean.java", createJavaSource(factor));
+                .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);
         assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
