@@ -1,18 +1,16 @@
 package org.kie.builder;
 
-import java.util.List;
-
 import org.kie.builder.Message.Level;
 
 public interface KieBuilder {
 
-    Messages build();
+    Results build();
 
-    boolean hasMessages(Level... levels);
+    boolean hasResults(Level... levels);
                          
-    Messages getMessages(Level... levels);
+    Results getResults(Level... levels);
     
-    Messages getMessages();
+    Results getResults();
 
     KieJar getKieJar();
 }
