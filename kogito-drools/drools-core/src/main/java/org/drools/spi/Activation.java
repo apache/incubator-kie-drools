@@ -16,6 +16,8 @@
 
 package org.drools.spi;
 
+import java.io.Serializable;
+
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.ActivationNode;
 import org.drools.common.InternalFactHandle;
@@ -25,8 +27,8 @@ import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-
-import java.io.Serializable;
+import org.kie.runtime.rule.AgendaGroup;
+import org.kie.runtime.rule.Match;
 
 /**
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
@@ -37,7 +39,7 @@ import java.io.Serializable;
 public interface Activation
     extends
     Serializable,
-    org.kie.runtime.rule.Activation {
+    Match {
     
     /**
      * 

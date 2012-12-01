@@ -25,19 +25,19 @@ import org.kie.event.rule.ActivationCancelledEvent;
 import org.kie.event.rule.ActivationCreatedEvent;
 import org.kie.event.rule.ActivationEvent;
 import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.Match;
 
 
 public class ActivationEventImpl implements ActivationEvent, Externalizable {
-    private Activation activation;
+    private Match activation;
     private KnowledgeRuntime kruntime;
     
-    public ActivationEventImpl(Activation activation, KnowledgeRuntime kruntime) {
+    public ActivationEventImpl(Match activation, KnowledgeRuntime kruntime) {
         this.activation = activation;
         this.kruntime = kruntime;
     }
     
-    public Activation getActivation() {
+    public Match getActivation() {
         return this.activation;
     }
 

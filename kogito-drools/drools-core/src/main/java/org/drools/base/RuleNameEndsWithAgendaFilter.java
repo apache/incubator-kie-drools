@@ -18,6 +18,7 @@ package org.drools.base;
 
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
+import org.kie.runtime.rule.Match;
 
 /**
  * Filters activations based on a specified rule name suffix.
@@ -48,7 +49,7 @@ public class RuleNameEndsWithAgendaFilter
         }
     }
 
-    public boolean accept( org.kie.runtime.rule.Activation activation ) {
+    public boolean accept( Match activation ) {
         if ( activation.getRule().getName().endsWith( this.suffix ) ) {
             return this.accept;
         } else {

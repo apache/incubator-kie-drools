@@ -30,7 +30,7 @@ public interface InternalWorkingMemoryActions
                        long mask,
                        Activation activation) throws FactException;
 
-    public void retract(FactHandle handle,
+    public void delete(FactHandle handle,
                         Rule rule,
                         Activation activation) throws FactException;
 

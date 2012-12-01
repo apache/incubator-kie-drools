@@ -74,7 +74,7 @@ public class ClassObjectTypeConf
     public ClassObjectTypeConf(final EntryPoint entryPoint,
                                final Class< ? > clazz,
                                final InternalRuleBase ruleBase) {        
-        this.cls = (Activation.class.isAssignableFrom( clazz ) ) ? ClassObjectType.Activation_ObjectType.getClassType() : clazz;
+        this.cls = (Activation.class.isAssignableFrom( clazz ) ) ? ClassObjectType.Match_ObjectType.getClassType() : clazz;
         this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
         this.typeDecl = ruleBase.getTypeDeclaration( clazz );

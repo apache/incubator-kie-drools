@@ -410,6 +410,10 @@ public class CommandBasedStatefulKnowledgeSession
         commandService.execute( new RetractCommand( handle ) );
     }
 
+    public void delete(FactHandle handle) {
+        commandService.execute( new RetractCommand( handle ) );
+    }
+
     public void update(FactHandle handle,
                        Object object) {
         commandService.execute( new UpdateCommand( handle,

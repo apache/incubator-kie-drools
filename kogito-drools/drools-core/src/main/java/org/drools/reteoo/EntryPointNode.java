@@ -186,7 +186,7 @@ public class EntryPointNode extends ObjectSource
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         if ( activationNode == null ) {
-            this.activationNode = objectTypeNodes.get( ClassObjectType.Activation_ObjectType );
+            this.activationNode = objectTypeNodes.get( ClassObjectType.Match_ObjectType );
         }
         
         if ( activationNode != null ) {
@@ -199,7 +199,7 @@ public class EntryPointNode extends ObjectSource
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         if ( activationNode == null ) {
-            this.activationNode = objectTypeNodes.get( ClassObjectType.Activation_ObjectType );
+            this.activationNode = objectTypeNodes.get( ClassObjectType.Match_ObjectType );
         }
         
         if ( activationNode != null ) {
@@ -212,7 +212,7 @@ public class EntryPointNode extends ObjectSource
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
          if ( activationNode == null ) {
-             this.activationNode = objectTypeNodes.get( ClassObjectType.Activation_ObjectType );
+             this.activationNode = objectTypeNodes.get( ClassObjectType.Match_ObjectType );
          }
          
          if ( activationNode != null ) {

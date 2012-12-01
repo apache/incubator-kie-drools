@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.AgendaFilter;
+import org.kie.runtime.rule.Match;
 
 public class ScopesAgendaFilter
     implements
@@ -68,7 +68,7 @@ public class ScopesAgendaFilter
         this.scopes = list;
     }
 
-    public boolean accept(Activation activation) {
+    public boolean accept(Match activation) {
         if ( acceptEmpty && activation.getRule().getMetaData().isEmpty() ) {
             return true;
         }

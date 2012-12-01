@@ -12,7 +12,7 @@ import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.Match;
 
 public class ActivationIteratorTest extends CommonTestMethodBase {
 
@@ -48,7 +48,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule1:0:true", "rule1:1:true", "rule1:2:true", "rule1:3:true", "rule1:4:true"},
@@ -58,7 +58,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule1:0:false", "rule1:1:false", "rule1:2:false", "rule1:3:false", "rule1:4:false"},
@@ -98,7 +98,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule1:0:true", "rule1:1:true", "rule1:2:true", "rule1:3:true", "rule1:4:true"},
@@ -108,7 +108,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule1:0:false", "rule1:1:false", "rule1:2:false", "rule1:3:false", "rule1:4:false"},
@@ -179,7 +179,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         ActivationIterator it = ActivationIterator.iterator( ksession );
 
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule0:0:true", "rule0:1:true", "rule0:2:true", "rule0:3:true", "rule0:4:true",
@@ -192,7 +192,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule0:0:false", "rule0:1:false", "rule0:2:false", "rule0:3:false", "rule0:4:false",
@@ -263,7 +263,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         ActivationIterator it = ActivationIterator.iterator( ksession );
 
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule0:0:true", "rule0:1:true", "rule0:2:true", "rule0:3:false", "rule0:4:false",
@@ -302,7 +302,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule1:0:1:true", "rule1:1:0:true", "rule1:1:1:true", "rule1:0:0:true"},
@@ -312,7 +312,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule1:0:1:false", "rule1:1:0:false", "rule1:1:1:false", "rule1:0:0:false"},
@@ -349,7 +349,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule1:0:1:true", "rule1:1:0:true", "rule1:1:1:true", "rule1:0:0:true"},
@@ -359,7 +359,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule1:0:1:false", "rule1:1:0:false", "rule1:1:1:false", "rule1:0:0:false"},
@@ -407,7 +407,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.getDeclarationValue( "$s3" ) + ":" + act.isActive() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -426,7 +426,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.getDeclarationValue( "$s3" ) + ":" + act.isActive() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -485,7 +485,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.getDeclarationValue( "$s3" ) + ":" + act.isActive() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -544,7 +544,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isActive() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -602,7 +602,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isActive() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -663,7 +663,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isActive() );
         }
 
@@ -714,7 +714,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isActive() );
         }
 

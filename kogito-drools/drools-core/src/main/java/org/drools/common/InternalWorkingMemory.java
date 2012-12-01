@@ -92,7 +92,7 @@ public interface InternalWorkingMemory
      */
     public FactHandle getFactHandleByIdentity(final Object object);
 
-    void retract(final FactHandle factHandle,
+    void delete(final FactHandle factHandle,
                        final Rule rule,
                        final Activation activation) throws FactException;
 

@@ -28,13 +28,13 @@ import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.kie.definition.rule.Rule;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.PropagationContext;
 
 public class SerializableActivation
     implements
-    Activation,
+    Match,
     Externalizable {
     private Rule                              rule;
     private Declaration[]                     declarations;
@@ -46,7 +46,7 @@ public class SerializableActivation
         
     }
     
-    public SerializableActivation(Activation activation) {
+    public SerializableActivation(Match activation) {
         this.rule = activation.getRule();
         this.factHandles = activation.getFactHandles();
         this.propgationContext = activation.getPropagationContext();

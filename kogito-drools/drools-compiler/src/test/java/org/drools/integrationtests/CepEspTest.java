@@ -73,8 +73,8 @@ import org.kie.io.ResourceFactory;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
 import org.mockito.ArgumentCaptor;
@@ -841,7 +841,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
         verify( ael ).activationCreated( arg.capture() );
-        Activation activation = arg.getValue().getActivation();
+        Match activation = arg.getValue().getActivation();
         assertThat( activation.getRule().getName(),
                     is( "metby" ) );
 
@@ -2098,7 +2098,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         List<AfterActivationFiredEvent> values = captor.getAllValues();
         // first rule
-        Activation act = values.get( 0 ).getActivation();
+        Match act = values.get( 0 ).getActivation();
         assertThat( act.getRule().getName(),
                     is( "launch" ) );
 

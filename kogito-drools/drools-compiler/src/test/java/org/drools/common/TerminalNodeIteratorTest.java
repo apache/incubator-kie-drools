@@ -1,10 +1,12 @@
 package org.drools.common;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.common.ActivationIterator;
-import org.drools.common.TerminalNodeIterator;
 import org.drools.core.util.Iterator;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
@@ -15,10 +17,6 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.Activation;
-
-import static org.junit.Assert.*;
 
 public class TerminalNodeIteratorTest {
 

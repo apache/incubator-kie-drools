@@ -1,6 +1,8 @@
 package org.kie.builder.impl;
 
-import org.drools.kproject.GroupArtifactVersion;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.kproject.KieBaseModelImpl;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
@@ -13,9 +15,6 @@ import org.kie.runtime.KieBase;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class KieContainerImpl
     implements
@@ -33,11 +32,9 @@ public class KieContainerImpl
         return gav;
     }
 
-    public void updateToVersion(String version) {
+    public void updateToVersion(GAV version) {
         reset();
-        gav = new GroupArtifactVersion( gav.getGroupId(),
-                                        gav.getArtifactId(),
-                                        version );
+        gav = version;
     }
 
     public void updateKieJar(KieJar kieJar) {

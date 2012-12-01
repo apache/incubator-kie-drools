@@ -18,6 +18,7 @@ package org.drools.base;
 
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
+import org.kie.runtime.rule.Match;
 
 /**
  * Filters activations based on an exact match of a rule name.
@@ -48,7 +49,7 @@ public class RuleNameEqualsAgendaFilter
         }
     }
 
-    public boolean accept( org.kie.runtime.rule.Activation activation ) {
+    public boolean accept( Match activation ) {
         if ( activation.getRule().getName().equals( this.name ) ) {
             return this.accept;
         } else {

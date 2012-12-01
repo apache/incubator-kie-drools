@@ -22,13 +22,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Map;
 
-import org.drools.InitialFact;
 import org.drools.RuntimeDroolsException;
-import org.drools.common.AgendaItem;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.spi.ClassWireable;
 import org.drools.spi.ObjectType;
-import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.Match;
 
 /**
  * Java class semantics <code>ObjectType</code>.
@@ -50,7 +48,7 @@ public class ClassObjectType
     
     public static final ClassObjectType ObjectArray_ObjectType = new ClassObjectType( Object[].class );
     
-    public static final ClassObjectType Activation_ObjectType = new ClassObjectType( Activation.class );
+    public static final ClassObjectType Match_ObjectType = new ClassObjectType( Match.class );
     
 
     private static final long serialVersionUID = 510l;

@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.conf.DeclarativeAgendaOption;
 import org.kie.event.rule.ActivationCancelledEvent;
 import org.kie.event.rule.ActivationCreatedEvent;
@@ -20,8 +19,8 @@ import org.kie.event.rule.BeforeActivationFiredEvent;
 import org.kie.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.Match;
 
 public class DeclarativeAgendaTest extends CommonTestMethodBase {
     
@@ -29,7 +28,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testSimpleBlockingUsingForall() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
         str += "rule rule1 @department(sales) salience -100 \n";
@@ -69,7 +68,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testBasicBlockOnAnnotation() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
         str += "rule rule1 @department(sales) \n";
@@ -285,7 +284,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public StatefulKnowledgeSession getStatefulKnowledgeSession() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
@@ -317,7 +316,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testMultipleBlockers() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
@@ -400,7 +399,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         // This test is a bit wierd as it recurses. Maybe unblockAll is not feasible...
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
@@ -485,7 +484,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testIterativeUpdate() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
@@ -617,7 +616,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testCancelActivation() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
         str += "rule rule1 @department(sales) \n";
@@ -695,7 +694,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testActiveInActiveChanges() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
         str += "rule rule1 @department(sales) \n";
@@ -750,7 +749,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     @Test
     public void testCancelMultipleActivations() {
         String str = "package org.domain.test\n" +
-                "import " + Activation.class.getName() + "\n" +
+                "import " + Match.class.getName() + "\n" +
                 "global java.util.List list\n" +
                 "rule sales1 @department('sales')\n" +
                 "when\n" +
@@ -792,7 +791,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     @Test
     public void testCancelActivationOnInsertAndUpdate() {
         String str = "package org.domain.test\n" +
-                "import " + Activation.class.getName() + "\n" +
+                "import " + Match.class.getName() + "\n" +
                 "global java.util.List list\n" +
                 "rule sales1 @department('sales') @category('special')\n" +
                 "salience 10\n" +

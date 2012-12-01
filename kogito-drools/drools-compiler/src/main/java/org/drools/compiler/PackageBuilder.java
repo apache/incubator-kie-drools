@@ -87,9 +87,9 @@ import org.drools.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.EnumDeclarationDescr;
 import org.drools.lang.descr.EnumLiteralDescr;
-import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -98,6 +98,7 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.QualifiedName;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
@@ -105,7 +106,6 @@ import org.drools.lang.descr.WindowDeclarationDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
-import org.drools.lang.descr.QualifiedName;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
@@ -141,7 +141,7 @@ import org.kie.definition.type.Modifies;
 import org.kie.definition.type.Position;
 import org.kie.definition.type.PropertyReactive;
 import org.kie.io.Resource;
-import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.Match;
 import org.kie.util.CompositeClassLoader;
 import org.xml.sax.SAXException;
 
@@ -373,10 +373,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         builtinTypes.put( "java.util.Map",
                           mapType );
 
-        TypeDeclaration activationType = new TypeDeclaration( "Activation" );
+        TypeDeclaration activationType = new TypeDeclaration( "Match" );
         activationType.setTypesafe( false );
-        activationType.setTypeClass( Activation.class );
-        builtinTypes.put( Activation.class.getCanonicalName(),
+        activationType.setTypeClass( Match.class );
+        builtinTypes.put( Match.class.getCanonicalName(),
                           activationType );
 
         TypeDeclaration thingType = new TypeDeclaration( Thing.class.getName() );

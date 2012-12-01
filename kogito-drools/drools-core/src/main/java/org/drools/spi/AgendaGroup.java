@@ -20,7 +20,7 @@ import java.io.Externalizable;
 import java.util.Collection;
 
 import org.drools.common.DefaultAgenda;
-import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.Match;
 
 /**
  *  The <code>Agenda</code> can be partitioned into groups, called <code>AgendaGroup</code>s. <code>Rule</code>s can be assigned to
@@ -41,7 +41,7 @@ public interface AgendaGroup
      * @return 
      *     An immutable Collection of all the activations in the AgendaGroup
      */
-    Activation[] getActivations();
+    Match[] getActivations();
 
     /** 
      * @return

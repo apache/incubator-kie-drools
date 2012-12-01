@@ -267,7 +267,7 @@ public class TruthMaintenanceSystem {
                 }
             } else  {
                 if ( fullyRetract ) {
-                    ((NamedEntryPoint) handle.getEntryPoint()).retract( this.handle,
+                    ((NamedEntryPoint) handle.getEntryPoint()).delete( this.handle,
                                                                         (Rule) context.getRuleOrigin(),
                                                                         this.activation );                    
                 } else {                

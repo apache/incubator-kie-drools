@@ -185,7 +185,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public void retract(FactHandle factHandle,
+    public void delete(FactHandle factHandle,
                         Rule rule,
                         Activation activation) throws FactException {
         // TODO Auto-generated method stub
@@ -440,6 +440,10 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public void retract(org.kie.runtime.rule.FactHandle handle) throws FactException {
         // TODO Auto-generated method stub
         
+    }
+
+    public void delete(org.kie.runtime.rule.FactHandle handle) throws FactException {
+        // TODO Auto-generated method stub
     }
 
     public void update(org.kie.runtime.rule.FactHandle handle,

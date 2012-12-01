@@ -20,11 +20,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.Collection;
 
 import org.drools.common.InternalAgenda;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.AgendaGroup;
 
 public class AgendaGroupImpl implements AgendaGroup, Externalizable {

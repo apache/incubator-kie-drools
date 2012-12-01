@@ -62,6 +62,7 @@ import org.drools.time.impl.ExpressionIntervalTimer;
 import org.drools.time.impl.Timer;
 import org.kie.event.rule.ActivationCancelledCause;
 import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.rule.Match;
 
 /**
  * Rule-firing Agenda.
@@ -1010,7 +1011,7 @@ public class DefaultAgenda
         final List<Activation> list = new ArrayList<Activation>();
         for ( final java.util.Iterator<InternalAgendaGroup> it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
             final AgendaGroup group = it.next();
-            for ( org.kie.runtime.rule.Activation activation : group.getActivations() ) {
+            for ( Match activation : group.getActivations() ) {
                 list.add((Activation) activation);
             }
         }
@@ -1059,7 +1060,7 @@ public class DefaultAgenda
                 // preserve lazy items.
                 ((InternalAgendaGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
                 lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
-                for ( org.kie.runtime.rule.Activation a : group.getActivations() ) {
+                for ( Match a : group.getActivations() ) {
                     if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
                         lazyItems.add( (RuleNetworkEvaluatorActivation) a );
                     }
@@ -1082,7 +1083,7 @@ public class DefaultAgenda
                 // preserve lazy items
                 ((InternalRuleFlowGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
                 lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
-                for ( org.kie.runtime.rule.Activation a : ((InternalRuleFlowGroup) group).getActivations() ) {
+                for ( Match a : ((InternalRuleFlowGroup) group).getActivations() ) {
                     if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
                         lazyItems.add( (RuleNetworkEvaluatorActivation) a );
                     }

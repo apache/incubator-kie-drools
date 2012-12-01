@@ -64,6 +64,7 @@ import org.kie.runtime.process.NodeInstanceContainer;
 import org.kie.runtime.process.ProcessContext;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class DefaultKnowledgeHelper
@@ -139,7 +140,7 @@ public class DefaultKnowledgeHelper
         return previousJustified;
     }
     
-    public void blockActivation(org.kie.runtime.rule.Activation act) {
+    public void blockActivation(Match act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
@@ -172,7 +173,7 @@ public class DefaultKnowledgeHelper
         }
     }
     
-    public void unblockAllActivations(org.kie.runtime.rule.Activation act) {
+    public void unblockAllActivations(Match act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
         
@@ -288,7 +289,7 @@ public class DefaultKnowledgeHelper
         }        
     }
     
-    public void cancelActivation(org.kie.runtime.rule.Activation act) {
+    public void cancelActivation(Match act) {
         AgendaItem match = ( AgendaItem ) act;
         match.cancel();
         if ( match.isActive() ) {
@@ -363,7 +364,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(final FactHandle handle) {
-        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).retract( handle,
+        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).delete( handle,
                                                                                                    this.activation.getRule(),
                                                                                                    this.activation );
         if ( this.identityMap != null ) {
@@ -557,7 +558,7 @@ public class DefaultKnowledgeHelper
         }
 
         public void unMatch(org.kie.runtime.rule.WorkingMemory wm,
-                            org.kie.runtime.rule.Activation activation) {
+                            Match activation) {
             wm.retract( fh );
             if ( next != null ) {
                 next.unMatch( wm, activation );

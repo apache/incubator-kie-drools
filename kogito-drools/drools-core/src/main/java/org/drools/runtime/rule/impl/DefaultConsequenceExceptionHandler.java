@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemory;
 
 public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionHandler, Externalizable {
@@ -33,7 +33,7 @@ public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionH
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
-    public void handleException(Activation activation,
+    public void handleException(Match activation,
                                 WorkingMemory workingMemory,
                                 Exception exception) {
         throw new org.kie.runtime.rule.ConsequenceException(exception, workingMemory, activation );
