@@ -38,4 +38,8 @@ public abstract class AbstractKieJar implements InternalKieJar {
     public KieBase getKieBase(String kBaseName) {
         return kbases.get(kBaseName);
     }
+
+    public KieProject getKieProject() {
+        return kieProject;
+    }
 }

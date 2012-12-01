@@ -9,7 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.drools.core.util.IoUtils.getBytesFromInputStream;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class MemoryFile implements File {
     private String name;
@@ -67,7 +67,7 @@ public class MemoryFile implements File {
             throw new IOException( "File does already exists, cannot create contents" );
         }
 
-        mfs.setFileContents( this, getBytesFromInputStream(is) );
+        mfs.setFileContents( this, readBytesFromInputStream(is) );
     }
 
     @Override

@@ -115,8 +115,8 @@ public class KieBuilderTest {
         
         kb.build();
         
-        if ( kb.hasMessages( Level.ERROR  ) ) {
-            fail("Unable to build KieJar\n" + kb.getMessages( ).toString() );
+        if ( kb.hasResults( Level.ERROR  ) ) {
+            fail("Unable to build KieJar\n" + kb.getResults( ).toString() );
         }
         KieRepository kr = ks.getKieRepository();
         KieJar kJar = kr.getKieJar( gav );

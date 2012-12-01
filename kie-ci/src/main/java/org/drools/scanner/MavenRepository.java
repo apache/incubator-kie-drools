@@ -1,5 +1,6 @@
 package org.drools.scanner;
 
+import org.kie.builder.KieJar;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.CollectResult;
@@ -17,6 +18,8 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.SubArtifact;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +71,19 @@ class MavenRepository {
         }
 
         return artifactResult.getArtifact();
+    }
+
+    public void deployArtifact(String groupId, String artifactId, String version, KieJar kieJar, File pomfile) {
+        File jarFile = new File( System.getProperty( "java.io.tmpdir" ), groupId + ":" + artifactId + ":" + version + ".jar");
+        try {
+            FileOutputStream fos = new FileOutputStream(jarFile);
+            fos.write(kieJar.getBytes());
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        deployArtifact(groupId, artifactId, version, jarFile, pomfile);
     }
 
     public void deployArtifact(String groupId, String artifactId, String version, File jar, File pomfile) {
