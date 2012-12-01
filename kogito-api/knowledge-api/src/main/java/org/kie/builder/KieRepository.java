@@ -8,7 +8,7 @@ public interface KieRepository {
     
     void addKieJar(KieJar kjar);
 
-    Messages verfyKieJar(GAV gav);
+    Results verfyKieJar(GAV gav);
     
     KieJar getKieJar(GAV gav);
 }

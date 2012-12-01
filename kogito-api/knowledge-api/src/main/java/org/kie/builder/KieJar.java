@@ -1,7 +1,7 @@
 package org.kie.builder;
 
 import java.io.InputStream;
-import java.util.List;
+import java.util.Collection;
 
 public interface KieJar {
     GAV getGAV();
@@ -10,7 +10,7 @@ public interface KieJar {
 
     InputStream getInputStream();
 
-    List<String> getFiles();
+    Collection<String> getFiles();
 
     byte[] getBytes(String path);
 
