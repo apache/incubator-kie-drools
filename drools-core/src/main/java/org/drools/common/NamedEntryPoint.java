@@ -522,14 +522,20 @@ public class NamedEntryPoint
     }
 
     public void retract(final org.kie.runtime.rule.FactHandle handle) throws FactException {
-        retract( (org.drools.FactHandle) handle,
+        delete( (org.drools.FactHandle) handle,
                  null,
                  null );
     }
 
-    public void retract(final org.drools.FactHandle factHandle,
-                        final Rule rule,
-                        final Activation activation) throws FactException {
+    public void delete(final org.kie.runtime.rule.FactHandle handle) throws FactException {
+        delete( (org.drools.FactHandle) handle,
+                 null,
+                 null );
+    }
+
+    public void delete(final org.drools.FactHandle factHandle,
+                       final Rule rule,
+                       final Activation activation) throws FactException {
         if ( factHandle == null ) {
             throw new IllegalArgumentException( "FactHandle cannot be null " );
         }

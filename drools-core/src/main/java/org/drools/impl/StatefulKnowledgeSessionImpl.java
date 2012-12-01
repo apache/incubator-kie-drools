@@ -271,8 +271,11 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void retract(FactHandle factHandle) {
-        this.session.retract( factHandle );
+        this.session.delete( factHandle );
+    }
 
+    public void delete(FactHandle factHandle) {
+        this.session.delete( factHandle );
     }
 
     public void update(FactHandle factHandle) {
@@ -404,10 +407,10 @@ public class StatefulKnowledgeSessionImpl
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public void retract(org.drools.FactHandle factHandle,
+    public void delete(org.drools.FactHandle factHandle,
                         Rule rule,
                         Activation activation) throws FactException {
-        this.session.retract( factHandle,
+        this.session.delete( factHandle,
                               rule,
                               activation );
     }

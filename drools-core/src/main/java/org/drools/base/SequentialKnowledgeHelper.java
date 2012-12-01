@@ -36,6 +36,7 @@ import org.drools.spi.Tuple;
 import org.kie.runtime.Channel;
 import org.kie.runtime.ExitPoint;
 import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class SequentialKnowledgeHelper
@@ -276,15 +277,15 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
-    public void blockActivation(org.kie.runtime.rule.Activation match) {
+    public void blockActivation(Match match) {
         // TODO Auto-generated method stub
     }
 
-    public void unblockAllActivations(org.kie.runtime.rule.Activation match) {
+    public void unblockAllActivations(Match match) {
         // TODO Auto-generated method stub
     }
 
-    public void cancelActivation(org.kie.runtime.rule.Activation match) {
+    public void cancelActivation(Match match) {
         // TODO Auto-generated method stub
     }
 }

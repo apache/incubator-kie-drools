@@ -92,7 +92,7 @@ public class PatternBuilder
         pattern.setOffset( context.getCurrentPatternOffset() );
         
         // this is needed for Activation patterns, to allow declarations and annotations to be used like field constraints
-        if ( ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+        if ( ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
             PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItem.class );
             if ( handler == null ) {
                 PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItem.class, new ActivationPropertyHandler() );

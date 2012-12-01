@@ -81,7 +81,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void retract( FactHandle handle, Rule rule, Activation activation ) throws FactException {
+    public void delete( FactHandle handle, Rule rule, Activation activation ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -438,6 +438,10 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
     }
 
     public void retract( org.kie.runtime.rule.FactHandle handle ) throws FactException {
+        throw new IllegalStateException( ERRORMSG );
+    }
+
+    public void delete( org.kie.runtime.rule.FactHandle handle ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 

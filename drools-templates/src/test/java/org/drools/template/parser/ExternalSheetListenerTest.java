@@ -210,6 +210,10 @@ public class ExternalSheetListenerTest {
 
                 }
 
+                public void delete(org.kie.runtime.rule.FactHandle arg0) throws FactException {
+
+                }
+
                 public void setAsyncExceptionHandler(AsyncExceptionHandler arg0) {
 
                 }

@@ -250,7 +250,7 @@ public class PatternBuilder
                                    null );
         }
 
-        if ( ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+        if ( ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
             PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItem.class );
             if ( handler == null ) {
                 PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItem.class,
@@ -658,7 +658,7 @@ public class PatternBuilder
 
         if ( simple && // simple means also relDescr is != null
                 !ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) &&
-                !ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+                !ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
             buildRelationalExpression( context, pattern, relDescr, expr, aliases );
         } else {
             // Either it's a complex expression, so do as predicate
@@ -1142,7 +1142,7 @@ public class PatternBuilder
             }
 
             boolean isDynamic = requiredOperators.length > 0 ||
-                    ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType()) ||
+                    ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType()) ||
                     (!((ClassObjectType)pattern.getObjectType()).getClassType().isArray() &&
                     !context.getPackageBuilder().getTypeDeclaration(((ClassObjectType)pattern.getObjectType()).getClassType()).isTypesafe());
 

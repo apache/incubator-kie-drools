@@ -19,13 +19,13 @@ package org.drools.event.rule.impl;
 import org.kie.event.rule.ActivationCancelledCause;
 import org.kie.event.rule.ActivationCancelledEvent;
 import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.Match;
 
 
 public class ActivationCancelledEventImpl extends ActivationEventImpl implements ActivationCancelledEvent {
     private ActivationCancelledCause cause;
     
-    public ActivationCancelledEventImpl(Activation activation, KnowledgeRuntime kruntime, ActivationCancelledCause cause) {
+    public ActivationCancelledEventImpl(Match activation, KnowledgeRuntime kruntime, ActivationCancelledCause cause) {
         super( activation, kruntime);
         this.cause = cause;
     }

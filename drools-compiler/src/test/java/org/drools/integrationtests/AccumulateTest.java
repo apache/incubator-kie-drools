@@ -40,8 +40,8 @@ import org.kie.event.rule.AfterActivationFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.Variable;
 import org.mockito.ArgumentCaptor;
@@ -1584,7 +1584,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
 
-        Activation activation = cap.getValue().getActivation();
+        Match activation = cap.getValue().getActivation();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
                     is( 18 ) );
         assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
@@ -1677,7 +1677,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
 
-        Activation activation = cap.getValue().getActivation();
+        Match activation = cap.getValue().getActivation();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
                     is( 18 ) );
         assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
