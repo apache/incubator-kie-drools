@@ -14,8 +14,8 @@ import org.kie.event.rule.DebugAgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.drools.rule.Rule;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.AgendaFilter;
+import org.kie.runtime.rule.Match;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -150,7 +150,7 @@ public class AgendaFilterTest {
 
         private Integer currentSalience = null;
 
-        public boolean accept(Activation activation) {
+        public boolean accept(Match activation) {
             Rule rule = (Rule)activation.getRule();
 
             if (currentSalience == null){
@@ -276,7 +276,7 @@ public class AgendaFilterTest {
     }
 
     public static class CancelAgendaFilter implements AgendaFilter {
-        public boolean accept(Activation activation) {
+        public boolean accept(Match activation) {
             return !"Cancel".equals(activation.getRule().getName());
         }
     }

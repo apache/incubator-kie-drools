@@ -16,15 +16,14 @@
 
 package org.jbpm.process;
 
+import java.util.concurrent.ExecutorService;
+
 import junit.framework.Assert;
 
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.concurrent.CommandExecutor;
-import org.drools.concurrent.DefaultExecutorService;
-import org.drools.concurrent.ExecutorService;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
