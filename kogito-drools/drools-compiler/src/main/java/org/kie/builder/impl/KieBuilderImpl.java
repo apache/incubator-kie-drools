@@ -33,7 +33,7 @@ import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.Message;
 import org.kie.builder.Message.Level;
-import org.kie.builder.Messages;
+import org.kie.builder.Results;
 import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
 import org.kie.runtime.KieBase;
@@ -109,7 +109,7 @@ public class KieBuilderImpl
         return null;
     }
 
-    public Messages build() {
+    public Results build() {
         if ( !isBuilt() ) {
             trgMfs = new MemoryFileSystem();
             writePomAndKProject();
@@ -118,11 +118,11 @@ public class KieBuilderImpl
                                        trgMfs );
             ClassLoader classLoader = compileJavaClasses();
             compileKieFiles(classLoader);
-            if ( !hasMessages( Level.ERROR ) ) {
+            if ( !hasResults( Level.ERROR ) ) {
                 KieServices.Factory.get().getKieRepository().addKieJar( kieJar );
             }
         }
-        return new MessagesImpl( messages,
+        return new ResultsImpl( messages,
                                  null );
     }
 
@@ -218,7 +218,7 @@ public class KieBuilderImpl
                 fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() );
     }
 
-    public boolean hasMessages(Level... levels) {
+    public boolean hasResults(Level... levels) {
         if ( !isBuilt() ) {
             build();
         }
@@ -226,20 +226,20 @@ public class KieBuilderImpl
                                             levels ).isEmpty();
     }
 
-    public Messages getMessages(Level... levels) {
+    public Results getResults(Level... levels) {
         if ( !isBuilt() ) {
             build();
         }
-        return new MessagesImpl( MessageImpl.filterMessages( messages,
+        return new ResultsImpl( MessageImpl.filterMessages( messages,
                                                              levels ),
                                  null );
     }
 
-    public Messages getMessages() {
+    public Results getResults() {
         if ( !isBuilt() ) {
             build();
         }
-        return new MessagesImpl( messages,
+        return new ResultsImpl( messages,
                                  null );
     }
 
@@ -247,7 +247,7 @@ public class KieBuilderImpl
         if ( !isBuilt() ) {
             build();
         }
-        if ( hasMessages( Level.ERROR ) || kieJar == null ) {
+        if ( hasResults( Level.ERROR ) || kieJar == null ) {
             throw new RuntimeException( "Unable to get KieJar, Errors Existed" );
         }
         return kieJar;

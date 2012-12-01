@@ -3,9 +3,9 @@ package org.kie.builder.impl;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.kie.builder.KieProject;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Collection;
 
 public class MemoryKieJar extends AbstractKieJar {
 
@@ -16,32 +16,23 @@ public class MemoryKieJar extends AbstractKieJar {
         this.mfs = mfs;
     }
 
-    public File asFile() {
-        return mfs.writeAsJar(new File( System.getProperty( "java.io.tmpdir" ) ), getGAV().toString());
-    }
-
     public byte[] getBytes() {
-        throw new UnsupportedOperationException("org.kie.builder.impl.MemoryKieJar.getBytes -> TODO");
-
+        return mfs.writeAsBytes();
     }
 
     public InputStream getInputStream() {
-        throw new UnsupportedOperationException("org.kie.builder.impl.MemoryKieJar.getInputStream -> TODO");
-
+        return new ByteArrayInputStream(getBytes());
     }
 
-    public List<String> getFiles() {
-        throw new UnsupportedOperationException("org.kie.builder.impl.MemoryKieJar.getFiles -> TODO");
-
+    public Collection<String> getFiles() {
+        return mfs.getFileNames();
     }
 
     public byte[] getBytes(String path) {
-        throw new UnsupportedOperationException("org.kie.builder.impl.MemoryKieJar.getBytes -> TODO");
-
+        return mfs.getBytes(path);
     }
 
     public InputStream getInputStream(String path) {
-        throw new UnsupportedOperationException("org.kie.builder.impl.MemoryKieJar.getInputStream -> TODO");
-
+        return new ByteArrayInputStream(getBytes(path));
     }
 }

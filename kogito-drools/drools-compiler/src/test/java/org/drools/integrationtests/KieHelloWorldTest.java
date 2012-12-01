@@ -10,7 +10,7 @@ import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieProject;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
-import org.kie.builder.Messages;
+import org.kie.builder.Results;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
@@ -55,9 +55,9 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieFactory kf = KieFactory.Factory.get();
 
         KieFileSystem kfs = kf.newKieFileSystem().write( "r1.drl", drl );
-        Messages messages = ks.newKieBuilder( kfs ).build();
+        Results results = ks.newKieBuilder( kfs ).build();
 
-        assertEquals( 1, messages.getInsertedMessages().size() );
+        assertEquals( 1, results.getInsertedMessages().size() );
     }
 
     @Test

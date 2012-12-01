@@ -130,11 +130,16 @@ public class IoUtils {
         }
     }
 
-    public static byte[] getBytesFromInputStream(InputStream is) throws IOException {
-        long length = is.available();
-        byte[] bytes = new byte[(int) length];
-        is.read(bytes);
-        is.close();
-        return bytes;
+    public static byte[] readBytesFromInputStream(InputStream is) throws IOException {
+        byte[] resultBuff = new byte[0];
+        byte[] buff = new byte[2048];
+        int k = -1;
+        while ((k = is.read(buff, 0, buff.length)) > -1) {
+            byte[] tbuff = new byte[resultBuff.length + k];
+            System.arraycopy(resultBuff, 0, tbuff, 0, resultBuff.length);
+            System.arraycopy(buff, 0, tbuff, resultBuff.length, k);
+            resultBuff = tbuff;
+        }
+        return resultBuff;
     }
 }

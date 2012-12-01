@@ -1,19 +1,19 @@
 package org.kie.builder.impl;
 
 import org.kie.builder.Message;
-import org.kie.builder.Messages;
+import org.kie.builder.Results;
 
 import java.util.Collections;
 import java.util.List;
 
-public class MessagesImpl implements Messages {
+public class ResultsImpl implements Results {
 
     private List<Message> insertedMessages;
     private List<Message> deletedMessages;
 
-    public MessagesImpl() { }
+    public ResultsImpl() { }
 
-    public MessagesImpl(List<Message> insertedMessages, List<Message> deleteMessages) {
+    public ResultsImpl(List<Message> insertedMessages, List<Message> deleteMessages) {
         this.insertedMessages = ( insertedMessages == null )  ? Collections.<Message>emptyList() : insertedMessages;
         this.deletedMessages = ( deleteMessages == null )  ? Collections.<Message>emptyList() : deleteMessages;
     }

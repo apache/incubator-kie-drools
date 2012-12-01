@@ -10,8 +10,10 @@ import org.drools.kproject.Path;
 import org.drools.kproject.Resource;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -286,7 +288,7 @@ public class MemoryFileSystem
     }
 
     public byte[] getBytes(String pResourceName) {
-        return getFileContents( (MemoryFile) getFile( pResourceName ) );
+        return getFileContents((MemoryFile) getFile(pResourceName));
     }
 
     public void write(String pResourceName,
@@ -322,19 +324,32 @@ public class MemoryFileSystem
         throw new UnsupportedOperationException();
     }
 
+    public byte[] writeAsBytes() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        zip( baos );
+        return baos.toByteArray();
+    }
+
     public java.io.File writeAsJar(java.io.File folder,
                                    String jarName) {
-        ZipOutputStream out = null;
         try {
             java.io.File jarFile = new java.io.File( folder,
                                                      jarName + ".jar" );
-            out = new ZipOutputStream( new FileOutputStream( jarFile ) );
+            zip( new FileOutputStream( jarFile ) );
+            return jarFile;
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    private void zip(OutputStream outputStream) {
+        ZipOutputStream out = null;
+        try {
+            out = new ZipOutputStream( outputStream );
 
             writeJarEntries( getRootFolder(),
                              out );
             out.close();
-
-            return jarFile;
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         } finally {

@@ -1,8 +1,5 @@
 package org.kie.builder.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.kproject.KieBaseModelImpl;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
@@ -16,12 +13,15 @@ import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class KieContainerImpl
     implements
     InternalKieContainer {
 
     private GAV                       gav;
-    private AbstractKieJar            kieJar;
+    private InternalKieJar            kieJar;
     private Map<String, KieBaseModel> kSessions;
 
     public KieContainerImpl(GAV gav) {
@@ -39,7 +39,7 @@ public class KieContainerImpl
 
     public void updateKieJar(KieJar kieJar) {
         reset();
-        this.kieJar = (AbstractKieJar) kieJar;
+        this.kieJar = (InternalKieJar) kieJar;
     }
 
     public KieBase getKieBase() {
@@ -74,7 +74,7 @@ public class KieContainerImpl
         throw new UnsupportedOperationException( "org.kie.builder.impl.KieContainerImpl.dispose -> TODO" );
     }
 
-    private AbstractKieJar loadKieJar() {
+    private InternalKieJar loadKieJar() {
         if ( kieJar == null ) {
             kieJar = (AbstractKieJar) KieServices.Factory.get().getKieRepository().getKieJar( gav );
             if ( kieJar == null ) {
@@ -87,7 +87,7 @@ public class KieContainerImpl
     private KieBaseModel getKieBaseForSession(String kSessionName) {
         if ( kSessions == null ) {
             kSessions = new HashMap<String, KieBaseModel>();
-            KieProject kieProject = loadKieJar().kieProject;
+            KieProject kieProject = loadKieJar().getKieProject();
             for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
                 for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
                     kSessions.put( kieSessionModel.getName(),

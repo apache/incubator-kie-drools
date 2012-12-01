@@ -15,7 +15,6 @@ import org.kie.builder.KieProject;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
-import org.kie.builder.impl.InternalKieJar;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
@@ -55,7 +54,7 @@ public class KieRepositoryScannerTest {
         KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
         MavenRepository repository = new MavenRepository();
-        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar1).asFile(), kPom);
+        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar1, kPom);
 
         // create a ksesion and check it works as expected
         KieSession ksession = kieContainer.getKieSession("KSession1");
@@ -65,7 +64,7 @@ public class KieRepositoryScannerTest {
         KieJar kJar2 = createKieJar(ks, kf, "rule2", "rule3");
 
         // deploy it on maven
-        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar2).asFile(), kPom);
+        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar2, kPom);
 
         // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
         KieScanner scanner = ks.newKieScanner(kieContainer);
@@ -87,7 +86,7 @@ public class KieRepositoryScannerTest {
         KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
         MavenRepository repository = new MavenRepository();
-        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar1).asFile(), kPom);
+        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar1, kPom);
 
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
@@ -96,7 +95,7 @@ public class KieRepositoryScannerTest {
 
         KieJar kJar2 = createKieJarWithClass(ks, kf, 3, 5);
 
-        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", ((InternalKieJar)kJar2).asFile(), kPom);
+        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar2, kPom);
 
         scanner.scanNow();
 
