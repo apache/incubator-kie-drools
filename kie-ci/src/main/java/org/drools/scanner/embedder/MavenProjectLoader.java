@@ -9,11 +9,15 @@ public class MavenProjectLoader {
         private static final MavenProject mavenProject = loadMavenProject();
 
         private static MavenProject loadMavenProject() {
+            File pomFile = new File( "pom.xml" );
+            if (!pomFile.exists()) {
+                return null;
+            }
             MavenRequest mavenRequest = new MavenRequest();
-            mavenRequest.setPom( new File( "pom.xml" ).getAbsolutePath() );
+            mavenRequest.setPom( pomFile.getAbsolutePath() );
             try {
                 MavenEmbedder mavenEmbedder = new MavenEmbedder( Thread.currentThread().getContextClassLoader(), mavenRequest );
-                return mavenEmbedder.readProject( new File( "pom.xml" ) );
+                return mavenEmbedder.readProject( pomFile );
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

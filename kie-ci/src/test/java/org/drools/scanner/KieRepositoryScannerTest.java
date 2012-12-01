@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drools.scanner.MavenRepository.getMavenRepository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -53,7 +54,7 @@ public class KieRepositoryScannerTest {
         KieJar kJar1 = createKieJar(ks, kf, "rule1", "rule2");
         KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
-        MavenRepository repository = new MavenRepository();
+        MavenRepository repository = getMavenRepository();
         repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar1, kPom);
 
         // create a ksesion and check it works as expected
@@ -85,7 +86,7 @@ public class KieRepositoryScannerTest {
         KieJar kJar1 = createKieJarWithClass(ks, kf, 2, 7);
         KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
-        MavenRepository repository = new MavenRepository();
+        MavenRepository repository = getMavenRepository();
         repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar1, kPom);
 
         KieScanner scanner = ks.newKieScanner(kieContainer);
@@ -98,6 +99,18 @@ public class KieRepositoryScannerTest {
         repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar2, kPom);
 
         scanner.scanNow();
+
+        KieSession ksession2 = kieContainer.getKieSession("KSession1");
+        checkKSession(ksession2, 15);
+    }
+
+    @Test @Ignore
+    public void testLoadKieJarFromMavenRepo() throws Exception {
+        // This test depends from the former one (UGLY!) and must be run immediately after it
+        KieServices ks = KieServices.Factory.get();
+        KieFactory kf = KieFactory.Factory.get();
+
+        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
         KieSession ksession2 = kieContainer.getKieSession("KSession1");
         checkKSession(ksession2, 15);
@@ -136,7 +149,7 @@ public class KieRepositoryScannerTest {
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
-                .setType( "stateful" )
+                .setType("stateful")
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kfs.write(KieProject.KPROJECT_JAR_PATH, kproj.toXML());
@@ -179,7 +192,7 @@ public class KieRepositoryScannerTest {
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
-                .setType( "stateful" )
+                .setType("stateful")
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kieFileSystem

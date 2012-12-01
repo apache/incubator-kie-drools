@@ -1,7 +1,5 @@
 package org.kie.builder.impl;
 
-import java.io.File;
-
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
@@ -11,6 +9,10 @@ import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.io.ResourceFactory;
 import org.kie.util.ServiceRegistryImpl;
+
+import java.io.File;
+
+import static org.drools.kproject.memory.MemoryFileSystem.readFromJar;
 
 public class KieServicesImpl implements KieServices {
 
@@ -32,7 +34,7 @@ public class KieServicesImpl implements KieServices {
     
 
     public KieBuilder newKieBuilder(File file) {
-        return new KieBuilderImpl(file);
+        return file.isDirectory() ? new KieBuilderImpl(file) : newKieBuilder(new KieFileSystemImpl(readFromJar(file)));
     }
     
     public KieBuilder newKieBuilder(KieFileSystem kieFileSystem) {

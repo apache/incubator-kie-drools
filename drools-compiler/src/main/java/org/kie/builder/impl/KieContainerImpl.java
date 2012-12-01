@@ -70,13 +70,13 @@ public class KieContainerImpl
     }
 
     public void dispose() {
+        // TODO: should it store all the KieSession created from this container and then dispose them?
         reset();
-        throw new UnsupportedOperationException( "org.kie.builder.impl.KieContainerImpl.dispose -> TODO" );
     }
 
     private InternalKieJar loadKieJar() {
         if ( kieJar == null ) {
-            kieJar = (AbstractKieJar) KieServices.Factory.get().getKieRepository().getKieJar( gav );
+            kieJar = (InternalKieJar) KieServices.Factory.get().getKieRepository().getKieJar(gav);
             if ( kieJar == null ) {
                 throw new RuntimeException("It doesn't exist any KieJar with gav: " + gav);
             }
