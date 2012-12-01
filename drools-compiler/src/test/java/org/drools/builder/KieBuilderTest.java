@@ -2,6 +2,8 @@ package org.drools.builder;
 
 
 import org.drools.core.util.FileManager;
+import org.drools.kproject.GroupArtifactVersion;
+import org.drools.kproject.KieBaseModelImpl;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +19,8 @@ import org.kie.builder.KieProject;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
 import org.kie.builder.Message.Level;
+import org.kie.builder.Results;
+import org.kie.builder.impl.KieBuilderImpl;
 import org.kie.builder.impl.KieFileSystemImpl;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -28,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -50,11 +55,14 @@ public class KieBuilderTest {
     public void testInMemory() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
 
+        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
+        
         KieProject kProj = createKieProject(namespace);
         
-        KieFileSystem kfs = createProjectSource(namespace, kProj);
+        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        generateAll(kfs, namespace, gav, kProj);
         
-        createAndTestKieContainer(kProj.getGroupArtifactVersion(), createKieBuilder(kfs));
+        createAndTestKieContainer(gav, createKieBuilder(kfs), namespace );
     }    
 
     @Test
@@ -63,14 +71,125 @@ public class KieBuilderTest {
 
         KieProject kProj = createKieProject(namespace);
         
-        KieFileSystem kfs = createProjectSource(namespace, kProj);
+        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
+        
+        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        generateAll(kfs, namespace, gav, kProj);
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
         
         File file = fileManager.getRootDirectory() ;
         mfs.writeAsFs( file );
         
-        createAndTestKieContainer(kProj.getGroupArtifactVersion(), createKieBuilder( file ));
+        createAndTestKieContainer(gav, createKieBuilder(kfs), namespace);
     }
+    
+    @Test
+    public void testNoPomXml() throws ClassNotFoundException, InterruptedException, IOException {
+        String namespace = "org.kie.test";
+
+        KieProject kProj = createKieProject(namespace);
+        
+        GAV gav = KieServices.Factory.get().getKieRepository().getDefaultGAV();
+        
+        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        generateKProjectXML( kfs, namespace, kProj );
+        generateMessageClass( kfs, namespace );
+        generateRule( kfs, namespace );
+        
+        MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
+               
+        createAndTestKieContainer(gav, createKieBuilder(kfs), namespace );
+    }
+    
+    @Test
+    public void testNoProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
+        String namespace = "org.kie.test";
+        
+        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
+        
+        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        generatePomXML(kfs, gav);
+        generateMessageClass( kfs, namespace );
+        generateRule( kfs, namespace );
+        
+        MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
+               
+        createAndTestKieContainer(gav, createKieBuilder(kfs), KieBaseModelImpl.DEFAULT_KIEBASE_NAME );
+    }    
+    
+    public void testNoPomAndProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
+        String namespace = "org.kie.test";
+        
+        GAV gav = KieServices.Factory.get().getKieRepository().getDefaultGAV();
+        
+        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        generateMessageClass( kfs, namespace );
+        generateRule( kfs, namespace );
+        
+        MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
+               
+        createAndTestKieContainer(gav, createKieBuilder(kfs), KieBaseModelImpl.DEFAULT_KIEBASE_NAME );
+    }      
+    
+    @Test
+    public void testInvalidPomXmlGAV() throws ClassNotFoundException, InterruptedException, IOException {
+        String namespace = "org.kie.test";
+
+        KieProject kProj = createKieProject(namespace);
+        
+        GAV gav = new GroupArtifactVersion( "", "", "" );                
+        
+        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        generatePomXML(kfs, gav);
+        
+        generateMessageClass( kfs, namespace );
+        generateRule( kfs, namespace );
+        
+        MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
+          
+        KieBuilder kieBuilder = createKieBuilder(kfs);
+        kieBuilder.build();
+        assertTrue ( kieBuilder.hasResults( Level.ERROR ) );
+    }   
+    
+    @Test
+    public void testInvalidPomXmlContent() throws ClassNotFoundException, InterruptedException, IOException {
+        String namespace = "org.kie.test";
+
+        KieProject kProj = createKieProject(namespace);
+        
+        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );            
+        
+        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        kfs.write( "pom.xml", "xxxx" );
+        generateKProjectXML( kfs, namespace, kProj );
+        generateMessageClass( kfs, namespace );
+        generateRule( kfs, namespace );        
+          
+        KieBuilder kieBuilder = createKieBuilder(kfs);
+        kieBuilder.build();
+        assertTrue ( kieBuilder.hasResults( Level.ERROR ) );
+    }     
+    
+    @Test
+    public void testInvalidProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
+        String namespace = "org.kie.test";
+
+        KieProject kProj = createKieProject(namespace);
+        
+        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );                
+        
+        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        generatePomXML(kfs, gav);       
+        kfs.write("src/main/resources/META-INF/kproject.xml","xxxx" ); 
+        generateMessageClass( kfs, namespace );
+        generateRule( kfs, namespace );
+        
+        KieBuilder kieBuilder = createKieBuilder(kfs);
+        kieBuilder.build();
+        assertTrue ( kieBuilder.hasResults( Level.ERROR ) );
+    }     
+    
     
     public KieProject createKieProject(String namespace) {        
         KieFactory kf = KieFactory.Factory.get();
@@ -79,24 +198,33 @@ public class KieBuilderTest {
         KieBaseModel kBase1 = kProj.newKieBaseModel(namespace)
                                    .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                                    .setEventProcessingMode( EventProcessingOption.STREAM );        
-
-        
-        GAV gav = kf.newGav( namespace, "DEFAULT", "0.1");
-        kProj.setGroupArtifactVersion( gav );
         
         return kProj;
     }    
-
-    public KieFileSystem createProjectSource(String namespace, KieProject kProj) {
-        KieFactory kf = KieFactory.Factory.get();
+    
+    public void generateAll(KieFileSystem kfs,  String namespace, GAV gav, KieProject kProj) {
+        generatePomXML(kfs, gav);
+        generateKProjectXML( kfs, namespace, kProj );
+        generateMessageClass( kfs, namespace );
+        generateRule( kfs, namespace );
         
-        KieFileSystem kfs = kf.newKieFileSystem();
-        kfs.write("src/main/java/" + namespace.replace('.', '/') + "/Message.java", getMessageClass( namespace ) );
-        kfs.write("src/main/resources/META-INF/kproject.xml", kProj.toXML() );
-        kfs.write("src/main/resources/" + namespace.replace('.', '/') + "/rule1.drl", getRule(namespace, "r1") );
-        
-        return kfs;
     }
+
+    public void generatePomXML(KieFileSystem kfs, GAV gav) {
+        kfs.write( "pom.xml", KieBuilderImpl.generatePomXml( gav ) );
+    }    
+    
+    public void generateKProjectXML(KieFileSystem kfs, String namespace, KieProject kProj) {
+        kfs.write("src/main/resources/META-INF/kproject.xml", kProj.toXML() );
+    }
+    
+    public void generateMessageClass(KieFileSystem kfs, String namespace) {
+        kfs.write("src/main/java/" + namespace.replace('.', '/') + "/Message.java", getMessageClass( namespace ) );
+    }
+    
+    public void generateRule(KieFileSystem kfs, String namespace) {
+        kfs.write("src/main/resources/" + namespace.replace('.', '/') + "/rule1.drl", getRule(namespace, "r1") );
+    }    
     
     public KieBuilder createKieBuilder(KieFileSystem kfs) {
         KieServices ks = KieServices.Factory.get();       
@@ -108,7 +236,7 @@ public class KieBuilderTest {
         return ks.newKieBuilder( file );        
     }    
     
-    public void createAndTestKieContainer(GAV gav, KieBuilder kb) throws IOException,
+    public void createAndTestKieContainer(GAV gav, KieBuilder kb, String kBaseName) throws IOException,
             ClassNotFoundException,
             InterruptedException {
         KieServices ks = KieServices.Factory.get();
@@ -123,7 +251,7 @@ public class KieBuilderTest {
         assertNotNull( kJar );
         
         KieContainer kContainer = ks.getKieContainer( gav );
-        KieBase kBase = kContainer.getKieBase( gav.getGroupId() );
+        KieBase kBase = kContainer.getKieBase( kBaseName );
         
         KieSession kSession = kBase.newKieSession();
         List list = new ArrayList();

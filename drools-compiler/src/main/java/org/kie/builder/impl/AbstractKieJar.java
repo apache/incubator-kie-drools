@@ -14,8 +14,11 @@ public abstract class AbstractKieJar implements InternalKieJar {
     private final Map<String, KieBase> kbases = new HashMap<String, KieBase>();
 
     protected final KieProject kieProject;
+    
+    protected final GAV gav;
 
-    public AbstractKieJar(KieProject kieProject) {
+    public AbstractKieJar(GAV gav, KieProject kieProject) {
+        this.gav = gav;
         this.kieProject = kieProject;
     }        
 
@@ -28,7 +31,7 @@ public abstract class AbstractKieJar implements InternalKieJar {
     }
 
     public GAV getGAV() {
-        return kieProject.getGroupArtifactVersion();
+        return gav;
     }
 
     public void addKieBase(String kBaseName, KieBase kBase) {

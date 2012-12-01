@@ -8,9 +8,18 @@ import org.drools.kproject.memory.MemoryFile;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.junit.After;
 import org.junit.Before;
+import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieBuilder;
+import org.kie.builder.KieFactory;
+import org.kie.builder.KieFileSystem;
+import org.kie.builder.KieJar;
 import org.kie.builder.KieProject;
+import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.Message.Level;
+import org.kie.builder.impl.KieFileSystemImpl;
+import org.kie.builder.impl.MemoryKieJar;
 import org.kie.KnowledgeBase;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -48,10 +57,6 @@ public class AbstractKnowledgeTest {
             InterruptedException {
         KieProject kproj = new KieProjectImpl();
 
-        kproj.setGroupArtifactVersion( new GroupArtifactVersion( "org.test", namespace, "0.1" ) );
-
-        kproj.setKBasesPath( "src/kbases" );
-
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
@@ -81,53 +86,49 @@ public class AbstractKnowledgeTest {
         KieSessionModel ksession4 = kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
                 .setType( "stateless" )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
-
-        MemoryFileSystem mfs = new MemoryFileSystem();
-
-        Folder fld2 = mfs.getFolder( "META-INF" );
-        fld2.create();
-        File fle2 = fld2.getFile( "beans.xml" );
-        fle2.create( new ByteArrayInputStream( generateBeansXML( kproj ).getBytes() ) );
-
-        fle2 = fld2.getFile( "kproject.xml" );
-        fle2.create( new ByteArrayInputStream( ((KieProjectImpl)kproj).toXML().getBytes() ) );
+  
+        
+        KieFileSystemImpl kfs =  ( KieFileSystemImpl ) KieFactory.Factory.get().newKieFileSystem();
+        kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
+        kfs.writeProjectXML( ((KieProjectImpl)kproj).toXML()  );
+        
+        GAV gav = KieFactory.Factory.get().newGav( namespace, "art1", "1.0-SNAPSHOT" );
+        kfs.generateAndWritePomXML( gav );        
 
         String kBase1R1 = getRule( namespace + ".test1", "rule1" );
         String kBase1R2 = getRule( namespace + ".test1", "rule2" );
 
         String kbase2R1 = getRule( namespace + ".test2", "rule1" );
         String kbase2R2 = getRule( namespace + ".test2", "rule2" );
-
-        String fldKB1 = kproj.getKBasesPath() + "/" + kieBaseModel1.getName();
-        String fldKB2 = kproj.getKBasesPath() + "/" + kieBaseModel2.getName();
-
-        mfs.getFolder( fldKB1 ).create();
-        mfs.getFolder( fldKB2 ).create();
-
-        mfs.getFile( fldKB1 + "/rule1.drl" ).create( new ByteArrayInputStream( kBase1R1.getBytes() ) );
-        mfs.getFile( fldKB1 + "/rule2.drl" ).create( new ByteArrayInputStream( kBase1R2.getBytes() ) );
-        mfs.getFile( fldKB2 + "/rule1.drl" ).create( new ByteArrayInputStream( kbase2R1.getBytes() ) );
-        mfs.getFile( fldKB2 + "/rule2.drl" ).create( new ByteArrayInputStream( kbase2R2.getBytes() ) );
-
-        MemoryFileSystem trgMfs = new MemoryFileSystem();
-        MemoryFileSystem srcMfs = mfs;
-
-        Folder fld1 = trgMfs.getFolder( "org/drools/cdi/test" );
-        fld1.create();
-        File fle1 = fld1.getFile( "KProjectTestClass" + namespace + ".java" );
-        fle1.create( new ByteArrayInputStream( generateKProjectTestClass( kproj, namespace ).getBytes() ) );
-
-        List<String> inputClasses = new ArrayList<String>();
-        inputClasses.add( "org/drools/cdi/test/KProjectTestClass" + namespace + ".java" );
-
-        //writeFs(namespace + "mod", srcMfs );
-        compile( kproj, srcMfs, trgMfs, inputClasses );
-
-        if ( createJar ) {
+                
+        String fldKB1 = "src/main/resources/" + kieBaseModel1.getName().replace( '.', '/' );
+        String fldKB2 = "src/main/resources/" + kieBaseModel2.getName().replace( '.', '/' );
+        
+        kfs.write( fldKB1 + "/rule1.drl", kBase1R1.getBytes() );
+        kfs.write( fldKB1 + "/rule2.drl", kBase1R2.getBytes() );
+        kfs.write( fldKB2 + "/rule1.drl", kbase2R1.getBytes() );
+        kfs.write( fldKB2 + "/rule2.drl", kbase2R2.getBytes() );
+        
+        kfs.write( "src/main/java/org/drools/cdi/test/KProjectTestClass" + namespace + ".java" ,generateKProjectTestClass( kproj, namespace ) );        
+        
+        
+        KieServices ks = KieServices.Factory.get();       
+        KieBuilder kBuilder = ks.newKieBuilder( kfs );
+        
+        kBuilder.build();
+        if ( kBuilder.hasResults( Level.ERROR  ) ) {
+            fail( "should not have errors" + kBuilder.getResults() );
+        }
+        MemoryKieJar kieJar = ( MemoryKieJar ) kBuilder.getKieJar();
+        MemoryFileSystem trgMfs = kieJar.getMemoryFileSystem();
+        
+        if ( createJar ) {            
             trgMfs.writeAsJar(fileManager.getRootDirectory(), namespace);
         } else {
-            writeFs( namespace, trgMfs );
+            java.io.File file = fileManager.newFile( namespace );            
+            trgMfs.writeAsFs( file );
         }
+        
     }
 
     public String getRule(String packageName,
@@ -205,7 +206,7 @@ public class AbstractKnowledgeTest {
                                 MemoryFileSystem trgMfs,
                                 List<String> classes) {
         for ( KieBaseModel kbase : kproj.getKieBaseModels().values() ) {
-            Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getName() );
+            Folder srcFolder = srcMfs.getFolder( "src/main/resources/" + kbase.getName() );
             Folder trgFolder = trgMfs.getFolder(kbase.getName());
 
             copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );

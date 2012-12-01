@@ -83,6 +83,7 @@ public class KProjectTest extends AbstractKnowledgeTest {
             java.io.File file2 = fileManager.newFile( "jar2.jar" );
             java.io.File file3 = fileManager.newFile( "jar3.jar" );
             java.io.File fol4 = fileManager.newFile( "fol4" );
+        
             URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{file1.toURI().toURL(), file2.toURI().toURL(), file3.toURI().toURL(), fol4.toURI().toURL() } );
             Thread.currentThread().setContextClassLoader( urlClassLoader );
 

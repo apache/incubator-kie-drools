@@ -64,7 +64,8 @@ public class MemoryFileSystem
         return this.fileContents;
     }
     
-    public File getFile(String path) {
+    public File getFile(String path) {   
+        path = MemoryFolder.trimLeadingAndTrailing( path );
         int lastSlashPos = path.lastIndexOf( '/' );
         if ( lastSlashPos >= 0 ) {
             Folder folder = getFolder( path.substring( 0,
@@ -103,7 +104,7 @@ public class MemoryFileSystem
 
     public void setFileContents(MemoryFile file,
                                 byte[] contents) throws IOException {
-        if ( !existsFolder( file.getFolder().getPath().toPortableString() ) ) {
+        if ( !existsFolder( (MemoryFolder) file.getFolder() ) ) {
             createFolder( (MemoryFolder) file.getFolder() );
         }
 
@@ -112,6 +113,10 @@ public class MemoryFileSystem
 
         folders.get( file.getFolder().getPath().toPortableString() ).add( file );
 
+    }
+    
+    public boolean existsFolder(MemoryFolder folder) {
+        return existsFolder( folder.getPath().toPortableString() ); 
     }
 
     public boolean existsFolder(String path) {
@@ -122,12 +127,14 @@ public class MemoryFileSystem
         return fileContents.containsKey( path );
     }
 
-    public void createFolder(MemoryFolder folder) {
-        if ( !existsFolder( folder.getParent().getPath().toPortableString() ) ) {
-            createFolder( (MemoryFolder) folder.getParent() );
-        }
-        if ( existsFolder( folder.getParent().getPath().toPortableString() ) &&
-             !existsFolder( folder.getPath().toPortableString() ) ) {
+    public void createFolder(MemoryFolder folder) {                
+        // create current, if it does not exist.
+        if ( !existsFolder( folder ) ) {
+            // create parent if it does not exist
+            if ( !existsFolder( ( MemoryFolder) folder.getParent() ) ) {
+                createFolder( (MemoryFolder) folder.getParent() );
+            }
+            
             folders.put( folder.getPath().toPortableString(),
                          new HashSet<Resource>() );
 
@@ -149,10 +156,8 @@ public class MemoryFileSystem
     public void remove(Set<Resource> members) {
         for ( Iterator<Resource> it = members.iterator(); it.hasNext(); ) {
             Resource res = it.next();
-            //for( Resource res : members ) {
             if ( res instanceof Folder ) {
                 remove( folders.get( res.getPath().toPortableString() ) );
-                //folders.remove( folder.getPath().toPortableString() );
             } else {
                 fileContents.remove( res.getPath().toPortableString() );
             }
