@@ -1,5 +1,6 @@
 package org.drools.cdi;
 
+import org.drools.core.util.StringUtils;
 import org.drools.kproject.KieBaseModelImpl;
 import org.drools.kproject.KieProjectImpl;
 import org.drools.kproject.KieSessionModelImpl;
@@ -12,6 +13,7 @@ import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
+import org.kie.builder.impl.KieBuilderImpl;
 import org.kie.cdi.KBase;
 import org.kie.cdi.KSession;
 import org.kie.io.ResourceFactory;
@@ -33,18 +35,24 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -52,31 +60,32 @@ import java.util.zip.ZipFile;
 import static org.drools.kproject.KieBaseModelImpl.getFiles;
 
 public class KProjectExtension
-        implements
-        Extension {
+    implements
+    Extension {
 
-    private static final Logger                       log = LoggerFactory.getLogger( KProjectExtension.class );
+    private static final Logger          log = LoggerFactory.getLogger( KProjectExtension.class );
 
-    private Set<String>                               kBaseNames;
-    private Set<String>                               kSessionNames;
+    private Set<String>                  kBaseNames;
+    private Set<String>                  kSessionNames;
 
-    private Map<String, String>                       kBaseURLs;
-    private Map<String, KieProject>                     kProjects;
+    private Map<String, String>          kBaseURLs;
+//    private Map<String, KieProject>      kProjects;
     private Map<String, KieBaseModel>    kBases;
     private Map<String, KieSessionModel> kSessions;
 
-    public KProjectExtension() {}
+    public KProjectExtension() {
+    }
 
     public void init() {
         kBaseURLs = new HashMap<String, String>();
-        kProjects = new HashMap<String, KieProject>();
+//        kProjects = new HashMap<String, KieProject>();
         kBases = new HashMap<String, KieBaseModel>();
         kSessions = new HashMap<String, KieSessionModel>();
         buildKProjects();
     }
 
     <Object> void processInjectionTarget(@Observes ProcessInjectionTarget<Object> pit) {
-        if ( kProjects == null ) {
+        if ( kBases == null ) {
             init();
         }
 
@@ -88,7 +97,7 @@ public class KProjectExtension
                     if ( kBaseNames == null ) {
                         kBaseNames = new HashSet<String>();
                     }
-                    kBaseNames.add(kBase.value());
+                    kBaseNames.add( kBase.value() );
                 }
 
                 KSession kSession = ip.getAnnotated().getAnnotation( KSession.class );
@@ -96,7 +105,7 @@ public class KProjectExtension
                     if ( kSessionNames == null ) {
                         kSessionNames = new HashSet<String>();
                     }
-                    kSessionNames.add(kSession.value());
+                    kSessionNames.add( kSession.value() );
                 }
             }
         }
@@ -105,66 +114,71 @@ public class KProjectExtension
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd,
                             BeanManager bm) {
-        if ( kProjects != null ) {
+        if ( kBases != null ) {
             // if kProjects null, processInjectionTarget was not called, so beans to create
 
             Map<String, KBaseBean> kBaseBeans = new HashMap<String, KProjectExtension.KBaseBean>();
             if ( kBaseNames != null ) {
-                for ( String kBaseQName : kBaseNames) {
+                for ( String kBaseQName : kBaseNames ) {
                     KBaseBean bean = new KBaseBean( kBases.get( kBaseQName ),
                                                     kBaseURLs.get( kBaseQName ),
                                                     kBaseBeans );
-                    kBaseBeans.put( kBaseQName, bean );
+                    kBaseBeans.put( kBaseQName,
+                                    bean );
                     abd.addBean( bean );
                 }
             }
             kBaseNames = null;
 
             if ( kSessionNames != null ) {
-                for ( String kSessionName : kSessionNames) {
+                for ( String kSessionName : kSessionNames ) {
                     KieSessionModel kieSessionModel = kSessions.get( kSessionName );
-                    if (kieSessionModel == null) {
-                        throw new RuntimeException("Unknown KnowledgeSession: " + kSessionName);
+                    if ( kieSessionModel == null ) {
+                        throw new RuntimeException( "Unknown KnowledgeSession: " + kSessionName );
                     }
                     KBaseBean bean = kBaseBeans.get( ((KieSessionModelImpl) kieSessionModel).getKBase().getName() );
                     if ( "stateless".equals( kieSessionModel.getType() ) ) {
-                        abd.addBean( new StatelessKSessionBean(kieSessionModel, bean ) );
+                        abd.addBean( new StatelessKSessionBean( kieSessionModel,
+                                                                bean ) );
                     } else {
-                        abd.addBean( new StatefulKSessionBean(kieSessionModel, bean ) );
+                        abd.addBean( new StatefulKSessionBean( kieSessionModel,
+                                                               bean ) );
                     }
                 }
             }
             kSessionNames = null;
-            
+
             kBaseURLs = null;
-            kProjects = null;
             kBases = null;
-            kSessions = null;            
+            kSessions = null;
         }
     }
 
     public static class KBaseBean
-            implements
-            Bean<KnowledgeBase> {
-        static final Set<Type>            types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( KnowledgeBase.class, Object.class ) ) );
+        implements
+        Bean<KnowledgeBase> {
+        static final Set<Type>         types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( KnowledgeBase.class,
+                                                                                                              Object.class ) ) );
 
-        private Set<Annotation>           qualifiers;
+        private Set<Annotation>        qualifiers;
 
-        private String                    urlPath;
-        private KieBaseModel kieBaseModelModel;
+        private String                 urlPath;
+        private KieBaseModel           kieBaseModelModel;
 
-        private KnowledgeBase             kBase;
-        
-        private Map<String, KBaseBean>    kBaseBeans;
+        private KnowledgeBase          kBase;
+
+        private Map<String, KBaseBean> kBaseBeans;
 
         public KBaseBean(final KieBaseModel kieBaseModelModel,
-                         String urlPath, 
+                         String urlPath,
                          Map<String, KBaseBean> kBaseBeans) {
             this.kieBaseModelModel = kieBaseModelModel;
             this.urlPath = urlPath;
             this.kBaseBeans = kBaseBeans;
-            this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
-                                                                                                   new AnnotationLiteral<Any>() {},
+            this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {
+                                                                                                   },
+                                                                                                   new AnnotationLiteral<Any>() {
+                                                                                                   },
                                                                                                    new KBase() {
                                                                                                        public Class< ? extends Annotation> annotationType() {
                                                                                                            return KBase.class;
@@ -177,18 +191,22 @@ public class KProjectExtension
                     ) ) );
         }
 
-        public KnowledgeBase create(CreationalContext ctx) {            
+        public KnowledgeBase create(CreationalContext ctx) {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
-            
+
             Set<String> includes = kieBaseModelModel.getIncludes();
             if ( includes != null && !includes.isEmpty() ) {
                 for ( String include : includes ) {
                     KBaseBean includeBean = kBaseBeans.get( include );
-                    addFiles(ckbuilder, includeBean.getKieBaseModelModel(), includeBean.getUrlPath() );
+                    addFiles( ckbuilder,
+                              includeBean.getKieBaseModelModel(),
+                              includeBean.getUrlPath() );
                 }
             }
-            addFiles(ckbuilder, kieBaseModelModel, urlPath);
+            addFiles( ckbuilder,
+                      kieBaseModelModel,
+                      urlPath );
 
             ckbuilder.build();
 
@@ -198,47 +216,54 @@ public class KProjectExtension
             return this.kBase;
         }
 
-        private void addFiles(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String urlPathToAdd) {
+        private void addFiles(CompositeKnowledgeBuilder ckbuilder,
+                              KieBaseModel kieBaseModel,
+                              String urlPathToAdd) {
             String rootPath = urlPathToAdd;
             if ( rootPath.lastIndexOf( ':' ) > 0 ) {
                 rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
             }
 
-            if ( urlPathToAdd.endsWith( ".jar" ) ) {  
+            if ( urlPathToAdd.endsWith( ".jar" ) ) {
                 File actualZipFile = new File( rootPath );
                 if ( !actualZipFile.exists() ) {
                     log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + " as jarPath cannot be found\n" + rootPath );
-                   // return KnowledgeBaseFactory.newKnowledgeBase();
+                    // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
-                
+
                 ZipFile zipFile = null;
                 try {
                     zipFile = new ZipFile( actualZipFile );
                 } catch ( Exception e ) {
                     log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + " as jar cannot be opened\n" + e.getMessage() );
                     // return KnowledgeBaseFactory.newKnowledgeBase();
-                }  
-       
+                }
+
                 try {
-                    for ( String file : getFiles(kieBaseModel.getName(), zipFile) ) {
+                    for ( String file : getFiles( kieBaseModel.getName(),
+                                                  zipFile ) ) {
                         ZipEntry zipEntry = zipFile.getEntry( file );
-                        ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ), ResourceType.DRL );
+                        ckbuilder.add( ResourceFactory.newInputStreamResource( zipFile.getInputStream( zipEntry ) ),
+                                       ResourceType.DRL );
                     }
                 } catch ( Exception e ) {
                     try {
                         zipFile.close();
                     } catch ( IOException e1 ) {
-    
+
                     }
                     log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + " as jar cannot be read\n" + e.getMessage() );
                     // return KnowledgeBaseFactory.newKnowledgeBase();
                 }
             } else {
                 try {
-                    for ( String file : getFiles(kieBaseModel.getName(), new File(rootPath)) ) {
-                        ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ), ResourceType.DRL );
+                    File  kieBaseRootPath = new File(  rootPath, kieBaseModel.getName().replace( '.', '/' ) );
+                    for ( String file : getFiles(kieBaseRootPath) ) {
+                        ckbuilder.add( ResourceFactory.newFileResource( new File( kieBaseRootPath,
+                                                                                  file ) ),
+                                       ResourceType.DRL );
                     }
-                } catch ( Exception e) {
+                } catch ( Exception e ) {
                     log.error( "Unable to build KieBaseModel:" + kieBaseModel.getName() + "\n" + e.getMessage() );
                 }
             }
@@ -304,24 +329,28 @@ public class KProjectExtension
     }
 
     public static class StatelessKSessionBean
-            implements
-            Bean<StatelessKnowledgeSession> {
-        static final Set<Type>               types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( StatelessKnowledgeSession.class, Object.class ) ) );
+        implements
+        Bean<StatelessKnowledgeSession> {
+        static final Set<Type>  types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( StatelessKnowledgeSession.class,
+                                                                                                       Object.class ) ) );
 
-        private Set<Annotation>              qualifiers;
+        private Set<Annotation> qualifiers;
 
-        private KieBaseModel kieBaseModelModel;
+        private KieBaseModel    kieBaseModelModel;
         private KieSessionModel kieSessionModelModel;
-        
-        private KBaseBean                    kBaseBean;
 
-        public StatelessKSessionBean(final KieSessionModel kieSessionModelModel, KBaseBean kBaseBean) {
+        private KBaseBean       kBaseBean;
+
+        public StatelessKSessionBean(final KieSessionModel kieSessionModelModel,
+                                     KBaseBean kBaseBean) {
             this.kieSessionModelModel = kieSessionModelModel;
             this.kBaseBean = kBaseBean;
             this.kieBaseModelModel = ((KieSessionModelImpl) kieSessionModelModel).getKBase();
 
-            this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
-                                                                                                   new AnnotationLiteral<Any>() {},
+            this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {
+                                                                                                   },
+                                                                                                   new AnnotationLiteral<Any>() {
+                                                                                                   },
                                                                                                    new KSession() {
                                                                                                        public Class< ? extends Annotation> annotationType() {
                                                                                                            return KSession.class;
@@ -382,24 +411,28 @@ public class KProjectExtension
     }
 
     public static class StatefulKSessionBean
-            implements
-            Bean<StatefulKnowledgeSession> {
-        static final Set<Type>               types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( StatefulKnowledgeSession.class, Object.class ) ) );
+        implements
+        Bean<StatefulKnowledgeSession> {
+        static final Set<Type>  types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( StatefulKnowledgeSession.class,
+                                                                                                       Object.class ) ) );
 
-        private Set<Annotation>              qualifiers;
+        private Set<Annotation> qualifiers;
 
-        private KieBaseModel kieBaseModelModel;
+        private KieBaseModel    kieBaseModelModel;
         private KieSessionModel kieSessionModelModel;
-        
-        private KBaseBean                    kBaseBean;
 
-        public StatefulKSessionBean(final KieSessionModel kieSessionModelModel, KBaseBean kBaseBean) {
+        private KBaseBean       kBaseBean;
+
+        public StatefulKSessionBean(final KieSessionModel kieSessionModelModel,
+                                    KBaseBean kBaseBean) {
             this.kieSessionModelModel = kieSessionModelModel;
             this.kieBaseModelModel = ((KieSessionModelImpl) kieSessionModelModel).getKBase();
             this.kBaseBean = kBaseBean;
 
-            this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {},
-                                                                                                   new AnnotationLiteral<Any>() {},
+            this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {
+                                                                                                   },
+                                                                                                   new AnnotationLiteral<Any>() {
+                                                                                                   },
                                                                                                    new KSession() {
                                                                                                        public Class< ? extends Annotation> annotationType() {
                                                                                                            return KSession.class;
@@ -470,34 +503,98 @@ public class KProjectExtension
             return;
         }
 
+        List<KieProject> kProjects = new ArrayList<KieProject>();
+        
         // Map of kproject urls
-        Map<String, String> urls = new HashMap<String, String>();
+        Map<KieProject, String> urls = new IdentityHashMap<KieProject, String>();
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();;
             try {
-                KieProject kieProject = KieProjectImpl.fromXML(url);
-                String kProjectId = kieProject.getGroupArtifactVersion().getGroupId() + ":" + kieProject.getGroupArtifactVersion().getArtifactId();
-                urls.put( kProjectId, fixURL( url ) );
-                kProjects.put( kProjectId, kieProject);
+                KieProject kieProject = KieProjectImpl.fromXML( url );
+                kProjects.add( kieProject );
+                
+                String fixedURL = fixURL( url );
+                urls.put( kieProject,
+                          fixedURL );
             } catch ( Exception exc ) {
                 log.error( "Unable to build and build index of kproject.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
             }
         }
 
-        for ( KieProject kieProject : kProjects.values() ) {
+        for ( KieProject kieProject : kProjects ) {
             for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
-                kBases.put( kieBaseModel.getName(), kieBaseModel);
-                ((KieBaseModelImpl) kieBaseModel).setKProject(kieProject); // should already be set, but just in case
-
-                String kProjectId = kieProject.getGroupArtifactVersion().getGroupId() + ":" + kieProject.getGroupArtifactVersion().getArtifactId();
-                kBaseURLs.put( kieBaseModel.getName(), urls.get( kProjectId ) );
+                kBases.put( kieBaseModel.getName(),
+                            kieBaseModel );
+                ((KieBaseModelImpl) kieBaseModel).setKProject( kieProject ); // should already be set, but just in case
+                
+                kBaseURLs.put( kieBaseModel.getName(),
+                               urls.get( kieProject ) );
                 for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
-                    ((KieSessionModelImpl) kieSessionModel).setKBase(kieBaseModel); // should already be set, but just in case
+                    ((KieSessionModelImpl) kieSessionModel).setKBase( kieBaseModel ); // should already be set, but just in case
                     kSessions.put( kieSessionModel.getName(),
-                            kieSessionModel);
+                                   kieSessionModel );
                 }
             }
         }
+    }
+
+    public String getPomProperties(String urlPathToAdd) {
+        String rootPath = urlPathToAdd;
+        if ( rootPath.lastIndexOf( ':' ) > 0 ) {
+            rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
+        }
+
+        if ( urlPathToAdd.endsWith( ".jar" ) ) {
+            File actualZipFile = new File( rootPath );
+            if ( !actualZipFile.exists() ) {
+                log.error( "Unable to load pom.properties from" + urlPathToAdd + " as jarPath cannot be found\n" + rootPath );
+            }
+
+            ZipFile zipFile = null;
+
+
+            try {
+                zipFile = new ZipFile( actualZipFile );
+                
+                String file = KieBuilderImpl.findPomProperties( zipFile );
+                if ( file == null ) {
+                    throw new IOException();
+                }
+                ZipEntry zipEntry = zipFile.getEntry( file );
+                
+                return StringUtils.readFileAsString( new InputStreamReader( zipFile.getInputStream( zipEntry ) ) );                
+            } catch ( Exception e ) {
+                log.error( "Unable to load pom.properties from" + urlPathToAdd + "\n" + e.getMessage() );
+            } finally {
+                try {
+                    zipFile.close();
+                } catch ( IOException e ) {
+                    log.error( "Error when closing InputStream to " + urlPathToAdd + "\n" + e.getMessage() );
+                }                
+            }
+        } else {
+            FileReader reader = null;
+            try {
+                File file = KieBuilderImpl.findPomProperties( new File( rootPath ) );
+                if ( file == null ) {
+                    throw new IOException();
+                }
+                reader = new FileReader( file );
+                return StringUtils.toString( reader );                
+            } catch ( Exception e ) {
+                log.error( "Unable to load pom.properties from" + urlPathToAdd + "\n" + e.getMessage() );
+            } finally {
+                if ( reader != null ) {
+                    try {
+                        reader.close();
+                    } catch ( IOException e ) {
+                        log.error( "Error when closing InputStream to " + urlPathToAdd + "\n" + e.getMessage() );
+                    }
+                }
+            }
+        }
+        log.error( "Unable to load pom.properties from" + urlPathToAdd );
+        return null;
     }
 
     private String fixURL(URL url) {
@@ -507,33 +604,36 @@ public class KProjectExtension
         String urlType = "file";
         int colonIndex = urlPath.indexOf( ":" );
         if ( colonIndex != -1 ) {
-            urlType = urlPath.substring( 0, colonIndex );
+            urlType = urlPath.substring( 0,
+                                         colonIndex );
         }
 
         urlPath = url.getPath();
-        
 
         if ( "jar".equals( urlType ) ) {
             // switch to using getPath() instead of toExternalForm()
-           
+
             if ( urlPath.indexOf( '!' ) > 0 ) {
-                urlPath = urlPath.substring( 0, urlPath.indexOf( '!' ) );
+                urlPath = urlPath.substring( 0,
+                                             urlPath.indexOf( '!' ) );
             }
         } else {
-            urlPath = urlPath.substring( 0, urlPath.length() - "/META-INF/kproject.xml".length() );
+            urlPath = urlPath.substring( 0,
+                                         urlPath.length() - "/META-INF/kproject.xml".length() );
         }
 
-        
         // remove any remaining protocols, normally only if it was a jar
         colonIndex = urlPath.lastIndexOf( ":" );
         if ( colonIndex >= 0 ) {
-            urlPath = urlPath.substring( colonIndex +  1  );
+            urlPath = urlPath.substring( colonIndex + 1 );
         }
-        
+
         try {
-            urlPath = URLDecoder.decode( urlPath, "UTF-8" );
+            urlPath = URLDecoder.decode( urlPath,
+                                         "UTF-8" );
         } catch ( UnsupportedEncodingException e ) {
-            throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8", e );
+            throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8",
+                                                e );
         }
 
         log.debug( "KieProject URL Type + URL: " + urlType + ":" + urlPath );

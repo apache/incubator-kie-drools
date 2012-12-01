@@ -1,6 +1,7 @@
 package org.kie.builder.impl;
 
 import org.drools.kproject.memory.MemoryFileSystem;
+import org.kie.builder.GAV;
 import org.kie.builder.KieProject;
 
 import java.io.ByteArrayInputStream;
@@ -11,9 +12,13 @@ public class MemoryKieJar extends AbstractKieJar {
 
     private final MemoryFileSystem mfs;
 
-    public MemoryKieJar(KieProject kieProject, MemoryFileSystem mfs) {
-        super(kieProject);
+    public MemoryKieJar(GAV gav, KieProject kieProject, MemoryFileSystem mfs) {
+        super(gav, kieProject);
         this.mfs = mfs;
+    }
+    
+    public MemoryFileSystem getMemoryFileSystem() {
+        return mfs;
     }
 
     public byte[] getBytes() {

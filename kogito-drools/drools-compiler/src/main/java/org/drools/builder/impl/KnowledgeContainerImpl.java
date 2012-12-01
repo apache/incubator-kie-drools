@@ -39,7 +39,6 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
 
     private static final Logger log = LoggerFactory.getLogger(KnowledgeContainer.class);
 
-    public static final String KBASES_FOLDER = "src/kbases";
     public static final String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
     public static final String KPROJECT_RELATIVE_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
 
@@ -126,18 +125,6 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         return units;
     }
 
-    public void copyKBasesToOutput(File rootFolder, File outputFolder) {
-        File kProjectFile = new File(rootFolder, KPROJECT_RELATIVE_PATH);
-        KieProject kieProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
-        copyFile(kProjectFile, new File(outputFolder, KPROJECT_JAR_PATH));
-
-        for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
-            for (String kBaseFile : getFiles(kieBaseModel.getName(), new File(rootFolder, KBASES_FOLDER))) {
-                copyFile(new File(rootFolder, KBASES_FOLDER + "/" + kBaseFile), new File(outputFolder, kBaseFile));
-            }
-        }
-    }
-
     public KBaseUnit getKBaseUnit(String kBaseName) {
         KieBaseModel kieBaseModel = kBases.get(kBaseName);
         if (kieBaseModel == null) {
@@ -208,12 +195,13 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     }
 
     private File writeKJar(File rootFolder, File outputFolder, String jarName, KieProject kieProject) {
-        File kBasesFolder = new File(rootFolder, KBASES_FOLDER);
         Map<String, String> jarEntries = new HashMap<String, String>();
         jarEntries.put(KPROJECT_RELATIVE_PATH, KPROJECT_JAR_PATH);
+        
         for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
-            for (String kBaseFile : getFiles(kieBaseModel.getName(), kBasesFolder)) {
-                jarEntries.put(KBASES_FOLDER + "/" + kBaseFile, kBaseFile);
+            String path = kieBaseModel.getName().replace( '.', '/' );
+            for (String kBaseFile : getFiles( new File( rootFolder, KPROJECT_RELATIVE_PATH + "/" + path ) ) ) {
+                jarEntries.put(path + "/" + kBaseFile, kBaseFile);
             }
         }
         return writeAsJar(rootFolder, outputFolder, jarName, jarEntries);

@@ -13,6 +13,29 @@ import org.junit.Test;
 public class MemoryFolderTest {
     
     @Test
+    public void testGetParentWithLeadingAndTrailingSlash() {
+        MemoryFileSystem mfs = new MemoryFileSystem();        
+        assertEquals( "", new MemoryFolder( mfs, "/src" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "", new MemoryFolder( mfs, "src/" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "", new MemoryFolder( mfs, "/src/" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src", new MemoryFolder( mfs, "/src/main" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src", new MemoryFolder( mfs, "src/main/" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src", new MemoryFolder( mfs, "/src/main/" ).getParent().getPath().toPortableString() ); 
+        
+        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src/main", new MemoryFolder( mfs, "src/main/java/" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java/" ).getParent().getPath().toPortableString() );                
+    }
+    
+    
+    @Test
     public void testRecursiveFolderCreation() {
         FileSystem fs = new MemoryFileSystem();
         

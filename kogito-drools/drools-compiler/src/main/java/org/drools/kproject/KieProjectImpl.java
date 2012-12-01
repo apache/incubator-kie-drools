@@ -21,11 +21,8 @@ import java.util.Map;
 
 public class KieProjectImpl implements KieProject {
 
-    private GAV groupArtifactVersion;
-    
-    // qualifier to path
-    private String              kProjectPath;
-    private String              kBasesPath;
+    public static String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
+    public static String KPROJECT_RELATIVE_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
 
     private Map<String, KieBaseModel>  kBases;
     
@@ -33,45 +30,7 @@ public class KieProjectImpl implements KieProject {
         kBases = Collections.emptyMap();
     }    
 
-    public GAV getGroupArtifactVersion() {
-        return groupArtifactVersion;
-    }
 
-    public KieProject setGroupArtifactVersion(GAV groupArtifactVersion) {
-        this.groupArtifactVersion = groupArtifactVersion;
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#getKProjectPath()
-     */
-    public String getKProjectPath() {
-        return kProjectPath;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#setKProjectPath(java.lang.String)
-     */
-    public KieProject setKProjectPath(String kprojectPath) {
-        this.kProjectPath = kprojectPath;
-        return this;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#getKBasesPath()
-     */
-    public String getKBasesPath() {
-        return kBasesPath;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#setKBasesPath(java.lang.String)
-     */
-    public KieProject setKBasesPath(String kprojectPath) {
-        this.kBasesPath = kprojectPath;
-        return this;
-    }  
-    
     /* (non-Javadoc)
      * @see org.kie.kproject.KieProject#addKBase(org.kie.kproject.KieBaseModelImpl)
      */
@@ -129,9 +88,6 @@ public class KieProjectImpl implements KieProject {
 
     List<String> validate() {
         List<String> problems = new ArrayList<String>();
-        if ( kProjectPath == null) {
-            problems.add( "A path to the kproject.properties file must be specified" );
-        }
         return problems;
     }
 
@@ -140,7 +96,7 @@ public class KieProjectImpl implements KieProject {
      */
     @Override
     public String toString() {
-        return "KieProject [kprojectPath=" + kProjectPath + ", kbases=" + kBases + "]";
+        return "KieProject [kbases=" + kBases + "]";
     }
 
     public String toXML() {
@@ -198,22 +154,15 @@ public class KieProjectImpl implements KieProject {
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
             KieProjectImpl kProject = (KieProjectImpl) value;
-            writeAttribute(writer, "kBasesPath", kProject.getKBasesPath());
-            writeAttribute(writer, "kProjectPath", kProject.getKProjectPath());
-            writeObject(writer, context, "groupArtifactVersion", kProject.getGroupArtifactVersion());
             writeObjectList(writer, context, "kbases", "kbase", kProject.getKieBaseModels().values());
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final KieProjectImpl kProject = new KieProjectImpl();
-            kProject.setKBasesPath(reader.getAttribute("kBasesPath"));
-            kProject.setKProjectPath(reader.getAttribute("kProjectPath"));
 
             readNodes(reader, new AbstractXStreamConverter.NodeReader() {
                 public void onNode(HierarchicalStreamReader reader, String name, String value) {
-                    if ("groupArtifactVersion".equals(name)) {
-                        kProject.setGroupArtifactVersion((GroupArtifactVersion) context.convertAnother(reader.getValue(), GroupArtifactVersion.class));
-                    } else if ("kbases".equals(name)) {
+                    if ("kbases".equals(name)) {
                         Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();
                         for (KieBaseModelImpl kBase : readObjectList(reader, context, KieBaseModelImpl.class)) {
                             kBase.setKProject(kProject);

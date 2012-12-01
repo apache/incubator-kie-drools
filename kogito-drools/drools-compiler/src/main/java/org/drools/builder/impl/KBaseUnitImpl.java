@@ -150,7 +150,7 @@ public class KBaseUnitImpl implements KBaseUnit {
             }
         } else {
             try {
-                for ( String file : getFiles(kieBaseModel.getName(), new File(rootPath)) ) {
+                for ( String file : getFiles(new File(rootPath, kieBaseModel.getName().replace( '.', '/' ))) ) {
                     ckbuilder.add( ResourceFactory.newFileResource( new File(rootPath, file) ),ResourceType.determineResourceType( file ) );
                 }
             } catch ( Exception e) {

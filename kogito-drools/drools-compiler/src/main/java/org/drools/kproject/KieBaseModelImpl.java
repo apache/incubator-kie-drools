@@ -204,34 +204,15 @@ public class KieBaseModelImpl
         while ( zipEntries.hasMoreElements() ) {
             ZipEntry zipEntry = zipEntries.nextElement();
             String fileName = zipEntry.getName();
-            if ( filterFileInKBase( kBaseName, fileName ) ) {
+            if ( filterFileInKBase( kBaseName.replace( '.', '/' ), fileName ) ) {
                 files.add( fileName );
             }
         }
         return files;
     }
-
-    public static List<String> getFiles(String kBaseName,
-                                        java.io.File root) {
-        String prefix = "";
-        java.io.File kBaseRoot = null;
-        if ( root.getName().equals( kBaseName ) ) {
-            kBaseRoot = root;
-        } else {
-            for ( java.io.File child : root.listFiles() ) {
-                if ( child.getName().equals( kBaseName ) ) {
-                    kBaseRoot = child;
-                    break;
-                }
-            }
-            prefix = kBaseName + "/";
-        }
-
-        if ( kBaseRoot == null ) {
-            throw new RuntimeException( "Unable to find KieBaseModel " + kBaseName + " in " + root );
-        }
-
-        return recursiveListFile( kBaseRoot, prefix, new Predicate<java.io.File>() {
+    
+    public static List<String> getFiles(java.io.File rootFolder) {
+        return recursiveListFile( rootFolder, "", new Predicate<java.io.File>() {
             public boolean apply(java.io.File file) {
                 String fileName = file.getName();
                 return fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) ||
@@ -240,9 +221,9 @@ public class KieBaseModelImpl
         } );
     }
 
-    private static boolean filterFileInKBase(String kBaseQName,
+    private static boolean filterFileInKBase(String rootPath,
                                              String fileName) {
-        return fileName.startsWith( kBaseQName ) && (fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) || fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() ));
+        return fileName.startsWith( rootPath ) && (fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) || fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() ));
     }
 
     public static class KBaseConverter extends AbstractXStreamConverter {

@@ -36,10 +36,14 @@ public class GroupArtifactVersion implements GAV {
         return toString();
     }
     
-    public String toJarPath() {
-        return "META-INF/maven/" + groupId + "/" + artifactId; 
+    public String getPomXmlPath() {
+        return "META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
     }
 
+    public String getPomPropertiesPath() {
+        return "META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties";
+    }    
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

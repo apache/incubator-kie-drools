@@ -2,6 +2,7 @@ package org.drools.integrationtests;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.Message;
+import org.drools.kproject.KieProjectImpl;
 import org.junit.Test;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
@@ -80,9 +81,10 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         GAV gav = kf.newGav("org.kie", "hello-world", "1.0-SNAPSHOT");
 
         KieFileSystem kfs = kf.newKieFileSystem()
+                .generateAndWritePomXML( gav )
                 .write("src/main/resoureces/org/pkg1/r1.drl", drl1)
                 .write("src/main/resoureces/org/pkg2/r2.drl", drl2)
-                .write(KieProject.KPROJECT_JAR_PATH, createKieProjectWithPackages(kf, gav).toXML());
+                .writeProjectXML( createKieProjectWithPackages(kf).toXML());
         ks.newKieBuilder( kfs ).build();
 
         KieSession ksession = ks.getKieContainer(gav).getKieSession("KSession1");
@@ -93,9 +95,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         assertEquals( 1, count );
     }
 
-    private KieProject createKieProjectWithPackages(KieFactory kf, GAV gav) {
-        KieProject kproj = kf.newKieProject()
-                .setGroupArtifactVersion(gav);
+    private KieProject createKieProjectWithPackages(KieFactory kf) {
+        KieProject kproj = kf.newKieProject();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )

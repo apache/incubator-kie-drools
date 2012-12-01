@@ -14,6 +14,10 @@ public class MemoryFolder
     private MemoryFileSystem mfs;
 
     private String           path;
+    
+    private MemoryPath       mPath;
+    
+    private MemoryFolder     pFolder;
 
     public MemoryFolder(MemoryFileSystem mfs,
                         String path) {
@@ -31,7 +35,10 @@ public class MemoryFolder
     }
 
     public Path getPath() {
-        return new MemoryPath( path );
+        if ( mPath == null ) {
+            mPath = new MemoryPath( path );
+        }
+        return mPath;
     }
 
     public File getFile(String name) {
@@ -51,32 +58,48 @@ public class MemoryFolder
     }
 
     public Folder getParent() {
-        String[] elements = path.split( "/" );
-        if ( elements.length == 0 ) {
-            // we are at root
-            return this;
-        }
+        if ( pFolder == null ) {
+            String p = trimLeadingAndTrailing( path );
+            
+            if ( p.indexOf( '/' ) == -1 ) {
+                pFolder = new MemoryFolder( mfs,
+                                         "" );            
+            } else {           
+                String[] elements = p.split( "/" );
         
-        String newPath = "";
-        boolean first = true;
-        for ( int i = 0; i < elements.length - 1; i++ ) {
-            if ( !StringUtils.isEmpty( elements[i] ) ) {
-                if ( !first ) {
-                    newPath = newPath + "/";;
+                String newPath = "";
+                boolean first = true;
+                for ( int i = 0; i < elements.length - 1; i++ ) {
+                    if ( !StringUtils.isEmpty( elements[i] ) ) {
+                        if ( !first ) {
+                            newPath = newPath + "/";;
+                        }
+                        newPath = newPath + elements[i];
+                        first = false;
+                    }
                 }
-                newPath = newPath + elements[i];
-                first = false;
+                pFolder = new MemoryFolder( mfs,
+                                            newPath );
             }
         }
         
-        if ( StringUtils.isEmpty( newPath ) ) {
-            // we are at root
-            newPath = "";
-        }
-        return new MemoryFolder( mfs,
-                                 newPath );
+        
+        
+        return pFolder;
     }
     
+    
+    public static String trimLeadingAndTrailing(String p) {
+        while ( p.charAt( 0 ) == '/') {
+            p = p.substring( 1 );
+        }
+
+        while ( p.charAt( p.length() -1 ) == '/') {
+            p = p.substring( 0, p.length() -1 );
+        } 
+        
+        return p;
+    }
 
     public Collection<? extends Resource> getMembers() {
         return mfs.getMembers( this );
@@ -87,18 +110,16 @@ public class MemoryFolder
     }
 
     public boolean create() {
-        if ( !exists() ) {
-            createFolder( this );
-        }
+        createFolder( this );
         return true;
 
     }
 
     private void createFolder(MemoryFolder folder) {
-        if ( !folder.exists() ) {
-            createFolder( ( MemoryFolder ) folder.getParent() );
-            mfs.createFolder( folder );
-        }
+        // trim lead and trailing slashes
+        String p = trimLeadingAndTrailing( folder.path );
+        
+        mfs.createFolder( folder );
     }
 
     @Override
