@@ -26,5 +26,5 @@ public interface AgendaFilter {
      * @return
      *     boolean value of "true" accepts the Activation for firing. 
      */
-    boolean accept(Activation activation);
+    boolean accept(Match activation);
 }

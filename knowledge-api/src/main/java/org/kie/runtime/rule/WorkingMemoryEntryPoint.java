@@ -68,8 +68,16 @@ public interface WorkingMemoryEntryPoint {
      * Retracts the fact for which the given FactHandle was assigned.
      * 
      * @param handle the handle whose fact is to be retracted.
+     * @deprecated use {@link #delete(FactHandle)}
      */
     void retract(FactHandle handle);
+
+    /**
+     * Retracts the fact for which the given FactHandle was assigned.
+     * 
+     * @param handle the handle whose fact is to be retracted.
+     */
+    void delete(FactHandle handle);
 
     /**
      * Updates the fact for which the given FactHandle was assigned with the new

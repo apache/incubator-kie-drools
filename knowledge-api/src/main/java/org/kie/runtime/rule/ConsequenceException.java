@@ -23,11 +23,11 @@ import org.kie.definition.rule.Rule;
 
 public class ConsequenceException extends RuntimeException {
     private WorkingMemory workingMemory;
-    private Activation    activation;    
+    private Match    activation;    
 
     public ConsequenceException( final Throwable rootCause,
                                  final WorkingMemory workingMemory,
-                                 final Activation activation ){
+                                 final Match activation ){
         super( rootCause );
         this.workingMemory = workingMemory;
         this.activation = activation;
@@ -49,7 +49,7 @@ public class ConsequenceException extends RuntimeException {
         return sb.toString();
     }
     
-    public Activation getActivation() {
+    public Match getActivation() {
         return this.activation;
     }
 

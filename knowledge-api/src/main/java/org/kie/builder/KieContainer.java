@@ -8,7 +8,7 @@ public interface KieContainer {
 
     GAV getGAV();
 
-    void updateToVersion(String version);
+    void updateToVersion(GAV version);
 
     KieBase getKieBase();
 

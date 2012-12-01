@@ -33,7 +33,7 @@ public interface RuleContext extends KnowledgeContext {
      * 
      * @return
      */
-    Activation getActivation();
+    Match getActivation();
     
     /**
      * Logically inserts a fact into the KnowledgeSession, justified by the current
@@ -55,18 +55,18 @@ public interface RuleContext extends KnowledgeContext {
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
      */
-    void blockActivation(Activation match);
+    void blockActivation(Match match);
     
     /** 
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
      */    
-    public void unblockAllActivations(Activation match);
+    public void unblockAllActivations(Match match);
     
     /** 
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
      */    
-    public void cancelActivation(Activation match);
+    public void cancelActivation(Match match);
     
 }
