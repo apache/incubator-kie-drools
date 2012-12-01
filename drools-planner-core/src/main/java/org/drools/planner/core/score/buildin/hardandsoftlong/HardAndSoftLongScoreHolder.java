@@ -20,7 +20,7 @@ import org.drools.common.AgendaItem;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
 import org.kie.event.rule.ActivationUnMatchListener;
-import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.RuleContext;
 import org.kie.runtime.rule.WorkingMemory;
 
@@ -54,7 +54,7 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
         AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
         agendaItem.setActivationUnMatchListener(
                 new ActivationUnMatchListener() {
-                    public void unMatch(WorkingMemory workingMemory, Activation activation) {
+                    public void unMatch(WorkingMemory workingMemory, Match activation) {
                         hardScore -= weight;
                     }
                 }
@@ -66,7 +66,7 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
         AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
         agendaItem.setActivationUnMatchListener(
                 new ActivationUnMatchListener() {
-                    public void unMatch(WorkingMemory workingMemory, Activation activation) {
+                    public void unMatch(WorkingMemory workingMemory, Match activation) {
                         softScore -= weight;
                     }
                 }
