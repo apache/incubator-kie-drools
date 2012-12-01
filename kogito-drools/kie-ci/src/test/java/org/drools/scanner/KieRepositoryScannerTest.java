@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
@@ -38,7 +39,7 @@ public class KieRepositoryScannerTest {
     public void setUp() throws Exception {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
-        kPom = createKPom();
+        kPom = createKPom("1.0-SNAPSHOT");
     }
 
     @After
@@ -46,26 +47,33 @@ public class KieRepositoryScannerTest {
         this.fileManager.tearDown();
     }
 
+    private void resetFileManager() {
+        this.fileManager.tearDown();
+        this.fileManager = new FileManager();
+        this.fileManager.setUp();
+    }
+
     @Test @Ignore
     public void testKScanner() throws Exception {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
+        GAV gav = kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
-        KieJar kJar1 = createKieJar(ks, kf, "rule1", "rule2");
-        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
+        KieJar kJar1 = createKieJar(ks, kf, gav, "rule1", "rule2");
+        KieContainer kieContainer = ks.getKieContainer(gav);
 
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar1, kPom);
+        repository.deployArtifact(gav, kJar1, kPom);
 
         // create a ksesion and check it works as expected
         KieSession ksession = kieContainer.getKieSession("KSession1");
         checkKSession(ksession, "rule1", "rule2");
 
         // create a new kjar
-        KieJar kJar2 = createKieJar(ks, kf, "rule2", "rule3");
+        KieJar kJar2 = createKieJar(ks, kf, gav, "rule2", "rule3");
 
         // deploy it on maven
-        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar2, kPom);
+        repository.deployArtifact(gav, kJar2, kPom);
 
         // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
         KieScanner scanner = ks.newKieScanner(kieContainer);
@@ -82,21 +90,21 @@ public class KieRepositoryScannerTest {
     public void testKScannerWithKJarContainingClasses() throws Exception {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
+        GAV gav = kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
-        KieJar kJar1 = createKieJarWithClass(ks, kf, 2, 7);
-        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
+        KieJar kJar1 = createKieJarWithClass(ks, kf, gav, 2, 7);
 
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar1, kPom);
+        repository.deployArtifact(gav, kJar1, kPom);
 
+        KieContainer kieContainer = ks.getKieContainer(gav);
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
         KieSession ksession = kieContainer.getKieSession("KSession1");
         checkKSession(ksession, 14);
 
-        KieJar kJar2 = createKieJarWithClass(ks, kf, 3, 5);
-
-        repository.deployArtifact("org.kie", "scanner-test", "1.0-SNAPSHOT", kJar2, kPom);
+        KieJar kJar2 = createKieJarWithClass(ks, kf, gav, 3, 5);
+        repository.deployArtifact(gav, kJar2, kPom);
 
         scanner.scanNow();
 
@@ -116,7 +124,37 @@ public class KieRepositoryScannerTest {
         checkKSession(ksession2, 15);
     }
 
-    private File createKPom() throws IOException {
+    @Test @Ignore
+    public void testScannerOnPomProject() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        KieFactory kf = KieFactory.Factory.get();
+        GAV gav1 = kf.newGav("org.kie", "scanner-test", "1.0");
+        GAV gav2 = kf.newGav("org.kie", "scanner-test", "2.0");
+
+        MavenRepository repository = getMavenRepository();
+        repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom());
+
+        resetFileManager();
+
+        KieJar kJar1 = createKieJarWithClass(ks, kf, gav1, 2, 7);
+        repository.deployArtifact(gav1, kJar1, createKPom("1.0"));
+
+        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-master-test", "1.0"));
+        KieSession ksession = kieContainer.getKieSession("KSession1");
+        checkKSession(ksession, 14);
+
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        KieJar kJar2 = createKieJarWithClass(ks, kf, gav2, 3, 5);
+        repository.deployArtifact(gav2, kJar2, createKPom("2.0"));
+
+        scanner.scanNow();
+
+        KieSession ksession2 = kieContainer.getKieSession("KSession1");
+        checkKSession(ksession2, 15);
+    }
+
+    private File createKPom(String version) throws IOException {
         String pom =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
@@ -125,7 +163,7 @@ public class KieRepositoryScannerTest {
                 "\n" +
                 "  <groupId>org.kie</groupId>\n" +
                 "  <artifactId>scanner-test</artifactId>\n" +
-                "  <version>1.0-SNAPSHOT</version>\n" +
+                "  <version>" + version + "</version>\n" +
                 "\n" +
                 "</project>";
 
@@ -134,15 +172,40 @@ public class KieRepositoryScannerTest {
         return pomFile;
     }
 
-    private KieJar createKieJar(KieServices ks, KieFactory kf, String... rules) throws IOException {
+    private File createMasterKPom() throws IOException {
+        String pom =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+                "  <modelVersion>4.0.0</modelVersion>\n" +
+                "\n" +
+                "  <groupId>org.kie</groupId>\n" +
+                "  <artifactId>scanner-master-test</artifactId>\n" +
+                "  <version>1.0</version>\n" +
+                "  <packaging>pom</packaging>\n" +
+                "\n" +
+                "    <dependencies>\n" +
+                "      <dependency>\n" +
+                "        <groupId>org.kie</groupId>\n" +
+                "        <artifactId>scanner-test</artifactId>\n" +
+                "        <version>LATEST</version>\n" +
+                "      </dependency>\n" +
+                "    </dependencies>\n" +
+                "</project>";
+
+        File pomFile = fileManager.newFile("pom.xml");
+        fileManager.write(pomFile, pom);
+        return pomFile;
+    }
+
+    private KieJar createKieJar(KieServices ks, KieFactory kf, GAV gav, String... rules) throws IOException {
         KieFileSystem kfs = kf.newKieFileSystem();
         for (String rule : rules) {
             String file = "org/test/" + rule + ".drl";
             kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
         }
 
-        KieProject kproj = kf.newKieProject()
-                .setGroupArtifactVersion(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
+        KieProject kproj = kf.newKieProject();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
@@ -152,7 +215,7 @@ public class KieRepositoryScannerTest {
                 .setType("stateful")
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        kfs.write(KieProject.KPROJECT_JAR_PATH, kproj.toXML());
+        kfs.writeProjectXML(kproj.toXML());
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
@@ -181,11 +244,10 @@ public class KieRepositoryScannerTest {
         }
     }
 
-    private KieJar createKieJarWithClass(KieServices ks, KieFactory kf, int value, int factor) throws IOException {
+    private KieJar createKieJarWithClass(KieServices ks, KieFactory kf, GAV gav, int value, int factor) throws IOException {
         KieFileSystem kieFileSystem = kf.newKieFileSystem();
 
-        KieProject kproj = kf.newKieProject()
-                .setGroupArtifactVersion(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
+        KieProject kproj = kf.newKieProject();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
@@ -196,7 +258,7 @@ public class KieRepositoryScannerTest {
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kieFileSystem
-                .write(KieProject.KPROJECT_JAR_PATH, kproj.toXML())
+                .writeProjectXML(kproj.toXML())
                 .write("src/kbases/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
                 .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
 

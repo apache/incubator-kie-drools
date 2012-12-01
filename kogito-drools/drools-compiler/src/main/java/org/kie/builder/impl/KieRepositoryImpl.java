@@ -2,16 +2,13 @@ package org.kie.builder.impl;
 
 import org.drools.kproject.GroupArtifactVersion;
 import org.kie.builder.GAV;
-import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieJar;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
-import org.kie.builder.KieServices;
 import org.kie.builder.Results;
 import org.kie.util.ServiceRegistryImpl;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -52,14 +49,7 @@ public class KieRepositoryImpl implements KieRepository {
     }
 
     private KieJar loadKieJarFromMavenRepo(GAV gav) {
-        File artifact = getInternalKieScanner().loadArtifact(gav);
-        if (artifact == null) {
-            return null;
-        }
-
-        KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(artifact);
-        Results results = kieBuilder.build();
-        return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieJar() : null;
+        return getInternalKieScanner().loadArtifact(gav);
     }
 
     private InternalKieScanner getInternalKieScanner() {
@@ -78,7 +68,7 @@ public class KieRepositoryImpl implements KieRepository {
 
         public void setKieContainer(KieContainer kieContainer) { }
 
-        public File loadArtifact(GAV gav) {
+        public KieJar loadArtifact(GAV gav) {
             return null;
         }
 

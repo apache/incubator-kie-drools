@@ -27,7 +27,7 @@ class Aether {
     private static final String M2_REPO = System.getProperty( "user.home" ) + "/.m2/repository";
     private String localRepoDir = M2_REPO;
 
-    static final Aether INSTANCE = new Aether();
+    static final Aether DEFUALT_AETHER = new Aether();
 
     private final RepositorySystem system;
     private final RepositorySystemSession session;
@@ -36,15 +36,17 @@ class Aether {
     private RemoteRepository localRepository;
 
     private Aether() {
-        initRepositories();
-        system = newRepositorySystem();
-        session = newRepositorySystemSession( system );
-        repositories = initRepositories();
+        this(loadMavenProject());
     }
 
-    private List<RemoteRepository> initRepositories() {
+    Aether(MavenProject mavenProject) {
+        system = newRepositorySystem();
+        session = newRepositorySystemSession( system );
+        repositories = initRepositories(mavenProject);
+    }
+
+    private List<RemoteRepository> initRepositories(MavenProject mavenProject) {
         List<RemoteRepository> reps = new ArrayList<RemoteRepository>();
-        MavenProject mavenProject = loadMavenProject();
         if (mavenProject != null) {
             reps.addAll(mavenProject.getRemoteProjectRepositories());
         } else {

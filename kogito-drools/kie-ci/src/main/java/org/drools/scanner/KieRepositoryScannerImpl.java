@@ -1,12 +1,16 @@
 package org.drools.scanner;
 
+import org.apache.maven.project.MavenProject;
+import org.drools.kproject.KieProjectImpl;
 import org.drools.scanner.embedder.EmbeddedPomParser;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
+import org.kie.builder.KieJar;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.builder.Results;
+import org.kie.builder.impl.CompositeKieJar;
 import org.kie.builder.impl.InternalKieContainer;
 import org.kie.builder.impl.InternalKieScanner;
 import org.slf4j.Logger;
@@ -25,11 +29,9 @@ import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.drools.scanner.MavenRepository.getMavenRepository;
+import static org.drools.scanner.embedder.MavenProjectLoader.parseMavenPom;
 
 public class KieRepositoryScannerImpl implements InternalKieScanner {
-
-    private long pollingInterval;
 
     private Timer timer;
 
@@ -37,9 +39,11 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private KieContainer kieContainer;
 
+    private PomParser pomParser;
+
     private final Set<DependencyDescriptor> usedDependencies = new HashSet<DependencyDescriptor>();
 
-    private PomParser pomParser = new EmbeddedPomParser();
+    private MavenRepository mavenRepository;
 
     public void setKieContainer(KieContainer kieContainer) {
         this.kieContainer = kieContainer;
@@ -47,21 +51,72 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         if (!projectDescr.isFixedVersion()) {
             usedDependencies.add(projectDescr);
         }
+
+        MavenProject mavenProject = getMavenProjectForGAV(kieContainer.getGAV());
+        if (mavenProject != null) {
+            mavenRepository = MavenRepository.getMavenRepository(mavenProject);
+            pomParser = new EmbeddedPomParser(mavenProject);
+        } else {
+            mavenRepository = MavenRepository.getMavenRepository();
+            pomParser = new EmbeddedPomParser();
+        }
+        init();
     }
 
-    public File loadArtifact(GAV gav) {
-        Artifact artifact = getMavenRepository().resolveArtifact(gav.toString());
-        return artifact != null ? artifact.getFile() : null;
+    private void init() {
+        Collection<Artifact> artifacts = findKJarAtifacts();
+        log.info("Artifacts containing a kjar: " + artifacts);
+        if (artifacts.isEmpty()) {
+            log.info("There's no artifacts containing a kjar: shutdown the scanner");
+            return;
+        }
+        indexAtifacts(artifacts);
+    }
+
+    public KieJar loadArtifact(GAV gav) {
+        String artifactName = gav.toString();
+        Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName);
+        return artifact != null ? buildArtifact(artifact) : loadPomArtifact(gav);
+    }
+
+    private KieJar loadPomArtifact(GAV gav) {
+        MavenProject mavenProject = getMavenProjectForGAV(gav);
+        if (mavenProject == null) {
+            return null;
+        }
+        mavenRepository = MavenRepository.getMavenRepository(mavenProject);
+        PomParser pomParser = new EmbeddedPomParser(mavenProject);
+
+        CompositeKieJar compositeKieJar = new CompositeKieJar(gav);
+        for (DependencyDescriptor dep : pomParser.getPomDirectDependencies()) {
+            Artifact depArtifact = mavenRepository.resolveArtifact(dep.toString());
+            if (isKJar(depArtifact.getFile())) {
+                compositeKieJar.addKieJar(buildArtifact(depArtifact));
+            }
+        }
+        return compositeKieJar;
+    }
+
+    private MavenProject getMavenProjectForGAV(GAV gav) {
+        String artifactName = gav.getGroupId() + ":" + gav.getArtifactId() + ":pom:" + gav.getVersion();
+        Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName);
+        return artifact != null ? parseMavenPom(artifact.getFile()) : null;
+    }
+
+    private KieJar buildArtifact(Artifact artifact) {
+        KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(artifact.getFile());
+        Results results = kieBuilder.build();
+        return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieJar() : null;
     }
 
     public void start(long pollingInterval) {
+        if (pollingInterval <= 0) {
+            throw new IllegalArgumentException("pollingInterval must be positive");
+        }
         if (timer != null) {
             throw new IllegalStateException("The scanner is already running");
         }
-        this.pollingInterval = pollingInterval;
-        if (init() && pollingInterval > 0) {
-            startScanTask();
-        }
+        startScanTask(pollingInterval);
     }
 
     public void stop() {
@@ -71,18 +126,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
     }
 
-    private boolean init() {
-        Collection<Artifact> artifacts = findKJarAtifacts();
-        log.info("Artifacts containing a kjar: " + artifacts);
-        if (artifacts.isEmpty()) {
-            log.info("There's no artifacts containing a kjar: shutdown the scanner");
-            return false;
-        }
-        indexAtifacts(artifacts);
-        return !usedDependencies.isEmpty();
-    }
-
-    private void startScanTask() {
+    private void startScanTask(long pollingInterval) {
         timer = new Timer(true);
         timer.schedule(new ScanTask(), pollingInterval, pollingInterval);
     }
@@ -102,13 +146,10 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             return;
         }
         for (Artifact artifact : updatedArtifacts) {
-            File kJar = artifact.getFile();
             DependencyDescriptor depDescr = new DependencyDescriptor(artifact);
             usedDependencies.remove(depDescr);
             usedDependencies.add(depDescr);
-            if (kieContainer.getGAV().equals(depDescr.getGav())) {
-                updateKieJar(kJar);
-            }
+            updateKieJar(artifact.getFile());
         }
         log.info("The following artifacts have been updated: " + updatedArtifacts);
     }
@@ -124,7 +165,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private Collection<Artifact> scanForUpdates(Collection<DependencyDescriptor> dependencies) {
         List<Artifact> newArtifacts = new ArrayList<Artifact>();
         for (DependencyDescriptor dependency : dependencies) {
-            Artifact newArtifact = getMavenRepository().resolveArtifact(dependency.toResolvableString());
+            Artifact newArtifact = mavenRepository.resolveArtifact(dependency.toResolvableString());
             DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
             if (resolvedDep.isNewerThan(dependency)) {
                 newArtifacts.add(newArtifact);
@@ -149,7 +190,8 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private Collection<DependencyDescriptor> getAllDependecies() {
         Set<DependencyDescriptor> dependencies = new HashSet<DependencyDescriptor>();
         for (DependencyDescriptor dep : pomParser.getPomDirectDependencies()) {
-            dependencies.addAll(getMavenRepository().getArtifactDependecies(dep.toString()));
+            dependencies.add(dep);
+            dependencies.addAll(mavenRepository.getArtifactDependecies(dep.toString()));
         }
         return dependencies;
     }
@@ -167,7 +209,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private List<Artifact> resolveArtifacts(Collection<DependencyDescriptor> dependencies) {
         List<Artifact> artifacts = new ArrayList<Artifact>();
         for (DependencyDescriptor dep : dependencies) {
-            Artifact artifact = getMavenRepository().resolveArtifact(dep.toString());
+            Artifact artifact = mavenRepository.resolveArtifact(dep.toString());
             artifacts.add(artifact);
             log.debug( artifact + " resolved to  " + artifact.getFile() );
         }
@@ -184,8 +226,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return kJarArtifacts;
     }
 
-    public static final String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
-
     private boolean isKJar(File jar) {
         ZipFile zipFile;
         try {
@@ -193,7 +233,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ZipEntry zipEntry = zipFile.getEntry( KPROJECT_JAR_PATH );
+        ZipEntry zipEntry = zipFile.getEntry( KieProjectImpl.KPROJECT_JAR_PATH );
         return zipEntry != null;
     }
 }
