@@ -26,10 +26,12 @@ import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
+import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@PlanningSolution
 @XStreamAlias("VrpSchedule")
 public class VrpSchedule extends AbstractPersistable implements Solution<HardAndSoftScore> {
 

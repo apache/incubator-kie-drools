@@ -19,6 +19,7 @@ package org.drools.planner.core.solver.scope;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
@@ -158,7 +159,8 @@ public class DefaultSolverScope {
 
     public void setWorkingSolutionFromBestSolution() {
         // The workingSolution must never be the same instance as the bestSolution.
-        scoreDirector.setWorkingSolution(getBestSolution().cloneSolution());
+        SolutionCloner cloner = scoreDirector.getSolutionDescriptor().getSolutionCloner();
+        scoreDirector.setWorkingSolution(cloner.cloneSolution(getBestSolution()));
     }
 
 }

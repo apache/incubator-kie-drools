@@ -2374,3 +2374,9 @@ After in *ScoreRules.drl:
     end
 Refactor similarly for LongConstraintOccurrence and longValue().
 
+[MAJOR] Your Solution implementation class now needs a @PlanningSolution annotation
+Before in *.java:
+    public class ... implements Solution<...Score> {...}
+After in *.java:
+    @PlanningSolution
+    public class ... implements Solution<...Score> {...}

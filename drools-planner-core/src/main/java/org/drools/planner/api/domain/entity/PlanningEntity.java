@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * Specifies that the class is a planning entity.
  * Each planning entity must have at least 1 {@link PlanningVariable} property.
  * <p/>
- * The class should have a public no-arg constructor, so it can be instantiated by Drools Planner.
+ * The class should have a public no-arg constructor, so it can be instantiated.
  */
 @Target({TYPE})
 @Retention(RUNTIME)

@@ -226,7 +226,7 @@ public class DefaultSolver implements Solver {
                 count++;
                 problemFactChange = problemFactChangeQueue.poll();
             }
-            bestSolutionRecaller.updateBestSolution(solverScope, solverScope.getWorkingSolution().cloneSolution());
+            bestSolutionRecaller.updateBestSolution(solverScope, solverScope.getScoreDirector().cloneWorkingSolution());
             logger.info("Done {} ProblemFactChange(s): new score ({}) possibly uninitialized. Restarting solver.",
                     count, score);
         }

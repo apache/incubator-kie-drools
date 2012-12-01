@@ -21,11 +21,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
+import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.solution.Solution;
 
+@PlanningSolution
 public class TestdataSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {

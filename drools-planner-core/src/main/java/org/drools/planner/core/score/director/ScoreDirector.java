@@ -64,6 +64,8 @@ public interface ScoreDirector {
      */
     void setWorkingSolution(Solution workingSolution);
 
+    Solution cloneWorkingSolution();
+
     void beforeEntityAdded(Object entity);
 
     void afterEntityAdded(Object entity);

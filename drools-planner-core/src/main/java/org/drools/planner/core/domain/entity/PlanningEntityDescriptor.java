@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -64,19 +65,19 @@ public class PlanningEntityDescriptor {
     }
 
     private void processEntityAnnotations() {
-        PlanningEntity planningEntityAnnotation = planningEntityClass.getAnnotation(PlanningEntity.class);
-        if (planningEntityAnnotation == null) {
+        PlanningEntity entityAnnotation = planningEntityClass.getAnnotation(PlanningEntity.class);
+        if (entityAnnotation == null) {
             throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
                     + ") has been specified as a planning entity in the configuration," +
-                    " but does not have a PlanningEntity annotation.");
+                    " but does not have a " + PlanningEntity.class.getSimpleName() + " annotation.");
         }
-        processMovable(planningEntityAnnotation);
+        processMovable(entityAnnotation);
         planningEntitySorter = new PlanningEntitySorter();
-        processDifficulty(planningEntityAnnotation);
+        processDifficulty(entityAnnotation);
     }
 
-    private void processMovable(PlanningEntity planningEntityAnnotation) {
-        Class<? extends SelectionFilter> movableEntitySelectionFilterClass = planningEntityAnnotation.movableEntitySelectionFilter();
+    private void processMovable(PlanningEntity entityAnnotation) {
+        Class<? extends SelectionFilter> movableEntitySelectionFilterClass = entityAnnotation.movableEntitySelectionFilter();
         if (movableEntitySelectionFilterClass == PlanningEntity.NullMovableEntitySelectionFilter.class) {
             movableEntitySelectionFilterClass = null;
         }
@@ -86,13 +87,13 @@ public class PlanningEntityDescriptor {
         }
     }
 
-    private void processDifficulty(PlanningEntity planningEntityAnnotation) {
-        Class<? extends Comparator> difficultyComparatorClass = planningEntityAnnotation.difficultyComparatorClass();
+    private void processDifficulty(PlanningEntity entityAnnotation) {
+        Class<? extends Comparator> difficultyComparatorClass = entityAnnotation.difficultyComparatorClass();
         if (difficultyComparatorClass == PlanningEntity.NullDifficultyComparator.class) {
             difficultyComparatorClass = null;
         }
         Class<? extends PlanningEntityDifficultyWeightFactory> difficultyWeightFactoryClass
-                = planningEntityAnnotation.difficultyWeightFactoryClass();
+                = entityAnnotation.difficultyWeightFactoryClass();
         if (difficultyWeightFactoryClass == PlanningEntity.NullDifficultyWeightFactory.class) {
             difficultyWeightFactoryClass = null;
         }
@@ -155,16 +156,16 @@ public class PlanningEntityDescriptor {
         return entity.getClass().isAssignableFrom(planningEntityClass);
     }
 
-    public PlanningEntitySorter getPlanningEntitySorter() {
-        return planningEntitySorter;
-    }
-
     public boolean hasMovableEntitySelectionFilter() {
         return movableEntitySelectionFilter != null;
     }
 
     public SelectionFilter getMovableEntitySelectionFilter() {
         return movableEntitySelectionFilter;
+    }
+
+    public PlanningEntitySorter getPlanningEntitySorter() {
+        return planningEntitySorter;
     }
 
     public PropertyDescriptor getPropertyDescriptor(String propertyName) {

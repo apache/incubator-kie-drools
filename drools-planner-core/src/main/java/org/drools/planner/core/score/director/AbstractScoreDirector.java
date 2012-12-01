@@ -95,6 +95,10 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         resetTrailingEntityMap();
     }
 
+    public Solution cloneWorkingSolution() {
+        return getSolutionDescriptor().getSolutionCloner().cloneSolution(workingSolution);
+    }
+
     private void resetTrailingEntityMap() {
         if (hasChainedVariables) {
             List<Object> entityList = getSolutionDescriptor().getPlanningEntityList(workingSolution);
@@ -222,7 +226,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         // Breaks incremental score calculation.
         // Subclasses should overwrite this method to avoid breaking it if possible.
         AbstractScoreDirector clone = (AbstractScoreDirector) scoreDirectorFactory.buildScoreDirector();
-        clone.setWorkingSolution(workingSolution.cloneSolution());
+        clone.setWorkingSolution(cloneWorkingSolution());
         return clone;
     }
 

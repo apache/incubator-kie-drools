@@ -49,7 +49,7 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
     public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         // Add the starting solution to the tabu list
-        Object tabu = phaseScope.getWorkingSolution().cloneSolution();
+        Object tabu = phaseScope.getScoreDirector().cloneWorkingSolution();
         tabuToStepIndexMap.put(tabu, 0); // TODO should -1 when AbstractTabuAcceptor can handle that
         tabuSequenceList.add(tabu);
     }

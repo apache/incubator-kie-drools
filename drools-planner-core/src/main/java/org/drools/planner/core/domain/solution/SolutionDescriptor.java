@@ -20,7 +20,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,8 +30,12 @@ import java.util.Set;
 
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningEntityProperty;
+import org.drools.planner.api.domain.solution.PlanningSolution;
+import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.solution.cloner.DefaultSolutionCloner;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.solution.Solution;
 
@@ -40,6 +43,7 @@ public class SolutionDescriptor {
 
     private final Class<? extends Solution> solutionClass;
     private final BeanInfo solutionBeanInfo;
+    private SolutionCloner solutionCloner;
     
     private final Map<String, PropertyDescriptor> propertyDescriptorMap;
     private final Map<String, PropertyDescriptor> entityPropertyDescriptorMap;
@@ -62,7 +66,30 @@ public class SolutionDescriptor {
     }
 
     public void processAnnotations() {
+        processSolutionAnnotations();
         processPropertyAnnotations();
+    }
+
+    private void processSolutionAnnotations() {
+        PlanningSolution solutionAnnotation = solutionClass.getAnnotation(PlanningSolution.class);
+        if (solutionAnnotation == null) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") has been specified as a solution in the configuration," +
+                    " but does not have a " + PlanningSolution.class.getSimpleName() + " annotation.");
+        }
+        processSolutionCloner(solutionAnnotation);
+    }
+
+    private void processSolutionCloner(PlanningSolution solutionAnnotation) {
+        Class<? extends SolutionCloner> solutionClonerClass = solutionAnnotation.solutionCloner();
+        if (solutionClonerClass == PlanningSolution.NullSolutionCloner.class) {
+            solutionClonerClass = null;
+        }
+        if (solutionClonerClass != null) {
+            solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
+        } else {
+            solutionCloner = new DefaultSolutionCloner();
+        }
     }
 
     private void processPropertyAnnotations() {
@@ -98,6 +125,10 @@ public class SolutionDescriptor {
 
     public Class<? extends Solution> getSolutionClass() {
         return solutionClass;
+    }
+
+    public SolutionCloner getSolutionCloner() {
+        return solutionCloner;
     }
 
     // ************************************************************************

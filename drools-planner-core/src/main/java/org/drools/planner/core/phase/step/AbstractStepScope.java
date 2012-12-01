@@ -93,7 +93,7 @@ public abstract class AbstractStepScope {
 
     public Solution createOrGetClonedSolution() {
         if (clonedSolution == null) {
-            clonedSolution = getWorkingSolution().cloneSolution();
+            clonedSolution = getScoreDirector().cloneWorkingSolution();
         }
         return clonedSolution;
     }

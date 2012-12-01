@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.domain.solution.cloner.DefaultSolutionCloner;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
@@ -61,7 +62,7 @@ public class AbstractScoreDirectorTest {
                 return DefaultSimpleScore.valueOf(-100);
             }
         };
-        TestdataChainedSolution clonedStartingSolution = solution.cloneSolution();
+        TestdataChainedSolution clonedStartingSolution = new DefaultSolutionCloner().cloneSolution(solution);
 
         scoreDirector.setWorkingSolution(solution);
         assertEquals(a1, scoreDirector.getTrailingEntity(variableDescriptor, a0));
