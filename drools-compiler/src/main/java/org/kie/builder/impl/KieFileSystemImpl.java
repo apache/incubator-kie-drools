@@ -1,14 +1,14 @@
 package org.kie.builder.impl;
 
-import java.io.IOException;
-
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
 import org.drools.kproject.KieProjectImpl;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.kie.builder.GAV;
 import org.kie.builder.KieFileSystem;
 import org.kie.io.Resource;
+
+import java.io.IOException;
+
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class KieFileSystemImpl
         implements
@@ -38,15 +38,15 @@ public class KieFileSystemImpl
     public KieFileSystem write(String path,
                                Resource resource) {
         try {
-            return write( path, IoUtils.readBytesFromInputStream( resource.getInputStream() ) );
-        } catch ( IOException e ) {
+            return write( path, readBytesFromInputStream(resource.getInputStream()) );
+        } catch (IOException e) {
             throw new RuntimeException("Unable to write Resource: " + resource.toString(), e);
         }
     }
 
     public void delete(String... paths) {
         for ( String path : paths ) {
-            mfs.remove( path );
+            mfs.remove(path);
         }
     }
 

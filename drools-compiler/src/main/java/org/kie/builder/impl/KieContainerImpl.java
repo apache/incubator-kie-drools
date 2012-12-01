@@ -5,7 +5,6 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieJar;
-import org.kie.builder.KieProject;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.KieBase;
@@ -13,16 +12,12 @@ import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class KieContainerImpl
     implements
     InternalKieContainer {
 
     private GAV                       gav;
     private InternalKieJar            kieJar;
-    private Map<String, KieBaseModel> kSessions;
 
     public KieContainerImpl(GAV gav) {
         this.gav = gav;
@@ -33,13 +28,16 @@ public class KieContainerImpl
     }
 
     public void updateToVersion(GAV version) {
-        reset();
+        kieJar = null;
         gav = version;
     }
 
     public void updateKieJar(KieJar kieJar) {
-        reset();
-        this.kieJar = (InternalKieJar) kieJar;
+        if (this.kieJar instanceof CompositeKieJar) {
+            ((CompositeKieJar)this.kieJar).updateKieJar(kieJar);
+        } else {
+            this.kieJar = (InternalKieJar) kieJar;
+        }
     }
 
     public KieBase getKieBase() {
@@ -71,7 +69,7 @@ public class KieContainerImpl
 
     public void dispose() {
         // TODO: should it store all the KieSession created from this container and then dispose them?
-        reset();
+        kieJar = null;
     }
 
     private InternalKieJar loadKieJar() {
@@ -85,22 +83,7 @@ public class KieContainerImpl
     }
 
     private KieBaseModel getKieBaseForSession(String kSessionName) {
-        if ( kSessions == null ) {
-            kSessions = new HashMap<String, KieBaseModel>();
-            KieProject kieProject = loadKieJar().getKieProject();
-            for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
-                for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
-                    kSessions.put( kieSessionModel.getName(),
-                                   kieBaseModel );
-                }
-            }
-        }
-        return kSessions.get( kSessionName );
-    }
-
-    private void reset() {
-        kieJar = null;
-        kSessions = null;
+        return loadKieJar().getKieBaseForSession(kSessionName);
     }
 
     private KnowledgeSessionConfiguration getKnowledgeSessionConfiguration(KieBaseModel kieBaseModel,
