@@ -18,12 +18,12 @@ package org.kie.event.rule;
 
 
 import org.kie.event.KnowledgeRuntimeEvent;
-import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.Match;
 
 public interface ActivationEvent
     extends
     KnowledgeRuntimeEvent {
 
-    public Activation getActivation();
+    public Match getActivation();
 
 }
