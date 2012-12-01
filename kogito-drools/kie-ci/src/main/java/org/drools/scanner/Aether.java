@@ -1,5 +1,6 @@
 package org.drools.scanner;
 
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.DefaultServiceLocator;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.wagon.Wagon;
@@ -26,7 +27,7 @@ class Aether {
     private static final String M2_REPO = System.getProperty( "user.home" ) + "/.m2/repository";
     private String localRepoDir = M2_REPO;
 
-    public static final Aether INSTANCE = new Aether();
+    static final Aether INSTANCE = new Aether();
 
     private final RepositorySystem system;
     private final RepositorySystemSession session;
@@ -43,7 +44,13 @@ class Aether {
 
     private List<RemoteRepository> initRepositories() {
         List<RemoteRepository> reps = new ArrayList<RemoteRepository>();
-        reps.addAll(loadMavenProject().getRemoteProjectRepositories());
+        MavenProject mavenProject = loadMavenProject();
+        if (mavenProject != null) {
+            reps.addAll(mavenProject.getRemoteProjectRepositories());
+        } else {
+            reps.add(newCentralRepository());
+        }
+
         RemoteRepository localRepo = newLocalRepository();
         if (localRepo != null) {
             reps.add(localRepo);

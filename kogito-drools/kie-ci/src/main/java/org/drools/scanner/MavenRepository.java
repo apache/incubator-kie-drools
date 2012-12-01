@@ -25,10 +25,14 @@ import java.util.List;
 
 class MavenRepository {
 
-    private final Aether aether;
+    private static final MavenRepository INSTANCE = new MavenRepository();
 
-    public MavenRepository() {
-        this.aether = Aether.INSTANCE;
+    private final Aether aether = Aether.INSTANCE;
+
+    private MavenRepository() { }
+
+    public static MavenRepository getMavenRepository() {
+        return INSTANCE;
     }
 
     public List<DependencyDescriptor> getArtifactDependecies(String artifactName) {
