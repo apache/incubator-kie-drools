@@ -8,6 +8,7 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieContainer;
 import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
@@ -21,6 +22,7 @@ import org.kie.io.ResourceFactory;
 import org.kie.runtime.KieBase;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,41 +127,41 @@ public class KProjectExtension
         if ( kBaseNames != null ) {
             // if kProjects null, processInjectionTarget was not called, so beans to create
 
-            Map<String, KBaseBean> kBaseBeans = new HashMap<String, KProjectExtension.KBaseBean>();
             if ( kBaseNames != null ) {
                 for ( String kBaseQName : kBaseNames ) {
                     //KieBaseModel kieBaseModelModel = kBases.get( kBaseQName );
-                    
-                    if ( kieContainer.kieBaseExists( kBaseQName ) ) {
+                  
+                    KieBaseModel kBaseModel = kieContainer.getKieBaseModel( kBaseQName );
+                    if ( kBaseModel == null) {
                         log.error( "Annotation @KBase(\"" + kBaseQName + "\") found, but no KieBaseModel exist.\nEither the required kproject.xml does not exist, was corrupted, or mising the KieBase entry" );
                         continue;
                     }
-                    KBaseBean bean = new KBaseBean( kBaseQName,
+                    KBaseBean bean = new KBaseBean( kBaseModel,
                                                     kieContainer );
-                    kBaseBeans.put( kBaseQName,
-                                    bean );
                     abd.addBean( bean );
                 }
             }
             kBaseNames = null;
 
-//            if ( kSessionNames != null ) {
-//                for ( String kSessionName : kSessionNames ) {
-//                    KieSessionModel kieSessionModel = kSessions.get( kSessionName );
-//                    if ( kieSessionModel == null ) {
-//                        throw new RuntimeException( "Unknown KnowledgeSession: " + kSessionName );
-//                    }
-//                    KBaseBean bean = kBaseBeans.get( ((KieSessionModelImpl) kieSessionModel).getKBase().getName() );
-//                    if ( "stateless".equals( kieSessionModel.getType() ) ) {
-//                        abd.addBean( new StatelessKSessionBean( kieSessionModel,
-//                                                                bean ) );
-//                    } else {
-//                        abd.addBean( new StatefulKSessionBean( kieSessionModel,
-//                                                               bean ) );
-//                    }
-//                }
-//            }
-//            kSessionNames = null;
+            if ( kSessionNames != null ) {
+                for ( String kSessionName : kSessionNames ) {
+                    
+                    KieSessionModel kieSessionModel = kieContainer.getKieSessionModel( kSessionName );
+                    if ( kieSessionModel == null ) {
+                        log.error( "Annotation @KSession(\"" + kSessionName + "\") found, but no KieSessioneModel exist.\nEither the required kproject.xml does not exist, was corrupted, or mising the KieBase entry" );
+                        continue;
+                    }
+                    
+                    if ( "stateless".equals( kieSessionModel.getType() ) ) {
+                        abd.addBean( new StatelessKSessionBean( kieSessionModel,
+                                                                kieContainer ) );
+                    } else {
+                        abd.addBean( new StatefulKSessionBean( kieSessionModel,
+                                                               kieContainer ) );
+                    }
+                }
+            }
+            kSessionNames = null;
         }
     }
 
@@ -170,26 +172,25 @@ public class KProjectExtension
                                                                                                               Object.class ) ) );
 
         private Set<Annotation>        qualifiers;
-        
-        private String kieBaseName;
+       
         
         private ClasspathKieContainer  kieContainer;
 
 //        private String                 urlPath;
-//        private KieBaseModel           kieBaseModelModel;
+        private KieBaseModel           kBaseModel;
 //
 //        private KnowledgeBase          kBase;
 //
 //        private Map<String, KBaseBean> kBaseBeans;
 
         public KBaseBean(
-           final String kieBaseName,
+           final KieBaseModel kBaseModel,
             ClasspathKieContainer  kieContainer
 //                         final KieBaseModel kieBaseModelModel,
 //                         String urlPath,
 //                         Map<String, KBaseBean> kBaseBeans
                          ) {
-            this.kieBaseName = kieBaseName;
+            this.kBaseModel = kBaseModel;
             this.kieContainer = kieContainer;
 //            this.kieBaseModelModel = kieBaseModelModel;
 //            this.urlPath = urlPath;
@@ -204,14 +205,14 @@ public class KProjectExtension
                                                                                                        }
 
                                                                                                        public String value() {
-                                                                                                           return kieBaseName;
+                                                                                                           return kBaseModel.getName();
                                                                                                        }
                                                                                                    }
                     ) ) );
         }
 
         public KieBase create(CreationalContext ctx) {
-            KieBase kieBase = kieContainer.getKieBase( kieBaseName );
+            KieBase kieBase = kieContainer.getKieBase( kBaseModel.getName() );
             return kieBase;
             //return this.
 //            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -351,8 +352,8 @@ public class KProjectExtension
 
     public static class StatelessKSessionBean
         implements
-        Bean<StatelessKnowledgeSession> {
-        static final Set<Type>  types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( StatelessKnowledgeSession.class,
+        Bean<StatelessKieSession> {
+        static final Set<Type>  types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( StatelessKieSession.class,
                                                                                                        Object.class ) ) );
 
         private Set<Annotation> qualifiers;
@@ -360,13 +361,13 @@ public class KProjectExtension
         private KieBaseModel    kieBaseModelModel;
         private KieSessionModel kieSessionModelModel;
 
-        private KBaseBean       kBaseBean;
+        private KieContainer       kieContainer;
 
         public StatelessKSessionBean(final KieSessionModel kieSessionModelModel,
-                                     KBaseBean kBaseBean) {
+                                     KieContainer       kieContainer) {
             this.kieSessionModelModel = kieSessionModelModel;
-            this.kBaseBean = kBaseBean;
-            this.kieBaseModelModel = ((KieSessionModelImpl) kieSessionModelModel).getKBase();
+            this.kieContainer = kieContainer;
+            this.kieBaseModelModel = ((KieSessionModelImpl) kieSessionModelModel).getKieBaseModel();
 
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {
                                                                                                    },
@@ -384,12 +385,11 @@ public class KProjectExtension
                     ) ) );
         }
 
-        public StatelessKnowledgeSession create(CreationalContext ctx) {
-            KnowledgeBase kBase = kBaseBean.getKnowledgeBase();
-            return kBase.newStatelessKnowledgeSession();
+        public StatelessKieSession create(CreationalContext ctx) {
+            return kieContainer.getKieStatelessSession( kieSessionModelModel.getName() );
         }
 
-        public void destroy(StatelessKnowledgeSession kSession,
+        public void destroy(StatelessKieSession kSession,
                             CreationalContext ctx) {
             ctx.release();
         }
@@ -442,13 +442,14 @@ public class KProjectExtension
         private KieBaseModel    kieBaseModelModel;
         private KieSessionModel kieSessionModelModel;
 
-        private KBaseBean       kBaseBean;
+        //private KBaseBean       kBaseBean;
+        private ClasspathKieContainer kieContainer;
 
         public StatefulKSessionBean(final KieSessionModel kieSessionModelModel,
-                                    KBaseBean kBaseBean) {
+                                    ClasspathKieContainer kieContainer) {
             this.kieSessionModelModel = kieSessionModelModel;
-            this.kieBaseModelModel = ((KieSessionModelImpl) kieSessionModelModel).getKBase();
-            this.kBaseBean = kBaseBean;
+            this.kieBaseModelModel = ((KieSessionModelImpl) kieSessionModelModel).getKieBaseModel();
+            this.kieContainer = kieContainer;
 
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {
                                                                                                    },
@@ -467,8 +468,7 @@ public class KProjectExtension
         }
 
         public KieSession create(CreationalContext ctx) {
-            KnowledgeBase kBase = kBaseBean.getKnowledgeBase();
-            return kBase.newStatefulKnowledgeSession();
+            return kieContainer.getKieSession( kieSessionModelModel.getName() );
         }
 
         public void destroy(KieSession kBase,

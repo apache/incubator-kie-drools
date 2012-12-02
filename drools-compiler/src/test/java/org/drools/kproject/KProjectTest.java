@@ -15,7 +15,9 @@ import org.junit.Test;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 
 import javax.enterprise.inject.spi.Bean;
@@ -137,7 +139,7 @@ public class KProjectTest extends AbstractKnowledgeTest {
     public void testEntry(KProjectTestClass testClass, String jarName) {
         List<String> list = new ArrayList<String>();
 
-        StatelessKnowledgeSession stlsKsession = testClass.getKBase1KSession1();
+        StatelessKieSession stlsKsession = testClass.getKBase1KSession1();
         stlsKsession.setGlobal( "list", list );
         stlsKsession.execute( "dummy" );
         assertEquals( 2, list.size() );
@@ -145,7 +147,7 @@ public class KProjectTest extends AbstractKnowledgeTest {
         assertTrue( list.contains( jarName + ".test1:rule2" ) );
 
         list.clear();
-        StatefulKnowledgeSession stflKsession = testClass.getKBase1KSession2();
+        KieSession stflKsession = testClass.getKBase1KSession2();
         stflKsession.setGlobal( "list", list );
         stflKsession.fireAllRules();
         assertEquals( 2, list.size() );

@@ -1,21 +1,21 @@
 package org.drools.kproject;
 
-import org.kie.KnowledgeBase;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.KieBase;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.StatelessKieSession;
 
 public interface KProjectTestClass {
-    public KnowledgeBase getKBase1();
+    public KieBase getKBase1();
 
-    public KnowledgeBase getKBase2();
+    public KieBase getKBase2();
 
-    public KnowledgeBase getKBase3();
+    public KieBase getKBase3();
     
-    public StatelessKnowledgeSession getKBase1KSession1();
+    public StatelessKieSession getKBase1KSession1();
     
-    public StatefulKnowledgeSession getKBase1KSession2();
+    public KieSession getKBase1KSession2();
     
-    public StatefulKnowledgeSession getKBase2KSession3();
+    public KieSession getKBase2KSession3();
 
-    public StatelessKnowledgeSession getKBase3KSession4();
+    public StatelessKieSession getKBase3KSession4();
 }

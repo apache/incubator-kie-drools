@@ -95,7 +95,7 @@ public class ClasspathKieContainer
 
     public KieBase getKieBase(String kBaseName) {
         KieBase kBase = kBases.get( kBaseName );
-        if ( kBaseName == null ) {
+        if ( kBase == null ) {
             kBase = createKieBase( kBaseModels.get( kBaseName ) );
         }
         return kBase;
@@ -106,21 +106,15 @@ public class ClasspathKieContainer
     }
 
     public KieSession getKieSession(String kSessionName) {
-        //        KieBaseModel kieBaseModel = getKieBaseForSession( kSessionName );
-        //        KieBase kieBase = getKieBase( kieBaseModel.getName() );
-        //        return kieBase.newKieSession( getKnowledgeSessionConfiguration( kieBaseModel,
-        //                                                                        kSessionName ),
-        //                                      null );
-
-        return null;
+        KieSessionModelImpl kSessionModel = ( KieSessionModelImpl ) kSessionModels.get( kSessionName );
+        KieBase kBase = getKieBase( kSessionModel.getKieBaseModel().getName() );
+        return kBase.newKieSession();
     }
 
     public StatelessKieSession getKieStatelessSession(String kSessionName) {
-        //        KieBaseModel kieBaseModel = getKieBaseForSession( kSessionName );
-        //        KieBase kieBase = getKieBase( kieBaseModel.getName() );
-        //        return kieBase.newStatelessKieSession( getKnowledgeSessionConfiguration( kieBaseModel,
-        //                                                                                 kSessionName ) );
-        return null;
+        KieSessionModelImpl kSessionModel = ( KieSessionModelImpl ) kSessionModels.get( kSessionName );
+        KieBase kBase = getKieBase( kSessionModel.getKieBaseModel().getName() );
+        return kBase.newStatelessKieSession();
     }
 
     @Override
@@ -191,7 +185,7 @@ public class ClasspathKieContainer
         // Map of kproject urls
         Map<KieProjectModel, String> urls = new IdentityHashMap<KieProjectModel, String>();
         while ( e.hasMoreElements() ) {
-            URL url = e.nextElement();;
+            URL url = e.nextElement();
             try {
                 KieProjectModel kieProject = KieProjectModelImpl.fromXML( url );
                 kProjects.add( kieProject );
@@ -271,16 +265,20 @@ public class ClasspathKieContainer
                           KieBaseModel kieBaseModel,
                           InternalKieJar kieJar) {
         int fileCount = 0;
+        String prefixPath = kieBaseModel.getName().replace( '.', '/' );
         for ( String fileName : kieJar.getFileNames() ) {
-            String upperCharName = fileName.toUpperCase();
-            if ( upperCharName.endsWith( "DRL" ) ) {
-                ckbuilder.add( ResourceFactory.newByteArrayResource( kieJar.getBytes( fileName ) ),
-                               ResourceType.DRL );
-                fileCount++;
-            } else if ( upperCharName.endsWith( "BPMN2" ) ) {
-                ckbuilder.add( ResourceFactory.newByteArrayResource( kieJar.getBytes( fileName ) ),
-                               ResourceType.DRL );
-                fileCount++;
+            if ( fileName.startsWith( prefixPath ) ) {
+                String upperCharName = fileName.toUpperCase();
+                
+                if ( upperCharName.endsWith( "DRL" ) ) {
+                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieJar.getBytes( fileName ) ),
+                                   ResourceType.DRL );
+                    fileCount++;
+                } else if ( upperCharName.endsWith( "BPMN2" ) ) {
+                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieJar.getBytes( fileName ) ),
+                                   ResourceType.DRL );
+                    fileCount++;
+                }
             }
         }
         if ( fileCount == 0 ) {
@@ -455,7 +453,15 @@ public class ClasspathKieContainer
         return kBaseModels.containsKey( kieBaseName );
     }
 
-    public boolean kieSession(String kieSessionName) {
-        return kBaseModels.containsKey( kieSessionName );
+    public boolean kieSessionExists(String kieSessionName) {
+        return kSessionModels.containsKey( kieSessionName );
+    }
+
+    public KieBaseModel getKieBaseModel(String kieBaseName) {
+        return kBaseModels.get( kieBaseName );
+    }
+    
+    public KieSessionModel getKieSessionModel(String kSessionName) {
+        return kSessionModels.get( kSessionName );
     }
 }
