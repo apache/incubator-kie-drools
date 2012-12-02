@@ -4,8 +4,8 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>droolsjbpm-knowledge</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-api-parent</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
@@ -54,8 +54,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>knowledge-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
