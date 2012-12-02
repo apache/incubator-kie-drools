@@ -1,14 +1,12 @@
 package org.drools.cdi;
 
 
-import javax.enterprise.inject.Produces;
+import static org.junit.Assert.assertEquals;
+
 import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.builder.KieServices;
-
-import static org.junit.Assert.*;
 
 @RunWith(CDITestRunner.class)
 public class CDIExamplesTest {
@@ -18,6 +16,12 @@ public class CDIExamplesTest {
     
     @Inject
     private Message defaultMsg;    
+    
+    @Inject @Msg1
+    private Message2 m1;
+    
+    @Inject @Msg2
+    private Message2 m2;
     
     @Inject @Msg1
     private String msg1;
@@ -64,6 +68,12 @@ public class CDIExamplesTest {
     @Test
     public void testChained2Injection() {        
         assertEquals( "chained.2 default.msg msg.1 msg.named1", msgChained2 );
-    }           
+    }     
+    
+    @Test
+    public void testNoProducers() {
+        assertEquals( "msg2 - 1", m1.getText() );
+        assertEquals( "msg2 - 2", m2.getText() );
+    }
        
 }

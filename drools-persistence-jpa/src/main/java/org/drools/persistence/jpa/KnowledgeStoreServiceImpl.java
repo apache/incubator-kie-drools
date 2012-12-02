@@ -26,7 +26,7 @@ import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.kie.KnowledgeBase;
-import org.kie.persistence.jpa.KnowledgeStoreService;
+import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.CommandExecutor;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
@@ -35,7 +35,7 @@ import org.kie.runtime.conf.TimerJobFactoryOption;
 
 public class KnowledgeStoreServiceImpl
     implements
-    KnowledgeStoreService {
+    KieStoreServices {
 
     private Class< ? extends CommandExecutor>               commandServiceClass;
     private Class< ? extends WorkItemManagerFactory>        workItemManagerFactoryClass;

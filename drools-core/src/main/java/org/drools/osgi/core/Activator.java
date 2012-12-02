@@ -24,8 +24,8 @@ import org.drools.io.impl.ResourceFactoryServiceImpl;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
 import org.kie.KnowledgeBaseFactoryService;
 import org.kie.Service;
-import org.kie.io.ResourceFactoryService;
-import org.kie.marshalling.MarshallerProvider;
+import org.kie.io.KieResources;
+import org.kie.marshalling.KieMarshallers;
 import org.kie.osgi.api.Activator.BundleContextInstantiator;
 import org.kie.util.ServiceRegistryImpl;
 import org.osgi.framework.BundleActivator;
@@ -49,7 +49,7 @@ public class Activator
 
     public void start(BundleContext bc) throws Exception {
         logger.info( "registering core  services" );
-        this.resourceReg = bc.registerService( new String[]{ResourceFactoryService.class.getName(), Service.class.getName()},
+        this.resourceReg = bc.registerService( new String[]{KieResources.class.getName(), Service.class.getName()},
                                                new ResourceFactoryServiceImpl(),
                                                new Hashtable() );
         
@@ -57,7 +57,7 @@ public class Activator
                                             new KnowledgeBaseFactoryServiceImpl(),
                                             new Hashtable() );
 
-        this.marshallerProviderReg = bc.registerService( new String[]{MarshallerProvider.class.getName(), Service.class.getName()},
+        this.marshallerProviderReg = bc.registerService( new String[]{KieMarshallers.class.getName(), Service.class.getName()},
                 new MarshallerProviderImpl(),
                 new Hashtable() );
 
