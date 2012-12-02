@@ -120,7 +120,12 @@ public class KProjectExtension
             Map<String, KBaseBean> kBaseBeans = new HashMap<String, KProjectExtension.KBaseBean>();
             if ( kBaseNames != null ) {
                 for ( String kBaseQName : kBaseNames ) {
-                    KBaseBean bean = new KBaseBean( kBases.get( kBaseQName ),
+                    KieBaseModel kieBaseModelModel = kBases.get( kBaseQName );
+                    if ( kieBaseModelModel == null ) {
+                        log.error( "Annotation @KBase(\"" + kBaseQName + "\") found, but no KieBaseModel exist.\nEither the required kproject.xml does not exist, was corrupted, or mising the KieBase entry" );
+                        continue;
+                    }
+                    KBaseBean bean = new KBaseBean( kieBaseModelModel,
                                                     kBaseURLs.get( kBaseQName ),
                                                     kBaseBeans );
                     kBaseBeans.put( kBaseQName,
