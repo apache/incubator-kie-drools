@@ -90,7 +90,7 @@
             - For "tiling", set property "enabled" to "false"
             - Save and close ydoc.cfg
             - Uncomment the lines below. Adjust <docletPath> accordingly.
-            - cd .../droolsjbpm/droolsjbpm-knowledge/knowledge-api
+            - cd .../droolsjbpm/droolsjbpm-knowledge/kie-api
             - mvn clean install -Dfull
             - cd .../droolsjbpm
             - droolsjbpm-build-bootstrap/script/docs/copy-ydoc-output.sh
