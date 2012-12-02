@@ -34,7 +34,7 @@
               <includeDependencySources>true</includeDependencySources>
               <dependencySourceIncludes>
                 <dependencySourceInclude>org.jbpm:*</dependencySourceInclude>
-                <dependencySourceInclude>org.drools:knowledge-api</dependencySourceInclude>
+                <dependencySourceInclude>org.kie:kie-api</dependencySourceInclude>
               </dependencySourceIncludes>
             </configuration>
           </execution>
