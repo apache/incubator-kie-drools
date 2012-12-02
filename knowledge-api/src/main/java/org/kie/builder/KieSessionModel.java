@@ -2,6 +2,8 @@ package org.kie.builder;
 
 import org.kie.runtime.conf.ClockTypeOption;
 
+import java.util.List;
+
 public interface KieSessionModel {
 
     String getName();
@@ -15,4 +17,12 @@ public interface KieSessionModel {
     ClockTypeOption getClockType();
 
     KieSessionModel setClockType(ClockTypeOption clockType);
+
+    ListenerModel newListenerModel(String type);
+
+    List<ListenerModel> getListenerModels();
+
+    WorkItemHandelerModel newWorkItemHandelerModel(String type);
+
+    List<WorkItemHandelerModel> getWorkItemHandelerModels();
 }
