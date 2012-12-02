@@ -11,11 +11,11 @@
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
 
-  <groupId>org.drools</groupId>
-  <artifactId>droolsjbpm-knowledge</artifactId>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-api-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools and jBPM knowledge multiproject</name>
+  <name>Drools and jBPM kie multiproject</name>
   <description>
     The common API for Drools and jBPM
   </description>
@@ -45,8 +45,8 @@
   </scm>
 
   <modules>
-    <module>knowledge-api</module>
-    <module>knowledge-internal-api</module>
+    <module>kie-api</module>
+    <module>kie-internal</module>
   </modules>
 
   <profiles>
