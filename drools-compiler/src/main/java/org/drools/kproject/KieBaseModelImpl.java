@@ -256,7 +256,6 @@ public class KieBaseModelImpl
                 }
                 writer.addAttribute( "packages", buf.toString() );
             }
-            // writeList(writer, "files", "file", kBase.getFiles());
             writeList( writer, "includes", "include", kBase.getIncludes() );
             
             Map<String, KieSessionModel> ksessions =  kBase.getKieSessionModels();

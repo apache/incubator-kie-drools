@@ -7,7 +7,12 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.ListenerModel;
+import org.kie.builder.WorkItemHandelerModel;
 import org.kie.runtime.conf.ClockTypeOption;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class KieSessionModelImpl
         implements
@@ -18,7 +23,10 @@ public class KieSessionModelImpl
     private ClockTypeOption                  clockType;
 
     private KieBaseModelImpl kBase;
-    
+
+    private final List<ListenerModel> listeners = new ArrayList<ListenerModel>();
+    private final List<WorkItemHandelerModel> wihs = new ArrayList<WorkItemHandelerModel>();
+
     private KieSessionModelImpl() { }
 
     public KieSessionModelImpl(KieBaseModelImpl kBase, String name) {
@@ -79,6 +87,34 @@ public class KieSessionModelImpl
         return this;
     }
 
+    public ListenerModel newListenerModel(String type) {
+        ListenerModelImpl listenerModel = new ListenerModelImpl(this, type);
+        listeners.add(listenerModel);
+        return listenerModel;
+    }
+
+    public List<ListenerModel> getListenerModels() {
+        return listeners;
+    }
+
+    private void addListenerModel(ListenerModel listener) {
+        listeners.add(listener);
+    }
+
+    public WorkItemHandelerModel newWorkItemHandelerModel(String type) {
+        WorkItemHandelerModelImpl wihModel = new WorkItemHandelerModelImpl(this, type);
+        wihs.add(wihModel);
+        return wihModel;
+    }
+
+    public List<WorkItemHandelerModel> getWorkItemHandelerModels() {
+        return wihs;
+    }
+
+    private void addWorkItemHandelerModel(WorkItemHandelerModel wih) {
+        wihs.add(wih);
+    }
+
     @Override
     public String toString() {
         return "KieSessionModel [name=" + name + ", clockType=" + clockType + "]";
@@ -97,10 +133,16 @@ public class KieSessionModelImpl
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
+            for (ListenerModel listener : kSession.getListenerModels()) {
+                writeObject(writer, context, "listener", listener);
+            }
+            for (WorkItemHandelerModel wih : kSession.getWorkItemHandelerModels()) {
+                writeObject(writer, context, "workItemHandeler", wih);
+            }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-            KieSessionModelImpl kSession = new KieSessionModelImpl();
+        public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
+            final KieSessionModelImpl kSession = new KieSessionModelImpl();
             kSession.setName(reader.getAttribute("name"));
             kSession.setType(reader.getAttribute("type"));
 
@@ -108,6 +150,22 @@ public class KieSessionModelImpl
             if (clockType != null) {
                 kSession.setClockType(ClockTypeOption.get(clockType));
             }
+
+            readNodes( reader, new AbstractXStreamConverter.NodeReader() {
+                public void onNode(HierarchicalStreamReader reader,
+                                   String name,
+                                   String value) {
+                    if ( "listener".equals( name ) ) {
+                        ListenerModelImpl listener = readObject(reader, context, ListenerModelImpl.class);
+                        listener.setKSession( kSession );
+                        kSession.addListenerModel(listener);
+                    } else if ( "workItemHandeler".equals( name ) ) {
+                        WorkItemHandelerModelImpl wih = readObject(reader, context, WorkItemHandelerModelImpl.class);
+                        wih.setKSession( kSession );
+                        kSession.addWorkItemHandelerModel(wih);
+                    }
+                }
+            } );
             return kSession;
         }
     }

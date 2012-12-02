@@ -89,6 +89,10 @@ public abstract class AbstractXStreamConverter implements Converter {
         return list;
     }
 
+    protected <T> T readObject(HierarchicalStreamReader reader, UnmarshallingContext context, Class<? extends T> clazz) {
+        return (T) context.convertAnother(reader.getValue(), clazz);
+    }
+
     protected <T> List<T> readObjectList(HierarchicalStreamReader reader, UnmarshallingContext context, Class<? extends T> clazz) {
         List<T> list = new ArrayList<T>();
         while (reader.hasMoreChildren()) {
