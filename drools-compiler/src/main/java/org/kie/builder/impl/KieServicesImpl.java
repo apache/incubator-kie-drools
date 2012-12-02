@@ -4,6 +4,8 @@ import static org.drools.kproject.memory.MemoryFileSystem.readFromJar;
 
 import java.io.File;
 
+import javax.inject.Singleton;
+
 import org.drools.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.command.impl.CommandFactoryServiceImpl;
 import org.drools.concurrent.ExecutorProviderImpl;
@@ -19,16 +21,21 @@ import org.kie.builder.KieServices;
 import org.kie.command.KieCommands;
 import org.kie.concurrent.KieExecutors;
 import org.kie.io.KieResources;
-import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceFactoryService;
 import org.kie.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.util.ServiceRegistryImpl;
 
+@Singleton
 public class KieServicesImpl implements KieServices {
-
-    public ResourceFactory getResourceFactory() {
-        throw new UnsupportedOperationException("org.kie.builder.impl.KieServicesImpl.getResourceFactory -> TODO");
+    private ResourceFactoryService resourceFactory;
+    
+    public ResourceFactoryService getResourceFactory() {
+        if ( resourceFactory == null ) {
+            this.resourceFactory = new ResourceFactoryServiceImpl();
+        }
+        return resourceFactory;
     }
 
     public KieRepository getKieRepository() {

@@ -1,8 +1,10 @@
 package org.kie.builder.impl;
 
+import org.drools.rule.Collect;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
+import org.kie.definition.KnowledgePackage;
 import org.kie.runtime.KieBase;
 
 import java.util.Collection;
@@ -13,7 +15,9 @@ public abstract class AbstractKieJar implements InternalKieJar {
 
     private ClassLoader classLoader;
     
-    private final Map<String, KieBase> kbases = new HashMap<String, KieBase>();
+    private final Map<String, Collection<KnowledgePackage>> packageCache = new HashMap<String, Collection<KnowledgePackage>>();
+    
+//    private final Map<String, KieBase> kbases = new HashMap<String, KieBase>();
 
     protected Map<String, KieBaseModel> kSessions;
 
@@ -34,22 +38,25 @@ public abstract class AbstractKieJar implements InternalKieJar {
     public GAV getGAV() {
         return gav;
     }
-
-    public void addKieBase(String kBaseName, KieBase kBase) {
-        kbases.put(kBaseName, kBase);
+    public Map<String, Collection<KnowledgePackage>> getKnowledgePackageCache() {
+        return packageCache;
     }
-
-    public void removeKieBase(String kBaseName) {
-        kbases.remove(kBaseName);
-    }
-
-    public Collection<String> getKieBaseNames() {
-        return kbases.keySet();
-    }
-
-    public KieBase getKieBase(String kBaseName) {
-        return kbases.get(kBaseName);
-    }
+// 
+//    public void addKieBase(String kBaseName, KieBase kBase) {
+//        kbases.put(kBaseName, kBase);
+//    }
+//
+//    public void removeKieBase(String kBaseName) {
+//        kbases.remove(kBaseName);
+//    }
+//
+//    public Collection<String> getKieBaseNames() {
+//        return kbases.keySet();
+//    }
+//
+//    public KieBase getKieBase(String kBaseName) {
+//        return kbases.get(kBaseName);
+//    }
 
     protected abstract Map<String, KieBaseModel> indexKieSessions();
 

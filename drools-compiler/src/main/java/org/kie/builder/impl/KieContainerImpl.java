@@ -34,7 +34,8 @@ public class KieContainerImpl
 
     public void updateKieJar(KieJar kieJar) {
         if (this.kieJar instanceof CompositeKieJar) {
-            ((CompositeKieJar)this.kieJar).updateKieJar(kieJar);
+            // @TODO(mdp) temp delete to allow merge
+            //((CompositeKieJar)this.kieJar).updateKieJar(kieJar);
         } else {
             this.kieJar = (InternalKieJar) kieJar;
         }
@@ -45,7 +46,9 @@ public class KieContainerImpl
     }
 
     public KieBase getKieBase(String kBaseName) {
-        return loadKieJar().getKieBase( kBaseName );
+        // @TODO(mdp) temp delete to allow merge
+        //return loadKieJar().getKieBase( kBaseName );
+        return null;
     }
 
     public KieSession getKieSession() {
@@ -83,7 +86,9 @@ public class KieContainerImpl
     }
 
     private KieBaseModel getKieBaseForSession(String kSessionName) {
-        return loadKieJar().getKieBaseForSession(kSessionName);
+        // @TODO(mdp) temp delete to allow merge
+//        return loadKieJar().getKieBaseForSession(kSessionName);
+        return null;
     }
 
     private KnowledgeSessionConfiguration getKnowledgeSessionConfiguration(KieBaseModel kieBaseModel,
@@ -92,5 +97,11 @@ public class KieContainerImpl
         KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksConf.setOption( kieSessionModel.getClockType() );
         return ksConf;
+    }
+
+    @Override
+    public StatelessKieSession getKieStatelessSession() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -3,7 +3,8 @@ package org.drools.kproject;
 import org.junit.Test;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.ListenerModel;
 import org.kie.builder.QualifierModel;
@@ -15,7 +16,7 @@ import org.kie.runtime.conf.ClockTypeOption;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static org.drools.kproject.KieProjectImpl.fromXML;
+import static org.drools.kproject.KieProjectModelImpl.fromXML;
 import static org.junit.Assert.assertNull;
 
 public class KieProjectTest {
@@ -24,7 +25,7 @@ public class KieProjectTest {
     public void testMarshallingUnmarshalling() {
         KieFactory kf = KieFactory.Factory.get();
 
-        KieProject kproj = kf.newKieProject();
+        KieProjectModel kproj = kf.newKieProject();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
@@ -55,7 +56,7 @@ public class KieProjectTest {
 
         String xml = kproj.toXML();
 
-        KieProject kprojXml = fromXML(xml);
+        KieProjectModel kprojXml = fromXML(xml);
 
         KieBaseModel kieBaseModelXML = kprojXml.getKieBaseModels().get("KBase1");
         assertEquals(AssertBehaviorOption.EQUALITY, kieBaseModelXML.getEqualsBehavior());

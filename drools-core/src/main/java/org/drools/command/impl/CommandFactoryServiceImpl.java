@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Singleton;
+
 import org.drools.command.NewKnowledgeBuilderConfigurationCommand;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
@@ -48,6 +50,7 @@ import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.rule.FactHandle;
 
+@Singleton
 public class CommandFactoryServiceImpl implements KieCommands {
 
     public Command newGetGlobal(String identifier) {

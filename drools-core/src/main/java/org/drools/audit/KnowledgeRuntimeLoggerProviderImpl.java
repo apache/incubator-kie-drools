@@ -16,10 +16,13 @@
 
 package org.drools.audit;
 
+import javax.inject.Singleton;
+
 import org.kie.event.KnowledgeRuntimeEventManager;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KieLoggers;
 
+@Singleton
 public class KnowledgeRuntimeLoggerProviderImpl
     implements
     KieLoggers {

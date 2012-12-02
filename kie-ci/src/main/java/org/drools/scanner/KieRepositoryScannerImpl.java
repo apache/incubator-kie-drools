@@ -1,7 +1,7 @@
 package org.drools.scanner;
 
 import org.apache.maven.project.MavenProject;
-import org.drools.kproject.KieProjectImpl;
+import org.drools.kproject.KieProjectModelImpl;
 import org.drools.scanner.embedder.EmbeddedPomParser;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
@@ -84,17 +84,20 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         if (mavenProject == null) {
             return null;
         }
-        mavenRepository = MavenRepository.getMavenRepository(mavenProject);
-        PomParser pomParser = new EmbeddedPomParser(mavenProject);
-
-        CompositeKieJar compositeKieJar = new CompositeKieJar(gav);
-        for (DependencyDescriptor dep : pomParser.getPomDirectDependencies()) {
-            Artifact depArtifact = mavenRepository.resolveArtifact(dep.toString());
-            if (isKJar(depArtifact.getFile())) {
-                compositeKieJar.addKieJar(buildArtifact(depArtifact));
-            }
-        }
-        return compositeKieJar;
+        // @TODO(mdp) temp delete to allow merge
+//        mavenRepository = MavenRepository.getMavenRepository(mavenProject);
+//        PomParser pomParser = new EmbeddedPomParser(mavenProject);
+//
+//        CompositeKieJar compositeKieJar = new CompositeKieJar(gav);
+//        for (DependencyDescriptor dep : pomParser.getPomDirectDependencies()) {
+//            Artifact depArtifact = mavenRepository.resolveArtifact(dep.toString());
+//            if (isKJar(depArtifact.getFile())) {
+//                compositeKieJar.addKieJar(buildArtifact(depArtifact));
+//            }
+//        }
+//        return compositeKieJar;
+        
+        return null;
     }
 
     private MavenProject getMavenProjectForGAV(GAV gav) {
@@ -233,7 +236,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ZipEntry zipEntry = zipFile.getEntry( KieProjectImpl.KPROJECT_JAR_PATH );
+        ZipEntry zipEntry = zipFile.getEntry( KieProjectModelImpl.KPROJECT_JAR_PATH );
         return zipEntry != null;
     }
 }

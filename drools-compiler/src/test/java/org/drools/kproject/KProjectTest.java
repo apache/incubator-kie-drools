@@ -13,7 +13,7 @@ import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.Test;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
@@ -172,7 +172,7 @@ public class KProjectTest extends AbstractKnowledgeTest {
         assertTrue( list.contains( jarName + ".test2:rule2" ) );
     }
 
-    public void populateClasses(KieProject kproject,
+    public void populateClasses(KieProjectModel kproject,
                                 List<String> classes) {
         for ( KieBaseModel kieBaseModel : kproject.getKieBaseModels().values() ) {
             classes.add(kieBaseModel.getName() + "Producer.java");

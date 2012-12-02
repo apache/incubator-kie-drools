@@ -1,4 +1,4 @@
-package org.drools.cdi;
+package org.drools.cdi.example;
 
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
