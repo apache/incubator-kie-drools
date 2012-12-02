@@ -21,7 +21,7 @@ import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 
-public interface KnowledgeStoreService {
+public interface KieStoreServices {
 
     StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
                                                          KnowledgeSessionConfiguration configuration,

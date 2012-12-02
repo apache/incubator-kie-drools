@@ -36,7 +36,7 @@ import org.kie.event.KnowledgeRuntimeEventManager;
  */
 public class KnowledgeRuntimeLoggerFactory {
 
-    private static KnowledgeRuntimeLoggerFactoryService knowledgeRuntimeLoggerFactoryService;
+    private static KieLoggers knowledgeRuntimeLoggerFactoryService;
 
     /**
      * Creates a file logger in the current thread. The file is in XML format, suitable for interpretation by Eclipse's Drools Audit View
@@ -81,11 +81,11 @@ public class KnowledgeRuntimeLoggerFactory {
         return getKnowledgeRuntimeLoggerProvider().newConsoleLogger( session );
     }
 
-    private static synchronized void setKnowledgeRuntimeLoggerProvider(KnowledgeRuntimeLoggerFactoryService provider) {
+    private static synchronized void setKnowledgeRuntimeLoggerProvider(KieLoggers provider) {
         KnowledgeRuntimeLoggerFactory.knowledgeRuntimeLoggerFactoryService = provider;
     }
 
-    private static synchronized KnowledgeRuntimeLoggerFactoryService getKnowledgeRuntimeLoggerProvider() {
+    private static synchronized KieLoggers getKnowledgeRuntimeLoggerProvider() {
         if ( knowledgeRuntimeLoggerFactoryService == null ) {
             loadProvider();
         }
@@ -95,7 +95,7 @@ public class KnowledgeRuntimeLoggerFactory {
     @SuppressWarnings("unchecked")
     private static void loadProvider() {
         try {
-            Class<KnowledgeRuntimeLoggerFactoryService> cls = (Class<KnowledgeRuntimeLoggerFactoryService>) Class.forName( "org.drools.audit.KnowledgeRuntimeLoggerProviderImpl" );
+            Class<KieLoggers> cls = (Class<KieLoggers>) Class.forName( "org.drools.audit.KnowledgeRuntimeLoggerProviderImpl" );
             setKnowledgeRuntimeLoggerProvider( cls.newInstance() );
         } catch ( Exception e ) {
             throw new RuntimeException( "Provider org.drools.audit.KnowledgeRuntimeLoggerProviderImpl could not be set.",

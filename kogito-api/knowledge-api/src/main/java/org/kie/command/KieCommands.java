@@ -24,7 +24,7 @@ import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.rule.FactHandle;
 
-public interface CommandFactoryService {
+public interface KieCommands {
     Command newInsert(Object object);
 
     Command newInsert(Object object,

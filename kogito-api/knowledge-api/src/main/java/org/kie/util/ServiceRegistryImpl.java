@@ -36,9 +36,9 @@ import org.kie.SystemEventListenerService;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
-import org.kie.concurrent.ExecutorProvider;
-import org.kie.io.ResourceFactoryService;
-import org.kie.marshalling.MarshallerProvider;
+import org.kie.concurrent.KieExecutors;
+import org.kie.io.KieResources;
+import org.kie.marshalling.KieMarshallers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,14 +183,14 @@ public class ServiceRegistryImpl
         addDefault( KnowledgeBaseFactoryService.class,
                     "org.drools.impl.KnowledgeBaseFactoryServiceImpl" );
 
-        addDefault( ResourceFactoryService.class,
+        addDefault( "org.kie.io.ResourceFactoryService.class",
                     "org.drools.io.impl.ResourceFactoryServiceImpl" );
         
         addDefault(  SystemEventListenerService.class,
                      "org.drools.impl.SystemEventListenerServiceImpl" );
-        addDefault(  MarshallerProvider.class,
+        addDefault(  KieMarshallers.class,
                      "org.drools.marshalling.impl.MarshallerProviderImpl");
-        addDefault(  ExecutorProvider.class,
+        addDefault(  KieExecutors.class,
                      "org.drools.concurrent.ExecutorProviderImpl");
         addDefault(  KieServices.class,
                      "org.kie.builder.impl.KieServicesImpl");
