@@ -10,7 +10,7 @@ public class MessageProducers {
         return "msg.1";
     }
     
-    @Produces @Msg2 
+    @Msg2 @Produces 
     public String getSimple2() {
         return "msg.2";
     }

@@ -18,11 +18,11 @@ package org.drools.audit;
 
 import org.kie.event.KnowledgeRuntimeEventManager;
 import org.kie.logger.KnowledgeRuntimeLogger;
-import org.kie.logger.KnowledgeRuntimeLoggerFactoryService;
+import org.kie.logger.KieLoggers;
 
 public class KnowledgeRuntimeLoggerProviderImpl
     implements
-    KnowledgeRuntimeLoggerFactoryService {
+    KieLoggers {
 
     public KnowledgeRuntimeLogger newFileLogger(KnowledgeRuntimeEventManager session,
                                                 String fileName) {

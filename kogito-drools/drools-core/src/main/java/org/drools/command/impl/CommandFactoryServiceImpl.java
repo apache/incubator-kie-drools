@@ -17,15 +17,14 @@
 package org.drools.command.impl;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.command.NewKnowledgeBuilderConfigurationCommand;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
-import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.KBuilderSetPropertyCommand;
+import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.RegisterWorkItemHandlerCommand;
@@ -38,18 +37,18 @@ import org.drools.command.runtime.rule.GetObjectsCommand;
 import org.drools.command.runtime.rule.InsertElementsCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
+import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
-import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.kie.command.BatchExecutionCommand;
 import org.kie.command.Command;
-import org.kie.command.CommandFactoryService;
+import org.kie.command.KieCommands;
 import org.kie.command.Setter;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.rule.FactHandle;
 
-public class CommandFactoryServiceImpl implements CommandFactoryService {
+public class CommandFactoryServiceImpl implements KieCommands {
 
     public Command newGetGlobal(String identifier) {
         return new GetGlobalCommand(identifier);
