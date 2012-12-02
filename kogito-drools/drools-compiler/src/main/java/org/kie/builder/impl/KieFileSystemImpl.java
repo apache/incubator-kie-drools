@@ -1,6 +1,6 @@
 package org.kie.builder.impl;
 
-import org.drools.kproject.KieProjectImpl;
+import org.drools.kproject.KieProjectModelImpl;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.kie.builder.GAV;
 import org.kie.builder.KieFileSystem;
@@ -74,12 +74,12 @@ public class KieFileSystemImpl
     }
 
     public KieFileSystem writeProjectXML(byte[] content) {
-        write(KieProjectImpl.KPROJECT_RELATIVE_PATH, content);
+        write(KieProjectModelImpl.KPROJECT_SRC_PATH, content);
         return this;
     }
 
     public KieFileSystem writeProjectXML(String content) {
-        write(KieProjectImpl.KPROJECT_RELATIVE_PATH, content);
+        write(KieProjectModelImpl.KPROJECT_SRC_PATH, content);
         return this;
     }
 }

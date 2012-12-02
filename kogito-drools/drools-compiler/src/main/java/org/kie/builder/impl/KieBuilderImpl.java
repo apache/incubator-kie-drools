@@ -11,9 +11,9 @@ import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.Predicate;
 import org.drools.core.util.StringUtils;
-import org.drools.kproject.GroupArtifactVersion;
+import org.drools.kproject.GAVImpl;
 import org.drools.kproject.KieBaseModelImpl;
-import org.drools.kproject.KieProjectImpl;
+import org.drools.kproject.KieProjectModelImpl;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
@@ -27,7 +27,7 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieJar;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -37,6 +37,7 @@ import org.kie.builder.Message;
 import org.kie.builder.Message.Level;
 import org.kie.builder.Results;
 import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
 import org.kie.runtime.KieBase;
 import org.kie.util.ClassLoaderUtil;
@@ -45,6 +46,7 @@ import org.kie.util.CompositeClassLoader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -63,15 +65,16 @@ public class KieBuilderImpl
 
     private long                 idGenerator = 1L;
 
-    private InternalKieJar       kieJar;
+    private MemoryKieJar         kieJar;
 
-
-    private PomModel             pomModel; 
+    private PomModel             pomModel;
     private byte[]               pomXml;
     private GAV                  gav;
-    
+
     private byte[]               kieProjectXml;
-    private KieProject           kieProject;   
+    private KieProjectModel      kieProject;
+    
+    private Collection<InternalKieJar>   dependencies;
 
     public KieBuilderImpl(File file) {
         this.srcMfs = new DiskResourceReader( file );
@@ -85,17 +88,17 @@ public class KieBuilderImpl
 
     private void init() {
         KieFactory kf = KieFactory.Factory.get();
-        
+
         messages = new ArrayList<Message>();
-        
+
         // if pomXML is null it will generate a default, using default GAV
         // if pomXml is invalid, it assign pomModel to null
-         buildPomModel();
+        buildPomModel();
 
-         // if kprojectXML is null it will generate a default kproject, with a default kbase name
-         // if kprojectXML is  invalid, it will kieProject to null
-         buildKieProject();
-                
+        // if kprojectXML is null it will generate a default kproject, with a default kbase name
+        // if kprojectXML is  invalid, it will kieProject to null
+        buildKieProject();
+
         if ( pomModel != null ) {
             // creates GAV from build pom
             // If the pom was generated, it will be the same as teh default GAV 
@@ -107,62 +110,68 @@ public class KieBuilderImpl
 
     public Results build() {
         // gav and kieProject will be null if a provided pom.xml or project.xml is invalid
-        if ( !isBuilt() && gav != null && kieProject != null  ) {            
+        if ( !isBuilt() && gav != null && kieProject != null ) {
             trgMfs = new MemoryFileSystem();
             writePomAndKProject();
-            
+
             kieJar = new MemoryKieJar( gav,
                                        kieProject,
-                                       trgMfs );
+                                       trgMfs );            
+            kieJar.setDependencies( dependencies );
+            
             ClassLoader classLoader = compileJavaClasses();
-            compileKieFiles(classLoader);
+            addKBasesFilesToTrg( );
+            
+            //validateKBases();
+            
             //kieJar
             if ( !hasResults( Level.ERROR ) ) {
                 KieServices.Factory.get().getKieRepository().addKieJar( kieJar );
             }
         }
         return new ResultsImpl( messages,
-                                 null );
+                                null );
     }
 
-    private void compileKieFiles(ClassLoader classLoader) {
+    private void addKBasesFilesToTrg() {
         for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
-            KieBase kieBase = buildKieBase( classLoader, kieBaseModel );
-            if ( kieBase != null ) {
-                kieJar.addKieBase( kieBaseModel.getName(),
-                                   kieBase );
-            }
+            addKBaseFilesToTrg( kieBaseModel );            
+//            Collection<KnowledgePackage> pkgsCache = addKBaseFilesToTrg( kieBaseModel );
+//            if ( pkgsCache != null ) {
+//                kieJar.getKnowledgePackageCache().put( kieBaseModel.getName(),
+//                                                       pkgsCache );
+//            }
         }
     }
 
-    public KieBase buildKieBase(ClassLoader classLoader, KieBaseModel kieBase) {
-        KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
-                                                                                                        classLoader );
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kConf );
-        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
-        addKBaseFileToBuilder( ckbuilder,
-                               kieBase );
-        if ( kieBase.getIncludes() != null ) {
-            for ( String include : kieBase.getIncludes() ) {
-                addKBaseFileToBuilder( ckbuilder,
-                                       kieProject.getKieBaseModels().get( include ) );
-            }
-        }
-        ckbuilder.build();
+    public Collection<KnowledgePackage> buildKieBase(ClassLoader classLoader,
+                                                     KieBaseModel kieBase) {
+//        KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
+//                                                                                                        classLoader );
+//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kConf );
+//        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+//        addKBaseFilesToTrg( ckbuilder,
+//                               kieBase );
+//        
+//        if ( kieBase.getIncludes() != null ) {
+//            for ( String include : kieBase.getIncludes() ) {
+//                addKBaseFilesToTrg( ckbuilder,
+//                                       kieProject.getKieBaseModels().get( include ) );
+//            }
+//        }
+//        
+//        ckbuilder.build();
 
-        if ( kbuilder.hasErrors() ) {
-            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-                messages.add( new MessageImpl( idGenerator++,
-                                               error ) );
-            }
-            return null;
-        }
-
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( getKnowledgeBaseConfiguration( kieBase,
-                                                                                                            null,
-                                                                                                            classLoader ) );
-        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return knowledgeBase;
+//        if ( kbuilder.hasErrors() ) {
+//            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
+//                messages.add( new MessageImpl( idGenerator++,
+//                                               error ) );
+//            }
+//            return null;
+//        }
+//
+//        return kbuilder.getKnowledgePackages();
+        return null;
     }
 
     private KnowledgeBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModel kieBase,
@@ -175,57 +184,66 @@ public class KieBuilderImpl
         return kbConf;
     }
 
-    private void addKBaseFileToBuilder(CompositeKnowledgeBuilder ckbuilder,
-                                       KieBaseModel kieBase) {
+//    private void addKBaseFileToBuilder(CompositeKnowledgeBuilder ckbuilder,
+//                                       KieBaseModel kieBase) {
+        private void addKBaseFilesToTrg(KieBaseModel kieBase) {        
         String resourcesRoot = "src/main/resources/";
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( filterFileInKBase( kieBase,
                                     fileName ) ) {
-                byte[] bytes = srcMfs.getBytes(fileName);
-                ckbuilder.add( ResourceFactory.newByteArrayResource( srcMfs.getBytes( fileName ) ),
-                               ResourceType.determineResourceType( fileName ) );
-                trgMfs.write( fileName.substring( resourcesRoot.length() - 1 ), bytes, true );
+                byte[] bytes = srcMfs.getBytes( fileName );
+//                ckbuilder.add( ResourceFactory.newByteArrayResource( srcMfs.getBytes( fileName ) ),
+//                               ResourceType.determineResourceType( fileName ) );
+                trgMfs.write( fileName.substring( resourcesRoot.length() - 1 ),
+                              bytes,
+                              true );
             }
         }
     }
-    
+
     private void addMetaInfBuilder() {
         String resourcesRoot = "src/main/resources/";
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.startsWith( resourcesRoot ) ) {
-                byte[] bytes = srcMfs.getBytes(fileName);
-                trgMfs.write( fileName.substring( resourcesRoot.length() - 1 ), bytes, true );
+                byte[] bytes = srcMfs.getBytes( fileName );
+                trgMfs.write( fileName.substring( resourcesRoot.length() - 1 ),
+                              bytes,
+                              true );
             }
         }
-    }    
+    }
 
     private boolean filterFileInKBase(KieBaseModel kieBase,
                                       String fileName) {
-        if (!isKieExtension(fileName)) {
+        if ( !isKieExtension( fileName ) ) {
             return false;
         }
-        if (((KieBaseModelImpl)kieBase).isDefault()) {
+        if ( ((KieBaseModelImpl) kieBase).isDefault() ) {
             return true;
         }
-        if (kieBase.getPackages().isEmpty()) {
-            return isFileInKiePackage(fileName, kieBase.getName());
+        if ( kieBase.getPackages().isEmpty() ) {
+            return isFileInKiePackage( fileName,
+                                       kieBase.getName() );
         }
-        for (String pkg : kieBase.getPackages()) {
-            if (isFileInKiePackage(fileName, pkg)) {
+        for ( String pkg : kieBase.getPackages() ) {
+            if ( isFileInKiePackage( fileName,
+                                     pkg ) ) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isFileInKiePackage(String fileName, String pkgName) {
-        String pathName = pkgName.replace( '.', '/' );
+    private boolean isFileInKiePackage(String fileName,
+                                       String pkgName) {
+        String pathName = pkgName.replace( '.',
+                                           '/' );
         return (fileName.startsWith( "src/main/resources/" + pathName + "/" ) || fileName.contains( "/" + pathName + "/" ));
     }
 
     private boolean isKieExtension(String fileName) {
         return fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) ||
-                fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() );
+               fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() );
     }
 
     public boolean hasResults(Level... levels) {
@@ -241,8 +259,8 @@ public class KieBuilderImpl
             build();
         }
         return new ResultsImpl( MessageImpl.filterMessages( messages,
-                                                             levels ),
-                                 null );
+                                                            levels ),
+                                null );
     }
 
     public Results getResults() {
@@ -250,7 +268,7 @@ public class KieBuilderImpl
             build();
         }
         return new ResultsImpl( messages,
-                                 null );
+                                null );
     }
 
     public KieJar getKieJar() {
@@ -267,131 +285,141 @@ public class KieBuilderImpl
         return kieJar != null;
     }
 
-    private  void buildKieProject() {
-        if ( srcMfs.isAvailable( KieProjectImpl.KPROJECT_RELATIVE_PATH  ) ) {
-            kieProjectXml = srcMfs.getBytes( KieProjectImpl.KPROJECT_RELATIVE_PATH );
+    private void buildKieProject() {
+        if ( srcMfs.isAvailable( KieProjectModelImpl.KPROJECT_SRC_PATH ) ) {
+            kieProjectXml = srcMfs.getBytes( KieProjectModelImpl.KPROJECT_SRC_PATH );
             try {
-                kieProject =  KieProjectImpl.fromXML( new ByteArrayInputStream( kieProjectXml ) );
-            } catch ( Exception e) {
+                kieProject = KieProjectModelImpl.fromXML( new ByteArrayInputStream( kieProjectXml ) );
+            } catch ( Exception e ) {
                 messages.add( new MessageImpl( idGenerator++,
                                                Level.ERROR,
                                                "kproject.xml",
-                                               "kproject.xml found, but unable to read\n" + e.getMessage() ) );                
-            }            
+                                               "kproject.xml found, but unable to read\n" + e.getMessage() ) );
+            }
         } else {
             KieFactory kf = KieFactory.Factory.get();
             kieProject = kf.newKieProject();
-            
-            ((KieProjectImpl)kieProject).newDefaultKieBaseModel();            
+
+            ((KieProjectModelImpl) kieProject).newDefaultKieBaseModel();
             kieProjectXml = kieProject.toXML().getBytes();
-        }        
+        }
     }
 
-    public void buildPomModel() { 
-        pomXml = getOrGeneratePomXml(srcMfs);        
+    public void buildPomModel() {
+        pomXml = getOrGeneratePomXml( srcMfs );
         if ( pomXml == null ) {
             // will be null if the provided pom is invalid
             return;
         }
-        
-        try {         
-            PomModel tempPomModel = MinimalPomParser.parse( "pom.xml", new ByteArrayInputStream( pomXml ) );
+
+        try {
+            PomModel tempPomModel = MinimalPomParser.parse( "pom.xml",
+                                                            new ByteArrayInputStream( pomXml ) );
             validatePomModel( tempPomModel ); // throws an exception if invalid
-            pomModel =  tempPomModel;
-        } catch( Exception e) {
+            pomModel = tempPomModel;
+        } catch ( Exception e ) {
             messages.add( new MessageImpl( idGenerator++,
                                            Level.ERROR,
                                            "pom.xml",
-                                           "maven pom.xml found, but unable to read\n" + e.getMessage() ) );            
+                                           "maven pom.xml found, but unable to read\n" + e.getMessage() ) );
         }
     }
-    
+
     public static void validatePomModel(PomModel pomModel) {
-        if ( StringUtils.isEmpty( pomModel.getGroupId()  ) || StringUtils.isEmpty( pomModel.getArtifactId() ) || StringUtils.isEmpty(  pomModel.getVersion()  ) ) {
-            throw new RuntimeException("Maven pom.properties exists but GAV content is malformed");
-        }        
+        if ( StringUtils.isEmpty( pomModel.getGroupId() ) || StringUtils.isEmpty( pomModel.getArtifactId() ) || StringUtils.isEmpty( pomModel.getVersion() ) ) {
+            throw new RuntimeException( "Maven pom.properties exists but GAV content is malformed" );
+        }
     }
-    
-    public static byte[] getOrGeneratePomXml(ResourceReader mfs ) {
+
+    public static byte[] getOrGeneratePomXml(ResourceReader mfs) {
         if ( mfs.isAvailable( "pom.xml" ) ) {
             return mfs.getBytes( "pom.xml" );
         } else {
             // There is no pom.xml, and thus no GAV, so generate a pom.xml from the global detault.
-            return generatePomXml(KieServices.Factory.get().getKieRepository().getDefaultGAV() ).getBytes();
+            return generatePomXml( KieServices.Factory.get().getKieRepository().getDefaultGAV() ).getBytes();
         }
     }
-    
-    
+
     public void writePomAndKProject() {
         addMetaInfBuilder();
-        
+
         if ( pomXml != null ) {
-            GroupArtifactVersion g = ( GroupArtifactVersion ) gav;
-            trgMfs.write( g.getPomXmlPath(), pomXml, true );
-            trgMfs.write( g.getPomPropertiesPath(), generatePomProperties(gav).getBytes(), true );
-            
+            GAVImpl g = (GAVImpl) gav;
+            trgMfs.write( g.getPomXmlPath(),
+                          pomXml,
+                          true );
+            trgMfs.write( g.getPomPropertiesPath(),
+                          generatePomProperties( gav ).getBytes(),
+                          true );
+
         }
-        
+
         if ( kieProjectXml != null ) {
-            trgMfs.write( KieProjectImpl.KPROJECT_JAR_PATH, kieProject.toXML().getBytes(), true );
-        }   
+            trgMfs.write( KieProjectModelImpl.KPROJECT_JAR_PATH,
+                          kieProject.toXML().getBytes(),
+                          true );
+        }
     }
-   
-   public static String generatePomXml(GAV gav) {
-       StringBuilder sBuilder = new StringBuilder();
-       sBuilder.append( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" );
-       sBuilder.append( "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\"> \n" );
-       sBuilder.append( "    <modelVersion>4.0.0</modelVersion> \n");
 
-       sBuilder.append( "    <groupId>" );
-       sBuilder.append( gav.getGroupId() );
-       sBuilder.append( "</groupId> \n");
+    public static String generatePomXml(GAV gav) {
+        StringBuilder sBuilder = new StringBuilder();
+        sBuilder.append( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" );
+        sBuilder.append( "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\"> \n" );
+        sBuilder.append( "    <modelVersion>4.0.0</modelVersion> \n" );
 
-       sBuilder.append( "    <artifactId>" );
-       sBuilder.append( gav.getArtifactId() );
-       sBuilder.append( "</artifactId> \n");
-       
-       sBuilder.append( "    <version>" );
-       sBuilder.append( gav.getVersion() );
-       sBuilder.append( "</version> \n");
-       
-       sBuilder.append( "    <packaging>jar</packaging> \n");
+        sBuilder.append( "    <groupId>" );
+        sBuilder.append( gav.getGroupId() );
+        sBuilder.append( "</groupId> \n" );
 
-       sBuilder.append( "    <name>Default</name> \n");
-       sBuilder.append( "</project>  \n");      
-       
-       return sBuilder.toString();
-   }
-   
-   public static String generatePomProperties(GAV gav) {
-       StringBuilder sBuilder = new StringBuilder();
-       sBuilder.append( "groupId=" );
-       sBuilder.append( gav.getGroupId() );
-       sBuilder.append( "\n");
+        sBuilder.append( "    <artifactId>" );
+        sBuilder.append( gav.getArtifactId() );
+        sBuilder.append( "</artifactId> \n" );
 
-       sBuilder.append( "artifactId=" );
-       sBuilder.append( gav.getArtifactId() );
-       sBuilder.append( "\n");
-       
-       sBuilder.append( "version=" );
-       sBuilder.append( gav.getVersion() );
-       sBuilder.append( "\n");
-       
-       return sBuilder.toString();
-   }
-    
+        sBuilder.append( "    <version>" );
+        sBuilder.append( gav.getVersion() );
+        sBuilder.append( "</version> \n" );
+
+        sBuilder.append( "    <packaging>jar</packaging> \n" );
+
+        sBuilder.append( "    <name>Default</name> \n" );
+        sBuilder.append( "</project>  \n" );
+
+        return sBuilder.toString();
+    }
+
+    public static String generatePomProperties(GAV gav) {
+        StringBuilder sBuilder = new StringBuilder();
+        sBuilder.append( "groupId=" );
+        sBuilder.append( gav.getGroupId() );
+        sBuilder.append( "\n" );
+
+        sBuilder.append( "artifactId=" );
+        sBuilder.append( gav.getArtifactId() );
+        sBuilder.append( "\n" );
+
+        sBuilder.append( "version=" );
+        sBuilder.append( gav.getVersion() );
+        sBuilder.append( "\n" );
+
+        return sBuilder.toString();
+    }
+
     private ClassLoader compileJavaClasses() {
         List<String> classFiles = new ArrayList<String>();
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".class" ) ) {
-                trgMfs.write(fileName, srcMfs.getBytes(fileName), true);
-                classFiles.add(fileName.substring(0, fileName.length() - ".class".length()));
+                trgMfs.write( fileName,
+                              srcMfs.getBytes( fileName ),
+                              true );
+                classFiles.add( fileName.substring( 0,
+                                                    fileName.length() - ".class".length() ) );
             }
         }
 
         List<String> javaFiles = new ArrayList<String>();
         for ( String fileName : srcMfs.getFileNames() ) {
-            if ( fileName.endsWith( ".java" ) && !classFiles.contains(fileName.substring(0, fileName.length() - ".java".length())) ) {
+            if ( fileName.endsWith( ".java" ) && !classFiles.contains( fileName.substring( 0,
+                                                                                           fileName.length() - ".java".length() ) ) ) {
                 javaFiles.add( fileName );
             }
         }
@@ -423,22 +451,23 @@ public class KieBuilderImpl
         while ( zipEntries.hasMoreElements() ) {
             ZipEntry zipEntry = zipEntries.nextElement();
             String fileName = zipEntry.getName();
-            if ( fileName.endsWith( "pom.properties" ) && fileName.startsWith( "META-INF/maven/"  ) ) {
+            if ( fileName.endsWith( "pom.properties" ) && fileName.startsWith( "META-INF/maven/" ) ) {
                 return fileName;
             }
         }
         return null;
     }
-    
+
     public static File findPomProperties(java.io.File root) {
-        File mavenRoot = new File(root, "META-INF/maven");
+        File mavenRoot = new File( root,
+                                   "META-INF/maven" );
         return recurseToPomProperties( mavenRoot );
-    }    
-    
+    }
+
     public static File recurseToPomProperties(File file) {
         for ( java.io.File child : file.listFiles() ) {
             if ( child.isDirectory() ) {
-                File returnedFile =  recurseToPomProperties( child );
+                File returnedFile = recurseToPomProperties( child );
                 if ( returnedFile != null ) {
                     return returnedFile;
                 }
@@ -448,11 +477,11 @@ public class KieBuilderImpl
         }
         return null;
     }
-    
+
     private CompositeClassLoader getCompositeClassLoader() {
-        CompositeClassLoader ccl = ClassLoaderUtil.getClassLoader(null,
-                getClass(),
-                true);
+        CompositeClassLoader ccl = ClassLoaderUtil.getClassLoader( null,
+                                                                   getClass(),
+                                                                   true );
         ccl.addClassLoader( new ClassUtils.MapClassLoader( trgMfs.getMap(),
                                                            ccl ) );
         return ccl;

@@ -1,4 +1,4 @@
-package org.drools.cdi;
+package org.drools.cdi.example;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

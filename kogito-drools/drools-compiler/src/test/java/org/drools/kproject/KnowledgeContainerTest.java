@@ -4,7 +4,7 @@ import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.core.util.FileManager;
 import org.junit.Test;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeContainer;
 import org.kie.builder.KnowledgeContainerFactory;
@@ -92,7 +92,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
             fileManager.write(fileManager.newFile("src/kbases/KBase1/" + file), createDRL(rule));
         }
 
-        KieProject kproj = new KieProjectImpl();
+        KieProjectModel kproj = new KieProjectModelImpl();
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
@@ -101,7 +101,7 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
                 .setType( "stateful" )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KieProjectImpl)kproj).toXML() );
+        fileManager.write(fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KieProjectModelImpl)kproj).toXML() );
 
         return kContainer.buildKJar(fileManager.getRootDirectory(), fileManager.getRootDirectory(), kjarName);
     }

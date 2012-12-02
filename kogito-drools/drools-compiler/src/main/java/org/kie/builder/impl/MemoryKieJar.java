@@ -1,50 +1,42 @@
 package org.kie.builder.impl;
 
+import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.kproject.memory.MemoryFileSystem;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MemoryKieJar extends AbstractKieJar {
+public class MemoryKieJar extends AbstractKieJar implements ResourceReader {
 
     private final MemoryFileSystem mfs;
-    private final KieProject kieProject;
+    private final KieProjectModel kieProject;
+    
+    private Collection<InternalKieJar> dependencies;
 
-    public MemoryKieJar(GAV gav, KieProject kieProject, MemoryFileSystem mfs) {
+    public MemoryKieJar(GAV gav, KieProjectModel kieProject, MemoryFileSystem mfs) {
         super(gav);
         this.mfs = mfs;
         this.kieProject = kieProject;
     }
     
-    public MemoryFileSystem getMemoryFileSystem() {
-        return mfs;
+    public KieProjectModel getKieProjectModel() {
+        return kieProject;
     }
-
-    public byte[] getBytes() {
-        return mfs.writeAsBytes();
+    
+    public void setDependencies(Collection<InternalKieJar> dependencies) {
+        this.dependencies = dependencies;
     }
-
-    public InputStream getInputStream() {
-        return new ByteArrayInputStream(getBytes());
-    }
-
-    public Collection<String> getFiles() {
-        return mfs.getFileNames();
-    }
-
-    public byte[] getBytes(String path) {
-        return mfs.getBytes(path);
-    }
-
-    public InputStream getInputStream(String path) {
-        return new ByteArrayInputStream(getBytes(path));
+    
+    public Collection<InternalKieJar> getDependencies() {
+        return dependencies;
     }
 
     protected Map<String, KieBaseModel> indexKieSessions() {
@@ -55,5 +47,36 @@ public class MemoryKieJar extends AbstractKieJar {
             }
         }
         return kSessions;
+    }
+
+    @Override
+    public boolean isAvailable(String path) {
+        return mfs.existsFile( path );
+    }
+
+    @Override
+    public byte[] getBytes(String path) {
+        return mfs.getBytes( path );
+    }
+
+    @Override
+    public Collection<String> getFileNames() {
+        return mfs.getFileNames();
+    }
+    
+    public MemoryFileSystem  getMemoryFileSystem() {
+        return this.mfs;
+    }
+
+    @Override
+    public File getFile() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public byte[] getBytes() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

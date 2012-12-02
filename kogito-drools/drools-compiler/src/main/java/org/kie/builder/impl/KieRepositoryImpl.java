@@ -1,31 +1,48 @@
 package org.kie.builder.impl;
 
-import org.drools.kproject.GroupArtifactVersion;
+import org.drools.cdi.KProjectExtension;
+import org.drools.kproject.GAVImpl;
 import org.kie.builder.GAV;
+import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieJar;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
+import org.kie.builder.KieServices;
 import org.kie.builder.Results;
 import org.kie.util.ServiceRegistryImpl;
+import org.mortbay.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class KieRepositoryImpl implements KieRepository {
+import javax.inject.Singleton;
 
-    private static final String DEFAULT_VERSION = "1.0.0-SNAPSHOT";
-    private static final String DEFAULT_ARTIFACT = "artifact";
-    private static final String DEFAULT_GROUP = "org.default";
-    
-    static final KieRepositoryImpl INSTANCE = new KieRepositoryImpl();
+@Singleton
+public class KieRepositoryImpl
+    implements
+    KieRepository {
+    private static final Logger        log              = LoggerFactory.getLogger( KieRepositoryImpl.class );
 
-    private final Map<GAV, KieJar> kieJars = new HashMap<GAV, KieJar>();
-    
-    private final AtomicReference<GAV> defaultGAV = new AtomicReference( new GroupArtifactVersion(DEFAULT_GROUP, DEFAULT_ARTIFACT, DEFAULT_VERSION) );
+    private static final String        DEFAULT_VERSION  = "1.0.0-SNAPSHOT";
+    private static final String        DEFAULT_ARTIFACT = "artifact";
+    private static final String        DEFAULT_GROUP    = "org.default";
 
-    private InternalKieScanner internalKieScanner;
+    static final KieRepositoryImpl     INSTANCE         = new KieRepositoryImpl();
+
+    private final Map<GAV, KieJar>     kieJars          = new HashMap<GAV, KieJar>();
+
+    private final AtomicReference<GAV> defaultGAV       = new AtomicReference( new GAVImpl( DEFAULT_GROUP,
+                                                                                            DEFAULT_ARTIFACT,
+                                                                                            DEFAULT_VERSION ) );
+
+    private InternalKieScanner         internalKieScanner;
 
     public void setDefaultGAV(GAV gav) {
         this.defaultGAV.set( gav );
@@ -33,30 +50,60 @@ public class KieRepositoryImpl implements KieRepository {
 
     public GAV getDefaultGAV() {
         return this.defaultGAV.get();
-    }    
-    
+    }
+
     public void addKieJar(KieJar kjar) {
-        kieJars.put(kjar.getGAV(), kjar);
+        kieJars.put( kjar.getGAV(),
+                     kjar );
     }
 
     public Results verfyKieJar(GAV gav) {
-        throw new UnsupportedOperationException("org.kie.builder.impl.KieRepositoryImpl.verfyKieJar -> TODO");
+        throw new UnsupportedOperationException( "org.kie.builder.impl.KieRepositoryImpl.verfyKieJar -> TODO" );
     }
 
     public KieJar getKieJar(GAV gav) {
-        KieJar kieJar = kieJars.get(gav);
-        return kieJar != null ? kieJar : loadKieJarFromMavenRepo(gav);
+        KieJar kieJar = kieJars.get( gav );
+        if ( kieJar == null ) {
+            log.debug( "KieJar Lookup. GAV {} was not in cache, checking classpath",
+                       gav.toExternalForm() );
+            kieJar = checkClasspathForKieJar( gav );
+        }
+        
+        if ( kieJar == null ) {
+            log.debug( "KieJar Lookup. GAV {} was not in cache, checking maven repository",
+                       gav.toExternalForm() );   
+            kieJar =  loadKieJarFromMavenRepo( gav );
+        }
+        
+        return kieJar; 
+    }
+
+    private KieJar checkClasspathForKieJar(GAV gav) {
+        // check classpath
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        URL url = classLoader.getResource( "((GAVImpl)gav).getPomPropertiesPath()" );
+        if ( url == null ) {
+            log.debug( "KieJar Lookup. GAV {} is not on the classpath",
+                       gav.toExternalForm() );
+        }
+        
+//        KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(artifact.getFile());
+//        Results results = kieBuilder.build();
+//        return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieJar() : null;        
+        
+        return null;
     }
 
     private KieJar loadKieJarFromMavenRepo(GAV gav) {
-        return getInternalKieScanner().loadArtifact(gav);
+        return getInternalKieScanner().loadArtifact( gav );
     }
 
     private InternalKieScanner getInternalKieScanner() {
-        if (internalKieScanner == null) {
+        if ( internalKieScanner == null ) {
             try {
                 internalKieScanner = (InternalKieScanner) ServiceRegistryImpl.getInstance().get( KieScanner.class );
-            } catch (Exception e) {
+            } catch ( Exception e ) {
                 // kie-ci is not on the classpath
                 internalKieScanner = new DummyKieScanner();
             }
@@ -64,18 +111,26 @@ public class KieRepositoryImpl implements KieRepository {
         return internalKieScanner;
     }
 
-    private static class DummyKieScanner implements InternalKieScanner {
+    private static class DummyKieScanner
+        implements
+        InternalKieScanner {
 
-        public void setKieContainer(KieContainer kieContainer) { }
+        public void setKieContainer(KieContainer kieContainer) {
+        }
 
         public KieJar loadArtifact(GAV gav) {
             return null;
         }
 
-        public void start(long pollingInterval) { }
+        public void start(long pollingInterval) {
+        }
 
-        public void stop() { }
+        public void stop() {
+        }
 
-        public void scanNow() { }
+        public void scanNow() {
+        }
     }
+    
+    
 }

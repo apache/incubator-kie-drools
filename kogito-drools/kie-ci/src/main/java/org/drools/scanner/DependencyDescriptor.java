@@ -3,7 +3,7 @@ package org.drools.scanner;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.model.Dependency;
-import org.drools.kproject.GroupArtifactVersion;
+import org.drools.kproject.GAVImpl;
 import org.kie.builder.GAV;
 import org.sonatype.aether.artifact.Artifact;
 
@@ -59,7 +59,7 @@ public class DependencyDescriptor {
     }
 
     public GAV getGav() {
-        return new GroupArtifactVersion(groupId, artifactId, version);
+        return new GAVImpl(groupId, artifactId, version);
     }
 
     public String getType() {

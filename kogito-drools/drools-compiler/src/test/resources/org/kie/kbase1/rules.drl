@@ -1,0 +1,9 @@
+package org.kie.kbase1;
+
+global java.util.List list;
+
+rule r1 when
+then
+    list.add("x");
+end
+

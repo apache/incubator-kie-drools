@@ -11,14 +11,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.kproject.KieProjectImpl;
+import org.drools.kproject.KieProjectModelImpl;
 import org.junit.Test;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieJar;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.impl.InternalKieJar;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;
@@ -45,8 +46,8 @@ public class ChangeSetBuilderTest {
                 "then\n" +
                 "end\n";
 
-        KieJar kieJar1 = createKieJar( drl1, drl2 );
-        KieJar kieJar2 = createKieJar( drl1, drl2 );
+        InternalKieJar kieJar1 = createKieJar( drl1, drl2 );
+        InternalKieJar kieJar2 = createKieJar( drl1, drl2 );
 
         ChangeSetBuilder builder = new ChangeSetBuilder();
         KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
@@ -75,12 +76,12 @@ public class ChangeSetBuilderTest {
                 "then\n" +
                 "end\n";
 
-        KieJar kieJar1 = createKieJar( drl1, drl2 );
-        KieJar kieJar2 = createKieJar( drl1, drl3 );
+        InternalKieJar kieJar1 = createKieJar( drl1, drl2 );
+        InternalKieJar kieJar2 = createKieJar( drl1, drl3 );
 
         KieJarChangeSet changes = new ChangeSetBuilder().build( kieJar1, kieJar2 );
         
-        String modifiedFile = (String) kieJar2.getFiles().toArray()[1];
+        String modifiedFile = (String) kieJar2.getFileNames().toArray()[1];
         
         assertThat( changes.getChanges().size(), is(1));
         ResourceChangeSet cs = changes.getChanges().get( modifiedFile );
@@ -109,12 +110,12 @@ public class ChangeSetBuilderTest {
                 "then\n" +
                 "end\n";
 
-        KieJar kieJar1 = createKieJar( drl1, drl2 );
-        KieJar kieJar2 = createKieJar( drl1 );
+        InternalKieJar kieJar1 = createKieJar( drl1, drl2 );
+        InternalKieJar kieJar2 = createKieJar( drl1 );
 
         KieJarChangeSet changes = new ChangeSetBuilder().build( kieJar1, kieJar2 );
 
-        String removedFile = (String) kieJar1.getFiles().toArray()[1];
+        String removedFile = (String) kieJar1.getFileNames().toArray()[1];
         
         assertThat( changes.getChanges().size(), is(1));
         ResourceChangeSet cs = changes.getChanges().get( removedFile );
@@ -165,17 +166,17 @@ public class ChangeSetBuilderTest {
                 "then\n" +
                 "end\n";
 
-        KieJar kieJar1 = createKieJar( drl1, drl2 );
-        KieJar kieJar2 = createKieJar( drl1_5, null, drl3 );
+        InternalKieJar kieJar1 = createKieJar( drl1, drl2 );
+        InternalKieJar kieJar2 = createKieJar( drl1_5, null, drl3 );
 
         ChangeSetBuilder builder = new ChangeSetBuilder();
         KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
         
         System.out.println( builder.toProperties( changes ) );
 
-        String modifiedFile = (String) kieJar2.getFiles().toArray()[0];
-        String addedFile = (String) kieJar2.getFiles().toArray()[1];
-        String removedFile = (String) kieJar1.getFiles().toArray()[1];
+        String modifiedFile = (String) kieJar2.getFileNames().toArray()[0];
+        String addedFile = (String) kieJar2.getFileNames().toArray()[1];
+        String removedFile = (String) kieJar1.getFileNames().toArray()[1];
         
         assertThat( changes.getChanges().size(), is(3));
 
@@ -198,8 +199,8 @@ public class ChangeSetBuilderTest {
 //        assertThat( cs.getChanges().get( 2 ), is( new ResourceChange(ChangeType.UPDATED, Type.RULE, "An updated rule") ) );
     }
 
-    private KieJar createKieJar( String... drls) {
-        KieJar kieJar = mock( KieJar.class );
+    private InternalKieJar createKieJar( String... drls) {
+        InternalKieJar kieJar = mock( InternalKieJar.class );
         KieFactory kf = KieFactory.Factory.get();
         GAV gav = kf.newGav("org.kie", "hello-world", "1.0-SNAPSHOT");
 
@@ -212,13 +213,13 @@ public class ChangeSetBuilderTest {
                 when( kieJar.getBytes( fileName ) ).thenReturn( drls[i].getBytes() );
             }
         }
-        when( kieJar.getBytes( KieProjectImpl.KPROJECT_JAR_PATH ) ).thenReturn( createKieProjectWithPackages(kf, gav).toXML().getBytes() );
-        when( kieJar.getFiles() ).thenReturn( drlFs );
-        return kieJar;
+        when( kieJar.getBytes( KieProjectModelImpl.KPROJECT_JAR_PATH ) ).thenReturn( createKieProjectWithPackages(kf, gav).toXML().getBytes() );
+        when( kieJar.getFileNames() ).thenReturn( drlFs );
+        return ( InternalKieJar ) kieJar;
     }
     
-    private KieProject createKieProjectWithPackages(KieFactory kf, GAV gav) {
-        KieProject kproj = kf.newKieProject();
+    private KieProjectModel createKieProjectWithPackages(KieFactory kf, GAV gav) {
+        KieProjectModel kproj = kf.newKieProject();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )

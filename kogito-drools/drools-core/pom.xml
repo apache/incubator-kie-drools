@@ -86,6 +86,12 @@
       <artifactId>activation</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
+    </dependency>    
 
     <!-- Logging -->
     <dependency>

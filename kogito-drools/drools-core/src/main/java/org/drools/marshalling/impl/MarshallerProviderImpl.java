@@ -16,12 +16,15 @@
 
 package org.drools.marshalling.impl;
 
+import javax.inject.Singleton;
+
 import org.kie.KnowledgeBase;
 import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
 
+@Singleton
 public class MarshallerProviderImpl implements KieMarshallers {
 
     public ObjectMarshallingStrategyAcceptor newClassFilterAcceptor(String[] patterns) {

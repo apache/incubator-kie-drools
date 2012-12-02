@@ -1,18 +1,15 @@
-package org.drools.cdi;
+package org.drools.cdi.example;
 
 
 import static org.junit.Assert.assertEquals;
-
 import javax.inject.Inject;
 
+import org.drools.cdi.CDITestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(CDITestRunner.class)
 public class CDIExamplesTest {
-    
-//    @Inject 
-//    KieServices sc;
     
     @Inject
     private Message defaultMsg;    

@@ -2,7 +2,7 @@ package org.drools.builder.impl;
 
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
@@ -33,7 +33,7 @@ import static org.drools.builder.impl.KBaseUnitCachingFactory.evictKBaseUnit;
 import static org.drools.builder.impl.KBaseUnitCachingFactory.getOrCreateKBaseUnit;
 import static org.drools.core.util.IoUtils.copyFile;
 import static org.drools.kproject.KieBaseModelImpl.getFiles;
-import static org.drools.kproject.KieProjectImpl.fromXML;
+import static org.drools.kproject.KieProjectModelImpl.fromXML;
 
 public class KnowledgeContainerImpl implements KnowledgeContainer {
 
@@ -104,7 +104,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     }
 
     public File buildKJar(File rootFolder, File outputFolder, String jarName) {
-        KieProject kieProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
+        KieProjectModel kieProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
         return writeKJar(rootFolder, outputFolder, jarName, kieProject);
     }
 
@@ -118,7 +118,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
 
     public List<KBaseUnit> getKBaseUnits(File rootFolder, File sourceFolder) {
         List<KBaseUnit> units = new ArrayList<KBaseUnit>();
-        KieProject kieProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
+        KieProjectModel kieProject = fromXML(new File(rootFolder, KPROJECT_RELATIVE_PATH));
         for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
             units.add(new KBaseUnitImpl( sourceFolder.getAbsolutePath() + "/" + kieBaseModel.getName(), kieBaseModel, classLoader ));
         }
@@ -170,7 +170,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         }
     }
 
-    private void indexKSessions(KieProject kieProject, URL url, boolean doEvict) {
+    private void indexKSessions(KieProjectModel kieProject, URL url, boolean doEvict) {
         for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
             cleanUpExistingKBase(kieBaseModel, doEvict);
             kBases.put(kieBaseModel.getName(), kieBaseModel);
@@ -194,7 +194,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
         }
     }
 
-    private File writeKJar(File rootFolder, File outputFolder, String jarName, KieProject kieProject) {
+    private File writeKJar(File rootFolder, File outputFolder, String jarName, KieProjectModel kieProject) {
         Map<String, String> jarEntries = new HashMap<String, String>();
         jarEntries.put(KPROJECT_RELATIVE_PATH, KPROJECT_JAR_PATH);
         

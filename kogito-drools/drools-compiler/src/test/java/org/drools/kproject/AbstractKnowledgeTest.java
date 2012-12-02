@@ -14,7 +14,7 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieJar;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.Message.Level;
@@ -55,7 +55,7 @@ public class AbstractKnowledgeTest {
                                   boolean createJar) throws IOException,
             ClassNotFoundException,
             InterruptedException {
-        KieProject kproj = new KieProjectImpl();
+        KieProjectModel kproj = new KieProjectModelImpl();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
@@ -90,7 +90,7 @@ public class AbstractKnowledgeTest {
         
         KieFileSystemImpl kfs =  ( KieFileSystemImpl ) KieFactory.Factory.get().newKieFileSystem();
         kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
-        kfs.writeProjectXML( ((KieProjectImpl)kproj).toXML()  );
+        kfs.writeProjectXML( ((KieProjectModelImpl)kproj).toXML()  );
         
         GAV gav = KieFactory.Factory.get().newGav( namespace, "art1", "1.0-SNAPSHOT" );
         kfs.generateAndWritePomXML( gav );        
@@ -143,13 +143,13 @@ public class AbstractKnowledgeTest {
         return s;
     }
 
-    public String generateBeansXML(KieProject kproject) {
+    public String generateBeansXML(KieProjectModel kproject) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n" +
                 "</beans>";
     }
 
-    public String generateKProjectTestClass(KieProject kproject,
+    public String generateKProjectTestClass(KieProjectModel kproject,
                                             String namespace) {
 
         return "package org.drools.cdi.test;\n" +
@@ -201,7 +201,7 @@ public class AbstractKnowledgeTest {
                 "}\n";
     }
 
-    public List<String> compile(KieProject kproj,
+    public List<String> compile(KieProjectModel kproj,
                                 MemoryFileSystem srcMfs,
                                 MemoryFileSystem trgMfs,
                                 List<String> classes) {
@@ -244,7 +244,7 @@ public class AbstractKnowledgeTest {
                            Folder srcFolder,
                            MemoryFileSystem trgMfs,
                            Folder trgFolder,
-                           KieProject kproj) {
+                           KieProjectModel kproj) {
         if ( !trgFolder.exists() ) {
             trgMfs.getFolder( trgFolder.getPath() ).create();
         }

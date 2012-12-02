@@ -29,6 +29,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.kie.builder.KieJar;
 import org.kie.builder.ResourceType;
+import org.kie.builder.impl.InternalKieJar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +37,11 @@ public class ChangeSetBuilder {
     
     private final Logger logger = LoggerFactory.getLogger( ChangeSetBuilder.class );
 
-    public KieJarChangeSet build( KieJar original, KieJar currentJar ) {
+    public KieJarChangeSet build( InternalKieJar original, InternalKieJar currentJar ) {
         KieJarChangeSet result = new KieJarChangeSet();
         
-        Collection<String> originalFiles = original.getFiles();
-        Collection<String> currentFiles = currentJar.getFiles();
+        Collection<String> originalFiles = original.getFileNames();
+        Collection<String> currentFiles = currentJar.getFileNames();
         
         ArrayList<String> removedFiles = new ArrayList<String>( originalFiles );
         removedFiles.removeAll( currentFiles );

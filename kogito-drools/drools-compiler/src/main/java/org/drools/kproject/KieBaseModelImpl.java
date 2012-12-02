@@ -7,7 +7,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.Predicate;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProject;
+import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.ResourceType;
 import org.kie.conf.AssertBehaviorOption;
@@ -44,14 +44,14 @@ public class KieBaseModelImpl
 
     private Map<String, KieSessionModel> kSessions;
 
-    private KieProject                   kProject;
+    private KieProjectModel                   kProject;
 
     private KieBaseModelImpl() {
         this.includes = new HashSet<String>();
         this.kSessions = Collections.emptyMap();
     }
 
-    public KieBaseModelImpl(KieProject kProject,
+    public KieBaseModelImpl(KieProjectModel kProject,
                             String name) {
         this.kProject = kProject;
         this.includes = new HashSet<String>();
@@ -83,11 +83,11 @@ public class KieBaseModelImpl
         return this;
     }
 
-    public KieProject getKProject() {
+    public KieProjectModel getKProject() {
         return kProject;
     }
 
-    public void setKProject(KieProject kieProject) {
+    public void setKProject(KieProjectModel kieProject) {
         this.kProject = kieProject;
     }
 
