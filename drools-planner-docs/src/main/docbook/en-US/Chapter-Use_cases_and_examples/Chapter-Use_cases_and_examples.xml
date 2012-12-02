@@ -513,6 +513,12 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
         <para>Using a fleet of vehicles, pick up the objects of each customer and bring them to the depot. Each vehicle
         can service multiple customers, but it has a limited capacity.</para>
 
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/vehicleRoutingUseCase.png"/>
+          </imageobject>
+        </mediaobject>
+
         <para>The capacitated vehicle routing problem (CRVP) is defined by <link
         xlink:href="http://neo.lcc.uma.es/radi-aeb/WebVRP/">the VRP web</link>.</para>
       </section>
