@@ -21,7 +21,7 @@ import java.util.Hashtable;
 import java.util.concurrent.Callable;
 
 import org.kie.Service;
-import org.kie.marshalling.MarshallerProvider;
+import org.kie.marshalling.KieMarshallers;
 import org.kie.util.ServiceRegistry;
 import org.kie.util.ServiceRegistryImpl;
 import org.osgi.framework.BundleActivator;
@@ -58,7 +58,7 @@ public class Activator
         registryTracker.open();
         
         this.marshallerProviderTracker = new ServiceTracker( bc,
-                MarshallerProvider.class.getName(),
+                KieMarshallers.class.getName(),
                 new DroolsServiceTracker( bc,
                                           this) );
         

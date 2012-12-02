@@ -2,12 +2,17 @@ package org.kie.builder;
 
 import java.io.File;
 
-import org.kie.io.ResourceFactory;
+import org.kie.command.KieCommands;
+import org.kie.concurrent.KieExecutors;
+import org.kie.io.KieResources;
+import org.kie.logger.KieLoggers;
+import org.kie.marshalling.KieMarshallers;
+import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.util.ServiceRegistryImpl;
 
 public interface KieServices {
     
-    ResourceFactory getResourceFactory();
+    KieResources getResources();
 
     KieRepository getKieRepository();
 
@@ -20,6 +25,16 @@ public interface KieServices {
     KieContainer getKieContainer();
     
     KieContainer getKieContainer(GAV gav);
+    
+    KieCommands getCommands();
+    
+    KieMarshallers getMarshallers();
+    
+    KieLoggers getLoggers();
+    
+    KieExecutors getExecutors();
+    
+    KieStoreServices getStoreServices();
     
     KieScanner newKieScanner(KieContainer kieContainer);    
     

@@ -114,7 +114,7 @@ import org.kie.util.ServiceRegistryImpl;
  * </pre>
  */
 public class JPAKnowledgeService {
-    private static KnowledgeStoreService provider;
+    private static KieStoreServices provider;
 
     public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
                                                                        KnowledgeSessionConfiguration configuration,
@@ -134,11 +134,11 @@ public class JPAKnowledgeService {
                                                                               environment );
     }
 
-    private static synchronized void setJPAKnowledgeServiceProvider(KnowledgeStoreService provider) {
+    private static synchronized void setJPAKnowledgeServiceProvider(KieStoreServices provider) {
         JPAKnowledgeService.provider = provider;
     }
 
-    private static synchronized KnowledgeStoreService getJPAKnowledgeServiceProvider() {
+    private static synchronized KieStoreServices getJPAKnowledgeServiceProvider() {
         if ( provider == null ) {
             loadProvider();
         }
@@ -149,7 +149,7 @@ public class JPAKnowledgeService {
     private static void loadProvider() {
         try {
             // we didn't find anything in properties so lets try and us reflection
-            Class<KnowledgeStoreService> cls = (Class<KnowledgeStoreService>) Class.forName( "org.drools.persistence.jpa.KnowledgeStoreServiceImpl" );
+            Class<KieStoreServices> cls = (Class<KieStoreServices>) Class.forName( "org.drools.persistence.jpa.KnowledgeStoreServiceImpl" );
             setJPAKnowledgeServiceProvider( cls.newInstance() );
         } catch ( Exception e ) {
             throw new RuntimeException( "Provider org.drools.persistence.jpa.KnowledgeStoreServiceImpl could not be set.",

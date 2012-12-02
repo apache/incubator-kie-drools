@@ -41,7 +41,7 @@ import org.kie.runtime.rule.FactHandle;
  * @BETA
  */
 public class CommandFactory {
-    private static volatile CommandFactoryService provider;
+    private static volatile KieCommands provider;
 
     /**
      * Inserts a new instance
@@ -355,11 +355,11 @@ public class CommandFactory {
                                                               lookup);
     }
 
-    private static synchronized void setCommandFactoryProvider(CommandFactoryService provider) {
+    private static synchronized void setCommandFactoryProvider(KieCommands provider) {
         CommandFactory.provider = provider;
     }
 
-    private static synchronized CommandFactoryService getCommandFactoryProvider() {
+    private static synchronized KieCommands getCommandFactoryProvider() {
         if ( provider == null ) {
             loadProvider();
         }
@@ -368,7 +368,7 @@ public class CommandFactory {
 
     private static void loadProvider() {
         try {
-            Class<CommandFactoryService> cls = (Class<CommandFactoryService>) Class.forName( "org.drools.command.impl.CommandFactoryServiceImpl" );
+            Class<KieCommands> cls = (Class<KieCommands>) Class.forName( "org.drools.command.impl.CommandFactoryServiceImpl" );
             setCommandFactoryProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
             throw new RuntimeException( "Provider org.drools.command.impl.CommandFactoryProviderImpl could not be set.",

@@ -74,7 +74,7 @@ import org.kie.util.ServiceRegistryImpl;
  * </p>
  */
 public class MarshallerFactory {
-    private static volatile MarshallerProvider provider;
+    private static volatile KieMarshallers provider;
 
     public static ObjectMarshallingStrategyAcceptor newClassFilterAcceptor(String[] patterns) {
         return getMarshallerProvider().newClassFilterAcceptor( patterns );
@@ -110,11 +110,11 @@ public class MarshallerFactory {
                                                       strategies );
     }
 
-    private static synchronized void setMarshallerProvider(MarshallerProvider provider) {
+    private static synchronized void setMarshallerProvider(KieMarshallers provider) {
         MarshallerFactory.provider = provider;
     }
 
-    private static synchronized MarshallerProvider getMarshallerProvider() {
+    private static synchronized KieMarshallers getMarshallerProvider() {
         if ( provider == null ) {
             loadProvider();
         }
@@ -122,6 +122,6 @@ public class MarshallerFactory {
     }
 
     private static void loadProvider() {
-        setMarshallerProvider( ServiceRegistryImpl.getInstance().get( MarshallerProvider.class ) );
+        setMarshallerProvider( ServiceRegistryImpl.getInstance().get( KieMarshallers.class ) );
     }
 }
