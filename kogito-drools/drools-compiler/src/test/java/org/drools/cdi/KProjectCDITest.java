@@ -16,9 +16,10 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class KProjectCDITest {
     
-    @Test @Ignore
+    @Test 
     public void test1() {
         final List<String> classes = new ArrayList<String>();
         classes.add( TestClass.class.getName() );
