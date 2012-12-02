@@ -13,12 +13,12 @@ import org.kie.runtime.KieSession;
 @RunWith(CDITestRunner.class)
 public class KieSessionInjectionTest {
 
-    @Inject @KSession("ksession1")
-    private KieSession kSession1;
-    
-    @Test 
-    public void test1() {
-        assertNotNull( kSession1 );
-        assertEquals(1, kSession1.getKnowledgeBase().getKnowledgePackage( "org.kie.kbase1" ).getRules().size() );
-    }
+//    @Inject @KSession("ksession1")
+//    private KieSession kSession1;
+//    
+//    @Test 
+//    public void test1() {
+//        assertNotNull( kSession1 );
+//        assertEquals(1, kSession1.getKnowledgeBase().getKnowledgePackage( "org.kie.kbase1" ).getRules().size() );
+//    }
 }

@@ -1,6 +1,8 @@
 package org.kie.builder.impl;
 
+import org.drools.core.util.IoUtils;
 import org.drools.kproject.memory.MemoryFileSystem;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProjectModel;
@@ -8,6 +10,9 @@ import org.kie.builder.KieSessionModel;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,7 +37,7 @@ public class FileKieJar implements InternalKieJar {
 
     @Override
     public GAV getGAV() {
-        return null;
+        return gav;
     }
 
     @Override
@@ -54,33 +59,35 @@ public class FileKieJar implements InternalKieJar {
 
     @Override
     public boolean isAvailable(String pResourceName) {
-        return false;
+        return new File( file, pResourceName).exists();
     }
 
 
     @Override
     public byte[] getBytes(String pResourceName) {
-        return null;
+        try {
+            return IoUtils.readBytesFromInputStream( new FileInputStream( new File( file, pResourceName) ) );
+        } catch ( Exception e ) {
+            throw new RuntimeException("Unable to get bytes for: " + new File( file, pResourceName) );
+        }
     }
 
 
     @Override
     public Collection<String> getFileNames() {
-        return null;
+        return IoUtils.recursiveListFile( file );
     }
 
 
     @Override
     public KieProjectModel getKieProjectModel() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.kieProject;
     }
 
 
     @Override
     public byte[] getBytes() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 

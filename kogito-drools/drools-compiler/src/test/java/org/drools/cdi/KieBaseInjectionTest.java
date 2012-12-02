@@ -12,13 +12,13 @@ import static org.junit.Assert.*;
 @RunWith(CDITestRunner.class)
 public class KieBaseInjectionTest {
 
-    @Inject @KBase("org.kie.kbase1" )
-    private KnowledgeBase kBase1;
-    
-    @Test 
-    public void test1() {
-        assertNotNull( kBase1 );
-        assertEquals( 1, kBase1.getKnowledgePackage( "org.kie.kbase1" ).getRules().size() );
-    }
+//    @Inject @KBase("org.kie.kbase1" )
+//    private KnowledgeBase kBase1;
+//    
+//    @Test 
+//    public void test1() {
+//        assertNotNull( kBase1 );
+//        assertEquals( 1, kBase1.getKnowledgePackage( "org.kie.kbase1" ).getRules().size() );
+//    }
     
 }

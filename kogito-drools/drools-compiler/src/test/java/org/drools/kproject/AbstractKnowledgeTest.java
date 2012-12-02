@@ -23,7 +23,10 @@ import org.kie.builder.impl.MemoryKieJar;
 import org.kie.KnowledgeBase;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.KieBase;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 
@@ -158,9 +161,9 @@ public class AbstractKnowledgeTest {
                 "import javax.inject.Inject;\n" +
                 "import javax.enterprise.event.Observes;\n" +
                 "import org.jboss.weld.environment.se.events.ContainerInitialized;\n" +
-                "import " + KnowledgeBase.class.getName() + ";\n" +
-                "import " + StatefulKnowledgeSession.class.getName() + ";\n" +
-                "import " + StatelessKnowledgeSession.class.getName() + ";\n" +
+                "import " + KieBase.class.getName() + ";\n" +
+                "import " + KieSession.class.getName() + ";\n" +
+                "import " + StatelessKieSession.class.getName() + ";\n" +
                 "import " + org.kie.cdi.KBase.class.getName() + ";\n" +
                 "import " + org.kie.cdi.KSession.class.getName() + ";\n" +
                 "import " + KPTest.class.getName() + ";\n" +
@@ -168,34 +171,34 @@ public class AbstractKnowledgeTest {
                 "@KPTest(\"" + namespace + "\") \n" +
                 "public class KProjectTestClass" + namespace + " implements org.drools.kproject.KProjectTestClass {\n" +
                 "    private @Inject @KBase(\"" + namespace + ".KBase1\")  " +
-                "    KnowledgeBase kBase1; \n" +
-                "    public KnowledgeBase getKBase1() {\n" +
+                "    KieBase kBase1; \n" +
+                "    public KieBase getKBase1() {\n" +
                 "        return kBase1;\n" +
                 "    }\n" +
                 "    private @Inject @KBase(\"" + namespace + ".KBase2\") " +
-                "    KnowledgeBase kBase2; \n" +
-                "    public KnowledgeBase getKBase2() {\n" +
+                "    KieBase kBase2; \n" +
+                "    public KieBase getKBase2() {\n" +
                 "        return kBase2;\n" +
                 "    }\n" +
                 "    private @Inject @KBase(\"" + namespace + ".KBase3\") \n" +
-                "    KnowledgeBase kBase3; \n" +
-                "    public KnowledgeBase getKBase3() {\n" +
+                "    KieBase kBase3; \n" +
+                "    public KieBase getKBase3() {\n" +
                 "        return kBase3;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".KSession1\") StatelessKnowledgeSession kBase1kSession1; \n" +
-                "    public StatelessKnowledgeSession getKBase1KSession1() {\n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession1\") StatelessKieSession kBase1kSession1; \n" +
+                "    public StatelessKieSession getKBase1KSession1() {\n" +
                 "        return kBase1kSession1;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".KSession2\") StatefulKnowledgeSession kBase1kSession2; \n" +
-                "    public StatefulKnowledgeSession getKBase1KSession2() {\n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession2\") KieSession kBase1kSession2; \n" +
+                "    public KieSession getKBase1KSession2() {\n" +
                 "        return kBase1kSession2;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".KSession3\") StatefulKnowledgeSession kBase2kSession3; \n" +
-                "    public StatefulKnowledgeSession getKBase2KSession3() {\n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession3\") KieSession kBase2kSession3; \n" +
+                "    public KieSession getKBase2KSession3() {\n" +
                 "        return kBase2kSession3;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".KSession4\") StatelessKnowledgeSession kBase3kSession4; \n" +
-                "    public StatelessKnowledgeSession getKBase3KSession4() {\n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession4\") StatelessKieSession kBase3kSession4; \n" +
+                "    public StatelessKieSession getKBase3KSession4() {\n" +
                 "        return kBase3kSession4;\n" +
                 "    }\n" +
                 "}\n";

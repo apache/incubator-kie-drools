@@ -34,7 +34,7 @@ public class KieSessionModelImpl
         this.name = name;
     }
     
-    public KieBaseModelImpl getKBase() {
+    public KieBaseModelImpl getKieBaseModel() {
         return kBase;
     }
     
