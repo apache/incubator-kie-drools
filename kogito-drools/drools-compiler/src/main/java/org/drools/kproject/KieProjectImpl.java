@@ -7,7 +7,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieProject;
 
@@ -115,6 +114,10 @@ public class KieProjectImpl implements KieProject {
         return MARSHALLER.fromXML(kProjectUrl);
     }
 
+    public static KieProject fromXML(String kProjectString) {
+        return MARSHALLER.fromXML(kProjectString);
+    }
+
     private static final KProjectMarshaller MARSHALLER = new KProjectMarshaller();
 
     private static class KProjectMarshaller {
@@ -124,9 +127,16 @@ public class KieProjectImpl implements KieProject {
             xStream.registerConverter(new KProjectConverter());
             xStream.registerConverter(new KieBaseModelImpl.KBaseConverter());
             xStream.registerConverter(new KieSessionModelImpl.KSessionConverter());
+            xStream.registerConverter(new ListenerModelImpl.ListenerConverter());
+            xStream.registerConverter(new QualifierModelImpl.QualifierConverter());
+            xStream.registerConverter(new WorkItemHandelerModelImpl.WorkItemHandelerConverter());
+
             xStream.alias("kproject", KieProjectImpl.class);
             xStream.alias("kbase", KieBaseModelImpl.class);
             xStream.alias("ksession", KieSessionModelImpl.class);
+            xStream.alias("listener", ListenerModelImpl.class);
+            xStream.alias("qualifier", QualifierModelImpl.class);
+            xStream.alias("workItemHandeler", WorkItemHandelerModelImpl.class);
         }
 
         public String toXML(KieProject kieProject) {
@@ -143,6 +153,10 @@ public class KieProjectImpl implements KieProject {
 
         public KieProject fromXML(URL kProjectUrl) {
             return (KieProject)xStream.fromXML(kProjectUrl);
+        }
+
+        public KieProject fromXML(String kProjectString) {
+            return (KieProject)xStream.fromXML(kProjectString);
         }
     }
 
