@@ -25,4 +25,8 @@ public interface KieSessionModel {
     WorkItemHandelerModel newWorkItemHandelerModel(String type);
 
     List<WorkItemHandelerModel> getWorkItemHandelerModels();
+    
+    public static enum KieSessionType {
+        Stateful, Statless;
+    }
 }

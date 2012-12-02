@@ -3,7 +3,7 @@ package org.kie.builder;
 import java.util.Map;
 
 
-public interface KieProject {
+public interface KieProjectModel {
 
     KieBaseModel newKieBaseModel(String name);
     
