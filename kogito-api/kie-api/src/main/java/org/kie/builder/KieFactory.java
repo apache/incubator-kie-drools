@@ -15,8 +15,6 @@
  */
 package org.kie.builder;
 
-import java.io.File;
-
 import org.kie.util.ServiceRegistryImpl;
 
 /**
@@ -28,7 +26,7 @@ public interface KieFactory {
     
     KieFileSystem newKieFileSystem( );
     
-    KieModuleModel newKieProject();
+    KieModuleModel newKieModuleModel();
 
     public static class Factory {
         private static KieFactory INSTANCE;

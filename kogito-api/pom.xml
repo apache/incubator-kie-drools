@@ -47,8 +47,6 @@
   <modules>
     <module>kie-api</module>
     <module>kie-internal</module>
-    <module>knowledge-api</module>
-    <module>knowledge-internal-api</module>
   </modules>
 
   <profiles>
