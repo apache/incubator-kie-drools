@@ -1,9 +1,5 @@
 package org.kie.builder.impl;
 
-import static org.drools.compiler.io.memory.MemoryFileSystem.readFromJar;
-
-import java.io.File;
-
 import org.drools.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.command.impl.CommandFactoryServiceImpl;
 import org.drools.concurrent.ExecutorProviderImpl;
@@ -25,6 +21,10 @@ import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.util.ServiceRegistryImpl;
 
+import java.io.File;
+
+import static org.drools.compiler.io.memory.MemoryFileSystem.readFromJar;
+
 public class KieServicesImpl implements KieServices {
     private ResourceFactoryService resourceFactory;
     
@@ -43,7 +43,7 @@ public class KieServicesImpl implements KieServices {
      * Returns KieContainer for the classpath
      */
     public KieContainer getKieContainer() {
-        return new KieContainerImpl( new ClasspathKieProject( getKieRepository() ), getKieRepository() ); 
+        return getKieContainer(getKieRepository().getDefaultGAV());
     }
     
     public KieContainer getKieContainer(GAV gav) {

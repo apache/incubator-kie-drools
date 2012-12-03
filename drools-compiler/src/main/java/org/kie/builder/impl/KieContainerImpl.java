@@ -68,13 +68,11 @@ public class KieContainerImpl
     }
 
     public KieSession getKieSession() {
-        // @TODO
-        throw new UnsupportedOperationException( "This method is still to be implemented" );
+        return getKieBase().newKieSession();
     }
 
     public StatelessKieSession getKieStatelessSession() {
-        // @TODO
-        throw new UnsupportedOperationException( "This method is still to be implemented" );
+        return getKieBase().newStatelessKieSession();
     }
     
     public KieSession getKieSession(String kSessionName) {

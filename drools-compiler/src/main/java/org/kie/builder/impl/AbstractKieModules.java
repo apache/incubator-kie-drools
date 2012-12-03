@@ -24,14 +24,13 @@ import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+
+import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
 
 public abstract class AbstractKieModules
     implements
@@ -49,10 +48,10 @@ public abstract class AbstractKieModules
     
     private Map<GAV, InternalKieModule>                     kieModules;
 
-    private Map<String, InternalKieModule>                  kJarFromKBaseName = new HashMap<String, InternalKieModule>();
+    private final Map<String, InternalKieModule>            kJarFromKBaseName = new HashMap<String, InternalKieModule>();
 
-    private Map<String, KieBaseModel>                       kBaseModels       = new HashMap<String, KieBaseModel>();
-    private Map<String, KieSessionModel>                    kSessionModels    = new HashMap<String, KieSessionModel>();
+    private final Map<String, KieBaseModel>                 kBaseModels       = new HashMap<String, KieBaseModel>();
+    private final Map<String, KieSessionModel>              kSessionModels    = new HashMap<String, KieSessionModel>();
 
     public AbstractKieModules(GAV gav) {
         this.gav = gav;
@@ -144,10 +143,7 @@ public abstract class AbstractKieModules
     
     public CompositeClassLoader createClassLaoder() {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
-        for( Entry<GAV, InternalKieModule> entry : kieModules.entrySet() ) {
-            GAV gav = entry.getKey();
-            InternalKieModule kModule  = entry.getValue();
-            List<String> fileNames = new ArrayList<String>();
+        for( InternalKieModule kModule : kieModules.values() ) {
             for( String fileName : kModule.getFileNames() ) {
                  if ( fileName.endsWith( ".class" ) ) {
                      classes.put( fileName, kModule.getBytes( fileName ) );
@@ -224,16 +220,10 @@ public abstract class AbstractKieModules
         String prefixPath = kieBaseModel.getName().replace( '.',
                                                             '/' );
         for ( String fileName : kieModule.getFileNames() ) {
-            if ( fileName.startsWith( prefixPath ) ) {
-                String upperCharName = fileName.toUpperCase();
-
-                if ( upperCharName.endsWith( "DRL" ) ) {
+            if ( ((KieBaseModelImpl)kieBaseModel).isDefault() || fileName.startsWith( prefixPath ) ) {
+                if ( isKieExtension(fileName) ) {
                     ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
-                                   ResourceType.DRL );
-                    fileCount++;
-                } else if ( upperCharName.endsWith( "BPMN2" ) ) {
-                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
-                                   ResourceType.DRL );
+                                   ResourceType.determineResourceType( fileName ) );
                     fileCount++;
                 }
             }
