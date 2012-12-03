@@ -87,8 +87,8 @@ public class KieSessionModelImpl
         return this;
     }
 
-    public ListenerModel newListenerModel(String type) {
-        ListenerModelImpl listenerModel = new ListenerModelImpl(this, type);
+    public ListenerModel newListenerModel(String type, ListenerModel.Kind kind) {
+        ListenerModelImpl listenerModel = new ListenerModelImpl(this, type, kind);
         listeners.add(listenerModel);
         return listenerModel;
     }
@@ -134,7 +134,7 @@ public class KieSessionModelImpl
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
             for (ListenerModel listener : kSession.getListenerModels()) {
-                writeObject(writer, context, "listener", listener);
+                writeObject(writer, context, listener.getKind().toString(), listener);
             }
             for (WorkItemHandlerModel wih : kSession.getWorkItemHandelerModels()) {
                 writeObject(writer, context, "workItemHandler", wih);
@@ -155,9 +155,10 @@ public class KieSessionModelImpl
                 public void onNode(HierarchicalStreamReader reader,
                                    String name,
                                    String value) {
-                    if ( "listener".equals( name ) ) {
+                    if ( "agendaEventListener".equals( name ) || "workingMemoryEventListener".equals( name ) || "processEventListener".equals( name ) ) {
                         ListenerModelImpl listener = readObject(reader, context, ListenerModelImpl.class);
                         listener.setKSession( kSession );
+                        listener.setKind(ListenerModel.Kind.fromString(name));
                         kSession.addListenerModel(listener);
                     } else if ( "workItemHandler".equals( name ) ) {
                         WorkItemHandlerModelImpl wih = readObject(reader, context, WorkItemHandlerModelImpl.class);
