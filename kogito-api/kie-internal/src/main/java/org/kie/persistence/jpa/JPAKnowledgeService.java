@@ -16,12 +16,10 @@
 
 package org.kie.persistence.jpa;
 
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactoryService;
+import org.kie.KieBase;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.util.ServiceRegistryImpl;
 
 /**
  * <p>
@@ -116,19 +114,19 @@ import org.kie.util.ServiceRegistryImpl;
 public class JPAKnowledgeService {
     private static KieStoreServices provider;
 
-    public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
+    public static StatefulKnowledgeSession newStatefulKnowledgeSession(KieBase kbase,
                                                                        KnowledgeSessionConfiguration configuration,
                                                                        Environment environment) {
-        return getJPAKnowledgeServiceProvider().newStatefulKnowledgeSession( kbase,
+        return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().newStatefulKnowledgeSession( kbase,
                                                                              configuration,
                                                                              environment );
     }
 
     public static StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
-                                                                        KnowledgeBase kbase,
+                                                                        KieBase kbase,
                                                                         KnowledgeSessionConfiguration configuration,
                                                                         Environment environment) {
-        return getJPAKnowledgeServiceProvider().loadStatefulKnowledgeSession( id,
+        return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().loadStatefulKnowledgeSession( id,
                                                                               kbase,
                                                                               configuration,
                                                                               environment );
