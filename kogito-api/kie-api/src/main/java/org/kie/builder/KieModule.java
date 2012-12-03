@@ -4,6 +4,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.zip.ZipFile;
 
-public interface KieJar {
+public interface KieModule {
     GAV getGAV();
 }

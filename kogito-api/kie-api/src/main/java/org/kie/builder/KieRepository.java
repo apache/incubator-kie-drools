@@ -6,9 +6,9 @@ public interface KieRepository {
 
     public GAV getDefaultGAV();    
     
-    void addKieJar(KieJar kjar);
+    void addKieJar(KieModule kjar);
 
     Results verfyKieJar(GAV gav);
     
-    KieJar getKieJar(GAV gav);
+    KieModule getKieJar(GAV gav);
 }
