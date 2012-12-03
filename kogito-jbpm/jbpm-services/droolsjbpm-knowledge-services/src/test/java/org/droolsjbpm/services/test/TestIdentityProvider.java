@@ -7,14 +7,11 @@ import org.droolsjbpm.services.api.IdentityProvider;
 
 public class TestIdentityProvider implements IdentityProvider {
 
-    @Override
     public String getName() {
         return "testUser";
     }
 
-    @Override
     public List<String> getRoles() {
-        
         return Collections.EMPTY_LIST;
     }
 

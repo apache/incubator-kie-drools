@@ -17,9 +17,9 @@ import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.rule.Package;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.rule.Activation;
 import org.jbpm.JbpmTestCase;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.rule.Match;
 
 public class ProcessFlowControlTest extends JbpmTestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -213,7 +213,7 @@ public class ProcessFlowControlTest extends JbpmTestCase {
         workingMemory.setGlobal( "list",
                                  list );
 
-        final List<Activation> activations = new ArrayList<Activation>();
+        final List<Match> activations = new ArrayList<Match>();
         AgendaEventListener listener = new DefaultAgendaEventListener() {
             public void activationCancelled(ActivationCancelledEvent event,
                                             WorkingMemory workingMemory) {

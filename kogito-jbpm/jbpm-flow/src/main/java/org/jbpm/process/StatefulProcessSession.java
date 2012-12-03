@@ -321,9 +321,13 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		throw new UnsupportedOperationException();
 	}
 
-	public void retract(FactHandle handle) {
-		throw new UnsupportedOperationException();
-	}
+    public void retract(FactHandle handle) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void delete(FactHandle handle) {
+        throw new UnsupportedOperationException();
+    }
 
 	public void update(FactHandle handle, Object object) {
 		throw new UnsupportedOperationException();

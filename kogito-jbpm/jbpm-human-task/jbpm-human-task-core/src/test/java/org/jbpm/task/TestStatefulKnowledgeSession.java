@@ -249,8 +249,11 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 		return null;
 	}
 
-	public void retract(FactHandle arg0) {
-	}
+    public void retract(FactHandle arg0) {
+    }
+
+    public void delete(FactHandle arg0) {
+    }
 
 	public void update(FactHandle arg0, Object arg1) {
 	}

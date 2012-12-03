@@ -10,17 +10,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import org.kie.KnowledgeBase;
-import org.kie.SystemEventListenerFactory;
-import org.kie.agent.KnowledgeAgent;
-import org.kie.agent.KnowledgeAgentFactory;
-import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.core.util.FileManager;
-import org.kie.io.ResourceChangeScannerConfiguration;
-import org.kie.io.ResourceFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentFactory;
+import org.kie.io.ResourceChangeScannerConfiguration;
+import org.kie.io.ResourceFactory;
 
 public class ScannerChangeSetTest {
 
@@ -51,9 +50,8 @@ public class ScannerChangeSetTest {
 	 * @author jsvitak@redhat.com
 	 *
 	 */
-	@Test
+	@Test @Ignore("Requires the implementation of the new agent infrastructure")
     public void testBPMNByResourceChangeScanner() throws Exception {
-        SystemEventListenerFactory.setSystemEventListener(new PrintStreamSystemEventListener(System.out));        
         
         // first file
         File ruleFile = new File(TMP_DIR + "temporary.bpmn");

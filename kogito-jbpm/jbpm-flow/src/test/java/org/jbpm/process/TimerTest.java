@@ -33,6 +33,9 @@ import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 public class TimerTest extends Assert {
 
@@ -45,10 +48,12 @@ public class TimerTest extends Assert {
     @Test
     @Ignore
 	public void testTimer() {
-        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
-        ExecutorService executorService = new DefaultExecutorService();
-        final StatefulSession workingMemory = new ReteooStatefulSession(1, ruleBase, executorService);
-        executorService.setCommandExecutor( new CommandExecutor( workingMemory ) );
+//        AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
+//        ExecutorService executorService = new DefaultExecutorService();
+//        final StatefulSession workingMemory = new ReteooStatefulSession(1, ruleBase, executorService);
+//        executorService.setCommandExecutor( new CommandExecutor( workingMemory ) );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final StatefulKnowledgeSession workingMemory = kbase.newStatefulKnowledgeSession(); 
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance() {
 			private static final long serialVersionUID = 510l;

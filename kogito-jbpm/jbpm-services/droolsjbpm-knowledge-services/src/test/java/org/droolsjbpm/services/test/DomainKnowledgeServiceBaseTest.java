@@ -15,17 +15,17 @@
  */
 package org.droolsjbpm.services.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
-import org.kie.definition.process.Process;
-import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
+import javax.inject.Inject;
+
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
@@ -36,7 +36,10 @@ import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.kie.definition.process.Process;
+import org.kie.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 
 public abstract class DomainKnowledgeServiceBaseTest {
 
