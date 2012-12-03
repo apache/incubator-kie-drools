@@ -73,13 +73,13 @@ public class KieFileSystemImpl
         return this;
     }
 
-    public KieFileSystem writeProjectXML(byte[] content) {
-        write(KieModuleModelImpl.KPROJECT_SRC_PATH, content);
+    public KieFileSystem writeKModuleXML(byte[] content) {
+        write(KieModuleModelImpl.KMODULE_SRC_PATH, content);
         return this;
     }
 
-    public KieFileSystem writeProjectXML(String content) {
-        write(KieModuleModelImpl.KPROJECT_SRC_PATH, content);
+    public KieFileSystem writeKModuleXML(String content) {
+        write(KieModuleModelImpl.KMODULE_SRC_PATH, content);
         return this;
     }
 }

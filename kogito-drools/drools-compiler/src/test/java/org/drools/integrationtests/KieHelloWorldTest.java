@@ -83,7 +83,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .generateAndWritePomXML( gav )
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
-                .writeProjectXML( createKieProjectWithPackages(kf).toXML());
+                .writeKModuleXML( createKieProjectWithPackages(kf).toXML());
         ks.newKieBuilder( kfs ).build();
 
         KieSession ksession = ks.getKieContainer(gav).getKieSession("KSession1");

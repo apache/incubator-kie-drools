@@ -235,7 +235,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KPROJECT_JAR_PATH );
+        ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
         return zipEntry != null;
     }
 }

@@ -19,8 +19,8 @@ import java.util.Map;
 
 public class KieModuleModelImpl implements KieModuleModel {
 
-    public static String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
-    public static String KPROJECT_SRC_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
+    public static String KMODULE_JAR_PATH = "META-INF/kmodule.xml";
+    public static String KMODULE_SRC_PATH = "src/main/resources/" + KMODULE_JAR_PATH;
 
     private Map<String, KieBaseModel>  kBases;
     
