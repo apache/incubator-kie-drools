@@ -1,7 +1,8 @@
-package org.drools.kproject;
+package org.drools.compiler.io;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 
 public interface File extends Resource {      
     String getName();

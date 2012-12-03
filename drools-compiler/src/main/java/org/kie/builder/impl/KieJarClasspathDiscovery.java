@@ -18,12 +18,12 @@ import java.util.zip.ZipFile;
 
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.GAVImpl;
-import org.drools.kproject.KieBaseModelImpl;
-import org.drools.kproject.KieProjectModelImpl;
-import org.drools.kproject.KieSessionModelImpl;
+import org.drools.kproject.models.KieBaseModelImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,14 +54,14 @@ public class KieJarClasspathDiscovery {
             return;
         }
 
-        List<KieProjectModel> kProjects = new ArrayList<KieProjectModel>();
+        List<KieModuleModel> kProjects = new ArrayList<KieModuleModel>();
         
         // Map of kproject urls
-        Map<KieProjectModel, String> urls = new IdentityHashMap<KieProjectModel, String>();
+        Map<KieModuleModel, String> urls = new IdentityHashMap<KieModuleModel, String>();
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();;
             try {
-                KieProjectModel kieProject = KieProjectModelImpl.fromXML( url );
+                KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
                 kProjects.add( kieProject );
                 
                 String fixedURL = fixURL( url );
@@ -72,7 +72,7 @@ public class KieJarClasspathDiscovery {
             }
         }
 
-        for ( KieProjectModel kieProject : kProjects ) {
+        for ( KieModuleModel kieProject : kProjects ) {
             String url = urls.get( kieProject );
             String strGAV = getPomProperties(url);
             if ( StringUtils.isEmpty( strGAV  ) ) {

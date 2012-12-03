@@ -10,15 +10,15 @@ import java.util.zip.ZipFile;
 import org.drools.core.util.IoUtils;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.kie.builder.GAV;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 
 public class ZipKieModule extends AbstractKieModules implements InternalKieModule {
     private final File             file;
-    private final KieProjectModel  kieProject;    
+    private final KieModuleModel  kieProject;    
     private Map<String, ZipEntry> zipEntries;
 
     public ZipKieModule(GAV gav,
-                     KieProjectModel kieProject,
+                     KieModuleModel kieProject,
                      File file) {
         super( gav );
         this.file = file;
@@ -70,7 +70,7 @@ public class ZipKieModule extends AbstractKieModules implements InternalKieModul
     }
 
     @Override
-    public KieProjectModel getKieProjectModel() {
+    public KieModuleModel getKieProjectModel() {
         return kieProject;
     }
 

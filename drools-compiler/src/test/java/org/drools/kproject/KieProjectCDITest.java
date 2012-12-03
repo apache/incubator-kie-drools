@@ -1,7 +1,7 @@
 package org.drools.kproject;
 
-import org.drools.kproject.memory.MemoryFile;
-import org.drools.kproject.memory.MemoryFileSystem;
+import org.drools.compiler.io.memory.MemoryFile;
+import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.kproject.memory.MemorytURLStreamHandler;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.jboss.weld.bootstrap.api.Bootstrap;
@@ -13,7 +13,7 @@ import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.Test;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;

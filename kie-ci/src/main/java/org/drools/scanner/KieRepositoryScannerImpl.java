@@ -1,7 +1,7 @@
 package org.drools.scanner;
 
 import org.apache.maven.project.MavenProject;
-import org.drools.kproject.KieProjectModelImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.scanner.embedder.EmbeddedPomParser;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
@@ -236,7 +236,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ZipEntry zipEntry = zipFile.getEntry( KieProjectModelImpl.KPROJECT_JAR_PATH );
+        ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KPROJECT_JAR_PATH );
         return zipEntry != null;
     }
 }

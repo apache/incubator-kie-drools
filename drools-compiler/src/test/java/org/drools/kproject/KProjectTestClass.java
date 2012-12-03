@@ -1,6 +1,6 @@
 package org.drools.kproject;
 
-import org.kie.runtime.KieBase;
+import org.kie.KieBase;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;
 

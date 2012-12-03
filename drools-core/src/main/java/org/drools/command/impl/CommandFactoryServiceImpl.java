@@ -50,7 +50,6 @@ import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.rule.FactHandle;
 
-@Singleton
 public class CommandFactoryServiceImpl implements KieCommands {
 
     public Command newGetGlobal(String identifier) {

@@ -1,9 +1,9 @@
-package org.drools.kproject.memory;
+package org.drools.compiler.io.memory;
 
+import org.drools.compiler.io.File;
+import org.drools.compiler.io.Folder;
+import org.drools.compiler.io.Path;
 import org.drools.core.util.StringUtils;
-import org.drools.kproject.File;
-import org.drools.kproject.Folder;
-import org.drools.kproject.Path;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

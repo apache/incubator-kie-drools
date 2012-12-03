@@ -29,7 +29,6 @@ import org.kie.io.ResourceChangeNotifier;
 import org.kie.io.ResourceChangeScanner;
 import org.kie.io.ResourceFactoryService;
 
-@Singleton
 public class ResourceFactoryServiceImpl
     implements
     ResourceFactoryService {

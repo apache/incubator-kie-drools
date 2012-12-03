@@ -3,9 +3,13 @@ package org.drools.kproject;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
+import org.drools.compiler.io.File;
+import org.drools.compiler.io.Folder;
+import org.drools.compiler.io.Resource;
+import org.drools.compiler.io.memory.MemoryFile;
+import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
-import org.drools.kproject.memory.MemoryFile;
-import org.drools.kproject.memory.MemoryFileSystem;
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.builder.GAV;
@@ -14,16 +18,16 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.Message.Level;
 import org.kie.builder.impl.KieFileSystemImpl;
 import org.kie.builder.impl.MemoryKieModules;
+import org.kie.KieBase;
 import org.kie.KnowledgeBase;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
-import org.kie.runtime.KieBase;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKieSession;
@@ -94,11 +98,11 @@ public class AbstractKnowledgeTest {
         assertTrue( list.contains( jarName + ".test2:rule2" ) );
     }    
 
-    public KieProjectModel createKieModule(String namespace,
+    public KieModuleModel createKieModule(String namespace,
                                 boolean createJar) throws IOException,
             ClassNotFoundException,
             InterruptedException {
-        KieProjectModel kproj = new KieProjectModelImpl();
+        KieModuleModel kproj = new KieModuleModelImpl();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
@@ -133,7 +137,7 @@ public class AbstractKnowledgeTest {
         
         KieFileSystemImpl kfs =  ( KieFileSystemImpl ) KieFactory.Factory.get().newKieFileSystem();
         kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
-        kfs.writeProjectXML( ((KieProjectModelImpl)kproj).toXML()  );
+        kfs.writeProjectXML( ((KieModuleModelImpl)kproj).toXML()  );
         
         GAV gav = KieFactory.Factory.get().newGav( namespace, "art1", "1.0-SNAPSHOT" );
         kfs.generateAndWritePomXML( gav );        
@@ -187,13 +191,13 @@ public class AbstractKnowledgeTest {
         return s;
     }
 
-    public String generateBeansXML(KieProjectModel kproject) {
+    public String generateBeansXML(KieModuleModel kproject) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n" +
                 "</beans>";
     }
 
-    public String generateKProjectTestClass(KieProjectModel kproject,
+    public String generateKProjectTestClass(KieModuleModel kproject,
                                             String namespace) {
 
         return "package org.drools.cdi.test;\n" +
@@ -245,7 +249,7 @@ public class AbstractKnowledgeTest {
                 "}\n";
     }
 
-    public List<String> compile(KieProjectModel kproj,
+    public List<String> compile(KieModuleModel kproj,
                                 MemoryFileSystem srcMfs,
                                 MemoryFileSystem trgMfs,
                                 List<String> classes) {
@@ -288,7 +292,7 @@ public class AbstractKnowledgeTest {
                            Folder srcFolder,
                            MemoryFileSystem trgMfs,
                            Folder trgFolder,
-                           KieProjectModel kproj) {
+                           KieModuleModel kproj) {
         if ( !trgFolder.exists() ) {
             trgMfs.getFolder( trgFolder.getPath() ).create();
         }

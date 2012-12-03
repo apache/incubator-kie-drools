@@ -1,6 +1,7 @@
-package org.drools.kproject;
+package org.drools.compiler.io;
 
 import java.util.Collection;
+
 
 public interface Folder extends Resource {
     String getName();

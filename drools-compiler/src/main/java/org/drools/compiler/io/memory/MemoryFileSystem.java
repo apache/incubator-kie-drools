@@ -1,13 +1,13 @@
-package org.drools.kproject.memory;
+package org.drools.compiler.io.memory;
 
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.commons.jci.stores.ResourceStore;
+import org.drools.compiler.io.File;
+import org.drools.compiler.io.FileSystem;
+import org.drools.compiler.io.Folder;
+import org.drools.compiler.io.Path;
+import org.drools.compiler.io.Resource;
 import org.drools.core.util.FileManager;
-import org.drools.kproject.File;
-import org.drools.kproject.FileSystem;
-import org.drools.kproject.Folder;
-import org.drools.kproject.Path;
-import org.drools.kproject.Resource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -207,7 +207,7 @@ public class MemoryFileSystem
                                         count,
                                         filters );
                 } else {
-                    MemoryFile trgFile = (MemoryFile) trgFolder.getFile( ((org.drools.kproject.File) rs).getName() );
+                    MemoryFile trgFile = (MemoryFile) trgFolder.getFile( ((org.drools.compiler.io.File) rs).getName() );
                     boolean accept = false;
 
                     if ( filters == null || filters.length == 0 ) {

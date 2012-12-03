@@ -20,7 +20,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.drools.kproject.KieSessionModelImpl;
+import org.drools.kproject.models.KieSessionModelImpl;
+import org.kie.KieBase;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieSessionModel;
@@ -29,7 +30,6 @@ import org.kie.builder.impl.InternalKieModule;
 import org.kie.builder.impl.KieContainerImpl;
 import org.kie.cdi.KBase;
 import org.kie.cdi.KSession;
-import org.kie.runtime.KieBase;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKieSession;

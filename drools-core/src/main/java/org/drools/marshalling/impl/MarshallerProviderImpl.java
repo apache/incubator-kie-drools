@@ -24,7 +24,6 @@ import org.kie.marshalling.KieMarshallers;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
 
-@Singleton
 public class MarshallerProviderImpl implements KieMarshallers {
 
     public ObjectMarshallingStrategyAcceptor newClassFilterAcceptor(String[] patterns) {

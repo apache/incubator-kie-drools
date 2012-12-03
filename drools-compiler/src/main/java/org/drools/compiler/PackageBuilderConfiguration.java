@@ -154,7 +154,7 @@ public class PackageBuilderConfiguration
      */
     public PackageBuilderConfiguration(Properties properties) {
         init( properties,
-              null );
+              ( ClassLoader[]) null );
     }
 
     /**
@@ -168,14 +168,31 @@ public class PackageBuilderConfiguration
               classLoaders );
     }
 
+    
+    public PackageBuilderConfiguration(Properties properties,
+                                       CompositeClassLoader classLoader) {
+        init( properties,
+              classLoader );
+    }
+    
+    
     public PackageBuilderConfiguration() {
         init( null,
-              null );
+              (ClassLoader[]) null );
     }
 
     private void init(Properties properties,
+                      CompositeClassLoader classLoader) {
+        this.classLoader =  classLoader;
+        init(properties);
+    }
+    private void init(Properties properties,
                       ClassLoader... classLoaders) {
         setClassLoader( classLoaders );
+        init(properties);
+    }
+    
+    private void init(Properties properties) {
 
         this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
                                                         this.classLoader,

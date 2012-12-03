@@ -2,6 +2,7 @@ package org.drools.kproject;
 
 import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.drools.core.util.FileManager;
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeContainer;
 import org.kie.builder.KnowledgeContainerFactory;
@@ -103,7 +104,7 @@ public class KJarTest {
         fileManager.write(fileManager.newFile("src/kbases/KBase1/org/test/decA.drl"), declarationA);
         fileManager.write(fileManager.newFile("src/kbases/KBase1/org/test/decB.drl"), declarationB);
 
-        KieProjectModel kproj = new KieProjectModelImpl();
+        KieModuleModel kproj = new KieModuleModelImpl();
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
@@ -112,7 +113,7 @@ public class KJarTest {
                 .setType( "stateful" )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        fileManager.write( fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KieProjectModelImpl)kproj).toXML() );
+        fileManager.write( fileManager.newFile(KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH), ((KieModuleModelImpl)kproj).toXML() );
 
         KnowledgeContainer kcontainer = KnowledgeContainerFactory.newKnowledgeContainer();
 
