@@ -5,7 +5,6 @@ import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieBaseModelImpl;
-import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,9 +32,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class KieBuilderTest {
@@ -100,14 +99,14 @@ public class KieBuilderTest {
             fail("Unable to build KieJar\n" + kb1.getResults( ).toString() );
         }
         KieRepository kr = ks.getKieRepository();
-        KieModule kModule1 = kr.getKieModule( gav1 );
+        KieModule kModule1 = kr.getKieModule(gav1);
         assertNotNull( kModule1 );
         
         
         String namespace2 = "org.kie.test2";
         GAV gav2 = KieFactory.Factory.get().newGav( namespace2, "memory", "1.0-SNAPSHOT" );        
         KieModuleModel kProj2 = createKieProject(namespace2);        
-        KieBaseModelImpl kieBase2 = ( KieBaseModelImpl ) ((KieModuleModelImpl)kProj2).getKieBaseModels().get( namespace2 );
+        KieBaseModelImpl kieBase2 = ( KieBaseModelImpl ) kProj2.getKieBaseModels().get( namespace2 );
         kieBase2.addInclude( namespace1 );
         
         KieFileSystem kfs2 = KieFactory.Factory.get().newKieFileSystem();
@@ -120,7 +119,7 @@ public class KieBuilderTest {
         if ( kb2.hasResults( Level.ERROR  ) ) {
             fail("Unable to build KieJar\n" + kb2.getResults( ).toString() );
         }
-        KieModule kModule2= kr.getKieModule( gav2 );
+        KieModule kModule2= kr.getKieModule(gav2);
         assertNotNull( kModule2);
         
         KieContainer kContainer = ks.getKieContainer( gav2 );
@@ -132,8 +131,13 @@ public class KieBuilderTest {
         kSession.fireAllRules();
 
         assertEquals( 2, list.size() );
-        assertEquals( "org.kie.test.Message", list.get(0).getClass().getName() );        
-    }    
+        if ("org.kie.test1.Message".equals(list.get(0).getClass().getName())) {
+            assertEquals( "org.kie.test2.Message", list.get(1).getClass().getName() );
+        } else {
+            assertEquals( "org.kie.test2.Message", list.get(0).getClass().getName() );
+            assertEquals( "org.kie.test1.Message", list.get(1).getClass().getName() );
+        }
+    }
     
     @Test
     public void testNoPomXml() throws ClassNotFoundException, InterruptedException, IOException {

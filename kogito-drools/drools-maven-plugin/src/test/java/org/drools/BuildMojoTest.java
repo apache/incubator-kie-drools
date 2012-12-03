@@ -1,13 +1,14 @@
 package org.drools;
 
-import java.io.File;
-
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
+
+@Ignore
 public class BuildMojoTest extends AbstractMojoTestCase {
     
         @Before
@@ -20,7 +21,7 @@ public class BuildMojoTest extends AbstractMojoTestCase {
             super.tearDown();
         }
 
-        @Test @Ignore
+        @Test
         public void testSomething()
             throws Exception
         {

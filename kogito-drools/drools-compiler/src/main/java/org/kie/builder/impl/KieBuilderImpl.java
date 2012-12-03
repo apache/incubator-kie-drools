@@ -7,7 +7,6 @@ import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.DiskResourceReader;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieBaseModelImpl;
@@ -27,8 +26,6 @@ import org.kie.builder.KieServices;
 import org.kie.builder.Message.Level;
 import org.kie.builder.ResourceType;
 import org.kie.builder.Results;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -45,6 +42,8 @@ import java.util.zip.ZipFile;
 public class KieBuilderImpl
     implements
     KieBuilder {
+
+    private static final String RESOURCES_ROOT = "src/main/resources/";
 
     private Messages             messages;
     private final ResourceReader srcMfs;
@@ -106,7 +105,7 @@ public class KieBuilderImpl
             trgMfs = new MemoryFileSystem();
             writePomAndKProject();
 
-            ClassLoader classLoader = compileJavaClasses();
+            compileJavaClasses();
             addKBasesFilesToTrg();
 
             kieModule = new MemoryKieModules( gav,
@@ -149,12 +148,11 @@ public class KieBuilderImpl
     }
 
     private void addKBaseFilesToTrg(KieBaseModel kieBase) {
-        String resourcesRoot = "src/main/resources/";
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( filterFileInKBase( kieBase,
                                     fileName ) ) {
                 byte[] bytes = srcMfs.getBytes( fileName );
-                trgMfs.write( fileName.substring( resourcesRoot.length() - 1 ),
+                trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ),
                               bytes,
                               true );
             }
@@ -162,11 +160,10 @@ public class KieBuilderImpl
     }
 
     private void addMetaInfBuilder() {
-        String resourcesRoot = "src/main/resources/";
         for ( String fileName : srcMfs.getFileNames() ) {
-            if ( fileName.startsWith( resourcesRoot ) ) {
+            if ( fileName.startsWith( RESOURCES_ROOT ) && !isKieExtension(fileName) ) {
                 byte[] bytes = srcMfs.getBytes( fileName );
-                trgMfs.write( fileName.substring( resourcesRoot.length() - 1 ),
+                trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ),
                               bytes,
                               true );
             }
@@ -198,10 +195,10 @@ public class KieBuilderImpl
                                        String pkgName) {
         String pathName = pkgName.replace( '.',
                                            '/' );
-        return (fileName.startsWith( "src/main/resources/" + pathName + "/" ) || fileName.contains( "/" + pathName + "/" ));
+        return (fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.contains( "/" + pathName + "/" ));
     }
 
-    private boolean isKieExtension(String fileName) {
+    static boolean isKieExtension(String fileName) {
         return fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) ||
                fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() );
     }
@@ -362,7 +359,7 @@ public class KieBuilderImpl
         return sBuilder.toString();
     }
 
-    private ClassLoader compileJavaClasses() {
+    private void compileJavaClasses() {
         List<String> classFiles = new ArrayList<String>();
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".class" ) ) {
@@ -382,7 +379,7 @@ public class KieBuilderImpl
             }
         }
         if ( javaFiles.isEmpty() ) {
-            return getCompositeClassLoader();
+            return;
         }
 
         String[] sourceFiles = javaFiles.toArray( new String[javaFiles.size()] );
@@ -398,8 +395,6 @@ public class KieBuilderImpl
         for ( CompilationProblem problem : res.getWarnings() ) {
             messages.addMessage( problem );
         }
-
-        return res.getErrors().length == 0 ? getCompositeClassLoader() : getClass().getClassLoader();
     }
 
     public static String findPomProperties(ZipFile zipFile) {
@@ -434,15 +429,6 @@ public class KieBuilderImpl
         return null;
     }
 
-    private CompositeClassLoader getCompositeClassLoader() {
-        CompositeClassLoader ccl = ClassLoaderUtil.getClassLoader( null,
-                                                                   getClass(),
-                                                                   true );
-        ccl.addClassLoader( new ClassUtils.MapClassLoader( trgMfs.getMap(),
-                                                           ccl ) );
-        return ccl;
-    }
-
     private EclipseJavaCompiler createCompiler(String prefix) {
         EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
         settings.setSourceVersion( "1.5" );
@@ -450,5 +436,4 @@ public class KieBuilderImpl
         return new EclipseJavaCompiler( settings,
                                         prefix );
     }
-
 }

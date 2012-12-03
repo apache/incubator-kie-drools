@@ -32,7 +32,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
         
-        KieFileSystem kfs = kf.newKieFileSystem().write( "r1.drl", drl );
+        KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
         ks.newKieBuilder( kfs ).build();
 
         KieSession ksession = ks.getKieContainer().getKieSession();
@@ -54,7 +54,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
 
-        KieFileSystem kfs = kf.newKieFileSystem().write( "r1.drl", drl );
+        KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
         Results results = ks.newKieBuilder( kfs ).build();
 
         assertEquals( 1, results.getInsertedMessages().size() );
@@ -81,8 +81,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = kf.newKieFileSystem()
                 .generateAndWritePomXML( gav )
-                .write("src/main/resoureces/org/pkg1/r1.drl", drl1)
-                .write("src/main/resoureces/org/pkg2/r2.drl", drl2)
+                .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
+                .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
                 .writeProjectXML( createKieProjectWithPackages(kf).toXML());
         ks.newKieBuilder( kfs ).build();
 
