@@ -5,6 +5,7 @@ import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieBaseModelImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import org.kie.runtime.KieSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -82,6 +84,57 @@ public class KieBuilderTest {
         
         createAndTestKieContainer(gav, createKieBuilder(kfs), namespace);
     }
+    
+    @Test
+    public void testKieModuleDepednencies() throws ClassNotFoundException, InterruptedException, IOException {
+        KieServices ks = KieServices.Factory.get();
+        
+        String namespace1 = "org.kie.test1";
+        GAV gav1 = KieFactory.Factory.get().newGav( namespace1, "memory", "1.0-SNAPSHOT" );        
+        KieModuleModel kProj1 = createKieProject(namespace1);        
+        KieFileSystem kfs1 = KieFactory.Factory.get().newKieFileSystem();
+        generateAll(kfs1, namespace1, gav1, kProj1);
+
+        KieBuilder kb1 = createKieBuilder(kfs1);
+        kb1.build();        
+        if ( kb1.hasResults( Level.ERROR  ) ) {
+            fail("Unable to build KieJar\n" + kb1.getResults( ).toString() );
+        }
+        KieRepository kr = ks.getKieRepository();
+        KieModule kModule1 = kr.getKieJar( gav1 );
+        assertNotNull( kModule1 );
+        
+        
+        String namespace2 = "org.kie.test2";
+        GAV gav2 = KieFactory.Factory.get().newGav( namespace2, "memory", "1.0-SNAPSHOT" );        
+        KieModuleModel kProj2 = createKieProject(namespace2);        
+        KieBaseModelImpl kieBase2 = ( KieBaseModelImpl ) ((KieModuleModelImpl)kProj2).getKieBaseModels().get( namespace2 );
+        kieBase2.addInclude( namespace1 );
+        
+        KieFileSystem kfs2 = KieFactory.Factory.get().newKieFileSystem();
+        generateAll(kfs2, namespace2, gav2, kProj2);
+        
+
+        KieBuilder kb2 = createKieBuilder(kfs2);
+        kb2.setDependencies( Arrays.asList( new KieModule[] { kModule1 } ) );
+        kb2.build();        
+        if ( kb2.hasResults( Level.ERROR  ) ) {
+            fail("Unable to build KieJar\n" + kb2.getResults( ).toString() );
+        }
+        KieModule kModule2= kr.getKieJar( gav2 );        
+        assertNotNull( kModule2);
+        
+        KieContainer kContainer = ks.getKieContainer( gav2 );
+        KieBase kBase = kContainer.getKieBase( namespace2 );
+        
+        KieSession kSession = kBase.newKieSession();
+        List list = new ArrayList();
+        kSession.setGlobal( "list", list );
+        kSession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( "org.kie.test.Message", list.get(0).getClass().getName() );        
+    }    
     
     @Test
     public void testNoPomXml() throws ClassNotFoundException, InterruptedException, IOException {
@@ -257,9 +310,9 @@ public class KieBuilderTest {
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
-        
-        assertEquals( "org.kie.test.Message", list.get(0).getClass().getName() );
-       
+
+        assertEquals( 1, list.size() );
+        assertEquals( "org.kie.test.Message", list.get(0).getClass().getName() );       
     }
     
     public String getRule(String namespace,

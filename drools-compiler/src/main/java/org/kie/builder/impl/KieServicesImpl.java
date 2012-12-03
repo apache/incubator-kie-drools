@@ -41,9 +41,11 @@ public class KieServicesImpl implements KieServices {
         return KieRepositoryImpl.INSTANCE;
     }
 
+    /**
+     * Returns KieContainer for the classpath
+     */
     public KieContainer getKieContainer() {
-        //return new KieContainerImpl(getKieRepository().getDefaultGAV(), getKieRepository());
-        return null;
+        return new KieContainerImpl( new ClasspathKieProject( getKieRepository() ), getKieRepository() ); 
     }
     
     public KieContainer getKieContainer(GAV gav) {
