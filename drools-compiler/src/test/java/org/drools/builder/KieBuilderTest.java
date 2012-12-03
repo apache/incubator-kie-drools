@@ -21,7 +21,6 @@ import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
 import org.kie.builder.Message.Level;
-import org.kie.builder.Results;
 import org.kie.builder.impl.KieBuilderImpl;
 import org.kie.builder.impl.KieFileSystemImpl;
 import org.kie.conf.AssertBehaviorOption;
@@ -101,7 +100,7 @@ public class KieBuilderTest {
             fail("Unable to build KieJar\n" + kb1.getResults( ).toString() );
         }
         KieRepository kr = ks.getKieRepository();
-        KieModule kModule1 = kr.getKieJar( gav1 );
+        KieModule kModule1 = kr.getKieModule( gav1 );
         assertNotNull( kModule1 );
         
         
@@ -121,7 +120,7 @@ public class KieBuilderTest {
         if ( kb2.hasResults( Level.ERROR  ) ) {
             fail("Unable to build KieJar\n" + kb2.getResults( ).toString() );
         }
-        KieModule kModule2= kr.getKieJar( gav2 );        
+        KieModule kModule2= kr.getKieModule( gav2 );
         assertNotNull( kModule2);
         
         KieContainer kContainer = ks.getKieContainer( gav2 );
@@ -247,7 +246,7 @@ public class KieBuilderTest {
     public KieModuleModel createKieProject(String namespace) {        
         KieFactory kf = KieFactory.Factory.get();
         
-        KieModuleModel kProj = kf.newKieProject();
+        KieModuleModel kProj = kf.newKieModuleModel();
         KieBaseModel kBase1 = kProj.newKieBaseModel(namespace)
                                    .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                                    .setEventProcessingMode( EventProcessingOption.STREAM );        
@@ -297,10 +296,10 @@ public class KieBuilderTest {
         kb.build();
         
         if ( kb.hasResults( Level.ERROR  ) ) {
-            fail("Unable to build KieJar\n" + kb.getResults( ).toString() );
+            fail("Unable to build KieModule\n" + kb.getResults( ).toString() );
         }
         KieRepository kr = ks.getKieRepository();
-        KieModule kJar = kr.getKieJar( gav );
+        KieModule kJar = kr.getKieModule(gav);
         assertNotNull( kJar );
         
         KieContainer kContainer = ks.getKieContainer( gav );

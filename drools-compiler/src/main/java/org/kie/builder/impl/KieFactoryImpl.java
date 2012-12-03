@@ -17,7 +17,7 @@ public class KieFactoryImpl implements KieFactory {
         return new GAVImpl(groupId, artifactId, version);
     }
 
-    public KieModuleModel newKieProject() {
+    public KieModuleModel newKieModuleModel() {
         return new KieModuleModelImpl();
     }
 

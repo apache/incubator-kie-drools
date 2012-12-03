@@ -17,17 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModuleModel;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
 public class KieModuleModelImpl implements KieModuleModel {
 
     public static String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
@@ -139,13 +128,13 @@ public class KieModuleModelImpl implements KieModuleModel {
             xStream.registerConverter(new KieSessionModelImpl.KSessionConverter());
             xStream.registerConverter(new ListenerModelImpl.ListenerConverter());
             xStream.registerConverter(new QualifierModelImpl.QualifierConverter());
-            xStream.registerConverter(new WorkItemHandelerModelImpl.WorkItemHandelerConverter());
+            xStream.registerConverter(new WorkItemHandlerModelImpl.WorkItemHandelerConverter());
             xStream.alias("kmodule", KieModuleModelImpl.class);
             xStream.alias("kbase", KieBaseModelImpl.class);
             xStream.alias("ksession", KieSessionModelImpl.class);
             xStream.alias("listener", ListenerModelImpl.class);
             xStream.alias("qualifier", QualifierModelImpl.class);
-            xStream.alias("workItemHandeler", WorkItemHandelerModelImpl.class);
+            xStream.alias("workItemHandler", WorkItemHandlerModelImpl.class);
         }
 
         public String toXML(KieModuleModel kieProject) {

@@ -4,11 +4,10 @@ import org.junit.Test;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.ListenerModel;
 import org.kie.builder.QualifierModel;
-import org.kie.builder.WorkItemHandelerModel;
+import org.kie.builder.WorkItemHandlerModel;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;
@@ -19,13 +18,13 @@ import static junit.framework.Assert.assertEquals;
 import static org.drools.kproject.models.KieModuleModelImpl.fromXML;
 import static org.junit.Assert.assertNull;
 
-public class KieProjectTest {
+public class KieModuleModelTest {
 
     @Test
     public void testMarshallingUnmarshalling() {
         KieFactory kf = KieFactory.Factory.get();
 
-        KieModuleModel kproj = kf.newKieProject();
+        KieModuleModel kproj = kf.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
@@ -57,6 +56,8 @@ public class KieProjectTest {
         String xml = kproj.toXML();
 
         KieModuleModel kprojXml = fromXML(xml);
+
+        System.out.println(xml);
 
         KieBaseModel kieBaseModelXML = kprojXml.getKieBaseModels().get("KBase1");
         assertEquals(AssertBehaviorOption.EQUALITY, kieBaseModelXML.getEqualsBehavior());
@@ -90,7 +91,7 @@ public class KieProjectTest {
         assertEquals("xxxx", qualifier4.getArguments().get("name1"));
         assertEquals("yyyy", qualifier4.getArguments().get("name2"));
 
-        WorkItemHandelerModel wihm = kieSessionModelXML.getWorkItemHandelerModels().get(0);
+        WorkItemHandlerModel wihm = kieSessionModelXML.getWorkItemHandelerModels().get(0);
         assertEquals("org.domain.FifthInterface", wihm.getType());
         QualifierModel qualifier5 = wihm.getQualifierModel();
         assertEquals("MyQualfier5", qualifier5.getType());

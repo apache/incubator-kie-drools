@@ -8,7 +8,7 @@ import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.ListenerModel;
-import org.kie.builder.WorkItemHandelerModel;
+import org.kie.builder.WorkItemHandlerModel;
 import org.kie.runtime.conf.ClockTypeOption;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class KieSessionModelImpl
     private KieBaseModelImpl kBase;
 
     private final List<ListenerModel> listeners = new ArrayList<ListenerModel>();
-    private final List<WorkItemHandelerModel> wihs = new ArrayList<WorkItemHandelerModel>();
+    private final List<WorkItemHandlerModel> wihs = new ArrayList<WorkItemHandlerModel>();
 
     private KieSessionModelImpl() { }
 
@@ -101,17 +101,17 @@ public class KieSessionModelImpl
         listeners.add(listener);
     }
 
-    public WorkItemHandelerModel newWorkItemHandelerModel(String type) {
-        WorkItemHandelerModelImpl wihModel = new WorkItemHandelerModelImpl(this, type);
+    public WorkItemHandlerModel newWorkItemHandelerModel(String type) {
+        WorkItemHandlerModelImpl wihModel = new WorkItemHandlerModelImpl(this, type);
         wihs.add(wihModel);
         return wihModel;
     }
 
-    public List<WorkItemHandelerModel> getWorkItemHandelerModels() {
+    public List<WorkItemHandlerModel> getWorkItemHandelerModels() {
         return wihs;
     }
 
-    private void addWorkItemHandelerModel(WorkItemHandelerModel wih) {
+    private void addWorkItemHandelerModel(WorkItemHandlerModel wih) {
         wihs.add(wih);
     }
 
@@ -136,8 +136,8 @@ public class KieSessionModelImpl
             for (ListenerModel listener : kSession.getListenerModels()) {
                 writeObject(writer, context, "listener", listener);
             }
-            for (WorkItemHandelerModel wih : kSession.getWorkItemHandelerModels()) {
-                writeObject(writer, context, "workItemHandeler", wih);
+            for (WorkItemHandlerModel wih : kSession.getWorkItemHandelerModels()) {
+                writeObject(writer, context, "workItemHandler", wih);
             }
         }
 
@@ -159,8 +159,8 @@ public class KieSessionModelImpl
                         ListenerModelImpl listener = readObject(reader, context, ListenerModelImpl.class);
                         listener.setKSession( kSession );
                         kSession.addListenerModel(listener);
-                    } else if ( "workItemHandeler".equals( name ) ) {
-                        WorkItemHandelerModelImpl wih = readObject(reader, context, WorkItemHandelerModelImpl.class);
+                    } else if ( "workItemHandler".equals( name ) ) {
+                        WorkItemHandlerModelImpl wih = readObject(reader, context, WorkItemHandlerModelImpl.class);
                         wih.setKSession( kSession );
                         kSession.addWorkItemHandelerModel(wih);
                     }

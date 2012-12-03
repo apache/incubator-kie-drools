@@ -241,7 +241,7 @@ public class KieBaseModelImpl
                 writer.addAttribute( "eventProcessingMode", kBase.getEventProcessingMode().getMode() );
             }
             if ( kBase.getEqualsBehavior() != null ) {
-                writer.addAttribute( "equalsBehavior", kBase.getEqualsBehavior().toString() );
+                writer.addAttribute( "equalsBehavior", kBase.getEqualsBehavior().toString().toLowerCase() );
             }
             if ( ! kBase.getPackages().isEmpty() ) {
                 StringBuilder buf = new StringBuilder();
@@ -275,7 +275,7 @@ public class KieBaseModelImpl
             }
             String equalsBehavior = reader.getAttribute( "equalsBehavior" );
             if ( equalsBehavior != null ) {
-                kBase.setEqualsBehavior( AssertBehaviorOption.valueOf( equalsBehavior ) );
+                kBase.setEqualsBehavior( AssertBehaviorOption.valueOf( equalsBehavior.toUpperCase() ) );
             }
             String pkgs = reader.getAttribute( "packages" );
             if( pkgs != null ) {

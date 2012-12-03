@@ -1,5 +1,20 @@
 package org.kie.builder.impl;
 
+import org.drools.cdi.KProjectExtension;
+import org.drools.core.util.StringUtils;
+import org.drools.kproject.GAVImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
+import org.kie.builder.GAV;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieModuleModel;
+import org.kie.builder.KieRepository;
+import org.kie.builder.KieServices;
+import org.kie.builder.KieSessionModel;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,42 +28,13 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.drools.cdi.KProjectExtension;
-import org.drools.core.util.StringUtils;
-import org.drools.impl.InternalKnowledgeBase;
-import org.drools.kproject.GAVImpl;
-import org.drools.kproject.models.KieBaseModelImpl;
-import org.drools.kproject.models.KieModuleModelImpl;
-import org.drools.kproject.models.KieSessionModelImpl;
-import org.kie.KieBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.CompositeKnowledgeBuilder;
-import org.kie.builder.GAV;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModule;
-import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieRepository;
-import org.kie.builder.KieServices;
-import org.kie.builder.KieSessionModel;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.io.ResourceFactory;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.StatelessKieSession;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * Discovers all KieJars on the classpath, via the kproject.xml file. 
+ * Discovers all KieModules on the classpath, via the kproject.xml file.
  * KieBaseModels and KieSessionModels are then indexed, with helper lookups
- * Each resulting KieJar is added to the KieRepository
+ * Each resulting KieModule is added to the KieRepository
  *
  */
 public class ClasspathKieProject
@@ -75,7 +61,7 @@ public class ClasspathKieProject
     }
     
     public void verify() {
-        discoverKieJars();
+        discoverKieModules();
         AbstractKieModules.indexParts( kJars, kBaseModels, kSessionModels, kJarFromKBaseName );
     }
 
@@ -83,7 +69,7 @@ public class ClasspathKieProject
         return null;
     }
 
-    public void discoverKieJars() {
+    public void discoverKieModules() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         final Enumeration<URL> e;
@@ -134,7 +120,7 @@ public class ClasspathKieProject
                 kJars.put( gav,
                            kJar );
 
-                kr.addKieJar( kJar );
+                kr.addKieModule(kJar);
 
             } catch ( Exception exc ) {
                 log.error( "Unable to build index of kproject.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );

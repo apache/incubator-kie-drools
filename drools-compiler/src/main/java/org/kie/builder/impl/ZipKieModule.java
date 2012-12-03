@@ -1,16 +1,15 @@
 package org.kie.builder.impl;
 
+import org.drools.core.util.IoUtils;
+import org.kie.builder.GAV;
+import org.kie.builder.KieModuleModel;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.drools.core.util.IoUtils;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
-import org.kie.builder.GAV;
-import org.kie.builder.KieModuleModel;
 
 public class ZipKieModule extends AbstractKieModules implements InternalKieModule {
     private final File             file;

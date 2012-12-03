@@ -6,17 +6,17 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.QualifierModel;
-import org.kie.builder.WorkItemHandelerModel;
+import org.kie.builder.WorkItemHandlerModel;
 
-public class WorkItemHandelerModelImpl implements WorkItemHandelerModel {
+public class WorkItemHandlerModelImpl implements WorkItemHandlerModel {
 
     private KieSessionModelImpl kSession;
     private String type;
     private QualifierModel qualifier;
 
-    public WorkItemHandelerModelImpl() { }
+    public WorkItemHandlerModelImpl() { }
 
-    public WorkItemHandelerModelImpl(KieSessionModelImpl kSession, String type) {
+    public WorkItemHandlerModelImpl(KieSessionModelImpl kSession, String type) {
         this.kSession = kSession;
         this.type = type;
     }
@@ -54,11 +54,11 @@ public class WorkItemHandelerModelImpl implements WorkItemHandelerModel {
     public static class WorkItemHandelerConverter extends AbstractXStreamConverter {
 
         public WorkItemHandelerConverter() {
-            super(WorkItemHandelerModelImpl.class);
+            super(WorkItemHandlerModelImpl.class);
         }
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-            WorkItemHandelerModelImpl wih = (WorkItemHandelerModelImpl) value;
+            WorkItemHandlerModelImpl wih = (WorkItemHandlerModelImpl) value;
             writer.addAttribute("type", wih.getType());
             QualifierModelImpl qualifier = (QualifierModelImpl)wih.getQualifierModel();
             if (qualifier != null) {
@@ -71,7 +71,7 @@ public class WorkItemHandelerModelImpl implements WorkItemHandelerModel {
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
-            final WorkItemHandelerModelImpl wih = new WorkItemHandelerModelImpl();
+            final WorkItemHandlerModelImpl wih = new WorkItemHandlerModelImpl();
             wih.setType(reader.getAttribute("type"));
             String qualifierType = reader.getAttribute("qualifier");
             if (qualifierType != null) {

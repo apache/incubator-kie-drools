@@ -16,8 +16,6 @@ import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
-import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
@@ -25,22 +23,17 @@ import org.kie.builder.Message.Level;
 import org.kie.builder.impl.KieFileSystemImpl;
 import org.kie.builder.impl.MemoryKieModules;
 import org.kie.KieBase;
-import org.kie.KnowledgeBase;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKieSession;
-import org.kie.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -166,8 +159,8 @@ public class AbstractKnowledgeTest {
         if ( kBuilder.hasResults( Level.ERROR  ) ) {
             fail( "should not have errors" + kBuilder.getResults() );
         }
-        MemoryKieModules kieJar = ( MemoryKieModules ) kBuilder.getKieJar();
-        MemoryFileSystem trgMfs = kieJar.getMemoryFileSystem();
+        MemoryKieModules kieModule = ( MemoryKieModules ) kBuilder.getKieModule();
+        MemoryFileSystem trgMfs = kieModule.getMemoryFileSystem();
         
         if ( createJar ) {            
             trgMfs.writeAsJar(fileManager.getRootDirectory(), namespace);

@@ -10,7 +10,6 @@ import org.kie.builder.KieModule;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.builder.Results;
-import org.kie.builder.impl.CompositeKieJar;
 import org.kie.builder.impl.InternalKieContainer;
 import org.kie.builder.impl.InternalKieScanner;
 import org.slf4j.Logger;
@@ -92,7 +91,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 //        for (DependencyDescriptor dep : pomParser.getPomDirectDependencies()) {
 //            Artifact depArtifact = mavenRepository.resolveArtifact(dep.toString());
 //            if (isKJar(depArtifact.getFile())) {
-//                compositeKieJar.addKieJar(buildArtifact(depArtifact));
+//                compositeKieJar.addKieModule(buildArtifact(depArtifact));
 //            }
 //        }
 //        return compositeKieJar;
@@ -109,7 +108,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private KieModule buildArtifact(Artifact artifact) {
         KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(artifact.getFile());
         Results results = kieBuilder.build();
-        return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieJar() : null;
+        return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieModule() : null;
     }
 
     public void start(long pollingInterval) {
@@ -152,16 +151,16 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             DependencyDescriptor depDescr = new DependencyDescriptor(artifact);
             usedDependencies.remove(depDescr);
             usedDependencies.add(depDescr);
-            updateKieJar(artifact.getFile());
+            updateKieModule(artifact.getFile());
         }
         log.info("The following artifacts have been updated: " + updatedArtifacts);
     }
 
-    private void updateKieJar(File kJar) {
+    private void updateKieModule(File kJar) {
         KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(kJar);
         Results results = kieBuilder.build();
         if (results.getInsertedMessages().isEmpty()) {
-            ((InternalKieContainer)kieContainer).updateKieJar(kieBuilder.getKieJar());
+            ((InternalKieContainer)kieContainer).updateKieModule(kieBuilder.getKieModule());
         }
     }
 

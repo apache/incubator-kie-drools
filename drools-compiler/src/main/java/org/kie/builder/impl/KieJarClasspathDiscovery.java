@@ -1,5 +1,17 @@
 package org.kie.builder.impl;
 
+import org.drools.core.util.StringUtils;
+import org.drools.kproject.GAVImpl;
+import org.drools.kproject.models.KieBaseModelImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.kproject.models.KieSessionModelImpl;
+import org.kie.builder.GAV;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieModuleModel;
+import org.kie.builder.KieSessionModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,18 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.drools.core.util.StringUtils;
-import org.drools.kproject.GAVImpl;
-import org.drools.kproject.models.KieBaseModelImpl;
-import org.drools.kproject.models.KieModuleModelImpl;
-import org.drools.kproject.models.KieSessionModelImpl;
-import org.kie.builder.GAV;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieSessionModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class KieJarClasspathDiscovery {
     private static final Logger        log              = LoggerFactory.getLogger( KieRepositoryImpl.class );    
@@ -92,7 +92,7 @@ public class KieJarClasspathDiscovery {
                 rootPath = url.substring( rootPath.lastIndexOf( ':' ) + 1 );
             }
             File file = new File( rootPath );            
-            FileKieModule kieJar = new FileKieModule( gav, kieProject, file );
+            FileKieModule kieModule = new FileKieModule( gav, kieProject, file );
             
             for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
                 kBases.put( kieBaseModel.getName(),
