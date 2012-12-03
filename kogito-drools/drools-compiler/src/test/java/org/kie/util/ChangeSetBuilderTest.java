@@ -88,8 +88,8 @@ public class ChangeSetBuilderTest {
         assertThat( cs, not( nullValue() ) );
         assertThat( cs.getChangeType(), is( ChangeType.UPDATED ) );
         assertThat( cs.getChanges().size(), is(2) );
-        assertThat( cs.getChanges().get( 0 ), is( new ResourceChange(ChangeType.ADDED, Type.RULE, "R3") ) );
-        assertThat( cs.getChanges().get( 1 ), is( new ResourceChange(ChangeType.REMOVED, Type.RULE, "R2") ) );
+        assertThat( cs.getChanges().get( 1 ), is( new ResourceChange(ChangeType.ADDED, Type.RULE, "R3") ) );
+        assertThat( cs.getChanges().get( 0 ), is( new ResourceChange(ChangeType.REMOVED, Type.RULE, "R2") ) );
         
         ChangeSetBuilder builder = new ChangeSetBuilder();
         System.out.println( builder.toProperties( changes ) );

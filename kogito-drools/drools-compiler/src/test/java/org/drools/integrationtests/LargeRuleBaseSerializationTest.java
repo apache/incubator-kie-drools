@@ -24,6 +24,7 @@ import org.drools.rule.Package;
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 18, 2008 Time: 1:22:50 PM To change this template use File |
  * Settings | File Templates.
  */
+@Ignore
 public class LargeRuleBaseSerializationTest {
     private static final int    RULE_COUNT = Integer.parseInt(System.getProperty("test.count", "525"));
     private static final int    ITERATIONS = Integer.parseInt(System.getProperty("test.iterations", "5"));

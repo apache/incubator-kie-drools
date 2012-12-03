@@ -5,6 +5,7 @@ import org.drools.core.util.FileManager;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
@@ -28,6 +29,7 @@ import java.net.URLClassLoader;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+@Ignore
 public class KJarTest {
 
     private FileManager fileManager;

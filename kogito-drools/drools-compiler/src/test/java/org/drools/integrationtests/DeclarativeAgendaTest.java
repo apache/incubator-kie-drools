@@ -40,8 +40,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule rule2 salience 200\n";
         str += "when \n";        
         str += "     $s : String( this == 'go1' ) \n";
-        str += "     exists  Activation( department == 'sales' ) \n";  
-        str += "     forall ( $a : Activation( department == 'sales' ) Activation( this == $a, active == false ) ) \n";
+        str += "     exists  Match( department == 'sales' ) \n";  
+        str += "     forall ( $a : Match( department == 'sales' ) Match( this == $a, active == false ) ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $s ); \n";
         str += "end \n";
@@ -92,10 +92,10 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -298,10 +298,10 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -330,28 +330,28 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules1 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go1' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule blockerAllSalesRules2 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule blockerAllSalesRules3 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go3' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -413,37 +413,37 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules1 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go1' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule blockerAllSalesRules2 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule blockerAllSalesRules3 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go3' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule unblockAll @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go4' ) \n";
-        str += "     $i : Activation( department == 'sales', active == true ) \n";
+        str += "     $i : Match( department == 'sales', active == true ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.unblockAllActivations( $i ); \n";
+        str += "    kcontext.unblockAllMatches( $i ); \n";
         str += "end \n";
 
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -512,11 +512,11 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules1 @activationListener('direct') \n";
         str += "when \n";
         str += "     $l : List( ) \n";
-        str += "     $i : Activation( rule.name == $l[0] ) \n";
+        str += "     $i : Match( rule.name == $l[0] ) \n";
         str += "then \n";
         //str += "   System.out.println( kcontext.rule.name  + ':' + $i ); \n";
         str += "    list.add( 'block:' + $i.rule.name  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -628,9 +628,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
-        str += "    kcontext.cancelActivation( $i ); \n";
+        str += "    kcontext.cancelMatch( $i ); \n";
         str += "end \n";
 
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -718,8 +718,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule countActivateInActive @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $active : Number( this == 1 ) from accumulate( $a : Activation( department == 'sales', active == true ), count( $a ) )\n";
-        str += "     $inActive : Number( this == 2 ) from  accumulate( $a : Activation( department == 'sales', active == false ), count( $a ) )\n";
+        str += "     $active : Number( this == 1 ) from accumulate( $a : Match( department == 'sales', active == true ), count( $a ) )\n";
+        str += "     $inActive : Number( this == 2 ) from  accumulate( $a : Match( department == 'sales', active == false ), count( $a ) )\n";
         str += "then \n";
         str += "    list.add( $active + ':' + $inActive  ); \n";
         str += "    kcontext.halt( ); \n";
@@ -767,9 +767,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                 "\n" +
                 "rule salesCancel @activationListener('direct')\n" +
                 "when\n" +
-                "    $i : Activation( department == 'sales' )\n" +
+                "    $i : Match( department == 'sales' )\n" +
                 "then\n" +
-                "    kcontext.cancelActivation($i);\n" +
+                "    kcontext.cancelMatch($i);\n" +
                 "end";
 
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -811,9 +811,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                 "rule salesCancel @activationListener('direct')\n" +
                 "when\n" +
                 "    String(this == 'fireCancelRule')\n" +
-                "    $i : Activation( department == 'sales', category == 'special' )\n" +
+                "    $i : Match( department == 'sales', category == 'special' )\n" +
                 "then\n" +
-                "    kcontext.cancelActivation($i);\n" +
+                "    kcontext.cancelMatch($i);\n" +
                 "end";
 
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();

@@ -277,15 +277,15 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
-    public void blockActivation(Match match) {
+    public void blockMatch(Match match) {
         // TODO Auto-generated method stub
     }
 
-    public void unblockAllActivations(Match match) {
+    public void unblockAllMatches(Match match) {
         // TODO Auto-generated method stub
     }
 
-    public void cancelActivation(Match match) {
+    public void cancelMatch(Match match) {
         // TODO Auto-generated method stub
     }
 }
