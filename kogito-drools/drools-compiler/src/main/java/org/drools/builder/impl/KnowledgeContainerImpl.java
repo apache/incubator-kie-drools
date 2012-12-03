@@ -1,6 +1,7 @@
 package org.drools.builder.impl;
 
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.kproject.models.KieBaseModelImpl;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
@@ -126,7 +127,7 @@ public class KnowledgeContainerImpl implements KnowledgeContainer {
     }
 
     public KBaseUnit getKBaseUnit(String kBaseName) {
-        KieBaseModel kieBaseModel = kBases.get(kBaseName);
+        KieBaseModelImpl kieBaseModel = ( KieBaseModelImpl ) kBases.get(kBaseName);
         if (kieBaseModel == null) {
             throw new RuntimeException("Unknown KnowledgeBase: " + kBaseName);
         }
