@@ -18,7 +18,7 @@ public interface KieSessionModel {
 
     KieSessionModel setClockType(ClockTypeOption clockType);
 
-    ListenerModel newListenerModel(String type);
+    ListenerModel newListenerModel(String type, ListenerModel.Kind kind);
 
     List<ListenerModel> getListenerModels();
 
