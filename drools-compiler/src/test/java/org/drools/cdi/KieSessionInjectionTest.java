@@ -5,12 +5,14 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.cdi.KSession;
 import org.kie.runtime.KieSession;
 
 @RunWith(CDITestRunner.class)
+@Ignore
 public class KieSessionInjectionTest {
 
 //    @Inject @KSession("ksession1")

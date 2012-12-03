@@ -34,7 +34,6 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.Message;
 import org.kie.builder.Message.Level;
 import org.kie.builder.Results;
 import org.kie.builder.ResourceType;
@@ -48,6 +47,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
@@ -57,13 +57,10 @@ public class KieBuilderImpl
     implements
     KieBuilder {
 
+    private Messages             messages;
     private final ResourceReader srcMfs;
 
     private MemoryFileSystem     trgMfs;
-
-    private List<Message>        messages;
-
-    private long                 idGenerator = 1L;
 
     private MemoryKieModules         kieJar;
 
@@ -89,7 +86,7 @@ public class KieBuilderImpl
     private void init() {
         KieFactory kf = KieFactory.Factory.get();
 
-        messages = new ArrayList<Message>();
+        messages = new Messages();
 
         // if pomXML is null it will generate a default, using default GAV
         // if pomXml is invalid, it assign pomModel to null
@@ -121,25 +118,20 @@ public class KieBuilderImpl
             ClassLoader classLoader = compileJavaClasses();
             addKBasesFilesToTrg( );
             
-            //validateKBases();
-            
-            //kieJar
+            kieJar = new MemoryKieModules(gav, kieProject, trgMfs);
+            kieJar.verify( messages );
+
             if ( !hasResults( Level.ERROR ) ) {
                 KieServices.Factory.get().getKieRepository().addKieJar( kieJar );
             }
         }
-        return new ResultsImpl( messages,
+        return new ResultsImpl( messages.getMessages(),
                                 null );
     }
 
     private void addKBasesFilesToTrg() {
         for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
             addKBaseFilesToTrg( kieBaseModel );            
-//            Collection<KnowledgePackage> pkgsCache = addKBaseFilesToTrg( kieBaseModel );
-//            if ( pkgsCache != null ) {
-//                kieJar.getKnowledgePackageCache().put( kieBaseModel.getName(),
-//                                                       pkgsCache );
-//            }
         }
     }
 
@@ -249,7 +241,7 @@ public class KieBuilderImpl
         if ( !isBuilt() ) {
             build();
         }
-        return !MessageImpl.filterMessages( messages,
+        return !MessageImpl.filterMessages( messages.getMessages(),
                                             levels ).isEmpty();
     }
 
@@ -257,7 +249,7 @@ public class KieBuilderImpl
         if ( !isBuilt() ) {
             build();
         }
-        return new ResultsImpl( MessageImpl.filterMessages( messages,
+        return new ResultsImpl( MessageImpl.filterMessages( messages.getMessages(),
                                                             levels ),
                                 null );
     }
@@ -266,7 +258,7 @@ public class KieBuilderImpl
         if ( !isBuilt() ) {
             build();
         }
-        return new ResultsImpl( messages,
+        return new ResultsImpl( messages.getMessages(),
                                 null );
     }
 
@@ -290,10 +282,9 @@ public class KieBuilderImpl
             try {
                 kieProject = KieModuleModelImpl.fromXML( new ByteArrayInputStream( kieProjectXml ) );
             } catch ( Exception e ) {
-                messages.add( new MessageImpl( idGenerator++,
-                                               Level.ERROR,
-                                               "kproject.xml",
-                                               "kproject.xml found, but unable to read\n" + e.getMessage() ) );
+                messages.addMessage(  Level.ERROR,
+                                      "kproject.xml",
+                                      "kproject.xml found, but unable to read\n" + e.getMessage() );
             }
         } else {
             KieFactory kf = KieFactory.Factory.get();
@@ -317,10 +308,9 @@ public class KieBuilderImpl
             validatePomModel( tempPomModel ); // throws an exception if invalid
             pomModel = tempPomModel;
         } catch ( Exception e ) {
-            messages.add( new MessageImpl( idGenerator++,
-                                           Level.ERROR,
-                                           "pom.xml",
-                                           "maven pom.xml found, but unable to read\n" + e.getMessage() ) );
+            messages.addMessage( Level.ERROR,
+                                 "pom.xml",
+                                 "maven pom.xml found, but unable to read\n" + e.getMessage() );
         }
     }
 
@@ -434,12 +424,10 @@ public class KieBuilderImpl
                                                   trgMfs );
 
         for ( CompilationProblem problem : res.getErrors() ) {
-            messages.add( new MessageImpl( idGenerator++,
-                                           problem ) );
+            messages.addMessage(  problem );
         }
         for ( CompilationProblem problem : res.getWarnings() ) {
-            messages.add( new MessageImpl( idGenerator++,
-                                           problem ) );
+            messages.addMessage( problem );
         }
 
         return res.getErrors().length == 0 ? getCompositeClassLoader() : getClass().getClassLoader();

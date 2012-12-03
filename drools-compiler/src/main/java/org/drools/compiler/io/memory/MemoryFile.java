@@ -63,10 +63,6 @@ public class MemoryFile implements File {
     }
 
     public void create(InputStream is) throws IOException {
-        if ( exists() ) {
-            throw new IOException( "File does already exists, cannot create contents" );
-        }
-
         mfs.setFileContents( this, readBytesFromInputStream(is) );
     }
 

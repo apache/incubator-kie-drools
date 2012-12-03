@@ -140,7 +140,7 @@ public class DefaultKnowledgeHelper
         return previousJustified;
     }
     
-    public void blockActivation(Match act) {
+    public void blockMatch(Match act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
@@ -173,7 +173,7 @@ public class DefaultKnowledgeHelper
         }
     }
     
-    public void unblockAllActivations(Match act) {
+    public void unblockAllMatches(Match act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
         
@@ -289,7 +289,7 @@ public class DefaultKnowledgeHelper
         }        
     }
     
-    public void cancelActivation(Match act) {
+    public void cancelMatch(Match act) {
         AgendaItem match = ( AgendaItem ) act;
         match.cancel();
         if ( match.isActive() ) {

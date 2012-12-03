@@ -47,8 +47,7 @@ public class KieServicesImpl implements KieServices {
     }
     
     public KieContainer getKieContainer(GAV gav) {
-        //return new KieContainerImpl(gav);
-        return null;
+        return new KieContainerImpl( (KieProject ) getKieRepository().getKieJar( gav ), getKieRepository() );
     }
     
 
