@@ -22,9 +22,9 @@ public interface KieSessionModel {
 
     List<ListenerModel> getListenerModels();
 
-    WorkItemHandelerModel newWorkItemHandelerModel(String type);
+    WorkItemHandlerModel newWorkItemHandelerModel(String type);
 
-    List<WorkItemHandelerModel> getWorkItemHandelerModels();
+    List<WorkItemHandlerModel> getWorkItemHandelerModels();
     
     public static enum KieSessionType {
         Stateful, Statless;

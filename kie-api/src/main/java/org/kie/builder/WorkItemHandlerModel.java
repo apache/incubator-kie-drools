@@ -1,6 +1,6 @@
 package org.kie.builder;
 
-public interface WorkItemHandelerModel {
+public interface WorkItemHandlerModel {
 
     String getType();
 
