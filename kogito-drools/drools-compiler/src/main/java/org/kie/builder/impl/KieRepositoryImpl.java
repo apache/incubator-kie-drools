@@ -5,7 +5,7 @@ import org.drools.kproject.GAVImpl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
@@ -36,7 +36,7 @@ public class KieRepositoryImpl
 
     static final KieRepositoryImpl     INSTANCE         = new KieRepositoryImpl();
 
-    private final Map<GAV, KieJar>     kieJars          = new HashMap<GAV, KieJar>();
+    private final Map<GAV, KieModule>     kieJars          = new HashMap<GAV, KieModule>();
 
     private final AtomicReference<GAV> defaultGAV       = new AtomicReference( new GAVImpl( DEFAULT_GROUP,
                                                                                             DEFAULT_ARTIFACT,
@@ -52,7 +52,7 @@ public class KieRepositoryImpl
         return this.defaultGAV.get();
     }
 
-    public void addKieJar(KieJar kjar) {
+    public void addKieJar(KieModule kjar) {
         kieJars.put( kjar.getGAV(),
                      kjar );
     }
@@ -61,8 +61,8 @@ public class KieRepositoryImpl
         throw new UnsupportedOperationException( "org.kie.builder.impl.KieRepositoryImpl.verfyKieJar -> TODO" );
     }
 
-    public KieJar getKieJar(GAV gav) {
-        KieJar kieJar = kieJars.get( gav );
+    public KieModule getKieJar(GAV gav) {
+        KieModule kieJar = kieJars.get( gav );
         if ( kieJar == null ) {
             log.debug( "KieJar Lookup. GAV {} was not in cache, checking classpath",
                        gav.toExternalForm() );
@@ -78,7 +78,7 @@ public class KieRepositoryImpl
         return kieJar; 
     }
 
-    private KieJar checkClasspathForKieJar(GAV gav) {
+    private KieModule checkClasspathForKieJar(GAV gav) {
         // check classpath
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
@@ -95,7 +95,7 @@ public class KieRepositoryImpl
         return null;
     }
 
-    private KieJar loadKieJarFromMavenRepo(GAV gav) {
+    private KieModule loadKieJarFromMavenRepo(GAV gav) {
         return getInternalKieScanner().loadArtifact( gav );
     }
 
@@ -118,7 +118,7 @@ public class KieRepositoryImpl
         public void setKieContainer(KieContainer kieContainer) {
         }
 
-        public KieJar loadArtifact(GAV gav) {
+        public KieModule loadArtifact(GAV gav) {
             return null;
         }
 

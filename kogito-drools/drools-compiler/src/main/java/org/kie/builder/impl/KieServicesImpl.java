@@ -43,11 +43,13 @@ public class KieServicesImpl implements KieServices {
     }
 
     public KieContainer getKieContainer() {
-        return new KieContainerImpl(getKieRepository().getDefaultGAV());
+        //return new KieContainerImpl(getKieRepository().getDefaultGAV(), getKieRepository());
+        return null;
     }
     
     public KieContainer getKieContainer(GAV gav) {
-        return new KieContainerImpl(gav);
+        //return new KieContainerImpl(gav);
+        return null;
     }
     
 

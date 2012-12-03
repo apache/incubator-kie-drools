@@ -13,13 +13,13 @@ import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.Message.Level;
 import org.kie.builder.impl.KieFileSystemImpl;
-import org.kie.builder.impl.MemoryKieJar;
+import org.kie.builder.impl.MemoryKieModules;
 import org.kie.KnowledgeBase;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -37,6 +37,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class AbstractKnowledgeTest {
@@ -53,9 +55,47 @@ public class AbstractKnowledgeTest {
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
     }
+    
+    public void testEntry(KProjectTestClass testClass, String jarName) {
+        List<String> list = new ArrayList<String>();
 
-    public void createKProjectJar(String namespace,
-                                  boolean createJar) throws IOException,
+        StatelessKieSession stlsKsession = testClass.getKBase1KSession1();
+        stlsKsession.setGlobal( "list", list );
+        stlsKsession.execute( "dummy" );
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2" ) );
+
+        list.clear();
+        KieSession stflKsession = testClass.getKBase1KSession2();
+        stflKsession.setGlobal( "list", list );
+        stflKsession.fireAllRules();
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2" ) );
+
+        list.clear();
+        stflKsession = testClass.getKBase2KSession3();
+        stflKsession.setGlobal( "list", list );
+        stflKsession.fireAllRules();
+        assertEquals( 2, list.size() );
+
+        assertTrue( list.contains( jarName + ".test2:rule1" ) );
+        assertTrue( list.contains( jarName + ".test2:rule2" ) );
+
+        list.clear();
+        stlsKsession = testClass.getKBase3KSession4();
+        stlsKsession.setGlobal( "list", list );
+        stlsKsession.execute( "dummy" );
+        assertEquals( 4, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2" ) );
+        assertTrue( list.contains( jarName + ".test2:rule1" ) );
+        assertTrue( list.contains( jarName + ".test2:rule2" ) );
+    }    
+
+    public KieProjectModel createKieModule(String namespace,
+                                boolean createJar) throws IOException,
             ClassNotFoundException,
             InterruptedException {
         KieProjectModel kproj = new KieProjectModelImpl();
@@ -122,7 +162,7 @@ public class AbstractKnowledgeTest {
         if ( kBuilder.hasResults( Level.ERROR  ) ) {
             fail( "should not have errors" + kBuilder.getResults() );
         }
-        MemoryKieJar kieJar = ( MemoryKieJar ) kBuilder.getKieJar();
+        MemoryKieModules kieJar = ( MemoryKieModules ) kBuilder.getKieJar();
         MemoryFileSystem trgMfs = kieJar.getMemoryFileSystem();
         
         if ( createJar ) {            
@@ -132,6 +172,7 @@ public class AbstractKnowledgeTest {
             trgMfs.writeAsFs( file );
         }
         
+        return kproj;
     }
 
     public String getRule(String packageName,

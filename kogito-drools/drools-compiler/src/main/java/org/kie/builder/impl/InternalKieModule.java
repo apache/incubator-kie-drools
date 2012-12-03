@@ -1,8 +1,10 @@
 package org.kie.builder.impl;
 
+import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieSessionModel;
 import org.kie.definition.KnowledgePackage;
 import org.kie.runtime.KieBase;
 
@@ -12,7 +14,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
-public interface InternalKieJar extends KieJar {
+public interface InternalKieModule extends KieModule, KieProject {
 
 //    Map<String, Collection<KnowledgePackage>> getKnowledgePackageCache();
 //
@@ -22,9 +24,9 @@ public interface InternalKieJar extends KieJar {
     
     KieProjectModel getKieProjectModel();
     
-    void setDependencies(Collection<InternalKieJar> dependencies);
-    
-    Collection<InternalKieJar> getDependencies();    
+    public Map<GAV, InternalKieModule> getDependencies();
+
+    public void setDependencies(Map<GAV, InternalKieModule> dependencies);    
     
     boolean isAvailable( final String pResourceName );
     
@@ -33,4 +35,5 @@ public interface InternalKieJar extends KieJar {
     Collection<String> getFileNames();  
     
     File getFile();
+    
 }

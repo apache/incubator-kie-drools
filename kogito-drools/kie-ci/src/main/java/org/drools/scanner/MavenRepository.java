@@ -2,8 +2,8 @@ package org.drools.scanner;
 
 import org.apache.maven.project.MavenProject;
 import org.kie.builder.GAV;
-import org.kie.builder.KieJar;
-import org.kie.builder.impl.InternalKieJar;
+import org.kie.builder.KieModule;
+import org.kie.builder.impl.InternalKieModule;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.CollectResult;
@@ -86,7 +86,7 @@ class MavenRepository {
         return artifactResult.getArtifact();
     }
 
-    public void deployArtifact(GAV gav, InternalKieJar kieJar, File pomfile) {
+    public void deployArtifact(GAV gav, InternalKieModule kieJar, File pomfile) {
         File jarFile = new File( System.getProperty( "java.io.tmpdir" ), gav + ".jar");
         try {
             FileOutputStream fos = new FileOutputStream(jarFile);

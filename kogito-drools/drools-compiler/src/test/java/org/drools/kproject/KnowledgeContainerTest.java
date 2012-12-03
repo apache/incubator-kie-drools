@@ -55,10 +55,10 @@ public class KnowledgeContainerTest extends AbstractKnowledgeTest {
 
     @Test
     public void testMultpleJarAndFileResources() throws Exception {
-        createKProjectJar( "jar1", true );
-        createKProjectJar( "jar2", true );
-        createKProjectJar( "jar3", true );
-        createKProjectJar( "fol4", false );
+        createKieModule( "jar1", true );
+        createKieModule( "jar2", true );
+        createKieModule( "jar3", true );
+        createKieModule( "fol4", false );
 
         File file1 = fileManager.newFile( "jar1.jar" );
         File file2 = fileManager.newFile( "jar2.jar" );

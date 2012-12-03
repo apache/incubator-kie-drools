@@ -6,7 +6,7 @@ import org.drools.scanner.embedder.EmbeddedPomParser;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.builder.Results;
@@ -73,13 +73,13 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         indexAtifacts(artifacts);
     }
 
-    public KieJar loadArtifact(GAV gav) {
+    public KieModule loadArtifact(GAV gav) {
         String artifactName = gav.toString();
         Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName);
         return artifact != null ? buildArtifact(artifact) : loadPomArtifact(gav);
     }
 
-    private KieJar loadPomArtifact(GAV gav) {
+    private KieModule loadPomArtifact(GAV gav) {
         MavenProject mavenProject = getMavenProjectForGAV(gav);
         if (mavenProject == null) {
             return null;
@@ -106,7 +106,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return artifact != null ? parseMavenPom(artifact.getFile()) : null;
     }
 
-    private KieJar buildArtifact(Artifact artifact) {
+    private KieModule buildArtifact(Artifact artifact) {
         KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(artifact.getFile());
         Results results = kieBuilder.build();
         return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieJar() : null;

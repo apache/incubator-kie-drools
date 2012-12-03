@@ -18,43 +18,24 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FileKieJar implements InternalKieJar {
+public class FileKieModule extends AbstractKieModules implements InternalKieModule {
     private final GAV              gav;
     private final File             file;
-    private final KieProjectModel  kieProject;
-    
-    private Collection<InternalKieJar> dependencies;
-   
+    private final KieProjectModel  kieProject;   
 
-    public FileKieJar(GAV gav,
+    public FileKieModule(GAV gav,
                       KieProjectModel kieProject,
                       File file) {
+        super( gav );
         this.gav = gav;
         this.file = file;
         this.kieProject = kieProject;
-    }
-
-
-    @Override
-    public GAV getGAV() {
-        return gav;
     }
 
     @Override
     public File getFile() {
         return this.file;
     }    
-
-    @Override
-    public void setDependencies(Collection<InternalKieJar> dependencies) {
-        this.dependencies = dependencies;
-    }
-
-
-    @Override
-    public Collection<InternalKieJar> getDependencies() {
-        return dependencies;
-    }
 
 
     @Override

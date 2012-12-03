@@ -14,14 +14,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MemoryKieJar extends AbstractKieJar implements ResourceReader {
+public class MemoryKieModules extends AbstractKieModules implements ResourceReader {
 
     private final MemoryFileSystem mfs;
     private final KieProjectModel kieProject;
     
-    private Collection<InternalKieJar> dependencies;
-
-    public MemoryKieJar(GAV gav, KieProjectModel kieProject, MemoryFileSystem mfs) {
+    public MemoryKieModules(GAV gav, KieProjectModel kieProject, MemoryFileSystem mfs) {
         super(gav);
         this.mfs = mfs;
         this.kieProject = kieProject;
@@ -29,15 +27,7 @@ public class MemoryKieJar extends AbstractKieJar implements ResourceReader {
     
     public KieProjectModel getKieProjectModel() {
         return kieProject;
-    }
-    
-    public void setDependencies(Collection<InternalKieJar> dependencies) {
-        this.dependencies = dependencies;
-    }
-    
-    public Collection<InternalKieJar> getDependencies() {
-        return dependencies;
-    }
+    }    
 
     protected Map<String, KieBaseModel> indexKieSessions() {
         Map<String, KieBaseModel> kSessions = new HashMap<String, KieBaseModel>();
