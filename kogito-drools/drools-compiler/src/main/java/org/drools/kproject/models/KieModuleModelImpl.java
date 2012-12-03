@@ -1,4 +1,4 @@
-package org.drools.kproject;
+package org.drools.kproject.models;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -8,7 +8,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -28,14 +28,14 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-public class KieProjectModelImpl implements KieProjectModel {
+public class KieModuleModelImpl implements KieModuleModel {
 
     public static String KPROJECT_JAR_PATH = "META-INF/kproject.xml";
     public static String KPROJECT_SRC_PATH = "src/main/resources/" + KPROJECT_JAR_PATH;
 
     private Map<String, KieBaseModel>  kBases;
     
-    public KieProjectModelImpl() {
+    public KieModuleModelImpl() {
         kBases = Collections.emptyMap();
     }    
 
@@ -112,19 +112,19 @@ public class KieProjectModelImpl implements KieProjectModel {
         return MARSHALLER.toXML(this);
     }
 
-    public static KieProjectModel fromXML(InputStream kProjectStream) {
+    public static KieModuleModel fromXML(InputStream kProjectStream) {
         return MARSHALLER.fromXML(kProjectStream);
     }
 
-    public static KieProjectModel fromXML(java.io.File kProjectFile) {
+    public static KieModuleModel fromXML(java.io.File kProjectFile) {
         return MARSHALLER.fromXML(kProjectFile);
     }
 
-    public static KieProjectModel fromXML(URL kProjectUrl) {
+    public static KieModuleModel fromXML(URL kProjectUrl) {
         return MARSHALLER.fromXML(kProjectUrl);
     }
 
-    public static KieProjectModel fromXML(String kProjectString) {
+    public static KieModuleModel fromXML(String kProjectString) {
         return MARSHALLER.fromXML(kProjectString);
     }
 
@@ -140,7 +140,7 @@ public class KieProjectModelImpl implements KieProjectModel {
             xStream.registerConverter(new ListenerModelImpl.ListenerConverter());
             xStream.registerConverter(new QualifierModelImpl.QualifierConverter());
             xStream.registerConverter(new WorkItemHandelerModelImpl.WorkItemHandelerConverter());
-            xStream.alias("kproject", KieProjectModelImpl.class);
+            xStream.alias("kmodule", KieModuleModelImpl.class);
             xStream.alias("kbase", KieBaseModelImpl.class);
             xStream.alias("ksession", KieSessionModelImpl.class);
             xStream.alias("listener", ListenerModelImpl.class);
@@ -148,40 +148,40 @@ public class KieProjectModelImpl implements KieProjectModel {
             xStream.alias("workItemHandeler", WorkItemHandelerModelImpl.class);
         }
 
-        public String toXML(KieProjectModel kieProject) {
+        public String toXML(KieModuleModel kieProject) {
             return xStream.toXML(kieProject);
         }
 
-        public KieProjectModel fromXML(InputStream kProjectStream) {
-            return (KieProjectModel)xStream.fromXML(kProjectStream);
+        public KieModuleModel fromXML(InputStream kProjectStream) {
+            return (KieModuleModel)xStream.fromXML(kProjectStream);
         }
 
-        public KieProjectModel fromXML(java.io.File kProjectFile) {
-            return (KieProjectModel)xStream.fromXML(kProjectFile);
+        public KieModuleModel fromXML(java.io.File kProjectFile) {
+            return (KieModuleModel)xStream.fromXML(kProjectFile);
         }
 
-        public KieProjectModel fromXML(URL kProjectUrl) {
-            return (KieProjectModel)xStream.fromXML(kProjectUrl);
+        public KieModuleModel fromXML(URL kProjectUrl) {
+            return (KieModuleModel)xStream.fromXML(kProjectUrl);
         }
 
-        public KieProjectModel fromXML(String kProjectString) {
-            return (KieProjectModel)xStream.fromXML(kProjectString);
+        public KieModuleModel fromXML(String kProjectString) {
+            return (KieModuleModel)xStream.fromXML(kProjectString);
         }
     }
 
     public static class KProjectConverter extends AbstractXStreamConverter {
 
         public KProjectConverter() {
-            super(KieProjectModelImpl.class);
+            super(KieModuleModelImpl.class);
         }
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-            KieProjectModelImpl kProject = (KieProjectModelImpl) value;
+            KieModuleModelImpl kProject = (KieModuleModelImpl) value;
             writeObjectList(writer, context, "kbases", "kbase", kProject.getKieBaseModels().values());
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
-            final KieProjectModelImpl kProject = new KieProjectModelImpl();
+            final KieModuleModelImpl kProject = new KieModuleModelImpl();
 
             readNodes(reader, new AbstractXStreamConverter.NodeReader() {
                 public void onNode(HierarchicalStreamReader reader, String name, String value) {

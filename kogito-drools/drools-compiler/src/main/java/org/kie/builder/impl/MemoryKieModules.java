@@ -1,10 +1,10 @@
 package org.kie.builder.impl;
 
 import org.drools.commons.jci.readers.ResourceReader;
-import org.drools.kproject.memory.MemoryFileSystem;
+import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 
 import java.io.ByteArrayInputStream;
@@ -17,15 +17,15 @@ import java.util.Map;
 public class MemoryKieModules extends AbstractKieModules implements ResourceReader {
 
     private final MemoryFileSystem mfs;
-    private final KieProjectModel kieProject;
+    private final KieModuleModel kieProject;
     
-    public MemoryKieModules(GAV gav, KieProjectModel kieProject, MemoryFileSystem mfs) {
+    public MemoryKieModules(GAV gav, KieModuleModel kieProject, MemoryFileSystem mfs) {
         super(gav);
         this.mfs = mfs;
         this.kieProject = kieProject;
     }
     
-    public KieProjectModel getKieProjectModel() {
+    public KieModuleModel getKieProjectModel() {
         return kieProject;
     }    
 

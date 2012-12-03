@@ -4,7 +4,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.drools.builder.impl.KnowledgeContainerImpl;
-import org.drools.kproject.KieProjectModelImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -50,7 +50,7 @@ public class KProjectMojo extends AbstractMojo {
             return;
         }
 
-        KieProjectModelImpl kproj = new KieProjectModelImpl();
+        KieModuleModelImpl kproj = new KieModuleModelImpl();
 
         for (File kBaseFolder : sourceFolder.listFiles()) {
             String kBaseName = kBaseFolder.getName();

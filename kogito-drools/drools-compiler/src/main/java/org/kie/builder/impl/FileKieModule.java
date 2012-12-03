@@ -1,11 +1,11 @@
 package org.kie.builder.impl;
 
+import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.IoUtils;
-import org.drools.kproject.memory.MemoryFileSystem;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 
 import java.io.ByteArrayInputStream;
@@ -21,10 +21,10 @@ import java.util.Map;
 public class FileKieModule extends AbstractKieModules implements InternalKieModule {
     private final GAV              gav;
     private final File             file;
-    private final KieProjectModel  kieProject;   
+    private final KieModuleModel  kieProject;   
 
     public FileKieModule(GAV gav,
-                      KieProjectModel kieProject,
+                      KieModuleModel kieProject,
                       File file) {
         super( gav );
         this.gav = gav;
@@ -61,7 +61,7 @@ public class FileKieModule extends AbstractKieModules implements InternalKieModu
 
 
     @Override
-    public KieProjectModel getKieProjectModel() {
+    public KieModuleModel getKieProjectModel() {
         return this.kieProject;
     }
 

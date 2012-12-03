@@ -31,7 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.drools.builder.impl.KnowledgeContainerImpl.KPROJECT_JAR_PATH;
-import static org.drools.kproject.KieBaseModelImpl.getFiles;
+import static org.drools.kproject.models.KieBaseModelImpl.getFiles;
 
 public class KBaseUnitImpl implements KBaseUnit {
 

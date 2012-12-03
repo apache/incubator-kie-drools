@@ -1,12 +1,12 @@
 package org.kie.builder.impl;
 
+import org.kie.KieBase;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModule;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.definition.KnowledgePackage;
-import org.kie.runtime.KieBase;
 
 import java.io.File;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ public interface InternalKieModule extends KieModule, KieProject {
     
     byte[] getBytes( );
     
-    KieProjectModel getKieProjectModel();
+    KieModuleModel getKieProjectModel();
     
     public Map<GAV, InternalKieModule> getDependencies();
 

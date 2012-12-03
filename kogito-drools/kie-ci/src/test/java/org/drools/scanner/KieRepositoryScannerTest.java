@@ -12,7 +12,7 @@ import org.kie.builder.KieContainer;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
@@ -206,7 +206,7 @@ public class KieRepositoryScannerTest {
             kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
         }
 
-        KieProjectModel kproj = kf.newKieProject();
+        KieModuleModel kproj = kf.newKieProject();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
@@ -248,7 +248,7 @@ public class KieRepositoryScannerTest {
     private InternalKieModule createKieJarWithClass(KieServices ks, KieFactory kf, GAV gav, int value, int factor) throws IOException {
         KieFileSystem kieFileSystem = kf.newKieFileSystem();
 
-        KieProjectModel kproj = kf.newKieProject();
+        KieModuleModel kproj = kf.newKieProject();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )

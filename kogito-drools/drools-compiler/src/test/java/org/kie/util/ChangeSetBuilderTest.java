@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.kproject.KieProjectModelImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.Test;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieModule;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.conf.AssertBehaviorOption;
@@ -213,13 +213,13 @@ public class ChangeSetBuilderTest {
                 when( kieJar.getBytes( fileName ) ).thenReturn( drls[i].getBytes() );
             }
         }
-        when( kieJar.getBytes( KieProjectModelImpl.KPROJECT_JAR_PATH ) ).thenReturn( createKieProjectWithPackages(kf, gav).toXML().getBytes() );
+        when( kieJar.getBytes( KieModuleModelImpl.KPROJECT_JAR_PATH ) ).thenReturn( createKieProjectWithPackages(kf, gav).toXML().getBytes() );
         when( kieJar.getFileNames() ).thenReturn( drlFs );
         return ( InternalKieModule ) kieJar;
     }
     
-    private KieProjectModel createKieProjectWithPackages(KieFactory kf, GAV gav) {
-        KieProjectModel kproj = kf.newKieProject();
+    private KieModuleModel createKieProjectWithPackages(KieFactory kf, GAV gav) {
+        KieModuleModel kproj = kf.newKieProject();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )

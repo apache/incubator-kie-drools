@@ -1,12 +1,12 @@
-package org.drools.kproject.memory;
+package org.drools.compiler.io.memory;
 
 import java.util.Collection;
 
+import org.drools.compiler.io.File;
+import org.drools.compiler.io.Folder;
+import org.drools.compiler.io.Path;
+import org.drools.compiler.io.Resource;
 import org.drools.core.util.StringUtils;
-import org.drools.kproject.File;
-import org.drools.kproject.Folder;
-import org.drools.kproject.Path;
-import org.drools.kproject.Resource;
 
 public class MemoryFolder
         implements

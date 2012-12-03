@@ -10,7 +10,6 @@ import javax.inject.Singleton;
 
 import org.kie.concurrent.KieExecutors;
 
-@Singleton
 public class ExecutorProviderImpl implements KieExecutors {
 
     private static final java.util.concurrent.ExecutorService executor = Executors.newCachedThreadPool(new ThreadFactory() {

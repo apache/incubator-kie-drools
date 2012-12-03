@@ -1,28 +1,36 @@
 package org.kie.builder.impl;
 
+import org.drools.RuleBaseConfiguration;
+import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.core.util.ClassUtils;
 import org.drools.impl.InternalKnowledgeBase;
-import org.drools.kproject.KieBaseModelImpl;
-import org.drools.kproject.KieSessionModelImpl;
+import org.drools.kproject.models.KieBaseModelImpl;
+import org.drools.kproject.models.KieSessionModelImpl;
 import org.drools.rule.Collect;
+import org.kie.KieBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModule;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
-import org.kie.runtime.KieBase;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public abstract class AbstractKieModules
@@ -38,6 +46,8 @@ public abstract class AbstractKieModules
     protected final GAV                                     gav;
 
     private Map<GAV, InternalKieModule>                     dependencies;
+    
+    private Map<GAV, InternalKieModule>                     kieModules;
 
     private Map<String, InternalKieModule>                  kJarFromKBaseName = new HashMap<String, InternalKieModule>();
 
@@ -49,7 +59,7 @@ public abstract class AbstractKieModules
     }    
     
     public void verify() {
-        Map<GAV, InternalKieModule> kieModules = new HashMap<GAV, InternalKieModule>();
+        kieModules = new HashMap<GAV, InternalKieModule>();
         kieModules.putAll( dependencies );
         kieModules.put( gav, this );
         indexParts( kieModules, kBaseModels, kSessionModels, kJarFromKBaseName );        
@@ -104,7 +114,7 @@ public abstract class AbstractKieModules
                                   Map<String, KieSessionModel> kSessionModels,
                                   Map<String, InternalKieModule> kJarFromKBaseName) {
         for ( InternalKieModule kJar : kJars.values() ) {
-            KieProjectModel kieProject = kJar.getKieProjectModel();
+            KieModuleModel kieProject = kJar.getKieProjectModel();
             for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
                 kBaseModels.put( kieBaseModel.getName(),
                                  kieBaseModel );
@@ -120,10 +130,37 @@ public abstract class AbstractKieModules
             }
         }
     }
-
+    
+    public CompositeClassLoader createClassLaoder() {
+        Map<String, byte[]> classes = new HashMap<String, byte[]>();
+        for( Entry<GAV, InternalKieModule> entry : kieModules.entrySet() ) {
+            GAV gav = entry.getKey();
+            InternalKieModule kModule  = entry.getValue();
+            List<String> fileNames = new ArrayList<String>();
+            for( String fileName : kModule.getFileNames() ) {
+                 if ( fileName.endsWith( ".class" ) ) {
+                     classes.put( fileName, kModule.getBytes( fileName ) );
+                 }
+            }
+        }
+        
+        CompositeClassLoader cl;
+        if ( !classes.isEmpty() ) {             
+            cl = ClassLoaderUtil.getClassLoader( null, null, true );
+            cl.addClassLoader(  new ClassUtils.MapClassLoader( classes, cl ) );
+        } else {
+            cl = ClassLoaderUtil.getClassLoader( null, null, true );
+        }
+        return cl;
+    }    
+    
     public static KieBase createKieBase(KieBaseModel kBaseModel,
                                         KieProject indexedParts) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        CompositeClassLoader cl = indexedParts.createClassLaoder(); // the most clone the CL, as each builder and rbase populates it
+        
+        PackageBuilderConfiguration pconf = new PackageBuilderConfiguration(null, cl.clone() );
+                
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         Set<String> includes = kBaseModel.getIncludes();
@@ -151,9 +188,10 @@ public abstract class AbstractKieModules
             log.error( "Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString() );
         }
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        RuleBaseConfiguration rconf = new RuleBaseConfiguration(null, cl );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(rconf);
+        
         kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         return kBase;
     }
 

@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Singleton;
 
-@Singleton
 public class KieRepositoryImpl
     implements
     KieRepository {

@@ -400,12 +400,21 @@ public class RuleBaseConfiguration
         init( properties,
               classLoaders );
     }
+    
+    public RuleBaseConfiguration(Properties properties,
+                                 CompositeClassLoader classLoader) {
+        this.classLoader = classLoader; 
+        init( properties);
+    }    
 
     private void init(Properties properties,
                       ClassLoader... classLoaders) {
-        this.immutable = false;
-
         setClassLoader( classLoaders );
+        init(properties);
+    }
+    
+    private void init(Properties properties) {
+        this.immutable = false;
 
         this.chainedProperties = new ChainedProperties( "rulebase.conf",
                                                         this.classLoader,

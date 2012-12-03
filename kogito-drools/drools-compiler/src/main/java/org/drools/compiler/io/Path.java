@@ -1,4 +1,4 @@
-package org.drools.kproject;
+package org.drools.compiler.io;
 
 public interface Path {
     String toPortableString();

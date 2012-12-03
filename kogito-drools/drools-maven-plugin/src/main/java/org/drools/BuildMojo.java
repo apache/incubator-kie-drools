@@ -6,7 +6,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.drools.builder.impl.KnowledgeContainerImpl;
 import org.kie.KBaseUnit;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeContainerFactory;
@@ -17,8 +17,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import static org.drools.core.util.IoUtils.copyFile;
-import static org.drools.kproject.KieBaseModelImpl.getFiles;
-import static org.drools.kproject.KieProjectModelImpl.fromXML;
+import static org.drools.kproject.models.KieBaseModelImpl.getFiles;
+import static org.drools.kproject.models.KieModuleModelImpl.fromXML;
 
 /**
  * This goal builds the drools file belonging to the kproject.
@@ -79,7 +79,7 @@ public class BuildMojo extends AbstractMojo {
 
     public void copyKBasesToOutput(File rootFolder, File outputFolder) {
         File kProjectFile = new File(rootFolder, KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH);
-        KieProjectModel kieProject = fromXML(new File(rootFolder, KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH));
+        KieModuleModel kieProject = fromXML(new File(rootFolder, KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH));
         copyFile(kProjectFile, new File(outputFolder, KnowledgeContainerImpl.KPROJECT_JAR_PATH));
 
         for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {

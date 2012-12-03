@@ -1,6 +1,6 @@
 package org.kie.builder.impl;
 
-import static org.drools.kproject.memory.MemoryFileSystem.readFromJar;
+import static org.drools.compiler.io.memory.MemoryFileSystem.readFromJar;
 
 import java.io.File;
 
@@ -27,7 +27,6 @@ import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.util.ServiceRegistryImpl;
 
-@Singleton
 public class KieServicesImpl implements KieServices {
     private ResourceFactoryService resourceFactory;
     

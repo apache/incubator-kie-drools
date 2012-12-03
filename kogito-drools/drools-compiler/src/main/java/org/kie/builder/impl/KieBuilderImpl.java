@@ -8,15 +8,16 @@ import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.DiskResourceReader;
 import org.drools.commons.jci.readers.ResourceReader;
+import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.Predicate;
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.GAVImpl;
-import org.drools.kproject.KieBaseModelImpl;
-import org.drools.kproject.KieProjectModelImpl;
-import org.drools.kproject.memory.MemoryFileSystem;
+import org.drools.kproject.models.KieBaseModelImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
+import org.kie.KieBase;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
@@ -27,7 +28,7 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
-import org.kie.builder.KieProjectModel;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -39,7 +40,6 @@ import org.kie.builder.Results;
 import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
-import org.kie.runtime.KieBase;
 import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
 
@@ -72,7 +72,7 @@ public class KieBuilderImpl
     private GAV                  gav;
 
     private byte[]               kieProjectXml;
-    private KieProjectModel      kieProject;
+    private KieModuleModel      kieProject;
     
     private Collection<InternalKieModule>   dependencies;
 
@@ -118,7 +118,7 @@ public class KieBuilderImpl
                                        kieProject,
                                        trgMfs );
             
-            //ClassLoader classLoader = compileJavaClasses();
+            ClassLoader classLoader = compileJavaClasses();
             addKBasesFilesToTrg( );
             
             //validateKBases();
@@ -285,10 +285,10 @@ public class KieBuilderImpl
     }
 
     private void buildKieProject() {
-        if ( srcMfs.isAvailable( KieProjectModelImpl.KPROJECT_SRC_PATH ) ) {
-            kieProjectXml = srcMfs.getBytes( KieProjectModelImpl.KPROJECT_SRC_PATH );
+        if ( srcMfs.isAvailable( KieModuleModelImpl.KPROJECT_SRC_PATH ) ) {
+            kieProjectXml = srcMfs.getBytes( KieModuleModelImpl.KPROJECT_SRC_PATH );
             try {
-                kieProject = KieProjectModelImpl.fromXML( new ByteArrayInputStream( kieProjectXml ) );
+                kieProject = KieModuleModelImpl.fromXML( new ByteArrayInputStream( kieProjectXml ) );
             } catch ( Exception e ) {
                 messages.add( new MessageImpl( idGenerator++,
                                                Level.ERROR,
@@ -299,7 +299,7 @@ public class KieBuilderImpl
             KieFactory kf = KieFactory.Factory.get();
             kieProject = kf.newKieProject();
 
-            ((KieProjectModelImpl) kieProject).newDefaultKieBaseModel();
+            ((KieModuleModelImpl) kieProject).newDefaultKieBaseModel();
             kieProjectXml = kieProject.toXML().getBytes();
         }
     }
@@ -354,7 +354,7 @@ public class KieBuilderImpl
         }
 
         if ( kieProjectXml != null ) {
-            trgMfs.write( KieProjectModelImpl.KPROJECT_JAR_PATH,
+            trgMfs.write( KieModuleModelImpl.KPROJECT_JAR_PATH,
                           kieProject.toXML().getBytes(),
                           true );
         }

@@ -1,6 +1,6 @@
-package org.drools.kproject.memory;
+package org.drools.compiler.io.memory;
 
-import org.drools.kproject.Path;
+import org.drools.compiler.io.Path;
 
 public class MemoryPath implements Path {
     private String path;
