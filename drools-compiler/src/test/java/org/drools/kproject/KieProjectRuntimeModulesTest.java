@@ -28,14 +28,10 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
     public void createMultpleJarAndFileResources() throws IOException,
                                                   ClassNotFoundException,
                                                   InterruptedException {
-        KieModuleModel kProjModel1 = createKieModule( "jar1",
-                                                       true );
-        KieModuleModel kProjModel2 = createKieModule( "jar2",
-                                                       true );
-        KieModuleModel kProjModel3 = createKieModule( "jar3",
-                                                       true );
-        KieModuleModel kProjModel4 = createKieModule( "fol4",
-                                                       false );
+        KieModuleModel kProjModel1 = createKieModule( "jar1", true );
+        KieModuleModel kProjModel2 = createKieModule( "jar2", true );
+        KieModuleModel kProjModel3 = createKieModule( "jar3", true );
+        KieModuleModel kProjModel4 = createKieModule( "fol4", false );
 
         GAV gav1 = KieFactory.Factory.get().newGav( "jar1",
                                                     "art1",

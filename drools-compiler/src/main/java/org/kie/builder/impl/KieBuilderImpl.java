@@ -135,36 +135,6 @@ public class KieBuilderImpl
         }
     }
 
-    public Collection<KnowledgePackage> buildKieBase(ClassLoader classLoader,
-                                                     KieBaseModel kieBase) {
-//        KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
-//                                                                                                        classLoader );
-//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kConf );
-//        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
-//        addKBaseFilesToTrg( ckbuilder,
-//                               kieBase );
-//        
-//        if ( kieBase.getIncludes() != null ) {
-//            for ( String include : kieBase.getIncludes() ) {
-//                addKBaseFilesToTrg( ckbuilder,
-//                                       kieProject.getKieBaseModels().get( include ) );
-//            }
-//        }
-//        
-//        ckbuilder.build();
-
-//        if ( kbuilder.hasErrors() ) {
-//            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-//                messages.add( new MessageImpl( idGenerator++,
-//                                               error ) );
-//            }
-//            return null;
-//        }
-//
-//        return kbuilder.getKnowledgePackages();
-        return null;
-    }
-
     private KnowledgeBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModel kieBase,
                                                                      Properties properties,
                                                                      ClassLoader... classLoaders) {
@@ -175,16 +145,12 @@ public class KieBuilderImpl
         return kbConf;
     }
 
-//    private void addKBaseFileToBuilder(CompositeKnowledgeBuilder ckbuilder,
-//                                       KieBaseModel kieBase) {
-        private void addKBaseFilesToTrg(KieBaseModel kieBase) {        
+    private void addKBaseFilesToTrg(KieBaseModel kieBase) {
         String resourcesRoot = "src/main/resources/";
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( filterFileInKBase( kieBase,
                                     fileName ) ) {
                 byte[] bytes = srcMfs.getBytes( fileName );
-//                ckbuilder.add( ResourceFactory.newByteArrayResource( srcMfs.getBytes( fileName ) ),
-//                               ResourceType.determineResourceType( fileName ) );
                 trgMfs.write( fileName.substring( resourcesRoot.length() - 1 ),
                               bytes,
                               true );
