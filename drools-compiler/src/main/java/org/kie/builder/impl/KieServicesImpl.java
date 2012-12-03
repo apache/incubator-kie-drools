@@ -42,8 +42,9 @@ public class KieServicesImpl implements KieServices {
     /**
      * Returns KieContainer for the classpath
      */
-    public KieContainer getKieContainer() {
-        return getKieContainer(getKieRepository().getDefaultGAV());
+    public KieContainer getKieClasspathContainer() {
+        ClasspathKieProject kProject =  new ClasspathKieProject();        
+        return new KieContainerImpl(kProject, null);
     }
     
     public KieContainer getKieContainer(GAV gav) {

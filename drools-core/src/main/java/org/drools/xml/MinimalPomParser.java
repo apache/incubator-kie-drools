@@ -80,7 +80,7 @@ public class MinimalPomParser extends DefaultHandler {
             if ( "parent".equals( qname ) && depth == 2 ) {
                 inParent = false;
             }
-        } else {
+        } else if ( depth == 2 ){
             String text = ( this.characters != null ) ? this.characters.toString() : null;
             if ( text != null ) {
                 if ( "groupId".equals( qname ) ) {
