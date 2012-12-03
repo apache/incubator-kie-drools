@@ -6,19 +6,16 @@ import org.drools.core.util.ClassUtils;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
-import org.drools.rule.Collect;
 import org.kie.KieBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.Message;
 import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
@@ -222,27 +219,27 @@ public abstract class AbstractKieModules
 
     public static void addFiles(CompositeKnowledgeBuilder ckbuilder,
                                 KieBaseModel kieBaseModel,
-                                InternalKieModule kieJar) {
+                                InternalKieModule kieModule) {
         int fileCount = 0;
         String prefixPath = kieBaseModel.getName().replace( '.',
                                                             '/' );
-        for ( String fileName : kieJar.getFileNames() ) {
+        for ( String fileName : kieModule.getFileNames() ) {
             if ( fileName.startsWith( prefixPath ) ) {
                 String upperCharName = fileName.toUpperCase();
 
                 if ( upperCharName.endsWith( "DRL" ) ) {
-                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieJar.getBytes( fileName ) ),
+                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
                                    ResourceType.DRL );
                     fileCount++;
                 } else if ( upperCharName.endsWith( "BPMN2" ) ) {
-                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieJar.getBytes( fileName ) ),
+                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
                                    ResourceType.DRL );
                     fileCount++;
                 }
             }
         }
         if ( fileCount == 0 ) {
-            log.warn( "No files found for KieBase " + kieBaseModel.getName() + ", searching folder " + kieJar.getFile() );
+            log.warn("No files found for KieBase " + kieBaseModel.getName() + ", searching folder " + kieModule.getFile());
         }
 
     }

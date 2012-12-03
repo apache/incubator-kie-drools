@@ -4,8 +4,6 @@ import static org.drools.compiler.io.memory.MemoryFileSystem.readFromJar;
 
 import java.io.File;
 
-import javax.inject.Singleton;
-
 import org.drools.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.command.impl.CommandFactoryServiceImpl;
 import org.drools.concurrent.ExecutorProviderImpl;
@@ -49,7 +47,7 @@ public class KieServicesImpl implements KieServices {
     }
     
     public KieContainer getKieContainer(GAV gav) {
-        return new KieContainerImpl( (KieProject ) getKieRepository().getKieJar( gav ), getKieRepository() );
+        return new KieContainerImpl( (KieProject ) getKieRepository().getKieModule(gav), getKieRepository() );
     }
     
 

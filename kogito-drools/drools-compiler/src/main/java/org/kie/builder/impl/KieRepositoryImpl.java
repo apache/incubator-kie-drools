@@ -1,28 +1,20 @@
 package org.kie.builder.impl;
 
-import org.drools.cdi.KProjectExtension;
 import org.drools.kproject.GAVImpl;
 import org.kie.builder.GAV;
-import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
-import org.kie.builder.KieServices;
 import org.kie.builder.Results;
 import org.kie.util.ServiceRegistryImpl;
-import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-
-import javax.inject.Singleton;
 
 public class KieRepositoryImpl
     implements
@@ -35,7 +27,7 @@ public class KieRepositoryImpl
 
     static final KieRepositoryImpl     INSTANCE         = new KieRepositoryImpl();
 
-    private final Map<GAV, KieModule>     kieJars          = new HashMap<GAV, KieModule>();
+    private final Map<GAV, KieModule> kieModules        = new HashMap<GAV, KieModule>();
 
     private final AtomicReference<GAV> defaultGAV       = new AtomicReference( new GAVImpl( DEFAULT_GROUP,
                                                                                             DEFAULT_ARTIFACT,
@@ -51,33 +43,33 @@ public class KieRepositoryImpl
         return this.defaultGAV.get();
     }
 
-    public void addKieJar(KieModule kjar) {
-        kieJars.put( kjar.getGAV(),
-                     kjar );
+    public void addKieModule(KieModule kieModule) {
+        kieModules.put(kieModule.getGAV(),
+                       kieModule);
     }
 
-    public Results verfyKieJar(GAV gav) {
-        throw new UnsupportedOperationException( "org.kie.builder.impl.KieRepositoryImpl.verfyKieJar -> TODO" );
+    public Results verfyKieModule(GAV gav) {
+        throw new UnsupportedOperationException( "org.kie.builder.impl.KieRepositoryImpl.verfyKieModule -> TODO" );
     }
 
-    public KieModule getKieJar(GAV gav) {
-        KieModule kieJar = kieJars.get( gav );
-        if ( kieJar == null ) {
-            log.debug( "KieJar Lookup. GAV {} was not in cache, checking classpath",
+    public KieModule getKieModule(GAV gav) {
+        KieModule kieModule = kieModules.get( gav );
+        if ( kieModule == null ) {
+            log.debug( "KieModule Lookup. GAV {} was not in cache, checking classpath",
                        gav.toExternalForm() );
-            kieJar = checkClasspathForKieJar( gav );
+            kieModule = checkClasspathForKieModule(gav);
         }
         
-        if ( kieJar == null ) {
-            log.debug( "KieJar Lookup. GAV {} was not in cache, checking maven repository",
+        if ( kieModule == null ) {
+            log.debug( "KieModule Lookup. GAV {} was not in cache, checking maven repository",
                        gav.toExternalForm() );   
-            kieJar =  loadKieJarFromMavenRepo( gav );
+            kieModule =  loadKieModuleFromMavenRepo(gav);
         }
         
-        return kieJar; 
+        return kieModule;
     }
 
-    private KieModule checkClasspathForKieJar(GAV gav) {
+    private KieModule checkClasspathForKieModule(GAV gav) {
         // check classpath
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
@@ -89,12 +81,12 @@ public class KieRepositoryImpl
         
 //        KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(artifact.getFile());
 //        Results results = kieBuilder.build();
-//        return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieJar() : null;        
+//        return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieModule() : null;
         
         return null;
     }
 
-    private KieModule loadKieJarFromMavenRepo(GAV gav) {
+    private KieModule loadKieModuleFromMavenRepo(GAV gav) {
         return getInternalKieScanner().loadArtifact( gav );
     }
 

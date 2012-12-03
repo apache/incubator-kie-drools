@@ -4,5 +4,5 @@ import org.kie.builder.KieContainer;
 import org.kie.builder.KieModule;
 
 public interface InternalKieContainer extends KieContainer {
-    void updateKieJar(KieModule kieJar);
+    void updateKieModule(KieModule kieModule);
 }

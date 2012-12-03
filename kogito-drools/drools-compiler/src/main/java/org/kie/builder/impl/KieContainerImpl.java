@@ -1,8 +1,5 @@
 package org.kie.builder.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
@@ -18,21 +15,24 @@ import org.kie.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class KieContainerImpl
     implements
     KieContainer {
 
     private static final Logger  log    = LoggerFactory.getLogger( KieContainerImpl.class );
 
-    private KieProject           kProject;
+    private final KieProject           kProject;
 
-    private Map<String, KieBase> kBases = new HashMap<String, KieBase>();
+    private final Map<String, KieBase> kBases = new HashMap<String, KieBase>();
 
-    private KieRepository        kr;
+    private final KieRepository        kr;
 
     public KieContainerImpl() {
-        this( null,
-              KieServices.Factory.get().getKieRepository() );
+        this(null,
+                KieServices.Factory.get().getKieRepository());
     }
 
     public KieContainerImpl(KieProject kProject,
@@ -50,7 +50,6 @@ public class KieContainerImpl
         // @TODO
         throw new UnsupportedOperationException( "This method is still to be implemented" );
     }
-
 
     public KieBase getKieBase() {
         return getKieBase( KieBaseModelImpl.DEFAULT_KIEBASE_NAME );
@@ -99,7 +98,7 @@ public class KieContainerImpl
     public void dispose() {
     }
 
-    public KieModule getKieJarForKBase(String kBaseName) {
+    public KieModule getKieModuleForKBase(String kBaseName) {
         return kProject.getKieModuleForKBase( kBaseName );
     }
 

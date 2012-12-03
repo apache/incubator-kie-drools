@@ -1,13 +1,12 @@
 package org.kie.builder.impl;
 
+import org.drools.core.util.IoUtils;
+import org.kie.builder.GAV;
+import org.kie.builder.KieModuleModel;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collection;
-
-import org.drools.core.util.IoUtils;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
-import org.kie.builder.GAV;
-import org.kie.builder.KieModuleModel;
 
 public class FileKieModule extends AbstractKieModules implements InternalKieModule {
     private final GAV              gav;

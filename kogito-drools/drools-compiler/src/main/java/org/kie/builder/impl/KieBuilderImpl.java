@@ -1,7 +1,5 @@
 package org.kie.builder.impl;
 
-import static org.drools.core.util.IoUtils.recursiveListFile;
-
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
@@ -10,18 +8,14 @@ import org.drools.commons.jci.readers.DiskResourceReader;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.Predicate;
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
-import org.kie.KieBase;
-import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
@@ -30,15 +24,9 @@ import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieServices;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.Message.Level;
-import org.kie.builder.Results;
 import org.kie.builder.ResourceType;
-import org.kie.definition.KnowledgePackage;
-import org.kie.io.ResourceFactory;
+import org.kie.builder.Results;
 import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
 
@@ -137,7 +125,7 @@ public class KieBuilderImpl
             kieModule.verify( messages );
 
             if ( !hasResults( Level.ERROR ) ) {
-                KieServices.Factory.get().getKieRepository().addKieJar( kieModule );
+                KieServices.Factory.get().getKieRepository().addKieModule( kieModule );
             }
         }
         return new ResultsImpl( messages.getMessages(),
@@ -243,12 +231,12 @@ public class KieBuilderImpl
                                 null );
     }
 
-    public KieModule getKieJar() {
+    public KieModule getKieModule() {
         if ( !isBuilt() ) {
             build();
         }
         if ( hasResults( Level.ERROR ) || kieModule == null ) {
-            throw new RuntimeException( "Unable to get KieJar, Errors Existed" );
+            throw new RuntimeException( "Unable to get KieModule, Errors Existed" );
         }
         return kieModule;
     }
@@ -269,7 +257,7 @@ public class KieBuilderImpl
             }
         } else {
             KieFactory kf = KieFactory.Factory.get();
-            kieProject = kf.newKieProject();
+            kieProject = kf.newKieModuleModel();
 
             ((KieModuleModelImpl) kieProject).newDefaultKieBaseModel();
             kieProjectXml = kieProject.toXML().getBytes();

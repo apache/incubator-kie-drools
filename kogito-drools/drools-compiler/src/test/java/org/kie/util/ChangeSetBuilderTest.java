@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.kproject.models.KieModuleModelImpl;
@@ -16,18 +15,12 @@ import org.junit.Test;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
-import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;
-import org.kie.util.ChangeSetBuilder;
-import org.kie.util.ChangeType;
-import org.kie.util.KieJarChangeSet;
-import org.kie.util.ResourceChange;
-import org.kie.util.ResourceChangeSet;
 import org.kie.util.ResourceChange.Type;
 
 public class ChangeSetBuilderTest {
@@ -219,7 +212,7 @@ public class ChangeSetBuilderTest {
     }
     
     private KieModuleModel createKieProjectWithPackages(KieFactory kf, GAV gav) {
-        KieModuleModel kproj = kf.newKieProject();
+        KieModuleModel kproj = kf.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )

@@ -2,7 +2,6 @@ package org.drools.integrationtests;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.Message;
-import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.Test;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
@@ -96,7 +95,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     }
 
     private KieModuleModel createKieProjectWithPackages(KieFactory kf) {
-        KieModuleModel kproj = kf.newKieProject();
+        KieModuleModel kproj = kf.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
