@@ -34,16 +34,16 @@ public class KieModuleModelTest {
                 .setType("stateful")
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        ksession1.newListenerModel("org.domain.FirstInterface");
+        ksession1.newListenerModel("org.domain.FirstInterface", ListenerModel.Kind.AGENDA_EVENT_LISTENER);
 
-        ksession1.newListenerModel("org.domain.SecondInterface")
+        ksession1.newListenerModel("org.domain.SecondInterface", ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER)
                 .newQualifierModel("MyQualfier2");
 
-        ksession1.newListenerModel("org.domain.ThirdInterface")
+        ksession1.newListenerModel("org.domain.ThirdInterface", ListenerModel.Kind.PROCESS_EVENT_LISTENER)
                 .newQualifierModel("MyQualfier3")
                 .setValue("v1");
 
-        ksession1.newListenerModel("org.domain.FourthInterface")
+        ksession1.newListenerModel("org.domain.FourthInterface", ListenerModel.Kind.AGENDA_EVENT_LISTENER)
                 .newQualifierModel("MyQualfier4")
                 .addArgument("name1", "xxxx")
                 .addArgument("name2", "yyyy");
@@ -71,21 +71,25 @@ public class KieModuleModelTest {
 
         ListenerModel listener1 = listeners.get(0);
         assertEquals("org.domain.FirstInterface", listener1.getType());
+        assertEquals(ListenerModel.Kind.AGENDA_EVENT_LISTENER, listener1.getKind());
         assertNull(listener1.getQualifierModel());
 
         ListenerModel listener2 = listeners.get(1);
         assertEquals("org.domain.SecondInterface", listener2.getType());
+        assertEquals(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER, listener2.getKind());
         QualifierModel qualifier2 = listener2.getQualifierModel();
         assertEquals("MyQualfier2", qualifier2.getType());
 
         ListenerModel listener3 = listeners.get(2);
         assertEquals("org.domain.ThirdInterface", listener3.getType());
+        assertEquals(ListenerModel.Kind.PROCESS_EVENT_LISTENER, listener3.getKind());
         QualifierModel qualifier3 = listener3.getQualifierModel();
         assertEquals("MyQualfier3", qualifier3.getType());
         assertEquals("v1", qualifier3.getValue());
 
         ListenerModel listener4 = listeners.get(3);
         assertEquals("org.domain.FourthInterface", listener4.getType());
+        assertEquals(ListenerModel.Kind.AGENDA_EVENT_LISTENER, listener4.getKind());
         QualifierModel qualifier4 = listener4.getQualifierModel();
         assertEquals("MyQualfier4", qualifier4.getType());
         assertEquals("xxxx", qualifier4.getArguments().get("name1"));

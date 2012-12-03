@@ -12,13 +12,15 @@ public class ListenerModelImpl implements ListenerModel {
 
     private KieSessionModelImpl kSession;
     private String type;
+    private ListenerModel.Kind kind;
     private QualifierModel qualifier;
 
     public ListenerModelImpl() { }
 
-    public ListenerModelImpl(KieSessionModelImpl kSession, String type) {
+    public ListenerModelImpl(KieSessionModelImpl kSession, String type, ListenerModel.Kind kind) {
         this.kSession = kSession;
         this.type = type;
+        this.kind = kind;
     }
 
     public String getType() {
@@ -27,6 +29,14 @@ public class ListenerModelImpl implements ListenerModel {
 
     private void setType(String type) {
         this.type = type;
+    }
+
+    public ListenerModel.Kind getKind() {
+        return kind;
+    }
+
+    void setKind(ListenerModel.Kind kind) {
+        this.kind = kind;
     }
 
     public QualifierModel getQualifierModel() {
