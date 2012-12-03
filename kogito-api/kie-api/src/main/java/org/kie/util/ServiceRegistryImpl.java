@@ -32,7 +32,6 @@ package org.kie.util;
 
 import org.kie.KnowledgeBaseFactoryService;
 import org.kie.Service;
-import org.kie.SystemEventListenerService;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
@@ -186,7 +185,7 @@ public class ServiceRegistryImpl
         addDefault( "org.kie.io.ResourceFactoryService",
                     "org.drools.io.impl.ResourceFactoryServiceImpl" );
         
-        addDefault(  SystemEventListenerService.class,
+        addDefault(  "org.kie.SystemEventListenerService",
                      "org.drools.impl.SystemEventListenerServiceImpl" );
         addDefault(  KieMarshallers.class,
                      "org.drools.marshalling.impl.MarshallerProviderImpl");
