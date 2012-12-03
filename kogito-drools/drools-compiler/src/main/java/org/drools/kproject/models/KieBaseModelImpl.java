@@ -256,7 +256,23 @@ public class KieBaseModelImpl
                 }
                 writer.addAttribute( "packages", buf.toString() );
             }
-            writeList( writer, "includes", "include", kBase.getIncludes() );
+            if ( kBase.getIncludes().isEmpty() ) {
+                StringBuilder sb = new StringBuilder();
+                boolean insertComma = false;
+                for ( String include : kBase.getIncludes() ) {
+                    sb.append( include );
+                    if ( insertComma ) {
+                        sb.append( ", " );
+                    }
+                    if ( !insertComma ) {
+                        insertComma = true;
+                    }
+                }
+                writer.addAttribute( "includes", sb.toString() );
+            }
+            
+            // @TODO We only support attribte of strings for now, added nested elements with filters later 
+            //writeList( writer, "includes", "include", kBase.getIncludes() );
             
             Map<String, KieSessionModel> ksessions =  kBase.getKieSessionModels();
             if ( !ksessions.isEmpty() ) {
@@ -283,6 +299,13 @@ public class KieBaseModelImpl
                     kBase.addPackage( pkg.trim() );
                 }
             }
+            
+            String includes = reader.getAttribute( "includes" );
+            if( includes != null ) {
+                for( String include : includes.split( "," ) ) {
+                    kBase.addInclude( include.trim() );
+                }
+            }            
 
             readNodes( reader, new AbstractXStreamConverter.NodeReader() {
                 public void onNode(HierarchicalStreamReader reader,
@@ -295,11 +318,14 @@ public class KieBaseModelImpl
                             kSessions.put( kSession.getName(), kSession );
                         }
                         kBase.setKSessions( kSessions );
-                    } else if ( "includes".equals( name ) ) {
-                        for ( String include : readList( reader ) ) {
-                            kBase.addInclude( include );
-                        }
                     }
+                    
+                   // @TODO we don't use support nested includes
+//                    if ( "includes".equals( name ) ) {
+//                        for ( String include : readList( reader ) ) {
+//                            kBase.addInclude( include );
+//                        }
+//                    }
                 }
             } );
             return kBase;

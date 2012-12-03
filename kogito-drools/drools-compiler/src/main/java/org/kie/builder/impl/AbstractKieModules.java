@@ -71,7 +71,7 @@ public abstract class AbstractKieModules
         indexParts( kieModules, kBaseModels, kSessionModels, kJarFromKBaseName );       
         
         for ( KieBaseModel model : kBaseModels.values() ) {
-            createKieBase( model, this, messages );
+            createKieBase( ( KieBaseModelImpl)  model, this, messages );
         }
      }    
 
@@ -163,10 +163,10 @@ public abstract class AbstractKieModules
 
     public static KieBase createKieBase(KieBaseModel kBaseModel,
                                         KieProject indexedParts) {
-        return createKieBase(kBaseModel, indexedParts, new Messages() );
+        return createKieBase(( KieBaseModelImpl ) kBaseModel, indexedParts, new Messages() );
     }
     
-    public static KieBase createKieBase(KieBaseModel kBaseModel,
+    public static KieBase createKieBase(KieBaseModelImpl kBaseModel,
                                         KieProject indexedParts,
                                         Messages messages) {
         CompositeClassLoader cl = indexedParts.createClassLaoder(); // the most clone the CL, as each builder and rbase populates it
