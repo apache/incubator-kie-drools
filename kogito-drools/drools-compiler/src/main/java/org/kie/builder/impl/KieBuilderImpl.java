@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -62,7 +63,7 @@ public class KieBuilderImpl
 
     private MemoryFileSystem     trgMfs;
 
-    private MemoryKieModules         kieJar;
+    private MemoryKieModules         kieModule;
 
     private PomModel             pomModel;
     private byte[]               pomXml;
@@ -71,7 +72,7 @@ public class KieBuilderImpl
     private byte[]               kieProjectXml;
     private KieModuleModel      kieProject;
     
-    private Collection<InternalKieModule>   dependencies;
+    private Collection<KieModule>   dependencies;
 
     public KieBuilderImpl(File file) {
         this.srcMfs = new DiskResourceReader( file );
@@ -83,6 +84,12 @@ public class KieBuilderImpl
         init();
     }
 
+    public KieBuilder setDependencies(Collection<KieModule> dependencies) {
+        this.dependencies = dependencies;
+        return this;
+    }
+    
+    
     private void init() {
         KieFactory kf = KieFactory.Factory.get();
 
@@ -111,18 +118,26 @@ public class KieBuilderImpl
             trgMfs = new MemoryFileSystem();
             writePomAndKProject();
 
-            kieJar = new MemoryKieModules( gav,
-                                       kieProject,
-                                       trgMfs );
-            
             ClassLoader classLoader = compileJavaClasses();
-            addKBasesFilesToTrg( );
-            
-            kieJar = new MemoryKieModules(gav, kieProject, trgMfs);
-            kieJar.verify( messages );
+            addKBasesFilesToTrg();
+
+            kieModule = new MemoryKieModules( gav,
+                                              kieProject,
+                                              trgMfs );
+
+            if ( dependencies != null && !dependencies.isEmpty() ) {
+                Map<GAV, InternalKieModule> modules = new HashMap<GAV, InternalKieModule>();
+                for ( KieModule kieModule : dependencies ) {
+                    modules.put( kieModule.getGAV(),
+                                 (InternalKieModule) kieModule );
+                }
+                kieModule.setDependencies( modules );
+            }
+
+            kieModule.verify( messages );
 
             if ( !hasResults( Level.ERROR ) ) {
-                KieServices.Factory.get().getKieRepository().addKieJar( kieJar );
+                KieServices.Factory.get().getKieRepository().addKieJar( kieModule );
             }
         }
         return new ResultsImpl( messages.getMessages(),
@@ -232,14 +247,14 @@ public class KieBuilderImpl
         if ( !isBuilt() ) {
             build();
         }
-        if ( hasResults( Level.ERROR ) || kieJar == null ) {
+        if ( hasResults( Level.ERROR ) || kieModule == null ) {
             throw new RuntimeException( "Unable to get KieJar, Errors Existed" );
         }
-        return kieJar;
+        return kieModule;
     }
 
     private boolean isBuilt() {
-        return kieJar != null;
+        return kieModule != null;
     }
 
     private void buildKieProject() {

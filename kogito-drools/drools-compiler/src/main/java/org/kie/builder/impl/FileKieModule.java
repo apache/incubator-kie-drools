@@ -1,22 +1,13 @@
 package org.kie.builder.impl;
 
-import org.drools.compiler.io.memory.MemoryFileSystem;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Collection;
+
 import org.drools.core.util.IoUtils;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.kie.builder.GAV;
-import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieSessionModel;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FileKieModule extends AbstractKieModules implements InternalKieModule {
     private final GAV              gav;

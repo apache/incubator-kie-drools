@@ -6,7 +6,6 @@ import java.util.Map;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
-import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieContainer;
@@ -15,7 +14,6 @@ import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,12 +47,10 @@ public class KieContainerImpl
     }
 
     public void updateToVersion(GAV version) {
-        //throw new UnsupportedOperationException( "The " + getClass().getSimpleName() + " cannot be updated" );
+        // @TODO
+        throw new UnsupportedOperationException( "This method is still to be implemented" );
     }
 
-    public void updateKieJar(KieModule kieJar) {
-        //throw new UnsupportedOperationException( "The " + getClass().getSimpleName() + " cannot be updated" );
-    }
 
     public KieBase getKieBase() {
         return getKieBase( KieBaseModelImpl.DEFAULT_KIEBASE_NAME );
@@ -73,11 +69,13 @@ public class KieContainerImpl
     }
 
     public KieSession getKieSession() {
-        return null;
+        // @TODO
+        throw new UnsupportedOperationException( "This method is still to be implemented" );
     }
 
     public StatelessKieSession getKieStatelessSession() {
-        return null;
+        // @TODO
+        throw new UnsupportedOperationException( "This method is still to be implemented" );
     }
     
     public KieSession getKieSession(String kSessionName) {
