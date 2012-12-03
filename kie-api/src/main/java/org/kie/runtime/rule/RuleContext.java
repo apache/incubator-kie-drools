@@ -55,18 +55,18 @@ public interface RuleContext extends KnowledgeContext {
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
      */
-    void blockActivation(Match match);
+    void blockMatch(Match match);
     
     /** 
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
      */    
-    public void unblockAllActivations(Match match);
+    public void unblockAllMatches(Match match);
     
     /** 
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
      */    
-    public void cancelActivation(Match match);
+    public void cancelMatch(Match match);
     
 }
