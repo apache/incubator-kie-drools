@@ -19,7 +19,7 @@ public interface KieServices {
     /**
      * Returns KieContainer for the classpath
      */
-    KieContainer getKieContainer();
+    KieContainer getKieClasspathContainer();
     
     KieContainer getKieContainer(GAV gav);
     
