@@ -9,8 +9,8 @@ public interface KieFileSystem {
     KieFileSystem writePomXML(byte[] content);
     KieFileSystem writePomXML(String content);
 
-    KieFileSystem writeProjectXML(byte[] content);
-    KieFileSystem writeProjectXML(String content);
+    KieFileSystem writeKModuleXML(byte[] content);
+    KieFileSystem writeKModuleXML(String content);
     
     KieFileSystem write(String path, byte[] content);
     KieFileSystem write(String path, String content);
