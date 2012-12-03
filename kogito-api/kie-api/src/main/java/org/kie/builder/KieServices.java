@@ -17,10 +17,7 @@ public interface KieServices {
     KieRepository getKieRepository();
 
     /**
-     * Returns a KieContainer for the default GAV, as defined by KieRepository. 
-     * 
-     * @return
-     *     KieContainer
+     * Returns KieContainer for the classpath
      */
     KieContainer getKieContainer();
     
@@ -40,7 +37,8 @@ public interface KieServices {
     
     KieBuilder newKieBuilder(File rootFolder);
     
-    KieBuilder newKieBuilder(KieFileSystem kieFileSystem);    
+    KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
+    
 
     public static class Factory {
         private static KieServices INSTANCE;
