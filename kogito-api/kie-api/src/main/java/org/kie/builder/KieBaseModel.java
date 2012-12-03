@@ -14,8 +14,6 @@ public interface KieBaseModel {
 
     Map<String, KieSessionModel> getKieSessionModels();
 
-    Set<String> getIncludes();
-
     KieBaseModel addInclude(String kBaseQName);
 
     KieBaseModel removeInclude(String kBaseQName);
