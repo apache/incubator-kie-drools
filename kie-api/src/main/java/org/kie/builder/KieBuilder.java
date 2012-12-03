@@ -12,5 +12,5 @@ public interface KieBuilder {
     
     Results getResults();
 
-    KieJar getKieJar();
+    KieModule getKieJar();
 }
