@@ -60,7 +60,7 @@ public class KieBaseModelImpl
     }
 
     public boolean isDefault() {
-        return name == DEFAULT_KIEBASE_NAME;
+        return name.equals(DEFAULT_KIEBASE_NAME);
     }
 
     @SuppressWarnings("unchecked")

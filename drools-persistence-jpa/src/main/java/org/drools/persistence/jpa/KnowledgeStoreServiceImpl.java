@@ -15,16 +15,13 @@
  */
  package org.drools.persistence.jpa;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
-
 import org.drools.SessionConfiguration;
 import org.drools.command.CommandService;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
+import org.kie.KieBase;
 import org.kie.KnowledgeBase;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.CommandExecutor;
@@ -32,6 +29,10 @@ import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.TimerJobFactoryOption;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
 
 public class KnowledgeStoreServiceImpl
     implements
@@ -53,7 +54,7 @@ public class KnowledgeStoreServiceImpl
         setProcessSignalManagerFactoryClass( "org.jbpm.persistence.processinstance.JPASignalManagerFactory" );
     }
 
-    public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
+    public StatefulKnowledgeSession newStatefulKnowledgeSession(KieBase kbase,
                                                                 KnowledgeSessionConfiguration configuration,
                                                                 Environment environment) {
         if ( configuration == null ) {
@@ -70,7 +71,7 @@ public class KnowledgeStoreServiceImpl
     }
 
     public StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
-                                                                 KnowledgeBase kbase,
+                                                                 KieBase kbase,
                                                                  KnowledgeSessionConfiguration configuration,
                                                                  Environment environment) {
         if ( configuration == null ) {
@@ -88,9 +89,9 @@ public class KnowledgeStoreServiceImpl
     }
 
     private CommandExecutor buildCommandService(Integer sessionId,
-                                              KnowledgeBase kbase,
-                                              KnowledgeSessionConfiguration conf,
-                                              Environment env) {
+                                                KieBase kbase,
+                                                KnowledgeSessionConfiguration conf,
+                                                Environment env) {
 
         try {
             Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
@@ -117,9 +118,9 @@ public class KnowledgeStoreServiceImpl
         }
     }
 
-    private CommandExecutor buildCommandService(KnowledgeBase kbase,
-                                              KnowledgeSessionConfiguration conf,
-                                              Environment env) {
+    private CommandExecutor buildCommandService(KieBase kbase,
+                                                KnowledgeSessionConfiguration conf,
+                                                Environment env) {
 
         Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
         try {
