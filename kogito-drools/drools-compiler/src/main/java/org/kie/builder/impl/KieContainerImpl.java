@@ -3,6 +3,7 @@ package org.kie.builder.impl;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
+import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieContainer;
@@ -39,7 +40,9 @@ public class KieContainerImpl
                             KieRepository kr) {
         this.kr = kr;
         this.kProject = kProject;
-        this.kProject.verify();
+        if (kProject != null) {
+            this.kProject.verify();
+        }
     }
 
     public GAV getGAV() {
@@ -58,10 +61,14 @@ public class KieContainerImpl
     public KieBase getKieBase(String kBaseName) {
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
-            kBase = AbstractKieModules.createKieBase( kProject.getKieBaseModel( kBaseName ),
-                                                      kProject );
-            if ( kBase != null ) {
-                kBases.put(  kBaseName, kBase );
+            if (kProject != null) {
+                kBase = AbstractKieModules.createKieBase( kProject.getKieBaseModel( kBaseName ),
+                                                          kProject );
+                if ( kBase != null ) {
+                    kBases.put(  kBaseName, kBase );
+                }
+            } else {
+                return KnowledgeBaseFactory.newKnowledgeBase();
             }
         }
         return kBase;
