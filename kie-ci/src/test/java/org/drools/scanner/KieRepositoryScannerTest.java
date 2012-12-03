@@ -11,12 +11,12 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
-import org.kie.builder.impl.InternalKieJar;
+import org.kie.builder.impl.InternalKieModule;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
@@ -60,7 +60,7 @@ public class KieRepositoryScannerTest {
         KieFactory kf = KieFactory.Factory.get();
         GAV gav = kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
-        InternalKieJar kJar1 = createKieJar(ks, kf, gav, "rule1", "rule2");
+        InternalKieModule kJar1 = createKieJar(ks, kf, gav, "rule1", "rule2");
         KieContainer kieContainer = ks.getKieContainer(gav);
 
         MavenRepository repository = getMavenRepository();
@@ -71,7 +71,7 @@ public class KieRepositoryScannerTest {
         checkKSession(ksession, "rule1", "rule2");
 
         // create a new kjar
-        InternalKieJar kJar2 = createKieJar(ks, kf, gav, "rule2", "rule3");
+        InternalKieModule kJar2 = createKieJar(ks, kf, gav, "rule2", "rule3");
 
         // deploy it on maven
         repository.deployArtifact(gav, kJar2, kPom);
@@ -93,7 +93,7 @@ public class KieRepositoryScannerTest {
         KieFactory kf = KieFactory.Factory.get();
         GAV gav = kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
-        InternalKieJar kJar1 = createKieJarWithClass(ks, kf, gav, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, kf, gav, 2, 7);
 
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(gav, kJar1, kPom);
@@ -104,7 +104,7 @@ public class KieRepositoryScannerTest {
         KieSession ksession = kieContainer.getKieSession("KSession1");
         checkKSession(ksession, 14);
 
-        InternalKieJar kJar2 = createKieJarWithClass(ks, kf, gav, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, kf, gav, 3, 5);
         repository.deployArtifact(gav, kJar2, kPom);
 
         scanner.scanNow();
@@ -137,7 +137,7 @@ public class KieRepositoryScannerTest {
 
         resetFileManager();
 
-        InternalKieJar kJar1 = createKieJarWithClass(ks, kf, gav1, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, kf, gav1, 2, 7);
         repository.deployArtifact(gav1, kJar1, createKPom("1.0"));
 
         KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-master-test", "1.0"));
@@ -146,7 +146,7 @@ public class KieRepositoryScannerTest {
 
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
-        InternalKieJar kJar2 = createKieJarWithClass(ks, kf, gav2, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, kf, gav2, 3, 5);
         repository.deployArtifact(gav2, kJar2, createKPom("2.0"));
 
         scanner.scanNow();
@@ -199,7 +199,7 @@ public class KieRepositoryScannerTest {
         return pomFile;
     }
 
-    private InternalKieJar createKieJar(KieServices ks, KieFactory kf, GAV gav, String... rules) throws IOException {
+    private InternalKieModule createKieJar(KieServices ks, KieFactory kf, GAV gav, String... rules) throws IOException {
         KieFileSystem kfs = kf.newKieFileSystem();
         for (String rule : rules) {
             String file = "org/test/" + rule + ".drl";
@@ -220,7 +220,7 @@ public class KieRepositoryScannerTest {
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
-        return ( InternalKieJar ) kieBuilder.getKieJar();
+        return ( InternalKieModule ) kieBuilder.getKieJar();
     }
 
     private String createDRL(String ruleName) {
@@ -245,7 +245,7 @@ public class KieRepositoryScannerTest {
         }
     }
 
-    private InternalKieJar createKieJarWithClass(KieServices ks, KieFactory kf, GAV gav, int value, int factor) throws IOException {
+    private InternalKieModule createKieJarWithClass(KieServices ks, KieFactory kf, GAV gav, int value, int factor) throws IOException {
         KieFileSystem kieFileSystem = kf.newKieFileSystem();
 
         KieProjectModel kproj = kf.newKieProject();
@@ -265,7 +265,7 @@ public class KieRepositoryScannerTest {
 
         KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);
         assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
-        return ( InternalKieJar ) kieBuilder.getKieJar();
+        return ( InternalKieModule ) kieBuilder.getKieJar();
     }
 
     private String createJavaSource(int factor) {

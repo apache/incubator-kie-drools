@@ -14,7 +14,7 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
@@ -247,7 +247,7 @@ public class KieBuilderTest {
             fail("Unable to build KieJar\n" + kb.getResults( ).toString() );
         }
         KieRepository kr = ks.getKieRepository();
-        KieJar kJar = kr.getKieJar( gav );
+        KieModule kJar = kr.getKieJar( gav );
         assertNotNull( kJar );
         
         KieContainer kContainer = ks.getKieContainer( gav );

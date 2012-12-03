@@ -26,7 +26,7 @@ import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KnowledgeBuilder;
@@ -65,7 +65,7 @@ public class KieBuilderImpl
 
     private long                 idGenerator = 1L;
 
-    private MemoryKieJar         kieJar;
+    private MemoryKieModules         kieJar;
 
     private PomModel             pomModel;
     private byte[]               pomXml;
@@ -74,7 +74,7 @@ public class KieBuilderImpl
     private byte[]               kieProjectXml;
     private KieProjectModel      kieProject;
     
-    private Collection<InternalKieJar>   dependencies;
+    private Collection<InternalKieModule>   dependencies;
 
     public KieBuilderImpl(File file) {
         this.srcMfs = new DiskResourceReader( file );
@@ -114,12 +114,11 @@ public class KieBuilderImpl
             trgMfs = new MemoryFileSystem();
             writePomAndKProject();
 
-            kieJar = new MemoryKieJar( gav,
+            kieJar = new MemoryKieModules( gav,
                                        kieProject,
-                                       trgMfs );            
-            kieJar.setDependencies( dependencies );
+                                       trgMfs );
             
-            ClassLoader classLoader = compileJavaClasses();
+            //ClassLoader classLoader = compileJavaClasses();
             addKBasesFilesToTrg( );
             
             //validateKBases();
@@ -271,7 +270,7 @@ public class KieBuilderImpl
                                 null );
     }
 
-    public KieJar getKieJar() {
+    public KieModule getKieJar() {
         if ( !isBuilt() ) {
             build();
         }

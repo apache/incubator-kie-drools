@@ -12,43 +12,23 @@ import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.kie.builder.GAV;
 import org.kie.builder.KieProjectModel;
 
-public class ZipKieJar implements InternalKieJar {
-    private final GAV              gav;
+public class ZipKieModule extends AbstractKieModules implements InternalKieModule {
     private final File             file;
-    private final KieProjectModel  kieProject;
-    
-    private Collection<InternalKieJar> dependencies;
-    
+    private final KieProjectModel  kieProject;    
     private Map<String, ZipEntry> zipEntries;
 
-    public ZipKieJar(GAV gav,
+    public ZipKieModule(GAV gav,
                      KieProjectModel kieProject,
                      File file) {
-        this.gav = gav;
+        super( gav );
         this.file = file;
         this.kieProject = kieProject;   
         this.zipEntries = IoUtils.buildZipFileMapEntries( file );
     }
     
     @Override
-    public GAV getGAV() {
-        return gav;
-    }
-
-    @Override
     public File getFile() {
         return this.file;
-    }
-    
-    @Override
-    public void setDependencies(Collection<InternalKieJar> dependencies) {
-        this.dependencies = dependencies;
-    }
-
-
-    @Override
-    public Collection<InternalKieJar> getDependencies() {
-        return dependencies;
     }
 
 

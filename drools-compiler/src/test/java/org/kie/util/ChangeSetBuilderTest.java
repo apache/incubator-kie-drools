@@ -16,10 +16,10 @@ import org.junit.Test;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 import org.kie.builder.KieProjectModel;
 import org.kie.builder.KieSessionModel;
-import org.kie.builder.impl.InternalKieJar;
+import org.kie.builder.impl.InternalKieModule;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;
@@ -46,8 +46,8 @@ public class ChangeSetBuilderTest {
                 "then\n" +
                 "end\n";
 
-        InternalKieJar kieJar1 = createKieJar( drl1, drl2 );
-        InternalKieJar kieJar2 = createKieJar( drl1, drl2 );
+        InternalKieModule kieJar1 = createKieJar( drl1, drl2 );
+        InternalKieModule kieJar2 = createKieJar( drl1, drl2 );
 
         ChangeSetBuilder builder = new ChangeSetBuilder();
         KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
@@ -76,8 +76,8 @@ public class ChangeSetBuilderTest {
                 "then\n" +
                 "end\n";
 
-        InternalKieJar kieJar1 = createKieJar( drl1, drl2 );
-        InternalKieJar kieJar2 = createKieJar( drl1, drl3 );
+        InternalKieModule kieJar1 = createKieJar( drl1, drl2 );
+        InternalKieModule kieJar2 = createKieJar( drl1, drl3 );
 
         KieJarChangeSet changes = new ChangeSetBuilder().build( kieJar1, kieJar2 );
         
@@ -110,8 +110,8 @@ public class ChangeSetBuilderTest {
                 "then\n" +
                 "end\n";
 
-        InternalKieJar kieJar1 = createKieJar( drl1, drl2 );
-        InternalKieJar kieJar2 = createKieJar( drl1 );
+        InternalKieModule kieJar1 = createKieJar( drl1, drl2 );
+        InternalKieModule kieJar2 = createKieJar( drl1 );
 
         KieJarChangeSet changes = new ChangeSetBuilder().build( kieJar1, kieJar2 );
 
@@ -166,8 +166,8 @@ public class ChangeSetBuilderTest {
                 "then\n" +
                 "end\n";
 
-        InternalKieJar kieJar1 = createKieJar( drl1, drl2 );
-        InternalKieJar kieJar2 = createKieJar( drl1_5, null, drl3 );
+        InternalKieModule kieJar1 = createKieJar( drl1, drl2 );
+        InternalKieModule kieJar2 = createKieJar( drl1_5, null, drl3 );
 
         ChangeSetBuilder builder = new ChangeSetBuilder();
         KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
@@ -199,8 +199,8 @@ public class ChangeSetBuilderTest {
 //        assertThat( cs.getChanges().get( 2 ), is( new ResourceChange(ChangeType.UPDATED, Type.RULE, "An updated rule") ) );
     }
 
-    private InternalKieJar createKieJar( String... drls) {
-        InternalKieJar kieJar = mock( InternalKieJar.class );
+    private InternalKieModule createKieJar( String... drls) {
+        InternalKieModule kieJar = mock( InternalKieModule.class );
         KieFactory kf = KieFactory.Factory.get();
         GAV gav = kf.newGav("org.kie", "hello-world", "1.0-SNAPSHOT");
 
@@ -215,7 +215,7 @@ public class ChangeSetBuilderTest {
         }
         when( kieJar.getBytes( KieProjectModelImpl.KPROJECT_JAR_PATH ) ).thenReturn( createKieProjectWithPackages(kf, gav).toXML().getBytes() );
         when( kieJar.getFileNames() ).thenReturn( drlFs );
-        return ( InternalKieJar ) kieJar;
+        return ( InternalKieModule ) kieJar;
     }
     
     private KieProjectModel createKieProjectWithPackages(KieFactory kf, GAV gav) {

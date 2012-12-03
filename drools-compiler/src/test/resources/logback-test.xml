@@ -9,7 +9,7 @@
     </encoder>
   </appender>
 
-  <logger name="org.drools" level="info"/>
+  <logger name="org.drools" level="debug"/>
   <logger name="org.mortbay" level="warn"/>
 
   <root level="info"><!-- TODO We probably want to set default level to warn instead -->

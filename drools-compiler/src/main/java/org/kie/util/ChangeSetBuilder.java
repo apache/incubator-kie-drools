@@ -27,9 +27,9 @@ import org.drools.compiler.DrlParser;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 import org.kie.builder.ResourceType;
-import org.kie.builder.impl.InternalKieJar;
+import org.kie.builder.impl.InternalKieModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class ChangeSetBuilder {
     
     private final Logger logger = LoggerFactory.getLogger( ChangeSetBuilder.class );
 
-    public KieJarChangeSet build( InternalKieJar original, InternalKieJar currentJar ) {
+    public KieJarChangeSet build( InternalKieModule original, InternalKieModule currentJar ) {
         KieJarChangeSet result = new KieJarChangeSet();
         
         Collection<String> originalFiles = original.getFileNames();

@@ -2,7 +2,7 @@ package org.kie.builder.impl;
 
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieJar;
+import org.kie.builder.KieModule;
 
 import java.io.InputStream;
 import java.util.ArrayList;
