@@ -43,23 +43,23 @@ public class KieBuilderImpl
     implements
     KieBuilder {
 
-    private static final String RESOURCES_ROOT = "src/main/resources/";
+    private static final String   RESOURCES_ROOT = "src/main/resources/";
 
-    private Messages             messages;
-    private final ResourceReader srcMfs;
+    private Messages              messages;
+    private final ResourceReader  srcMfs;
 
-    private MemoryFileSystem     trgMfs;
+    private MemoryFileSystem      trgMfs;
 
-    private MemoryKieModules         kieModule;
+    private MemoryKieModules      kModule;
 
-    private PomModel             pomModel;
-    private byte[]               pomXml;
-    private GAV                  gav;
+    private PomModel              pomModel;
+    private byte[]                pomXml;
+    private GAV                   gav;
 
-    private byte[]               kieProjectXml;
-    private KieModuleModel      kieProject;
-    
-    private Collection<KieModule>   dependencies;
+    private byte[]                kModuleModelXml;
+    private KieModuleModel        kModuleModel;
+
+    private Collection<KieModule> dependencies;
 
     public KieBuilderImpl(File file) {
         this.srcMfs = new DiskResourceReader( file );
@@ -86,9 +86,9 @@ public class KieBuilderImpl
         // if pomXml is invalid, it assign pomModel to null
         buildPomModel();
 
-        // if kprojectXML is null it will generate a default kproject, with a default kbase name
-        // if kprojectXML is  invalid, it will kieProject to null
-        buildKieProject();
+        // if kModuleModelXML is null it will generate a default kModule, with a default kbase name
+        // if kModuleModelXML is  invalid, it will kModule to null
+        buildKieModuleModel();
 
         if ( pomModel != null ) {
             // creates GAV from build pom
@@ -100,16 +100,16 @@ public class KieBuilderImpl
     }
 
     public Results build() {
-        // gav and kieProject will be null if a provided pom.xml or project.xml is invalid
-        if ( !isBuilt() && gav != null && kieProject != null ) {
+        // gav and kModule will be null if a provided pom.xml or kmodule.xml is invalid
+        if ( !isBuilt() && gav != null && kModuleModel != null ) {
             trgMfs = new MemoryFileSystem();
-            writePomAndKProject();
+            writePomAndKModule();
 
             compileJavaClasses();
             addKBasesFilesToTrg();
 
-            kieModule = new MemoryKieModules( gav,
-                                              kieProject,
+            kModule = new MemoryKieModules( gav,
+                                              kModuleModel,
                                               trgMfs );
 
             if ( dependencies != null && !dependencies.isEmpty() ) {
@@ -118,13 +118,13 @@ public class KieBuilderImpl
                     modules.put( kieModule.getGAV(),
                                  (InternalKieModule) kieModule );
                 }
-                kieModule.setDependencies( modules );
+                kModule.setDependencies( modules );
             }
 
-            kieModule.verify( messages );
+            kModule.verify( messages );
 
             if ( !hasResults( Level.ERROR ) ) {
-                KieServices.Factory.get().getKieRepository().addKieModule( kieModule );
+                KieServices.Factory.get().getKieRepository().addKieModule( kModule );
             }
         }
         return new ResultsImpl( messages.getMessages(),
@@ -132,7 +132,7 @@ public class KieBuilderImpl
     }
 
     private void addKBasesFilesToTrg() {
-        for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
+        for ( KieBaseModel kieBaseModel : kModuleModel.getKieBaseModels().values() ) {
             addKBaseFilesToTrg( kieBaseModel );            
         }
     }
@@ -232,32 +232,32 @@ public class KieBuilderImpl
         if ( !isBuilt() ) {
             build();
         }
-        if ( hasResults( Level.ERROR ) || kieModule == null ) {
+        if ( hasResults( Level.ERROR ) || kModule == null ) {
             throw new RuntimeException( "Unable to get KieModule, Errors Existed" );
         }
-        return kieModule;
+        return kModule;
     }
 
     private boolean isBuilt() {
-        return kieModule != null;
+        return kModule != null;
     }
 
-    private void buildKieProject() {
-        if ( srcMfs.isAvailable( KieModuleModelImpl.KPROJECT_SRC_PATH ) ) {
-            kieProjectXml = srcMfs.getBytes( KieModuleModelImpl.KPROJECT_SRC_PATH );
+    private void buildKieModuleModel() {
+        if ( srcMfs.isAvailable( KieModuleModelImpl.KMODULE_SRC_PATH ) ) {
+            kModuleModelXml = srcMfs.getBytes( KieModuleModelImpl.KMODULE_SRC_PATH );
             try {
-                kieProject = KieModuleModelImpl.fromXML( new ByteArrayInputStream( kieProjectXml ) );
+                kModuleModel = KieModuleModelImpl.fromXML( new ByteArrayInputStream( kModuleModelXml ) );
             } catch ( Exception e ) {
                 messages.addMessage(  Level.ERROR,
-                                      "kproject.xml",
-                                      "kproject.xml found, but unable to read\n" + e.getMessage() );
+                                      "kmodule.xml",
+                                      "kmodulet.xml found, but unable to read\n" + e.getMessage() );
             }
         } else {
             KieFactory kf = KieFactory.Factory.get();
-            kieProject = kf.newKieModuleModel();
+            kModuleModel = kf.newKieModuleModel();
 
-            ((KieModuleModelImpl) kieProject).newDefaultKieBaseModel();
-            kieProjectXml = kieProject.toXML().getBytes();
+            ((KieModuleModelImpl) kModuleModel).newDefaultKieBaseModel();
+            kModuleModelXml = kModuleModel.toXML().getBytes();
         }
     }
 
@@ -295,7 +295,7 @@ public class KieBuilderImpl
         }
     }
 
-    public void writePomAndKProject() {
+    public void writePomAndKModule() {
         addMetaInfBuilder();
 
         if ( pomXml != null ) {
@@ -309,9 +309,9 @@ public class KieBuilderImpl
 
         }
 
-        if ( kieProjectXml != null ) {
-            trgMfs.write( KieModuleModelImpl.KPROJECT_JAR_PATH,
-                          kieProject.toXML().getBytes(),
+        if ( kModuleModelXml != null ) {
+            trgMfs.write( KieModuleModelImpl.KMODULE_JAR_PATH,
+                          kModuleModel.toXML().getBytes(),
                           true );
         }
     }

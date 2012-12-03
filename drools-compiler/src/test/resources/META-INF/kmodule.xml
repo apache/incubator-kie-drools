@@ -1,4 +1,4 @@
-<kproject>
+<kmodule>
 
   <kbases>
     <kbase name="org.kie.kbase1" equalsBehavior="EQUALITY" eventProcessingMode="STREAM">
@@ -9,4 +9,4 @@
     </kbase>
   </kbases>
   
-</kproject>
+</kmodule>

@@ -130,7 +130,7 @@ public class AbstractKnowledgeTest {
         
         KieFileSystemImpl kfs =  ( KieFileSystemImpl ) KieFactory.Factory.get().newKieFileSystem();
         kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
-        kfs.writeProjectXML( ((KieModuleModelImpl)kproj).toXML()  );
+        kfs.writeKModuleXML( ((KieModuleModelImpl)kproj).toXML()  );
         
         GAV gav = KieFactory.Factory.get().newGav( namespace, "art1", "1.0-SNAPSHOT" );
         kfs.generateAndWritePomXML( gav );        

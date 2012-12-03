@@ -4,8 +4,11 @@ import org.drools.cdi.KProjectExtension;
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.xml.MinimalPomParser;
+import org.drools.xml.PomModel;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
@@ -15,7 +18,10 @@ import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,7 +38,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * Discovers all KieModules on the classpath, via the kproject.xml file.
+ * Discovers all KieModules on the classpath, via the kmodule.xml file.
  * KieBaseModels and KieSessionModels are then indexed, with helper lookups
  * Each resulting KieModule is added to the KieRepository
  *
@@ -74,27 +80,28 @@ public class ClasspathKieProject
 
         final Enumeration<URL> e;
         try {
-            e = classLoader.getResources( "META-INF/kproject.xml" );
+            e = classLoader.getResources( KieModuleModelImpl.KMODULE_JAR_PATH );
         } catch ( IOException exc ) {
-            log.error( "Unable to find and build index of kproject.xml \n" + exc.getMessage() );
+            log.error( "Unable to find and build index of kmodule.xml \n" + exc.getMessage() );
             return;
         }
 
-        List<KieModuleModel> kProjects = new ArrayList<KieModuleModel>();
+        List<KieModuleModel> kModules = new ArrayList<KieModuleModel>();
 
-        // Map of kproject urls
+        // Map of kmodule urls
         Map<KieModuleModel, String> urls = new IdentityHashMap<KieModuleModel, String>();
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();
             try {
                 KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
-                kProjects.add( kieProject );
+                kModules.add( kieProject );
 
                 String fixedURL = fixURL( url );
                 urls.put( kieProject,
                           fixedURL );
 
                 String pomProperties = getPomProperties( fixedURL );
+                
                 GAV gav = GAVImpl.fromPropertiesString( pomProperties );
 
                 String rootPath = fixedURL;
@@ -114,16 +121,18 @@ public class ClasspathKieProject
                                            file );
                 } else {
                     // if it's a file it must be zip and end with .jar, otherwise we log an error
-                    log.error( "Unable to build index of kproject.xml url=" + url.toExternalForm() + "\n" );
+                    log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" );
                     continue;
                 }
                 kJars.put( gav,
                            kJar );
 
+                log.debug( "Discovered classpath module " + gav.toExternalForm() );
+                
                 kr.addKieModule(kJar);
 
             } catch ( Exception exc ) {
-                log.error( "Unable to build index of kproject.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
+                log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
             }
         }
     }
@@ -151,7 +160,9 @@ public class ClasspathKieProject
                 }
                 ZipEntry zipEntry = zipFile.getEntry( file );
 
-                return StringUtils.readFileAsString( new InputStreamReader( zipFile.getInputStream( zipEntry ) ) );
+                String pomProps = StringUtils.readFileAsString( new InputStreamReader( zipFile.getInputStream( zipEntry ) ) ); 
+                log.debug( "Found and used pom.properties " + file);
+                return pomProps;
             } catch ( Exception e ) {
                 log.error( "Unable to load pom.properties from" + urlPathToAdd + "\n" + e.getMessage() );
             } finally {
@@ -169,9 +180,10 @@ public class ClasspathKieProject
                     throw new IOException();
                 }
                 reader = new FileReader( file );
+                log.debug( "Found and used pom.properties " + file);
                 return StringUtils.toString( reader );
             } catch ( Exception e ) {
-                log.error( "Unable to load pom.properties from" + urlPathToAdd + "\n" + e.getMessage() );
+                log.warn( "Unable to load pom.properties tried recursing down from" + urlPathToAdd + "\n" + e.getMessage() );
             } finally {
                 if ( reader != null ) {
                     try {
@@ -180,6 +192,51 @@ public class ClasspathKieProject
                         log.error( "Error when closing InputStream to " + urlPathToAdd + "\n" + e.getMessage() );
                     }
                 }
+            }
+            
+            
+            
+            // recurse until we reach root or find a pom.xml
+            File file = null;
+            for ( File folder = new File( rootPath ); folder != null; folder = new File( folder.getParent() ) ) {
+                file = new File( folder, "pom.xml" );
+                if ( file.exists() ) {
+                    break;
+                }
+                file = null;
+            }
+            
+            if ( file != null ) {
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream( file ) ;
+                    PomModel pomModel = MinimalPomParser.parse( rootPath + "/pom.xml",
+                                                                    fis);
+                    
+                    KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
+                    
+                    GAVImpl gav = ( GAVImpl ) KieFactory.Factory.get().newGav( pomModel.getGroupId(),
+                                                                               pomModel.getArtifactId(),
+                                                                               pomModel.getVersion() );
+                    
+                    String str =  KieBuilderImpl.generatePomProperties( gav );
+                    log.info( "Recursed up folders,  found and used pom.xml " + file );
+                    
+                    return str;
+                    
+                } catch ( Exception e ) {
+                    log.error( "As folder project tried to fall back to pom.xml " + file + "\nbut failed with exception:\n" + e.getMessage() );
+                } finally {
+                    if ( fis != null ) {
+                        try {
+                            fis.close();
+                        } catch ( IOException e ) {
+                            log.error( "Error when closing InputStream to " + file + "\n" + e.getMessage() );
+                        }
+                    }
+                }
+            } else {
+                log.error( "As folder project tried to fall back to pom.xml, but could not find one for " + file );
             }
         }
         log.error( "Unable to load pom.properties from" + urlPathToAdd );
@@ -207,7 +264,7 @@ public class ClasspathKieProject
             }
         } else {
             urlPath = urlPath.substring( 0,
-                                         urlPath.length() - "/META-INF/kproject.xml".length() );
+                                         urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
         }
 
         // remove any remaining protocols, normally only if it was a jar
@@ -224,7 +281,7 @@ public class ClasspathKieProject
                                                 e );
         }
 
-        log.debug( "KieProject URL Type + URL: " + urlType + ":" + urlPath );
+        log.debug( "KieModule URL type=" + urlType + " url=" + urlPath );
 
         return urlPath;
     }
