@@ -28,7 +28,7 @@ public interface KieFactory {
     
     KieFileSystem newKieFileSystem( );
     
-    KieProjectModel newKieProject();
+    KieModuleModel newKieProject();
 
     public static class Factory {
         private static KieFactory INSTANCE;

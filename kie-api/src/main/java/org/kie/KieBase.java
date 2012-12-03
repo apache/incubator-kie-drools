@@ -1,4 +1,4 @@
-package org.kie.runtime;
+package org.kie;
 
 import java.util.Collection;
 import java.util.Set;
@@ -9,6 +9,10 @@ import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
 import org.kie.event.knowledgebase.KnowledgeBaseEventManager;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.StatelessKieSession;
 
 
 public interface KieBase extends KnowledgeBaseEventManager {
