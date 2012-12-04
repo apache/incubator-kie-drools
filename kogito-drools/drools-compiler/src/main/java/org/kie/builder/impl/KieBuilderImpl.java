@@ -213,8 +213,7 @@ public class KieBuilderImpl
     }
 
     static boolean isKieExtension(String fileName) {
-        return fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) ||
-               fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() );
+        return ResourceType.determineResourceType( fileName ) != null;
     }
 
     public boolean hasResults(Level... levels) {
