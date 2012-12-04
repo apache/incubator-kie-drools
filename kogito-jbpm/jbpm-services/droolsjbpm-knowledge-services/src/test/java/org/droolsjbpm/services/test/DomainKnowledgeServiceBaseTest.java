@@ -15,56 +15,168 @@
  */
 package org.droolsjbpm.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
+import org.droolsjbpm.services.api.Domain;
+import org.droolsjbpm.services.api.FileException;
+import org.droolsjbpm.services.api.FileService;
+import org.kie.definition.process.Process;
 
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.droolsjbpm.services.api.KnowledgeDomainService;
+import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
+import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
+import org.droolsjbpm.services.impl.CDISessionManager;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.Test;
-import org.kie.definition.process.Process;
-import org.kie.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
+import static org.junit.Assert.*;
+import org.junit.Ignore;
+import org.kie.commons.java.nio.file.Path;
 
 public abstract class DomainKnowledgeServiceBaseTest {
 
-    @Inject
-    protected KnowledgeDomainService knowledgeService;
     @Inject
     protected TaskServiceEntryPoint taskService;
     @Inject
     protected KnowledgeDataService dataService;
     @Inject
     protected KnowledgeAdminDataService adminDataService;
-    
+    @Inject
+    private FileService fs;
+    @Inject
+    private CDISessionManager sessionManager;
+
+            
+    @Test
+    public void simpleDomainTest() {
+        Domain myDomain = new SimpleDomainImpl("myDomain");
+        sessionManager.setDomain(myDomain);
+
+        Iterable<Path> loadFilesByType = null;
+        try {
+            loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
+        } catch (FileException ex) {
+            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (Path p : loadFilesByType) {
+            myDomain.addKsessionAsset("myKsession", p);
+        }
+
+        sessionManager.buildSessions(); //DO THIS -> OR oneSessionOneProcessStrategy.buildSessionByName("mySession");
+
+
+        ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.writedocument");
+
+
+        assertNotNull(pI);
+
+        assertEquals(1, sessionManager.getProcessInstanceIdKsession().size());
+
+        assertEquals("myKsession", sessionManager.getSessionForProcessInstanceId(pI.getId()));
+
+
+
+
+    }
+
+    @Test
+    public void simpleDomainTwoSessionsTest() {
+        Domain myDomain = new SimpleDomainImpl("myDomain");
+        sessionManager.setDomain(myDomain);
+
+        Iterable<Path> loadFilesByType = null;
+        try {
+            loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
+        } catch (FileException ex) {
+            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        int i = 0;
+        for (Path p : loadFilesByType) {
+            myDomain.addKsessionAsset("myKsession" + i, p);
+            i++;
+        }
+        
+        sessionManager.buildSessions();
+        
+        
+        Collection<String> sessionNames = sessionManager.getAllSessionsNames();
+        for (String sessionName : sessionNames) {
+            Collection<String> processDefinitionsIds = sessionManager.getProcessesInSession(sessionName);
+            for (String processDefId : processDefinitionsIds) {
+                String ksessionName = sessionManager.getProcessInSessionByName(processDefId);
+                ProcessInstance pI = sessionManager.getKsessionByName(ksessionName).startProcess(processDefId);
+                assertNotNull(pI);
+                
+            }
+        }
+        assertEquals(2, sessionManager.getProcessInstanceIdKsession().size());
+
+
+    }
+
+    @Test
+    public void testReleaseProcess() {
+        Domain myDomain = new SimpleDomainImpl("myDomain");
+        sessionManager.setDomain(myDomain);
+
+        Iterable<Path> loadFilesByType = null;
+        try {
+            loadFilesByType = fs.loadFilesByType("examples/release/", "bpmn");
+        } catch (FileException ex) {
+            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (Path p : loadFilesByType) {
+            myDomain.addKsessionAsset("myKsession", p);
+        }
+
+        sessionManager.buildSessions();
+
+        ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process");
+
+
+
+    }
+
+    //add release example here
     @Test
     public void testSimpleProcess() throws Exception {
-        
-        
-        
-        StatefulKnowledgeSession ksession = knowledgeService.getSessionByBusinessKey("default");
-        
-        assertEquals(2, dataService.getProcesses().size());
-        
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+
+        Domain myDomain = new SimpleDomainImpl("myDomain");
+        sessionManager.setDomain(myDomain);
+
+        Iterable<Path> loadFilesByType = null;
+        try {
+            loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
+        } catch (FileException ex) {
+            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (Path p : loadFilesByType) {
+            myDomain.addKsessionAsset("myKsession", p);
+        }
+
+        sessionManager.buildSessions();
+
+
+
+        StatefulKnowledgeSession ksession = sessionManager.getKsessionByName("myKsession");
+
+
+
         Collection<Process> processes = ksession.getKnowledgeBase().getProcesses();
 
-        assertEquals(2, processes.size());
+
         ProcessInstance processInstance = ksession.startProcess("org.jbpm.writedocument", null);
         ProcessInstanceDesc processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());
@@ -74,8 +186,14 @@ public abstract class DomainKnowledgeServiceBaseTest {
         Collection<NodeInstanceDesc> processInstanceHistory = dataService.getProcessInstanceHistory(0, processInstance.getId());
         Iterator<NodeInstanceDesc> iterator = processInstanceHistory.iterator();
         assertEquals(2, processInstanceHistory.size());
-        assertEquals("Start", iterator.next().getName());
-        assertEquals("Write a Document", iterator.next().getName());
+        
+        List<String> names = new ArrayList<String>(processInstanceHistory.size());
+        while(iterator.hasNext()){
+            names.add(iterator.next().getName());
+        }
+        
+        assertTrue(names.contains("Start") && names.contains("Write a Document"));
+        
         Collection<NodeInstanceDesc> processInstanceActiveNodes = dataService.getProcessInstanceActiveNodes(0, processInstance.getId());
         assertEquals(1, processInstanceActiveNodes.size());
         assertEquals("Write a Document", processInstanceActiveNodes.iterator().next().getName());
@@ -105,26 +223,29 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
 
 
-        
+
 
         List<TaskSummary> translatorTasks = taskService.getTasksAssignedAsPotentialOwner("translator", "en-UK");
         assertEquals(1, translatorTasks.size());
-        
+
         variablesCurrentState = dataService.getVariablesCurrentState(processInstance.getId());
         assertEquals(1, variablesCurrentState.size());
         assertEquals("Initial Document", variablesCurrentState.iterator().next().getNewValue());
-        
+
         processInstanceHistory = dataService.getProcessInstanceHistory(0, processInstance.getId());
         assertEquals(5, processInstanceHistory.size());
-        iterator = processInstanceHistory.iterator();
-        assertEquals("Start", iterator.next().getName());
-        assertEquals("Write a Document", iterator.next().getName());
-        assertEquals("Review and Translate", iterator.next().getName());
-        String taskName = iterator.next().getName();
-        assertTrue(("Translate Document".equals(taskName) || "Review Document".equals(taskName)));
-        taskName = iterator.next().getName();
-        assertTrue(("Translate Document".equals(taskName) || "Review Document".equals(taskName)));
         
+        iterator = processInstanceHistory.iterator();
+        names = new ArrayList<String>(processInstanceHistory.size());
+        while(iterator.hasNext()){
+            names.add(iterator.next().getName());
+        }
+        
+        assertTrue(names.contains("Start") && names.contains("Write a Document") 
+                && names.contains("Review and Translate") && names.contains("Translate Document") 
+                && names.contains("Review Document"));
+        
+
         processInstanceActiveNodes = dataService.getProcessInstanceActiveNodes(0, processInstance.getId());
         assertEquals(2, processInstanceActiveNodes.size());
         Iterator<NodeInstanceDesc> iteratorActiveNodes = processInstanceActiveNodes.iterator();
@@ -132,8 +253,8 @@ public abstract class DomainKnowledgeServiceBaseTest {
         assertTrue(("Translate Document".equals(nodeName) || "Review Document".equals(nodeName)));
         nodeName = iteratorActiveNodes.next().getName();
         assertTrue(("Translate Document".equals(nodeName) || "Review Document".equals(nodeName)));
-        
-        
+
+
         List<TaskSummary> reviewerTasks = taskService.getTasksAssignedAsPotentialOwner("reviewer", "en-UK");
         assertEquals(1, reviewerTasks.size());
 
@@ -145,29 +266,32 @@ public abstract class DomainKnowledgeServiceBaseTest {
         processInstanceHistory = dataService.getProcessInstanceHistory(0, processInstance.getId());
         assertEquals(6, processInstanceHistory.size());
         iterator = processInstanceHistory.iterator();
-        assertEquals("Start", iterator.next().getName());
-        assertEquals("Write a Document", iterator.next().getName());
-        assertEquals("Review and Translate", iterator.next().getName());
-        taskName = iterator.next().getName();
-        assertTrue(("Translate Document".equals(taskName) || "Review Document".equals(taskName)));
-        taskName = iterator.next().getName();
-        assertTrue("Translate Document".equals(taskName) || "Review Document".equals(taskName));
         
-        assertEquals("Reviewed and Translated", iterator.next().getName());
+        
+        names = new ArrayList<String>(processInstanceHistory.size());
+        while(iterator.hasNext()){
+            names.add(iterator.next().getName());
+        }
+        
+        assertTrue(names.contains("Start") && names.contains("Write a Document") 
+                && names.contains("Review and Translate") && names.contains("Translate Document") 
+                && names.contains("Review Document") && names.contains("Reviewed and Translated"));
+        
+        
 
         variablesCurrentState = dataService.getVariablesCurrentState(processInstance.getId());
         assertEquals(2, variablesCurrentState.size());
         Iterator<VariableStateDesc> variableIterator = variablesCurrentState.iterator();
         assertEquals("Initial Document", variableIterator.next().getNewValue());
         assertEquals("Reviewed Document", variableIterator.next().getNewValue());
-        
-        
+
+
         ProcessInstance pi = ksession.getProcessInstance(processInstance.getId());
         ((WorkflowProcessInstance) pi).setVariable("approval_document", "Initial Document(updated)");
-        
+
         variablesCurrentState = dataService.getVariablesCurrentState(processInstance.getId());
         assertEquals(2, variablesCurrentState.size());
-        
+
         translatorTasks = taskService.getTasksAssignedAsPotentialOwner("translator", "en-UK");
         assertEquals(1, translatorTasks.size());
 
@@ -178,28 +302,29 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
         processInstanceHistory = dataService.getProcessInstanceHistory(0, processInstance.getId());
         assertEquals(9, processInstanceHistory.size());
+        
         iterator = processInstanceHistory.iterator();
-        assertEquals("Start", iterator.next().getName());
-        assertEquals("Write a Document", iterator.next().getName());
-        assertEquals("Review and Translate", iterator.next().getName());
-        taskName = iterator.next().getName();
-        assertTrue("Translate Document".equals(taskName) || "Review Document".equals(taskName));
-        taskName = iterator.next().getName();
-        assertTrue("Translate Document".equals(taskName) || "Review Document".equals(taskName));
-        assertEquals("Reviewed and Translated", iterator.next().getName());
-        assertEquals("Reviewed and Translated", iterator.next().getName());
-        assertEquals("Report", iterator.next().getName());
-        assertEquals("End", iterator.next().getName());
+        names = new ArrayList<String>(processInstanceHistory.size());
+        while(iterator.hasNext()){
+            names.add(iterator.next().getName());
+        }
+        
+        assertTrue(names.contains("Start") && names.contains("Write a Document") 
+                && names.contains("Review and Translate") && names.contains("Translate Document") 
+                && names.contains("Review Document") && names.contains("Reviewed and Translated")
+                && names.contains("Report") && names.contains("End"));
+        
+      
 
         variablesCurrentState = dataService.getVariablesCurrentState(processInstance.getId());
         assertEquals(3, variablesCurrentState.size());
         variableIterator = variablesCurrentState.iterator();
-        
+
         assertEquals("Reviewed Document", variableIterator.next().getNewValue());
         assertEquals("Initial Document(updated)", variableIterator.next().getNewValue());
         assertEquals("Translated Document", variableIterator.next().getNewValue());
-        
-        
+
+
         processInstanceHistory = dataService.getProcessInstanceFullHistory(0, processInstance.getId());
         assertEquals(18, processInstanceHistory.size());
 
@@ -208,34 +333,51 @@ public abstract class DomainKnowledgeServiceBaseTest {
         variableIterator = variablesCurrentState.iterator();
         assertEquals("Initial Document(updated)", variableIterator.next().getNewValue());
         assertEquals("Initial Document", variableIterator.next().getNewValue());
-        
-    }
-    
-    @Test
-    public void testMultiProcessInstances(){
-        StatefulKnowledgeSession ksession = knowledgeService.getSessionByBusinessKey("default");
-         Collection<Process> processes = ksession.getKnowledgeBase().getProcesses();
 
-        assertEquals(2, processes.size());
+    }
+
+    @Test
+    public void testMultiProcessInstances() {
+
+
+        Domain myDomain = new SimpleDomainImpl("myDomain");
+        sessionManager.setDomain(myDomain);
+
+        Iterable<Path> loadFilesByType = null;
+        try {
+            loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
+        } catch (FileException ex) {
+            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (Path p : loadFilesByType) {
+            myDomain.addKsessionAsset("myKsession", p);
+        }
+
+        sessionManager.buildSessions();
+
+        StatefulKnowledgeSession ksession = sessionManager.getKsessionByName("myKsession");
+
+
+
         ProcessInstance processInstance = ksession.startProcess("org.jbpm.writedocument", null);
         ProcessInstanceDesc processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());
-        
-          processInstance = ksession.startProcess("org.jbpm.writedocument", null);
+
+        processInstance = ksession.startProcess("org.jbpm.writedocument", null);
         processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());
-        
-         Collection<ProcessInstanceDesc> processInstancesDesc = dataService.getProcessInstances();
+
+        Collection<ProcessInstanceDesc> processInstancesDesc = dataService.getProcessInstances();
         assertEquals(2, processInstancesDesc.size());
-        
-        
-       
+
+
+
 
 
         List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
         Collection<ProcessInstance> processInstances = ksession.getProcessInstances();
 
-       
+
 
         // Get Twice to test duplicated items
         tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
@@ -259,7 +401,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         List<TaskSummary> translatorTasks = taskService.getTasksAssignedAsPotentialOwner("translator", "en-UK");
         assertEquals(1, translatorTasks.size());
 
-        
+
 
 
 
@@ -270,9 +412,9 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
         taskService.complete(reviewerTasks.get(0).getId(), "reviewer", null);
 
-     
 
-        
+
+
 
 
         translatorTasks = taskService.getTasksAssignedAsPotentialOwner("translator", "en-UK");
@@ -283,15 +425,14 @@ public abstract class DomainKnowledgeServiceBaseTest {
         taskService.complete(translatorTasks.get(0).getId(), "translator", null);
         processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstanceById.getState());
-        
-       
+
+
         processInstance = ksession.startProcess("org.jbpm.writedocument", null);
         processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());
         ProcessInstanceDesc next = dataService.getProcessInstances().iterator().next();
         assertTrue(next instanceof ProcessInstanceDesc);
         assertEquals(3, dataService.getProcessInstances().size());
-        
+
     }
-    
 }

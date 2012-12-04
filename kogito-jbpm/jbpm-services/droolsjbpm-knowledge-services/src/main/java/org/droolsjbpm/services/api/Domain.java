@@ -15,21 +15,33 @@
  */
 package org.droolsjbpm.services.api;
 
-
+import java.util.List;
+import java.util.Map;
 import org.kie.commons.java.nio.file.Path;
 
 /**
  *
  * @author salaboy
  */
-public interface FileService {
-
-    void init() throws FileException;
+public interface Domain {
     
-    public void fetchChanges();
+    void setName(String name);
+    
+    String getName();
 
-    byte[] loadFile(final Path file) throws FileException;
+    Map<String, String> getAssetsDefs();
 
-    Iterable<Path> loadFilesByType(final String path, final String fileType) throws FileException;
+    void setAssetsDefs(Map<String, String> assetsDefs);
+    
+    void addAsset(String name, String path);
+
+  
+    Map<String, List<Path>> getKsessionAssets();
+
+    void setKsessionAssets(Map<String, List<Path>> ksessionAssets);
+    
+    void addKsessionAsset(String ksession, Path path);
+
+    
     
 }

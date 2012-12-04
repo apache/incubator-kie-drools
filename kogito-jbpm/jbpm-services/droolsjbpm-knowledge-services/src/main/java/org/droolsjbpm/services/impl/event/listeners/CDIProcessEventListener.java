@@ -18,6 +18,7 @@ package org.droolsjbpm.services.impl.event.listeners;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import org.droolsjbpm.services.api.SessionManager;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.process.ProcessNodeLeftEvent;
@@ -30,7 +31,6 @@ import org.kie.runtime.process.ProcessInstance;
 import org.droolsjbpm.services.api.IdentityProvider;
 import org.droolsjbpm.services.impl.helpers.NodeInstanceDescFactory;
 import org.droolsjbpm.services.impl.helpers.ProcessInstanceDescFactory;
-import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
 import org.jboss.seam.transaction.Transactional;
 
@@ -49,8 +49,11 @@ public class CDIProcessEventListener implements ProcessEventListener {
 
     private String domainName;
     
+    private SessionManager sessionManager;
+    
     public CDIProcessEventListener() {
     }
+    
     
     
     
@@ -72,10 +75,12 @@ public class CDIProcessEventListener implements ProcessEventListener {
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent pce) {
-        //do nothing
         ProcessInstance processInstance = pce.getProcessInstance();
         int sessionId = ((StatefulKnowledgeSession)pce.getKnowledgeRuntime()).getId();
         em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
+        if(sessionManager != null){
+            sessionManager.getProcessInstanceIdKsession().remove(processInstance.getId());
+        }
     }
 
     public void afterProcessCompleted(ProcessCompletedEvent pce) {
@@ -125,6 +130,11 @@ public class CDIProcessEventListener implements ProcessEventListener {
     public void setDomainName(String domainName) {
         this.domainName = domainName;
     }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+    
     
     
     

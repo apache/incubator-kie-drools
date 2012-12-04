@@ -26,6 +26,8 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.droolsjbpm.services.api.Domain;
+import org.droolsjbpm.services.api.SessionManager;
 
 import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
@@ -64,7 +66,6 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
     
     @Inject
     private CDIKbaseEventListener kbaseEventListener;
-    // This must be replaced by the VFS
     
     @Inject
     private BPMN2DataService bpmn2Service;
@@ -94,7 +95,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Iterable<Path> loadFilesByType = null;
         try {
-            loadFilesByType = fs.loadFilesByType("bpmn2/","bpmn");
+            loadFilesByType = fs.loadFilesByType("examples/general/","bpmn");
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

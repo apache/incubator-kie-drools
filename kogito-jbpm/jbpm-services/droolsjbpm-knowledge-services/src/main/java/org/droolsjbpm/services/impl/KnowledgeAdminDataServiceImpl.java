@@ -36,6 +36,7 @@ public class KnowledgeAdminDataServiceImpl implements KnowledgeAdminDataService{
         deleted += em.createQuery("delete from  ProcessInstanceDesc pid").executeUpdate();
         deleted += em.createQuery("delete from  ProcessDesc pd").executeUpdate();
         deleted += em.createQuery("delete from  VariableStateDesc vsd").executeUpdate();
+        deleted += em.createQuery("delete from  ProcessInputDesc pidesc").executeUpdate();
         return deleted;
     }
     

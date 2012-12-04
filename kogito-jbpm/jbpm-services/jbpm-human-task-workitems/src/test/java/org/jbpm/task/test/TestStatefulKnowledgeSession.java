@@ -28,231 +28,234 @@ import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
 
 public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
-	public static int testSessionId = 5;
-	private Environment env;
-	public Calendars getCalendars() {
-		return null;
-	}
 
-	public Map<String, Channel> getChannels() {
-		return null;
-	}
+    public static int testSessionId = 5;
+    private Environment env;
 
-        public void setEnvironment(Environment env){
-            this.env = env;
-        }
-	public Environment getEnvironment() {
-		return this.env;
-	}
+    public Calendars getCalendars() {
+        return null;
+    }
 
-	public Object getGlobal(String arg0) {
-		return null;
-	}
+    public Map<String, Channel> getChannels() {
+        return null;
+    }
 
-	public Globals getGlobals() {
-		return null;
-	}
+    public void setEnvironment(Environment env) {
+        this.env = env;
+    }
 
-	public KnowledgeBase getKnowledgeBase() {
-		return null;
-	}
+    public Environment getEnvironment() {
+        return this.env;
+    }
 
-	public <T extends SessionClock> T getSessionClock() {
-		return null;
-	}
+    public Object getGlobal(String arg0) {
+        return null;
+    }
 
-	public KnowledgeSessionConfiguration getSessionConfiguration() {
-		return null;
-	}
+    public Globals getGlobals() {
+        return null;
+    }
 
-	public void registerChannel(String arg0, Channel arg1) {
-	}
+    public KnowledgeBase getKnowledgeBase() {
+        return null;
+    }
 
-	public void registerExitPoint(String arg0, ExitPoint arg1) {
-	}
+    public <T extends SessionClock> T getSessionClock() {
+        return null;
+    }
 
-	public void setGlobal(String arg0, Object arg1) {
-	}
+    public KnowledgeSessionConfiguration getSessionConfiguration() {
+        return null;
+    }
 
-	public void unregisterChannel(String arg0) {
-	}
+    public void registerChannel(String arg0, Channel arg1) {
+    }
 
-	public void unregisterExitPoint(String arg0) {
-	}
+    public void registerExitPoint(String arg0, ExitPoint arg1) {
+    }
 
-	public void addEventListener(AgendaEventListener arg0) {
-	}
+    public void setGlobal(String arg0, Object arg1) {
+    }
 
-	public void addEventListener(WorkingMemoryEventListener arg0) {
-	}
+    public void unregisterChannel(String arg0) {
+    }
 
-	public Collection<AgendaEventListener> getAgendaEventListeners() {
-		return null;
-	}
+    public void unregisterExitPoint(String arg0) {
+    }
 
-	public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-		return null;
-	}
+    public void addEventListener(AgendaEventListener arg0) {
+    }
 
-	public void removeEventListener(AgendaEventListener arg0) {
-	}
+    public void addEventListener(WorkingMemoryEventListener arg0) {
+    }
 
-	public void removeEventListener(WorkingMemoryEventListener arg0) {
-	}
+    public Collection<AgendaEventListener> getAgendaEventListeners() {
+        return null;
+    }
 
-	public void abortProcessInstance(long arg0) {
-	}
+    public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
+        return null;
+    }
 
-	public ProcessInstance createProcessInstance(String arg0,
-			Map<String, Object> arg1) {
-		return null;
-	}
+    public void removeEventListener(AgendaEventListener arg0) {
+    }
 
-	public ProcessInstance getProcessInstance(long arg0) {
-		return null;
-	}
+    public void removeEventListener(WorkingMemoryEventListener arg0) {
+    }
 
-	public Collection<ProcessInstance> getProcessInstances() {
-		return null;
-	}
-	
-	private WorkItemManager workItemManager;
-	
-	public void setWorkItemManager(WorkItemManager workItemManager) {
-		this.workItemManager = workItemManager;
-	}
+    public void abortProcessInstance(long arg0) {
+    }
 
-	public WorkItemManager getWorkItemManager() {
-		return workItemManager;
-	}
+    public ProcessInstance createProcessInstance(String arg0,
+            Map<String, Object> arg1) {
+        return null;
+    }
 
-	public void signalEvent(String arg0, Object arg1, long arg2) {
-	}
+    public ProcessInstance getProcessInstance(long arg0) {
+        return null;
+    }
 
-	public void signalEvent(String arg0, Object arg1) {
-	}
+    public Collection<ProcessInstance> getProcessInstances() {
+        return null;
+    }
+    private WorkItemManager workItemManager;
 
-	public ProcessInstance startProcess(String arg0, Map<String, Object> arg1) {
-		return null;
-	}
+    public void setWorkItemManager(WorkItemManager workItemManager) {
+        this.workItemManager = workItemManager;
+    }
 
-	public ProcessInstance startProcess(String arg0) {
-		return null;
-	}
+    public WorkItemManager getWorkItemManager() {
+        return workItemManager;
+    }
 
-	public ProcessInstance startProcessInstance(long arg0) {
-		return null;
-	}
+    public void signalEvent(String arg0, Object arg1, long arg2) {
+    }
 
-	public Agenda getAgenda() {
-		return null;
-	}
+    public void signalEvent(String arg0, Object arg1) {
+    }
 
-	public QueryResults getQueryResults(String arg0, Object... arg1) {
-		return null;
-	}
+    public ProcessInstance startProcess(String arg0, Map<String, Object> arg1) {
+        return null;
+    }
 
-	public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String arg0) {
-		return null;
-	}
+    public ProcessInstance startProcess(String arg0) {
+        return null;
+    }
 
-	public Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
-		return null;
-	}
+    public ProcessInstance startProcessInstance(long arg0) {
+        return null;
+    }
 
-	public void halt() {
-	}
+    public Agenda getAgenda() {
+        return null;
+    }
 
-	public LiveQuery openLiveQuery(String arg0, Object[] arg1,
-			ViewChangedEventListener arg2) {
-		return null;
-	}
+    public QueryResults getQueryResults(String arg0, Object... arg1) {
+        return null;
+    }
 
-	public int fireAllRules() {
-		return 0;
-	}
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String arg0) {
+        return null;
+    }
 
-	public int fireAllRules(AgendaFilter arg0, int arg1) {
-		return 0;
-	}
+    public Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+        return null;
+    }
 
-	public int fireAllRules(AgendaFilter arg0) {
-		return 0;
-	}
+    public void halt() {
+    }
 
-	public int fireAllRules(int arg0) {
-		return 0;
-	}
+    public LiveQuery openLiveQuery(String arg0, Object[] arg1,
+            ViewChangedEventListener arg2) {
+        return null;
+    }
 
-	public void fireUntilHalt() {
-	}
+    public int fireAllRules() {
+        return 0;
+    }
 
-	public void fireUntilHalt(AgendaFilter arg0) {
-	}
+    public int fireAllRules(AgendaFilter arg0, int arg1) {
+        return 0;
+    }
 
-	public <T> T execute(Command<T> arg0) {
-		return null;
-	}
+    public int fireAllRules(AgendaFilter arg0) {
+        return 0;
+    }
 
-	public void addEventListener(ProcessEventListener arg0) {
-	}
+    public int fireAllRules(int arg0) {
+        return 0;
+    }
 
-	public Collection<ProcessEventListener> getProcessEventListeners() {
-		return null;
-	}
+    public void fireUntilHalt() {
+    }
 
-	public void removeEventListener(ProcessEventListener arg0) {
-	}
+    public void fireUntilHalt(AgendaFilter arg0) {
+    }
 
-	public String getEntryPointId() {
-		return null;
-	}
+    public <T> T execute(Command<T> arg0) {
+        return null;
+    }
 
-	public long getFactCount() {
-		return 0;
-	}
+    public void addEventListener(ProcessEventListener arg0) {
+    }
 
-	public FactHandle getFactHandle(Object arg0) {
-		return null;
-	}
+    public Collection<ProcessEventListener> getProcessEventListeners() {
+        return null;
+    }
 
-	public <T extends FactHandle> Collection<T> getFactHandles() {
-		return null;
-	}
+    public void removeEventListener(ProcessEventListener arg0) {
+    }
 
-	public <T extends FactHandle> Collection<T> getFactHandles(ObjectFilter arg0) {
-		return null;
-	}
+    public String getEntryPointId() {
+        return null;
+    }
 
-	public Object getObject(FactHandle arg0) {
-		return null;
-	}
+    public long getFactCount() {
+        return 0;
+    }
 
-	public Collection<Object> getObjects() {
-		return null;
-	}
+    public FactHandle getFactHandle(Object arg0) {
+        return null;
+    }
 
-	public Collection<Object> getObjects(ObjectFilter arg0) {
-		return null;
-	}
+    public <T extends FactHandle> Collection<T> getFactHandles() {
+        return null;
+    }
 
-	public FactHandle insert(Object arg0) {
-		return null;
-	}
+    public <T extends FactHandle> Collection<T> getFactHandles(ObjectFilter arg0) {
+        return null;
+    }
+
+    public Object getObject(FactHandle arg0) {
+        return null;
+    }
+
+    public Collection<Object> getObjects() {
+        return null;
+    }
+
+    public Collection<Object> getObjects(ObjectFilter arg0) {
+        return null;
+    }
+
+    public FactHandle insert(Object arg0) {
+        return null;
+    }
 
     public void retract(FactHandle arg0) {
     }
 
-    public void delete(FactHandle arg0) {
+    public void update(FactHandle arg0, Object arg1) {
     }
 
-	public void update(FactHandle arg0, Object arg1) {
-	}
+    public void dispose() {
+    }
 
-	public void dispose() {
-	}
+    public int getId() {
+        return testSessionId;
+    }
 
-	public int getId() {
-		return testSessionId; 
-	}
+    @Override
+    public void delete(FactHandle fh) {
+    }
 }
