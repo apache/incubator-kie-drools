@@ -15,6 +15,8 @@
  */
 package org.droolsjbpm.services.impl.bpmn2;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
@@ -32,6 +34,7 @@ public class ProcessDescRepoHelper {
     private Map<String, Map<String, String>> taskOutputMappings = new HashMap<String, Map<String, String>>();
     private Map<String, String> inputs = new HashMap<String, String>();
     private Map<String, String> taskAssignments = new HashMap<String, String>();
+    private Collection<String> reusableSubProcesses = new ArrayList<String>();
 
     public ProcessDescRepoHelper() {
     }
@@ -72,5 +75,14 @@ public class ProcessDescRepoHelper {
         taskOutputMappings.clear();
         inputs.clear();
         taskAssignments.clear();
+        reusableSubProcesses.clear();
+    }
+
+    public Collection<String> getReusableSubProcesses() {
+        return reusableSubProcesses;
+    }
+
+    public void setReusableSubProcesses(Collection<String> reusableSubProcesses) {
+        this.reusableSubProcesses = reusableSubProcesses;
     }
 }

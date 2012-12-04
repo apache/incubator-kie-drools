@@ -15,10 +15,15 @@
  */
 package org.droolsjbpm.services.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -34,7 +39,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -83,10 +87,9 @@ public class BPMN2DataServicesTest {
 
     }
     @Inject
-    private BPMN2DataService bpmn2Service;
-    
-    @Inject
     private KnowledgeDomainService knolwedgeService;
+    @Inject
+    private BPMN2DataService bpmn2Service;
 
     public BPMN2DataServicesTest() {
     }
@@ -101,6 +104,7 @@ public class BPMN2DataServicesTest {
 
     @Before
     public void setUp() {
+        knolwedgeService.getAvailableProcesses();
     }
 
     @After
@@ -109,7 +113,7 @@ public class BPMN2DataServicesTest {
 
     @Test
     public void hello() throws IOException {
-        String theString = knolwedgeService.getAvailableProcesses().get("org.jbpm.writedocument");
+        String theString = "org.jbpm.writedocument";
         
 
         Collection<TaskDef> processTasks = bpmn2Service.getAllTasksDef(theString);
@@ -126,5 +130,17 @@ public class BPMN2DataServicesTest {
         
         assertEquals(1, taskOutputMappings.keySet().size());
         
+    }
+    
+    @Test
+    public void testFindReusableSubProcesses() {
+        String theString = "ParentProcess";
+        
+        assertNotNull(theString);
+        Collection<String> reusableProcesses = bpmn2Service.getReusableSubProcesses(theString);
+        assertNotNull(reusableProcesses);
+        assertEquals(1, reusableProcesses.size());
+        
+        assertEquals("signal", reusableProcesses.iterator().next());
     }
 }

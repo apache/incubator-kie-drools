@@ -18,21 +18,25 @@ package org.droolsjbpm.services.impl.bpmn2;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
+
 import org.drools.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.io.impl.ByteArrayResource;
+import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.ResourceType;
+import org.kie.definition.KnowledgePackage;
 
 /**
  *
@@ -44,18 +48,18 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     @Inject
     private TaskServiceEntryPoint taskService;
     @Inject
+    private KnowledgeDomainService knolwedgeService;
+    @Inject
     private BPMN2DataServiceSemanticModule module;
     private BPMN2ProcessProvider provider;
-    
     @Inject
-    private ProcessDescRepoHelper repo;
+    private ProcessDescriptionRepository repo;
     
     public BPMN2DataServiceImpl() {
     }
 
     @PostConstruct
     public void init() {
-        module.setRepo(repo);
         provider = new BPMN2ProcessProvider() {
             @Override
             public void configurePackageBuilder(PackageBuilder packageBuilder) {
@@ -67,130 +71,102 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
         };
     }
 
-    public Map<String, String> getTaskInputMappings(String bpmn2Content, String taskName){
-        if (bpmn2Content == null || "".equals(bpmn2Content)) {
-            throw new IllegalStateException("The Process Content cannot be Empty!");
+    public Map<String, String> getTaskInputMappings(String processId, String taskName){
+        if (processId == null || "".equals(processId)) {
+            throw new IllegalStateException("The Process id cannot be Empty!");
         }
-        repo.clear();
-        BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
-        if (originalProvider != provider) {
-            BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
+        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
+        if (helper == null) {
+            throw new IllegalStateException("No process available with given id : " + processId);
         }
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-       
-        kbuilder.add(new ByteArrayResource(bpmn2Content.getBytes()), ResourceType.BPMN2);
-        if (kbuilder.hasErrors()) {
-            throw new IllegalStateException("Process Cannot be Parsed!");
-        }
-        
-        BPMN2ProcessFactory.setBPMN2ProcessProvider(originalProvider);
-        
-        return repo.getTaskInputMappings().get(taskName);
+        return helper.getTaskInputMappings().get(taskName);
     }
     
-     public Map<String, String> getTaskOutputMappings(String bpmn2Content, String taskName){
-        if (bpmn2Content == null || "".equals(bpmn2Content)) {
-            throw new IllegalStateException("The Process Content cannot be Empty!");
-        }
-        repo.clear();
-        BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
-        if (originalProvider != provider) {
-            BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
-        }
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-       
-        kbuilder.add(new ByteArrayResource(bpmn2Content.getBytes()), ResourceType.BPMN2);
-        if (kbuilder.hasErrors()) {
-            throw new IllegalStateException("Process Cannot be Parsed!");
+     public Map<String, String> getTaskOutputMappings(String processId, String taskName){
+        if (processId == null || "".equals(processId)) {
+            throw new IllegalStateException("The Process id cannot be Empty!");
         }
         
-        BPMN2ProcessFactory.setBPMN2ProcessProvider(originalProvider);
-        
-        return repo.getTaskOutputMappings().get(taskName);
+        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
+        if (helper == null) {
+            throw new IllegalStateException("No process available with given id : " + processId);
+        }
+        return helper.getTaskOutputMappings().get(taskName);
     }
 
 
-    public Collection<TaskDef> getAllTasksDef(String bpmn2Content){
-        if (bpmn2Content == null || "".equals(bpmn2Content)) {
-            throw new IllegalStateException("The Process Content cannot be Empty!");
+    public Collection<TaskDef> getAllTasksDef(String processId){
+        if (processId == null || "".equals(processId)) {
+            throw new IllegalStateException("The Process id cannot be Empty!");
         }
-        repo.clear();
-        BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
-        if (originalProvider != provider) {
-            BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
+    
+        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
+        if (helper == null) {
+            throw new IllegalStateException("No process available with given id : " + processId);
         }
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-       
-        kbuilder.add(new ByteArrayResource(bpmn2Content.getBytes()), ResourceType.BPMN2);
-        if (kbuilder.hasErrors()) {
-            throw new IllegalStateException("Process Cannot be Parsed!");
-        }
-        
-        BPMN2ProcessFactory.setBPMN2ProcessProvider(originalProvider);
-        
-        return repo.getTasks().values();
+        return helper.getTasks().values();
     }
 
-    public Map<String, String> getAssociatedEntities(String bpmn2Content) {
-        if (bpmn2Content == null || "".equals(bpmn2Content)) {
-            throw new IllegalStateException("The Process Content cannot be Empty!");
-        }
-        repo.clear(); 
-        BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
-        if (originalProvider != provider) {
-            BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
-        }
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-       
-        kbuilder.add(new ByteArrayResource(bpmn2Content.getBytes()), ResourceType.BPMN2);
-        if (kbuilder.hasErrors()) {
-            throw new IllegalStateException("Process Cannot be Parsed!");
+    public Map<String, String> getAssociatedEntities(String processId) {
+        if (processId == null || "".equals(processId)) {
+            throw new IllegalStateException("The Process id cannot be Empty!");
         }
         
-        BPMN2ProcessFactory.setBPMN2ProcessProvider(originalProvider);
-        
-        return repo.getTaskAssignments();
+        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
+        if (helper == null) {
+            throw new IllegalStateException("No process available with given id : " + processId);
+        }
+        return helper.getTaskAssignments();
     }
 
     public List<String> getAssociatedDomainObjects(String bpmn2Content) {
          throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Map<String, String> getProcessData(String bpmn2Content) {
-        if (bpmn2Content == null || "".equals(bpmn2Content)) {
-            throw new IllegalStateException("The Process Content cannot be Empty!");
+    public Map<String, String> getProcessData(String processId) {
+        if (processId == null || "".equals(processId)) {
+            throw new IllegalStateException("The Process id cannot be Empty!");
         }
-        repo.clear();
-        BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
-        if (originalProvider != provider) {
-            BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
+        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
+        if (helper == null) {
+            throw new IllegalStateException("No process available with given id : " + processId);
         }
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-       
-        kbuilder.add(new ByteArrayResource(bpmn2Content.getBytes()), ResourceType.BPMN2);
-        if (kbuilder.hasErrors()) {
-            throw new IllegalStateException("Process Cannot be Parsed!");
-        }
-        
-        BPMN2ProcessFactory.setBPMN2ProcessProvider(originalProvider);
-        
-        return repo.getInputs();
+        return helper.getInputs();
     }
 
     public List<String> getAssociatedForms(String processId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public ProcessDesc getProcessDesc(String bpmn2Content){
+    public ProcessDesc getProcessDesc(String processId){
+        if (processId == null || "".equals(processId)) {
+            throw new IllegalStateException("The Process id cannot be Empty!");
+        }
+        
+        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
+        if (helper == null) {
+            throw new IllegalStateException("No process available with given id : " + processId);
+        }
+        return helper.getProcess();
+    }
+
+    @Override
+    public Collection<String> getReusableSubProcesses(String processId) {
+        if (processId == null || "".equals(processId)) {
+            throw new IllegalStateException("The Process id cannot be Empty!");
+        }
+        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
+        if (helper == null) {
+            throw new IllegalStateException("No process available with given id : " + processId);
+        }
+        return helper.getReusableSubProcesses();
+    }
+
+    @Override
+    public String findProcessId(String bpmn2Content) {
         if (bpmn2Content == null || "".equals(bpmn2Content)) {
             throw new IllegalStateException("The Process Content cannot be Empty!");
         }
-        repo.clear();
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
@@ -205,6 +181,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
         
         BPMN2ProcessFactory.setBPMN2ProcessProvider(originalProvider);
         
-        return repo.getProcess();
+        KnowledgePackage pckg = kbuilder.getKnowledgePackages().iterator().next();
+        return pckg.getProcesses().iterator().next().getId();
     }
 }

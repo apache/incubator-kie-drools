@@ -39,6 +39,7 @@ import org.kie.event.knowledgebase.BeforeRuleRemovedEvent;
 import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
 import org.jboss.seam.transaction.Transactional;
 import org.kie.definition.process.Process;
+import org.droolsjbpm.services.impl.bpmn2.ProcessDescriptionRepository;
 import org.droolsjbpm.services.impl.helpers.ProcessDescFactory;
 /**
  *
@@ -50,6 +51,8 @@ public class CDIKbaseEventListener implements KnowledgeBaseEventListener{
 
     @Inject
     private EntityManager em; 
+    @Inject
+    private ProcessDescriptionRepository repository;
     
     private String domainName;
     
@@ -115,7 +118,7 @@ public class CDIKbaseEventListener implements KnowledgeBaseEventListener{
 
     public void afterProcessAdded(AfterProcessAddedEvent apae) {
         Process process = apae.getProcess();
-        em.persist(ProcessDescFactory.newProcessDesc(this.domainName, process));
+        em.persist(ProcessDescFactory.newProcessDesc(this.domainName, process));       
     }
 
     public void beforeProcessRemoved(BeforeProcessRemovedEvent bpre) {
@@ -123,7 +126,7 @@ public class CDIKbaseEventListener implements KnowledgeBaseEventListener{
     }
 
     public void afterProcessRemoved(AfterProcessRemovedEvent apre) {
-        
+        repository.removeProcessDescription(apre.getProcess().getId());
     }
 
     public String getDomainName() {

@@ -102,9 +102,8 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
         for(Path p: loadFilesByType){
             System.out.println(" >>>>>>>>>>>>>>>>>>>>>>>>>>> Loading -> "+p.toString());
             String processString = new String(Files.readAllBytes(p));
-            availableProcesses.put(bpmn2Service.getProcessDesc(processString).getId(), processString);
-            kbuilder.add(ResourceFactory.newByteArrayResource(Files.readAllBytes(p)), ResourceType.BPMN2);
-            
+            availableProcesses.put(bpmn2Service.findProcessId(processString), processString);
+            kbuilder.add(ResourceFactory.newByteArrayResource(Files.readAllBytes(p)), ResourceType.BPMN2);            
         }
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

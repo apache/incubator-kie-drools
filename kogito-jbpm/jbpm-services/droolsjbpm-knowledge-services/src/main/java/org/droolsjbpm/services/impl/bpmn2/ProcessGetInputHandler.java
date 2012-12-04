@@ -15,6 +15,8 @@
  */
 package org.droolsjbpm.services.impl.bpmn2;
 
+import javax.inject.Inject;
+
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
 import org.jbpm.bpmn2.xml.PropertyHandler;
@@ -28,6 +30,8 @@ public class ProcessGetInputHandler extends PropertyHandler implements Handler {
 
     
     private ProcessDescRepoHelper repo;
+    @Inject
+    private ProcessDescriptionRepository repository;
     
     public ProcessGetInputHandler() {
             super();
@@ -38,9 +42,11 @@ public class ProcessGetInputHandler extends PropertyHandler implements Handler {
     public Object start(final String uri, final String localName,
                     final Attributes attrs, final ExtensibleXmlParser parser)
                     throws SAXException {
+        String mainProcessId = repo.getProcess().getId();
+        
         Object result = super.start(uri, localName, attrs, parser);
         if(result instanceof Variable){
-            repo.getInputs().put(((Variable)result).getName(), ((Variable)result).getType().getStringType());
+            repository.getProcessDesc(mainProcessId).getInputs().put(((Variable)result).getName(), ((Variable)result).getType().getStringType());
         }
         
         return result;

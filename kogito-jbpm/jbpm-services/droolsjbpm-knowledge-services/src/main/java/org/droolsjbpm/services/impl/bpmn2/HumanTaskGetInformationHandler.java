@@ -33,6 +33,9 @@ import org.w3c.dom.Node;
 public class HumanTaskGetInformationHandler extends UserTaskHandler {
 
     private ProcessDescRepoHelper repo;
+    
+    @Inject
+    private ProcessDescriptionRepository repository;
 
     /**
      * Creates a new {@link HumanTaskGetInformationHandler} instance.
@@ -84,16 +87,18 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         for (Map.Entry<String, String> out : dataOutputs.entrySet()) {
             outputParams.put(out.getKey(), out.getValue());
         }
+        String mainProcessId = repo.getProcess().getId();
 
-        repo.getTasks().put(task.getName(), task);
-        repo.getTaskInputMappings().put(task.getName(), inputParams);
-        repo.getTaskOutputMappings().put(task.getName(), outputParams);
+        repository.getProcessDesc(mainProcessId).getTasks().put(task.getName(), task);
+        repository.getProcessDesc(mainProcessId).getTaskInputMappings().put(task.getName(), inputParams);
+        repository.getProcessDesc(mainProcessId).getTaskOutputMappings().put(task.getName(), outputParams);
     }
 
     @Override
     protected String readPotentialOwner(org.w3c.dom.Node xmlNode, HumanTaskNode humanTaskNode) {
         String userOrGroup = xmlNode.getFirstChild().getFirstChild().getFirstChild().getTextContent();
-        repo.getTaskAssignments().put(humanTaskNode.getName(), userOrGroup);
+        String mainProcessId = repo.getProcess().getId();
+        repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(), userOrGroup);
         return userOrGroup;
     }
 

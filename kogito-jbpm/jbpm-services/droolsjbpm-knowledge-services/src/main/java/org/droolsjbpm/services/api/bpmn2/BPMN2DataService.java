@@ -27,12 +27,14 @@ import org.jbpm.task.TaskDef;
  * @author salaboy
  */
 public interface BPMN2DataService {
-    Map<String, String> getAssociatedEntities(String bpmn2Content);
-    List<String> getAssociatedDomainObjects(String bpmn2Content);
-    Map<String, String> getProcessData(String bpmn2Content);
-    List<String> getAssociatedForms(String bpmn2Content);
-    Collection<TaskDef> getAllTasksDef(String bpmn2Content);
-    ProcessDesc getProcessDesc(String bpmn2Content);
-    Map<String, String> getTaskInputMappings(String bpmn2Content, String taskName);
-    Map<String, String> getTaskOutputMappings(String bpmn2Content, String taskName);
+    Map<String, String> getAssociatedEntities(String processId);
+    List<String> getAssociatedDomainObjects(String processId);
+    Map<String, String> getProcessData(String processId);
+    List<String> getAssociatedForms(String processId);
+    Collection<TaskDef> getAllTasksDef(String processId);
+    ProcessDesc getProcessDesc(String processId);
+    Map<String, String> getTaskInputMappings(String processId, String taskName);
+    Map<String, String> getTaskOutputMappings(String processId, String taskName);
+    Collection<String> getReusableSubProcesses(String processId);
+    String findProcessId(String bpmn2Content);
 }

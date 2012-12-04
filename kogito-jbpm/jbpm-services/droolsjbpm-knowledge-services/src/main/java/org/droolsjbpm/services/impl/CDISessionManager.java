@@ -100,7 +100,7 @@ public class CDISessionManager implements SessionManager {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             for (Path path : ksessionAssets.get(session)) {
                 String processString = new String(Files.readAllBytes(path));
-                addProcessDefinitionToSession(session, bpmn2Service.getProcessDesc(processString).getId());
+                addProcessDefinitionToSession(session, bpmn2Service.findProcessId(processString));
                 kbuilder.add(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
             }
             

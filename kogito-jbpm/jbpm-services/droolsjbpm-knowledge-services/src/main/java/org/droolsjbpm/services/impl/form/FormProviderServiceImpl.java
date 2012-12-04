@@ -84,11 +84,11 @@ public class FormProviderServiceImpl implements FormProviderService {
         InputStream template = getClass().getResourceAsStream("/ftl/DefaultProcess.ftl");
         
         String processString = domainService.getAvailableProcesses().get(processId);
-        Map<String, String> processData = bpmn2Service.getProcessData(processString);
+        Map<String, String> processData = bpmn2Service.getProcessData(processId);
         if(processData == null){
             processData = new HashMap<String,String>();
         }
-        ProcessDesc processDesc = bpmn2Service.getProcessDesc(processString);
+        ProcessDesc processDesc = bpmn2Service.getProcessDesc(processId);
         Map<String, Object> renderContext = new HashMap<String, Object>();
         renderContext.put("process", processDesc);
         renderContext.put("outputs", processData);
@@ -134,12 +134,9 @@ public class FormProviderServiceImpl implements FormProviderService {
         String processId = task.getTaskData().getProcessId();
         Map<String, String> taskOutputMappings = null;
         if (processId != null && !processId.equals("")) {
-            String processDef = domainService.getAvailableProcesses().get(processId);
             
-            if (processDef != null && !processDef.equals("")) {
-   
-                taskOutputMappings = bpmn2Service.getTaskOutputMappings(processDef, task.getNames().iterator().next().getText());
-            }
+            taskOutputMappings = bpmn2Service.getTaskOutputMappings(processId, task.getNames().iterator().next().getText());
+            
         }
         if(taskOutputMappings == null){
              taskOutputMappings = new HashMap<String, String>();
@@ -188,10 +185,8 @@ public class FormProviderServiceImpl implements FormProviderService {
     }
     
     @Override
-    public FormRepresentation getAssociatedForm(String bpmn2, String taskName) {
+    public FormRepresentation getAssociatedForm(String processName, String taskName) {
     	try {
-    		ProcessDesc desc = bpmn2Service.getProcessDesc(bpmn2);
-			String processName = desc.getId();
 			TaskDef actualTask = null;
     		List<FormRepresentation> forms = formService.getForms();
 	        FormRepresentation retval = null;

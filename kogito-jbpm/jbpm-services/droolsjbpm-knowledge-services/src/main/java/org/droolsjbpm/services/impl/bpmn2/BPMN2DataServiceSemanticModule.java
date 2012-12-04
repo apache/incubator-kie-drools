@@ -21,15 +21,14 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 
 public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
 
-    
-    private ProcessDescRepoHelper repo;
-    
     @Inject 
     private HumanTaskGetInformationHandler taskHandler;
     @Inject 
     private ProcessGetInformationHandler processHandler;
     @Inject 
     private ProcessGetInputHandler processInputHandler;
+    @Inject
+    private GetReusableSubProcessesHandler reusableSubprocessHandler;
     
     public BPMN2DataServiceSemanticModule() {
         super();
@@ -38,19 +37,16 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
     
     @PostConstruct
     public void init(){
-
+        ProcessDescRepoHelper repoHelper = new ProcessDescRepoHelper();
+        taskHandler.setRepo(repoHelper);
+        processHandler.setRepo(repoHelper);
+        processInputHandler.setRepo(repoHelper);
+        reusableSubprocessHandler.setRepo(repoHelper);
+        
         addHandler("userTask", taskHandler);
         addHandler("process", processHandler);
         addHandler("property", processInputHandler);
-    }
-
-    public void setRepo(ProcessDescRepoHelper repo) {
-        this.repo = repo;
-        taskHandler.setRepo(repo);
-        processHandler.setRepo(repo);
-        processInputHandler.setRepo(repo);
-    }
-    
-    
+        addHandler("callActivity", reusableSubprocessHandler);
+    }    
     
 }

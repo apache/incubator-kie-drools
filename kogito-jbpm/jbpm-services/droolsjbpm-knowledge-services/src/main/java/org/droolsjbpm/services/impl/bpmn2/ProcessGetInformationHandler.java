@@ -29,6 +29,8 @@ import org.xml.sax.SAXException;
 public class ProcessGetInformationHandler extends ProcessHandler {
 
     @Inject
+    private ProcessDescriptionRepository repository;
+    @Inject
     private TaskServiceEntryPoint taskService;
     @Inject
     private EntityManager em;
@@ -46,14 +48,25 @@ public class ProcessGetInformationHandler extends ProcessHandler {
         final String processType = attrs.getValue("type");
         final String namespace = attrs.getValue("namespace");
         final String version = attrs.getValue("version");
-
-        repo.setProcess(new ProcessDesc(processId, processName, version, packageName, processType, "", namespace, ""));
-
+        
+        ProcessDescRepoHelper value = new ProcessDescRepoHelper();        
+        value.setProcess(new ProcessDesc(processId, processName, version, packageName, processType, "", namespace, ""));
+        repository.addProcessDescription(processId, value);
+        
+        repo.setProcess(value.getProcess());
+        
         return super.start(uri, localName, attrs, parser);
     }
 
     
     public void setRepo(ProcessDescRepoHelper repo) {
         this.repo = repo;
+    }
+
+    @Override
+    public Object end(String uri, String localName, ExtensibleXmlParser parser)
+            throws SAXException {
+        repo.clear();
+        return super.end(uri, localName, parser);
     }
 }
