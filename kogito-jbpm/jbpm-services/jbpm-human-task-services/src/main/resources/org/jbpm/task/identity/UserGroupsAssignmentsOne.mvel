@@ -11,7 +11,7 @@ usersgroups = [ new User('Darth Vader') : [new Group( "Knights Templer" ),  new 
                 new User('Elizabeth Windsor') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
                 new User('Bruce Wayne' ) : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],   
                 new User('Tony Stark') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
-                new User('salaboy') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('salaboy') : [new Group( "Knights Templer" ), new Group( "Release Manager" ), new Group( "Crusaders" )],
                 new User('translator') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
                 new User('reviewer') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
                 new User('Luke Cage') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],      

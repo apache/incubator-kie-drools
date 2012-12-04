@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.droolsjbpm.services.api.Domain;
 import org.kie.commons.java.nio.file.Path;
+import org.kie.runtime.process.WorkItemHandler;
 
 /**
  *
@@ -34,7 +35,6 @@ public class SimpleDomainImpl implements Domain{
     // Ksession Name / List of assets Paths
     private Map<String, List<Path>> ksessionAssets = new HashMap<String, List<Path>>();
     
-  
     
     public SimpleDomainImpl() {
     }

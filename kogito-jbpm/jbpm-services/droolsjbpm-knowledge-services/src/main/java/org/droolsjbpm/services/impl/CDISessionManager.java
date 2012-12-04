@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.inject.Inject;
 import org.droolsjbpm.services.api.Domain;
 import org.droolsjbpm.services.api.SessionManager;
@@ -43,6 +42,7 @@ import org.kie.commons.java.nio.file.Path;
 import org.kie.io.ResourceFactory;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItemHandler;
 
 /**
  *
@@ -72,6 +72,9 @@ public class CDISessionManager implements SessionManager {
     private Map<String, Long> processInstanceIdKsession = new HashMap<String, Long>();
     // Process Path / Process Id - String 
     private Map<String, List<String>> processDefinitionNamesBySession = new HashMap<String, List<String>>();
+    
+    // Ksession Name / List of handlers
+    private Map<String, List<WorkItemHandler>> ksessionHandlers = new HashMap<String, List<WorkItemHandler>>();
 
     public CDISessionManager() {
     }
@@ -223,5 +226,7 @@ public class CDISessionManager implements SessionManager {
         }
         return "";
     }
+    
+    
     
 }

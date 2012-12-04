@@ -45,14 +45,13 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractHTWorkItemHandler.class);
     protected KnowledgeRuntime session;
-    protected OnErrorAction action;
+    protected OnErrorAction action = OnErrorAction.LOG;
 
     public AbstractHTWorkItemHandler() {
     }
 
     public AbstractHTWorkItemHandler(KnowledgeRuntime session) {
         this.session = session;
-        this.action = OnErrorAction.LOG;
     }
 
     public AbstractHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
