@@ -3,6 +3,7 @@ package org.kie.builder.impl;
 import org.drools.RuleBaseConfiguration;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.StringUtils;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
@@ -180,6 +181,9 @@ public abstract class AbstractKieModules
         Set<String> includes = kBaseModel.getIncludes();
         if ( includes != null && !includes.isEmpty() ) {
             for ( String include : includes ) {
+                if ( StringUtils.isEmpty( include ) ) {
+                    continue;
+                }
                 InternalKieModule includeModule = indexedParts.getKieModuleForKBase( include );
                 if ( includeModule == null ) {
                     log.error( "Unable to build KieBase, could not find include: " + include );

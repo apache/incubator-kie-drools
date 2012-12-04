@@ -88,7 +88,11 @@ public class KieContainerImpl
             return null;
         }        
         KieBase kBase = getKieBase( kSessionModel.getKieBaseModel().getName() );
-        return kBase.newKieSession();
+        if ( kBase != null ) {
+            return kBase.newKieSession();
+        } else {
+            return null;
+        }
     }
 
     public StatelessKieSession getKieStatelessSession(String kSessionName) {
@@ -97,7 +101,11 @@ public class KieContainerImpl
             return null;
         }
         KieBase kBase = getKieBase( kSessionModel.getKieBaseModel().getName() );
-        return kBase.newStatelessKieSession();
+        if ( kBase != null ) {
+            return kBase.newStatelessKieSession();
+        } else {
+            return null;
+        }
     }
 
     public void dispose() {

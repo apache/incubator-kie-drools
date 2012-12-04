@@ -256,14 +256,14 @@ public class KieBaseModelImpl
                 }
                 writer.addAttribute( "packages", buf.toString() );
             }
-            if ( kBase.getIncludes().isEmpty() ) {
+            if ( !kBase.getIncludes().isEmpty() ) {
                 StringBuilder sb = new StringBuilder();
                 boolean insertComma = false;
                 for ( String include : kBase.getIncludes() ) {
-                    sb.append( include );
                     if ( insertComma ) {
                         sb.append( ", " );
-                    }
+                    }                    
+                    sb.append( include );
                     if ( !insertComma ) {
                         insertComma = true;
                     }
