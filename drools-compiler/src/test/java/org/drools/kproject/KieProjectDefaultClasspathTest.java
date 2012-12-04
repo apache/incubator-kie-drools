@@ -20,8 +20,6 @@ import org.kie.builder.impl.KieContainerImpl;
 
 public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
 
-    
-
     @Test
     public void createMultpleJarAndFileResources() throws IOException,
                        ClassNotFoundException,
