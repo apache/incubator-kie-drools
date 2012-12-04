@@ -237,7 +237,7 @@ public class KieBuilderTest {
         
         KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
         generatePomXML(kfs, gav);       
-        kfs.write("src/main/resources/META-INF/kproject.xml","xxxx" ); 
+        kfs.writeKModuleXML("xxxx" );
         generateMessageClass( kfs, namespace );
         generateRule( kfs, namespace );
         
@@ -267,11 +267,11 @@ public class KieBuilderTest {
     }
 
     public void generatePomXML(KieFileSystem kfs, GAV gav) {
-        kfs.write( "pom.xml", KieBuilderImpl.generatePomXml( gav ) );
+        kfs.writePomXML( KieBuilderImpl.generatePomXml( gav ) );
     }    
     
     public void generateKProjectXML(KieFileSystem kfs, String namespace, KieModuleModel kProj) {
-        kfs.write("src/main/resources/META-INF/kproject.xml", kProj.toXML() );
+        kfs.writeKModuleXML( kProj.toXML() );
     }
     
     public void generateMessageClass(KieFileSystem kfs, String namespace) {

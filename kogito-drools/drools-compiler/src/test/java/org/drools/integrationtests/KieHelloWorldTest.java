@@ -35,7 +35,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
         ks.newKieBuilder( kfs ).build();
 
-        KieSession ksession = ks.getKieClasspathContainer().getKieSession();
+        KieSession ksession = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieSession();
         ksession.insert(new Message("Hello World"));
 
         int count = ksession.fireAllRules();

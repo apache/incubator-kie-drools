@@ -1,19 +1,7 @@
 package org.drools.kproject;
 
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.definition.type.FactType;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.net.URL;
-import java.net.URLClassLoader;
-
-import static junit.framework.Assert.assertEquals;
-
 public class KProjectTest {
-
+/*
     @Test @Ignore
     public void testKJar() throws Exception {
         // Simulate having the jar in the classpath
@@ -39,4 +27,5 @@ public class KProjectTest {
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
     }
+*/
 }

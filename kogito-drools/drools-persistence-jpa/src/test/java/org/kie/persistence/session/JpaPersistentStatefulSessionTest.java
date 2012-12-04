@@ -92,7 +92,7 @@ public class JpaPersistentStatefulSessionTest {
         KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).build();
 
-        KieBase kbase = ks.getKieContainer().getKieBase();
+        KieBase kbase = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieBase();
         KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 
         List<?> list = new ArrayList<Object>();
@@ -151,7 +151,7 @@ public class JpaPersistentStatefulSessionTest {
         KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).build();
 
-        KieBase kbase = ks.getKieContainer().getKieBase();
+        KieBase kbase = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieBase();
         KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 
         List<?> list = new ArrayList<Object>();
@@ -189,7 +189,7 @@ public class JpaPersistentStatefulSessionTest {
         KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).build();
 
-        KieBase kbase = ks.getKieContainer().getKieBase();
+        KieBase kbase = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieBase();
 
         UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
@@ -275,7 +275,7 @@ public class JpaPersistentStatefulSessionTest {
         KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).build();
 
-        KieBase kbase = ks.getKieContainer().getKieBase();
+        KieBase kbase = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieBase();
 
         KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         SingleSessionCommandService sscs = (SingleSessionCommandService)
@@ -312,7 +312,7 @@ public class JpaPersistentStatefulSessionTest {
         KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).build();
 
-        KieBase kbase = ks.getKieContainer().getKieBase();
+        KieBase kbase = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieBase();
 
         KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         List<?> list = new ArrayList<Object>();
@@ -333,7 +333,8 @@ public class JpaPersistentStatefulSessionTest {
     
     @Test
     public void testSharedReferences() {
-        KieBase kbase = KieServices.Factory.get().getKieContainer().getKieBase();
+        KieServices ks = KieServices.Factory.get();
+        KieBase kbase = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieBase();
         KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 
         Person x = new Person( "test" );
@@ -361,7 +362,7 @@ public class JpaPersistentStatefulSessionTest {
     @Test
     public void testMergeConfig() {
         // JBRULES-3155
-        KieBase kbase = KieServices.Factory.get().getKieContainer().getKieBase();
+        KieBase kbase = KieServices.Factory.get().getKieClasspathContainer().getKieBase();
 
         Properties properties = new Properties();
         properties.put("drools.processInstanceManagerFactory", "com.example.CustomJPAProcessInstanceManagerFactory");

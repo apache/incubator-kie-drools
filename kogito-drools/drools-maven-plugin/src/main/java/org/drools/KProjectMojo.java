@@ -3,13 +3,8 @@ package org.drools;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.drools.builder.impl.KnowledgeContainerImpl;
-import org.drools.kproject.models.KieModuleModelImpl;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  * This goal builds the drools file belonging to the kproject.
@@ -37,7 +32,7 @@ public class KProjectMojo extends AbstractMojo {
     private File sourceFolder;
 
     /**
-     * If it true recreates the kproject.xml file even if it already exists
+     * If it true recreates the kmodule.xml file even if it already exists
      *
      * @parameter default-value=false
      * @required
@@ -45,6 +40,7 @@ public class KProjectMojo extends AbstractMojo {
     private boolean recreate;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+/*
         File file = new File( rootFolder, KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH );
         if (!recreate && file.exists()) {
             return;
@@ -76,5 +72,6 @@ public class KProjectMojo extends AbstractMojo {
                 }
             }
         }
+*/
     }
 }

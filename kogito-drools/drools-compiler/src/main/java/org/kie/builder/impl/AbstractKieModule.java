@@ -2,7 +2,6 @@ package org.kie.builder.impl;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.kproject.models.KieBaseModelImpl;
@@ -12,7 +11,6 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieContainer;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
@@ -21,7 +19,6 @@ import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
-import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,12 +122,12 @@ public abstract class AbstractKieModule
         }
     }
 
-    public static KieBase createKieBase(KieBaseModel kBaseModel,
-                                        KieProject indexedParts) {
+    static KieBase createKieBase(KieBaseModel kBaseModel,
+                                 KieProject indexedParts) {
         return createKieBase(( KieBaseModelImpl ) kBaseModel, indexedParts, new Messages() );
     }
     
-    public static KieBase createKieBase(KieBaseModelImpl kBaseModel,
+    static KieBase createKieBase(KieBaseModelImpl kBaseModel,
                                         KieProject indexedParts,
                                         Messages messages) {
         CompositeClassLoader cl = ( CompositeClassLoader ) indexedParts.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
