@@ -12,6 +12,7 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieContainer;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
@@ -33,48 +34,58 @@ import java.util.Set;
 
 import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
 
-public abstract class AbstractKieModules
+public abstract class AbstractKieModule
     implements
     InternalKieModule {
 
-    private static final Logger                             log               = LoggerFactory.getLogger( AbstractKieModules.class );
-
-    private ClassLoader                                     classLoader;
+    private static final Logger                             log               = LoggerFactory.getLogger( AbstractKieModule.class );
 
     private final Map<String, Collection<KnowledgePackage>> packageCache      = new HashMap<String, Collection<KnowledgePackage>>();
 
     protected final GAV                                     gav;
+    
+    private final KieModuleModel                            kModuleModel;
 
     private Map<GAV, InternalKieModule>                     dependencies      =  Collections.<GAV, InternalKieModule>emptyMap();
     
-    private Map<GAV, InternalKieModule>                     kieModules;
 
-    private final Map<String, InternalKieModule>            kJarFromKBaseName = new HashMap<String, InternalKieModule>();
-
-    private final Map<String, KieBaseModel>                 kBaseModels       = new HashMap<String, KieBaseModel>();
-    private final Map<String, KieSessionModel>              kSessionModels    = new HashMap<String, KieSessionModel>();
-
-    public AbstractKieModules(GAV gav) {
+    public AbstractKieModule(GAV gav, KieModuleModel kModuleModel) {
         this.gav = gav;
-    }    
+        this.kModuleModel = kModuleModel;
+    }   
     
-    public void verify() {
-        kieModules = new HashMap<GAV, InternalKieModule>();
-        kieModules.putAll( dependencies );
-        kieModules.put( gav, this );
-        indexParts( kieModules, kBaseModels, kSessionModels, kJarFromKBaseName );        
+    public KieModuleModel getKieModuleModel() {
+        return this.kModuleModel;
     }
     
-    public void verify(Messages messages) {
-        kieModules = new HashMap<GAV, InternalKieModule>();
-        kieModules.putAll( dependencies );
-        kieModules.put( gav, this );
-        indexParts( kieModules, kBaseModels, kSessionModels, kJarFromKBaseName );       
-        
-        for ( KieBaseModel model : kBaseModels.values() ) {
-            createKieBase( ( KieBaseModelImpl)  model, this, messages );
-        }
-     }    
+//    public void index() {
+//        if ( kieModules == null ) { 
+//            kieModules = new HashMap<GAV, InternalKieModule>();
+//            kieModules.putAll( dependencies );
+//            kieModules.put( gav, this );
+//            indexParts( kieModules, kBaseModels, kSessionModels, kJarFromKBaseName );
+//        }
+//    }
+//    
+//    public Map<GAV, InternalKieModule> getKieModules() {
+//        if ( kieModules == null ) {
+//            index();
+//        }        
+//        return kieModules;
+//    }
+    
+//    public void verify(Messages messages) {
+//        if ( kieModules == null ) {
+//            kieModules = new HashMap<GAV, InternalKieModule>();
+//            kieModules.putAll( dependencies );
+//            kieModules.put( gav, this );
+//            indexParts( kieModules, kBaseModels, kSessionModels, kJarFromKBaseName );       
+//            
+//            for ( KieBaseModel model : kBaseModels.values() ) {
+//                createKieBase( ( KieBaseModelImpl)  model, this, messages );
+//            }
+//        }
+//     }    
 
     public Map<GAV, InternalKieModule> getDependencies() {
         return dependencies;
@@ -82,14 +93,6 @@ public abstract class AbstractKieModules
 
     public void setDependencies(Map<GAV, InternalKieModule> dependencies) {
         this.dependencies = dependencies;
-    }
-
-    public ClassLoader getClassLoader() {
-        return classLoader;
-    }
-
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
     }
 
     public GAV getGAV() {
@@ -100,36 +103,16 @@ public abstract class AbstractKieModules
         return packageCache;
     }
 
-    public InternalKieModule getKieModuleForKBase(String kBaseName) {
-        return this.kJarFromKBaseName.get( kBaseName );
-    }
-
-    public boolean kieBaseExists(String kBaseName) {
-        return kBaseModels.containsKey( kBaseName );
-    }
-
-    public boolean kieSessionExists(String kSessionName) {
-        return kSessionModels.containsKey( kSessionName );
-    }
-
-    public KieBaseModel getKieBaseModel(String kBaseName) {
-        return kBaseModels.get( kBaseName );
-    }
-
-    public KieSessionModel getKieSessionModel(String kSessionName) {
-        return kSessionModels.get( kSessionName );
-    }
-
     public static void indexParts(Map<GAV, InternalKieModule> kJars,
                                   Map<String, KieBaseModel> kBaseModels,
                                   Map<String, KieSessionModel> kSessionModels,
                                   Map<String, InternalKieModule> kJarFromKBaseName) {
         for ( InternalKieModule kJar : kJars.values() ) {
-            KieModuleModel kieProject = kJar.getKieProjectModel();
+            KieModuleModel kieProject = kJar.getKieModuleModel();
             for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
                 kBaseModels.put( kieBaseModel.getName(),
                                  kieBaseModel );
-                ((KieBaseModelImpl) kieBaseModel).setKProject( kieProject ); // should already be set, but just in case
+                ((KieBaseModelImpl) kieBaseModel).setKModule( kieProject ); // should already be set, but just in case
 
                 kJarFromKBaseName.put( kieBaseModel.getName(),
                                        kJar );
@@ -141,26 +124,6 @@ public abstract class AbstractKieModules
             }
         }
     }
-    
-    public CompositeClassLoader createClassLaoder() {
-        Map<String, byte[]> classes = new HashMap<String, byte[]>();
-        for( InternalKieModule kModule : kieModules.values() ) {
-            for( String fileName : kModule.getFileNames() ) {
-                 if ( fileName.endsWith( ".class" ) ) {
-                     classes.put( fileName, kModule.getBytes( fileName ) );
-                 }
-            }
-        }
-        
-        CompositeClassLoader cl;
-        if ( !classes.isEmpty() ) {             
-            cl = ClassLoaderUtil.getClassLoader( null, null, true );
-            cl.addClassLoader(  new ClassUtils.MapClassLoader( classes, cl ) );
-        } else {
-            cl = ClassLoaderUtil.getClassLoader( null, null, true );
-        }
-        return cl;
-    }    
 
     public static KieBase createKieBase(KieBaseModel kBaseModel,
                                         KieProject indexedParts) {
@@ -170,7 +133,7 @@ public abstract class AbstractKieModules
     public static KieBase createKieBase(KieBaseModelImpl kBaseModel,
                                         KieProject indexedParts,
                                         Messages messages) {
-        CompositeClassLoader cl = indexedParts.createClassLaoder(); // the most clone the CL, as each builder and rbase populates it
+        CompositeClassLoader cl = ( CompositeClassLoader ) indexedParts.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
 
         PackageBuilderConfiguration pconf = new PackageBuilderConfiguration( null,
                                                                              cl.clone() );

@@ -20,6 +20,7 @@ import org.kie.builder.impl.ClasspathKieProject;
 import org.kie.builder.impl.FileKieModule;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.builder.impl.KieContainerImpl;
+import org.kie.builder.impl.KieModuleKieProject;
 import org.kie.builder.impl.ZipKieModule;
 
 public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
@@ -73,7 +74,9 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
                   mod4 );
         mod1.setDependencies( deps );
 
-        KieContainer kContainer = new KieContainerImpl( mod1,
+        KieModuleKieProject kProject = new KieModuleKieProject(mod1, null);
+        
+        KieContainer kContainer = new KieContainerImpl( kProject,
                                                         null );
 
         KieBase kBase = kContainer.getKieBase( "jar1.KBase1" );

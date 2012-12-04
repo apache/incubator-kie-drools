@@ -8,18 +8,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collection;
 
-public class FileKieModule extends AbstractKieModules implements InternalKieModule {
+public class FileKieModule extends AbstractKieModule implements InternalKieModule {
     private final GAV              gav;
-    private final File             file;
-    private final KieModuleModel  kieProject;   
+    private final File             file;   
 
     public FileKieModule(GAV gav,
                       KieModuleModel kieProject,
                       File file) {
-        super( gav );
+        super( gav, kieProject );
         this.gav = gav;
         this.file = file;
-        this.kieProject = kieProject;
     }
 
     @Override
@@ -47,12 +45,6 @@ public class FileKieModule extends AbstractKieModules implements InternalKieModu
     @Override
     public Collection<String> getFileNames() {
         return IoUtils.recursiveListFile( file );
-    }
-
-
-    @Override
-    public KieModuleModel getKieProjectModel() {
-        return this.kieProject;
     }
 
 

@@ -14,31 +14,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MemoryKieModules extends AbstractKieModules implements ResourceReader {
+public class MemoryKieModules extends AbstractKieModule implements ResourceReader {
 
     private final MemoryFileSystem mfs;
-    private final KieModuleModel kieProject;
     
     public MemoryKieModules(GAV gav, KieModuleModel kieProject, MemoryFileSystem mfs) {
-        super(gav);
+        super(gav, kieProject);
         this.mfs = mfs;
-        this.kieProject = kieProject;
     }
     
-    public KieModuleModel getKieProjectModel() {
-        return kieProject;
-    }    
-
-    protected Map<String, KieBaseModel> indexKieSessions() {
-        Map<String, KieBaseModel> kSessions = new HashMap<String, KieBaseModel>();
-        for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
-            for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
-                kSessions.put( kieSessionModel.getName(), kieBaseModel );
-            }
-        }
-        return kSessions;
-    }
-
     @Override
     public boolean isAvailable(String path) {
         return mfs.existsFile( path );

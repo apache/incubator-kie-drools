@@ -9,6 +9,7 @@ import org.drools.xml.PomModel;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
+import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
@@ -57,6 +58,8 @@ public class ClasspathKieProject
     private Map<String, KieSessionModel>    kSessionModels    = new HashMap<String, KieSessionModel>();
 
     private KieRepository                   kr;
+    
+    private CompositeClassLoader            cl;
 
     public ClasspathKieProject() {
         this( KieServices.Factory.get().getKieRepository() );
@@ -66,9 +69,10 @@ public class ClasspathKieProject
         this.kr = kr;
     }
     
-    public void verify() {
+    public void init() {
+        this.cl = ClassLoaderUtil.getClassLoader( null, null, true );
         discoverKieModules();
-        AbstractKieModules.indexParts( kJars, kBaseModels, kSessionModels, kJarFromKBaseName );
+        AbstractKieModule.indexParts( kJars, kBaseModels, kSessionModels, kJarFromKBaseName );
     }
 
     public GAV getGAV() {
@@ -93,51 +97,62 @@ public class ClasspathKieProject
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();
             try {
-                KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
-                kModules.add( kieProject );
-
-                String fixedURL = fixURL( url );
-                urls.put( kieProject,
+                String fixedURL = fixURLFromKProjectPath( url ); 
+                InternalKieModule kModule = fetchKModule( url, fixedURL );
+                KieModuleModel kModuleModel = kModule.getKieModuleModel();
+                
+                kModules.add( kModuleModel );
+                urls.put( kModuleModel,
                           fixedURL );
 
-                String pomProperties = getPomProperties( fixedURL );
-                
-                GAV gav = GAVImpl.fromPropertiesString( pomProperties );
-
-                String rootPath = fixedURL;
-                if ( rootPath.lastIndexOf( ':' ) > 0 ) {
-                    rootPath = fixedURL.substring( rootPath.lastIndexOf( ':' ) + 1 );
-                }
-
-                InternalKieModule kJar = null;
-                File file = new File( rootPath );
-                if ( fixedURL.endsWith( ".jar" ) ) {
-                    kJar = new ZipKieModule( gav,
-                                          kieProject,
-                                          file );
-                } else if ( file.isDirectory() ) {
-                    kJar = new FileKieModule( gav,
-                                           kieProject,
-                                           file );
-                } else {
-                    // if it's a file it must be zip and end with .jar, otherwise we log an error
-                    log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" );
-                    continue;
-                }
+                GAV gav = kModule.getGAV();
                 kJars.put( gav,
-                           kJar );
+                           kModule );
 
                 log.debug( "Discovered classpath module " + gav.toExternalForm() );
                 
-                kr.addKieModule(kJar);
+                kr.addKieModule(kModule);
 
             } catch ( Exception exc ) {
                 log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
             }
         }
     }
+    public static InternalKieModule fetchKModule(URL url) {
+        return fetchKModule(url, fixURLFromKProjectPath(url));
+    }
+    
+    public static InternalKieModule fetchKModule(URL url, String fixedURL) {
+        KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
 
-    public String getPomProperties(String urlPathToAdd) {
+        String pomProperties = getPomProperties( fixedURL );
+        
+        GAV gav = GAVImpl.fromPropertiesString( pomProperties );
+
+        String rootPath = fixedURL;
+        if ( rootPath.lastIndexOf( ':' ) > 0 ) {
+            rootPath = fixedURL.substring( rootPath.lastIndexOf( ':' ) + 1 );
+        }
+
+        InternalKieModule kJar = null;
+        File file = new File( rootPath );
+        if ( fixedURL.endsWith( ".jar" ) ) {
+            kJar = new ZipKieModule( gav,
+                                  kieProject,
+                                  file );
+        } else if ( file.isDirectory() ) {
+            kJar = new FileKieModule( gav,
+                                   kieProject,
+                                   file );
+        } else {
+            // if it's a file it must be zip and end with .jar, otherwise we log an error
+            log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" );
+            kJar = null;
+        }        
+        return kJar;
+    }    
+
+    public static String getPomProperties(String urlPathToAdd) {
         String rootPath = urlPathToAdd;
         if ( rootPath.lastIndexOf( ':' ) > 0 ) {
             rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
@@ -242,8 +257,8 @@ public class ClasspathKieProject
         log.error( "Unable to load pom.properties from" + urlPathToAdd );
         return null;
     }
-
-    private String fixURL(URL url) {
+    
+    public static String fixURLFromKProjectPath(URL url) {
         String urlPath = url.toExternalForm();
 
         // determine resource type (eg: jar, file, bundle)
@@ -290,14 +305,6 @@ public class ClasspathKieProject
         return this.kJarFromKBaseName.get( kBaseName );
     }
 
-    public boolean kieBaseExists(String kBaseName) {
-        return kBaseModels.containsKey( kBaseName );
-    }
-
-    public boolean kieSessionExists(String kSessionName) {
-        return kSessionModels.containsKey( kSessionName );
-    }
-
     public KieBaseModel getKieBaseModel(String kBaseName) {
         return kBaseModels.get( kBaseName );
     }
@@ -307,7 +314,7 @@ public class ClasspathKieProject
     }
 
     @Override
-    public CompositeClassLoader createClassLaoder() {
-        return ClassLoaderUtil.getClassLoader( null, null, true );
+    public CompositeClassLoader getClassLoader() {
+        return this.cl;
     }
 }

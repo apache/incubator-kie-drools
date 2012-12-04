@@ -11,17 +11,15 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ZipKieModule extends AbstractKieModules implements InternalKieModule {
-    private final File             file;
-    private final KieModuleModel  kieProject;    
+public class ZipKieModule extends AbstractKieModule implements InternalKieModule {
+    private final File             file;    
     private Map<String, ZipEntry> zipEntries;
 
     public ZipKieModule(GAV gav,
                      KieModuleModel kieProject,
                      File file) {
-        super( gav );
-        this.file = file;
-        this.kieProject = kieProject;   
+        super( gav, kieProject );
+        this.file = file;   
         this.zipEntries = IoUtils.buildZipFileMapEntries( file );
     }
     
@@ -66,11 +64,6 @@ public class ZipKieModule extends AbstractKieModules implements InternalKieModul
     @Override
     public Collection<String> getFileNames() {
         return this.zipEntries.keySet();
-    }
-
-    @Override
-    public KieModuleModel getKieProjectModel() {
-        return kieProject;
     }
 
     @Override

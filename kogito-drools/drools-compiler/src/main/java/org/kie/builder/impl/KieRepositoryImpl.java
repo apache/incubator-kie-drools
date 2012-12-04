@@ -1,20 +1,23 @@
 package org.kie.builder.impl;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.drools.io.internal.InternalResource;
 import org.drools.kproject.GAVImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
 import org.kie.builder.Results;
+import org.kie.io.Resource;
 import org.kie.util.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class KieRepositoryImpl
     implements
@@ -46,6 +49,7 @@ public class KieRepositoryImpl
     public void addKieModule(KieModule kieModule) {
         kieModules.put(kieModule.getGAV(),
                        kieModule);
+        log.info( "KieModule was added:" + kieModule);
     }
 
     public Results verfyKieModule(GAV gav) {
@@ -122,6 +126,28 @@ public class KieRepositoryImpl
         public void scanNow() {
         }
     }
-    
-    
+
+
+    public KieModule addKieModule(Resource resource) {
+        InternalResource res = (InternalResource) resource;
+        try {
+            // find kmodule.xml
+            String urlPath = res.getURL().toExternalForm();
+            if (res.isDirectory() ) {
+                if ( !urlPath.endsWith( "/" ) ) {
+                    urlPath = urlPath + "/";
+                }
+                urlPath = urlPath  + "META-INF/kproject.xml";
+                
+            } else {
+                urlPath = "jar:"+ urlPath  + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH;              
+            }
+            KieModule kModule = ClasspathKieProject.fetchKModule( new URL( urlPath )  );
+            addKieModule( kModule );
+            return kModule;
+        } catch ( Exception e ) {
+            throw new RuntimeException("Unable to fetch module from resource :" + res, e);
+        }    
+    }
+        
 }
