@@ -8,7 +8,7 @@ public interface KieRepository {
     
     void addKieModule(KieModule kjar);
     
-    KieModule addKieModule(Resource resource);    
+    KieModule addKieModule(Resource resource, Resource... dependencies);    
 
     Results verfyKieModule(GAV gav);
     
