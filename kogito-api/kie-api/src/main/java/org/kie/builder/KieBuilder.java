@@ -1,7 +1,5 @@
 package org.kie.builder;
 
-import java.util.Collection;
-
 import org.kie.builder.Message.Level;
 import org.kie.io.Resource;
 
