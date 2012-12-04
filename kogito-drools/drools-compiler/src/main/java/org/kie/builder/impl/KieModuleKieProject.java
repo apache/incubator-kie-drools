@@ -1,44 +1,18 @@
 package org.kie.builder.impl;
 
-import org.drools.cdi.KProjectExtension;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.StringUtils;
-import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieBaseModelImpl;
-import org.drools.kproject.models.KieModuleModelImpl;
-import org.drools.xml.MinimalPomParser;
-import org.drools.xml.PomModel;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieFactory;
-import org.kie.builder.KieModule;
-import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
-import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
@@ -50,7 +24,7 @@ public class KieModuleKieProject
     implements
     KieProject {
 
-    private static final Logger                  log               = LoggerFactory.getLogger( KProjectExtension.class );
+    private static final Logger                  log               = LoggerFactory.getLogger( KieModuleKieProject.class );
 
     private Map<GAV, InternalKieModule>          kieModules;
 
