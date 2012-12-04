@@ -362,7 +362,8 @@ public class JpaPersistentStatefulSessionTest {
     @Test
     public void testMergeConfig() {
         // JBRULES-3155
-        KieBase kbase = KieServices.Factory.get().getKieClasspathContainer().getKieBase();
+        KieServices ks = KieServices.Factory.get();
+        KieBase kbase = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieBase();
 
         Properties properties = new Properties();
         properties.put("drools.processInstanceManagerFactory", "com.example.CustomJPAProcessInstanceManagerFactory");
