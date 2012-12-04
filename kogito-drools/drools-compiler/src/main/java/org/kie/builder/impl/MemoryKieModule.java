@@ -14,11 +14,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MemoryKieModules extends AbstractKieModule implements ResourceReader {
+public class MemoryKieModule extends AbstractKieModule implements ResourceReader {
 
     private final MemoryFileSystem mfs;
     
-    public MemoryKieModules(GAV gav, KieModuleModel kieProject, MemoryFileSystem mfs) {
+    public MemoryKieModule(GAV gav, KieModuleModel kieProject, MemoryFileSystem mfs) {
         super(gav, kieProject);
         this.mfs = mfs;
     }
@@ -52,5 +52,9 @@ public class MemoryKieModules extends AbstractKieModule implements ResourceReade
     public byte[] getBytes() {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    public String toString() {
+        return "MemoryKieModule[ GAV=" + getGAV() + "]";
     }
 }

@@ -71,4 +71,7 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
         throw new UnsupportedOperationException();
     }
 
+    public String toString() {
+        return "ZipKieModule[ GAV=" + getGAV() + "file=" + file + "]";
+    }
 }

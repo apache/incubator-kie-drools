@@ -9,14 +9,12 @@ import java.io.FileInputStream;
 import java.util.Collection;
 
 public class FileKieModule extends AbstractKieModule implements InternalKieModule {
-    private final GAV              gav;
     private final File             file;   
 
     public FileKieModule(GAV gav,
                       KieModuleModel kieProject,
                       File file) {
         super( gav, kieProject );
-        this.gav = gav;
         this.file = file;
     }
 
@@ -53,7 +51,8 @@ public class FileKieModule extends AbstractKieModule implements InternalKieModul
         throw new UnsupportedOperationException();
     }
 
-
-
+    public String toString() {
+        return "FileKieModule[ GAV=" + getGAV() + "file=" + file + "]";
+    }
 
 }

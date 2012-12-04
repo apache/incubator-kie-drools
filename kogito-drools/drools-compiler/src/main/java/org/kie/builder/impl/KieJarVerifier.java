@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.drools.commons.jci.readers.ResourceReader;
 
 public class KieJarVerifier {
-    private MemoryKieModules kJar;
+    private MemoryKieModule kJar;
     
     public KieJarVerifier(File file) {
         if ( file.isDirectory() ) {

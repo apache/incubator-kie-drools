@@ -21,7 +21,7 @@ import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.Message.Level;
 import org.kie.builder.impl.KieFileSystemImpl;
-import org.kie.builder.impl.MemoryKieModules;
+import org.kie.builder.impl.MemoryKieModule;
 import org.kie.KieBase;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -159,7 +159,7 @@ public class AbstractKnowledgeTest {
         if ( kBuilder.hasResults( Level.ERROR  ) ) {
             fail( "should not have errors" + kBuilder.getResults() );
         }
-        MemoryKieModules kieModule = ( MemoryKieModules ) kBuilder.getKieModule();
+        MemoryKieModule kieModule = ( MemoryKieModule ) kBuilder.getKieModule();
         MemoryFileSystem trgMfs = kieModule.getMemoryFileSystem();
         
         if ( createJar ) {            

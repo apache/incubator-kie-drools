@@ -59,7 +59,7 @@ public class KieContainerImpl
         if ( kBase == null ) {
             if ( kProject != null ) {
                 kBase = AbstractKieModule.createKieBase( kProject.getKieBaseModel( kBaseName ),
-                                                          kProject );
+                                                         kProject );
                 if ( kBase != null ) {
                     kBases.put( kBaseName,
                                 kBase );
