@@ -12,7 +12,6 @@
     <name>jBPM :: Services</name>
     <packaging>pom</packaging>
     <properties>
-        <kie-commons.version>0.1.0-SNAPSHOT</kie-commons.version>
         <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
     
         <maven.tx.type>RESOURCE_LOCAL</maven.tx.type>
@@ -43,7 +42,6 @@
         <module>droolsjbpm-knowledge-services</module>
         <module>form-services</module>
         <module>executor-services</module>
-    
     </modules>
 
     <dependencies>
@@ -141,12 +139,10 @@
         <dependency>
             <groupId>org.kie.commons</groupId>
             <artifactId>kie-nio2-api</artifactId>
-            <version>${kie-commons.version}</version>	
         </dependency>
          <dependency>
             <groupId>org.kie.commons</groupId>
             <artifactId>kie-nio2-model</artifactId>
-            <version>${kie-commons.version}</version>	
         </dependency>
     </dependencies>
 </project>
