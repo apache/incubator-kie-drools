@@ -3,16 +3,10 @@ package org.kie.builder.impl;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.kie.builder.GAV;
-import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieSessionModel;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MemoryKieModule extends AbstractKieModule implements ResourceReader {
 
@@ -44,14 +38,12 @@ public class MemoryKieModule extends AbstractKieModule implements ResourceReader
 
     @Override
     public File getFile() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public byte[] getBytes() {
-        // TODO Auto-generated method stub
-        return null;
+        return mfs.writeAsBytes();
     }
     
     public String toString() {

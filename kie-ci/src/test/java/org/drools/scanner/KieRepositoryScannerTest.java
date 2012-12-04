@@ -39,7 +39,8 @@ public class KieRepositoryScannerTest {
     public void setUp() throws Exception {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
-        kPom = createKPom("1.0-SNAPSHOT");
+        GAV gav = KieFactory.Factory.get().newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
+        kPom = createKPom(gav);
     }
 
     @After
@@ -137,7 +138,7 @@ public class KieRepositoryScannerTest {
         resetFileManager();
 
         InternalKieModule kJar1 = createKieJarWithClass(ks, kf, gav1, 2, 7);
-        repository.deployArtifact(gav1, kJar1, createKPom("1.0"));
+        repository.deployArtifact(gav1, kJar1, createKPom(gav1));
 
         KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-master-test", "1.0"));
         KieSession ksession = kieContainer.getKieSession("KSession1");
@@ -146,7 +147,7 @@ public class KieRepositoryScannerTest {
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
         InternalKieModule kJar2 = createKieJarWithClass(ks, kf, gav2, 3, 5);
-        repository.deployArtifact(gav2, kJar2, createKPom("2.0"));
+        repository.deployArtifact(gav2, kJar2, createKPom(gav1));
 
         scanner.scanNow();
 
@@ -154,22 +155,23 @@ public class KieRepositoryScannerTest {
         checkKSession(ksession2, 15);
     }
 
-    private File createKPom(String version) throws IOException {
-        String pom =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
-                "  <modelVersion>4.0.0</modelVersion>\n" +
-                "\n" +
-                "  <groupId>org.kie</groupId>\n" +
-                "  <artifactId>scanner-test</artifactId>\n" +
-                "  <version>" + version + "</version>\n" +
-                "\n" +
-                "</project>";
-
+    private File createKPom(GAV gav) throws IOException {
         File pomFile = fileManager.newFile("pom.xml");
-        fileManager.write(pomFile, pom);
+        fileManager.write(pomFile, getPom(gav));
         return pomFile;
+    }
+
+    private String getPom(GAV gav) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+        "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+        "  <modelVersion>4.0.0</modelVersion>\n" +
+        "\n" +
+        "  <groupId>" + gav.getGroupId() + "</groupId>\n" +
+        "  <artifactId>" + gav.getArtifactId() + "</artifactId>\n" +
+        "  <version>" + gav.getVersion() + "</version>\n" +
+        "\n" +
+        "</project>";
     }
 
     private File createMasterKPom() throws IOException {
@@ -216,6 +218,7 @@ public class KieRepositoryScannerTest {
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kfs.writeKModuleXML(kproj.toXML());
+        kfs.writePomXML( getPom(gav) );
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
@@ -259,7 +262,8 @@ public class KieRepositoryScannerTest {
 
         kieFileSystem
                 .writeKModuleXML(kproj.toXML())
-                .write("src/kbases/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
+                .writePomXML(getPom(gav))
+                .write("src/main/resources/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
                 .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);

@@ -193,7 +193,11 @@ public abstract class AbstractKieModule
             }
         }
         if ( fileCount == 0 ) {
-            log.warn("No files found for KieBase " + kieBaseModel.getName() + ", searching folder " + kieModule.getFile());
+            if (kieModule instanceof FileKieModule) {
+                log.warn("No files found for KieBase " + kieBaseModel.getName() + ", searching folder " + kieModule.getFile());
+            } else {
+                log.warn("No files found for KieBase " + kieBaseModel.getName());
+            }
         }
 
     }
