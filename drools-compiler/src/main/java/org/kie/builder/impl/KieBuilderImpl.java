@@ -121,7 +121,9 @@ public class KieBuilderImpl
                 kModule.setDependencies( modules );
             }
 
-            kModule.verify( messages );
+            KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
+            kProject.init();
+            // kModule.verify( messages );
 
             if ( !hasResults( Level.ERROR ) ) {
                 KieServices.Factory.get().getKieRepository().addKieModule( kModule );

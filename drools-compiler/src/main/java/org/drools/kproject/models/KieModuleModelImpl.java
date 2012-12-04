@@ -30,7 +30,7 @@ public class KieModuleModelImpl implements KieModuleModel {
 
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#addKBase(org.kie.kproject.KieBaseModelImpl)
+     * @see org.kie.kModule.KieProject#addKBase(org.kie.kModule.KieBaseModelImpl)
      */
     public KieBaseModel newKieBaseModel(String name) {
         KieBaseModel kbase = new KieBaseModelImpl(this, name);
@@ -50,7 +50,7 @@ public class KieModuleModelImpl implements KieModuleModel {
     }
     
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#removeKieBaseModel(org.kie.kproject.KieBaseModel)
+     * @see org.kie.kModule.KieProject#removeKieBaseModel(org.kie.kModule.KieBaseModel)
      */
     public void removeKieBaseModel(String qName) {
         Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
@@ -60,7 +60,7 @@ public class KieModuleModelImpl implements KieModuleModel {
     }    
     
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#removeKieBaseModel(org.kie.kproject.KieBaseModel)
+     * @see org.kie.kModule.KieProject#removeKieBaseModel(org.kie.kModule.KieBaseModel)
      */
     public void moveKBase(String oldQName, String newQName) {
         Map<String, KieBaseModel> newMap = new HashMap<String, KieBaseModel>();
@@ -71,14 +71,14 @@ public class KieModuleModelImpl implements KieModuleModel {
     }        
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#getKieBaseModels()
+     * @see org.kie.kModule.KieProject#getKieBaseModels()
      */
     public Map<String, KieBaseModel> getKieBaseModels() {
         return Collections.unmodifiableMap( kBases );
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#setKBases(java.util.Map)
+     * @see org.kie.kModule.KieProject#setKBases(java.util.Map)
      */
     private void setKBases(Map<String, KieBaseModel> kBases) {
         this.kBases = kBases;
@@ -90,7 +90,7 @@ public class KieModuleModelImpl implements KieModuleModel {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieProject#toString()
+     * @see org.kie.kModule.KieProject#toString()
      */
     @Override
     public String toString() {
@@ -101,29 +101,29 @@ public class KieModuleModelImpl implements KieModuleModel {
         return MARSHALLER.toXML(this);
     }
 
-    public static KieModuleModel fromXML(InputStream kProjectStream) {
-        return MARSHALLER.fromXML(kProjectStream);
+    public static KieModuleModel fromXML(InputStream kModuleStream) {
+        return MARSHALLER.fromXML(kModuleStream);
     }
 
-    public static KieModuleModel fromXML(java.io.File kProjectFile) {
-        return MARSHALLER.fromXML(kProjectFile);
+    public static KieModuleModel fromXML(java.io.File kModuleFile) {
+        return MARSHALLER.fromXML(kModuleFile);
     }
 
-    public static KieModuleModel fromXML(URL kProjectUrl) {
-        return MARSHALLER.fromXML(kProjectUrl);
+    public static KieModuleModel fromXML(URL kModuleUrl) {
+        return MARSHALLER.fromXML(kModuleUrl);
     }
 
-    public static KieModuleModel fromXML(String kProjectString) {
-        return MARSHALLER.fromXML(kProjectString);
+    public static KieModuleModel fromXML(String kModuleString) {
+        return MARSHALLER.fromXML(kModuleString);
     }
 
-    private static final KProjectMarshaller MARSHALLER = new KProjectMarshaller();
+    private static final kModuleMarshaller MARSHALLER = new kModuleMarshaller();
 
-    private static class KProjectMarshaller {
+    private static class kModuleMarshaller {
         private final XStream xStream = new XStream(new DomDriver());
 
-        private KProjectMarshaller() {
-            xStream.registerConverter(new KProjectConverter());
+        private kModuleMarshaller() {
+            xStream.registerConverter(new kModuleConverter());
             xStream.registerConverter(new KieBaseModelImpl.KBaseConverter());
             xStream.registerConverter(new KieSessionModelImpl.KSessionConverter());
             xStream.registerConverter(new ListenerModelImpl.ListenerConverter());
@@ -141,51 +141,51 @@ public class KieModuleModelImpl implements KieModuleModel {
             return xStream.toXML(kieProject);
         }
 
-        public KieModuleModel fromXML(InputStream kProjectStream) {
-            return (KieModuleModel)xStream.fromXML(kProjectStream);
+        public KieModuleModel fromXML(InputStream kModuleStream) {
+            return (KieModuleModel)xStream.fromXML(kModuleStream);
         }
 
-        public KieModuleModel fromXML(java.io.File kProjectFile) {
-            return (KieModuleModel)xStream.fromXML(kProjectFile);
+        public KieModuleModel fromXML(java.io.File kModuleFile) {
+            return (KieModuleModel)xStream.fromXML(kModuleFile);
         }
 
-        public KieModuleModel fromXML(URL kProjectUrl) {
-            return (KieModuleModel)xStream.fromXML(kProjectUrl);
+        public KieModuleModel fromXML(URL kModuleUrl) {
+            return (KieModuleModel)xStream.fromXML(kModuleUrl);
         }
 
-        public KieModuleModel fromXML(String kProjectString) {
-            return (KieModuleModel)xStream.fromXML(kProjectString);
+        public KieModuleModel fromXML(String kModuleString) {
+            return (KieModuleModel)xStream.fromXML(kModuleString);
         }
     }
 
-    public static class KProjectConverter extends AbstractXStreamConverter {
+    public static class kModuleConverter extends AbstractXStreamConverter {
 
-        public KProjectConverter() {
+        public kModuleConverter() {
             super(KieModuleModelImpl.class);
         }
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-            KieModuleModelImpl kProject = (KieModuleModelImpl) value;
-            writeObjectList(writer, context, "kbases", "kbase", kProject.getKieBaseModels().values());
+            KieModuleModelImpl kModule = (KieModuleModelImpl) value;
+            writeObjectList(writer, context, "kbases", "kbase", kModule.getKieBaseModels().values());
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
-            final KieModuleModelImpl kProject = new KieModuleModelImpl();
+            final KieModuleModelImpl kModule = new KieModuleModelImpl();
 
             readNodes(reader, new AbstractXStreamConverter.NodeReader() {
                 public void onNode(HierarchicalStreamReader reader, String name, String value) {
                     if ("kbases".equals(name)) {
                         Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();
                         for (KieBaseModelImpl kBase : readObjectList(reader, context, KieBaseModelImpl.class)) {
-                            kBase.setKProject(kProject);
+                            kBase.setKModule(kModule);
                             kBases.put(kBase.getName(), kBase);
                         }
-                        kProject.setKBases(kBases);
+                        kModule.setKBases(kBases);
                     }
                 }
             });
 
-            return kProject;
+            return kModule;
         }
     }
 }

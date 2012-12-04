@@ -48,7 +48,8 @@ public class KieServicesImpl implements KieServices {
     }
     
     public KieContainer getKieContainer(GAV gav) {
-        return new KieContainerImpl( (KieProject ) getKieRepository().getKieModule(gav), getKieRepository() );
+        KieProject kProject = new KieModuleKieProject( ( InternalKieModule )  getKieRepository().getKieModule(gav), getKieRepository() );
+        return new KieContainerImpl( kProject, getKieRepository() );
     }
     
 

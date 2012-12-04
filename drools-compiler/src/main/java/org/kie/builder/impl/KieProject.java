@@ -15,7 +15,7 @@ public interface KieProject {
 
     KieSessionModel getKieSessionModel(String kSessionName); 
     
-    void verify();
+    void init();   
     
-    CompositeClassLoader createClassLaoder();
+    CompositeClassLoader getClassLoader();
 }

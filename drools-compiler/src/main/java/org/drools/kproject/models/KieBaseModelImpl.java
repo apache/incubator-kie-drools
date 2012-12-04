@@ -44,16 +44,16 @@ public class KieBaseModelImpl
 
     private Map<String, KieSessionModel> kSessions;
 
-    private KieModuleModel                   kProject;
+    private KieModuleModel                   kModule;
 
     private KieBaseModelImpl() {
         this.includes = new HashSet<String>();
         this.kSessions = Collections.emptyMap();
     }
 
-    public KieBaseModelImpl(KieModuleModel kProject,
+    public KieBaseModelImpl(KieModuleModel kModule,
                             String name) {
-        this.kProject = kProject;
+        this.kModule = kModule;
         this.includes = new HashSet<String>();
         this.name = name;
         this.kSessions = Collections.emptyMap();
@@ -83,12 +83,12 @@ public class KieBaseModelImpl
         return this;
     }
 
-    public KieModuleModel getKProject() {
-        return kProject;
+    public KieModuleModel getKModule() {
+        return kModule;
     }
 
-    public void setKProject(KieModuleModel kieProject) {
-        this.kProject = kieProject;
+    public void setKModule(KieModuleModel kieProject) {
+        this.kModule = kieProject;
     }
 
     /* (non-Javadoc)

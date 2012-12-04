@@ -13,6 +13,7 @@ import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;
+import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,7 @@ public class KieContainerImpl
     implements
     KieContainer {
 
-    private static final Logger  log    = LoggerFactory.getLogger( KieContainerImpl.class );
+    private static final Logger        log    = LoggerFactory.getLogger( KieContainerImpl.class );
 
     private final KieProject           kProject;
 
@@ -31,17 +32,12 @@ public class KieContainerImpl
 
     private final KieRepository        kr;
 
-    public KieContainerImpl() {
-        this(null,
-                KieServices.Factory.get().getKieRepository());
-    }
-
     public KieContainerImpl(KieProject kProject,
                             KieRepository kr) {
         this.kr = kr;
         this.kProject = kProject;
-        if (kProject != null) {
-            this.kProject.verify();
+        if ( kProject != null ) {
+            this.kProject.init();
         }
     }
 
@@ -61,11 +57,12 @@ public class KieContainerImpl
     public KieBase getKieBase(String kBaseName) {
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
-            if (kProject != null) {
-                kBase = AbstractKieModules.createKieBase( kProject.getKieBaseModel( kBaseName ),
+            if ( kProject != null ) {
+                kBase = AbstractKieModule.createKieBase( kProject.getKieBaseModel( kBaseName ),
                                                           kProject );
                 if ( kBase != null ) {
-                    kBases.put(  kBaseName, kBase );
+                    kBases.put( kBaseName,
+                                kBase );
                 }
             } else {
                 return KnowledgeBaseFactory.newKnowledgeBase();
@@ -81,12 +78,12 @@ public class KieContainerImpl
     public StatelessKieSession getKieStatelessSession() {
         return getKieBase().newStatelessKieSession();
     }
-    
+
     public KieSession getKieSession(String kSessionName) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
         if ( kSessionModel == null ) {
             return null;
-        }        
+        }
         KieBase kBase = getKieBase( kSessionModel.getKieBaseModel().getName() );
         if ( kBase != null ) {
             return kBase.newKieSession();
@@ -121,6 +118,11 @@ public class KieContainerImpl
 
     public KieSessionModel getKieSessionModel(String kSessionName) {
         return kProject.getKieSessionModel( kSessionName );
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return this.kProject.getClassLoader();
     }
 
 }
