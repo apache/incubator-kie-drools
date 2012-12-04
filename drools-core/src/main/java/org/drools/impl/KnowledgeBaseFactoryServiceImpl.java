@@ -19,14 +19,11 @@ package org.drools.impl;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
-import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactoryService;
-import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 import java.util.Properties;
 
@@ -68,17 +65,5 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
 
     public Environment newEnvironment() {
         return EnvironmentFactory.newEnvironment();//new EnvironmentImpl(); //
-    }
-
-    public KnowledgeBase getKnowledgeBase(String kBaseName) {
-        return KnowledgeContainerFactory.newKnowledgeContainer().getKnowledgeBase(kBaseName);
-    }
-
-    public StatefulKnowledgeSession getStatefulKnowlegeSession(String kSessionName) {
-        return KnowledgeContainerFactory.newKnowledgeContainer().getStatefulKnowlegeSession(kSessionName);
-    }
-
-    public KBaseUnit getKBaseUnit(String kBaseName) {
-        return KnowledgeContainerFactory.newKnowledgeContainer().getKBaseUnit(kBaseName);
     }
 }
