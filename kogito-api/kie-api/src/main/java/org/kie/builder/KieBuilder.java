@@ -3,10 +3,13 @@ package org.kie.builder;
 import java.util.Collection;
 
 import org.kie.builder.Message.Level;
+import org.kie.io.Resource;
 
 public interface KieBuilder {
     
-    KieBuilder setDependencies(Collection<KieModule> dependencies);
+    KieBuilder setDependencies(KieModule... dependencies);
+    
+    KieBuilder setDependencies(Resource... dependencies);
 
     Results build();
 
