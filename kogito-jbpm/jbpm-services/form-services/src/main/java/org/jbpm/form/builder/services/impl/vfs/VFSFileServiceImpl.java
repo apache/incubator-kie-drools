@@ -15,71 +15,77 @@
  */
 package org.jbpm.form.builder.services.impl.vfs;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 
 import org.jbpm.form.builder.services.api.FileException;
+import org.kie.commons.io.IOService;
+import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.FileSystem;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.commons.java.nio.file.FileSystems;
-import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.java.nio.file.Paths;
+
+import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 
 /**
  *
  */
 public class VFSFileServiceImpl {
 
-    private static final String REPO_PLAYGROUND = "git:///playground";
-    private static final String ORIGIN_URL = "https://github.com/guvnorngtestuser1/formbuilder-playground.git";
-    private FileSystem fileSystem = null;
+    private static final String REPO_PLAYGROUND = "git://playground";
+    private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/formbuilder-playground.git";
+
+    private final IOService ioService = new IOServiceDotFileImpl();
 
     public void checkFileSystem() {
-        if (FileSystems.getFileSystem(URI.create(REPO_PLAYGROUND)) == null) {
+        if ( ioService.getFileSystem( URI.create( REPO_PLAYGROUND ) ) == null ) {
             final String userName = "guvnorngtestuser1";
             final String password = "test1234";
-            final URI fsURI = URI.create(REPO_PLAYGROUND);
+            final URI fsURI = URI.create( REPO_PLAYGROUND );
 
             final Map<String, Object> env = new HashMap<String, Object>() {
                 {
-                    put("username", userName);
-                    put("password", password);
-                    put("giturl", ORIGIN_URL);
+                    put( "username", userName );
+                    put( "password", password );
+                    put( "giturl", ORIGIN_URL );
                 }
             };
 
-            fileSystem = FileSystems.newFileSystem(fsURI, env);
+            ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
         }
     }
 
-    public byte[] loadFile(final Path file) throws FileException {
-        if (file == null) {
+    public byte[] loadFile( final Path file ) throws FileException {
+        if ( file == null ) {
             throw new IllegalArgumentException();
         }
 
         checkFileSystem();
 
-        if (!file.getFileSystem().equals(fileSystem)) {
-            throw new IllegalStateException("file's fileSystem not supported.");
-        }
-        return Files.readAllBytes(file);
+        return ioService.readAllBytes( file );
 
     }
 
-    public Iterable<Path> loadFilesByType(final String fileType) throws FileException {
+    public Iterable<Path> loadFilesByType( final String fileType ) throws FileException {
         checkFileSystem();
 
-        return Files.newDirectoryStream(Paths.get("default:///playground"), new DirectoryStream.Filter<Path>() {
+        return ioService.newDirectoryStream( ioService.get( "default://playground" ), new DirectoryStream.Filter<Path>() {
             @Override
-            public boolean accept(final Path entry) {
-                if (entry.getFileName().toString().endsWith(fileType)) {
+            public boolean accept( final Path entry ) {
+                if ( entry.getFileName().toString().endsWith( fileType ) ) {
                     return true;
                 }
                 return false;
             }
-        });
+        } );
     }
+
+    @Produces
+    @Named("ioStrategy")
+    public IOService ioService() {
+        return ioService;
+    }
+
 }

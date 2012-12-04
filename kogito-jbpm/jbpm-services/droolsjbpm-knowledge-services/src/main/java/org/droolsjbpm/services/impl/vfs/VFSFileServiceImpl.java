@@ -20,17 +20,18 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 
 import org.droolsjbpm.services.api.FileException;
 import org.droolsjbpm.services.api.FileService;
+import org.kie.commons.io.IOService;
+import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.FileSystemNotFoundException;
-import org.kie.commons.java.nio.file.FileSystems;
-import org.kie.commons.java.nio.file.Files;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.commons.java.nio.file.Paths;
 
+import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
@@ -42,28 +43,32 @@ public class VFSFileServiceImpl implements FileService {
     private static final String REPO_PLAYGROUND = "git://jbpm-playground";
     private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
 
+    private final IOService ioService = new IOServiceDotFileImpl();
+
     @PostConstruct
     public void init() {
-        try {
-            FileSystems.getFileSystem( URI.create( REPO_PLAYGROUND ) );
+        if ( ioService.getFileSystem( URI.create( REPO_PLAYGROUND ) ) != null ) {
             fetchChanges();
-        } catch ( FileSystemNotFoundException e ) {
-            final String userName = "guvnorngtestuser1";
-            final String password = "test1234";
-            final URI fsURI = URI.create( "git://jbpm-playground" );
+        } else {
+            try {
+                final String userName = "guvnorngtestuser1";
+                final String password = "test1234";
+                final URI fsURI = URI.create( "git://jbpm-playground" );
 
-            final Map<String, Object> env = new HashMap<String, Object>();
-            env.put( "username", userName );
-            env.put( "password", password );
-            env.put( "origin", ORIGIN_URL );
-            FileSystems.newFileSystem( fsURI, env );
-        } catch ( Exception e ) {
-            System.out.println( ">>>>>>>>>>>>>>>>>>> E " + e.getMessage() );
+                final Map<String, Object> env = new HashMap<String, Object>();
+                env.put( "username", userName );
+                env.put( "password", password );
+                env.put( "origin", ORIGIN_URL );
+                ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
+            } catch ( Exception e ) {
+                System.out.println( ">>>>>>>>>>>>>>>>>>> E " + e.getMessage() );
+            }
         }
+
     }
 
     public void fetchChanges() {
-        FileSystems.getFileSystem( URI.create( REPO_PLAYGROUND + "?fetch" ) );
+        ioService.getFileSystem( URI.create( REPO_PLAYGROUND + "?fetch" ) );
     }
 
     @Override
@@ -71,7 +76,7 @@ public class VFSFileServiceImpl implements FileService {
         checkNotNull( "file", file );
 
         try {
-            return Files.readAllBytes( file );
+            return ioService.readAllBytes( file );
         } catch ( IOException ex ) {
             throw new FileException( ex.getMessage(), ex );
         }
@@ -80,7 +85,7 @@ public class VFSFileServiceImpl implements FileService {
     @Override
     public Iterable<Path> loadFilesByType( final String path,
                                            final String fileType ) {
-        return Files.newDirectoryStream( Paths.get( "git://jbpm-playground/" + path ), new DirectoryStream.Filter<Path>() {
+        return ioService.newDirectoryStream( ioService.get( "git://jbpm-playground/" + path ), new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
                 if ( entry.getFileName().toString().endsWith( fileType ) ) {
@@ -90,4 +95,11 @@ public class VFSFileServiceImpl implements FileService {
             }
         } );
     }
+
+    @Produces
+    @Named("ioStrategy")
+    public IOService ioService() {
+        return ioService;
+    }
+
 }

@@ -136,10 +136,6 @@
             <groupId>org.kie.commons</groupId>
             <artifactId>kie-nio2-fs</artifactId>	
         </dependency>
-        <dependency>
-            <groupId>org.kie.commons</groupId>
-            <artifactId>kie-nio2-api</artifactId>
-        </dependency>
          <dependency>
             <groupId>org.kie.commons</groupId>
             <artifactId>kie-nio2-model</artifactId>

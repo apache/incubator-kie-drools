@@ -15,20 +15,18 @@
  */
 package org.droolsjbpm.services.impl;
 
-import org.droolsjbpm.services.api.FileException;
-import org.droolsjbpm.services.api.FileService;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.droolsjbpm.services.api.Domain;
-import org.droolsjbpm.services.api.SessionManager;
+import javax.inject.Named;
 
+import org.droolsjbpm.services.api.FileException;
+import org.droolsjbpm.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
@@ -39,42 +37,42 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ResourceType;
-import org.kie.commons.java.nio.file.Files;
+import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.io.ResourceFactory;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-
-
-
 /**
- *
  * @author salaboy
  */
 @ApplicationScoped
-public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
+public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
     private Map<String, StatefulKnowledgeSession> ksessions = new HashMap<String, StatefulKnowledgeSession>();
-    
-    @Inject 
+
+    @Inject
     private CDIHTWorkItemHandler handler;
-    
-    @Inject 
+
+    @Inject
     private CDIProcessEventListener processListener;
-    
+
     @Inject
     private CDIKbaseEventListener kbaseEventListener;
-    
+
     @Inject
     private BPMN2DataService bpmn2Service;
-    
+
     @Inject
     private FileService fs;
-    
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
+
     private Map<String, String> availableProcesses = new HashMap<String, String>();
-    
+
     private long   id;
     private String domainName;
     private long   parentId;
@@ -83,59 +81,56 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
         this.id = 0;
         this.domainName = "My Business Unit";
     }
-    
-    
-    
-    @PostConstruct
-    public void createDomain(){
 
-        kbaseEventListener.setDomainName(domainName);
-        processListener.setDomainName(domainName);
-        
+    @PostConstruct
+    public void createDomain() {
+
+        kbaseEventListener.setDomainName( domainName );
+        processListener.setDomainName( domainName );
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Iterable<Path> loadFilesByType = null;
         try {
-            loadFilesByType = fs.loadFilesByType("examples/general/","bpmn");
-        } catch (FileException ex) {
-            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            loadFilesByType = fs.loadFilesByType( "examples/general/", "bpmn" );
+        } catch ( FileException ex ) {
+            Logger.getLogger( KnowledgeDomainServiceImpl.class.getName() ).log( Level.SEVERE, null, ex );
         }
-        for(Path p: loadFilesByType){
-            System.out.println(" >>>>>>>>>>>>>>>>>>>>>>>>>>> Loading -> "+p.toString());
-            String processString = new String(Files.readAllBytes(p));
-            availableProcesses.put(bpmn2Service.findProcessId(processString), processString);
-            kbuilder.add(ResourceFactory.newByteArrayResource(Files.readAllBytes(p)), ResourceType.BPMN2);            
+        for ( Path p : loadFilesByType ) {
+            System.out.println( " >>>>>>>>>>>>>>>>>>>>>>>>>>> Loading -> " + p.toString() );
+            String processString = new String( ioService.readAllBytes( p ) );
+            availableProcesses.put( bpmn2Service.findProcessId( processString ), processString );
+            kbuilder.add( ResourceFactory.newByteArrayResource( ioService.readAllBytes( p ) ), ResourceType.BPMN2 );
         }
-        
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addEventListener(kbaseEventListener);
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        kbase.addEventListener( kbaseEventListener );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
-        ksession.addEventListener(processListener);
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
-        
-        handler.setSession(ksession);
+
+        ksession.addEventListener( processListener );
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger( ksession );
+
+        handler.setSession( ksession );
         handler.init();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        
-        ksessions.put("default", ksession);
-        
-        
-        
-    }
-    
-    public void registerSession(String businessKey, StatefulKnowledgeSession ksession) {
-        ksessions.put(businessKey, ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler( "Human Task", handler );
+
+        ksessions.put( "default", ksession );
+
     }
 
-    public StatefulKnowledgeSession getSession(long sessionId) {
+    public void registerSession( String businessKey,
+                                 StatefulKnowledgeSession ksession ) {
+        ksessions.put( businessKey, ksession );
+    }
+
+    public StatefulKnowledgeSession getSession( long sessionId ) {
         throw new NotImplementedException();
     }
 
-    public StatefulKnowledgeSession getSessionByBusinessKey(String businessKey) {
-        return ksessions.get(businessKey);
+    public StatefulKnowledgeSession getSessionByBusinessKey( String businessKey ) {
+        return ksessions.get( businessKey );
     }
- 
+
     public Collection<StatefulKnowledgeSession> getSessions() {
         return ksessions.values();
     }
@@ -143,7 +138,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
     public Collection<String> getSessionsNames() {
         return ksessions.keySet();
     }
-    
+
     public int getAmountOfSessions() {
         return ksessions.size();
     }
@@ -152,7 +147,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId( Long id ) {
         this.id = id;
     }
 
@@ -160,7 +155,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
         return domainName;
     }
 
-    public void setDomainName(String domainName) {
+    public void setDomainName( String domainName ) {
         this.domainName = domainName;
     }
 
@@ -168,7 +163,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService{
         return parentId;
     }
 
-    public void setParentId(Long parentId) {
+    public void setParentId( Long parentId ) {
         this.parentId = parentId;
     }
 
