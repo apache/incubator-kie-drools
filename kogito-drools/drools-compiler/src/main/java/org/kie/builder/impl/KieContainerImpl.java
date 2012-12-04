@@ -9,11 +9,9 @@ import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
-import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;
-import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +24,7 @@ public class KieContainerImpl
 
     private static final Logger        log    = LoggerFactory.getLogger( KieContainerImpl.class );
 
-    private final KieProject           kProject;
+    private KieProject           kProject;
 
     private final Map<String, KieBase> kBases = new HashMap<String, KieBase>();
 
@@ -37,7 +35,7 @@ public class KieContainerImpl
         this.kr = kr;
         this.kProject = kProject;
         if ( kProject != null ) {
-            this.kProject.init();
+            kProject.init();
         }
     }
 
@@ -45,9 +43,12 @@ public class KieContainerImpl
         return kProject.getGAV();
     }
 
-    public void updateToVersion(GAV version) {
-        // @TODO
-        throw new UnsupportedOperationException( "This method is still to be implemented" );
+    public void updateToVersion(GAV gav) {
+        kBases.clear();
+        this.kProject = new KieModuleKieProject( (InternalKieModule)kr.getKieModule(gav), kr );
+        if ( kProject != null ) {
+            this.kProject.init();
+        }
     }
 
     public KieBase getKieBase() {

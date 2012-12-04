@@ -1,13 +1,12 @@
 package org.drools.commons.jci.readers;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 
-import org.drools.core.util.StringUtils;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class DiskResourceReader implements ResourceReader {
     private final File root;
@@ -22,7 +21,7 @@ public class DiskResourceReader implements ResourceReader {
 
     public byte[] getBytes( final String pResourceName ) {
         try {
-            return StringUtils.readFileAsString( new InputStreamReader( new FileInputStream( new File(root, pResourceName) ), "UTF-8" ) ).getBytes();
+            return readBytesFromInputStream(new FileInputStream(new File(root, pResourceName)));
         } catch(Exception e) {
             return null;
         }

@@ -6,7 +6,10 @@ import org.kie.builder.KieModuleModel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Collection;
+
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class FileKieModule extends AbstractKieModule implements InternalKieModule {
     private final File             file;   
@@ -48,7 +51,11 @@ public class FileKieModule extends AbstractKieModule implements InternalKieModul
 
     @Override
     public byte[] getBytes() {
-        throw new UnsupportedOperationException();
+        try {
+            return readBytesFromInputStream(new FileInputStream(file));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String toString() {

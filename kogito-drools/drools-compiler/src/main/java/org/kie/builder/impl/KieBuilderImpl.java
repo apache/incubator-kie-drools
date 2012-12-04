@@ -133,16 +133,20 @@ public class KieBuilderImpl
                 kModule.setDependencies( modules );
             }
 
-            KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
-            kProject.init();
-            kProject.verify( messages );
-
-            if ( !hasResults( Level.ERROR ) ) {
-                KieServices.Factory.get().getKieRepository().addKieModule( kModule );
-            }
+            buildKieModule(kModule, messages);
         }
         return new ResultsImpl( messages.getMessages(),
                                 null );
+    }
+
+    static void buildKieModule(InternalKieModule kModule, Messages messages) {
+        KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
+        kProject.init();
+        kProject.verify( messages );
+
+        if ( MessageImpl.filterMessages( messages.getMessages(), Level.ERROR ).isEmpty()) {
+            KieServices.Factory.get().getKieRepository().addKieModule( kModule );
+        }
     }
 
     private void addKBasesFilesToTrg() {
@@ -163,8 +167,8 @@ public class KieBuilderImpl
 
     private void addKBaseFilesToTrg(KieBaseModel kieBase) {
         for ( String fileName : srcMfs.getFileNames() ) {
-            if ( filterFileInKBase( kieBase,
-                                    fileName ) ) {
+            if ( filterFileInKBase(kieBase,
+                    fileName) ) {
                 byte[] bytes = srcMfs.getBytes( fileName );
                 trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ),
                               bytes,
@@ -228,8 +232,8 @@ public class KieBuilderImpl
         if ( !isBuilt() ) {
             build();
         }
-        return new ResultsImpl( MessageImpl.filterMessages( messages.getMessages(),
-                                                            levels ),
+        return new ResultsImpl( MessageImpl.filterMessages(messages.getMessages(),
+                levels),
                                 null );
     }
 

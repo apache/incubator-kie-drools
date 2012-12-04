@@ -4,14 +4,15 @@ import org.apache.maven.project.MavenProject;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.scanner.embedder.EmbeddedPomParser;
 import org.kie.builder.GAV;
-import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieScanner;
-import org.kie.builder.KieServices;
-import org.kie.builder.Results;
-import org.kie.builder.impl.InternalKieContainer;
+import org.kie.builder.Message;
+import org.kie.builder.impl.CompositeKieModule;
 import org.kie.builder.impl.InternalKieScanner;
+import org.kie.builder.impl.JarKieModule;
+import org.kie.builder.impl.MessageImpl;
+import org.kie.builder.impl.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
@@ -75,7 +76,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     public KieModule loadArtifact(GAV gav) {
         String artifactName = gav.toString();
         Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName);
-        return artifact != null ? buildArtifact(artifact) : loadPomArtifact(gav);
+        return artifact != null ? buildArtifact(gav, artifact) : loadPomArtifact(gav);
     }
 
     private KieModule loadPomArtifact(GAV gav) {
@@ -83,20 +84,18 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         if (mavenProject == null) {
             return null;
         }
-        // @TODO(mdp) temp delete to allow merge
-//        mavenRepository = MavenRepository.getMavenRepository(mavenProject);
-//        PomParser pomParser = new EmbeddedPomParser(mavenProject);
-//
-//        CompositeKieJar compositeKieJar = new CompositeKieJar(gav);
-//        for (DependencyDescriptor dep : pomParser.getPomDirectDependencies()) {
-//            Artifact depArtifact = mavenRepository.resolveArtifact(dep.toString());
-//            if (isKJar(depArtifact.getFile())) {
-//                compositeKieJar.addKieModule(buildArtifact(depArtifact));
-//            }
-//        }
-//        return compositeKieJar;
-        
-        return null;
+
+        mavenRepository = MavenRepository.getMavenRepository(mavenProject);
+        PomParser pomParser = new EmbeddedPomParser(mavenProject);
+
+        CompositeKieModule compositeKieModule = new CompositeKieModule(gav);
+        for (DependencyDescriptor dep : pomParser.getPomDirectDependencies()) {
+            Artifact depArtifact = mavenRepository.resolveArtifact(dep.toString());
+            if (isKJar(depArtifact.getFile())) {
+                compositeKieModule.addKieModule(buildArtifact(gav, depArtifact));
+            }
+        }
+        return compositeKieModule;
     }
 
     private MavenProject getMavenProjectForGAV(GAV gav) {
@@ -105,10 +104,10 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return artifact != null ? parseMavenPom(artifact.getFile()) : null;
     }
 
-    private KieModule buildArtifact(Artifact artifact) {
-        KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(artifact.getFile());
-        Results results = kieBuilder.build();
-        return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieModule() : null;
+    private KieModule buildArtifact(GAV gav, Artifact artifact) {
+        JarKieModule kieModule = new JarKieModule(gav, artifact.getFile());
+        kieModule.build();
+        return kieModule;
     }
 
     public void start(long pollingInterval) {
@@ -151,16 +150,16 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             DependencyDescriptor depDescr = new DependencyDescriptor(artifact);
             usedDependencies.remove(depDescr);
             usedDependencies.add(depDescr);
-            updateKieModule(artifact.getFile());
+            updateKieModule(artifact, depDescr.getGav());
         }
         log.info("The following artifacts have been updated: " + updatedArtifacts);
     }
 
-    private void updateKieModule(File kJar) {
-        KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(kJar);
-        Results results = kieBuilder.build();
-        if (results.getInsertedMessages().isEmpty()) {
-            ((InternalKieContainer)kieContainer).updateKieModule(kieBuilder.getKieModule());
+    private void updateKieModule(Artifact artifact, GAV gav) {
+        JarKieModule kieModule = new JarKieModule(gav, artifact.getFile());
+        Messages messages = kieModule.build();
+        if ( MessageImpl.filterMessages(messages.getMessages(), Message.Level.ERROR).isEmpty()) {
+            kieContainer.updateToVersion(gav);
         }
     }
 
