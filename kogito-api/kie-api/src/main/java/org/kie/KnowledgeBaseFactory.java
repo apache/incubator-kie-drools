@@ -16,12 +16,11 @@
 
 package org.kie;
 
-import java.util.Properties;
-
 import org.kie.runtime.Environment;
 import org.kie.runtime.KnowledgeSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.util.ServiceRegistryImpl;
+
+import java.util.Properties;
 
 /**
  * <p>
@@ -146,18 +145,6 @@ public class KnowledgeBaseFactory  {
 
     public static Environment newEnvironment() {
         return getKnowledgeBaseFactoryService().newEnvironment();
-    }
-
-    public static KnowledgeBase getKnowledgeBase(String kBaseName) {
-        return getKnowledgeBaseFactoryService().getKnowledgeBase( kBaseName );
-    }
-
-    public static StatefulKnowledgeSession getStatefulKnowlegeSession(String kSessionName) {
-        return getKnowledgeBaseFactoryService().getStatefulKnowlegeSession( kSessionName );
-    }
-
-    public static KBaseUnit getKBaseUnit(String kBaseName) {
-        return getKnowledgeBaseFactoryService().getKBaseUnit(kBaseName);
     }
 
     public static synchronized void setKnowledgeBaseServiceFactory(KnowledgeBaseFactoryService serviceFactory) {
