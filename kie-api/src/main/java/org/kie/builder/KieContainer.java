@@ -23,4 +23,6 @@ public interface KieContainer {
     StatelessKieSession getKieStatelessSession(String kSessionName);
 
     void dispose();
+    
+    ClassLoader getClassLoader();
 }

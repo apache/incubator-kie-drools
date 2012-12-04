@@ -70,6 +70,21 @@ public class CompositeClassLoader extends ClassLoader {
         this.classLoaders.add( 0, classLoader );
         this.loader.get().reset();
     }
+    
+    public synchronized void addClassLoaderToEnd(final ClassLoader classLoader) {
+        /* NB: we need synchronized here even though we use a COW list:
+         *     two threads may try to add the same new class loader, so we need
+         *     to protect over a bigger area than just a single iteration.
+         */
+        // don't add duplicate ClassLoaders;
+        for ( final ClassLoader cl : this.classLoaders ) {
+            if ( cl == classLoader ) {
+                return;
+            }
+        }
+        this.classLoaders.add( classLoader );
+        this.loader.get().reset();
+    }    
 
     public synchronized void removeClassLoader(final ClassLoader classLoader) {
         /* synchronized to protect against concurrent runs of 
