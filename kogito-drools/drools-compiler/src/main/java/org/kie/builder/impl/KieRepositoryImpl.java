@@ -1,7 +1,9 @@
 package org.kie.builder.impl;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -16,6 +18,7 @@ import org.kie.builder.KieScanner;
 import org.kie.builder.Results;
 import org.kie.io.Resource;
 import org.kie.util.ServiceRegistryImpl;
+import org.kohsuke.rngom.digested.DDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,7 +131,24 @@ public class KieRepositoryImpl
     }
 
 
-    public KieModule addKieModule(Resource resource) {
+    public KieModule addKieModule(Resource resource, Resource... dependencies) {
+        log.info( "Adding KieModule from resource :" + resource  );
+        KieModule kModule = getKieModule( resource );
+        
+        if ( dependencies != null && dependencies.length > 0 ) {
+            Map<GAV, InternalKieModule> list = new HashMap<GAV, InternalKieModule>();
+            for ( Resource depRes : dependencies ) {
+                InternalKieModule depKModule = ( InternalKieModule ) getKieModule( depRes );
+                log.info( "Adding KieModule dependency from resource :" + resource  );
+                list.put( depKModule.getGAV(), depKModule );
+            }
+            ((InternalKieModule)kModule).setDependencies( list );
+        }
+        addKieModule( kModule );
+        return kModule;
+    }
+    
+    public KieModule getKieModule(Resource resource) {
         InternalResource res = (InternalResource) resource;
         try {
             // find kmodule.xml
@@ -143,11 +163,10 @@ public class KieRepositoryImpl
                 urlPath = "jar:"+ urlPath  + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH;              
             }
             KieModule kModule = ClasspathKieProject.fetchKModule( new URL( urlPath )  );
-            addKieModule( kModule );
             return kModule;
         } catch ( Exception e ) {
             throw new RuntimeException("Unable to fetch module from resource :" + res, e);
-        }    
+        }          
     }
         
 }
