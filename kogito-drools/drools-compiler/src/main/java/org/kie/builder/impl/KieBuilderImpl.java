@@ -26,10 +26,12 @@ import org.kie.builder.KieServices;
 import org.kie.builder.Message.Level;
 import org.kie.builder.ResourceType;
 import org.kie.builder.Results;
+import org.kie.io.Resource;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -71,11 +73,21 @@ public class KieBuilderImpl
         init();
     }
 
-    public KieBuilder setDependencies(Collection<KieModule> dependencies) {
-        this.dependencies = dependencies;
+    public KieBuilder setDependencies(KieModule... dependencies) {        
+        this.dependencies = Arrays.asList( dependencies );
         return this;
     }
     
+    public KieBuilder setDependencies(Resource... resources) {
+        KieRepositoryImpl kr = ( KieRepositoryImpl ) KieServices.Factory.get().getKieRepository();
+        List<KieModule> list = new ArrayList<KieModule>();
+        for ( Resource res : resources ) {
+            InternalKieModule depKieMod = ( InternalKieModule ) kr.getKieModule( res );
+            list.add( depKieMod);
+        }
+        this.dependencies = list;
+        return this;
+    }
     
     private void init() {
         KieFactory kf = KieFactory.Factory.get();

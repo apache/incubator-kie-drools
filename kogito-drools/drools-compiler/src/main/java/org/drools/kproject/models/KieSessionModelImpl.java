@@ -19,8 +19,8 @@ public class KieSessionModelImpl
         KieSessionModel {
     private String                           name;
 
-    private String                           type;
-    private ClockTypeOption                  clockType;
+    private String                           type = "stateful";
+    private ClockTypeOption                  clockType = ClockTypeOption.get( "realtime" );
 
     private KieBaseModelImpl kBase;
 

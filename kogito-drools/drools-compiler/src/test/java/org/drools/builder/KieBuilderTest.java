@@ -114,7 +114,7 @@ public class KieBuilderTest {
         
 
         KieBuilder kb2 = createKieBuilder(kfs2);
-        kb2.setDependencies( Arrays.asList( new KieModule[] { kModule1 } ) );
+        kb2.setDependencies( kModule1 );
         kb2.build();        
         if ( kb2.hasResults( Level.ERROR  ) ) {
             fail("Unable to build KieJar\n" + kb2.getResults( ).toString() );
