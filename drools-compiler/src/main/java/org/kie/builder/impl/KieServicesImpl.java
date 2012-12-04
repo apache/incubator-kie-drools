@@ -43,7 +43,7 @@ public class KieServicesImpl implements KieServices {
      * Returns KieContainer for the classpath
      */
     public KieContainer getKieClasspathContainer() {
-        ClasspathKieProject kProject =  new ClasspathKieProject();        
+        ClasspathKieProject kProject =  new ClasspathKieProject();
         return new KieContainerImpl(kProject, null);
     }
     

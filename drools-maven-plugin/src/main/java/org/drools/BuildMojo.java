@@ -3,22 +3,8 @@ package org.drools;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.drools.builder.impl.KnowledgeContainerImpl;
-import org.kie.KBaseUnit;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModuleModel;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.KnowledgeContainerFactory;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-
-import static org.drools.core.util.IoUtils.copyFile;
-import static org.drools.kproject.models.KieBaseModelImpl.getFiles;
-import static org.drools.kproject.models.KieModuleModelImpl.fromXML;
 
 /**
  * This goal builds the drools file belonging to the kproject.
@@ -56,6 +42,7 @@ public class BuildMojo extends AbstractMojo {
     private File outputDirectory;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+/*
         URLClassLoader projectClassLoader = null;
         try {
             projectClassLoader = new URLClassLoader( new URL[] { outputDirectory.toURI().toURL() } );
@@ -75,8 +62,9 @@ public class BuildMojo extends AbstractMojo {
         }
 
         copyKBasesToOutput(rootFolder, outputDirectory);
+*/
     }
-
+/*
     public void copyKBasesToOutput(File rootFolder, File outputFolder) {
         File kProjectFile = new File(rootFolder, KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH);
         KieModuleModel kieProject = fromXML(new File(rootFolder, KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH));
@@ -88,4 +76,5 @@ public class BuildMojo extends AbstractMojo {
             }
         }
     }
+*/
 }

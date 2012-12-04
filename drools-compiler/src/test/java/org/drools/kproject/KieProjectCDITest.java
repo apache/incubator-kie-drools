@@ -1,47 +1,22 @@
 package org.drools.kproject;
 
-import org.drools.compiler.io.memory.MemoryFile;
-import org.drools.compiler.io.memory.MemoryFileSystem;
-import org.drools.kproject.memory.MemorytURLStreamHandler;
 import org.drools.rule.JavaDialectRuntimeData;
-import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
-import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
-import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.Test;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieSessionModel;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKieSession;
-import org.kie.runtime.StatelessKnowledgeSession;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.AnnotationLiteral;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class KieProjectCDITest extends AbstractKnowledgeTest {
     private static final ProtectionDomain PROTECTION_DOMAIN;
@@ -89,7 +64,7 @@ public class KieProjectCDITest extends AbstractKnowledgeTest {
             URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{file1.toURI().toURL(), file2.toURI().toURL(), file3.toURI().toURL(), fol4.toURI().toURL() } );
             Thread.currentThread().setContextClassLoader( urlClassLoader );
 
-            Enumeration<URL> e = urlClassLoader.getResources( "META-INF/kproject.xml" );
+            Enumeration<URL> e = urlClassLoader.getResources( "META-INF/kmodule.xml" );
             while ( e.hasMoreElements() ) {
                 URL url = e.nextElement();
                 System.out.println( url );
