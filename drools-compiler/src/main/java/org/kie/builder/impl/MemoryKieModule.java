@@ -1,12 +1,12 @@
 package org.kie.builder.impl;
 
+import java.io.File;
+import java.util.Collection;
+
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.kie.builder.GAV;
 import org.kie.builder.KieModuleModel;
-
-import java.io.File;
-import java.util.Collection;
 
 public class MemoryKieModule extends AbstractKieModule implements ResourceReader {
 
