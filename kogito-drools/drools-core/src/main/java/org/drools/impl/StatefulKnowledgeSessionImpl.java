@@ -811,7 +811,6 @@ public class StatefulKnowledgeSessionImpl
         if ( !(command instanceof BatchExecutionCommandImpl) ) {
             return (T) ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
                                                                                              null,
-                                                                                             null,
                                                                                              this.kbase,
                                                                                              this,
                                                                                              results ) );
@@ -820,7 +819,6 @@ public class StatefulKnowledgeSessionImpl
         try {
             session.startBatchExecution( results );
             ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
-                                                                                  null,
                                                                                   null,
                                                                                   this.kbase,
                                                                                   this,

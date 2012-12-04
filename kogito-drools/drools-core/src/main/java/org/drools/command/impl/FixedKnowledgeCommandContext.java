@@ -16,10 +16,8 @@
 
 package org.drools.command.impl;
 
-import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeContainer;
 import org.kie.command.Context;
 import org.kie.command.World;
 import org.kie.runtime.ExecutionResults;
@@ -32,22 +30,18 @@ public class FixedKnowledgeCommandContext
         KnowledgeCommandContext {
 
     private Context                  context;
-    private KnowledgeContainer       kcontainer;
     private KnowledgeBuilder         kbuilder;
     private KnowledgeBase            kbase;
     private StatefulKnowledgeSession statefulKsession;
     private WorkingMemoryEntryPoint  workingMemoryEntryPoint;
     private ExecutionResults         kresults;
-    private KBaseUnit                kbaseUnit;
 
     public FixedKnowledgeCommandContext(Context context,
-                                        KnowledgeContainer kcontainer,
                                         KnowledgeBuilder kbuilder,
                                         KnowledgeBase kbase,
                                         StatefulKnowledgeSession statefulKsession,
                                         ExecutionResults kresults) {
         this.context = context;
-        this.kcontainer = kcontainer;
         this.kbuilder = kbuilder;
         this.kbase = kbase;
         this.statefulKsession = statefulKsession;
@@ -55,23 +49,17 @@ public class FixedKnowledgeCommandContext
     }
 
     public FixedKnowledgeCommandContext(Context context,
-                                        KnowledgeContainer kcontainer,
                                         KnowledgeBuilder kbuilder,
                                         KnowledgeBase kbase,
                                         StatefulKnowledgeSession statefulKsession,
                                         WorkingMemoryEntryPoint workingMemoryEntryPoint,
                                         ExecutionResults kresults) {
         this( context,
-              kcontainer,
               kbuilder,
               kbase,
               statefulKsession,
               kresults );
         this.workingMemoryEntryPoint = workingMemoryEntryPoint;
-    }
-
-    public KnowledgeContainer getKnowledgeContainer() {
-        return kcontainer;
     }
 
     public KnowledgeBuilder getKnowledgeBuilder() {
@@ -104,14 +92,6 @@ public class FixedKnowledgeCommandContext
 
     public void setKnowledgeBuilder(KnowledgeBuilder kbuilder) {
         this.kbuilder = kbuilder;
-    }
-
-    public KBaseUnit getKBaseUnit() {
-        return kbaseUnit;
-    }
-
-    public void setKBaseUnit(KBaseUnit unit) {
-        this.kbaseUnit = unit;
     }
 
     public KnowledgeBase getKbase() {

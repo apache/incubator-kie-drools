@@ -15,12 +15,6 @@
  */
 package org.drools.persistence;
 
-import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.Date;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.command.CommandService;
@@ -51,7 +45,11 @@ import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.tools.jxc.gen.config.Config;
+import java.lang.reflect.Constructor;
+import java.util.Collections;
+import java.util.Date;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 public class SingleSessionCommandService
     implements
@@ -121,7 +119,6 @@ public class SingleSessionCommandService
                                                            this.env );
 
         this.kContext = new FixedKnowledgeCommandContext( null,
-                                                          null,
                                                           null,
                                                           null,
                                                           this.ksession,
@@ -262,7 +259,6 @@ public class SingleSessionCommandService
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed
             this.kContext = new FixedKnowledgeCommandContext( null,
-                                                              null,
                                                               null,
                                                               null,
                                                               this.ksession,
