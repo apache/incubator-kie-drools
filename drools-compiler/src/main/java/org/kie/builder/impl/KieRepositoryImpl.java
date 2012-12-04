@@ -163,6 +163,7 @@ public class KieRepositoryImpl
                 urlPath = "jar:"+ urlPath  + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH;              
             }
             KieModule kModule = ClasspathKieProject.fetchKModule( new URL( urlPath )  );
+            log.debug( "fetched KieModule from resource :" + resource  );
             return kModule;
         } catch ( Exception e ) {
             throw new RuntimeException("Unable to fetch module from resource :" + res, e);

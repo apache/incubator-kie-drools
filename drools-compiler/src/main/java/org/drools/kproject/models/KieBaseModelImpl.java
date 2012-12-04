@@ -38,9 +38,9 @@ public class KieBaseModelImpl
 
     private Set<String>                  packages;
 
-    private AssertBehaviorOption         equalsBehavior;
+    private AssertBehaviorOption         equalsBehavior = AssertBehaviorOption.IDENTITY;
 
-    private EventProcessingOption        eventProcessingMode;
+    private EventProcessingOption        eventProcessingMode = EventProcessingOption.STREAM;
 
     private Map<String, KieSessionModel> kSessions;
 
