@@ -50,7 +50,7 @@ public class KieBuilderImpl
 
     private MemoryFileSystem      trgMfs;
 
-    private MemoryKieModules      kModule;
+    private MemoryKieModule      kModule;
 
     private PomModel              pomModel;
     private byte[]                pomXml;
@@ -108,7 +108,7 @@ public class KieBuilderImpl
             compileJavaClasses();
             addKBasesFilesToTrg();
 
-            kModule = new MemoryKieModules( gav,
+            kModule = new MemoryKieModule( gav,
                                               kModuleModel,
                                               trgMfs );
 
@@ -123,7 +123,7 @@ public class KieBuilderImpl
 
             KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
             kProject.init();
-            // kModule.verify( messages );
+            kProject.verify( messages );
 
             if ( !hasResults( Level.ERROR ) ) {
                 KieServices.Factory.get().getKieRepository().addKieModule( kModule );
