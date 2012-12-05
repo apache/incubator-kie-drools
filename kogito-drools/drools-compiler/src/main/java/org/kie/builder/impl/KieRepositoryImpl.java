@@ -1,12 +1,5 @@
 package org.kie.builder.impl;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.drools.io.internal.InternalResource;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
@@ -18,9 +11,13 @@ import org.kie.builder.KieScanner;
 import org.kie.builder.Results;
 import org.kie.io.Resource;
 import org.kie.util.ServiceRegistryImpl;
-import org.kohsuke.rngom.digested.DDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class KieRepositoryImpl
     implements
@@ -157,7 +154,7 @@ public class KieRepositoryImpl
                 if ( !urlPath.endsWith( "/" ) ) {
                     urlPath = urlPath + "/";
                 }
-                urlPath = urlPath  + "META-INF/kproject.xml";
+                urlPath = urlPath  + KieModuleModelImpl.KMODULE_JAR_PATH;
                 
             } else {
                 urlPath = "jar:"+ urlPath  + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH;              

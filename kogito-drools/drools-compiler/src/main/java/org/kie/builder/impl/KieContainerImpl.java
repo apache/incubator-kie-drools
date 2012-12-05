@@ -119,6 +119,10 @@ public class KieContainerImpl
         // TODO
     }
 
+    public KieProject getKieProject() {
+        return kProject;
+    }
+
     public KieModule getKieModuleForKBase(String kBaseName) {
         return kProject.getKieModuleForKBase( kBaseName );
     }

@@ -3,8 +3,19 @@ package org.drools;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.kie.builder.KieModule;
+import org.kie.builder.KieRepository;
+import org.kie.builder.KieServices;
+import org.kie.builder.Message;
+import org.kie.builder.impl.KieContainerImpl;
+import org.kie.builder.impl.KieProject;
+import org.kie.builder.impl.Messages;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
 
 /**
  * This goal builds the drools file belonging to the kproject.
@@ -15,24 +26,6 @@ import java.io.File;
  */
 public class BuildMojo extends AbstractMojo {
 
-    private static final String KBASES_FOLDER = "src/kbases";
-
-    /**
-     * Project root folder.
-     *
-     * @parameter default-value="."
-     * @required
-     */
-    private File rootFolder;
-
-    /**
-     * Project sourceFolder folder.
-     *
-     * @parameter default-value="src/kbases"
-     * @required
-     */
-    private File sourceFolder;
-
     /**
      * Directory containing the generated JAR.
      *
@@ -41,8 +34,15 @@ public class BuildMojo extends AbstractMojo {
      */
     private File outputDirectory;
 
+    /**
+     * Project sourceFolder folder.
+     *
+     * @parameter default-value="src/main/resources"
+     * @required
+     */
+    private File sourceFolder;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
-/*
         URLClassLoader projectClassLoader = null;
         try {
             projectClassLoader = new URLClassLoader( new URL[] { outputDirectory.toURI().toURL() } );
@@ -50,31 +50,29 @@ public class BuildMojo extends AbstractMojo {
             throw new RuntimeException(e);
         }
 
-        KnowledgeBuilderConfiguration kConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, projectClassLoader);
-        KnowledgeContainerImpl kbuilder = (KnowledgeContainerImpl) KnowledgeContainerFactory.newKnowledgeContainer(kConf);
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(projectClassLoader);
 
-        for (KBaseUnit kBaseUnit : kbuilder.getKBaseUnits(rootFolder, sourceFolder)) {
-            if (kBaseUnit.hasErrors()) {
-                throw new MojoFailureException(kBaseUnit.getKBaseName() + " build failed!");
+        KieServices ks = KieServices.Factory.get();
+
+        try {
+            KieRepository kr = ks.getKieRepository();
+            KieModule kModule = kr.addKieModule( ks.getResources().newFileSystemResource( sourceFolder ) );
+            KieContainerImpl kContainer = (KieContainerImpl)ks.getKieContainer( kModule.getGAV() );
+
+            KieProject kieProject = kContainer.getKieProject();
+            Messages messages = kieProject.verify();
+
+            List<Message> errors = messages.filterMessages(Message.Level.ERROR);
+            if (!errors.isEmpty()) {
+                for (Message error : errors) {
+                    getLog().error(error.toString());
+                }
+                throw new MojoFailureException("Build failed!");
             }
-
-            getLog().info(kBaseUnit.getKBaseName() + " correctly built!");
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
-
-        copyKBasesToOutput(rootFolder, outputDirectory);
-*/
+        getLog().info("KieModule successfully built!");
     }
-/*
-    public void copyKBasesToOutput(File rootFolder, File outputFolder) {
-        File kProjectFile = new File(rootFolder, KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH);
-        KieModuleModel kieProject = fromXML(new File(rootFolder, KnowledgeContainerImpl.KPROJECT_RELATIVE_PATH));
-        copyFile(kProjectFile, new File(outputFolder, KnowledgeContainerImpl.KPROJECT_JAR_PATH));
-
-        for (KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values()) {
-            for (String kBaseFile : getFiles(new File(rootFolder, KBASES_FOLDER))) {
-                copyFile(new File(rootFolder, KBASES_FOLDER + "/" + kBaseFile), new File(outputFolder, kBaseFile));
-            }
-        }
-    }
-*/
 }

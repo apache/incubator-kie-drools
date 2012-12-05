@@ -18,4 +18,6 @@ public interface KieProject {
     void init();   
     
     CompositeClassLoader getClassLoader();
+
+    Messages verify();
 }

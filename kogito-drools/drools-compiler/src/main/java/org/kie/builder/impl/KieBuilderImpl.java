@@ -144,7 +144,7 @@ public class KieBuilderImpl
         kProject.init();
         kProject.verify( messages );
 
-        if ( MessageImpl.filterMessages( messages.getMessages(), Level.ERROR ).isEmpty()) {
+        if ( messages.filterMessages( Level.ERROR ).isEmpty()) {
             KieServices.Factory.get().getKieRepository().addKieModule( kModule );
         }
     }
@@ -224,16 +224,14 @@ public class KieBuilderImpl
         if ( !isBuilt() ) {
             build();
         }
-        return !MessageImpl.filterMessages( messages.getMessages(),
-                                            levels ).isEmpty();
+        return !messages.filterMessages( levels ).isEmpty();
     }
 
     public Results getResults(Level... levels) {
         if ( !isBuilt() ) {
             build();
         }
-        return new ResultsImpl( MessageImpl.filterMessages(messages.getMessages(),
-                levels),
+        return new ResultsImpl( messages.filterMessages(levels),
                                 null );
     }
 

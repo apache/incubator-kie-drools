@@ -1,12 +1,12 @@
 package org.kie.builder.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.Message;
 import org.kie.builder.Message.Level;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Messages {
     private List<Message>        messages = new ArrayList<Message>();
@@ -40,6 +40,8 @@ public class Messages {
     public void setIdGenerator(long idGenerator) {
         this.idGenerator = idGenerator;
     }
-    
-    
+
+    public List<Message> filterMessages(Level... levels) {
+        return MessageImpl.filterMessages(messages, levels);
+    }
 }

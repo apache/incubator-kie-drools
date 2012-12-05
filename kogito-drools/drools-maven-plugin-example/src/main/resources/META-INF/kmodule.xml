@@ -1,0 +1,8 @@
+<kmodule>
+  <kbase name="KBase1">
+    <ksession name="KBase1.session" type="stateful"/>
+  </kbase>
+  <kbase name="FireAlarmKBase">
+    <ksession name="FireAlarmKBase.session" type="stateful"/>
+  </kbase>
+</kmodule>
