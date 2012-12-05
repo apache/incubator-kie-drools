@@ -180,8 +180,9 @@ public class KieModuleModelImpl implements KieModuleModel {
             readNodes(reader, new AbstractXStreamConverter.NodeReader() {
                 public void onNode(HierarchicalStreamReader reader, String name, String value) {
                     if ("kbase".equals(name)) {
-                        KieBaseModel kBaseModule = readObject( reader, context, KieBaseModelImpl.class );
+                        KieBaseModelImpl kBaseModule = readObject( reader, context, KieBaseModelImpl.class );
                         kModule.getRawKieBaseModels().put( kBaseModule.getName(), kBaseModule );
+                        kBaseModule.setKModule(kModule);
                     }
                 }
             });

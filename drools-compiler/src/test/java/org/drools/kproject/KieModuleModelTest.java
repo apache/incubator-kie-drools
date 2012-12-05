@@ -1,5 +1,7 @@
 package org.drools.kproject;
 
+import org.drools.kproject.models.KieBaseModelImpl;
+import org.drools.kproject.models.KieSessionModelImpl;
 import org.junit.Test;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
@@ -17,6 +19,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static org.drools.kproject.models.KieModuleModelImpl.fromXML;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 public class KieModuleModelTest {
 
@@ -58,15 +61,18 @@ public class KieModuleModelTest {
 //                .setEventProcessingMode( EventProcessingOption.STREAM );        
 
         String xml = kproj.toXML();
-        System.out.println( xml );
+
+        // System.out.println( xml );
 
         KieModuleModel kprojXml = fromXML(xml);
 
         KieBaseModel kieBaseModelXML = kprojXml.getKieBaseModels().get("KBase1");
+        assertSame(kprojXml, ((KieBaseModelImpl)kieBaseModelXML).getKModule());
         assertEquals(AssertBehaviorOption.EQUALITY, kieBaseModelXML.getEqualsBehavior());
         assertEquals(EventProcessingOption.STREAM, kieBaseModelXML.getEventProcessingMode());
 
         KieSessionModel kieSessionModelXML = kieBaseModelXML.getKieSessionModels().get("KSession1");
+        assertSame(kieBaseModelXML, ((KieSessionModelImpl)kieSessionModelXML).getKieBaseModel());
         assertEquals("stateful", kieSessionModelXML.getType());
         assertEquals(ClockTypeOption.get("realtime"), kieSessionModelXML.getClockType());
 

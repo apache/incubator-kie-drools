@@ -315,6 +315,7 @@ public class KieBaseModelImpl
                     if ( "ksession".equals( name ) ) {
                         KieSessionModelImpl kSession = readObject( reader, context, KieSessionModelImpl.class );
                         kBase.getRawKieSessionModels().put( kSession.getName(), kSession );
+                        kSession.setKBase(kBase);
                     }
                     
                    // @TODO we don't use support nested includes
