@@ -256,7 +256,6 @@ public class StatelessKnowledgeSessionImpl
                                                                                         null ),
                                                                        null,
                                                                        null,
-                                                                       null,
                                                                        ksession,
                                                                        null );
 
