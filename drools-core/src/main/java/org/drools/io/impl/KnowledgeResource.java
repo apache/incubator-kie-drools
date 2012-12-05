@@ -16,9 +16,8 @@
 
 package org.drools.io.impl;
 
-import org.kie.builder.ResourceConfiguration;
-import org.kie.builder.ResourceType;
-import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
 
 public class KnowledgeResource {
     private String                source;

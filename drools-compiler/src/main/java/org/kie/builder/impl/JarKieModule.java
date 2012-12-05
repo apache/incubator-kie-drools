@@ -1,18 +1,18 @@
 package org.kie.builder.impl;
 
-import org.drools.kproject.models.KieModuleModelImpl;
-import org.kie.builder.GAV;
-import org.kie.builder.KieModuleModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.drools.compiler.io.memory.MemoryFileSystem.readFromJar;
+import static org.kie.builder.impl.KieBuilderImpl.buildKieModule;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.drools.compiler.io.memory.MemoryFileSystem.readFromJar;
-import static org.kie.builder.impl.KieBuilderImpl.buildKieModule;
+import org.drools.kproject.models.KieModuleModelImpl;
+import org.kie.builder.GAV;
+import org.kie.builder.KieModuleModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JarKieModule extends MemoryKieModule {
 

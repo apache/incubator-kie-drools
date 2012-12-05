@@ -1,5 +1,8 @@
 package org.drools.compiler;
 
+import java.io.InputStream;
+import java.io.Reader;
+
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
@@ -18,11 +21,6 @@ import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.ParserHelper;
 import org.kie.builder.conf.LanguageLevelOption;
-
-import java.io.InputStream;
-import java.io.Reader;
-
-import static org.drools.compiler.DRLFactory.buildParser;
 
 public class DRLFactory {
 

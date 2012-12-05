@@ -1,18 +1,13 @@
 package org.drools.api;
 
-import java.io.StringReader;
 import java.util.Collection;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
-
-import static org.junit.Assert.*;
+import org.kie.io.ResourceType;
 
 
 public class KnowledgeSessionTest {

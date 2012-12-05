@@ -1,8 +1,5 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Cat;
@@ -19,7 +16,6 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class AlphaNetworkModifyTest extends CommonTestMethodBase {
     

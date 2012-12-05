@@ -1,5 +1,8 @@
 package org.kie.builder.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.util.ClassUtils;
 import org.kie.builder.GAV;
 import org.kie.builder.KieRepository;
@@ -8,9 +11,6 @@ import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.

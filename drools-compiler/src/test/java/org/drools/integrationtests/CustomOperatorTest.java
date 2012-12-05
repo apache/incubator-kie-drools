@@ -1,5 +1,9 @@
 package org.drools.integrationtests;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.CommonTestMethodBase;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
@@ -16,10 +20,6 @@ import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.conf.EvaluatorOption;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class CustomOperatorTest extends CommonTestMethodBase {
 

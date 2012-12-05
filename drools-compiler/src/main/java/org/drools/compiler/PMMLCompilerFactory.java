@@ -16,10 +16,7 @@
 
 package org.drools.compiler;
 
-import org.kie.builder.DecisionTableConfiguration;
 import org.kie.util.ServiceRegistryImpl;
-
-import java.io.InputStream;
 
 public class PMMLCompilerFactory {
 

@@ -18,7 +18,6 @@ package org.drools.command;
 
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.time.SessionClock;

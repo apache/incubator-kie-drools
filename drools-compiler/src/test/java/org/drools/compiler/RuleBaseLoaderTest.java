@@ -1,15 +1,13 @@
 package org.drools.compiler;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.RuleBase;
 import org.drools.integrationtests.DslTest;
+import org.junit.Test;
 
 public class RuleBaseLoaderTest {
 

@@ -35,6 +35,7 @@ import java.util.List;
 import org.drools.core.util.StringUtils;
 import org.drools.io.internal.InternalResource;
 import org.kie.io.Resource;
+import org.kie.io.ResourceType;
 import org.kie.util.ClassLoaderUtil;
 
 /**
@@ -120,6 +121,8 @@ public class ClassPathResource extends BaseResource
         this.classLoader = ClassLoaderUtil.getClassLoader( classLoader == null ? null : new ClassLoader[] { classLoader },
                                                            clazz,
                                                            false );
+        setName( path );
+        setResourceType( ResourceType.determineResourceType( path ) );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

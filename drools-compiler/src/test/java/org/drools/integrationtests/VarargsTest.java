@@ -1,20 +1,13 @@
 package org.drools.integrationtests;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderErrors;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.type.PropertyReactive;
-import org.kie.io.ResourceFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class VarargsTest extends CommonTestMethodBase {
     

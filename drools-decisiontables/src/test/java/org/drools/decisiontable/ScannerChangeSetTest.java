@@ -1,15 +1,6 @@
 package org.drools.decisiontable;
 
-import org.drools.core.util.FileManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.agent.KnowledgeAgent;
-import org.kie.agent.KnowledgeAgentFactory;
-import org.kie.io.ResourceChangeScannerConfiguration;
-import org.kie.io.ResourceFactory;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +11,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import static org.junit.Assert.assertEquals;
+import org.drools.core.util.FileManager;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.agent.KnowledgeAgent;
+import org.kie.agent.KnowledgeAgentFactory;
+import org.kie.io.ResourceChangeScannerConfiguration;
+import org.kie.io.ResourceFactory;
 
 public class ScannerChangeSetTest {
 

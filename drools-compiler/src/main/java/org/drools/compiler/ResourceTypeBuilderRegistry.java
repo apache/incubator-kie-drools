@@ -3,7 +3,7 @@ package org.drools.compiler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.builder.ResourceType;
+import org.kie.io.ResourceType;
 
 public class ResourceTypeBuilderRegistry {
 

@@ -17,9 +17,15 @@ package org.drools.marshalling.util;
 
 import static org.drools.marshalling.util.CompareViaReflectionUtil.compareInstances;
 import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.drools.marshalling.util.MarshallingTestUtil.*;
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.drools.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
+import static org.drools.marshalling.util.MarshallingTestUtil.unmarshallObject;
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.tearDown;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.lang.reflect.Array;
@@ -31,9 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.SessionConfiguration;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.time.impl.TrackableTimeJobFactoryManager;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

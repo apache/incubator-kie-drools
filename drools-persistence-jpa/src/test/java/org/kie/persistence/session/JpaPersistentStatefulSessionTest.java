@@ -15,6 +15,21 @@
  */
 package org.kie.persistence.session;
 
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
+
 import org.drools.Person;
 import org.drools.SessionConfiguration;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
@@ -38,20 +53,6 @@ import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.naming.InitialContext;
-import javax.transaction.UserTransaction;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 public class JpaPersistentStatefulSessionTest {
 

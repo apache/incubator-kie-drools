@@ -14,7 +14,6 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.common.AbstractWorkingMemory;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;

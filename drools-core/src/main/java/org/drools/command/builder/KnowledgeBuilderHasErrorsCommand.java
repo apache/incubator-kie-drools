@@ -20,11 +20,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderErrors;
-import org.kie.builder.ResourceConfiguration;
-import org.kie.builder.ResourceType;
 import org.kie.command.Context;
-import org.kie.io.Resource;
 
 public class KnowledgeBuilderHasErrorsCommand
     implements

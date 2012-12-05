@@ -15,15 +15,16 @@
  */
 package org.drools.integrationtests;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
 import java.io.StringReader;
 
 import org.junit.Test;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
-
-import static org.junit.Assert.*;
+import org.kie.io.ResourceType;
 
 /**
  * Tests an error appearing when DLR does not contain a new line at the end of

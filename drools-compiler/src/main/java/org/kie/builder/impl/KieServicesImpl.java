@@ -1,5 +1,9 @@
 package org.kie.builder.impl;
 
+import static org.drools.compiler.io.memory.MemoryFileSystem.readFromJar;
+
+import java.io.File;
+
 import org.drools.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.command.impl.CommandFactoryServiceImpl;
 import org.drools.concurrent.ExecutorProviderImpl;
@@ -20,10 +24,6 @@ import org.kie.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.util.ServiceRegistryImpl;
-
-import java.io.File;
-
-import static org.drools.compiler.io.memory.MemoryFileSystem.readFromJar;
 
 public class KieServicesImpl implements KieServices {
     private ResourceFactoryService resourceFactory;

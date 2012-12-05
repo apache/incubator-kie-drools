@@ -21,8 +21,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import javax.inject.Singleton;
-
 import org.kie.definition.KnowledgeDescr;
 import org.kie.io.Resource;
 import org.kie.io.ResourceChangeNotifier;

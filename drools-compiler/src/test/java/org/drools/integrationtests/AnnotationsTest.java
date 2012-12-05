@@ -16,6 +16,19 @@
 
 package org.drools.integrationtests;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
+
+import java.io.StringReader;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Field;
+
 import org.drools.io.impl.ByteArrayResource;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,25 +37,12 @@ import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.conf.EventProcessingOption;
 import org.kie.conf.MBeansOption;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.Position;
 import org.kie.io.ResourceFactory;
-
-import java.io.StringReader;
-import java.lang.annotation.*;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.fail;
+import org.kie.io.ResourceType;
 
 public class AnnotationsTest {
 

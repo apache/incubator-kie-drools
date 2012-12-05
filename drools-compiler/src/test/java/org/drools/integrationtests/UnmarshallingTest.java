@@ -1,6 +1,7 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -14,9 +15,9 @@ import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.conf.EventProcessingOption;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 

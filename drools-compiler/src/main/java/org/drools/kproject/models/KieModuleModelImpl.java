@@ -1,14 +1,5 @@
 package org.drools.kproject.models;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModuleModel;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,6 +7,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.util.AbstractXStreamConverter;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieModuleModel;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class KieModuleModelImpl implements KieModuleModel {
 

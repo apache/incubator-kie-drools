@@ -15,7 +15,9 @@
  */
 package org.drools.persistence.jta;
 
-import static org.drools.persistence.jta.JtaTransactionManagerTest.*;
+import static org.drools.persistence.jta.JtaTransactionManagerTest.COMMAND_ENTITY_MANAGER;
+import static org.drools.persistence.jta.JtaTransactionManagerTest.COMMAND_ENTITY_MANAGER_FACTORY;
+
 import java.util.HashMap;
 
 import javax.persistence.EntityManager;

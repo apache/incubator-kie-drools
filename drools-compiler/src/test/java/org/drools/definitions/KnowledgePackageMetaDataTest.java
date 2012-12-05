@@ -17,6 +17,11 @@
 package org.drools.definitions;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.drools.definitions.rule.impl.GlobalImpl;
 import org.drools.io.impl.ByteArrayResource;
 import org.junit.Test;
@@ -24,13 +29,11 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.rule.Query;
 import org.kie.definition.type.FactField;
 import org.kie.definition.type.FactType;
-
-import static org.junit.Assert.*;
+import org.kie.io.ResourceType;
 
 public class KnowledgePackageMetaDataTest {
 

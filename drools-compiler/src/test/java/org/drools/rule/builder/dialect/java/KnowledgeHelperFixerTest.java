@@ -16,10 +16,9 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import org.junit.After;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class KnowledgeHelperFixerTest {
 

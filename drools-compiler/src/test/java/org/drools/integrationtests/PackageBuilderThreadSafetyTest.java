@@ -1,13 +1,10 @@
 package org.drools.integrationtests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -16,6 +13,7 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.junit.Test;
 
 public class PackageBuilderThreadSafetyTest {
 

@@ -16,13 +16,7 @@
 
 package org.drools.fluent.impl;
 
-import org.hamcrest.Matcher;
 import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.fluent.InternalSimulation;
-import org.kie.fluent.test.ReflectiveMatcherAssert;
-
-import static org.junit.Assert.assertThat;
 
 @Ignore
 public class AbstractFluentTest<P> {

@@ -1,14 +1,15 @@
 package org.drools.kproject.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.core.util.AbstractXStreamConverter;
+import org.kie.builder.QualifierModel;
+
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.builder.QualifierModel;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class QualifierModelImpl implements QualifierModel {
     private String type;

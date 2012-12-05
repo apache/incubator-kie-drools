@@ -16,10 +16,10 @@
 
 package org.drools.compiler;
 
-import org.kie.Service;
-
 import java.io.InputStream;
 import java.util.Map;
+
+import org.kie.Service;
 
 public interface PMMLCompiler extends Service {
 

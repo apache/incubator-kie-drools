@@ -3,14 +3,6 @@ package org.drools.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.builder.conf.LanguageLevelOption;
-
-import static org.junit.Assert.*;
-
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DrlParser;
@@ -19,6 +11,10 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.builder.conf.LanguageLevelOption;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 18, 2008 Time: 1:22:50 PM To change this template use File |

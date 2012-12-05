@@ -31,7 +31,7 @@ import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.builder.ResourceType;
+import org.kie.io.ResourceType;
 
 public class CauseTest {
 

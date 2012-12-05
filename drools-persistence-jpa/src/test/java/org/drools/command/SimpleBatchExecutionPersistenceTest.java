@@ -15,7 +15,9 @@
  */
 package org.drools.command;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.cleanUp;
+import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
 
 import java.util.HashMap;
 

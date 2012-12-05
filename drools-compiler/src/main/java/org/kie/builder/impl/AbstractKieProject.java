@@ -1,10 +1,10 @@
 package org.kie.builder.impl;
 
-import org.drools.kproject.models.KieBaseModelImpl;
-import org.kie.builder.KieBaseModel;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.kproject.models.KieBaseModelImpl;
+import org.kie.builder.KieBaseModel;
 
 public abstract class AbstractKieProject implements KieProject {
 

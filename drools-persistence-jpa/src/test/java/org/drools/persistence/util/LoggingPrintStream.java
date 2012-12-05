@@ -2,7 +2,6 @@ package org.drools.persistence.util;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

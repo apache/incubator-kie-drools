@@ -16,35 +16,59 @@
 
 package org.drools.io.impl;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.drools.io.internal.InternalResource;
-import org.kie.builder.ResourceConfiguration;
-import org.kie.builder.ResourceType;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
 
 public abstract class BaseResource
-    implements
-    InternalResource {
-    private ResourceType         resourceType;
+        implements
+        InternalResource,
+        Externalizable {
+    private ResourceType          resourceType;
     private ResourceConfiguration configuration;
 
-    private String name;
-    private String description;
+    private String                name;
+    private String                description;
 
-    private List<String> categories;
+    private List<String>          categories;
     
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        resourceType = (ResourceType) in.readObject();
+        configuration = (ResourceConfiguration) in.readObject();
+        name = (String) in.readObject();
+        description = (String) in.readObject();
+        categories = (List<String>) in.readObject();
+    }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( resourceType );
+        out.writeObject( configuration );
+        out.writeObject( name );
+        out.writeObject( description );
+        out.writeObject( categories );
+    }
+
     public ResourceConfiguration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(ResourceConfiguration configuration) {
+    public InternalResource setConfiguration(ResourceConfiguration configuration) {
         this.configuration = configuration;
+        return this;
     }
 
-    public void setResourceType(ResourceType resourceType) {
+    public InternalResource setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
+        return this;
     }
 
     public ResourceType getResourceType() {
@@ -63,8 +87,9 @@ public abstract class BaseResource
         return name;
     }
 
-    public void setName(String name) {
+    public InternalResource setName(String name) {
         this.name = name;
+        return this;
     }
 
     public List<String> getCategories() {
@@ -74,7 +99,7 @@ public abstract class BaseResource
         return categories;
     }
 
-    public void setCategories( String categories ) {
+    public void setCategories(String categories) {
         List list = getCategories();
         list.clear();
         if ( categories != null ) {
@@ -85,7 +110,7 @@ public abstract class BaseResource
         }
     }
 
-    public void addCategory( String tag ) {
+    public void addCategory(String tag) {
         getCategories().add( tag );
     }
 

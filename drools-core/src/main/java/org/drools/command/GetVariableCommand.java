@@ -16,20 +16,8 @@
 
 package org.drools.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.drools.FactHandle;
 import org.drools.command.impl.GenericCommand;
-import org.drools.common.InternalFactHandle;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceConfiguration;
-import org.kie.builder.ResourceType;
-import org.kie.command.Command;
 import org.kie.command.Context;
-import org.kie.io.Resource;
 
 public class GetVariableCommand
     implements

@@ -16,8 +16,6 @@
 
 package org.drools.command.builder;
 
-import org.drools.command.ResolvingKnowledgeCommandContext;
-import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.StringUtils;

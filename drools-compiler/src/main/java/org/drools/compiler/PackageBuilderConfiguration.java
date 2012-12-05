@@ -16,6 +16,14 @@
 
 package org.drools.compiler;
 
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
@@ -51,14 +59,6 @@ import org.kie.runtime.rule.AccumulateFunction;
 import org.kie.util.ChainedProperties;
 import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
-
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * This class configures the package compiler.

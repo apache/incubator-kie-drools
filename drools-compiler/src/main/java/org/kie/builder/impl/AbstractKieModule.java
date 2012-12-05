@@ -1,5 +1,13 @@
 package org.kie.builder.impl;
 
+import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.InternalKnowledgeBase;
@@ -16,20 +24,12 @@ import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
 
 public abstract class AbstractKieModule
     implements
