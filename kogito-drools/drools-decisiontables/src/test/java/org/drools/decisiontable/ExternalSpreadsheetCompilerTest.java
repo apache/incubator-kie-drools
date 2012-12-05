@@ -16,6 +16,10 @@
 
 package org.drools.decisiontable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +33,10 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
-import org.drools.rule.*;
 import org.drools.rule.Package;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.TemplateDataListener;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  *         basic tests for converter utility. Note that some of this may

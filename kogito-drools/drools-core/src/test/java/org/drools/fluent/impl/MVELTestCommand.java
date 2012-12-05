@@ -16,6 +16,8 @@
 
 package org.drools.fluent.impl;
 
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +25,6 @@ import org.drools.command.impl.GenericCommand;
 import org.kie.command.Context;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
-
-import static org.junit.Assert.fail;
 
 public class MVELTestCommand implements GenericCommand<Void>  {
 

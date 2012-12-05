@@ -1,7 +1,9 @@
 package org.drools.compiler;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import junit.framework.Assert;
-import static org.junit.Assert.*;
 
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.TypeDeclaration;
@@ -9,12 +11,12 @@ import org.junit.Test;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeBuilderResults;
-import org.kie.builder.ResourceType;
 import org.kie.builder.ResultSeverity;
 import org.kie.definition.type.FactField;
 import org.kie.definition.type.FactType;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 
 public class TypeDeclarationTest {
 

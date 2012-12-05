@@ -1,10 +1,10 @@
 package org.kie.builder.impl;
 
-import org.kie.builder.Message;
-import org.kie.builder.Results;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.kie.builder.Message;
+import org.kie.builder.Results;
 
 public class ResultsImpl implements Results {
 

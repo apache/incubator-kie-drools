@@ -16,8 +16,12 @@
 package org.drools.persistence.util;
 
 import static org.drools.marshalling.util.MarshallingDBUtil.initializeTestDb;
-import static org.junit.Assert.*;
-import static org.kie.runtime.EnvironmentName.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.runtime.EnvironmentName.GLOBALS;
+import static org.kie.runtime.EnvironmentName.TRANSACTION;
+import static org.kie.runtime.EnvironmentName.TRANSACTION_MANAGER;
 
 import java.io.IOException;
 import java.io.InputStream;

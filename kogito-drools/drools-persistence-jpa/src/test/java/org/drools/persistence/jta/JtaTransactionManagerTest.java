@@ -16,9 +16,12 @@
 package org.drools.persistence.jta;
 
 import static junit.framework.Assert.assertTrue;
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.PersistenceUtil.getValueOfField;
+import static org.drools.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 import static org.junit.Assert.fail;
-import static org.kie.runtime.EnvironmentName.*;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.HashMap;
 
@@ -42,8 +45,8 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;

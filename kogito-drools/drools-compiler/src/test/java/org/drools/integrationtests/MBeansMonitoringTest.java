@@ -20,10 +20,10 @@ import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.conf.EventProcessingOption;
 import org.kie.conf.MBeansOption;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 
 public class MBeansMonitoringTest {
 

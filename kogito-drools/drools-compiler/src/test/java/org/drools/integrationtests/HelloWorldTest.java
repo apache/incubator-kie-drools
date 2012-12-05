@@ -1,9 +1,7 @@
 package org.drools.integrationtests;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.drools.CommonTestMethodBase;
@@ -13,10 +11,9 @@ import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;

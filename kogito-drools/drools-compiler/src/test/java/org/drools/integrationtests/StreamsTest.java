@@ -17,11 +17,13 @@
  */
 package org.drools.integrationtests;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.Cheese;
 import org.drools.ClockType;
 import org.drools.CommonTestMethodBase;
 import org.drools.SessionConfiguration;
@@ -51,7 +52,6 @@ import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.conf.EventProcessingOption;
 import org.kie.definition.type.FactType;
 import org.kie.event.rule.ActivationCreatedEvent;
@@ -59,6 +59,7 @@ import org.kie.event.rule.AfterActivationFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;

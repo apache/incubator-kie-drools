@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.base.ClassFieldAccessorCache;
@@ -16,6 +13,8 @@ import org.drools.base.ClassObjectType;
 import org.drools.core.util.StringUtils;
 import org.drools.rule.Declaration;
 import org.drools.spi.PatternExtractor;
+import org.junit.Before;
+import org.junit.Test;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.SimpleTemplateRegistry;

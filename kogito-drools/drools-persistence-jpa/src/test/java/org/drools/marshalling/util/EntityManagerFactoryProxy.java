@@ -15,7 +15,9 @@
  */
 package org.drools.marshalling.util;
 
-import static org.drools.marshalling.util.MarshallingTestUtil.*;
+import static org.drools.marshalling.util.MarshallingTestUtil.PROCESS_INSTANCE_INFO_CLASS_NAME;
+import static org.drools.marshalling.util.MarshallingTestUtil.getProcessInstanceInfoByteArray;
+import static org.drools.marshalling.util.MarshallingTestUtil.getWorkItemByteArray;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;

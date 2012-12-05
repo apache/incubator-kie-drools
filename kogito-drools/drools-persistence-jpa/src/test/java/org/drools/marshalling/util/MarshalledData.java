@@ -15,7 +15,12 @@
  */
 package org.drools.marshalling.util;
 
-import static org.drools.marshalling.util.MarshallingTestUtil.*;
+import static org.drools.marshalling.util.MarshallingTestUtil.PROCESS_INSTANCE_INFO_CLASS_NAME;
+import static org.drools.marshalling.util.MarshallingTestUtil.STORE_KNOWLEDGE_BASE;
+import static org.drools.marshalling.util.MarshallingTestUtil.byteArrayHashCode;
+import static org.drools.marshalling.util.MarshallingTestUtil.getProcessInstanceInfoByteArray;
+import static org.drools.marshalling.util.MarshallingTestUtil.getTestMethodName;
+import static org.drools.marshalling.util.MarshallingTestUtil.getWorkItemByteArray;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

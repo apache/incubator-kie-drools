@@ -17,11 +17,11 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderResults;
-import org.kie.builder.ResourceConfiguration;
-import org.kie.builder.ResourceType;
 import org.kie.builder.ResultSeverity;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

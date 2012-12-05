@@ -1,9 +1,8 @@
 package org.drools.kproject.models;
 
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
@@ -11,8 +10,10 @@ import org.kie.builder.ListenerModel;
 import org.kie.builder.WorkItemHandlerModel;
 import org.kie.runtime.conf.ClockTypeOption;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class KieSessionModelImpl
         implements

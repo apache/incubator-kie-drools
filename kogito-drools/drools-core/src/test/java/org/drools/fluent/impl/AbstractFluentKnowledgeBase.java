@@ -18,11 +18,11 @@ package org.drools.fluent.impl;
 
 import org.drools.command.KnowledgeBaseAddKnowledgePackagesCommand;
 import org.drools.command.builder.KnowledgeBuilderAddCommand;
-import org.kie.builder.ResourceConfiguration;
-import org.kie.builder.ResourceType;
 import org.kie.fluent.CommandScript;
 import org.kie.fluent.FluentKnowledgeBase;
 import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
 
 public class AbstractFluentKnowledgeBase<T> extends AbstractFluentTest<T> implements FluentKnowledgeBase<T> {
     

@@ -16,7 +16,18 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import antlr.collections.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Calendar;
+
 import org.drools.base.EnabledBoolean;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
@@ -40,17 +51,7 @@ import org.drools.type.DateFormatsImpl;
 import org.junit.Test;
 import org.kie.builder.conf.LanguageLevelOption;
 
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Calendar;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import antlr.collections.List;
 
 public class RuleBuilderTest {
 

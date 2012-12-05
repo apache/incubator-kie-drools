@@ -1,5 +1,10 @@
 package org.kie.builder.impl;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.drools.io.internal.InternalResource;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
@@ -13,11 +18,6 @@ import org.kie.io.Resource;
 import org.kie.util.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class KieRepositoryImpl
     implements

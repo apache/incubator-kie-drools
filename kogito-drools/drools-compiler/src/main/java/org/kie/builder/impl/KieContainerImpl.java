@@ -1,5 +1,10 @@
 package org.kie.builder.impl;
 
+import static org.kie.util.CDIHelper.wireListnersAndWIHs;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
@@ -15,11 +20,6 @@ import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.kie.util.CDIHelper.wireListnersAndWIHs;
 
 public class KieContainerImpl
     implements

@@ -16,17 +16,14 @@
 
 package org.drools.factmodel.traits;
 
-import org.drools.core.util.Triple;
-import org.drools.core.util.TripleImpl;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.core.util.TripleStore;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
-import org.kie.runtime.rule.Variable;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.*;
 
 public class StudentProxyWrapper3 extends TripleBasedStruct {
 

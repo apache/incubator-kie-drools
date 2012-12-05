@@ -17,30 +17,41 @@
 package org.drools.io.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.Externalizable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
-import org.drools.core.util.StringUtils;
 import org.drools.io.internal.InternalResource;
-import org.kie.builder.ResourceType;
 import org.kie.io.Resource;
 
 public class ByteArrayResource extends BaseResource
     implements
-    InternalResource {
+    InternalResource,
+    Externalizable {
 
     private byte[] bytes;
 
+    @Override
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        bytes = (byte[]) in.readObject();
+    }
+    
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+        out.writeObject( bytes );
+    }
+    
     public ByteArrayResource(byte[] bytes) {
         if ( bytes == null || bytes.length == 0 ) {
             throw new IllegalArgumentException( "bytes cannot be null" );
@@ -92,5 +103,6 @@ public class ByteArrayResource extends BaseResource
     public String toString() {
         return "[ByteArrayResource resource=" + this.bytes + "]";
     }
+
 
 }

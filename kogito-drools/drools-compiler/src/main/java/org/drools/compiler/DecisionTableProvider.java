@@ -1,7 +1,6 @@
 package org.drools.compiler;
 
 import java.io.InputStream;
-import java.io.Reader;
 
 import org.kie.Service;
 import org.kie.builder.DecisionTableConfiguration;

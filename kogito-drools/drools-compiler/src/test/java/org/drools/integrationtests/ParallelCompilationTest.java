@@ -1,24 +1,25 @@
 package org.drools.integrationtests;
 
-import org.junit.Before;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.*;
-import java.util.concurrent.*;
-
-import static junit.framework.Assert.assertEquals;
+import org.kie.io.ResourceType;
 
 public class ParallelCompilationTest {
     private static final int PARALLEL_THREADS = 5;

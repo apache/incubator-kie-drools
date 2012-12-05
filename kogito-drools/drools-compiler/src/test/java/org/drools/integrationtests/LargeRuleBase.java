@@ -1,5 +1,7 @@
 package org.drools.integrationtests;
 
+import static org.junit.Assert.assertFalse;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,8 +19,6 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.kie.builder.conf.LanguageLevelOption;
-
-import static org.junit.Assert.*;
 
 /**
  * This generates a large number of rules (complex ones) and then times

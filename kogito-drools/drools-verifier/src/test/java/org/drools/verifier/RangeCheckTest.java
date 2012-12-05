@@ -28,7 +28,7 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
-import org.kie.builder.ResourceType;
+import org.kie.io.ResourceType;
 
 public class RangeCheckTest {
 

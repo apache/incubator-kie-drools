@@ -1,5 +1,13 @@
 package org.drools.rule.builder.dialect.java;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.StringReader;
+import java.util.List;
+
 import org.drools.Person;
 import org.drools.base.ClassObjectType;
 import org.drools.base.mvel.MVELPredicateExpression;
@@ -21,16 +29,8 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
-
-import java.io.StringReader;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.kie.io.ResourceType;
 
 public class JavaDialectTest {
     

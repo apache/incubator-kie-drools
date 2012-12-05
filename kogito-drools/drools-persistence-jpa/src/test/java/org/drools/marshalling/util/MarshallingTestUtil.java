@@ -15,9 +15,13 @@
  */
 package org.drools.marshalling.util;
 
-import static org.drools.marshalling.util.MarshallingDBUtil.*;
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.drools.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
+import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.drools.persistence.util.PersistenceUtil.cleanUp;
+import static org.drools.persistence.util.PersistenceUtil.getDatasourceProperties;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.io.ByteArrayInputStream;

@@ -16,13 +16,7 @@
 
 package org.drools.command;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.drools.FactHandle;
 import org.drools.command.impl.GenericCommand;
-import org.drools.common.InternalFactHandle;
 import org.kie.command.Command;
 import org.kie.command.Context;
 import org.kie.command.World;

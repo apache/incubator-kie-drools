@@ -1,7 +1,5 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.fail;
-
 import org.drools.CommonTestMethodBase;
 import org.drools.Mailbox;
 import org.drools.Mailbox.FolderType;
@@ -9,11 +7,6 @@ import org.drools.Message;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.io.ResourceFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 /**

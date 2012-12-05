@@ -15,8 +15,11 @@ package org.drools.marshalling.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.drools.persistence.util.PersistenceUtil.DATASOURCE;
+import static org.drools.persistence.util.PersistenceUtil.getDatasourceProperties;
+import static org.drools.persistence.util.PersistenceUtil.setupPoolingDataSource;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.io.File;

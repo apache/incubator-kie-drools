@@ -1,7 +1,5 @@
 package org.drools.compiler.xml.changeset;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -24,9 +22,9 @@ import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.xml.sax.SAXException;
 

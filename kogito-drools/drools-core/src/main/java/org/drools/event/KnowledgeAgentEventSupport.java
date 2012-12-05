@@ -17,16 +17,15 @@
 package org.drools.event;
 
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Iterator;
 
 import org.kie.ChangeSet;
 import org.kie.KnowledgeBase;
 import org.kie.agent.KnowledgeAgent.ResourceStatus;
 import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgeDefinition;
 import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;
 import org.kie.event.knowledgeagent.AfterChangeSetProcessedEvent;
@@ -38,6 +37,7 @@ import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.kie.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
 import org.kie.event.knowledgeagent.ResourceCompilationFailedEvent;
 import org.kie.io.Resource;
+import org.kie.io.ResourceType;
 
 public class KnowledgeAgentEventSupport extends AbstractEventSupport<KnowledgeAgentEventListener> {
 

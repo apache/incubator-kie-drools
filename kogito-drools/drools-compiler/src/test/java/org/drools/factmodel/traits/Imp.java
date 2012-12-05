@@ -16,8 +16,6 @@
 
 package org.drools.factmodel.traits;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class Imp {
 

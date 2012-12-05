@@ -16,6 +16,11 @@
 
 package org.drools.factmodel.traits;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,7 +51,6 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.command.Command;
 import org.kie.command.CommandFactory;
 import org.kie.definition.type.FactType;
@@ -54,14 +58,12 @@ import org.kie.event.rule.AfterActivationFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
-
-import static org.mockito.Mockito.*;
-import static org.hamcrest.CoreMatchers.is;
 
 public class TraitTest extends CommonTestMethodBase {
 

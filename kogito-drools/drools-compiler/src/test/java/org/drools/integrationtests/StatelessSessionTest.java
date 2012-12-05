@@ -1,12 +1,5 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,8 +12,6 @@ import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.CommonTestMethodBase;
 import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.CopyIdentifiersGlobalExporter;
@@ -36,12 +27,12 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.command.Command;
 import org.kie.command.CommandFactory;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.StatelessKnowledgeSession;
 

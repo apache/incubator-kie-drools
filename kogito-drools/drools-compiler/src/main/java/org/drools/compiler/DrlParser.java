@@ -16,6 +16,16 @@
 
 package org.drools.compiler;
 
+import static org.drools.compiler.DRLFactory.buildLexer;
+import static org.drools.compiler.DRLFactory.buildParser;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.InputStreamResource;
 import org.drools.io.impl.ReaderResource;
@@ -29,16 +39,6 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
 import org.kie.builder.conf.LanguageLevelOption;
 import org.kie.io.Resource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.drools.compiler.DRLFactory.buildLexer;
-import static org.drools.compiler.DRLFactory.buildParser;
 
 /**
  * This is a low level parser API. This will return textual AST representations

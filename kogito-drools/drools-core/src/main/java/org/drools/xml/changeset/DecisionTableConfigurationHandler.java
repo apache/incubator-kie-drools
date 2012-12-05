@@ -20,15 +20,14 @@ import java.util.HashSet;
 
 import org.drools.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.util.StringUtils;
-import org.drools.io.impl.KnowledgeResource;
 import org.drools.io.internal.InternalResource;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
-import org.kie.builder.ResourceConfiguration;
 import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

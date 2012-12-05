@@ -1,11 +1,11 @@
 package org.kie.builder.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.Message;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MessageImpl implements Message {
 

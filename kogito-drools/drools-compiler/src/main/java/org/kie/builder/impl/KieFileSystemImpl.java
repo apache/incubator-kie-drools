@@ -1,14 +1,14 @@
 package org.kie.builder.impl;
 
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+
+import java.io.IOException;
+
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieFileSystem;
 import org.kie.io.Resource;
-
-import java.io.IOException;
-
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class KieFileSystemImpl
         implements

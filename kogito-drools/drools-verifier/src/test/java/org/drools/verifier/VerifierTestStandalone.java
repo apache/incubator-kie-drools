@@ -35,8 +35,8 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.

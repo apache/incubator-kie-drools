@@ -1,21 +1,5 @@
 package org.kie.builder.impl;
 
-import org.drools.core.util.StringUtils;
-import org.drools.kproject.GAVImpl;
-import org.drools.kproject.models.KieModuleModelImpl;
-import org.drools.xml.MinimalPomParser;
-import org.drools.xml.PomModel;
-import org.kie.builder.GAV;
-import org.kie.builder.KieFactory;
-import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieRepository;
-import org.kie.builder.KieServices;
-import org.kie.builder.KieSessionModel;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -32,6 +16,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import org.drools.core.util.StringUtils;
+import org.drools.kproject.GAVImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.xml.MinimalPomParser;
+import org.drools.xml.PomModel;
+import org.kie.builder.GAV;
+import org.kie.builder.KieFactory;
+import org.kie.builder.KieModuleModel;
+import org.kie.builder.KieRepository;
+import org.kie.builder.KieServices;
+import org.kie.builder.KieSessionModel;
+import org.kie.util.ClassLoaderUtil;
+import org.kie.util.CompositeClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.

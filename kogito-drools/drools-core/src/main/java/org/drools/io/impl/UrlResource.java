@@ -18,6 +18,9 @@ package org.drools.io.impl;
 
 import java.io.Externalizable;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,10 +28,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,6 +41,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.io.internal.InternalResource;
 import org.drools.util.codec.Base64;
 import org.kie.io.Resource;
+import org.kie.io.ResourceType;
 
 
 
@@ -76,12 +76,16 @@ public class UrlResource extends BaseResource
     public UrlResource(URL url) {
         this.url = getCleanedUrl( url,
                                   url.toString() );
+        setName( this.url.getPath() );
+        setResourceType( ResourceType.determineResourceType( this.url.getPath() ) );
     }
 
     public UrlResource(String path) {
         try {
             this.url = getCleanedUrl( new URL( path ),
                                       path );
+            setName( this.url.getPath() );
+            setResourceType( ResourceType.determineResourceType( this.url.getPath() ) );
         } catch ( MalformedURLException e ) {
             throw new IllegalArgumentException( "'" + path + "' path is malformed",
                                                 e );

@@ -17,18 +17,16 @@
  */
 package org.drools.rule.builder.dialect.java;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.HashMap;
+import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.BoundIdentifiers;
+import org.junit.Test;
 
 public class JavaExprAnalyzerTest {
 

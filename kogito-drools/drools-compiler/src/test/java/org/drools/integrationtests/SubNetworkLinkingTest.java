@@ -1,32 +1,25 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.FactHandle;
-import org.drools.Person;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.MemoryFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.RuleMemory;
@@ -38,10 +31,9 @@ import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.builder.conf.LRUnlinkingOption;
 import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.io.ResourceType;
 
 public class SubNetworkLinkingTest {
     public static class A {       

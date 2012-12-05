@@ -1,16 +1,13 @@
 package org.drools.compiler;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.InputStreamReader;
 
 import org.drools.DroolsTestCase;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class Java5Test extends DroolsTestCase {
 

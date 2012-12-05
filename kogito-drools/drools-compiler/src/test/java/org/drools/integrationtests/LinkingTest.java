@@ -25,16 +25,12 @@ import org.drools.integrationtests.SubNetworkLinkingTest.G;
 import org.drools.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.RuleMemory;
-import org.drools.reteoo.RuleTerminalNode;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
@@ -42,10 +38,9 @@ import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.builder.conf.LRUnlinkingOption;
 import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.io.ResourceType;
 
 public class LinkingTest {
     

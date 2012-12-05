@@ -25,8 +25,8 @@ import java.net.URL;
 import java.util.Collection;
 
 import org.drools.io.internal.InternalResource;
-import org.kie.builder.ResourceType;
 import org.kie.io.Resource;
+import org.kie.io.ResourceType;
 
 public class ReaderResource  extends BaseResource implements InternalResource {
     private static final long serialVersionUID = -2554750160404141191L;

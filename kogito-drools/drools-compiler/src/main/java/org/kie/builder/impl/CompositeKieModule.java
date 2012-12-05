@@ -1,14 +1,14 @@
 package org.kie.builder.impl;
 
-import org.kie.builder.GAV;
-import org.kie.builder.KieModule;
-import org.kie.builder.KieModuleModel;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.builder.GAV;
+import org.kie.builder.KieModule;
+import org.kie.builder.KieModuleModel;
 
 public class CompositeKieModule implements InternalKieModule {
 

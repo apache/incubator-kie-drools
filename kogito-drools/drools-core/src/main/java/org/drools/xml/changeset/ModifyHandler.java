@@ -16,22 +16,15 @@
 
 package org.drools.xml.changeset;
 
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.drools.core.util.StringUtils;
 import org.drools.io.impl.ChangeSetImpl;
-import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.KnowledgeResource;
-import org.drools.io.impl.UrlResource;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
 import org.kie.ChangeSet;
-import org.kie.builder.ResourceType;
-import org.kie.io.Resource;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

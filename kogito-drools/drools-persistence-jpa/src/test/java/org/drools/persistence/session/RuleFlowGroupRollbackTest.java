@@ -15,8 +15,10 @@
  */
 package org.drools.persistence.session;
 
-import static org.junit.Assert.*;
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +37,8 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.command.Context;
+import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;

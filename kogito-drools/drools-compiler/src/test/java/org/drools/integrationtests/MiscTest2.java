@@ -16,39 +16,6 @@
 
 package org.drools.integrationtests;
 
-import org.drools.Address;
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
-import org.drools.WorkingMemory;
-import org.drools.core.util.FileManager;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.marshalling.impl.ProtobufMessages;
-import org.drools.runtime.rule.impl.AgendaImpl;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.definition.KnowledgePackage;
-import org.kie.event.knowledgebase.DefaultKnowledgeBaseEventListener;
-import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
-import org.kie.event.rule.AgendaEventListener;
-import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.FactHandle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -57,6 +24,29 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.drools.Address;
+import org.drools.CommonTestMethodBase;
+import org.drools.Person;
+import org.drools.core.util.FileManager;
+import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.runtime.rule.impl.AgendaImpl;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.knowledgebase.DefaultKnowledgeBaseEventListener;
+import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
+import org.kie.event.rule.AgendaEventListener;
+import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.FactHandle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Run all the tests with the ReteOO engine implementation

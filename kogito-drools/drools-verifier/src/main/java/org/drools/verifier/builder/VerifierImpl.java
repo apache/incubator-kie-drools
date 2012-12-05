@@ -36,9 +36,9 @@ import org.drools.verifier.misc.DrlRuleParser;
 import org.drools.verifier.visitor.PackageDescrVisitor;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.ResourceConfiguration;
-import org.kie.builder.ResourceType;
 import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 /**

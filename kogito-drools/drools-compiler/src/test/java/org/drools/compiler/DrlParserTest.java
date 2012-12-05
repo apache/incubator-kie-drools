@@ -13,14 +13,13 @@ import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.builder.conf.LanguageLevelOption;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 
 public class DrlParserTest {
 

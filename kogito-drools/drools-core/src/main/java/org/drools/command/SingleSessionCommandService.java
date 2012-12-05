@@ -16,7 +16,6 @@
 
 package org.drools.command;
 
-import org.kie.runtime.CommandExecutor;
 
 public interface SingleSessionCommandService extends CommandService {
     int getSessionId();

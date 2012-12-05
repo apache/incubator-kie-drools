@@ -1,5 +1,13 @@
 package org.kie.util;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.ListenerModel;
 import org.kie.builder.QualifierModel;
@@ -9,13 +17,6 @@ import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.process.WorkItemHandler;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.lang.annotation.Annotation;
-import java.util.Set;
 
 public class CDIHelper {
 

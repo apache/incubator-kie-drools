@@ -28,12 +28,12 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.drools.core.util.StringUtils;
 import org.drools.io.internal.InternalResource;
 import org.kie.io.Resource;
+import org.kie.io.ResourceType;
 
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
@@ -62,14 +62,18 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
             throw new IllegalArgumentException( "File must not be null" );
         }
         this.file = new File( StringUtils.cleanPath(file.getPath()) );
+        setName( file.getName() );
+        setResourceType( ResourceType.determineResourceType( getName() ) );
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
         out.writeObject( this.file );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        super.readExternal( in );
         this.file = (File) in.readObject();
     }
 
@@ -88,6 +92,8 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
             throw new IllegalArgumentException( "Path must not be null" );
         }
         this.file = new File(StringUtils.cleanPath(path));
+        setName( path );
+        setResourceType( ResourceType.determineResourceType( getName() ) );
     }
     
     /**

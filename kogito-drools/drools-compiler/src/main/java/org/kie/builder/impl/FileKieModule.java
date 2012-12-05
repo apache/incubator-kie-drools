@@ -1,15 +1,15 @@
 package org.kie.builder.impl;
 
-import org.drools.core.util.IoUtils;
-import org.kie.builder.GAV;
-import org.kie.builder.KieModuleModel;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import org.drools.core.util.IoUtils;
+import org.kie.builder.GAV;
+import org.kie.builder.KieModuleModel;
 
 public class FileKieModule extends AbstractKieModule implements InternalKieModule {
     private final File             file;   

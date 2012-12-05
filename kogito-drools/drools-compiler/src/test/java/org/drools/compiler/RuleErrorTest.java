@@ -1,13 +1,13 @@
 package org.drools.compiler;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.junit.Test;
 
 public class RuleErrorTest {
 
