@@ -21,6 +21,8 @@ import java.util.Collection;
 import org.kie.KnowledgeBase;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
 
 /**
  * <p>

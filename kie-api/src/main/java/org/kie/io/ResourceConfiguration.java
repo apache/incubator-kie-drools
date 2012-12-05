@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.builder;
+package org.kie.io;
 
 /**
  * This interface is a marker interface and should be implemented by any class

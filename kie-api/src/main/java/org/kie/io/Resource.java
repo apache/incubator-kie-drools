@@ -33,7 +33,7 @@ public interface Resource extends Serializable {
      * @return
      * @throws IOException
      */
-    InputStream getInputStream() throws IOException;
+    public InputStream getInputStream() throws IOException;
 
     /**
      * Opens a Reader to the resource, the user most close this when finished.
@@ -42,4 +42,51 @@ public interface Resource extends Serializable {
      */
     public Reader getReader() throws IOException;
     
+    /**
+     * Returns the name of the resource, if one is available.
+     */
+    public String getName();
+    
+    /**
+     * Returns the type of the resource if one could be inferred by the
+     * extension of the resource of if it was explicitly set.
+     */
+    public ResourceType getResourceType();
+    
+    /**
+     * Returns the configuration for the resource if one is available
+     */
+    public ResourceConfiguration getConfiguration();
+    
+    /**
+     * Sets this resource name. Some services require a resource to be
+     * named and it is not always possible to infer a name automatically.
+     * For instance, a file resource automatically infers its name from the
+     * file and path, but a byte array resource has to be given a name.
+     *  
+     * @param name the name of the resource
+     * 
+     * @return the resource itself in order to use it as a fluent API
+     */
+    public Resource setName( String name );
+    
+    /**
+     * Sets the resource type. For some resources it is possible to infer
+     * the type by the file name extension for instance. When it is not 
+     * possible to infer it automatically, the user is expected to set it.
+     * 
+     * @param type the resource type
+     * 
+     * @return the resource itself in order to use it as a fluent API
+     */
+    public Resource setResourceType( ResourceType type );
+    
+    /**
+     * Sets the resource configuration in case it is necessary.
+     * 
+     * @param type the resource configuration
+     * 
+     * @return the resource itself in order to use it as a fluent API
+     */
+    public Resource setConfiguration( ResourceConfiguration conf );
 }

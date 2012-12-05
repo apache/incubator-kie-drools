@@ -1,6 +1,8 @@
 package org.kie.builder;
 
 import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
 
 /**
  * A KnowledgeBuilder with a fluent interface allowing to add multiple Resources
