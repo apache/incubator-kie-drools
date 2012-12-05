@@ -1,9 +1,11 @@
 package org.drools.kproject;
 
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;
+import org.kie.builder.impl.AbstractKieModule;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.AnnotationLiteral;
@@ -63,8 +65,8 @@ public class KieProjectCDITest extends AbstractKnowledgeTest {
         
             URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{file1.toURI().toURL(), file2.toURI().toURL(), file3.toURI().toURL(), fol4.toURI().toURL() } );
             Thread.currentThread().setContextClassLoader( urlClassLoader );
-
-            Enumeration<URL> e = urlClassLoader.getResources( "META-INF/kmodule.xml" );
+            
+            Enumeration<URL> e = urlClassLoader.getResources( KieModuleModelImpl.KMODULE_JAR_PATH );
             while ( e.hasMoreElements() ) {
                 URL url = e.nextElement();
                 System.out.println( url );

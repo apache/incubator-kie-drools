@@ -22,10 +22,9 @@ public class KieModuleModelImpl implements KieModuleModel {
     public static String KMODULE_JAR_PATH = "META-INF/kmodule.xml";
     public static String KMODULE_SRC_PATH = "src/main/resources/" + KMODULE_JAR_PATH;
 
-    private Map<String, KieBaseModel>  kBases;
+    private Map<String, KieBaseModel>  kBases  = new HashMap<String, KieBaseModel>();
     
     public KieModuleModelImpl() {
-        kBases = Collections.emptyMap();
     }    
 
 
@@ -77,6 +76,10 @@ public class KieModuleModelImpl implements KieModuleModel {
         return Collections.unmodifiableMap( kBases );
     }
 
+    public Map<String, KieBaseModel> getRawKieBaseModels() {
+        return kBases;
+    }
+    
     /* (non-Javadoc)
      * @see org.kie.kModule.KieProject#setKBases(java.util.Map)
      */
@@ -166,7 +169,9 @@ public class KieModuleModelImpl implements KieModuleModel {
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
             KieModuleModelImpl kModule = (KieModuleModelImpl) value;
-            writeObjectList(writer, context, "kbases", "kbase", kModule.getKieBaseModels().values());
+            for ( KieBaseModel kBaseModule : kModule.getKieBaseModels().values() ) {
+                writeObject( writer, context, "kbase", kBaseModule);
+            }
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
@@ -174,13 +179,9 @@ public class KieModuleModelImpl implements KieModuleModel {
 
             readNodes(reader, new AbstractXStreamConverter.NodeReader() {
                 public void onNode(HierarchicalStreamReader reader, String name, String value) {
-                    if ("kbases".equals(name)) {
-                        Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();
-                        for (KieBaseModelImpl kBase : readObjectList(reader, context, KieBaseModelImpl.class)) {
-                            kBase.setKModule(kModule);
-                            kBases.put(kBase.getName(), kBase);
-                        }
-                        kModule.setKBases(kBases);
+                    if ("kbase".equals(name)) {
+                        KieBaseModel kBaseModule = readObject( reader, context, KieBaseModelImpl.class );
+                        kModule.getRawKieBaseModels().put( kBaseModule.getName(), kBaseModule );
                     }
                 }
             });

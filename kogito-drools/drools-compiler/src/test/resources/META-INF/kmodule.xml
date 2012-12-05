@@ -1,12 +1,8 @@
 <kmodule>
 
-  <kbases>
     <kbase name="org.kie.kbase1" equalsBehavior="EQUALITY" eventProcessingMode="STREAM">
-      <ksessions>
         <ksession name="org.kie.kbase1.ksession1" type="stateful" clockType="pseudo"/>
         <ksession name="org.kie.kbase1.ksession2" type="stateless" clockType="realtime"/>
-      </ksessions>
     </kbase>
-  </kbases>
   
 </kmodule>

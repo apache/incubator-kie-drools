@@ -34,7 +34,7 @@ public class KieBaseModelImpl
 
     private String                       name;
 
-    private Set<String>                  includes;
+    private Set<String>                  includes= new HashSet<String>();;
 
     private Set<String>                  packages;
 
@@ -42,13 +42,11 @@ public class KieBaseModelImpl
 
     private EventProcessingOption        eventProcessingMode = EventProcessingOption.STREAM;
 
-    private Map<String, KieSessionModel> kSessions;
+    private Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
 
     private KieModuleModel                   kModule;
 
     private KieBaseModelImpl() {
-        this.includes = new HashSet<String>();
-        this.kSessions = Collections.emptyMap();
     }
 
     public KieBaseModelImpl(KieModuleModel kModule,
@@ -98,6 +96,10 @@ public class KieBaseModelImpl
         return Collections.unmodifiableMap( kSessions );
     }
 
+    public Map<String, KieSessionModel> getRawKieSessionModels() {
+        return kSessions;
+    }    
+    
     /* (non-Javadoc)
      * @see org.kie.kproject.KieBaseModel#setKSessions(java.util.Map)
      */
@@ -273,11 +275,10 @@ public class KieBaseModelImpl
             
             // @TODO We only support attribte of strings for now, added nested elements with filters later 
             //writeList( writer, "includes", "include", kBase.getIncludes() );
-            
-            Map<String, KieSessionModel> ksessions =  kBase.getKieSessionModels();
-            if ( !ksessions.isEmpty() ) {
-                writeObjectList( writer, context, "ksessions", "ksession", kBase.getKieSessionModels().values() );
-            }
+
+            for ( KieSessionModel kSessionModel :  kBase.getKieSessionModels().values()) {
+                writeObject( writer, context, "ksession", kSessionModel);
+            }            
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,
@@ -311,13 +312,9 @@ public class KieBaseModelImpl
                 public void onNode(HierarchicalStreamReader reader,
                                    String name,
                                    String value) {
-                    if ( "ksessions".equals( name ) ) {
-                        Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
-                        for ( KieSessionModelImpl kSession : readObjectList( reader, context, KieSessionModelImpl.class ) ) {
-                            kSession.setKBase( kBase );
-                            kSessions.put( kSession.getName(), kSession );
-                        }
-                        kBase.setKSessions( kSessions );
+                    if ( "ksession".equals( name ) ) {
+                        KieSessionModelImpl kSession = readObject( reader, context, KieSessionModelImpl.class );
+                        kBase.getRawKieSessionModels().put( kSession.getName(), kSession );
                     }
                     
                    // @TODO we don't use support nested includes
