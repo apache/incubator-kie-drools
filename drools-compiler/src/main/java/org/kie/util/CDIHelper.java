@@ -35,12 +35,16 @@ public class CDIHelper {
             } catch (Exception e) {
                 throw new RuntimeException("Cannot instance listener " + listenerModel.getType(), e);
             }
-            if (listener instanceof WorkingMemoryEventListener) {
-                kSession.addEventListener((WorkingMemoryEventListener)listener);
-            } else if (listener instanceof AgendaEventListener) {
-                kSession.addEventListener((AgendaEventListener)listener);
-            } else if (listener instanceof ProcessEventListener) {
-                kSession.addEventListener((ProcessEventListener)listener);
+            switch(listenerModel.getKind()) {
+                case AGENDA_EVENT_LISTENER:
+                    kSession.addEventListener((AgendaEventListener)listener);
+                    break;
+                case WORKING_MEMORY_EVENT_LISTENER:
+                    kSession.addEventListener((WorkingMemoryEventListener)listener);
+                    break;
+                case PROCESS_EVENT_LISTENER:
+                    kSession.addEventListener((ProcessEventListener)listener);
+                    break;
             }
         }
 
