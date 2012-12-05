@@ -1,12 +1,12 @@
 package org.kie.builder.impl;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
+import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.GAV;
@@ -169,12 +169,17 @@ public abstract class AbstractKieModule
             log.error( "Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString() );
         }
 
-        RuleBaseConfiguration rconf = new RuleBaseConfiguration( null,
-                                                                 cl );
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( rconf );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( getKnowledgeBaseConfiguration(kBaseModel, cl) );
 
         kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kBase;
+    }
+
+    private static KnowledgeBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModelImpl kBaseModel, ClassLoader cl) {
+        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, cl);
+        kbConf.setOption(kBaseModel.getEqualsBehavior());
+        kbConf.setOption(kBaseModel.getEventProcessingMode());
+        return kbConf;
     }
 
     public static void addFiles(CompositeKnowledgeBuilder ckbuilder,

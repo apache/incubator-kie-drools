@@ -11,12 +11,15 @@ import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieSessionModel;
 import org.kie.runtime.KieSession;
+import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.kie.util.CDIHelper.wireListnersAndWIHs;
 
 public class KieContainerImpl
     implements
@@ -46,9 +49,7 @@ public class KieContainerImpl
     public void updateToVersion(GAV gav) {
         kBases.clear();
         this.kProject = new KieModuleKieProject( (InternalKieModule)kr.getKieModule(gav), kr );
-        if ( kProject != null ) {
-            this.kProject.init();
-        }
+        this.kProject.init();
     }
 
     public KieBase getKieBase() {
@@ -83,14 +84,17 @@ public class KieContainerImpl
     public KieSession getKieSession(String kSessionName) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
         if ( kSessionModel == null ) {
+            log.error("Unknown KieSession name: " + kSessionName);
             return null;
         }
         KieBase kBase = getKieBase( kSessionModel.getKieBaseModel().getName() );
-        if ( kBase != null ) {
-            return kBase.newKieSession();
-        } else {
+        if ( kBase == null ) {
+            log.error("Unknown KieBase name: " + kSessionModel.getKieBaseModel().getName());
             return null;
         }
+        KieSession kSession = kBase.newKieSession(getKnowledgeSessionConfiguration(kSessionModel), null);
+        wireListnersAndWIHs(kSessionModel, kSession);
+        return kSession;
     }
 
     public StatelessKieSession getKieStatelessSession(String kSessionName) {
@@ -99,14 +103,20 @@ public class KieContainerImpl
             return null;
         }
         KieBase kBase = getKieBase( kSessionModel.getKieBaseModel().getName() );
-        if ( kBase != null ) {
-            return kBase.newStatelessKieSession();
-        } else {
+        if ( kBase == null ) {
             return null;
         }
+        return kBase.newStatelessKieSession(getKnowledgeSessionConfiguration(kSessionModel));
+    }
+
+    private KnowledgeSessionConfiguration getKnowledgeSessionConfiguration(KieSessionModelImpl kSessionModel) {
+        KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksConf.setOption( kSessionModel.getClockType() );
+        return ksConf;
     }
 
     public void dispose() {
+        // TODO
     }
 
     public KieModule getKieModuleForKBase(String kBaseName) {
@@ -114,11 +124,11 @@ public class KieContainerImpl
     }
 
     public KieBaseModel getKieBaseModel(String kBaseName) {
-        return kProject.getKieBaseModel( kBaseName );
+        return kProject.getKieBaseModel(kBaseName);
     }
 
     public KieSessionModel getKieSessionModel(String kSessionName) {
-        return kProject.getKieSessionModel( kSessionName );
+        return kProject.getKieSessionModel(kSessionName);
     }
 
     @Override
