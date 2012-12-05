@@ -1,9 +1,7 @@
 package org.kie.builder.impl;
 
 import org.drools.core.util.ClassUtils;
-import org.drools.kproject.models.KieBaseModelImpl;
 import org.kie.builder.GAV;
-import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieSessionModel;
 import org.kie.util.ClassLoaderUtil;
@@ -20,17 +18,13 @@ import java.util.Map;
  * Each resulting KieModule is added to the KieRepository
  *
  */
-public class KieModuleKieProject
-    implements
-    KieProject {
+public class KieModuleKieProject extends AbstractKieProject {
 
     private static final Logger                  log               = LoggerFactory.getLogger( KieModuleKieProject.class );
 
     private Map<GAV, InternalKieModule>          kieModules;
 
     private final Map<String, InternalKieModule> kJarFromKBaseName = new HashMap<String, InternalKieModule>();
-
-    private final Map<String, KieBaseModel>      kBaseModels       = new HashMap<String, KieBaseModel>();
 
     private final Map<String, KieSessionModel>   kSessionModels    = new HashMap<String, KieSessionModel>();
 
@@ -59,15 +53,6 @@ public class KieModuleKieProject
         }
     }
 
-    public void verify(Messages messages) {
-
-        for ( KieBaseModel model : kBaseModels.values() ) {
-            AbstractKieModule.createKieBase( (KieBaseModelImpl) model,
-                                             this,
-                                             messages );
-        }
-    }   
-    
     public void initClassLaoder() {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
         for ( InternalKieModule kModule : kieModules.values() ) {
@@ -98,10 +83,6 @@ public class KieModuleKieProject
 
     public boolean kieSessionExists(String kSessionName) {
         return kSessionModels.containsKey( kSessionName );
-    }
-
-    public KieBaseModel getKieBaseModel(String kBaseName) {
-        return kBaseModels.get( kBaseName );
     }
 
     public KieSessionModel getKieSessionModel(String kSessionName) {

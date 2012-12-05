@@ -8,7 +8,7 @@
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <phases>
-          <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources,org.drools:drools-maven-plugin:kproject</process-resources>
+          <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
           <compile>org.apache.maven.plugins:maven-compiler-plugin:compile,org.drools:drools-maven-plugin:build</compile>
           <test-compile>org.apache.maven.plugins:maven-compiler-plugin:testCompile</test-compile>
           <test>org.apache.maven.plugins:maven-surefire-plugin:test</test>

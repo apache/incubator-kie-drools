@@ -158,7 +158,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private void updateKieModule(Artifact artifact, GAV gav) {
         JarKieModule kieModule = new JarKieModule(gav, artifact.getFile());
         Messages messages = kieModule.build();
-        if ( MessageImpl.filterMessages(messages.getMessages(), Message.Level.ERROR).isEmpty()) {
+        if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
             kieContainer.updateToVersion(gav);
         }
     }

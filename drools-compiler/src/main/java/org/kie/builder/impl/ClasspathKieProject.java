@@ -6,7 +6,6 @@ import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
 import org.kie.builder.GAV;
-import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
@@ -40,9 +39,7 @@ import java.util.zip.ZipFile;
  * Each resulting KieModule is added to the KieRepository
  *
  */
-public class ClasspathKieProject
-    implements
-    KieProject{
+public class ClasspathKieProject extends AbstractKieProject {
 
     private static final Logger             log               = LoggerFactory.getLogger( ClasspathKieProject.class );
 
@@ -50,7 +47,6 @@ public class ClasspathKieProject
 
     private Map<String, InternalKieModule>  kJarFromKBaseName = new HashMap<String, InternalKieModule>();
 
-    private Map<String, KieBaseModel>       kBaseModels       = new HashMap<String, KieBaseModel>();
     private Map<String, KieSessionModel>    kSessionModels    = new HashMap<String, KieSessionModel>();
 
     private KieRepository                   kr;
@@ -299,10 +295,6 @@ public class ClasspathKieProject
 
     public InternalKieModule getKieModuleForKBase(String kBaseName) {
         return this.kJarFromKBaseName.get( kBaseName );
-    }
-
-    public KieBaseModel getKieBaseModel(String kBaseName) {
-        return kBaseModels.get( kBaseName );
     }
 
     public KieSessionModel getKieSessionModel(String kSessionName) {
