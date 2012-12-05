@@ -52,12 +52,15 @@ public class KieModuleModelTest {
                 .newQualifierModel("MyQualfier5")
                 .addArgument("name1", "aaa")
                 .addArgument("name2", "bbb");
+        
+//        KieBaseModel kieBaseModel2 = kproj.newKieBaseModel("KBase2")
+//                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+//                .setEventProcessingMode( EventProcessingOption.STREAM );        
 
         String xml = kproj.toXML();
+        System.out.println( xml );
 
         KieModuleModel kprojXml = fromXML(xml);
-
-        System.out.println(xml);
 
         KieBaseModel kieBaseModelXML = kprojXml.getKieBaseModels().get("KBase1");
         assertEquals(AssertBehaviorOption.EQUALITY, kieBaseModelXML.getEqualsBehavior());

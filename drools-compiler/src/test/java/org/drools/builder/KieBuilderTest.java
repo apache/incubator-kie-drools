@@ -185,7 +185,7 @@ public class KieBuilderTest {
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
                
         createAndTestKieContainer(gav, createKieBuilder(kfs), KieBaseModelImpl.DEFAULT_KIEBASE_NAME );
-    }      
+    }
     
     @Test
     public void testInvalidPomXmlGAV() throws ClassNotFoundException, InterruptedException, IOException {
