@@ -19,8 +19,8 @@ package org.kie.event.knowledgeagent;
 import java.util.EventObject;
 
 import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.ResourceType;
 import org.kie.io.Resource;
+import org.kie.io.ResourceType;
 
 public class ResourceCompilationFailedEvent extends EventObject{
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.builder;
+package org.kie.io;
 
 import java.io.Serializable;
 import java.util.Collections;

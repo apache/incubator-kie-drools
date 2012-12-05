@@ -17,7 +17,6 @@
 package org.kie.fluent;
 
 import org.kie.command.Command;
-import org.kie.fluent.CommandScript;
 import org.kie.simulation.Simulation;
 
 public interface InternalSimulation extends Simulation, CommandScript {
