@@ -1,117 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	elementFormDefault="qualified"
-	attributeFormDefault="unqualified" 
-	targetNamespace="http://jboss.org/kie/6.0.0/kmodule"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:kmodule="http://jboss.org/kie/6.0.0/kmodule" >
-	
-	<xsd:import namespace="http://www.w3.org/2001/XMLSchema-instance" />
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	targetNamespace="http://jboss.org/kie/6.0.0/kmodule" xmlns="http://jboss.org/kie/6.0.0/kmodule">
 
-	<xsd:element name="kmodule">
-		<xs:complexType>
-			<xs:sequence>
-			<xsd:element ref="kbase" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
-		</xs:complexType>
-		<xsd:attribute name="name" use="required" type="xsd:string"/>
-		<xsd:attribute name="includes" type="xsd:string"/>
-		<xsd:attribute name="insertBehaviour" type=insertBehaviorEnum"/>		
-	</xsd:element>
-	
+	<!-- xsd:import namespace="http://www.w3.org/2001/XMLSchema-instance" / -->
+
+    <xsd:element name="kmodule">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="kbase" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
     <xsd:element name="kbase">
-        <xs:complexType>
-            <xs:sequence>
-            <xsd:element ref="ksession" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
-        </xs:complexType>
-        <xsd:attribute name="name" use="required" type="xsd:string"/>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="ksession" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="name" use="required" type="xsd:ID" />
+            <xsd:attribute name="includes" type="xsd:string" />
+            <xsd:attribute name="insertBehaviour" type="insertBehaviorEnum" />
+        </xsd:complexType>
     </xsd:element>
-	
+
 	<xsd:element name="ksession">
-        <xs:complexType>
-            <xs:all>
-                <xsd:element ref="loggers" minOccurs="0" maxOccurs="1"/>          
-                <xsd:element ref="listeners" minOccurs="0" maxOccurs="1"/>
-                <xsd:element ref="workItems" minOccurs="0" maxOccurs="1"/>                
-            </xs:all>
-        </xs:complexType>	
-	    <xsd:attribute name="name" use="required" type="xsd:string"/>
-	    <xsd:attribute name="type" use="required" type="ksessionType"/>
-	    <xsd:attribute name="clock-type" use="required" type="clockTypeEnum"/>
-        <xsd:attribute name="eventMode" use="required" type="eventModeEnum"/>	    
-    </xsd:element>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:choice minOccurs="0" maxOccurs="1">
+					<xsd:element ref="consoleLogger" />
+					<xsd:element ref="fileLogger" />
+				</xsd:choice>
+                <xsd:element ref="workItemHandlers" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="listeners" minOccurs="0" maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:attribute name="name" use="required" type="xsd:ID" />
+			<xsd:attribute name="type" type="ksessionType" />
+			<xsd:attribute name="clockType" type="clockTypeEnum" />
+			<xsd:attribute name="eventMode" type="eventModeEnum" />
+		</xsd:complexType>
+	</xsd:element>
 
-    <xsd:element name="loggers">
-        <xs:complexType>
-            <xs:choice>
-                <xsd:element ref="consoleLogger" minOccurs="0" maxOccurs="unbounded"/>
-                <xsd:element ref="fileLogger" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:choice>
-        </xs:complexType>       
-    </xsd:element>
-    
-    <xsd:element name="listeners">
-        <xs:complexType>
-            <xs:all>
-                <xsd:element ref="workingMemoryEventListener" minOccurs="0" maxOccurs="1"/>
-                <xsd:element ref="agendaEventListener" minOccurs="0" maxOccurs="1"/>
-                <xsd:element ref="processEventListener" minOccurs="0" maxOccurs="1"/>
-            </xs:all>
-        </xs:complexType>       
-    </xsd:element>
 
-    <xsd:element name="workItemHandlers">
-        <xs:complexType>
-            <xs:all>
-                <xsd:element ref="workItemHandler" minOccurs="0" maxOccurs="1"/>
-            </xs:all>
-        </xs:complexType>       
-    </xsd:element>
-    
-    <xsd:element name="workItemHandler">
-        <xsd:attribute name="type" use="required" type="xsd:string"/>
-    </xsd:element>    
+	<xsd:element name="consoleLogger">
+		<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:ID" />
+		</xsd:complexType>
+	</xsd:element>
 
-    <xsd:element name="workingMemoryEventListener">
-        <xsd:attribute name="type" use="required" type="xsd:string"/>
-    </xsd:element>    
-    
-    <xsd:element name="agendaEventListener">
-        <xsd:attribute name="type" use="required" type="xsd:string"/>
-    </xsd:element>        
+	<xsd:element name="fileLogger">
+		<xsd:complexType>
+            <xsd:attribute name="name"  type="xsd:ID" />		
+			<xsd:attribute name="file" use="required" type="xsd:string" />
+			<xsd:attribute name="threaded" type="xsd:boolean" default="false" />
+			<xsd:attribute name="interval" type="xsd:int" default="30" />
+		</xsd:complexType>
+	</xsd:element>
 
-    <xsd:element name="processEventListener">
-        <xsd:attribute name="type" use="required" type="xsd:string"/>
-    </xsd:element>  
-    
-  <xsd:simpleType name="ksessionType">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="STATELESS" />
-      <xsd:enumeration value="STATEFUL" />
-    </xsd:restriction>
-  </xsd:simpleType>   
-  
-     <xsd:simpleType name="eventModeEnum">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="STREAM" />
-      <xsd:enumeration value="CLOUD" />
-    </xsd:restriction>
-  </xsd:simpleType>
-  
-  <xsd:simpleType name="insertBehaviorEnum">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="IDENTITY" />
-      <xsd:enumeration value="EQUALITY" />
-    </xsd:restriction>
-  </xsd:simpleType>  
+	<xsd:element name="listeners">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="workingMemoryEventListener" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="agendaEventListener" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="processEventListener" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 
-  <xsd:simpleType name="clockTypeEnum">
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="REALTIME" />
-      <xsd:enumeration value="PSEUDO" />
-    </xsd:restriction>
-  </xsd:simpleType>
+	<xsd:element name="workItemHandlers">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="workItemHandler" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 
-  
+	<xsd:element name="workItemHandler">
+		<xsd:complexType>
+			<xsd:attribute name="type" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="workingMemoryEventListener">
+		<xsd:complexType>
+			<xsd:attribute name="type" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="agendaEventListener">
+		<xsd:complexType>
+			<xsd:attribute name="type" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="processEventListener">
+		<xsd:complexType>
+			<xsd:attribute name="type" use="required" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:simpleType name="ksessionType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="STATELESS" />
+			<xsd:enumeration value="STATEFUL" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="eventModeEnum">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="STREAM" />
+			<xsd:enumeration value="CLOUD" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="insertBehaviorEnum">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="IDENTITY" />
+			<xsd:enumeration value="EQUALITY" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="clockTypeEnum">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="REALTIME" />
+			<xsd:enumeration value="PSEUDO" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
 </xsd:schema>

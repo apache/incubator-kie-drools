@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+    <kbase name="org.kie.example1">
+    </kbase>
+
+    <kbase name="org.kie.example2" includes="org.kie.example1" >
+    </kbase>
+    
+    
+    <kbase name="org.kie.example3" includes="org.kie.example1, org.kie.example1" insertBehaviour="IDENTITY">
+        <ksession name="ksession1"/>
+    </kbase>    
+
+    <kbase name="org.kie.example4" includes="org.kie.example1, org.kie.example1" insertBehaviour="EQUALITY" >
+        <ksession name="ksession2"/>
+        <ksession name="ksession3"/>
+    </kbase>        
+    
+    <kbase name="org.kie.example5" includes="org.kie.example1, org.kie.example1" >
+        <ksession name="ksession4" type="STATELESS"  clockType="PSEUDO" eventMode="STREAM"> 
+        </ksession>
+
+        <ksession name="ksession5" type="STATEFUL"  clockType="REALTIME" eventMode="CLOUD">
+        </ksession>            
+    </kbase>        
+
+    <kbase name="org.kie.example6" includes="org.kie.example1, org.kie.example1" >
+        <ksession name="ksession6" type="STATELESS"  clockType="PSEUDO" eventMode="STREAM">
+            <consoleLogger /> 
+        </ksession>
+
+        <ksession name="ksession7" type="STATEFUL"  clockType="REALTIME" eventMode="CLOUD">
+            <fileLogger name="logger1" file="...." threaded="true" interval="50" />
+        </ksession>  
+        
+        <ksession name="ksession8" type="STATEFUL"  clockType="REALTIME" eventMode="CLOUD">
+            <fileLogger name="logger2" file="...." threaded="true" interval="50" />
+            <listeners>
+                <workingMemoryEventListener type="type1"/>
+                <workingMemoryEventListener type="type2"/>
+            </listeners>
+        </ksession>   
+    </kbase>  
+    
+    <kbase name="org.kie.example7" includes="org.kie.example1, org.kie.example1" >        
+        <ksession name="ksession9" type="STATEFUL"  clockType="REALTIME" eventMode="CLOUD">
+            <fileLogger name="logger3" file="...." threaded="true" interval="50" />
+            <listeners>
+                <workingMemoryEventListener type="type1"/>
+                <workingMemoryEventListener type="type3"/>
+                <workingMemoryEventListener type="type4"/>
+                <agendaEventListener type="type2"/>                
+                <agendaEventListener type="type4"/>
+                <processEventListener type="type4"/>
+                <processEventListener type="type4"/>
+            </listeners>
+        </ksession>   
+    </kbase>          
+</kmodule>
