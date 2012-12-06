@@ -30,12 +30,6 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
         this.zipEntries = IoUtils.buildZipFileMapEntries( file );
     }
 
-    public Messages build() {
-        Messages messages = new Messages();
-        buildKieModule(this, messages);
-        return messages;
-    }
-
     private static KieModuleModel getKieModuleModelFromJar(File jar) {
         ZipFile zipFile = null;
         try {

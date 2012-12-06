@@ -1,10 +1,5 @@
 package org.kie.builder.impl;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.drools.io.internal.InternalResource;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
@@ -18,6 +13,11 @@ import org.kie.io.Resource;
 import org.kie.util.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class KieRepositoryImpl
     implements
@@ -133,13 +133,11 @@ public class KieRepositoryImpl
         KieModule kModule = getKieModule( resource );
         
         if ( dependencies != null && dependencies.length > 0 ) {
-            Map<GAV, InternalKieModule> list = new HashMap<GAV, InternalKieModule>();
             for ( Resource depRes : dependencies ) {
                 InternalKieModule depKModule = ( InternalKieModule ) getKieModule( depRes );
+                ((InternalKieModule)kModule).addDependency(depKModule);
                 log.info( "Adding KieModule dependency from resource :" + resource  );
-                list.put( depKModule.getGAV(), depKModule );
             }
-            ((InternalKieModule)kModule).setDependencies( list );
         }
         addKieModule( kModule );
         return kModule;

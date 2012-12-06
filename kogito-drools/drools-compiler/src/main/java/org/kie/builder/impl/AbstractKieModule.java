@@ -1,13 +1,5 @@
 package org.kie.builder.impl;
 
-import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.InternalKnowledgeBase;
@@ -31,6 +23,15 @@ import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import static org.kie.builder.impl.KieBuilderImpl.buildKieModule;
+import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
+
 public abstract class AbstractKieModule
     implements
     InternalKieModule {
@@ -43,7 +44,7 @@ public abstract class AbstractKieModule
     
     private final KieModuleModel                            kModuleModel;
 
-    private Map<GAV, InternalKieModule>                     dependencies      =  Collections.<GAV, InternalKieModule>emptyMap();
+    private Map<GAV, InternalKieModule>                     dependencies;
     
 
     public AbstractKieModule(GAV gav, KieModuleModel kModuleModel) {
@@ -85,11 +86,14 @@ public abstract class AbstractKieModule
 //     }    
 
     public Map<GAV, InternalKieModule> getDependencies() {
-        return dependencies;
+        return dependencies == null ? Collections.<GAV, InternalKieModule>emptyMap() : dependencies;
     }
 
-    public void setDependencies(Map<GAV, InternalKieModule> dependencies) {
-        this.dependencies = dependencies;
+    public void addDependency(InternalKieModule dependency) {
+        if (dependencies == null) {
+            dependencies = new HashMap<GAV, InternalKieModule>();
+        }
+        dependencies.put(dependency.getGAV(), dependency);
     }
 
     public GAV getGAV() {
@@ -130,7 +134,7 @@ public abstract class AbstractKieModule
     static KieBase createKieBase(KieBaseModelImpl kBaseModel,
                                         KieProject indexedParts,
                                         Messages messages) {
-        CompositeClassLoader cl = ( CompositeClassLoader ) indexedParts.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
+        CompositeClassLoader cl = indexedParts.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
 
         PackageBuilderConfiguration pconf = new PackageBuilderConfiguration( null,
                                                                              cl.clone() );

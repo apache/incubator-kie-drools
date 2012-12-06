@@ -8,8 +8,9 @@ import org.kie.builder.KieContainer;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieScanner;
 import org.kie.builder.Message;
-import org.kie.builder.impl.CompositeKieModule;
+import org.kie.builder.impl.InternalKieModule;
 import org.kie.builder.impl.InternalKieScanner;
+import org.kie.builder.impl.MemoryKieModule;
 import org.kie.builder.impl.Messages;
 import org.kie.builder.impl.ZipKieModule;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.drools.scanner.embedder.MavenProjectLoader.parseMavenPom;
+import static org.kie.builder.impl.KieBuilderImpl.buildKieModule;
 
 public class KieRepositoryScannerImpl implements InternalKieScanner {
 
@@ -87,14 +89,16 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         mavenRepository = MavenRepository.getMavenRepository(mavenProject);
         PomParser pomParser = new EmbeddedPomParser(mavenProject);
 
-        CompositeKieModule compositeKieModule = new CompositeKieModule(gav);
+        MemoryKieModule kieModule = new MemoryKieModule(gav);
         for (DependencyDescriptor dep : pomParser.getPomDirectDependencies()) {
             Artifact depArtifact = mavenRepository.resolveArtifact(dep.toString());
             if (isKJar(depArtifact.getFile())) {
-                compositeKieModule.addKieModule(buildArtifact(gav, depArtifact));
+                GAV depGav = new DependencyDescriptor(depArtifact).getGav();
+                kieModule.addDependency(new ZipKieModule(depGav, depArtifact.getFile()));
             }
         }
-        return compositeKieModule;
+        build(kieModule);
+        return kieModule;
     }
 
     private MavenProject getMavenProjectForGAV(GAV gav) {
@@ -103,10 +107,16 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return artifact != null ? parseMavenPom(artifact.getFile()) : null;
     }
 
-    private KieModule buildArtifact(GAV gav, Artifact artifact) {
+    private InternalKieModule buildArtifact(GAV gav, Artifact artifact) {
         ZipKieModule kieModule = new ZipKieModule(gav, artifact.getFile());
-        kieModule.build();
+        build(kieModule);
         return kieModule;
+    }
+
+    private Messages build(InternalKieModule kieModule) {
+        Messages messages = new Messages();
+        buildKieModule(kieModule, messages);
+        return messages;
     }
 
     public void start(long pollingInterval) {
@@ -138,9 +148,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     public void scanNow() {
-        if (usedDependencies == null) {
-            return;
-        }
         Collection<Artifact> updatedArtifacts = scanForUpdates(usedDependencies);
         if (updatedArtifacts.isEmpty()) {
             return;
@@ -156,7 +163,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private void updateKieModule(Artifact artifact, GAV gav) {
         ZipKieModule kieModule = new ZipKieModule(gav, artifact.getFile());
-        Messages messages = kieModule.build();
+        Messages messages = build(kieModule);
         if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
             kieContainer.updateToVersion(gav);
         }
