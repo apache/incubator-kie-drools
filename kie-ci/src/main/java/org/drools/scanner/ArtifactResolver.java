@@ -1,0 +1,75 @@
+package org.drools.scanner;
+
+import org.apache.maven.project.MavenProject;
+import org.drools.scanner.embedder.EmbeddedPomParser;
+import org.kie.builder.GAV;
+import org.sonatype.aether.artifact.Artifact;
+
+import java.io.File;
+import java.net.URI;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.drools.scanner.embedder.MavenProjectLoader.parseMavenPom;
+
+class ArtifactResolver {
+
+    private final PomParser pomParser;
+
+    private final MavenRepository mavenRepository;
+
+    private ArtifactResolver() {
+        mavenRepository = MavenRepository.getMavenRepository();
+        pomParser = new EmbeddedPomParser();
+    }
+
+    private ArtifactResolver(MavenProject mavenProject) {
+        mavenRepository = MavenRepository.getMavenRepository(mavenProject);
+        pomParser = new EmbeddedPomParser(mavenProject);
+    }
+
+    Artifact resolveArtifact(String artifactName) {
+        return mavenRepository.resolveArtifact(artifactName);
+    }
+
+    List<DependencyDescriptor> getArtifactDependecies(String artifactName) {
+        return mavenRepository.getArtifactDependecies(artifactName);
+    }
+
+    List<DependencyDescriptor> getPomDirectDependencies() {
+        return pomParser.getPomDirectDependencies();
+    }
+
+    Collection<DependencyDescriptor> getAllDependecies() {
+        Set<DependencyDescriptor> dependencies = new HashSet<DependencyDescriptor>();
+        for (DependencyDescriptor dep : getPomDirectDependencies()) {
+            dependencies.add(dep);
+            dependencies.addAll(getArtifactDependecies(dep.toString()));
+        }
+        return dependencies;
+    }
+
+    public static ArtifactResolver getResolverFor(GAV gav, boolean allowDefaultPom) {
+        MavenProject mavenProject = getMavenProjectForGAV(gav);
+        return mavenProject == null ?
+                (allowDefaultPom ? new ArtifactResolver() : null) :
+                new ArtifactResolver(mavenProject);
+    }
+
+    public static ArtifactResolver getResolverFor(URI uri) {
+        return getResolverFor(new File(uri));
+    }
+
+    public static ArtifactResolver getResolverFor(File pomFile) {
+        MavenProject mavenProject = parseMavenPom(pomFile);
+        return new ArtifactResolver(mavenProject);
+    }
+
+    static MavenProject getMavenProjectForGAV(GAV gav) {
+        String artifactName = gav.getGroupId() + ":" + gav.getArtifactId() + ":pom:" + gav.getVersion();
+        Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName);
+        return artifact != null ? parseMavenPom(artifact.getFile()) : null;
+    }
+}
