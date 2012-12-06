@@ -1,11 +1,5 @@
 package org.drools.games.pong;
 
-import static org.kie.builder.ResourceType.DRL;
-import static org.kie.io.ResourceFactory.newClassPathResource;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
@@ -13,6 +7,12 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.StatefulKnowledgeSession;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static org.kie.io.ResourceFactory.newClassPathResource;
+import static org.kie.io.ResourceType.DRL;
 
 public class PongMain {
 

@@ -1,5 +1,10 @@
 package org.kie.builder.impl;
 
+import org.drools.core.util.IoUtils;
+import org.drools.kproject.models.KieModuleModelImpl;
+import org.kie.builder.GAV;
+import org.kie.builder.KieModuleModel;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -7,22 +12,45 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.drools.core.util.IoUtils;
-import org.kie.builder.GAV;
-import org.kie.builder.KieModuleModel;
+import static org.kie.builder.impl.KieBuilderImpl.buildKieModule;
 
 public class ZipKieModule extends AbstractKieModule implements InternalKieModule {
     private final File             file;    
     private Map<String, ZipEntry> zipEntries;
 
+    public ZipKieModule(GAV gav, File jar) {
+        this(gav, getKieModuleModelFromJar(jar), jar);
+    }
+
     public ZipKieModule(GAV gav,
-                     KieModuleModel kieProject,
-                     File file) {
+                        KieModuleModel kieProject,
+                        File file) {
         super( gav, kieProject );
-        this.file = file;   
+        this.file = file;
         this.zipEntries = IoUtils.buildZipFileMapEntries( file );
     }
-    
+
+    public Messages build() {
+        Messages messages = new Messages();
+        buildKieModule(this, messages);
+        return messages;
+    }
+
+    private static KieModuleModel getKieModuleModelFromJar(File jar) {
+        ZipFile zipFile = null;
+        try {
+            zipFile = new ZipFile( jar );
+            ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
+            return KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
+        } catch ( Exception e ) {
+            throw new RuntimeException("Unable to load kmodule.xml from" + jar.getAbsolutePath());
+        } finally {
+            try {
+                zipFile.close();
+            } catch ( IOException e ) { }
+        }
+    }
+
     @Override
     public File getFile() {
         return this.file;

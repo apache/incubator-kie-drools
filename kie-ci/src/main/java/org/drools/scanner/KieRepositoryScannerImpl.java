@@ -10,9 +10,8 @@ import org.kie.builder.KieScanner;
 import org.kie.builder.Message;
 import org.kie.builder.impl.CompositeKieModule;
 import org.kie.builder.impl.InternalKieScanner;
-import org.kie.builder.impl.JarKieModule;
-import org.kie.builder.impl.MessageImpl;
 import org.kie.builder.impl.Messages;
+import org.kie.builder.impl.ZipKieModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
@@ -105,7 +104,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     private KieModule buildArtifact(GAV gav, Artifact artifact) {
-        JarKieModule kieModule = new JarKieModule(gav, artifact.getFile());
+        ZipKieModule kieModule = new ZipKieModule(gav, artifact.getFile());
         kieModule.build();
         return kieModule;
     }
@@ -156,7 +155,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     private void updateKieModule(Artifact artifact, GAV gav) {
-        JarKieModule kieModule = new JarKieModule(gav, artifact.getFile());
+        ZipKieModule kieModule = new ZipKieModule(gav, artifact.getFile());
         Messages messages = kieModule.build();
         if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
             kieContainer.updateToVersion(gav);

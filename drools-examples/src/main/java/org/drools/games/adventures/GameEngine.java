@@ -1,10 +1,5 @@
 package org.drools.games.adventures;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
 import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -19,8 +14,13 @@ import org.kie.runtime.rule.FactHandle;
 import org.mvel2.MVEL;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 
-import static org.kie.io.ResourceFactory.*;
-import static org.kie.builder.ResourceType.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.kie.io.ResourceFactory.newClassPathResource;
+import static org.kie.io.ResourceType.DRL;
 
 public class GameEngine {
 
