@@ -19,12 +19,12 @@ package org.jbpm.process.workitem.rest;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
+
 import junit.framework.TestCase;
+
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.jbpm.process.workitem.rest.RestGeoCodeApiCallWorkItemHandler;
-import org.jbpm.process.workitem.rest.ResultGeoCodeApi;
 
 public class RestGeoCodeApiCallWorkItemHandlerTest extends TestCase {
 

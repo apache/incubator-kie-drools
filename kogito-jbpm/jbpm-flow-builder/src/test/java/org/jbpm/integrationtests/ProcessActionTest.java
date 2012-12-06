@@ -8,11 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.io.impl.ReaderResource;
+import org.jbpm.JbpmTestCase;
+import org.jbpm.Message;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.drools.io.impl.ReaderResource;
+import org.kie.io.ResourceType;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
@@ -20,8 +22,6 @@ import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.FactHandle;
-import org.jbpm.JbpmTestCase;
-import org.jbpm.Message;
 
 public class ProcessActionTest extends JbpmTestCase {
     

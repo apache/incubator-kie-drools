@@ -1,22 +1,31 @@
 package org.jbpm.persistence.processinstance;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
+import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.jbpm.persistence.JbpmTestCase;
+import org.jbpm.persistence.util.LoggingPrintStream;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.kie.KnowledgeBase;
-
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.event.process.*;
+import org.kie.event.process.DefaultProcessEventListener;
+import org.kie.event.process.ProcessCompletedEvent;
+import org.kie.event.process.ProcessStartedEvent;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.jbpm.persistence.JbpmTestCase;
-import org.jbpm.persistence.util.LoggingPrintStream;
-import org.junit.*;
 
 /**
  * This test 

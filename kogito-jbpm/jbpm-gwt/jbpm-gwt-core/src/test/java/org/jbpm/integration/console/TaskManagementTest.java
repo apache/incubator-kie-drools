@@ -1,9 +1,6 @@
 package org.jbpm.integration.console;
 
 import org.jbpm.integration.JbpmGwtCoreTestCase;
-import org.jbpm.task.service.BaseHandler;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskClientConnector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

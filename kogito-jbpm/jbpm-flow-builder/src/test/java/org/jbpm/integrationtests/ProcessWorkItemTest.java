@@ -6,21 +6,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbpm.JbpmTestCase;
+import org.jbpm.Person;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.process.WorkflowProcessInstance;
-import org.jbpm.JbpmTestCase;
-import org.jbpm.Person;
 
 public class ProcessWorkItemTest extends JbpmTestCase {
     
