@@ -1,13 +1,5 @@
 package org.drools.kproject;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.junit.Test;
@@ -16,12 +8,14 @@ import org.kie.builder.GAV;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
-import org.kie.builder.impl.ClasspathKieProject;
 import org.kie.builder.impl.FileKieModule;
-import org.kie.builder.impl.InternalKieModule;
 import org.kie.builder.impl.KieContainerImpl;
 import org.kie.builder.impl.KieModuleKieProject;
 import org.kie.builder.impl.ZipKieModule;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertNotNull;
 
 public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
 
@@ -65,14 +59,9 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
                                                 kProjModel4,
                                                 fol4 );
 
-        Map<GAV, InternalKieModule> deps = new HashMap<GAV, InternalKieModule>();
-        deps.put( gav2,
-                  mod2 );
-        deps.put( gav3,
-                  mod3 );
-        deps.put( gav4,
-                  mod4 );
-        mod1.setDependencies( deps );
+        mod1.addDependency( mod2 );
+        mod1.addDependency( mod3 );
+        mod1.addDependency( mod4 );
 
         KieModuleKieProject kProject = new KieModuleKieProject(mod1, null);
         

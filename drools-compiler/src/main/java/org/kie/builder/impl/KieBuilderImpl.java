@@ -1,18 +1,5 @@
 package org.kie.builder.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
@@ -40,6 +27,17 @@ import org.kie.builder.Message.Level;
 import org.kie.builder.Results;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class KieBuilderImpl
     implements
@@ -125,12 +123,9 @@ public class KieBuilderImpl
                                               trgMfs );
 
             if ( dependencies != null && !dependencies.isEmpty() ) {
-                Map<GAV, InternalKieModule> modules = new HashMap<GAV, InternalKieModule>();
                 for ( KieModule kieModule : dependencies ) {
-                    modules.put( kieModule.getGAV(),
-                                 (InternalKieModule) kieModule );
+                    kModule.addDependency( (InternalKieModule) kieModule );
                 }
-                kModule.setDependencies( modules );
             }
 
             buildKieModule(kModule, messages);
@@ -139,7 +134,7 @@ public class KieBuilderImpl
                                 null );
     }
 
-    static void buildKieModule(InternalKieModule kModule, Messages messages) {
+    public static void buildKieModule(InternalKieModule kModule, Messages messages) {
         KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
         kProject.init();
         kProject.verify( messages );

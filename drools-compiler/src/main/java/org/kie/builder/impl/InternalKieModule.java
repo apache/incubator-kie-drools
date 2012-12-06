@@ -1,12 +1,12 @@
 package org.kie.builder.impl;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Map;
-
 import org.kie.builder.GAV;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Map;
 
 public interface InternalKieModule extends KieModule {
     
@@ -14,10 +14,10 @@ public interface InternalKieModule extends KieModule {
     
     byte[] getBytes( );    
     
-    public Map<GAV, InternalKieModule> getDependencies();
+    Map<GAV, InternalKieModule> getDependencies();
 
-    public void setDependencies(Map<GAV, InternalKieModule> dependencies);    
-    
+    void addDependency(InternalKieModule dependency);
+
     boolean isAvailable( final String pResourceName );
     
     byte[] getBytes( final String pResourceName );
@@ -25,5 +25,4 @@ public interface InternalKieModule extends KieModule {
     Collection<String> getFileNames();  
     
     File getFile();
-    
 }
