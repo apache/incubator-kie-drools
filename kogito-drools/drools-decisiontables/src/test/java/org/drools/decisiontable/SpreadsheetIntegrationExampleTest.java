@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.acme.insurance.launcher.PricingRuleLauncher;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -102,7 +103,7 @@ public class SpreadsheetIntegrationExampleTest {
                       list.get( 0 ) );
     }
     
-    @Test
+    @Test @Ignore
     public void testNamedWorksheet() throws Exception {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
