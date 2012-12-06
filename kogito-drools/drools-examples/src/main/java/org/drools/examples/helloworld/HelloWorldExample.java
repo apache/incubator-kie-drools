@@ -16,20 +16,20 @@
 
 package org.drools.examples.helloworld;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.event.rule.DebugAgendaEventListener;
 import org.kie.event.rule.DebugWorkingMemoryEventListener;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.

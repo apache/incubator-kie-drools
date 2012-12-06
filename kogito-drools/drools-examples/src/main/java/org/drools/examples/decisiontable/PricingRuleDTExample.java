@@ -16,17 +16,17 @@
 
 package org.drools.examples.decisiontable;
 
-import java.util.Arrays;
-
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatelessKnowledgeSession;
+
+import java.util.Arrays;
 
 /**
  * This shows off a decision table.
