@@ -38,10 +38,10 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemHandler;
@@ -79,7 +79,7 @@ public class CDISessionManager implements SessionManager {
     private Map<String, List<String>> processDefinitionNamesBySession = new HashMap<String, List<String>>();
 
     // Ksession Name / List of handlers
-    private Map<String, List<WorkItemHandler>> ksessionHandlers = new HashMap<String, List<WorkItemHandler>>();
+    private Map<String, Map<String, WorkItemHandler>> ksessionHandlers = new HashMap<String, Map<String, WorkItemHandler>>();
 
     public CDISessionManager() {
     }
@@ -96,7 +96,21 @@ public class CDISessionManager implements SessionManager {
     public Domain getDomain() {
         return domain;
     }
+    
+    public void addKsessionHandler(String ksessionName, String handlerName,  WorkItemHandler handler){
+        if(ksessionHandlers.get(ksessionName) == null){
+            ksessionHandlers.put(ksessionName, new HashMap<String, WorkItemHandler>());
+        }
+        ksessionHandlers.get(ksessionName).put(handlerName, handler);
+    }
 
+    public void registerHandlersForSession(String ksessionName){
+        Map<String, WorkItemHandler> handlers = ksessionHandlers.get(ksessionName);
+        for(String key : handlers.keySet()){
+            ksessions.get(ksessionName).getWorkItemManager().registerWorkItemHandler(key, handlers.get(key));
+        }
+    }
+    
     @Override
     public void buildSessions() {
         processListener.setDomainName( domain.getName() );
@@ -132,8 +146,9 @@ public class CDISessionManager implements SessionManager {
 
             handler.setSession( ksession );
             handler.init();
-
+            // Register the same handler for all the ksessions
             ksession.getWorkItemManager().registerWorkItemHandler( "Human Task", handler );
+            // Register the configured handlers
             StatefulKnowledgeSessionDelegate statefulKnowledgeSessionDelegate = new StatefulKnowledgeSessionDelegate( session, ksession, this );
 
             ksessions.put( session, statefulKnowledgeSessionDelegate );

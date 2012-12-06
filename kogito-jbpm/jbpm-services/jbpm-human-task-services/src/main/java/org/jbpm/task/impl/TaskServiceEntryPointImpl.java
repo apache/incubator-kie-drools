@@ -39,6 +39,7 @@ import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.api.TaskStatisticsService;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 
 /**
@@ -546,7 +547,19 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
         taskInstanceService.setTaskNames(taskId, taskName);
     }
     
-    
+    public Map<String, Object> getTaskContent(long taskId){
+        Task taskById = taskQueryService.getTaskInstanceById(taskId);
+        Content contentById = taskContentService.getContentById(taskById.getTaskData().getDocumentContentId());
+
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
+        if (!(unmarshalledObject instanceof Map)) {
+            throw new IllegalStateException(" The Task Content Needs to be a Map in order to use this method and it was: "+unmarshalledObject.getClass());
+
+        }
+        Map<String, Object> content = (Map<String, Object>) unmarshalledObject;
+        
+        return content;
+    }
     
     
 }

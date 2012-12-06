@@ -146,7 +146,7 @@ public class ExecutorImpl implements Executor {
         RequestInfo r = (RequestInfo) result.iterator().next();
 
 
-        em.lock(r, LockModeType.READ);
+        //em.lock(r, LockModeType.READ);
         r.setStatus(STATUS.CANCELLED);
         em.merge(r);
 

@@ -35,8 +35,8 @@ import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceType;
 
 /**
  *

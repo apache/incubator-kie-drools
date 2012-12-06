@@ -257,6 +257,8 @@ public interface TaskServiceEntryPoint {
 
     public Comment getCommentById(long commentId);
     
+    public Map<String, Object> getTaskContent(long taskId);
+    
     
     //Listeners
     

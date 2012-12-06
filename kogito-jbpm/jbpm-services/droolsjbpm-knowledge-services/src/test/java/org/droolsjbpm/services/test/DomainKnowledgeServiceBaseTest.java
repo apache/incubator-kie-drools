@@ -15,12 +15,9 @@
  */
 package org.droolsjbpm.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -35,27 +32,25 @@ import org.droolsjbpm.services.api.FileException;
 import org.droolsjbpm.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.droolsjbpm.services.impl.CDISessionManager;
+import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
-import org.droolsjbpm.services.impl.CDISessionManager;
-import org.jbpm.task.Content;
-import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.definition.process.Process;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
 public abstract class DomainKnowledgeServiceBaseTest {
 
@@ -68,7 +63,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
     @Inject
     private FileService fs;
     @Inject
-    private CDISessionManager sessionManager;
+    private SessionManager sessionManager;
 
     @Test
     public void simpleDomainTest() {
@@ -140,8 +135,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
 
     }
-    
-    @Ignore
+
     @Test
     public void testReleaseProcess() {
         Domain myDomain = new SimpleDomainImpl("myDomain");
@@ -158,39 +152,67 @@ public abstract class DomainKnowledgeServiceBaseTest {
         }
 
         sessionManager.buildSessions();
+
+        sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("myKsession", "TriggerTests", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("myKsession", "MoveBackToStaging", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("myKsession", "MoveToProduction", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("myKsession", "ApplyChangestoRuntimes", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("myKsession", "Email", new DoNothingWorkItemHandler());
+
+        sessionManager.registerHandlersForSession("myKsession");
+         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("release_name", "first release ever");
+        
+        
         ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
+        
+        // Configure Release
         List<TaskSummary> tasksAssignedByGroup = taskService.getTasksAssignedByGroup("Release Manager", "en-UK");
 
         assertEquals(1, tasksAssignedByGroup.size());
-        TaskSummary selectFilesTask = tasksAssignedByGroup.get(0);
+        TaskSummary configureReleaseTask = tasksAssignedByGroup.get(0);
 
-        taskService.claim(selectFilesTask.getId(), "salaboy");
+        taskService.claim(configureReleaseTask.getId(), "salaboy");
 
-        taskService.start(selectFilesTask.getId(), "salaboy");
-        Task taskById = taskService.getTaskById(selectFilesTask.getId());
-        Content contentById = taskService.getContentById(taskById.getTaskData().getDocumentContentId());
+        taskService.start(configureReleaseTask.getId(), "salaboy");
+        
+        Map<String, Object> taskContent = taskService.getTaskContent(configureReleaseTask.getId());
 
-        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
-        if (!(unmarshalledObject instanceof Map)) {
-            fail("The variables should be a Map");
-
-        }
-        Map<String, Object> unmarshalledvars = (Map<String, Object>) unmarshalledObject;
-
-        assertEquals("first release ever", unmarshalledvars.get("release_name"));
+        assertEquals("first release ever", taskContent.get("release_name"));
 
         Map<String, Object> output = new HashMap<String, Object>();
         List<String> files = new ArrayList<String>();
         files.add("asset.drl");
         output.put("files", files);
-        taskService.complete(selectFilesTask.getId(), "salaboy", output);
+        taskService.complete(configureReleaseTask.getId(), "salaboy", output);
+
+        // Review and Confirm Release Setup 
+        
+        tasksAssignedByGroup = taskService.getTasksAssignedByGroup("Release Manager", "en-UK");
+        assertEquals(1, tasksAssignedByGroup.size());
+        TaskSummary confirmConfigurationTask = tasksAssignedByGroup.get(0);
+
+        taskService.claim(confirmConfigurationTask.getId(), "salaboy");
+
+        taskService.start(confirmConfigurationTask.getId(), "salaboy");
+        
+        taskContent = taskService.getTaskContent(confirmConfigurationTask.getId());
+        
+        assertEquals(1, ((List<String>)taskContent.get("selected_files")).size());
+        
+        params = new HashMap<String, Object>();
+        params.put("selected_files", files);
+        params.put("dueDate", new Date());
+        params.put("confirmed", true);
+        
+        taskService.complete(confirmConfigurationTask.getId(), "salaboy", params);
         
         
-
-
-
+        
+        
     }
 
     @Test
@@ -470,5 +492,19 @@ public abstract class DomainKnowledgeServiceBaseTest {
         assertTrue(next instanceof ProcessInstanceDesc);
         assertEquals(3, dataService.getProcessInstances().size());
 
+    }
+
+    private class DoNothingWorkItemHandler implements WorkItemHandler {
+
+        @Override
+        public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
+            String taskName = (String) wi.getParameter("TaskName");
+            System.out.println(">>> Working on: " + taskName + "...");
+            wim.completeWorkItem(wi.getId(), null);
+        }
+
+        @Override
+        public void abortWorkItem(WorkItem wi, WorkItemManager wim) {
+        }
     }
 }

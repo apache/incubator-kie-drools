@@ -17,8 +17,10 @@ package org.droolsjbpm.services.api;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItemHandler;
 
 /**
  *
@@ -35,27 +37,31 @@ public interface SessionManager {
     void setKsessions(Map<String, StatefulKnowledgeSession> ksessions);
 
     void addKsession(String name, StatefulKnowledgeSession ksession);
-    
+
     StatefulKnowledgeSession getKsessionByName(String ksessionName);
 
     Map<String, Long> getProcessInstanceIdKsession();
 
     void setProcessInstanceIdKsession(Map<String, Long> processInstanceIdKsession);
 
-    void addProcessInstanceIdKsession(String ksessionName, Long processInstanceId );
-    
+    void addProcessInstanceIdKsession(String ksessionName, Long processInstanceId);
+
     String getSessionForProcessInstanceId(Long processInstanceId);
-    
+
     int getSessionIdByName(String ksessionName);
-    
+
     Collection<String> getAllSessionsNames();
-    
+
     void addProcessDefinitionToSession(String sessionName, String processId);
-    
+
     void removeProcessDefinitionFromSession(String sessionName, String processId);
-    
+
     Collection<String> getProcessesInSession(String sessionName);
-    
+
     String getProcessInSessionByName(String processDefId);
+
+    void addKsessionHandler(String ksessionName, String handlerName, WorkItemHandler handler);
+
+    void registerHandlersForSession(String ksessionName);
     
 }
