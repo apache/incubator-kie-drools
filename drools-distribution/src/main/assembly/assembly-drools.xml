@@ -90,7 +90,7 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools:knowledge-api:jar:javadoc</include>
+        <include>org.kie:kie-api:jar:javadoc</include>
       </includes>
       <outputDirectory>javadoc/public</outputDirectory>
       <unpack>true</unpack>
