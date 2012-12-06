@@ -29,6 +29,7 @@
         <uberfire.version>0.2.0-SNAPSHOT</uberfire.version>
     </properties>
     <modules>
+        <module>jbpm-shared-services</module>
         <module>jbpm-human-task-services</module>
         <module>jbpm-human-task-workitems</module>
         <module>droolsjbpm-knowledge-services</module>

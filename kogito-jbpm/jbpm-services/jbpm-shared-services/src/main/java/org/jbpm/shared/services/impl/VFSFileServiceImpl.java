@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.droolsjbpm.services.impl.vfs;
+package org.jbpm.shared.services.impl;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -23,8 +23,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.droolsjbpm.services.api.FileException;
-import org.droolsjbpm.services.api.FileService;
+import org.jbpm.shared.services.api.FileException;
+import org.jbpm.shared.services.api.FileService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.commons.java.nio.IOException;

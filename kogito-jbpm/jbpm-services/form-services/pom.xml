@@ -37,7 +37,6 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.2.2</version>
     </dependency>
     <dependency>
       <groupId>commons-vfs</groupId>
@@ -130,11 +129,11 @@
       <artifactId>jbpm-human-task-services</artifactId>
     </dependency>
 
-    <!-- dependency>
+    <dependency>
         <groupId>org.jbpm</groupId>
-        <artifactId>droolsjbpm-knowledge-services</artifactId>
+        <artifactId>jbpm-shared-services</artifactId>
         <version>${project.version}</version>
-    </dependency-->
+    </dependency>
     <dependency>
       <groupId>freemarker</groupId>
       <artifactId>freemarker</artifactId>

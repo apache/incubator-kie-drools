@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc 
+ * Copyright 2012 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.droolsjbpm.services.api;
+package org.jbpm.shared.services.api;
 
-public class FileException extends Exception {
 
-    private static final long serialVersionUID = 8612783913087556595L;
+import org.kie.commons.java.nio.file.Path;
 
-    public FileException() {
-        super();
-    }
+/**
+ *
+ * @author salaboy
+ */
+public interface FileService {
 
-    public FileException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    void init() throws FileException;
+    
+    public void fetchChanges();
 
-    public FileException(String message) {
-        super(message);
-    }
+    byte[] loadFile(final Path file) throws FileException;
 
-    public FileException(Throwable cause) {
-        super(cause);
-    }
+    Iterable<Path> loadFilesByType(final String path, final String fileType) throws FileException;
+    
 }

@@ -8,8 +8,8 @@
     <version>6.0.0-SNAPSHOT</version>
   </parent>
   <groupId>org.jbpm</groupId>
-  <artifactId>droolsjbpm-knowledge-services</artifactId>
-  <name>Drools jBPM :: Knowledge Services</name>
+  <artifactId>jbpm-shared-services</artifactId>
+  <name>Drools jBPM :: Shared Services</name>
 
   <dependencies>
     <dependency>
@@ -17,40 +17,7 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-services</artifactId>
-      <type>jar</type>
-    </dependency>
-     <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-shared-services</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-workitems</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>form-services</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-bpmn2</artifactId>
-      <type>jar</type>
-    </dependency>
-    <dependency>
+        <dependency>
       <groupId>org.jboss.seam.persistence</groupId>
       <artifactId>seam-persistence</artifactId>
     </dependency>
@@ -90,36 +57,7 @@
       <artifactId>hibernate-validator</artifactId>
       <version>${hibernate.4.validator.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>4.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-queryparser</artifactId>
-      <version>4.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-analyzers-common</artifactId>
-      <version>4.0.0</version>
-    </dependency>
-
+    
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
@@ -135,12 +73,7 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.el</groupId>
-      <artifactId>el-api</artifactId>
-      <type>jar</type>
-    </dependency>
-
+   
 
     <dependency>
       <groupId>org.kie.commons</groupId>

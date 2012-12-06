@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2011 JBoss Inc 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.form.builder.services.api;
+package org.jbpm.shared.services.api;
 
-import java.util.List;
+public class FileException extends Exception {
 
+    private static final long serialVersionUID = 8612783913087556595L;
 
-/**
- * 
- */
-public interface FileService {
+    public FileException() {
+        super();
+    }
 
-    String storeFile(String fileName, byte[] content) throws FileException;
+    public FileException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    void deleteFile(String fileName) throws FileException;
+    public FileException(String message) {
+        super(message);
+    }
 
-    List<String> loadFilesByType(String fileType) throws FileException;
-
-    byte[] loadFile(String fileName) throws FileException;
+    public FileException(Throwable cause) {
+        super(cause);
+    }
 }

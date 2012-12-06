@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import org.droolsjbpm.services.api.Domain;
-import org.droolsjbpm.services.api.FileException;
-import org.droolsjbpm.services.api.FileService;
+import org.jbpm.shared.services.api.FileException;
+import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.SessionManager;

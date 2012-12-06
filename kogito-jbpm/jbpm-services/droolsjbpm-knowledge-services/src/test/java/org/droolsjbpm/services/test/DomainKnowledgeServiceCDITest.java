@@ -54,6 +54,8 @@ public class DomainKnowledgeServiceCDITest extends DomainKnowledgeServiceBaseTes
                 .addPackage("org.droolsjbpm.services.api.bpmn2")
                 .addPackage("org.droolsjbpm.services.impl")
                 .addPackage("org.droolsjbpm.services.impl.bpmn2")
+                .addPackage("org.jbpm.shared.services.api")
+                .addPackage("org.jbpm.shared.services.impl")
                 .addPackage("org.droolsjbpm.services.impl.vfs")
                 .addPackage("org.kie.commons.java.nio.fs.jgit")
                 .addPackage("org.droolsjbpm.services.test")

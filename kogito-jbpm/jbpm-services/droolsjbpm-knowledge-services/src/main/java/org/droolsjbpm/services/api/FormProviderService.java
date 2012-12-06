@@ -15,11 +15,6 @@
  */
 package org.droolsjbpm.services.api;
 
-import java.util.Map;
-
-import org.jbpm.form.builder.services.model.FormRepresentation;
-import org.jbpm.task.TaskDef;
-
 /**
  *
  * @author salaboy
@@ -27,6 +22,6 @@ import org.jbpm.task.TaskDef;
 public interface FormProviderService {
     String getFormDisplayTask(long taskId);
     String getFormDisplayProcess(String processId);
-    FormRepresentation getAssociatedForm(String bpmn2, String taskName);
-    FormRepresentation createFormFromTask(Map<String, String> inputs, Map<String, String> outputs, TaskDef task);
+   // FormRepresentation getAssociatedForm(String bpmn2, String taskName);
+  //  FormRepresentation createFormFromTask(Map<String, String> inputs, Map<String, String> outputs, TaskDef task);
 }

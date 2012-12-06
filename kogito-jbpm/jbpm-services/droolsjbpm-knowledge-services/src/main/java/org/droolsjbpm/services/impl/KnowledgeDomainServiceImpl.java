@@ -25,8 +25,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.droolsjbpm.services.api.FileException;
-import org.droolsjbpm.services.api.FileService;
+import org.jbpm.shared.services.api.FileException;
+import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
