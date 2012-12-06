@@ -16,6 +16,10 @@
 
 package org.drools.io.impl;
 
+import org.drools.io.internal.InternalResource;
+import org.kie.io.Resource;
+import org.kie.io.ResourceType;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +27,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
-
-import org.drools.io.internal.InternalResource;
-import org.kie.io.Resource;
-import org.kie.io.ResourceType;
 
 public class ReaderResource  extends BaseResource implements InternalResource {
     private static final long serialVersionUID = -2554750160404141191L;
@@ -36,6 +36,8 @@ public class ReaderResource  extends BaseResource implements InternalResource {
     private long timestamp;
     private long lastRead;
     
+    public ReaderResource() { }
+
     public ReaderResource(Reader reader) {
         this(reader, null, null );
     }

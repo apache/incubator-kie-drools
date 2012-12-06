@@ -16,6 +16,9 @@
 
 package org.drools.io.impl;
 
+import org.drools.io.internal.InternalResource;
+import org.kie.io.Resource;
+
 import java.io.ByteArrayInputStream;
 import java.io.Externalizable;
 import java.io.FileNotFoundException;
@@ -29,9 +32,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.io.internal.InternalResource;
-import org.kie.io.Resource;
-
 public class ByteArrayResource extends BaseResource
     implements
     InternalResource,
@@ -39,24 +39,26 @@ public class ByteArrayResource extends BaseResource
 
     private byte[] bytes;
 
-    @Override
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        bytes = (byte[]) in.readObject();
-    }
-    
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( bytes );
-    }
-    
+    public ByteArrayResource() { }
+
     public ByteArrayResource(byte[] bytes) {
         if ( bytes == null || bytes.length == 0 ) {
             throw new IllegalArgumentException( "bytes cannot be null" );
         }
         this.bytes = bytes;
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException,
+            ClassNotFoundException {
+        super.readExternal( in );
+        bytes = (byte[]) in.readObject();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+        out.writeObject( bytes );
     }
 
     public InputStream getInputStream() throws IOException {

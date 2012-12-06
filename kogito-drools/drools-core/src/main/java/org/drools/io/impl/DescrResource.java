@@ -16,6 +16,11 @@
 
 package org.drools.io.impl;
 
+import org.drools.io.internal.InternalResource;
+import org.kie.definition.KnowledgeDescr;
+import org.kie.io.Resource;
+import org.kie.io.ResourceType;
+
 import java.io.Externalizable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,16 +31,13 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
-import org.drools.io.internal.InternalResource;
-import org.kie.definition.KnowledgeDescr;
-import org.kie.io.Resource;
-import org.kie.io.ResourceType;
-
 public class DescrResource extends BaseResource implements InternalResource, Externalizable {
     private static final long serialVersionUID = 3931132608413160031L;
     
     private KnowledgeDescr descr;
     
+    public DescrResource() { }
+
     public DescrResource(KnowledgeDescr descr ) {
         if ( descr == null ) {
             throw new IllegalArgumentException( "descr cannot be null" );
