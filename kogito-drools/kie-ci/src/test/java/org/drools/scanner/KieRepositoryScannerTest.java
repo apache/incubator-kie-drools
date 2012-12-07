@@ -15,6 +15,7 @@ import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -214,7 +215,7 @@ public class KieRepositoryScannerTest {
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
-                .setType("stateful")
+                .setType(KieSessionType.STATEFUL)
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kfs.writeKModuleXML(kproj.toXML());
@@ -257,7 +258,7 @@ public class KieRepositoryScannerTest {
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
-                .setType("stateful")
+                .setType(KieSessionType.STATEFUL)
                 .setClockType( ClockTypeOption.get("realtime") );
 
         kieFileSystem

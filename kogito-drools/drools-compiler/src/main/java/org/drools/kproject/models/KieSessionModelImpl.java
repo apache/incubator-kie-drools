@@ -3,6 +3,8 @@ package org.drools.kproject.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
@@ -20,12 +22,14 @@ public class KieSessionModelImpl
         KieSessionModel {
     private String                           name;
 
-    private String                           type = "stateful";
+    private KieSessionType                   type =  KieSessionType.STATEFUL;
     private ClockTypeOption                  clockType = ClockTypeOption.get( "realtime" );
+    
+    private String                           scope = ApplicationScoped.class.getName();    
 
-    private KieBaseModelImpl kBase;
+    private KieBaseModelImpl                 kBase;
 
-    private final List<ListenerModel> listeners = new ArrayList<ListenerModel>();
+    private final List<ListenerModel>        listeners = new ArrayList<ListenerModel>();
     private final List<WorkItemHandlerModel> wihs = new ArrayList<WorkItemHandlerModel>();
 
     private KieSessionModelImpl() { }
@@ -61,14 +65,14 @@ public class KieSessionModelImpl
     /* (non-Javadoc)
      * @see org.kie.kproject.KieSessionModel#getType()
      */
-    public String getType() {
+    public KieSessionType getType() {
         return type;
     }
 
     /* (non-Javadoc)
      * @see org.kie.kproject.KieSessionModel#setType(java.lang.String)
      */
-    public KieSessionModel setType(String type) {
+    public KieSessionModel setType(KieSessionType type) {
         this.type = type;
         return this;
     }
@@ -87,6 +91,17 @@ public class KieSessionModelImpl
         this.clockType = clockType;
         return this;
     }
+    
+    @Override
+    public KieSessionModel setScope(String scope) {
+        this.scope = scope;
+        return this;
+    }
+
+    @Override
+    public String getScope() {
+        return this.scope;
+    }    
 
     public ListenerModel newListenerModel(String type, ListenerModel.Kind kind) {
         ListenerModelImpl listenerModel = new ListenerModelImpl(this, type, kind);
@@ -130,10 +145,13 @@ public class KieSessionModelImpl
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
             KieSessionModelImpl kSession = (KieSessionModelImpl) value;
             writer.addAttribute("name", kSession.getName());
-            writer.addAttribute("type", kSession.getType());
+            writer.addAttribute("type", kSession.getType().toString().toUpperCase() );
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
+            if (kSession.getScope() != null) {
+                writer.addAttribute("scope", kSession.getScope().toString() );
+            }            
             for (ListenerModel listener : kSession.getListenerModels()) {
                 writeObject(writer, context, listener.getKind().toString(), listener);
             }
@@ -145,13 +163,18 @@ public class KieSessionModelImpl
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final KieSessionModelImpl kSession = new KieSessionModelImpl();
             kSession.setName(reader.getAttribute("name"));
-            kSession.setType(reader.getAttribute("type"));
+            kSession.setType(KieSessionType.valueOf( reader.getAttribute("type").toUpperCase() ) );
 
             String clockType = reader.getAttribute("clockType");
             if (clockType != null) {
                 kSession.setClockType(ClockTypeOption.get(clockType));
             }
 
+            String scope = reader.getAttribute("scope");
+            if (scope != null) {
+                kSession.setScope( scope );
+            }            
+            
             readNodes( reader, new AbstractXStreamConverter.NodeReader() {
                 public void onNode(HierarchicalStreamReader reader,
                                    String name,
@@ -171,4 +194,5 @@ public class KieSessionModelImpl
             return kSession;
         }
     }
+
 }

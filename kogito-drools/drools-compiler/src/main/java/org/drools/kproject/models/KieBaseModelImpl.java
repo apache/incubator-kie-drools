@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.Predicate;
 import org.kie.builder.KieBaseModel;
@@ -45,7 +47,9 @@ public class KieBaseModelImpl
 
     private Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
 
-    private KieModuleModel                   kModule;
+    private KieModuleModel               kModule;
+    
+    private String                       scope = ApplicationScoped.class.getName();
 
     private KieBaseModelImpl() {
     }
@@ -199,6 +203,18 @@ public class KieBaseModelImpl
         this.eventProcessingMode = eventProcessingMode;
         return this;
     }
+    
+    @Override
+    public KieBaseModel setScope(String scope) {
+        this.scope = scope;
+        return this;
+    }
+
+    @Override
+    public String getScope() {
+        return this.scope;
+    }
+    
 
     public static List<String> getFiles(String kBaseName,
                                         ZipFile zipFile) {
@@ -246,6 +262,11 @@ public class KieBaseModelImpl
             if ( kBase.getEqualsBehavior() != null ) {
                 writer.addAttribute( "equalsBehavior", kBase.getEqualsBehavior().toString().toLowerCase() );
             }
+            
+            if ( kBase.getScope() != null ) {
+                writer.addAttribute( "scope", kBase.getScope() );
+            }
+            
             if ( ! kBase.getPackages().isEmpty() ) {
                 StringBuilder buf = new StringBuilder();
                 boolean first = true;
@@ -291,10 +312,17 @@ public class KieBaseModelImpl
             if ( eventMode != null ) {
                 kBase.setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( eventMode ) );
             }
+            
             String equalsBehavior = reader.getAttribute( "equalsBehavior" );
             if ( equalsBehavior != null ) {
                 kBase.setEqualsBehavior( AssertBehaviorOption.valueOf( equalsBehavior.toUpperCase() ) );
             }
+            
+            String scope = reader.getAttribute( "scope" );
+            if ( scope != null ) {
+                kBase.setScope( scope.trim() );
+            }
+            
             String pkgs = reader.getAttribute( "packages" );
             if( pkgs != null ) {
                 for( String pkg : pkgs.split( "," ) ) {
@@ -335,5 +363,6 @@ public class KieBaseModelImpl
     public String toString() {
         return "KieBaseModelImpl [name=" + name + ", includes=" + includes + ", packages=" + getPackages() + ", equalsBehavior=" + equalsBehavior + ", eventProcessingMode=" + eventProcessingMode + ", kSessions=" + kSessions + "]";
     }
+
 
 }

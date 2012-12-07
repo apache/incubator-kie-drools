@@ -4,5 +4,12 @@
         <ksession name="org.kie.kbase1.ksession1" type="stateful" clockType="pseudo"/>
         <ksession name="org.kie.kbase1.ksession2" type="stateless" clockType="realtime"/>
     </kbase>
-  
+    
+    <kbase name="org.kie.kbase2" equalsBehavior="EQUALITY" eventProcessingMode="STREAM">
+    </kbase>    
+
+    <kbase name="org.kie.kbase3" scope="SessionScoped" equalsBehavior="EQUALITY" eventProcessingMode="STREAM">
+        <ksession name="org.kie.kbase3.ksession1" scope="javax.enterprise.context.ApplicationScoped" type="stateful" clockType="pseudo"/>
+        <ksession name="org.kie.kbase3.ksession2" scope="SessionScoped" type="stateful" clockType="realtime"/>
+    </kbase>  
 </kmodule>

@@ -37,25 +37,25 @@ import org.kie.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KProjectExtension
+public class KieCDIExtension
     implements
     Extension {
 
-    private static final Logger log = LoggerFactory.getLogger( KProjectExtension.class );
+    private static final Logger log = LoggerFactory.getLogger( KieCDIExtension.class );
 
-    private Set<String>         kBaseNames;
-    private Set<String>         kSessionNames;
+    private Set<KieCDIEntry>         kBaseNames;
+    private Set<KieCDIEntry>         kSessionNames;
 
     ClasspathKieProject         kProject;
 
-    public KProjectExtension() {
+    public KieCDIExtension() {
     }
 
     public void init() {
         kProject = new ClasspathKieProject();
     }
 
-    <Object> void processInjectionTarget(@Observes ProcessInjectionTarget<Object> pit) {
+    <Object> void processInjectionTarget(@Observes ProcessInjectionTarget<Object> pit, BeanManager beanManager) {
         if ( kProject == null ) {
             init();
         }
@@ -64,23 +64,90 @@ public class KProjectExtension
         if ( !pit.getInjectionTarget().getInjectionPoints().isEmpty() ) {
             for ( InjectionPoint ip : pit.getInjectionTarget().getInjectionPoints() ) {
                 KBase kBase = ip.getAnnotated().getAnnotation( KBase.class );
-                if ( kBase != null ) {
+                if ( kBase != null ) {                    
+                    Class< ? extends Annotation> scope = ApplicationScoped.class;                    
                     if ( kBaseNames == null ) {
-                        kBaseNames = new HashSet<String>();
+                        kBaseNames = new HashSet<KieCDIEntry>();
                     }
-                    kBaseNames.add( kBase.value() );
+                    kBaseNames.add( new KieCDIEntry(kBase.value(), scope) );
                 }
 
                 KSession kSession = ip.getAnnotated().getAnnotation( KSession.class );
                 if ( kSession != null ) {
+                    Class< ? extends Annotation> scope = ApplicationScoped.class;
+                    
                     if ( kSessionNames == null ) {
-                        kSessionNames = new HashSet<String>();
+                        kSessionNames = new HashSet<KieCDIEntry>();
                     }
-                    kSessionNames.add( kSession.value() );
+                    kSessionNames.add( new KieCDIEntry(kSession.value(), scope) );
                 }
             }
         }
 
+    }
+    
+    public static class KieCDIEntry {
+        private String name;
+        private Class< ? extends Annotation>  scope;
+        
+        public KieCDIEntry(String name,
+                           Class< ? extends Annotation>  scope) {
+            super();
+            this.name = name;
+            this.scope = scope;
+        }
+
+        public KieCDIEntry(String name) {
+            super();
+            this.name = name;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setScope(Class< ? extends Annotation> scope) {
+            this.scope = scope;
+        }
+
+        public Class< ? extends Annotation>  getScope() {
+            return scope;
+        }
+        
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + ((scope == null) ? 0 : scope.hashCode());
+            return result;
+        }
+        
+        @Override
+        public boolean equals(java.lang.Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            KieCDIEntry other = (KieCDIEntry) obj;
+            if ( name == null ) {
+                if ( other.name != null ) return false;
+            } else if ( !name.equals( other.name ) ) return false;
+            if ( scope == null ) {
+                if ( other.scope != null ) return false;
+            } else if ( !scope.equals( other.scope ) ) return false;
+            return true;
+        }
+        
+        @Override
+        public String toString() {
+            return "KSessionEntry [name=" + name + ", scope=" + scope + "]";
+        }
+        
+        
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd,
@@ -91,15 +158,28 @@ public class KProjectExtension
             KieContainerImpl kContainer = new KieContainerImpl( kProject, null );
             
             if ( kBaseNames != null ) {
-                for ( String kBaseQName : kBaseNames ) {
+                for ( KieCDIEntry entry : kBaseNames ) {
+                    String kBaseQName = entry.getName();
                     KieBaseModel kBaseModel = kProject.getKieBaseModel( kBaseQName );
                     if ( kBaseModel == null ) {
                         log.error( "Annotation @KBase({}) found, but no KieBaseModel exist.\nEither the required kproject.xml does not exist, was corrupted, or mising the KieBase entry",
                                    kBaseQName );
                         continue;
                     }
+                    if ( !kBaseModel.getScope().trim().equals( entry.getScope().getClass().getName()  ) ) {
+                        try {
+                            if (kBaseModel.getScope().indexOf( '.' ) >= 0 ) {
+                                entry.setScope( (Class< ? extends Annotation>) Class.forName( kBaseModel.getScope() ) );
+                            } else {
+                                entry.setScope( (Class< ? extends Annotation>) Class.forName( "javax.enterprise.context." + kBaseModel.getScope() ) );                                
+                            }
+                        } catch ( ClassNotFoundException e ) {
+                            log.error( "KieBaseModule {} overrides default annotation, but it was not able to find it {}\n{}", new String[] { kBaseQName, kBaseModel.getScope(), e.getMessage() } );
+                        }
+                    }
                     KBaseBean bean = new KBaseBean( kBaseModel,
-                                                    kContainer );
+                                                    kContainer,
+                                                    entry.getScope() );
                     if ( log.isDebugEnabled() ) {
                         InternalKieModule kModule = (InternalKieModule) kProject.getKieModuleForKBase( kBaseQName );
                         log.debug( "Added Bean for @KBase({})",
@@ -112,8 +192,8 @@ public class KProjectExtension
             kBaseNames = null;
             
             if ( kSessionNames != null ) {
-                for ( String kSessionName : kSessionNames ) {
-
+                for ( KieCDIEntry entry : kSessionNames ) {
+                    String kSessionName = entry.getName();
                     KieSessionModel kSessionModel = kProject.getKieSessionModel( kSessionName );
                     if ( kSessionModel == null ) {
                         log.error( "Annotation @KSession({}) found, but no KieSessioneModel exist.\nEither the required kproject.xml does not exist, was corrupted, or mising the KieBase entry",
@@ -121,6 +201,18 @@ public class KProjectExtension
                         continue;
                     }
 
+                    if ( !kSessionModel.getScope().trim().equals( entry.getScope().getClass().getName()  ) ) {
+                        try {
+                            if (kSessionModel.getScope().indexOf( '.' ) >= 0 ) {
+                                entry.setScope( (Class< ? extends Annotation>) Class.forName( kSessionModel.getScope() ) );
+                            } else {
+                                entry.setScope( (Class< ? extends Annotation>) Class.forName( "javax.enterprise.context." + kSessionModel.getScope() ) );                                
+                            }
+                        } catch ( ClassNotFoundException e ) {
+                            log.error( "KieBaseModule {} overrides default annotation, but it was not able to find it {}\n{}", new String[] { kSessionName, kSessionModel.getScope(), e.getMessage() } );
+                        }
+                    }
+                    
                     if ( "stateless".equals( kSessionModel.getType() ) ) {
                         if ( log.isDebugEnabled() ) {
                             InternalKieModule kModule = (InternalKieModule) kProject.getKieModuleForKBase( ((KieSessionModelImpl) kSessionModel).getKieBaseModel().getName() );
@@ -129,14 +221,16 @@ public class KProjectExtension
                                        kModule.getFile() );
                         }
                         abd.addBean( new StatelessKSessionBean( kSessionModel,
-                                                                kContainer ) );
+                                                                kContainer,
+                                                                entry.getScope() ) );
                     } else {
                         InternalKieModule kModule = (InternalKieModule) kProject.getKieModuleForKBase( ((KieSessionModelImpl) kSessionModel).getKieBaseModel().getName() );
                         log.debug( "Added Bean for Stateful @Session({})  from: {}",
                                    kSessionName,
                                    kModule.getFile() );
                         abd.addBean( new StatefulKSessionBean( kSessionModel,
-                                                               kContainer ) );
+                                                               kContainer,
+                                                               entry.getScope() ) );
                     }
                 }
             }
@@ -150,17 +244,22 @@ public class KProjectExtension
         static final Set<Type>        types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( KieBase.class,
                                                                                                              Object.class ) ) );
 
-        private Set<Annotation>       qualifiers;
+        private Set<Annotation>              qualifiers;
 
-        private KieContainer          kieContainer;
+        private KieContainer                 kieContainer;
 
-        private KieBaseModel          kBaseModel;
+        private KieBaseModel                 kBaseModel;
+
+        private Class< ? extends Annotation> scope;
 
         public KBaseBean(final KieBaseModel kBaseModel,
-                         KieContainer kieContainer) {
+                         KieContainer kieContainer,
+                         Class< ? extends Annotation> scope) {
             this.kBaseModel = kBaseModel;
             this.kieContainer = kieContainer;
 
+            this.scope = scope;
+            
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {
                                                                                                    },
                                                                                                    new AnnotationLiteral<Any>() {
@@ -197,7 +296,7 @@ public class KProjectExtension
         }
 
         public String getName() {
-            return null;
+            return kBaseModel.getName();
         }
 
         public Set<Annotation> getQualifiers() {
@@ -205,7 +304,7 @@ public class KProjectExtension
         }
 
         public Class< ? extends Annotation> getScope() {
-            return ApplicationScoped.class;
+            return this.scope;
         }
 
         public Set<Class< ? extends Annotation>> getStereotypes() {
@@ -236,11 +335,15 @@ public class KProjectExtension
         private KieSessionModel kSessionModel;
 
         private KieContainer    kieContainer;
+        
+        private Class< ? extends Annotation> scope;
 
         public StatelessKSessionBean(final KieSessionModel kieSessionModelModel,
-                                     KieContainer kieContainer) {
+                                     KieContainer kieContainer,
+                                     Class< ? extends Annotation> scope) {
             this.kSessionModel = kieSessionModelModel;
             this.kieContainer = kieContainer;
+            this.scope = scope;
 
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {
                                                                                                    },
@@ -276,7 +379,7 @@ public class KProjectExtension
         }
 
         public String getName() {
-            return null;
+            return kSessionModel.getName();
         }
 
         public Set<Annotation> getQualifiers() {
@@ -284,7 +387,7 @@ public class KProjectExtension
         }
 
         public Class< ? extends Annotation> getScope() {
-            return ApplicationScoped.class;
+            return scope;
         }
 
         public Set<Class< ? extends Annotation>> getStereotypes() {
@@ -315,11 +418,15 @@ public class KProjectExtension
         private KieSessionModel       kSessionModel;
 
         private KieContainer          kContainer;
+        
+        private Class< ? extends Annotation> scope;
 
         public StatefulKSessionBean(final KieSessionModel kieSessionModelModel,
-                                    KieContainer kContainer) {
+                                    KieContainer kContainer,
+                                    Class< ? extends Annotation> scope) {
             this.kSessionModel = kieSessionModelModel;
             this.kContainer = kContainer;
+            this.scope = scope;
 
             this.qualifiers = Collections.unmodifiableSet( new HashSet<Annotation>( Arrays.asList( new AnnotationLiteral<Default>() {
                                                                                                    },
@@ -363,7 +470,7 @@ public class KProjectExtension
         }
 
         public Class< ? extends Annotation> getScope() {
-            return ApplicationScoped.class;
+            return this.scope;
         }
 
         public Set<Class< ? extends Annotation>> getStereotypes() {

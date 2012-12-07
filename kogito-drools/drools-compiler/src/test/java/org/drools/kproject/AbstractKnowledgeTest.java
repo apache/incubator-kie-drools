@@ -19,6 +19,7 @@ import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.builder.Message.Level;
 import org.kie.builder.impl.KieFileSystemImpl;
 import org.kie.builder.impl.MemoryKieModule;
@@ -102,11 +103,11 @@ public class AbstractKnowledgeTest {
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(namespace + ".KSession1")
-                .setType( "stateless" )
+                .setType( KieSessionType.STATELESS )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         KieSessionModel ksession2 = kieBaseModel1.newKieSessionModel(namespace + ".KSession2")
-                .setType( "stateful" )
+                .setType( KieSessionType.STATEFUL )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         KieBaseModel kieBaseModel2 = kproj.newKieBaseModel(namespace + ".KBase2")
@@ -114,7 +115,7 @@ public class AbstractKnowledgeTest {
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         KieSessionModel ksession3 = kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
-                .setType( "stateful" )
+                .setType( KieSessionType.STATEFUL )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         KieBaseModel kieBaseModel3 = kproj.newKieBaseModel(namespace + ".KBase3")
@@ -124,7 +125,7 @@ public class AbstractKnowledgeTest {
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         KieSessionModel ksession4 = kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
-                .setType( "stateless" )
+                .setType( KieSessionType.STATELESS )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
   
         
