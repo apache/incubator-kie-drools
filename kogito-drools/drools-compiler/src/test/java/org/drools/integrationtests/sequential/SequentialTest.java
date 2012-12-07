@@ -26,13 +26,13 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.conf.SequentialOption;
-import org.kie.event.rule.ActivationCancelledEvent;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.MatchCancelledEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.AgendaGroupPoppedEvent;
 import org.kie.event.rule.AgendaGroupPushedEvent;
-import org.kie.event.rule.BeforeActivationFiredEvent;
+import org.kie.event.rule.BeforeMatchFiredEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.ObjectRetractedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;
@@ -181,17 +181,17 @@ public class SequentialTest extends CommonTestMethodBase {
         
         ksession.addEventListener( new AgendaEventListener() {
 
-            public void activationCancelled(ActivationCancelledEvent event) {
+            public void activationCancelled(MatchCancelledEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
                 list.add( event );
             }
 
-            public void activationCreated(ActivationCreatedEvent event) {
+            public void activationCreated(MatchCreatedEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
                 list.add( event );
             }
 
-            public void afterActivationFired(AfterActivationFiredEvent event) {
+            public void afterActivationFired(AfterMatchFiredEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
                 list.add( event );
             }
@@ -206,7 +206,7 @@ public class SequentialTest extends CommonTestMethodBase {
                 list.add( event );
             }
 
-            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+            public void beforeActivationFired(BeforeMatchFiredEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
                 list.add( event );
             }

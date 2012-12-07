@@ -111,7 +111,7 @@ public interface KnowledgeHelper
 
     Tuple getTuple();
 
-    Activation getActivation();
+    Activation getMatch();
 
     WorkingMemory getWorkingMemory();
     

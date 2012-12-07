@@ -63,7 +63,7 @@ import org.drools.time.impl.DurationTimer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.event.rule.ActivationCancelledCause;
+import org.kie.event.rule.MatchCancelledCause;
 import org.kie.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.rule.Match;
 
@@ -226,7 +226,7 @@ public class AgendaTest extends DroolsTestCase {
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) {
-                AgendaItem item = ( AgendaItem ) knowledgeHelper.getActivation();
+                AgendaItem item = ( AgendaItem ) knowledgeHelper.getMatch();
                 final Cheese cheese = ( Cheese ) item.getTuple().getHandle().getObject();
                 final int oldPrice = cheese.getPrice();
                 cheese.setPrice( 100 );
@@ -289,7 +289,7 @@ public class AgendaTest extends DroolsTestCase {
 
             public void activationCancelled(ActivationCancelledEvent event,
                                             WorkingMemory workingMemory) {
-                if ( event.getCause() == ActivationCancelledCause.FILTER ) {
+                if ( event.getCause() == MatchCancelledCause.FILTER ) {
                     filtered[0] = true;
                 }
             }

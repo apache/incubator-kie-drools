@@ -54,7 +54,7 @@ import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.command.Command;
 import org.kie.command.CommandFactory;
 import org.kie.definition.type.FactType;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
@@ -1457,17 +1457,17 @@ public class TraitTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
                 times( 3 ) ).afterActivationFired( cap.capture() );
 
-        List<AfterActivationFiredEvent> values = cap.getAllValues();
+        List<AfterMatchFiredEvent> values = cap.getAllValues();
 
-        assertThat( values.get( 0 ).getActivation().getRule().getName(),
+        assertThat( values.get( 0 ).getMatch().getRule().getName(),
                     is( "create student" ) );
-        assertThat( values.get( 1 ).getActivation().getRule().getName(),
+        assertThat( values.get( 1 ).getMatch().getRule().getName(),
                     is( "print student" ) );
-        assertThat( values.get( 2 ).getActivation().getRule().getName(),
+        assertThat( values.get( 2 ).getMatch().getRule().getName(),
                     is( "print school" ) );
 
     }

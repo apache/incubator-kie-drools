@@ -35,7 +35,7 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.type.FactType;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
@@ -432,11 +432,11 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
         
-        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael ).afterActivationFired( cap.capture() );
         
-        assertThat( ((Number) cap.getValue().getActivation().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
-        assertThat( ((Number) cap.getValue().getActivation().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );
+        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
+        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );
     }
     
     @Test

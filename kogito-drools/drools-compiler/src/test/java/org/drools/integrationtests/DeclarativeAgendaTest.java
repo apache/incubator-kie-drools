@@ -9,13 +9,13 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.conf.DeclarativeAgendaOption;
-import org.kie.event.rule.ActivationCancelledEvent;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.MatchCancelledEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.AgendaGroupPoppedEvent;
 import org.kie.event.rule.AgendaGroupPushedEvent;
-import org.kie.event.rule.BeforeActivationFiredEvent;
+import org.kie.event.rule.BeforeMatchFiredEvent;
 import org.kie.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -642,7 +642,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         ksession.addEventListener( new AgendaEventListener() {
 
-            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+            public void beforeActivationFired(BeforeMatchFiredEvent event) {
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
@@ -651,10 +651,10 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
             }
 
-            public void afterActivationFired(AfterActivationFiredEvent event) {
+            public void afterActivationFired(AfterMatchFiredEvent event) {
             }
 
-            public void activationCreated(ActivationCreatedEvent event) {
+            public void activationCreated(MatchCreatedEvent event) {
             }
 
             public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
@@ -669,7 +669,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
             }
             
-            public void activationCancelled(ActivationCancelledEvent event) {
+            public void activationCancelled(MatchCancelledEvent event) {
                 cancelled.add( event );
             }            
         } );
@@ -686,7 +686,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertEquals( 1,
                       cancelled.size() );
         assertEquals( "rule1",
-                      ((ActivationCancelledEvent) cancelled.get( 0 )).getActivation().getRule().getName() );
+                      ((MatchCancelledEvent) cancelled.get( 0 )).getMatch().getRule().getName() );
         ksession.dispose();
     }
 

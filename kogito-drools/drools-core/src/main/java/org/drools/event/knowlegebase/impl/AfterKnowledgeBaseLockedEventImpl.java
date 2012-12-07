@@ -18,9 +18,9 @@ package org.drools.event.knowlegebase.impl;
 
 import org.kie.KnowledgeBase;
 import org.kie.definition.rule.Rule;
-import org.kie.event.knowledgebase.AfterKnowledgeBaseLockedEvent;
+import org.kie.event.kiebase.AfterKieBaseLockedEvent;
 
-public class AfterKnowledgeBaseLockedEventImpl extends KnowledgeBaseEventImpl implements AfterKnowledgeBaseLockedEvent {
+public class AfterKnowledgeBaseLockedEventImpl extends KnowledgeBaseEventImpl implements AfterKieBaseLockedEvent {
 
     public AfterKnowledgeBaseLockedEventImpl(KnowledgeBase knowledgeBase) {
         super( knowledgeBase );

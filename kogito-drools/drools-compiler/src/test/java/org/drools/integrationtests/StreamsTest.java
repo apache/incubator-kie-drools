@@ -54,8 +54,8 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.definition.type.FactType;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.io.ResourceFactory;
@@ -365,16 +365,16 @@ public class StreamsTest extends CommonTestMethodBase {
         assertEquals(3,
                      rulesFired);
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                times(3)).afterActivationFired(captor.capture());
-        List<org.kie.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+        List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat(aafe.get(0).getActivation().getRule().getName(),
+        Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
                           is("R1"));
-        Assert.assertThat(aafe.get(1).getActivation().getRule().getName(),
+        Assert.assertThat(aafe.get(1).getMatch().getRule().getName(),
                           is("R2"));
-        Assert.assertThat(aafe.get(2).getActivation().getRule().getName(),
+        Assert.assertThat(aafe.get(2).getMatch().getRule().getName(),
                           is("R3"));
     }
 
@@ -406,12 +406,12 @@ public class StreamsTest extends CommonTestMethodBase {
         assertEquals(1,
                 rulesFired);
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                 times(1)).afterActivationFired(captor.capture());
-        List<org.kie.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+        List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat(aafe.get(0).getActivation().getRule().getName(),
+        Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
                 is("R1"));
     }
     
@@ -516,7 +516,7 @@ public class StreamsTest extends CommonTestMethodBase {
         verify(wml,
                times(2)).objectInserted(any(org.kie.event.rule.ObjectInsertedEvent.class));
         verify(ael,
-               times(2)).activationCreated(any(ActivationCreatedEvent.class));
+               times(2)).activationCreated(any(MatchCreatedEvent.class));
         assertThat(ksession.getObjects().size(),
                    equalTo(2));
         assertThat(ksession.getObjects(),
@@ -639,14 +639,14 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                times(1)).afterActivationFired(captor.capture());
 
-        AfterActivationFiredEvent aafe = captor.getValue();
-        Assert.assertThat(((Number) aafe.getActivation().getDeclarationValue("$sum")).intValue(),
+        AfterMatchFiredEvent aafe = captor.getValue();
+        Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
                           is(95));
-        Assert.assertThat(((Number) aafe.getActivation().getDeclarationValue("$cnt")).intValue(),
+        Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$cnt")).intValue(),
                           is(3));
 
     }
@@ -685,12 +685,12 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                times(1)).afterActivationFired(captor.capture());
 
-        AfterActivationFiredEvent aafe = captor.getValue();
-        Assert.assertThat(((Number) aafe.getActivation().getDeclarationValue("$sum")).intValue(),
+        AfterMatchFiredEvent aafe = captor.getValue();
+        Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
                           is(33));
     }
     
@@ -722,14 +722,14 @@ public class StreamsTest extends CommonTestMethodBase {
         
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                times(1)).afterActivationFired(captor.capture());
 
-        AfterActivationFiredEvent aafe = captor.getValue();
-        Assert.assertThat( (StockTick) aafe.getActivation().getDeclarationValue("f1"),
+        AfterMatchFiredEvent aafe = captor.getValue();
+        Assert.assertThat( (StockTick) aafe.getMatch().getDeclarationValue("f1"),
                            is(st1));
-        Assert.assertThat( (StockTick) aafe.getActivation().getDeclarationValue("f2"),
+        Assert.assertThat( (StockTick) aafe.getMatch().getDeclarationValue("f2"),
                            is(st2));
     }
 

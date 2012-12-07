@@ -31,7 +31,7 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
@@ -1577,10 +1577,10 @@ public class AccumulateTest extends CommonTestMethodBase {
         // ---------------- 1st scenario
         ksession.fireAllRules();
 
-        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
 
-        Match activation = cap.getValue().getActivation();
+        Match activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
                     is( 18 ) );
         assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
@@ -1598,7 +1598,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
 
-        activation = cap.getValue().getActivation();
+        activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
                     is( 24 ) );
         assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
@@ -1615,7 +1615,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
 
-        activation = cap.getValue().getActivation();
+        activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
                     is( 32 ) );
         assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
@@ -1630,7 +1630,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
 
-        activation = cap.getValue().getActivation();
+        activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
                     is( 17 ) );
         assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
@@ -1670,10 +1670,10 @@ public class AccumulateTest extends CommonTestMethodBase {
         // ---------------- 1st scenario
         ksession.fireAllRules();
 
-        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
 
-        Match activation = cap.getValue().getActivation();
+        Match activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
                     is( 18 ) );
         assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
@@ -1689,7 +1689,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                          cheese[index] );
         ksession.fireAllRules();
 
-        Mockito.verify( ael, Mockito.never() ).afterActivationFired( Mockito.any(AfterActivationFiredEvent.class) );
+        Mockito.verify( ael, Mockito.never() ).afterActivationFired( Mockito.any(AfterMatchFiredEvent.class) );
 
         Mockito.reset( ael );
         // ---------------- 3rd scenario
@@ -1700,7 +1700,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
 
-        activation = cap.getValue().getActivation();
+        activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
                     is( 20 ) );
         assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),

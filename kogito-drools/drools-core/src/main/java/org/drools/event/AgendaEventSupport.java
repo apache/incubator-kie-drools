@@ -23,7 +23,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.RuleFlowGroup;
-import org.kie.event.rule.ActivationCancelledCause;
+import org.kie.event.rule.MatchCancelledCause;
 
 public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener> {
 
@@ -45,7 +45,7 @@ public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener
 
     public void fireActivationCancelled(final Activation activation,
                                         final WorkingMemory workingMemory,
-                                        final ActivationCancelledCause cause) {
+                                        final MatchCancelledCause cause) {
         final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {

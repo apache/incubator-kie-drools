@@ -17,19 +17,19 @@
 package org.drools.event;
 
 import org.drools.spi.Activation;
-import org.kie.event.rule.ActivationCancelledCause;
+import org.kie.event.rule.MatchCancelledCause;
 
 public class ActivationCancelledEvent extends ActivationEvent {
-    private ActivationCancelledCause cause;
+    private MatchCancelledCause cause;
     
     private static final long serialVersionUID = 510l;
 
-    public ActivationCancelledEvent(final Activation activation, ActivationCancelledCause cause) {
+    public ActivationCancelledEvent(final Activation activation, MatchCancelledCause cause) {
         super( activation );
         this.cause = cause;
     }
     
-    public ActivationCancelledCause getCause() {
+    public MatchCancelledCause getCause() {
         return cause;
     }
 

@@ -35,7 +35,7 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -86,7 +86,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 
 		verify(ael,
 				times(evalFirePseudoClockStockCount * (evalFirePseudoClockStockCount - 1) / 2)).afterActivationFired(
-				any(AfterActivationFiredEvent.class));
+				any(AfterMatchFiredEvent.class));
 	}
 
 	@Test(timeout = 6000)
@@ -99,7 +99,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 
 		verify(ael,
 				times(evalFirePseudoClockStockCount - 1)).afterActivationFired(
-				any(AfterActivationFiredEvent.class));
+				any(AfterMatchFiredEvent.class));
 	}
 
 	@Test//(timeout = 60000)
@@ -114,7 +114,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 				+ evalFirePseudoClockStockCount - 1;
 		verify(ael,
 				times(expectedActivationCount)).afterActivationFired(
-				any(AfterActivationFiredEvent.class));
+				any(AfterMatchFiredEvent.class));
 	}
 
 	private int processStocks(int stockCount, AgendaEventListener agendaEventListener, String drlContentString)

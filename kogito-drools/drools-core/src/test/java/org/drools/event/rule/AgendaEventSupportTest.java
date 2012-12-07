@@ -36,14 +36,14 @@ import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.rule.ActivationCancelledCause;
-import org.kie.event.rule.ActivationCancelledEvent;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.MatchCancelledCause;
+import org.kie.event.rule.MatchCancelledEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.AgendaGroupPoppedEvent;
 import org.kie.event.rule.AgendaGroupPushedEvent;
-import org.kie.event.rule.BeforeActivationFiredEvent;
+import org.kie.event.rule.BeforeMatchFiredEvent;
 import org.kie.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -123,19 +123,19 @@ public class AgendaEventSupportTest {
         final List agendaList = new ArrayList();
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
-            public void activationCancelled(ActivationCancelledEvent event) {
+            public void activationCancelled(MatchCancelledEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
 
             }
 
-            public void activationCreated(ActivationCreatedEvent event) {
+            public void activationCreated(MatchCreatedEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
                 
             }
 
-            public void afterActivationFired(AfterActivationFiredEvent event) {
+            public void afterActivationFired(AfterMatchFiredEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
             }
@@ -150,7 +150,7 @@ public class AgendaEventSupportTest {
                 agendaList.add( event );
             }
 
-            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+            public void beforeActivationFired(BeforeMatchFiredEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
             }
@@ -187,14 +187,14 @@ public class AgendaEventSupportTest {
         // should be one ActivationCreatedEvent
         assertEquals( 1,
                       agendaList.size() );
-        ActivationCreatedEvent createdEvent = (ActivationCreatedEvent) agendaList.get( 0 );
+        MatchCreatedEvent createdEvent = (MatchCreatedEvent) agendaList.get( 0 );
         assertSame( cheddarHandle,
-                    createdEvent.getActivation().getFactHandles().toArray()[0] );
+                    createdEvent.getMatch().getFactHandles().toArray()[0] );
 
         // clear the agenda to check CLEAR events occur
         ksession.getAgenda().clear();
-        ActivationCancelledEvent cancelledEvent = (ActivationCancelledEvent) agendaList.get( 1 );
-        assertEquals( ActivationCancelledCause.CLEAR,
+        MatchCancelledEvent cancelledEvent = (MatchCancelledEvent) agendaList.get( 1 );
+        assertEquals( MatchCancelledCause.CLEAR,
                       cancelledEvent.getCause() );
 
         agendaList.clear();
@@ -205,9 +205,9 @@ public class AgendaEventSupportTest {
                          cheddar );
         assertEquals( 1,
                       agendaList.size() );
-        createdEvent = (ActivationCreatedEvent) agendaList.get( 0 );
+        createdEvent = (MatchCreatedEvent) agendaList.get( 0 );
         assertSame( cheddarHandle,
-                    createdEvent.getActivation().getFactHandles().toArray()[0] );
+                    createdEvent.getMatch().getFactHandles().toArray()[0] );
         agendaList.clear();
 
         // update should not result in cancelation+activation events
@@ -229,8 +229,8 @@ public class AgendaEventSupportTest {
         ksession.retract( cheddarHandle );
         assertEquals( 1,
                       agendaList.size() );
-        cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
-        assertNull( ((InternalFactHandle) cancelledEvent.getActivation().getFactHandles().toArray()[0]).getObject() );
+        cancelledEvent = (MatchCancelledEvent) agendaList.get( 0 );
+        assertNull( ((InternalFactHandle) cancelledEvent.getMatch().getFactHandles().toArray()[0]).getObject() );
 
         // re-assert the fact so we can test the agenda group events
         cheddarHandle = ksession.insert( cheddar );
@@ -250,12 +250,12 @@ public class AgendaEventSupportTest {
         ksession.fireAllRules();
         assertEquals( 3,
                       agendaList.size() );
-        final BeforeActivationFiredEvent beforeEvent = (BeforeActivationFiredEvent) agendaList.get( 0 );
+        final BeforeMatchFiredEvent beforeEvent = (BeforeMatchFiredEvent) agendaList.get( 0 );
         assertSame( cheddarHandle,
-                    beforeEvent.getActivation().getFactHandles().toArray()[0] );
-        final AfterActivationFiredEvent afterEvent = (AfterActivationFiredEvent) agendaList.get( 1 );
+                    beforeEvent.getMatch().getFactHandles().toArray()[0] );
+        final AfterMatchFiredEvent afterEvent = (AfterMatchFiredEvent) agendaList.get( 1 );
         assertSame( cheddarHandle,
-                    afterEvent.getActivation().getFactHandles().toArray()[0] );
+                    afterEvent.getMatch().getFactHandles().toArray()[0] );
         final AgendaGroupPoppedEvent poppedEvent = (AgendaGroupPoppedEvent) agendaList.get( 2 );
         assertEquals( "test group",
                       poppedEvent.getAgendaGroup().getName() );

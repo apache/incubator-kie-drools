@@ -2297,7 +2297,7 @@ public class MiscTest extends CommonTestMethodBase {
             fail( "Should throw an Exception from the Consequence" );
         } catch ( final org.kie.runtime.rule.ConsequenceException e ) {
             assertEquals( "Throw Consequence Exception",
-                          e.getActivation().getRule().getName() );
+                          e.getMatch().getRule().getName() );
             assertEquals( "this should throw an exception",
                           e.getCause().getMessage() );
         }
@@ -3819,21 +3819,21 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael,
                 times( 4 ) ).afterActivationFired( arg.capture() );
-        org.kie.event.rule.AfterActivationFiredEvent aaf = arg.getAllValues().get( 0 );
-        assertThat( aaf.getActivation().getRule().getName(),
+        org.kie.event.rule.AfterMatchFiredEvent aaf = arg.getAllValues().get( 0 );
+        assertThat( aaf.getMatch().getRule().getName(),
                     is( "1. home != null" ) );
         aaf = arg.getAllValues().get( 1 );
-        assertThat( aaf.getActivation().getRule().getName(),
+        assertThat( aaf.getMatch().getRule().getName(),
                     is( "2. not home == null" ) );
 
         aaf = arg.getAllValues().get( 2 );
-        assertThat( aaf.getActivation().getRule().getName(),
+        assertThat( aaf.getMatch().getRule().getName(),
                     is( "7. work == null" ) );
         aaf = arg.getAllValues().get( 3 );
-        assertThat( aaf.getActivation().getRule().getName(),
+        assertThat( aaf.getMatch().getRule().getName(),
                     is( "8. not work != null" ) );
     }
 
@@ -6700,19 +6700,19 @@ public class MiscTest extends CommonTestMethodBase {
                       fired );
 
         // capture the arguments and check that the rules fired in the proper sequence
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> actvs = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> actvs = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael,
                 times( 3 ) ).afterActivationFired( actvs.capture() );
-        List<org.kie.event.rule.AfterActivationFiredEvent> values = actvs.getAllValues();
-        assertThat( values.get( 0 ).getActivation().getRule().getName(),
+        List<org.kie.event.rule.AfterMatchFiredEvent> values = actvs.getAllValues();
+        assertThat( values.get( 0 ).getMatch().getRule().getName(),
                     is( "init" ) );
-        assertThat( values.get( 1 ).getActivation().getRule().getName(),
+        assertThat( values.get( 1 ).getMatch().getRule().getName(),
                     is( "r1" ) );
-        assertThat( values.get( 2 ).getActivation().getRule().getName(),
+        assertThat( values.get( 2 ).getMatch().getRule().getName(),
                     is( "r2" ) );
 
         verify( ael,
-                never() ).activationCancelled( any( org.kie.event.rule.ActivationCancelledEvent.class ) );
+                never() ).activationCancelled( any( org.kie.event.rule.MatchCancelledEvent.class ) );
         verify( wml,
                 times( 2 ) ).objectInserted( any( org.kie.event.rule.ObjectInsertedEvent.class ) );
         verify( wml,
@@ -7336,9 +7336,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael ).afterActivationFired( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Bbb" ) );
     }
 
@@ -7360,9 +7360,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael ).afterActivationFired( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Aaa" ) );
     }
 
@@ -7384,9 +7384,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael ).afterActivationFired( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Bbb" ) );
     }
 
@@ -7408,9 +7408,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael ).afterActivationFired( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Aaa" ) );
     }
 
@@ -7756,17 +7756,17 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 2,
                       rulesFired );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael,
                 times( 2 ) ).afterActivationFired( captor.capture() );
-        List<org.kie.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+        List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
                            is( "kickOff" ) );
-        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
                            is( "r1" ) );
 
-        Object value = aafe.get( 1 ).getActivation().getDeclarationValue( "$t" );
+        Object value = aafe.get( 1 ).getMatch().getDeclarationValue( "$t" );
         String name = (String) MVEL.eval( "$t.name",
                                           Collections.singletonMap( "$t",
                                                                     value ) );
@@ -8126,12 +8126,12 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( c3 );
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael, times( 2 ) ).afterActivationFired( captor.capture() );
 
-        List<org.kie.event.rule.AfterActivationFiredEvent> values = captor.getAllValues();
-        assertThat( (Cheesery) values.get( 0 ).getActivation().getObjects().get( 0 ), is( c1 ) );
-        assertThat( (Cheesery) values.get( 1 ).getActivation().getObjects().get( 0 ), is( c2 ) );
+        List<org.kie.event.rule.AfterMatchFiredEvent> values = captor.getAllValues();
+        assertThat( (Cheesery) values.get( 0 ).getMatch().getObjects().get( 0 ), is( c1 ) );
+        assertThat( (Cheesery) values.get( 1 ).getMatch().getObjects().get( 0 ), is( c2 ) );
 
         ksession.dispose();
     }
@@ -10043,9 +10043,9 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         // both rules should fire exactly once
-        verify( ael, times( 2 ) ).afterActivationFired( any( org.kie.event.rule.AfterActivationFiredEvent.class ) );
+        verify( ael, times( 2 ) ).afterActivationFired( any( org.kie.event.rule.AfterMatchFiredEvent.class ) );
         // no cancellations should have happened 
-        verify( ael, never() ).activationCancelled( any( org.kie.event.rule.ActivationCancelledEvent.class ) );
+        verify( ael, never() ).activationCancelled( any( org.kie.event.rule.MatchCancelledEvent.class ) );
     }
 
     @Test

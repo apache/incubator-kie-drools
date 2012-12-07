@@ -38,8 +38,8 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.knowledgebase.DefaultKnowledgeBaseEventListener;
-import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
+import org.kie.event.kiebase.DefaultKieBaseEventListener;
+import org.kie.event.kiebase.KieBaseEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
@@ -243,7 +243,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testKnowledgeBaseEventSupportLeak() throws Exception {
         // JBRULES-3666
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBaseEventListener listener = new DefaultKnowledgeBaseEventListener();
+        KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener(listener);
         kbase.addEventListener(listener);
         assertEquals(1, ((KnowledgeBaseImpl) kbase).getRuleBase().getRuleBaseEventListeners().size());
@@ -274,16 +274,16 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.setGlobal( "results", res );
 
         AgendaEventListener agendaEventListener = new AgendaEventListener() {
-            public void activationCreated(org.kie.event.rule.ActivationCreatedEvent event) {
+            public void activationCreated(org.kie.event.rule.MatchCreatedEvent event) {
             }
 
-            public void activationCancelled(org.kie.event.rule.ActivationCancelledEvent event) {
+            public void activationCancelled(org.kie.event.rule.MatchCancelledEvent event) {
             }
 
-            public void beforeActivationFired(org.kie.event.rule.BeforeActivationFiredEvent event) {
+            public void beforeActivationFired(org.kie.event.rule.BeforeMatchFiredEvent event) {
             }
 
-            public void afterActivationFired(org.kie.event.rule.AfterActivationFiredEvent event) {
+            public void afterActivationFired(org.kie.event.rule.AfterMatchFiredEvent event) {
             }
 
             public void agendaGroupPopped(org.kie.event.rule.AgendaGroupPoppedEvent event) {

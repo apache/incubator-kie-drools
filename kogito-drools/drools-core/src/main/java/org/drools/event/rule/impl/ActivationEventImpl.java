@@ -21,14 +21,14 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.kie.event.rule.ActivationCancelledEvent;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.ActivationEvent;
+import org.kie.event.rule.MatchCancelledEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.MatchEvent;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.rule.Match;
 
 
-public class ActivationEventImpl implements ActivationEvent, Externalizable {
+public class ActivationEventImpl implements MatchEvent, Externalizable {
     private Match activation;
     private KnowledgeRuntime kruntime;
     
@@ -37,7 +37,7 @@ public class ActivationEventImpl implements ActivationEvent, Externalizable {
         this.kruntime = kruntime;
     }
     
-    public Match getActivation() {
+    public Match getMatch() {
         return this.activation;
     }
 
@@ -58,7 +58,7 @@ public class ActivationEventImpl implements ActivationEvent, Externalizable {
 
     @Override
     public String toString() {
-        return "==>[ActivationEventImpl: getActivation()=" + getActivation() + ", getKnowledgeRuntime()="
+        return "==>[ActivationEventImpl: getActivation()=" + getMatch() + ", getKnowledgeRuntime()="
                 + getKnowledgeRuntime() + "]";
     }
 }
