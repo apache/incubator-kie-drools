@@ -59,9 +59,9 @@ public class ConsequenceGenerator {
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 3); // LeftTuple
 
-                // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getActivation().getTuple().getLeftTupleSink()).getDeclarations();
+                // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getLeftTupleSink()).getDeclarations();
                 mv.visitVarInsn(ALOAD, 1);
-                invokeInterface(KnowledgeHelper.class, "getActivation", Activation.class);
+                invokeInterface(KnowledgeHelper.class, "getMatch", Activation.class);
                 invokeInterface(Activation.class, "getTuple", LeftTuple.class);
                 invokeInterface(LeftTuple.class, "getLeftTupleSink", LeftTupleSink.class);
                 cast(RuleTerminalNode.class);
