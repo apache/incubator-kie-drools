@@ -16,11 +16,11 @@
 
 package org.drools.event.rule.impl;
 
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.rule.Match;
 
-public class AfterActivationFiredEventImpl  extends ActivationEventImpl implements AfterActivationFiredEvent {
+public class AfterActivationFiredEventImpl  extends ActivationEventImpl implements AfterMatchFiredEvent {
 
     public AfterActivationFiredEventImpl(Match activation, KnowledgeRuntime kruntime) {
         super( activation, kruntime );
@@ -28,7 +28,7 @@ public class AfterActivationFiredEventImpl  extends ActivationEventImpl implemen
 
     @Override
     public String toString() {
-        return "==>[AfterActivationFiredEvent: getActivation()=" + getActivation()
+        return "==>[AfterActivationFiredEvent: getActivation()=" + getMatch()
                 + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + "]";
     }        
     

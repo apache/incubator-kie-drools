@@ -17,7 +17,7 @@
 package org.drools.event.knowlegebase.impl;
 
 import org.kie.KnowledgeBase;
-import org.kie.event.knowledgebase.BeforeFunctionRemovedEvent;
+import org.kie.event.kiebase.BeforeFunctionRemovedEvent;
 
 public class BeforeFunctionRemovedEventImpl extends KnowledgeBaseEventImpl implements BeforeFunctionRemovedEvent {
     String function;

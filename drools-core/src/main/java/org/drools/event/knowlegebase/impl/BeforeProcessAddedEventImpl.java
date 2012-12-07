@@ -18,7 +18,7 @@ package org.drools.event.knowlegebase.impl;
 
 import org.kie.KnowledgeBase;
 import org.kie.definition.process.Process;
-import org.kie.event.knowledgebase.BeforeProcessAddedEvent;
+import org.kie.event.kiebase.BeforeProcessAddedEvent;
 
 public class BeforeProcessAddedEventImpl extends KnowledgeBaseEventImpl implements BeforeProcessAddedEvent {
     private Process process;

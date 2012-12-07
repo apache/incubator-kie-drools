@@ -49,7 +49,7 @@ import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
@@ -1029,7 +1029,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         verify( al,
-                times( 6 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+                times( 6 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
     }
 
     // JBRULES-2526 
@@ -1057,7 +1057,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         verify( al,
-                times( 8 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+                times( 8 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
     }
 
     @Test

@@ -80,7 +80,7 @@ import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
-import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
+import org.kie.event.kiebase.KieBaseEventListener;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
@@ -97,7 +97,7 @@ public class KnowledgeBaseImpl
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
 
-    public Map<KnowledgeBaseEventListener, KnowledgeBaseEventListenerWrapper> mappedKnowledgeBaseListeners;
+    public Map<KieBaseEventListener, KnowledgeBaseEventListenerWrapper> mappedKnowledgeBaseListeners;
 
     public KnowledgeBaseImpl() {
 
@@ -105,7 +105,7 @@ public class KnowledgeBaseImpl
 
     public KnowledgeBaseImpl(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
-        this.mappedKnowledgeBaseListeners = new HashMap<KnowledgeBaseEventListener, KnowledgeBaseEventListenerWrapper>();
+        this.mappedKnowledgeBaseListeners = new HashMap<KieBaseEventListener, KnowledgeBaseEventListenerWrapper>();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -122,7 +122,7 @@ public class KnowledgeBaseImpl
         return ruleBase;
     }
 
-    public void addEventListener(KnowledgeBaseEventListener listener) {
+    public void addEventListener(KieBaseEventListener listener) {
         if (!mappedKnowledgeBaseListeners.containsKey(listener)) {
             KnowledgeBaseEventListenerWrapper wrapper = new KnowledgeBaseEventListenerWrapper( this, listener );
             mappedKnowledgeBaseListeners.put( listener, wrapper );
@@ -130,12 +130,12 @@ public class KnowledgeBaseImpl
         }
     }
 
-    public void removeEventListener(KnowledgeBaseEventListener listener) {
+    public void removeEventListener(KieBaseEventListener listener) {
         KnowledgeBaseEventListenerWrapper wrapper = this.mappedKnowledgeBaseListeners.remove( listener );
         this.ruleBase.removeEventListener( wrapper );
     }
     
-    public Collection<KnowledgeBaseEventListener> getKnowledgeBaseEventListeners() {
+    public Collection<KieBaseEventListener> getKnowledgeBaseEventListeners() {
         return Collections.unmodifiableCollection( this.mappedKnowledgeBaseListeners.keySet() );
     }
 
@@ -266,7 +266,7 @@ public class KnowledgeBaseImpl
     public static class KnowledgeBaseEventListenerWrapper
         implements
         org.drools.event.RuleBaseEventListener {
-        private KnowledgeBaseEventListener listener;
+        private KieBaseEventListener listener;
         private KnowledgeBase              kbase;
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -279,7 +279,7 @@ public class KnowledgeBaseImpl
         }
 
         public KnowledgeBaseEventListenerWrapper(KnowledgeBase kbase,
-                                                 KnowledgeBaseEventListener listener) {
+                                                 KieBaseEventListener listener) {
             this.listener = listener;
         }
 

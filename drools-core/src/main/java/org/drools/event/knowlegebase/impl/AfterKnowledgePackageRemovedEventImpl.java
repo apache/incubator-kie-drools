@@ -18,7 +18,7 @@ package org.drools.event.knowlegebase.impl;
 
 import org.kie.KnowledgeBase;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.knowledgebase.AfterKnowledgePackageRemovedEvent;
+import org.kie.event.kiebase.AfterKnowledgePackageRemovedEvent;
 
 public class AfterKnowledgePackageRemovedEventImpl extends KnowledgeBaseEventImpl implements AfterKnowledgePackageRemovedEvent {
     private KnowledgePackage knowledgePackage;

@@ -105,7 +105,7 @@ public class SequentialKnowledgeHelper
         return new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory );
      }
 
-    public Activation getActivation() {
+    public Activation getMatch() {
         return this.activation;
     }
 

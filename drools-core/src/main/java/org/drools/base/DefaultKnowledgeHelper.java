@@ -388,7 +388,7 @@ public class DefaultKnowledgeHelper
         return ((ReteooWorkingMemory) this.workingMemory).getKnowledgeRuntime();
     }
 
-    public Activation getActivation() {
+    public Activation getMatch() {
         return this.activation;
     }
 
@@ -486,7 +486,7 @@ public class DefaultKnowledgeHelper
     @SuppressWarnings("unchecked")
     public <T> T getContext(Class<T> contextClass) {
         if (ProcessContext.class.equals(contextClass)) {
-            String ruleflowGroupName = getActivation().getRule().getRuleFlowGroup();
+            String ruleflowGroupName = getMatch().getRule().getRuleFlowGroup();
             if (ruleflowGroupName != null) {
                 Map<Long, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
                 if (!nodeInstances.isEmpty()) {

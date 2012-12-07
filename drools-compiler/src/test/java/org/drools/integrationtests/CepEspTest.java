@@ -53,8 +53,8 @@ import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
@@ -740,14 +740,14 @@ public class CepEspTest extends CommonTestMethodBase {
                            TimeUnit.MILLISECONDS );
         ksession.insert( tick8 );
 
-        ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
+        ArgumentCaptor<MatchCreatedEvent> arg = ArgumentCaptor.forClass( MatchCreatedEvent.class );
         verify( ael ).activationCreated( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "before" ) );
 
         ksession.fireAllRules();
 
-        verify( ael ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+        verify( ael ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
     }
 
     @Test
@@ -827,17 +827,17 @@ public class CepEspTest extends CommonTestMethodBase {
                            TimeUnit.MILLISECONDS );
         ksession.insert( tick8 );
 
-        ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
+        ArgumentCaptor<MatchCreatedEvent> arg = ArgumentCaptor.forClass( MatchCreatedEvent.class );
         verify( ael ).activationCreated( arg.capture() );
-        Match activation = arg.getValue().getActivation();
+        Match activation = arg.getValue().getMatch();
         assertThat( activation.getRule().getName(),
                     is( "metby" ) );
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<AfterActivationFiredEvent> aaf = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> aaf = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael ).afterActivationFired( aaf.capture() );
-        assertThat( (InternalFactHandle) aaf.getValue().getActivation().getFactHandles().toArray()[0],
+        assertThat( (InternalFactHandle) aaf.getValue().getMatch().getFactHandles().toArray()[0],
                     is( fh2 ) );
     }
 
@@ -1754,11 +1754,11 @@ public class CepEspTest extends CommonTestMethodBase {
                                       10 ) );
         ksession1.fireAllRules();
 
-        ArgumentCaptor<AfterActivationFiredEvent> aafe1 = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> aafe1 = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael1,
                 times( 1 ) ).afterActivationFired( aafe1.capture() );
-        List<AfterActivationFiredEvent> events1 = aafe1.getAllValues();
-        assertThat( events1.get( 0 ).getActivation().getDeclarationValue( "$avg" ),
+        List<AfterMatchFiredEvent> events1 = aafe1.getAllValues();
+        assertThat( events1.get( 0 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 10 ) );
 
         ksession1.insert( new Sensor( 20,
@@ -1766,14 +1766,14 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession1.fireAllRules();
         verify( ael1,
                 times( 2 ) ).afterActivationFired( aafe1.capture() );
-        assertThat( events1.get( 1 ).getActivation().getDeclarationValue( "$avg" ),
+        assertThat( events1.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 15 ) );
         ksession1.insert( new Sensor( 30,
                                       30 ) );
         ksession1.fireAllRules();
         verify( ael1,
                 times( 3 ) ).afterActivationFired( aafe1.capture() );
-        assertThat( events1.get( 2 ).getActivation().getDeclarationValue( "$avg" ),
+        assertThat( events1.get( 2 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 25 ) );
 
         ksession1.dispose();
@@ -1781,15 +1781,15 @@ public class CepEspTest extends CommonTestMethodBase {
         // -------------
         // now we check the serialized session
         // -------------
-        ArgumentCaptor<AfterActivationFiredEvent> aafe2 = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> aafe2 = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
 
         ksession2.insert( new Sensor( 10,
                                       10 ) );
         ksession2.fireAllRules();
         verify( ael2,
                 times( 1 ) ).afterActivationFired( aafe2.capture() );
-        List<AfterActivationFiredEvent> events2 = aafe2.getAllValues();
-        assertThat( events2.get( 0 ).getActivation().getDeclarationValue( "$avg" ),
+        List<AfterMatchFiredEvent> events2 = aafe2.getAllValues();
+        assertThat( events2.get( 0 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 10 ) );
 
         ksession2.insert( new Sensor( 20,
@@ -1797,7 +1797,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession2.fireAllRules();
         verify( ael2,
                 times( 2 ) ).afterActivationFired( aafe2.capture() );
-        assertThat( events2.get( 1 ).getActivation().getDeclarationValue( "$avg" ),
+        assertThat( events2.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 15 ) );
 
         ksession2.insert( new Sensor( 30,
@@ -1805,7 +1805,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession2.fireAllRules();
         verify( ael2,
                 times( 3 ) ).afterActivationFired( aafe2.capture() );
-        assertThat( events2.get( 2 ).getActivation().getDeclarationValue( "$avg" ),
+        assertThat( events2.get( 2 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 25 ) );
         ksession2.dispose();
     }
@@ -1853,7 +1853,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         // must have fired 3 times, one for each event identity
         verify( ael1,
-                times( 3 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+                times( 3 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
 
         ksession.dispose();
     }
@@ -1899,7 +1899,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession1.fireAllRules();
         // must have fired 2 times, one for each event equality
         verify( ael1,
-                times( 2 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+                times( 2 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
 
         ksession1.dispose();
     }
@@ -2080,18 +2080,18 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
                 times( 7 ) ).afterActivationFired( captor.capture() );
 
-        List<AfterActivationFiredEvent> values = captor.getAllValues();
+        List<AfterMatchFiredEvent> values = captor.getAllValues();
         // first rule
-        Match act = values.get( 0 ).getActivation();
+        Match act = values.get( 0 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "launch" ) );
 
         // second rule
-        act = values.get( 1 ).getActivation();
+        act = values.get( 1 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2100,7 +2100,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 2 ) );
 
         // third rule
-        act = values.get( 2 ).getActivation();
+        act = values.get( 2 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ab" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2109,7 +2109,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 2 ) );
 
         // fourth rule
-        act = values.get( 3 ).getActivation();
+        act = values.get( 3 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2118,7 +2118,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 1 ) );
 
         // fifth rule
-        act = values.get( 4 ).getActivation();
+        act = values.get( 4 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ab" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2127,7 +2127,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 1 ) );
 
         // sixth rule
-        act = values.get( 5 ).getActivation();
+        act = values.get( 5 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2136,7 +2136,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 1 ) );
 
         // seventh rule
-        act = values.get( 6 ).getActivation();
+        act = values.get( 6 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ab" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2280,18 +2280,18 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 4,
                       rulesFired );
 
-        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
                 times( 4 ) ).afterActivationFired( captor.capture() );
-        List<AfterActivationFiredEvent> aafe = captor.getAllValues();
+        List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 2 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 3 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
                            is( "R3" ) );
     }
 
@@ -2355,18 +2355,18 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 4,
                       rulesFired );
 
-        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
                 times( 4 ) ).afterActivationFired( captor.capture() );
-        List<AfterActivationFiredEvent> aafe = captor.getAllValues();
+        List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 2 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 3 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
                            is( "R3" ) );
     }
     
