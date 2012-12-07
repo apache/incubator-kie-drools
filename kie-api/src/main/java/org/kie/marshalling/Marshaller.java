@@ -21,8 +21,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.kie.runtime.Environment;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public interface Marshaller {
 
@@ -33,7 +33,7 @@ public interface Marshaller {
      * @throws IOException
      */
     void marshall(OutputStream stream,
-                  StatefulKnowledgeSession ksession) throws IOException;
+                  KieSession ksession) throws IOException;
     
     /**
      * Creates StatefulKnowledgeSession using default KnowledgeSessionConfiguration and 
@@ -45,7 +45,7 @@ public interface Marshaller {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public StatefulKnowledgeSession unmarshall(InputStream stream) throws IOException,
+    public KieSession unmarshall(InputStream stream) throws IOException,
                                                                       ClassNotFoundException;
 
     /**
@@ -60,7 +60,7 @@ public interface Marshaller {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public StatefulKnowledgeSession unmarshall(InputStream stream,
+    public KieSession unmarshall(InputStream stream,
                                                KnowledgeSessionConfiguration config,
                                                Environment environment) throws IOException,
                                                                       ClassNotFoundException;
@@ -74,7 +74,7 @@ public interface Marshaller {
      * @throws ClassNotFoundException
      */
     void unmarshall(InputStream stream,
-                   StatefulKnowledgeSession ksession) throws IOException,
+                    KieSession ksession) throws IOException,
                                                     ClassNotFoundException;
 
     /**

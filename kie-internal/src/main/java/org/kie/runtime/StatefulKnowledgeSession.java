@@ -16,8 +16,8 @@
 
 package org.kie.runtime;
 
-import org.kie.runtime.process.StatefulProcessSession;
-import org.kie.runtime.rule.StatefulRuleSession;
+import org.kie.KnowledgeBase;
+
 
 /**
  * StatefulKnowledgeSession is the most common way to interact with the engine. A StatefulKnowledgeSession
@@ -99,5 +99,7 @@ import org.kie.runtime.rule.StatefulRuleSession;
 public interface StatefulKnowledgeSession
     extends
     KieSession {
+	
+	KnowledgeBase getKnowledgeBase();
 
 }

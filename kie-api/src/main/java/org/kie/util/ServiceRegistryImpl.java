@@ -30,20 +30,18 @@
 
 package org.kie.util;
 
-import org.kie.KnowledgeBaseFactoryService;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
 import org.kie.Service;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.concurrent.KieExecutors;
-import org.kie.io.KieResources;
 import org.kie.marshalling.KieMarshallers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * This is an internal class, not for public consumption.
@@ -179,7 +177,7 @@ public class ServiceRegistryImpl
         addDefault( "org.kie.builder.KnowledgeContainerFactoryService",
                     "org.drools.builder.impl.KnowledgeContainerFactoryServiceImpl" );
 
-        addDefault( KnowledgeBaseFactoryService.class,
+        addDefault( "org.kie.KnowledgeBaseFactoryService",
                     "org.drools.impl.KnowledgeBaseFactoryServiceImpl" );
 
         addDefault( "org.kie.io.ResourceFactoryService",

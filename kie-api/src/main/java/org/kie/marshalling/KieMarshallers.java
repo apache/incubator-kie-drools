@@ -16,7 +16,7 @@
 
 package org.kie.marshalling;
 
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 import org.kie.Service;
 
 /**
@@ -40,7 +40,7 @@ public interface KieMarshallers extends Service {
      * @param kbase
      * @return
      */
-    Marshaller newMarshaller(KnowledgeBase kbase);
+    Marshaller newMarshaller(KieBase kbase);
 
     /**
      * This will override the strategies specified in the ksession or environment.
@@ -48,6 +48,6 @@ public interface KieMarshallers extends Service {
      * @param strategies
      * @return
      */
-    Marshaller newMarshaller(KnowledgeBase kbase,
+    Marshaller newMarshaller(KieBase kbase,
                              ObjectMarshallingStrategy[] strategies);
 }

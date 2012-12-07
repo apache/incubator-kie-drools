@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * The <code>ProcessRuntime</code> is a super-interface for all <code>StatefulKnowledgeSession</code>s.
  * 
- * @see org.kie.runtime.StatefulKnowledgeSession 
+ * @see org.kie.runtime.KieSession 
  */
 public interface ProcessRuntime {
 
