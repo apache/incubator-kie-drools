@@ -156,9 +156,10 @@ public class SerializationHelper {
                                                                        throws Exception {
         
         ByteArrayInputStream bais = new ByteArrayInputStream( serializedKsession );
-        StatefulKnowledgeSession deserializedKsession = marshaller.unmarshall( bais,
-                                                                    new SessionConfiguration(),
-                                                                    EnvironmentFactory.newEnvironment() );
+        StatefulKnowledgeSession deserializedKsession = (StatefulKnowledgeSession)
+    		marshaller.unmarshall( bais,
+                                   new SessionConfiguration(),
+                                   EnvironmentFactory.newEnvironment() );
         bais.close();
         
         return deserializedKsession;

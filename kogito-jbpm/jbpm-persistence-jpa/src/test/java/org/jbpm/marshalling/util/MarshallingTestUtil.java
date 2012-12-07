@@ -456,7 +456,8 @@ public class MarshallingTestUtil {
         Environment env = EnvironmentFactory.newEnvironment();
     
         // Unmarshall
-        StatefulKnowledgeSession ksession = marshaller.unmarshall( bais, conf, env );
+        StatefulKnowledgeSession ksession = (StatefulKnowledgeSession)
+    		marshaller.unmarshall( bais, conf, env );
         
         return ksession;
     }

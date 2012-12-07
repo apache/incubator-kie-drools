@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 
+import org.kie.KieBase;
 import org.kie.KnowledgeBase;
 import org.kie.definition.process.Process;
 import org.kie.runtime.KnowledgeRuntime;
@@ -56,14 +57,14 @@ public final class StartProcessHelper {
         return kruntime.startProcess(processId, parameters);
     }
 
-	public static String findLatestProcessByName(KnowledgeBase kbase, final String processName) {
+	public static String findLatestProcessByName(KieBase kbase, final String processName) {
         if (kbase == null) {
             return null;
         }
         return findLatestProcessByName(kbase.getProcesses(), processName);
     }
 	
-	public static String findLatestProcessByName(KnowledgeBase kbase, final String processName, Comparator<Process> comparator) {
+	public static String findLatestProcessByName(KieBase kbase, final String processName, Comparator<Process> comparator) {
         if (kbase == null) {
             return null;
         }
