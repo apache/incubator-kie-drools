@@ -10,9 +10,9 @@ public interface KieSessionModel {
 
     KieSessionModel setName(String name);
 
-    String getType();
+    KieSessionType getType();
 
-    KieSessionModel setType(String type);
+    KieSessionModel setType(KieSessionType type);
 
     ClockTypeOption getClockType();
 
@@ -26,7 +26,11 @@ public interface KieSessionModel {
 
     List<WorkItemHandlerModel> getWorkItemHandelerModels();
     
+    KieSessionModel setScope(String scope);
+    
+    String getScope();    
+    
     public static enum KieSessionType {
-        Stateful, Statless;
+        STATEFUL, STATELESS;
     }
 }

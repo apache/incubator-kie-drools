@@ -6,7 +6,7 @@ public interface KieRepository {
     
     public GAV getDefaultGAV();
     
-    void addKieModule(KieModule kjar);
+    void addKieModule(KieModule kModule);
     
     KieModule addKieModule(Resource resource, Resource... dependencies);    
 
