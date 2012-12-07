@@ -35,4 +35,8 @@ public interface KieBaseModel {
     EventProcessingOption getEventProcessingMode();
 
     KieBaseModel setEventProcessingMode(EventProcessingOption eventProcessingMode);
+    
+    KieBaseModel setScope(String scope);
+    
+    String getScope();
 }
