@@ -11,6 +11,7 @@ import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.Results;
+import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
@@ -103,7 +104,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .addPackage("org.pkg1");
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
-                .setType( "stateful" )
+                .setType( KieSessionType.STATEFUL )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         return kproj;

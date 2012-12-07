@@ -10,6 +10,7 @@ import org.kie.builder.KieSessionModel;
 import org.kie.builder.ListenerModel;
 import org.kie.builder.QualifierModel;
 import org.kie.builder.WorkItemHandlerModel;
+import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;
@@ -34,7 +35,7 @@ public class KieModuleModelTest {
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
-                .setType("stateful")
+                .setType(KieSessionType.STATEFUL)
                 .setClockType( ClockTypeOption.get("realtime") );
 
         ksession1.newListenerModel("org.domain.FirstInterface", ListenerModel.Kind.AGENDA_EVENT_LISTENER);

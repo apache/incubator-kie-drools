@@ -17,6 +17,7 @@ import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -220,7 +221,7 @@ public class ChangeSetBuilderTest {
                 .addPackage("org.pkg1");
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
-                .setType( "stateful" )
+                .setType( KieSessionType.STATEFUL )
                 .setClockType( ClockTypeOption.get("realtime") );
 
         return kproj;
