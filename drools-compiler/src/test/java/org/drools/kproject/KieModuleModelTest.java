@@ -74,7 +74,7 @@ public class KieModuleModelTest {
 
         KieSessionModel kieSessionModelXML = kieBaseModelXML.getKieSessionModels().get("KSession1");
         assertSame(kieBaseModelXML, ((KieSessionModelImpl)kieSessionModelXML).getKieBaseModel());
-        assertEquals("stateful", kieSessionModelXML.getType());
+        assertEquals("STATEFUL", kieSessionModelXML.getType());
         assertEquals(ClockTypeOption.get("realtime"), kieSessionModelXML.getClockType());
 
         List<ListenerModel> listeners = kieSessionModelXML.getListenerModels();

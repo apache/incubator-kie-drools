@@ -2,6 +2,7 @@ package org.drools.cdi;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.KieBase;
@@ -10,6 +11,7 @@ import org.kie.cdi.KBase;
 import static org.junit.Assert.*;
 
 @RunWith(CDITestRunner.class)
+@Ignore
 public class KieBaseInjectionTest {
 
 //    @Inject @KBase("org.kie.kbase1" )
