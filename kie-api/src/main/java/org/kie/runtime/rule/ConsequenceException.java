@@ -49,7 +49,7 @@ public class ConsequenceException extends RuntimeException {
         return sb.toString();
     }
     
-    public Match getActivation() {
+    public Match getMatch() {
         return this.activation;
     }
 

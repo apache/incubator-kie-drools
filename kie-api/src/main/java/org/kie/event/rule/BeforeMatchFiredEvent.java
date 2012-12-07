@@ -17,13 +17,8 @@
 package org.kie.event.rule;
 
 
-import org.kie.event.KnowledgeRuntimeEvent;
-import org.kie.runtime.rule.Match;
-
-public interface ActivationEvent
+public interface BeforeMatchFiredEvent
     extends
-    KnowledgeRuntimeEvent {
-
-    public Match getActivation();
+    MatchEvent {
 
 }

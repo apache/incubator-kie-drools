@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
+package org.kie.event.kiebase;
+
 
 import org.kie.definition.KnowledgePackage;
 
-
-public interface BeforeKnowledgePackageRemovedEvent
+public interface AfterKnowledgePackageRemovedEvent
     extends
-    KnowledgeBaseEvent {
-    KnowledgePackage getKnowledgePackage();
+    KieBaseEvent {
+    public KnowledgePackage getKnowledgePackage();
 }

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
+package org.kie.event.rule;
 
-import org.kie.definition.process.Process;
 
-public interface AfterProcessRemovedEvent
+public interface AfterMatchFiredEvent
     extends
-    KnowledgeBaseEvent {
-    Process getProcess();
+    MatchEvent {
+
 }

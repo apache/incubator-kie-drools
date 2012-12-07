@@ -8,14 +8,14 @@ import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
-import org.kie.event.knowledgebase.KnowledgeBaseEventManager;
+import org.kie.event.kiebase.KieBaseEventManager;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 
 
-public interface KieBase extends KnowledgeBaseEventManager {
+public interface KieBase extends KieBaseEventManager {
 
     /**
      * Return an immutable collection of the packages that exist in this KnowledgeBase.

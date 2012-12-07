@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
+package org.kie.event.kiebase;
 
 import java.util.Collection;
 
-public interface KnowledgeBaseEventManager {
+public interface KieBaseEventManager {
     /**
      * Add an event listener.
      * 
      * @param listener
      *            The listener to add.
      */
-    public void addEventListener(KnowledgeBaseEventListener listener);
+    public void addEventListener(KieBaseEventListener listener);
 
     /**
      * Remove an event listener.
@@ -33,12 +33,12 @@ public interface KnowledgeBaseEventManager {
      * @param listener
      *            The listener to remove.
      */
-    public void removeEventListener(KnowledgeBaseEventListener listener);
+    public void removeEventListener(KieBaseEventListener listener);
 
     /**
      * Returns all event listeners.
      * 
      * @return listeners The listeners.
      */
-    public Collection<KnowledgeBaseEventListener> getKnowledgeBaseEventListeners();
+    public Collection<KieBaseEventListener> getKnowledgeBaseEventListeners();
 }

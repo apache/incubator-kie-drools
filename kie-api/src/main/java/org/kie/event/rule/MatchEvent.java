@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
-
-import org.kie.definition.rule.Rule;
+package org.kie.event.rule;
 
 
-public interface BeforeRuleRemovedEvent
+import org.kie.event.KnowledgeRuntimeEvent;
+import org.kie.runtime.rule.Match;
+
+public interface MatchEvent
     extends
-    KnowledgeBaseEvent {
-    Rule getRule();
+    KnowledgeRuntimeEvent {
+
+    public Match getMatch();
+
 }

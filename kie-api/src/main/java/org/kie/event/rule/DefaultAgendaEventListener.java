@@ -20,15 +20,15 @@ public class DefaultAgendaEventListener
     implements
     AgendaEventListener {
 
-    public void activationCancelled(ActivationCancelledEvent event) {
+    public void activationCancelled(MatchCancelledEvent event) {
         // intentionally left blank
     }
 
-    public void activationCreated(ActivationCreatedEvent event) {
+    public void activationCreated(MatchCreatedEvent event) {
         // intentionally left blank
     }
 
-    public void afterActivationFired(AfterActivationFiredEvent event) {
+    public void afterActivationFired(AfterMatchFiredEvent event) {
         // intentionally left blank
     }
 
@@ -40,7 +40,7 @@ public class DefaultAgendaEventListener
         // intentionally left blank
     }
 
-    public void beforeActivationFired(BeforeActivationFiredEvent event) {
+    public void beforeActivationFired(BeforeMatchFiredEvent event) {
         // intentionally left blank
     }
 

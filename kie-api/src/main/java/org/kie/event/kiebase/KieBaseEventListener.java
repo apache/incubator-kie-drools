@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
+package org.kie.event.kiebase;
 
 import java.util.EventListener;
 
-public interface KnowledgeBaseEventListener
+public interface KieBaseEventListener
     extends
     EventListener {
     /**
@@ -49,25 +49,25 @@ public interface KnowledgeBaseEventListener
      * Method called before a knowledge base is locked
      * @param event
      */
-    void beforeKnowledgeBaseLocked(BeforeKnowledgeBaseLockedEvent event);
+    void beforeKnowledgeBaseLocked(BeforeKieBaseLockedEvent event);
 
     /**
      * Method called after a knowledge base is locked
      * @param event
      */
-    void afterKnowledgeBaseLocked(AfterKnowledgeBaseLockedEvent event);
+    void afterKnowledgeBaseLocked(AfterKieBaseLockedEvent event);
 
     /**
      * Method called before a knowledge base is unlocked
      * @param event
      */
-    void beforeKnowledgeBaseUnlocked(BeforeKnowledgeBaseUnlockedEvent event);
+    void beforeKnowledgeBaseUnlocked(BeforeKieBaseUnlockedEvent event);
 
     /**
      * Method called after a knowledge base is unlocked
      * @param event
      */
-    void afterKnowledgeBaseUnlocked(AfterKnowledgeBaseUnlockedEvent event);
+    void afterKnowledgeBaseUnlocked(AfterKieBaseUnlockedEvent event);
 
     /**
      * Method called before a new rule is added to the knowledge base

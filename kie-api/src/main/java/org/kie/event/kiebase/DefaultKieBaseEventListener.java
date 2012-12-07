@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
+package org.kie.event.kiebase;
 
-public class DefaultKnowledgeBaseEventListener
+public class DefaultKieBaseEventListener
     implements
-    KnowledgeBaseEventListener {
+    KieBaseEventListener {
 
     public void afterFunctionRemoved(AfterFunctionRemovedEvent event) {
         // intentionally left blank
     }
 
-    public void afterKnowledgeBaseLocked(AfterKnowledgeBaseLockedEvent event) {
+    public void afterKnowledgeBaseLocked(AfterKieBaseLockedEvent event) {
         // intentionally left blank
     }
 
-    public void afterKnowledgeBaseUnlocked(AfterKnowledgeBaseUnlockedEvent event) {
+    public void afterKnowledgeBaseUnlocked(AfterKieBaseUnlockedEvent event) {
         // intentionally left blank
     }
 
@@ -52,11 +52,11 @@ public class DefaultKnowledgeBaseEventListener
         // intentionally left blank
     }
 
-    public void beforeKnowledgeBaseLocked(BeforeKnowledgeBaseLockedEvent event) {
+    public void beforeKnowledgeBaseLocked(BeforeKieBaseLockedEvent event) {
         // intentionally left blank
     }
 
-    public void beforeKnowledgeBaseUnlocked(BeforeKnowledgeBaseUnlockedEvent event) {
+    public void beforeKnowledgeBaseUnlocked(BeforeKieBaseUnlockedEvent event) {
         // intentionally left blank
     }
 
