@@ -21,20 +21,27 @@ import java.util.List;
 import java.util.Map;
 import org.droolsjbpm.services.api.Domain;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.runtime.process.WorkItemHandler;
 
 /**
  *
  * @author salaboy
  */
 public class SimpleDomainImpl implements Domain{
+    
+    private Long id;
+    
     private String name;
-     // Asset Name / Assets Definition Path 
+    
+    // Asset Name / Assets Definition Path 
     private Map<String, String> assetsDefs = new HashMap<String, String>();
     
     // Ksession Name / List of assets Paths
     private Map<String, List<Path>> ksessionAssets = new HashMap<String, List<Path>>();
     
+    // Process Id (String) / Process Content.. (?? this is really needed??)
+    private Map<String, Map<String,String>> processes = new HashMap<String, Map<String,String>>();
+    
+    private Long parentId;
     
     public SimpleDomainImpl() {
     }
@@ -43,6 +50,29 @@ public class SimpleDomainImpl implements Domain{
         this.name = name;
         
     }
+
+    public SimpleDomainImpl(String name, long parentId) {
+        this.name = name;
+        this.parentId = parentId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
+    }
+
+    
     
     @Override
     public void setName(String name) {
@@ -67,24 +97,46 @@ public class SimpleDomainImpl implements Domain{
     }
 
     
+    @Override
     public Map<String, List<Path>> getKsessionAssets() {
         return ksessionAssets;
     }
 
+    @Override
     public void setKsessionAssets(Map<String, List<Path>> ksessionAssets) {
         this.ksessionAssets = ksessionAssets;
     }
     
+    @Override
     public void addKsessionAsset(String ksession, Path path){
         if(this.ksessionAssets.get(ksession) == null){
             this.ksessionAssets.put(ksession, new ArrayList<Path>());
         }
         this.ksessionAssets.get(ksession).add(path);
+        
     }
 
-  
-    
-    
-    
+    @Override
+    public void addProcessToKsession(String sessionName, String processId, String bpmn2Content) {
+        if(processes.get(sessionName) == null){
+            processes.put(sessionName, new HashMap<String, String>());
+        }
+        processes.get(sessionName).put(processId, bpmn2Content);
+    }
+
+    @Override
+    public Map<String, String> getAllProcesses() {
+        Map<String, String> allProcesses = new HashMap<String, String>();
+        for(String sessionName : processes.keySet()){
+            allProcesses.putAll(processes.get(sessionName));
+        }
+        return allProcesses;
+    }
+
+    @Override
+    public Map<String, String> getProcessesBySession(String ksessionName) {
+        return processes.get(ksessionName);
+    }
+
  
 }

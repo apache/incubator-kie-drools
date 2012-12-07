@@ -24,24 +24,18 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.droolsjbpm.services.api.Domain;
 
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
+import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.NotImplementedException;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.io.ResourceFactory;
-import org.kie.io.ResourceType;
-import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
@@ -51,124 +45,97 @@ import org.kie.runtime.StatefulKnowledgeSession;
 public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
     private Map<String, StatefulKnowledgeSession> ksessions = new HashMap<String, StatefulKnowledgeSession>();
-
     @Inject
     private CDIHTWorkItemHandler handler;
-
     @Inject
     private CDIProcessEventListener processListener;
-
     @Inject
     private CDIKbaseEventListener kbaseEventListener;
-
     @Inject
     private BPMN2DataService bpmn2Service;
-
     @Inject
     private FileService fs;
-
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    private Map<String, String> availableProcesses = new HashMap<String, String>();
-
-    private long   id;
-    private String domainName;
-    private long   parentId;
+    
+    @Inject
+    private SessionManager sessionManager;
+    
+    private Domain domain;
+    
 
     public KnowledgeDomainServiceImpl() {
-        this.id = 0;
-        this.domainName = "My Business Unit";
+        domain = new SimpleDomainImpl("myDomain");
+
     }
 
     @PostConstruct
     public void createDomain() {
+        sessionManager.setDomain(domain);
 
-        kbaseEventListener.setDomainName( domainName );
-        processListener.setDomainName( domainName );
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Iterable<Path> loadFilesByType = null;
+        Iterable<Path> releaseFiles = null;
+        Iterable<Path> exampleFiles = null;
         try {
-            loadFilesByType = fs.loadFilesByType( "examples/general/", "bpmn" );
-        } catch ( FileException ex ) {
-            Logger.getLogger( KnowledgeDomainServiceImpl.class.getName() ).log( Level.SEVERE, null, ex );
+            releaseFiles = fs.loadFilesByType("examples/release/", "bpmn");
+            exampleFiles = fs.loadFilesByType("examples/general/", "bpmn");
+        } catch (FileException ex) {
+            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        for ( Path p : loadFilesByType ) {
-            System.out.println( " >>>>>>>>>>>>>>>>>>>>>>>>>>> Loading -> " + p.toString() );
+        for (Path p : releaseFiles) {
+            String kSessionName = "releaseSession";
+            domain.addKsessionAsset(kSessionName, p);
+            
+            // TODO automate this in another service
             String processString = new String( ioService.readAllBytes( p ) );
-            availableProcesses.put( bpmn2Service.findProcessId( processString ), processString );
-            kbuilder.add( ResourceFactory.newByteArrayResource( ioService.readAllBytes( p ) ), ResourceType.BPMN2 );
+            domain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+        }
+        for (Path p : exampleFiles) {
+            String kSessionName = "generalSession";
+            domain.addKsessionAsset("generalSession", p);
+            // TODO automate this in another service
+            String processString = new String( ioService.readAllBytes( p ) );
+            domain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addEventListener( kbaseEventListener );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        sessionManager.buildSessions();
 
-        ksession.addEventListener( processListener );
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger( ksession );
+//        sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
+//        sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
+//        sessionManager.addKsessionHandler("myKsession", "TriggerTests", new DoNothingWorkItemHandler());
+//        sessionManager.addKsessionHandler("myKsession", "MoveBackToStaging", new DoNothingWorkItemHandler());
+//        sessionManager.addKsessionHandler("myKsession", "MoveToProduction", new DoNothingWorkItemHandler());
+//        sessionManager.addKsessionHandler("myKsession", "ApplyChangestoRuntimes", new DoNothingWorkItemHandler());
+//        sessionManager.addKsessionHandler("myKsession", "Email", new DoNothingWorkItemHandler());
 
-        handler.setSession( ksession );
-        handler.init();
-        ksession.getWorkItemManager().registerWorkItemHandler( "Human Task", handler );
-
-        ksessions.put( "default", ksession );
+        sessionManager.registerHandlersForSession("releaseSession");
+         
 
     }
 
-    public void registerSession( String businessKey,
-                                 StatefulKnowledgeSession ksession ) {
-        ksessions.put( businessKey, ksession );
-    }
-
-    public StatefulKnowledgeSession getSession( long sessionId ) {
-        throw new NotImplementedException();
-    }
-
-    public StatefulKnowledgeSession getSessionByBusinessKey( String businessKey ) {
-        return ksessions.get( businessKey );
-    }
-
-    public Collection<StatefulKnowledgeSession> getSessions() {
-        return ksessions.values();
-    }
-
+    @Override
     public Collection<String> getSessionsNames() {
-        return ksessions.keySet();
+        return sessionManager.getAllSessionsNames();
     }
 
+    @Override
     public int getAmountOfSessions() {
-        return ksessions.size();
+        return sessionManager.getAllSessionsNames().size();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId( Long id ) {
-        this.id = id;
-    }
-
-    public String getDomainName() {
-        return domainName;
-    }
-
-    public void setDomainName( String domainName ) {
-        this.domainName = domainName;
-    }
-
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId( Long parentId ) {
-        this.parentId = parentId;
-    }
-
+    @Override
     public Map<String, String> getAvailableProcesses() {
-        return availableProcesses;
+        return domain.getAllProcesses();
     }
 
+    @Override
+    public StatefulKnowledgeSession getSessionByName(String ksessionName) {
+        return sessionManager.getKsessionByName(ksessionName);
+        
+    }
+
+    public String getProcessInSessionByName(String processDefId){
+        return sessionManager.getProcessInSessionByName(processDefId);
+    }
+    
 }

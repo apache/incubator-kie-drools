@@ -25,31 +25,15 @@ import org.kie.runtime.StatefulKnowledgeSession;
  */
 public interface KnowledgeDomainService {
 
-    void registerSession(String businessKey, StatefulKnowledgeSession ksession);
-
-    StatefulKnowledgeSession getSession(long sessionId);
-
-    StatefulKnowledgeSession getSessionByBusinessKey(String businessKey);
-
-    Collection<StatefulKnowledgeSession> getSessions();
-
     int getAmountOfSessions();
 
     Collection<String> getSessionsNames();
-    
-    Long getId();
 
-    void setId(Long id);
-
-    String getDomainName();
-
-    void setDomainName(String domainName);
-
-    Long getParentId();
-
-    void setParentId(Long parentId);
-    
     Map<String, String> getAvailableProcesses();
-    
+
     void createDomain();
+    
+    StatefulKnowledgeSession getSessionByName(String ksessionName);
+    
+    String getProcessInSessionByName(String processDefId);
 }
