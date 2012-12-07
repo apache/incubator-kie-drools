@@ -24,7 +24,7 @@ import java.util.Collection;
  * interface instead of <code>WorkingMemory</code> interface, specially because of the <code>dispose()</code> method
  * that is only available in the <code>StatefulKnowledgeSession</code> interface.  
  * 
- * @see org.kie.runtime.StatefulKnowledgeSession 
+ * @see org.kie.runtime.KieSession 
  */
 public interface WorkingMemory
     extends

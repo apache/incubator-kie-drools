@@ -18,7 +18,7 @@ package org.kie.runtime;
 
 import java.util.Map;
 
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 import org.kie.event.KnowledgeRuntimeEventManager;
 import org.kie.runtime.process.ProcessRuntime;
 import org.kie.runtime.rule.WorkingMemory;
@@ -57,7 +57,7 @@ public interface KnowledgeRuntime
      * 
      * @return
      */
-    KnowledgeBase getKnowledgeBase();
+    KieBase getKnowledgeBase();
 
     void registerChannel(String name,
                          Channel channel);

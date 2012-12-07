@@ -16,9 +16,9 @@
 
 package org.kie.event.knowledgebase;
 
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 
 
 public interface KnowledgeBaseEvent {
-    public KnowledgeBase getKnowledgeBase();
+    public KieBase getKnowledgeBase();
 }

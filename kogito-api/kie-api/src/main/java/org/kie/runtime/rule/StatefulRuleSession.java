@@ -21,7 +21,7 @@ package org.kie.runtime.rule;
  * An interface for all <code>StatefulRuleSession</code> methods. This interface
  * adds methods available to the StatefulKnowledgeSession beyond what the WorkingMemory provides. 
  * 
- * @see org.kie.runtime.StatefulKnowledgeSession 
+ * @see org.kie.runtime.KieSession 
  */
 public interface StatefulRuleSession {
     

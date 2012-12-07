@@ -16,11 +16,11 @@
 
 package org.kie.event.knowledgebase;
 
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 
 
 public interface BeforeKnowledgeBaseUnlockedEvent
     extends
     KnowledgeBaseEvent {
-    KnowledgeBase getKnowledgeBase();
+    KieBase getKnowledgeBase();
 }

@@ -16,7 +16,7 @@
 
 package org.kie.marshalling;
 
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 import org.kie.util.ServiceRegistryImpl;
 
 
@@ -100,11 +100,11 @@ public class MarshallerFactory {
      * Default uses the serialise marshalling strategy.
      * @return
      */
-    public static Marshaller newMarshaller(KnowledgeBase kbase) {
+    public static Marshaller newMarshaller(KieBase kbase) {
         return getMarshallerProvider().newMarshaller( kbase );
     }
 
-    public static Marshaller newMarshaller(KnowledgeBase kbase,
+    public static Marshaller newMarshaller(KieBase kbase,
                                            ObjectMarshallingStrategy[] strategies) {
         return getMarshallerProvider().newMarshaller( kbase,
                                                       strategies );
