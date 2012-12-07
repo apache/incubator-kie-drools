@@ -321,7 +321,7 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
     public void evaluate(org.drools.spi.KnowledgeHelper knowledgeHelper,
                          org.drools.WorkingMemory workingMemory) throws Exception {
         org.drools.spi.Tuple tuple = knowledgeHelper.getTuple();
-        org.drools.rule.Declaration[] declarations = ((org.drools.reteoo.RuleTerminalNode)knowledgeHelper.getActivation().getTuple().getLeftTupleSink()).getDeclarations(); 
+        org.drools.rule.Declaration[] declarations = ((org.drools.reteoo.RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getLeftTupleSink()).getDeclarations(); 
 
         @foreach{declr : declarations, index : indexes, notPattern : notPatterns}
           org.drools.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( declarations[@{index} ] );
