@@ -21,6 +21,7 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.command.Context;
 import org.kie.command.World;
 import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;

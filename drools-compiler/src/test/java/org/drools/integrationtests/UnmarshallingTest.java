@@ -19,7 +19,7 @@ import org.kie.conf.EventProcessingOption;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.marshalling.MarshallerFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class UnmarshallingTest {
 
@@ -45,7 +45,7 @@ public class UnmarshallingTest {
         KnowledgeBase knowledgeBase = initializeKnowledgeBase( whenBenNotVilgaxRule );
 
         // Initialize Knowledge session and insert Ben
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        KieSession ksession = knowledgeBase.newStatefulKnowledgeSession();
         ksession.insert( new Ben() );
 
         // Marshall

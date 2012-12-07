@@ -15,6 +15,12 @@
  */
 package org.drools.persistence;
 
+import java.lang.reflect.Constructor;
+import java.util.Collections;
+import java.util.Date;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.command.CommandService;
@@ -40,16 +46,11 @@ import org.kie.command.Command;
 import org.kie.command.Context;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.Date;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 public class SingleSessionCommandService
     implements
@@ -248,8 +249,9 @@ public class SingleSessionCommandService
         ((SessionConfiguration) conf).getTimerJobFactoryManager().setCommandService(this);
 
         // if this.ksession is null, it'll create a new one, else it'll use the existing one
-        this.ksession = this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
-                                                             this.ksession );
+        this.ksession = (StatefulKnowledgeSession) 
+    		this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
+                                                 this.ksession );
 
         // update the session id to be the same as the session info id
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );

@@ -35,12 +35,13 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.drools.spi.GlobalResolver;
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallingConfiguration;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.runtime.Environment;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.time.SessionClock;
@@ -48,14 +49,14 @@ import org.kie.time.SessionClock;
 public class DefaultMarshaller
         implements
         Marshaller {
-    KnowledgeBase                     kbase;
+    KieBase                     kbase;
     GlobalResolver                    globalResolver;
     RuleBaseConfiguration             ruleBaseConfig;
     MarshallingConfiguration          marshallingConfig;
     ObjectMarshallingStrategyStore    strategyStore;
     Map<Integer, TimersInputMarshaller> timerReaders;
 
-    public DefaultMarshaller(KnowledgeBase kbase,
+    public DefaultMarshaller(KieBase kbase,
                              MarshallingConfiguration marshallingConfig) {
         this.kbase = kbase;
         this.ruleBaseConfig = (ruleBaseConfig != null) ? ruleBaseConfig : RuleBaseConfiguration.getDefaultInstance();
@@ -113,7 +114,7 @@ public class DefaultMarshaller
     }
 
     public void unmarshall(final InputStream stream,
-                           final StatefulKnowledgeSession ksession) throws IOException,
+                           final KieSession ksession) throws IOException,
                                                                    ClassNotFoundException {
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
@@ -131,7 +132,7 @@ public class DefaultMarshaller
     }
 
     public void marshall(final OutputStream stream,
-                         final StatefulKnowledgeSession ksession) throws IOException {
+                         final KieSession ksession) throws IOException {
         marshall( stream, ksession, ksession.<SessionClock> getSessionClock().getCurrentTime() );
     }
 
@@ -139,7 +140,7 @@ public class DefaultMarshaller
      * @see org.kie.marshalling.Marshaller#write(java.io.OutputStream, org.kie.common.InternalRuleBase, org.kie.StatefulSession)
      */
     public void marshall(final OutputStream stream,
-                         final StatefulKnowledgeSession ksession,
+                         final KieSession ksession,
                          final long clockTime) throws IOException {
         MarshallerWriteContext context = new MarshallerWriteContext( stream,
                                                                      (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase(),

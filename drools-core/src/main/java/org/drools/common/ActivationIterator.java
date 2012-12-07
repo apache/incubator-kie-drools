@@ -6,7 +6,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
 import org.drools.spi.Activation;
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ActivationIterator
@@ -27,7 +27,7 @@ public class ActivationIterator
     }
 
     private ActivationIterator(InternalWorkingMemory wm,
-                               KnowledgeBase kbase) {
+                               KieBase kbase) {
         this.wm = wm;
 
         nodeIter = TerminalNodeIterator.iterator( kbase );
