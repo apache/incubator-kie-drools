@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
-
-import org.kie.definition.rule.Rule;
+package org.kie.event.rule;
 
 
-public interface BeforeRuleAddedEvent
+public interface MatchCancelledEvent
     extends
-    KnowledgeBaseEvent {
-    Rule getRule();
+    MatchEvent {
+    MatchCancelledCause getCause();
 }

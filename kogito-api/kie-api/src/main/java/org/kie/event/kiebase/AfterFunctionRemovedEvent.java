@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
+package org.kie.event.kiebase;
 
 
-public interface BeforeFunctionRemovedEvent
+public interface AfterFunctionRemovedEvent
     extends
-    KnowledgeBaseEvent {
-    String getFunction();
+    KieBaseEvent {
+    public String getFunction();
 }

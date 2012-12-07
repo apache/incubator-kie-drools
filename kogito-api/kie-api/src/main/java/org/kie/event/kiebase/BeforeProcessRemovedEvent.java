@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.event.rule;
+package org.kie.event.kiebase;
 
+import org.kie.definition.process.Process;
 
-public interface ActivationCancelledEvent
+public interface BeforeProcessRemovedEvent
     extends
-    ActivationEvent {
-    ActivationCancelledCause getCause();
+    KieBaseEvent {
+    Process getProcess();
 }

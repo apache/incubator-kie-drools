@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.event.rule;
+package org.kie.event.kiebase;
 
-public enum ActivationCancelledCause {
-    FILTER, WME_MODIFY, CLEAR;
+import org.kie.KieBase;
+
+
+public interface BeforeKieBaseUnlockedEvent
+    extends
+    KieBaseEvent {
+    KieBase getKnowledgeBase();
 }

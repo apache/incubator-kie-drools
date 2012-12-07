@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
+package org.kie.event.kiebase;
 
-import org.kie.definition.process.Process;
+import org.kie.definition.KnowledgePackage;
 
-public interface AfterProcessAddedEvent
+
+public interface BeforeKnowledgePackageAddedEvent
     extends
-    KnowledgeBaseEvent {
-    Process getProcess();
+    KieBaseEvent {
+    KnowledgePackage getKnowledgePackage();
 }

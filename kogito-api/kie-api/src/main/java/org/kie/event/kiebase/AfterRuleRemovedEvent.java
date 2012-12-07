@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.event.rule;
+package org.kie.event.kiebase;
+
+import org.kie.definition.rule.Rule;
 
 
-public interface AfterActivationFiredEvent
+public interface AfterRuleRemovedEvent
     extends
-    ActivationEvent {
-
+    KieBaseEvent {
+    Rule getRule();
 }

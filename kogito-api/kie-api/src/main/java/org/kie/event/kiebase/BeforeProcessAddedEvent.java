@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
+package org.kie.event.kiebase;
 
 import org.kie.definition.process.Process;
 
-public interface BeforeProcessRemovedEvent
+public interface BeforeProcessAddedEvent
     extends
-    KnowledgeBaseEvent {
+    KieBaseEvent {
     Process getProcess();
 }

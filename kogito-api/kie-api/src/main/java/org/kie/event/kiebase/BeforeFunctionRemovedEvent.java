@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.event.rule;
+package org.kie.event.kiebase;
 
 
-public interface ActivationCreatedEvent
+public interface BeforeFunctionRemovedEvent
     extends
-    ActivationEvent {
-
+    KieBaseEvent {
+    String getFunction();
 }

@@ -33,7 +33,7 @@ public interface RuleContext extends KnowledgeContext {
      * 
      * @return
      */
-    Match getActivation();
+    Match getMatch();
     
     /**
      * Logically inserts a fact into the KnowledgeSession, justified by the current

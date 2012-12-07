@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgebase;
+package org.kie.event.rule;
 
-import org.kie.KieBase;
-
-
-public interface KnowledgeBaseEvent {
-    public KieBase getKnowledgeBase();
+public enum MatchCancelledCause {
+    FILTER, WME_MODIFY, CLEAR;
 }
