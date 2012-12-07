@@ -60,6 +60,7 @@ import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -437,7 +438,7 @@ public class MarshallingTestUtil {
         }
     }
     
-    protected static StatefulKnowledgeSession unmarshallSession(MarshalledData marshalledData) throws Exception { 
+    protected static KieSession unmarshallSession(MarshalledData marshalledData) throws Exception { 
         // Setup marshaller
         KnowledgeBase kbase;
         if( STORE_KNOWLEDGE_BASE ) { 
@@ -457,7 +458,7 @@ public class MarshallingTestUtil {
         Environment env = EnvironmentFactory.newEnvironment();
     
         // Unmarshall
-        StatefulKnowledgeSession ksession = marshaller.unmarshall( bais, conf, env );
+        KieSession ksession = marshaller.unmarshall( bais, conf, env );
         
         return ksession;
     }

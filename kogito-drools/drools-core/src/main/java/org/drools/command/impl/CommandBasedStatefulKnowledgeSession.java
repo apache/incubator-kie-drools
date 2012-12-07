@@ -17,12 +17,10 @@
 package org.drools.command.impl;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.command.CommandService;
-import org.drools.command.ExecuteCommand;
 import org.drools.command.GetSessionClockCommand;
 import org.drools.command.Interceptor;
 import org.drools.command.runtime.AddEventListenerCommand;
@@ -72,7 +70,6 @@ import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.UpdateCommand;
-import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaFilterWrapper;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.EntryPoint;

@@ -75,6 +75,7 @@ import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KieBase;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
@@ -91,6 +92,7 @@ import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.Globals;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
@@ -2461,7 +2463,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
         knowledgeBase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession session = knowledgeBase.newStatefulKnowledgeSession();
+        KieSession session = knowledgeBase.newStatefulKnowledgeSession();
         session.insert( bob );
 
         assertSame( "these two object references should be same",
@@ -2503,7 +2505,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
             KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
             knowledgeBase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
-            StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+            KieSession ksession = knowledgeBase.newStatefulKnowledgeSession();
             ksession.setGlobal( "results",
                                 new ArrayList() );
 
@@ -2627,7 +2629,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
+        KieSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         ksession.insert( new A() );
 
@@ -2775,7 +2777,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
+        KieSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2868,7 +2870,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
+        KieSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2930,7 +2932,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
+        KieSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3014,7 +3016,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
+        KieSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3049,7 +3051,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     @Test
     public void testMarshalWithProtoBuf() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "../test_Serializable.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newStatefulKnowledgeSession();
 
         ksession.setGlobal( "list",
                             new ArrayList() );
@@ -3082,11 +3084,11 @@ public class MarshallingTest extends CommonTestMethodBase {
                       facts.size() );
     }
 
-    private StatefulKnowledgeSession marsallStatefulKnowledgeSession(StatefulKnowledgeSession ksession) throws IOException,
+    private KieSession marsallStatefulKnowledgeSession(KieSession ksession) throws IOException,
                                                                                                        ClassNotFoundException {
         Globals globals = ksession.getGlobals();
 
-        KnowledgeBase kbase = ksession.getKnowledgeBase();
+        KieBase kbase = ksession.getKnowledgeBase();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         MarshallerFactory.newMarshaller( kbase ).marshall( out,
@@ -3104,7 +3106,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     }
 
     private void readWrite(KnowledgeBase knowledgeBase,
-                           StatefulKnowledgeSession ksession,
+                           KieSession ksession,
                            KnowledgeSessionConfiguration config) {
         try {
             Marshaller marshaller = MarshallerFactory.newMarshaller( knowledgeBase );

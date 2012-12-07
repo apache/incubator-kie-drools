@@ -10,6 +10,7 @@ import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 
@@ -17,7 +18,7 @@ public class SessionMarshallingHelper {
 
     private KnowledgeBase                 kbase;
     private KnowledgeSessionConfiguration conf;
-    private StatefulKnowledgeSession      ksession;
+    private KieSession      			  ksession;
     private Marshaller                    marshaller;
     private Environment                   env;
 
@@ -79,8 +80,8 @@ public class SessionMarshallingHelper {
         return baos.toByteArray();
     }
 
-    public StatefulKnowledgeSession loadSnapshot(byte[] bytes,
-                                                 StatefulKnowledgeSession ksession) {
+    public KieSession loadSnapshot(byte[] bytes,
+                                   KieSession ksession) {
         this.ksession = ksession;
         ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
         try {
@@ -100,7 +101,7 @@ public class SessionMarshallingHelper {
     }
 
 
-    public StatefulKnowledgeSession getObject() {
+    public KieSession getObject() {
         return ksession;
     }
 

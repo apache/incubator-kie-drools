@@ -19,8 +19,7 @@ package org.drools.command.runtime.process;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.KieSession;
 
 public class AbortProcessInstanceCommand implements GenericCommand<Object> {
 
@@ -35,7 +34,7 @@ public class AbortProcessInstanceCommand implements GenericCommand<Object> {
     }
 
     public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         if (processInstanceId == null) {
             return null;
         }

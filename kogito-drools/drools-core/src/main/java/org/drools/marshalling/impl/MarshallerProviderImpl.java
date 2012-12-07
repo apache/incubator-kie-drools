@@ -16,11 +16,9 @@
 
 package org.drools.marshalling.impl;
 
-import javax.inject.Singleton;
-
-import org.kie.KnowledgeBase;
-import org.kie.marshalling.Marshaller;
+import org.kie.KieBase;
 import org.kie.marshalling.KieMarshallers;
+import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
 
@@ -48,11 +46,11 @@ public class MarshallerProviderImpl implements KieMarshallers {
         return new SerializablePlaceholderResolverStrategy( acceptor );
     }
     
-    public Marshaller newMarshaller(KnowledgeBase kbase) {
+    public Marshaller newMarshaller(KieBase kbase) {
         return newMarshaller(kbase, null );
     }
     
-    public Marshaller newMarshaller(KnowledgeBase kbase, ObjectMarshallingStrategy[] strategies) {
+    public Marshaller newMarshaller(KieBase kbase, ObjectMarshallingStrategy[] strategies) {
         return new ProtobufMarshaller( kbase , new MarshallingConfigurationImpl( strategies, true, true ) );
     }
     

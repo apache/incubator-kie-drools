@@ -61,7 +61,7 @@ import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -342,7 +342,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
                 Marshaller marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( this ),  new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() }   );
                 
                 Environment environment = EnvironmentFactory.newEnvironment();
-                StatefulKnowledgeSession ksession = marshaller.unmarshall( bais,
+                KieSession ksession = marshaller.unmarshall( bais,
                                                                            conf,
                                                                            environment );
                 session = (StatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session;
