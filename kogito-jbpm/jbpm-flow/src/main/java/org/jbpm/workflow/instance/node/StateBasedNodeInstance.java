@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
-import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.MatchCreatedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.Declaration;
 import org.kie.runtime.KnowledgeRuntime;
@@ -231,10 +231,10 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                 triggerTimer(timerInstance);
             }
     	} else if (type.equals(getActivationType())) {
-            if (event instanceof ActivationCreatedEvent) {
-                String name = ((ActivationCreatedEvent)event).getActivation().getRule().getName();
-                if (checkProcessInstance((Activation) ((ActivationCreatedEvent)event).getActivation())) {
-                    ((ActivationCreatedEvent)event).getKnowledgeRuntime().signalEvent(name, null);
+            if (event instanceof MatchCreatedEvent) {
+                String name = ((MatchCreatedEvent)event).getMatch().getRule().getName();
+                if (checkProcessInstance((Activation) ((MatchCreatedEvent)event).getMatch())) {
+                    ((MatchCreatedEvent)event).getKnowledgeRuntime().signalEvent(name, null);
                 }
             }
         }

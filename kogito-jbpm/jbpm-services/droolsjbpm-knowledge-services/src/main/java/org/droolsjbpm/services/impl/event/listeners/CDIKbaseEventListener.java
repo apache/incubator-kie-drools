@@ -18,36 +18,37 @@ package org.droolsjbpm.services.impl.event.listeners;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import org.kie.event.knowledgebase.AfterFunctionRemovedEvent;
-import org.kie.event.knowledgebase.AfterKnowledgeBaseLockedEvent;
-import org.kie.event.knowledgebase.AfterKnowledgeBaseUnlockedEvent;
-import org.kie.event.knowledgebase.AfterKnowledgePackageAddedEvent;
-import org.kie.event.knowledgebase.AfterKnowledgePackageRemovedEvent;
-import org.kie.event.knowledgebase.AfterProcessAddedEvent;
-import org.kie.event.knowledgebase.AfterProcessRemovedEvent;
-import org.kie.event.knowledgebase.AfterRuleAddedEvent;
-import org.kie.event.knowledgebase.AfterRuleRemovedEvent;
-import org.kie.event.knowledgebase.BeforeFunctionRemovedEvent;
-import org.kie.event.knowledgebase.BeforeKnowledgeBaseLockedEvent;
-import org.kie.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
-import org.kie.event.knowledgebase.BeforeKnowledgePackageAddedEvent;
-import org.kie.event.knowledgebase.BeforeKnowledgePackageRemovedEvent;
-import org.kie.event.knowledgebase.BeforeProcessAddedEvent;
-import org.kie.event.knowledgebase.BeforeProcessRemovedEvent;
-import org.kie.event.knowledgebase.BeforeRuleAddedEvent;
-import org.kie.event.knowledgebase.BeforeRuleRemovedEvent;
-import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
-import org.jboss.seam.transaction.Transactional;
-import org.kie.definition.process.Process;
+
 import org.droolsjbpm.services.impl.bpmn2.ProcessDescriptionRepository;
 import org.droolsjbpm.services.impl.helpers.ProcessDescFactory;
+import org.jboss.seam.transaction.Transactional;
+import org.kie.definition.process.Process;
+import org.kie.event.kiebase.AfterFunctionRemovedEvent;
+import org.kie.event.kiebase.AfterKieBaseLockedEvent;
+import org.kie.event.kiebase.AfterKieBaseUnlockedEvent;
+import org.kie.event.kiebase.AfterKnowledgePackageAddedEvent;
+import org.kie.event.kiebase.AfterKnowledgePackageRemovedEvent;
+import org.kie.event.kiebase.AfterProcessAddedEvent;
+import org.kie.event.kiebase.AfterProcessRemovedEvent;
+import org.kie.event.kiebase.AfterRuleAddedEvent;
+import org.kie.event.kiebase.AfterRuleRemovedEvent;
+import org.kie.event.kiebase.BeforeFunctionRemovedEvent;
+import org.kie.event.kiebase.BeforeKieBaseLockedEvent;
+import org.kie.event.kiebase.BeforeKieBaseUnlockedEvent;
+import org.kie.event.kiebase.BeforeKnowledgePackageAddedEvent;
+import org.kie.event.kiebase.BeforeKnowledgePackageRemovedEvent;
+import org.kie.event.kiebase.BeforeProcessAddedEvent;
+import org.kie.event.kiebase.BeforeProcessRemovedEvent;
+import org.kie.event.kiebase.BeforeRuleAddedEvent;
+import org.kie.event.kiebase.BeforeRuleRemovedEvent;
+import org.kie.event.kiebase.KieBaseEventListener;
 /**
  *
  * @author salaboy
  */
 @Transactional
 @ApplicationScoped
-public class CDIKbaseEventListener implements KnowledgeBaseEventListener{
+public class CDIKbaseEventListener implements KieBaseEventListener{
 
     @Inject
     private EntityManager em; 
@@ -72,19 +73,19 @@ public class CDIKbaseEventListener implements KnowledgeBaseEventListener{
         
     }
 
-    public void beforeKnowledgeBaseLocked(BeforeKnowledgeBaseLockedEvent bkble) {
+    public void beforeKnowledgeBaseLocked(BeforeKieBaseLockedEvent bkble) {
         
     }
 
-    public void afterKnowledgeBaseLocked(AfterKnowledgeBaseLockedEvent akble) {
+    public void afterKnowledgeBaseLocked(AfterKieBaseLockedEvent akble) {
         
     }
 
-    public void beforeKnowledgeBaseUnlocked(BeforeKnowledgeBaseUnlockedEvent bkbue) {
+    public void beforeKnowledgeBaseUnlocked(BeforeKieBaseUnlockedEvent bkbue) {
         
     }
 
-    public void afterKnowledgeBaseUnlocked(AfterKnowledgeBaseUnlockedEvent akbue) {
+    public void afterKnowledgeBaseUnlocked(AfterKieBaseUnlockedEvent akbue) {
         
     }
 

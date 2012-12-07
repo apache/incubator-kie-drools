@@ -15,11 +15,11 @@ import org.kie.definition.process.Node;
 import org.kie.definition.process.Process;
 import org.drools.event.ProcessEventSupport;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.event.knowledgebase.AfterProcessAddedEvent;
-import org.kie.event.knowledgebase.AfterProcessRemovedEvent;
-import org.kie.event.knowledgebase.DefaultKnowledgeBaseEventListener;
+import org.kie.event.kiebase.AfterProcessAddedEvent;
+import org.kie.event.kiebase.AfterProcessRemovedEvent;
+import org.kie.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.event.process.ProcessEventListener;
-import org.kie.event.rule.ActivationCreatedEvent;
+import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.DefaultAgendaEventListener;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.rule.Rule;
@@ -50,7 +50,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	private SignalManager signalManager;
 	private TimerManager timerManager;
 	private ProcessEventSupport processEventSupport;
-	private DefaultKnowledgeBaseEventListener knowledgeBaseListener;
+	private DefaultKieBaseEventListener knowledgeBaseListener;
 
 	public ProcessRuntimeImpl(InternalKnowledgeRuntime kruntime) {
 		this.kruntime = kruntime;
@@ -214,7 +214,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         for ( Process process : kruntime.getKnowledgeBase().getProcesses() ) {
             initProcessEventListener(process);
         }
-        knowledgeBaseListener = new DefaultKnowledgeBaseEventListener() {
+        knowledgeBaseListener = new DefaultKieBaseEventListener() {
         	@Override
         	public void afterProcessAdded(AfterProcessAddedEvent event) {
         		initProcessEventListener(event.getProcess());
@@ -330,12 +330,12 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
     private void initProcessActivationListener() {
     	kruntime.addEventListener(new DefaultAgendaEventListener() {
-			public void activationCreated(ActivationCreatedEvent event) {
-                String ruleFlowGroup = ((Rule) event.getActivation().getRule()).getRuleFlowGroup();
+			public void activationCreated(MatchCreatedEvent event) {
+                String ruleFlowGroup = ((Rule) event.getMatch().getRule()).getRuleFlowGroup();
                 if ( "DROOLS_SYSTEM".equals( ruleFlowGroup ) ) {
                     // new activations of the rule associate with a state node
                     // signal process instances of that state node
-                    String ruleName = event.getActivation().getRule().getName();
+                    String ruleName = event.getMatch().getRule().getName();
                     if ( ruleName.startsWith( "RuleFlowStateNode-" ) || ruleName.startsWith( "RuleFlowStateEvent-" ) ) {
                         int index = ruleName.indexOf( "-",
                                                       18 );

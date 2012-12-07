@@ -30,7 +30,7 @@ import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
-import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
+import org.kie.event.kiebase.KieBaseEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.InternalKnowledgeBase;
 import org.kie.runtime.Environment;
@@ -43,17 +43,17 @@ public class ProcessBaseImpl implements InternalKnowledgeBase {
     
 	private Map<String, Process> processes = new HashMap<String, Process>();
 	private Map<String, KnowledgePackage> packages = new HashMap<String, KnowledgePackage>();
-	private List<KnowledgeBaseEventListener> listeners = new ArrayList<KnowledgeBaseEventListener>();
+	private List<KieBaseEventListener> listeners = new ArrayList<KieBaseEventListener>();
 
-	public void addEventListener(KnowledgeBaseEventListener listener) {
+	public void addEventListener(KieBaseEventListener listener) {
         listeners.add(listener);
     }
 
-    public void removeEventListener(KnowledgeBaseEventListener listener) {
+    public void removeEventListener(KieBaseEventListener listener) {
         listeners.remove(listener);
     }
     
-    public Collection<KnowledgeBaseEventListener> getKnowledgeBaseEventListeners() {
+    public Collection<KieBaseEventListener> getKnowledgeBaseEventListeners() {
         return listeners;
     }
 
