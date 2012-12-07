@@ -97,6 +97,7 @@ public class CDISessionManager implements SessionManager {
         return domain;
     }
     
+    @Override
     public void addKsessionHandler(String ksessionName, String handlerName,  WorkItemHandler handler){
         if(ksessionHandlers.get(ksessionName) == null){
             ksessionHandlers.put(ksessionName, new HashMap<String, WorkItemHandler>());
@@ -104,10 +105,15 @@ public class CDISessionManager implements SessionManager {
         ksessionHandlers.get(ksessionName).put(handlerName, handler);
     }
 
+    @Override
     public void registerHandlersForSession(String ksessionName){
         Map<String, WorkItemHandler> handlers = ksessionHandlers.get(ksessionName);
-        for(String key : handlers.keySet()){
-            ksessions.get(ksessionName).getWorkItemManager().registerWorkItemHandler(key, handlers.get(key));
+        if(handlers != null){
+            for(String key : handlers.keySet()){
+                ksessions.get(ksessionName).getWorkItemManager().registerWorkItemHandler(key, handlers.get(key));
+            }
+        }else{
+            // Log NONE Handler Registered
         }
     }
     

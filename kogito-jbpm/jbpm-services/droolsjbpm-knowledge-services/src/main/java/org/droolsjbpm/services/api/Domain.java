@@ -42,6 +42,10 @@ public interface Domain {
     
     void addKsessionAsset(String ksession, Path path);
 
+    void addProcessToKsession(String ksessionName, String processId, String bpmn2Content);
     
+    Map<String, String> getAllProcesses();
+    
+    Map<String, String> getProcessesBySession(String kSessionName);
     
 }
