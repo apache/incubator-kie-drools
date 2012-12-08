@@ -25,6 +25,7 @@ import org.kie.KieBase;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.builder.impl.ClasspathKieProject;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.builder.impl.KieContainerImpl;
@@ -84,71 +85,7 @@ public class KieCDIExtension
             }
         }
 
-    }
-    
-    public static class KieCDIEntry {
-        private String name;
-        private Class< ? extends Annotation>  scope;
-        
-        public KieCDIEntry(String name,
-                           Class< ? extends Annotation>  scope) {
-            super();
-            this.name = name;
-            this.scope = scope;
-        }
-
-        public KieCDIEntry(String name) {
-            super();
-            this.name = name;
-        }
-        
-        public String getName() {
-            return name;
-        }
-        
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public void setScope(Class< ? extends Annotation> scope) {
-            this.scope = scope;
-        }
-
-        public Class< ? extends Annotation>  getScope() {
-            return scope;
-        }
-        
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
-            result = prime * result + ((scope == null) ? 0 : scope.hashCode());
-            return result;
-        }
-        
-        @Override
-        public boolean equals(java.lang.Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
-            KieCDIEntry other = (KieCDIEntry) obj;
-            if ( name == null ) {
-                if ( other.name != null ) return false;
-            } else if ( !name.equals( other.name ) ) return false;
-            if ( scope == null ) {
-                if ( other.scope != null ) return false;
-            } else if ( !scope.equals( other.scope ) ) return false;
-            return true;
-        }
-        
-        @Override
-        public String toString() {
-            return "KSessionEntry [name=" + name + ", scope=" + scope + "]";
-        }
-        
-        
-    }
+    }    
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd,
                             BeanManager bm) {
@@ -213,10 +150,10 @@ public class KieCDIExtension
                         }
                     }
                     
-                    if ( "stateless".equals( kSessionModel.getType() ) ) {
+                    if ( KieSessionType.STATELESS.equals( kSessionModel.getType() ) ) {
                         if ( log.isDebugEnabled() ) {
                             InternalKieModule kModule = (InternalKieModule) kProject.getKieModuleForKBase( ((KieSessionModelImpl) kSessionModel).getKieBaseModel().getName() );
-                            log.debug( "Added Bean for Stateless @Session({}) from: {}",
+                            log.debug( "Added Bean for Stateless @KSession({}) from: {}",
                                        kSessionName,
                                        kModule.getFile() );
                         }
@@ -225,7 +162,7 @@ public class KieCDIExtension
                                                                 entry.getScope() ) );
                     } else {
                         InternalKieModule kModule = (InternalKieModule) kProject.getKieModuleForKBase( ((KieSessionModelImpl) kSessionModel).getKieBaseModel().getName() );
-                        log.debug( "Added Bean for Stateful @Session({})  from: {}",
+                        log.debug( "Added Bean for Stateful @KSession({})  from: {}",
                                    kSessionName,
                                    kModule.getFile() );
                         abd.addBean( new StatefulKSessionBean( kSessionModel,
@@ -489,4 +426,68 @@ public class KieCDIExtension
             return false;
         }
     }
+    
+    public static class KieCDIEntry {
+        private String name;
+        private Class< ? extends Annotation>  scope;
+        
+        public KieCDIEntry(String name,
+                           Class< ? extends Annotation>  scope) {
+            super();
+            this.name = name;
+            this.scope = scope;
+        }
+
+        public KieCDIEntry(String name) {
+            super();
+            this.name = name;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setScope(Class< ? extends Annotation> scope) {
+            this.scope = scope;
+        }
+
+        public Class< ? extends Annotation>  getScope() {
+            return scope;
+        }
+        
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + ((scope == null) ? 0 : scope.hashCode());
+            return result;
+        }
+        
+        @Override
+        public boolean equals(java.lang.Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            KieCDIEntry other = (KieCDIEntry) obj;
+            if ( name == null ) {
+                if ( other.name != null ) return false;
+            } else if ( !name.equals( other.name ) ) return false;
+            if ( scope == null ) {
+                if ( other.scope != null ) return false;
+            } else if ( !scope.equals( other.scope ) ) return false;
+            return true;
+        }
+        
+        @Override
+        public String toString() {
+            return "KSessionEntry [name=" + name + ", scope=" + scope + "]";
+        }
+        
+        
+    }    
 }
