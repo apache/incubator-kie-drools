@@ -19,12 +19,12 @@ package org.kie.runtime.rule;
 public interface AgendaFilter {
 
     /**
-     * Determine if a given activation should be fired.
+     * Determine if a given match should be fired.
      * 
-     * @param activation
-     *     The Activation that is requested to be fired
+     * @param match
+     *     The match that is requested to be fired
      * @return
-     *     boolean value of "true" accepts the Activation for firing. 
+     *     boolean value of "true" accepts the match for firing. 
      */
-    boolean accept(Match activation);
+    boolean accept(Match match);
 }

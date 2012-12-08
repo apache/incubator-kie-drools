@@ -23,14 +23,14 @@ import org.kie.definition.rule.Rule;
 
 public class ConsequenceException extends RuntimeException {
     private WorkingMemory workingMemory;
-    private Match    activation;    
+    private Match    match;    
 
     public ConsequenceException( final Throwable rootCause,
                                  final WorkingMemory workingMemory,
-                                 final Match activation ){
+                                 final Match match ){
         super( rootCause );
         this.workingMemory = workingMemory;
-        this.activation = activation;
+        this.match = match;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ConsequenceException extends RuntimeException {
         StringBuilder sb = new StringBuilder( "Exception executing consequence for " );
         Rule rule = null;
         
-        if( activation != null && ( rule = activation.getRule() ) != null ){
+        if( match != null && ( rule = match.getRule() ) != null ){
             String packageName = rule.getPackageName();
             String ruleName = rule.getName();
             sb.append( "rule \"" ).append( ruleName ).append( "\" in " ).append( packageName );
@@ -50,11 +50,11 @@ public class ConsequenceException extends RuntimeException {
     }
     
     public Match getMatch() {
-        return this.activation;
+        return this.match;
     }
 
     public Rule getRule() {
-        return this.activation.getRule();
+        return this.match.getRule();
     }
     
     public void printFacts(){
@@ -62,7 +62,7 @@ public class ConsequenceException extends RuntimeException {
     }
 
     public void  printFacts( PrintStream pStream ){
-        Collection< ? extends FactHandle> handles = activation.getFactHandles();
+        Collection< ? extends FactHandle> handles = match.getFactHandles();
         for( FactHandle handle: handles ) {
             Object object = workingMemory.getObject( handle );
             if( object != null ){

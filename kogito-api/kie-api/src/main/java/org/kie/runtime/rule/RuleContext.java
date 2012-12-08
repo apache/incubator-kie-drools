@@ -29,7 +29,7 @@ public interface RuleContext extends KnowledgeContext {
     Rule getRule();
 
     /**
-     * Returns the current Activation for the current context
+     * Returns the current Match for the current context
      * 
      * @return
      */
