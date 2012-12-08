@@ -17,7 +17,7 @@
 package org.kie.runtime.rule;
 
 public interface ConsequenceExceptionHandler {
-    void handleException(Match activation,
+    void handleException(Match match,
                          WorkingMemory workingMemory,
                          Exception exception);
 }

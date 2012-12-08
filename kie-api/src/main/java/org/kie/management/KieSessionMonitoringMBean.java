@@ -22,9 +22,9 @@ import java.util.Map;
 import javax.management.ObjectName;
 
 /**
- * An MBean interface for Knowledge Session monitoring
+ * An MBean interface for Kie Session monitoring
  */
-public interface KnowledgeSessionMonitoringMBean {
+public interface KieSessionMonitoringMBean {
 
     /**
      * Resets all stats
@@ -39,18 +39,18 @@ public interface KnowledgeSessionMonitoringMBean {
     public ObjectName getName();
 
     /**
-     * Returns the associated knowledge base ID
+     * Returns the associated Kie Base ID
      * 
      * @return
      */
-    public String getKnowledgeBaseId();
+    public String getKieBaseId();
 
     /**
-     * Returns the associated knowledge session ID
+     * Returns the associated Kie Session ID
      * 
      * @return
      */
-    public int getKnowledgeSessionId();
+    public int getKieSessionId();
 
     /**
      * Returns the total fact count current loaded into this session
@@ -60,28 +60,28 @@ public interface KnowledgeSessionMonitoringMBean {
     public long getTotalFactCount();
 
     /**
-     * Returns the total number of activations fired in this session since last 
+     * Returns the total number of matches fired in this session since last 
      * reset.
      * 
      * @return
      */
-    public long getTotalActivationsFired();
+    public long getTotalMatchesFired();
 
     /**
-     * Returns the total number of activations cancelled in this session since 
+     * Returns the total number of matches cancelled in this session since 
      * last reset.
      *  
      * @return
      */
-    public long getTotalActivationsCancelled();
+    public long getTotalMatchesCancelled();
 
     /**
-     * Returns the total number of activations created in this session since 
+     * Returns the total number of matches created in this session since 
      * last reset.
      * 
      * @return
      */
-    public long getTotalActivationsCreated();
+    public long getTotalMatchesCreated();
 
     /**
      * Returns the total milliseconds spent firing rules in this session since last reset.
@@ -100,7 +100,7 @@ public interface KnowledgeSessionMonitoringMBean {
 
     /**
      * Returns a formatted String with statistics for a single rule in this session,
-     * like number of activations created, cancelled and fired as well as firing time.
+     * like number of matches created, cancelled and fired as well as firing time.
      *  
      * @param ruleName the name of the rule for which statistics are requested.
      * 

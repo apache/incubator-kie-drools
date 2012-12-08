@@ -26,14 +26,14 @@ package org.kie.runtime.rule;
 public interface StatefulRuleSession {
     
     /**
-     * Fire all Activations on the Agenda.
+     * Fire all Matches on the Agenda.
      * @return
      *     returns the number of rules fired
      */
     int fireAllRules();
 
     /**
-     * Fire Activations on the Agenda up to the given maximum number of activations, before returning
+     * Fire Matches on the Agenda up to the given maximum number of Matches, before returning
      * the control to the application.
      * In case the application wants to continue firing the rules later, from the point where it stopped,
      * it just needs to call <code>fireAllRules()</code> again.
@@ -46,20 +46,20 @@ public interface StatefulRuleSession {
     int fireAllRules(int max);
 
     /**
-     * Fire all Activations on the Agenda
+     * Fire all Matches on the Agenda
      * 
      * @param agendaFilter
-     *      filters the activations that may fire
+     *      filters the Matches that may fire
      * @return
      *      returns the number of rules fired
      */
     int fireAllRules(AgendaFilter agendaFilter);
 
     /**
-     * Fire all Activations on the Agenda
+     * Fire all Matches on the Agenda
      * 
      * @param agendaFilter
-     *      filters the activations that may fire
+     *      filters the Matches that may fire
      * @param max
      *     the maximum number of rules that should be fired
      * @return
@@ -68,8 +68,8 @@ public interface StatefulRuleSession {
     int fireAllRules(AgendaFilter agendaFilter, int max);
 
     /**
-     * Keeps firing activations until a halt is called. If in a given moment,
-     * there is no activation to fire, it will wait for an activation to be
+     * Keeps firing Matches until a halt is called. If in a given moment,
+     * there is no Match to fire, it will wait for an Match to be
      * added to an active agenda group or rule flow group. This blocks the thread
      * until halt is called.
      * 
@@ -79,13 +79,13 @@ public interface StatefulRuleSession {
     public void fireUntilHalt();
 
     /**
-     * Keeps firing activations until a halt is called. If in a given moment,
-     * there is no activation to fire, it will wait for an activation to be
+     * Keeps firing Matches until a halt is called. If in a given moment,
+     * there is no Match to fire, it will wait for an Match to be
      * added to an active agenda group or rule flow group. This blocks the thread
      * until halt is called.
      * 
      * @param agendaFilter
-     *            filters the activations that may fire
+     *            filters the Matches that may fire
      * 
      * @throws IllegalStateException
      *             if this method is called when running in sequential mode

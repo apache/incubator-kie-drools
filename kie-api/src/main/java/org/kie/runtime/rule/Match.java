@@ -16,20 +16,20 @@ public interface Match {
     /**
      * 
      * @return 
-     *     The PropagationContext that created this Activation
+     *     The PropagationContext that created this Match
      */
     public PropagationContext getPropagationContext();
 
     /**
      * 
      * @return
-     *     The matched FactHandles for this activation
+     *     The matched FactHandles for this Match
      */
     public List< ? extends FactHandle> getFactHandles();
 
     /**
      * Returns the list of objects that make the tuple that created
-     * this activation. The objects are in the proper tuple order.
+     * this Match. The objects are in the proper tuple order.
      * 
      * @return
      */
@@ -37,7 +37,7 @@ public interface Match {
 
     /**
      * Returns the list of declaration identifiers that are bound to the
-     * tuple that created this activation.
+     * tuple that created this Match.
      * 
      * @return
      */
@@ -52,9 +52,9 @@ public interface Match {
     public Object getDeclarationValue(String declarationId);
 
     /**
-     * An Activation is considered active if it is on the agenda and has not yet fired.
-     * Once an Activation has fired it is remove from the Agenda an considered dormant.
-     * However remember that the Activation may still be considered "true", i.e. a full match. 
+     * An Match is considered active if it is on the agenda and has not yet fired.
+     * Once an Match has fired it is remove from the Agenda an considered dormant.
+     * However remember that the Match may still be considered "true", i.e. a full match. 
      * @return
      */
     public boolean isActive();
