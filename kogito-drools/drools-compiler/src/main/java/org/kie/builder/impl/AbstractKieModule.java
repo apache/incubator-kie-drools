@@ -1,5 +1,16 @@
 package org.kie.builder.impl;
 
+import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.InternalKnowledgeBase;
@@ -17,20 +28,12 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static org.kie.builder.impl.KieBuilderImpl.buildKieModule;
-import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
 
 public abstract class AbstractKieModule
     implements
@@ -131,6 +134,7 @@ public abstract class AbstractKieModule
         return createKieBase(( KieBaseModelImpl ) kBaseModel, indexedParts, new Messages() );
     }
     
+    @SuppressWarnings("deprecation")
     static KieBase createKieBase(KieBaseModelImpl kBaseModel,
                                         KieProject indexedParts,
                                         Messages messages) {
@@ -194,9 +198,26 @@ public abstract class AbstractKieModule
                                                             '/' );
         for ( String fileName : kieModule.getFileNames() ) {
             if ( ((KieBaseModelImpl)kieBaseModel).isDefault() || fileName.startsWith( prefixPath ) ) {
-                if ( isKieExtension(fileName) ) {
-                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
-                                   ResourceType.determineResourceType( fileName ) );
+                if ( isKieExtension(fileName) && !fileName.endsWith( ".properties" )) {
+                    ResourceConfiguration conf = null;
+                    if( kieModule.isAvailable( fileName+".properties" ) ) {
+                        // configuration file available
+                        Properties prop = new Properties();
+                        try {
+                            prop.load( new ByteArrayInputStream( kieModule.getBytes(fileName+".properties") ) );
+                        } catch ( IOException e ) {
+                            log.error( "Error loading resource configuration from file: "+fileName+".properties" );
+                        }
+                        conf = ResourceType.fromProperties( prop );
+                    }
+                    if( conf == null ) {
+                        ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
+                                       ResourceType.determineResourceType( fileName ) );
+                    } else {
+                        ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
+                                       ResourceType.determineResourceType( fileName ),
+                                       conf );
+                    }
                     fileCount++;
                 }
             }

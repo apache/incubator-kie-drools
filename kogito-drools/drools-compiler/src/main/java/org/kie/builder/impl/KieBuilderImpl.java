@@ -212,7 +212,7 @@ public class KieBuilderImpl
     }
 
     static boolean isKieExtension(String fileName) {
-        return ResourceType.determineResourceType( fileName ) != null;
+        return (ResourceType.determineResourceType( fileName ) != null || fileName.endsWith( ".properties" ) );
     }
 
     public boolean hasResults(Level... levels) {
