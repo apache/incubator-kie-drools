@@ -28,6 +28,8 @@ public interface FileService {
     
     public void fetchChanges();
 
+    byte[] loadFile(final String file) throws FileException;
+    
     byte[] loadFile(final Path file) throws FileException;
 
     Iterable<Path> loadFilesByType(final String path, final String fileType) throws FileException;

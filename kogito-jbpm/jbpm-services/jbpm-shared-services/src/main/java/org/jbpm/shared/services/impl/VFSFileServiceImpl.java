@@ -72,7 +72,9 @@ public class VFSFileServiceImpl implements FileService {
     }
 
     @Override
-    public byte[] loadFile( final Path file ) throws FileException {
+    public byte[] loadFile( final String path ) throws FileException {
+        Path file = ioService.get( "git://jbpm-playground/" + path );
+        
         checkNotNull( "file", file );
 
         try {
@@ -81,6 +83,21 @@ public class VFSFileServiceImpl implements FileService {
             throw new FileException( ex.getMessage(), ex );
         }
     }
+    
+    @Override
+    public byte[] loadFile( final Path file ) throws FileException {
+        
+        
+        checkNotNull( "file", file );
+
+        try {
+            return ioService.readAllBytes( file );
+        } catch ( IOException ex ) {
+            throw new FileException( ex.getMessage(), ex );
+        }
+    }
+    
+    
 
     @Override
     public Iterable<Path> loadFilesByType( final String path,

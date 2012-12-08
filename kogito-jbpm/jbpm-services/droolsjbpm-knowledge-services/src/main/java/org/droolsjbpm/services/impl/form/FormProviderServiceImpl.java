@@ -41,6 +41,12 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
+import java.io.ByteArrayInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jbpm.shared.services.api.FileException;
+import org.jbpm.shared.services.api.FileService;
+import org.kie.commons.java.nio.file.Path;
 
 @ApplicationScoped
 public class FormProviderServiceImpl implements FormProviderService {
@@ -55,37 +61,63 @@ public class FormProviderServiceImpl implements FormProviderService {
     private BPMN2DataService bpmn2Service;
     @Inject
     private KnowledgeDomainService domainService;
-    
-
+    @Inject
+    private FileService fileService;
     private Map<String /*className*/, List<String>> effectsForItem = new HashMap<String, List<String>>();
     private Map<String /*className*/, List<String>> actionsForItem = new HashMap<String, List<String>>();
 
     public void putEffectsForItem(String className, List<String> effectClassNames) {
         this.effectsForItem.put(className, effectClassNames);
     }
-    
+
     public void putActionsForItem(String className, List<String> actionClassNames) {
         this.actionsForItem.put(className, actionClassNames);
     }
-    
+
     @Override
     public String getFormDisplayProcess(String processId) {
 
-        InputStream template = getClass().getResourceAsStream("/ftl/DefaultProcess.ftl");
+        
+        Iterable<Path> availableForms = null;
+        try {
+            availableForms = fileService.loadFilesByType("forms/", "ftl");
+        } catch (FileException ex) {
+            Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Path selectedForm = null;
+        for (Path p : availableForms) {
+            if (p.getFileName().toString().contains(processId)) {
+                selectedForm = p;
+            }
+        }
+        InputStream template = null;
+        try {
+            if (selectedForm == null) {
+
+                template = new ByteArrayInputStream(fileService.loadFile("forms/DefaultProcess.ftl"));
+
+            } else {
+
+                template = new ByteArrayInputStream(fileService.loadFile(selectedForm));
+
+            }
+        } catch (FileException ex) {
+            Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         String processString = domainService.getAvailableProcesses().get(processId);
         Map<String, String> processData = bpmn2Service.getProcessData(processId);
-        if(processData == null){
-            processData = new HashMap<String,String>();
+        if (processData == null) {
+            processData = new HashMap<String, String>();
         }
         ProcessDesc processDesc = bpmn2Service.getProcessDesc(processId);
         Map<String, Object> renderContext = new HashMap<String, Object>();
         renderContext.put("process", processDesc);
         renderContext.put("outputs", processData);
         return render(processDesc.getName(), template, renderContext);
-        
+
     }
-    
+
     @Override
     public String getFormDisplayTask(long taskId) {
         Task task = queryService.getTaskInstanceById(taskId);
@@ -97,17 +129,17 @@ public class FormProviderServiceImpl implements FormProviderService {
             Content content = contentService.getContentById(inputContentId);
             input = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         }
-        if(input == null){
+        if (input == null) {
             input = new HashMap<String, String>();
         }
-        
+
         Object output = null;
         long outputContentId = task.getTaskData().getOutputContentId();
         if (outputContentId != -1) {
             Content content = contentService.getContentById(outputContentId);
             output = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         }
-        if(output == null){
+        if (output == null) {
             output = new HashMap<String, String>();
         }
 
@@ -119,31 +151,55 @@ public class FormProviderServiceImpl implements FormProviderService {
                 name = text.getText();
             }
         }
+        Iterable<Path> availableForms = null;
+        try {
+            availableForms = fileService.loadFilesByType("forms/", "ftl");
+        } catch (FileException ex) {
+            Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Path selectedForm = null;
+        for (Path p : availableForms) {
+            if (p.getFileName().toString().contains(task.getNames().get(0).getText())) {
+                selectedForm = p;
+            }
+        }
+        InputStream template = null;
+        try {
+            if (selectedForm == null) {
 
+                template = new ByteArrayInputStream(fileService.loadFile("forms/DefaultTask.ftl"));
 
-        InputStream template = getClass().getResourceAsStream("/ftl/DefaultTask.ftl");
+            } else {
+
+                template = new ByteArrayInputStream(fileService.loadFile(selectedForm));
+
+            }
+        } catch (FileException ex) {
+            Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         String processId = task.getTaskData().getProcessId();
         Map<String, String> taskOutputMappings = null;
         if (processId != null && !processId.equals("")) {
-            
+
             taskOutputMappings = bpmn2Service.getTaskOutputMappings(processId, task.getNames().iterator().next().getText());
-            
+
         }
-        if(taskOutputMappings == null){
-             taskOutputMappings = new HashMap<String, String>();
+        if (taskOutputMappings == null) {
+            taskOutputMappings = new HashMap<String, String>();
         }
-        
+
         // I need to replace the value that comes from the 
         //process mappings with the value that can be stored in the output Content
         Map<String, String> finalOutput = new HashMap<String, String>();
-        for(String key: taskOutputMappings.values()){
-            String value = ((Map<String, String>)output).get(key);
-            if(value == null){
+        for (String key : taskOutputMappings.values()) {
+            String value = ((Map<String, String>) output).get(key);
+            if (value == null) {
                 value = "";
             }
             finalOutput.put(key, value);
         }
-        
+
 
         // merge template with process variables
         Map<String, Object> renderContext = new HashMap<String, Object>();
@@ -155,7 +211,6 @@ public class FormProviderServiceImpl implements FormProviderService {
 
 
     }
-   
 
     public String render(String name, InputStream src, Map<String, Object> renderContext) {
         String str = null;
@@ -174,7 +229,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         }
         return str;
     }
-    
+
 //    @Override
 //    public FormRepresentation getAssociatedForm(String processName, String taskName) {
 //    	try {
@@ -195,7 +250,6 @@ public class FormProviderServiceImpl implements FormProviderService {
 //    		throw new RuntimeException("Failed to get associated form for taskName " + taskName, e);
 //    	}
 //    }
-    
 //    @Override
 //    public FormRepresentation createFormFromTask(Map<String,String> inputs, Map<String,String> outputs, TaskDef task) {
 //        FormRepresentation form = new FormRepresentation();
@@ -344,30 +398,27 @@ public class FormProviderServiceImpl implements FormProviderService {
 //        }
 //        return null;
 //    }
-
     protected Map<String, InputData> toInputDataMap(Map<String, String> inputs) {
         Map<String, InputData> retval = new HashMap<String, InputData>();
         if (inputs != null) {
-	        for (String key : inputs.keySet()) {
-	            InputData in = new InputData();
-	            in.setName(key);
-	            retval.put(key, in);
-	        }
-        }
-        return retval;
-    }
-    
-    protected Map<String, OutputData> toOutputDataMap(Map<String, String> outputs) {
-        Map<String, OutputData> retval = new HashMap<String, OutputData>();
-        if (outputs != null) {
-	        for (String key : outputs.keySet()) {
-	            OutputData out = new OutputData();
-	            out.setName(key);
-	            retval.put(key, out);
-	        }
+            for (String key : inputs.keySet()) {
+                InputData in = new InputData();
+                in.setName(key);
+                retval.put(key, in);
+            }
         }
         return retval;
     }
 
-   
+    protected Map<String, OutputData> toOutputDataMap(Map<String, String> outputs) {
+        Map<String, OutputData> retval = new HashMap<String, OutputData>();
+        if (outputs != null) {
+            for (String key : outputs.keySet()) {
+                OutputData out = new OutputData();
+                out.setName(key);
+                retval.put(key, out);
+            }
+        }
+        return retval;
+    }
 }
