@@ -37,20 +37,20 @@ import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.management.KnowledgeSessionMonitoring.AgendaStats.AgendaStatsData;
-import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessInstanceStatsData;
-import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessStatsData;
+import org.drools.management.KieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
+import org.drools.management.KieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
+import org.drools.management.KieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
-import org.kie.management.KnowledgeSessionMonitoringMBean;
+import org.kie.management.KieSessionMonitoringMBean;
 
 /**
  * An MBean to monitor a given knowledge session
  */
-public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBean {
+public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
 
     private static final String KSESSION_PREFIX = "org.drools.kbases";
     
@@ -62,7 +62,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
     public AgendaStats agendaStats;
     public ProcessStats processStats;
     
-    public KnowledgeSessionMonitoring(InternalWorkingMemory ksession) {
+    public KieSessionMonitoringImpl(InternalWorkingMemory ksession) {
         this.ksession = ksession;
         this.kbase = (InternalRuleBase) ksession.getRuleBase();
         this.name = DroolsManagementAgent.createObjectName(KSESSION_PREFIX + ":type="+kbase.getId()+",group=Sessions,sessionId=Session-"+ksession.getId());
@@ -107,14 +107,14 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
     /* (non-Javadoc)
      * @see org.drools.management.KnowledgeSessionMonitoringMBean#getKnowledgeBaseId()
      */
-    public String getKnowledgeBaseId() {
+    public String getKieBaseId() {
         return kbase.getId();
     }
     
     /* (non-Javadoc)
      * @see org.drools.management.KnowledgeSessionMonitoringMBean#getKnowledgeSessionId()
      */
-    public int getKnowledgeSessionId() {
+    public int getKieSessionId() {
         return ksession.getId();
     }
 
@@ -126,24 +126,24 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalActivationsFired()
+     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalMatchesFired()
      */
-    public long getTotalActivationsFired() {
-        return this.agendaStats.getConsolidatedStats().activationsFired.get();
+    public long getTotalMatchesFired() {
+        return this.agendaStats.getConsolidatedStats().matchesFired.get();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalActivationsCancelled()
+     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalMatchesCancelled()
      */
-    public long getTotalActivationsCancelled() {
-        return this.agendaStats.getConsolidatedStats().activationsCancelled.get();
+    public long getTotalMatchesCancelled() {
+        return this.agendaStats.getConsolidatedStats().matchesCancelled.get();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalActivationsCreated()
+     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalMatchesCreated()
      */
-    public long getTotalActivationsCreated() {
-        return this.agendaStats.getConsolidatedStats().activationsCreated.get();
+    public long getTotalMatchesCreated() {
+        return this.agendaStats.getConsolidatedStats().matchesCreated.get();
     }
     
     /* (non-Javadoc)
@@ -162,7 +162,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
      * @see org.drools.management.KnowledgeSessionMonitoringMBean#getAverageFiringTime()
      */
     public double getAverageFiringTime() {
-        long fires = this.agendaStats.getConsolidatedStats().activationsFired.get();
+        long fires = this.agendaStats.getConsolidatedStats().matchesFired.get();
         long time = this.agendaStats.getConsolidatedStats().firingTime.get();
         // calculating the average and converting it from nano secs to milli secs
         return fires > 0 ? (((double) time / (double) fires) / (double) NANO_TO_MILLISEC) : 0;
@@ -173,7 +173,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
      */
     public String getStatsForRule( String ruleName ) {
         AgendaStatsData data = this.agendaStats.getRuleStats( ruleName );
-        String result = data == null ? "activationsCreated=0 activationsCancelled=0 activationsFired=0 firingTime=0ms" : data.toString();
+        String result = data == null ? "matchesCreated=0 matchesCancelled=0 matchesFired=0 firingTime=0ms" : data.toString();
         return result;
     }
     
@@ -212,16 +212,16 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
         
         public void activationCancelled(ActivationCancelledEvent event,
                                         WorkingMemory workingMemory) {
-            this.consolidated.activationsCancelled.incrementAndGet();
+            this.consolidated.matchesCancelled.incrementAndGet();
             AgendaStatsData data = getRuleStatsInstance( event.getActivation().getRule().getName() );
-            data.activationsCancelled.incrementAndGet();
+            data.matchesCancelled.incrementAndGet();
         }
 
         public void activationCreated(ActivationCreatedEvent event,
                                       WorkingMemory workingMemory) {
-            this.consolidated.activationsCreated.incrementAndGet();
+            this.consolidated.matchesCreated.incrementAndGet();
             AgendaStatsData data = getRuleStatsInstance( event.getActivation().getRule().getName() );
-            data.activationsCreated.incrementAndGet();
+            data.matchesCreated.incrementAndGet();
         }
 
         public void afterActivationFired(AfterActivationFiredEvent event,
@@ -229,8 +229,8 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             AgendaStatsData data = getRuleStatsInstance( event.getActivation().getRule().getName() );
             this.consolidated.stopFireClock();
             data.stopFireClock();
-            this.consolidated.activationsFired.incrementAndGet();
-            data.activationsFired.incrementAndGet();
+            this.consolidated.matchesFired.incrementAndGet();
+            data.matchesFired.incrementAndGet();
         }
 
         public void agendaGroupPopped(AgendaGroupPoppedEvent event,
@@ -280,20 +280,20 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
         }
 
         public static class AgendaStatsData {
-            public AtomicLong activationsFired;
-            public AtomicLong activationsCreated;
-            public AtomicLong activationsCancelled;
+            public AtomicLong matchesFired;
+            public AtomicLong matchesCreated;
+            public AtomicLong matchesCancelled;
             public AtomicLong firingTime;
 
             public AtomicReference<Date> lastReset;
             
-            // no need for synch, because two activations cannot fire concurrently 
+            // no need for synch, because two matches cannot fire concurrently 
             public long start;
 
             public AgendaStatsData() {
-                this.activationsFired = new AtomicLong(0);
-                this.activationsCreated = new AtomicLong(0);
-                this.activationsCancelled = new AtomicLong(0);
+                this.matchesFired = new AtomicLong(0);
+                this.matchesCreated = new AtomicLong(0);
+                this.matchesCancelled = new AtomicLong(0);
                 this.firingTime = new AtomicLong(0);
                 this.lastReset = new AtomicReference<Date>(new Date());
             }
@@ -307,16 +307,16 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             }
             
             public void reset() {
-                this.activationsFired.set( 0 );
-                this.activationsCreated.set( 0 );
-                this.activationsCancelled.set( 0 );
+                this.matchesFired.set( 0 );
+                this.matchesCreated.set( 0 );
+                this.matchesCancelled.set( 0 );
                 this.firingTime.set( 0 );
                 this.lastReset.set( new Date() );
             }
             
             public String toString() {
-                return "activationsCreated="+activationsCreated.get()+" activationsCancelled="+activationsCancelled.get()+
-                       " activationsFired="+this.activationsFired.get()+" firingTime="+(firingTime.get()/NANO_TO_MILLISEC)+"ms";
+                return "matchesCreated="+matchesCreated.get()+" matchesCancelled="+matchesCancelled.get()+
+                       " matchesFired="+this.matchesFired.get()+" firingTime="+(firingTime.get()/NANO_TO_MILLISEC)+"ms";
             }
         }
     }
