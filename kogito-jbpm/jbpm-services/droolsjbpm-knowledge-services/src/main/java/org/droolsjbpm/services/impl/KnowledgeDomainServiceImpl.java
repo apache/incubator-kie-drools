@@ -37,6 +37,9 @@ import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
 /**
  * @author salaboy
@@ -85,7 +88,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         for (Path p : releaseFiles) {
             String kSessionName = "releaseSession";
             domain.addKsessionAsset(kSessionName, p);
-            
+            System.out.println(" >>> Adding Path to ReleaseSession- > "+p.toString());
             // TODO automate this in another service
             String processString = new String( ioService.readAllBytes( p ) );
             domain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
@@ -93,6 +96,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         for (Path p : exampleFiles) {
             String kSessionName = "generalSession";
             domain.addKsessionAsset("generalSession", p);
+            System.out.println(" >>> Adding Path to GeneralSession - > "+p.toString());
             // TODO automate this in another service
             String processString = new String( ioService.readAllBytes( p ) );
             domain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
@@ -100,13 +104,13 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
         sessionManager.buildSessions();
 
-//        sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
-//        sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
-//        sessionManager.addKsessionHandler("myKsession", "TriggerTests", new DoNothingWorkItemHandler());
-//        sessionManager.addKsessionHandler("myKsession", "MoveBackToStaging", new DoNothingWorkItemHandler());
-//        sessionManager.addKsessionHandler("myKsession", "MoveToProduction", new DoNothingWorkItemHandler());
-//        sessionManager.addKsessionHandler("myKsession", "ApplyChangestoRuntimes", new DoNothingWorkItemHandler());
-//        sessionManager.addKsessionHandler("myKsession", "Email", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "MoveToStagingArea", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "MoveToTest", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "TriggerTests", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "MoveBackToStaging", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "MoveToProduction", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "ApplyChangestoRuntimes", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "Email", new DoNothingWorkItemHandler());
 
         sessionManager.registerHandlersForSession("releaseSession");
          
@@ -136,6 +140,20 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
     public String getProcessInSessionByName(String processDefId){
         return sessionManager.getProcessInSessionByName(processDefId);
+    }
+    
+     private class DoNothingWorkItemHandler implements WorkItemHandler {
+
+        @Override
+        public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
+            String taskName = (String) wi.getParameter("TaskName");
+            System.out.println(">>> Working on: " + taskName + "...");
+            wim.completeWorkItem(wi.getId(), null);
+        }
+
+        @Override
+        public void abortWorkItem(WorkItem wi, WorkItemManager wim) {
+        }
     }
     
 }

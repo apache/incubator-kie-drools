@@ -129,6 +129,7 @@ public class CDISessionManager implements SessionManager {
             for ( Path path : ksessionAssets.get( session ) ) {
                 String processString = new String( ioService.readAllBytes( path ) );
                 addProcessDefinitionToSession( session, bpmn2Service.findProcessId( processString ) );
+                System.out.println(">>>>>>>>>> Adding to KBase - > "+path.toString());
                 kbuilder.add( ResourceFactory.newByteArrayResource( processString.getBytes() ), ResourceType.BPMN2 );
             }
 
@@ -231,7 +232,7 @@ public class CDISessionManager implements SessionManager {
         }
         processDefinitionNamesBySession.get( sessionName ).add( processId );
     }
-
+   
     @Override
     public void removeProcessDefinitionFromSession( String sessionName,
                                                     String processId ) {
