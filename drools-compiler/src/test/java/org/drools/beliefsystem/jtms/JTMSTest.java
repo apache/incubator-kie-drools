@@ -96,7 +96,7 @@ public class JTMSTest {
                 "    final String s = '+' + $n;" +
                 "    final List l = list;" +
                 "    l.add( s );\n" +
-                "    AgendaItem item = ( AgendaItem ) kcontext.getActivation();" +
+                "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" + 
                 "        \n" + 
                 "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm,\n" +
@@ -112,7 +112,7 @@ public class JTMSTest {
                 "    final String s = '-' + $n; \n" +
                 "    final List l = list; \n" +
                 "    l.add( s ); \n" +
-                "    AgendaItem item = ( AgendaItem ) kcontext.getActivation();" +
+                "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" +
                 "        \n" +
                 "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm,\n" +
@@ -385,7 +385,7 @@ public class JTMSTest {
                 "    final String s = '-' + $n; \n" +
                 "    final List l = list; \n" +
                 "    l.add( s ); \n" +
-                "    AgendaItem item = ( AgendaItem ) kcontext.getActivation(); \n" +
+                "    AgendaItem item = ( AgendaItem ) kcontext.getMatch(); \n" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() { \n" + 
                 "        \n" + 
                 "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm, \n" +
