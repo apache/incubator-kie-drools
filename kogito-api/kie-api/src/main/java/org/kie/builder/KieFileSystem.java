@@ -15,6 +15,8 @@ public interface KieFileSystem {
     KieFileSystem write(String path, byte[] content);
     KieFileSystem write(String path, String content);
     KieFileSystem write(String path, Resource resource);
+    
+    KieFileSystem write(Resource resource);
 
     void delete(String... paths);
 
