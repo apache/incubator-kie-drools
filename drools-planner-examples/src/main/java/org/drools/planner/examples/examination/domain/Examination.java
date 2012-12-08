@@ -28,9 +28,10 @@ import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.examination.domain.solver.ExaminationCloner;
 import org.drools.planner.examples.examination.domain.solver.TopicConflict;
 
-@PlanningSolution
+@PlanningSolution(solutionCloner = ExaminationCloner.class)
 @XStreamAlias("Examination")
 public class Examination extends AbstractPersistable implements Solution<HardAndSoftScore> {
 

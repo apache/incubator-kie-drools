@@ -1,5 +1,6 @@
 package org.drools.planner.api.domain.solution.cloner;
 
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.solution.Solution;
 
 /**
@@ -8,7 +9,7 @@ import org.drools.planner.core.solution.Solution;
  * when the original {@link Solution} is already modified.
  * Also used in population based heuristics to increase or repopulate the population.
  */
-public interface SolutionCloner {
+public interface SolutionCloner<SolutionG extends Solution> {
 
     /**
      * The returned {@link Solution} clone must fulfill these requirements:
@@ -24,6 +25,6 @@ public interface SolutionCloner {
      * @param original never null, the original {@link Solution}
      * @return never null, the cloned {@link Solution}
      */
-    <SolutionG extends Solution> SolutionG cloneSolution(SolutionG original);
+     SolutionG cloneSolution(SolutionG original);
 
 }

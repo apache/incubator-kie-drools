@@ -35,7 +35,7 @@ import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.cloner.DefaultSolutionCloner;
+import org.drools.planner.core.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.solution.Solution;
 
@@ -88,7 +88,7 @@ public class SolutionDescriptor {
         if (solutionClonerClass != null) {
             solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
         } else {
-            solutionCloner = new DefaultSolutionCloner();
+            solutionCloner = new FieldAccessingSolutionCloner(this);
         }
     }
 
@@ -129,6 +129,14 @@ public class SolutionDescriptor {
 
     public SolutionCloner getSolutionCloner() {
         return solutionCloner;
+    }
+
+    public Map<String, PropertyDescriptor> getEntityPropertyDescriptorMap() {
+        return entityPropertyDescriptorMap;
+    }
+
+    public Map<String, PropertyDescriptor> getEntityCollectionPropertyDescriptorMap() {
+        return entityCollectionPropertyDescriptorMap;
     }
 
     // ************************************************************************

@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.solution.cloner.DefaultSolutionCloner;
+import org.drools.planner.core.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
@@ -28,6 +28,7 @@ import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
 import org.drools.planner.core.testdata.domain.TestdataChainedSolution;
 import org.drools.planner.core.testdata.domain.TestdataObject;
+import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -62,7 +63,9 @@ public class AbstractScoreDirectorTest {
                 return DefaultSimpleScore.valueOf(-100);
             }
         };
-        TestdataChainedSolution clonedStartingSolution = new DefaultSolutionCloner().cloneSolution(solution);
+        FieldAccessingSolutionCloner<TestdataChainedSolution> cloner
+                = new FieldAccessingSolutionCloner<TestdataChainedSolution>(solutionDescriptor);
+        TestdataChainedSolution clonedStartingSolution = cloner.cloneSolution(solution);
 
         scoreDirector.setWorkingSolution(solution);
         assertEquals(a1, scoreDirector.getTrailingEntity(variableDescriptor, a0));
