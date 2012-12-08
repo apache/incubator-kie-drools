@@ -107,7 +107,7 @@ public class DroolsManagementAgent
     }
 
     public void registerKnowledgeSession(InternalWorkingMemory ksession) {
-        KnowledgeSessionMonitoring mbean = new KnowledgeSessionMonitoring( ksession );
+        KieSessionMonitoringImpl mbean = new KieSessionMonitoringImpl( ksession );
         registerMBean( ksession, 
                        mbean,
                        mbean.getName() );
