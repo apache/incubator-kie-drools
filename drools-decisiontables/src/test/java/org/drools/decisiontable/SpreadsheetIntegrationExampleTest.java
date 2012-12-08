@@ -17,34 +17,25 @@
 package org.drools.decisiontable;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.acme.insurance.launcher.PricingRuleLauncher;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieServices;
-import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.Results;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
-import org.kie.io.ResourceType;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class SpreadsheetIntegrationExampleTest {
-
-    private static final String PATH_PREFIX = "src/main/resources/";
 
     @Test
     public void testExecuteUsingKieAPI() throws Exception {
@@ -73,7 +64,7 @@ public class SpreadsheetIntegrationExampleTest {
         KieServices ks = KieServices.Factory.get();
         KieFactory kf = KieFactory.Factory.get();
         
-        KieFileSystem kfs = kf.newKieFileSystem().write( PATH_PREFIX + dt.getName(), dt );
+        KieFileSystem kfs = kf.newKieFileSystem().write( dt );
         Results results = ks.newKieBuilder( kfs ).build();
         assertTrue( results.getInsertedMessages().isEmpty() );
 
@@ -103,7 +94,7 @@ public class SpreadsheetIntegrationExampleTest {
                       list.get( 0 ) );
     }
     
-    @Test @Ignore
+    @Test 
     public void testNamedWorksheet() throws Exception {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
