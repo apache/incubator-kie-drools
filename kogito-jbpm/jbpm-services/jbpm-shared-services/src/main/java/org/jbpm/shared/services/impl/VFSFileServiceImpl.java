@@ -119,4 +119,35 @@ public class VFSFileServiceImpl implements FileService {
         return ioService;
     }
 
+    @Override
+    public boolean exists(Path file){
+        return ioService.exists(file);
+    }
+    
+    @Override
+    public boolean exists(String file){
+        Path path = ioService.get( "git://jbpm-playground/" + file );
+        return ioService.exists(path);
+    }
+
+    @Override
+    public void move(String source, String dest){
+        
+        checkNotNull( "source", source );
+        checkNotNull( "dest", dest );
+        
+        Path sourcePath = ioService.get( "git://jbpm-playground/" + source );
+        Path targetPath = ioService.get( "git://jbpm-playground/" + dest );
+        ioService.copy(sourcePath, targetPath);
+        ioService.delete(sourcePath);
+    }
+    
+    @Override
+    public Path createDirectory(String path){
+        
+        checkNotNull( "path", path );
+        
+        return ioService.createDirectory(ioService.get( "git://jbpm-playground/" + path));
+    }
+    
 }

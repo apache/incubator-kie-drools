@@ -28,10 +28,18 @@ public interface FileService {
     
     public void fetchChanges();
 
-    byte[] loadFile(final String file) throws FileException;
+    byte[] loadFile(String file) throws FileException;
     
-    byte[] loadFile(final Path file) throws FileException;
+    byte[] loadFile(Path file) throws FileException;
 
     Iterable<Path> loadFilesByType(final String path, final String fileType) throws FileException;
+  
+    boolean exists(Path file);
+    
+    boolean exists(String file);
+    
+    void move(String source, String dest);
+    
+    Path createDirectory(String path);
     
 }
