@@ -108,7 +108,7 @@ public class MoveFileWorkItemHandler implements WorkItemHandler {
 
         
         //convert errors to String
-        StringBuilder errorsString = new StringBuilder();
+        StringBuilder errorsString = new StringBuilder("");
         for (Map.Entry<String,String> entry : errors.entrySet()) {
             if (errorsString.length() != 0){
                 errorsString.append(",");

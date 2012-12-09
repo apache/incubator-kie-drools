@@ -15,6 +15,8 @@
  */
 package org.droolsjbpm.services.wih.test;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+import org.apache.commons.io.IOUtils;
 
 import org.droolsjbpm.services.api.Domain;
 import org.jbpm.shared.services.api.FileException;
@@ -35,11 +38,13 @@ import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.kie.commons.java.nio.file.Path;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkflowProcessInstance;
 
 public abstract class DomainKnowledgeServiceWorkItemsTest {
 
@@ -57,16 +62,28 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
     @Inject
     private MoveFileWorkItemHandler moveFileWorkItemHandler;
 
-    @Test
-    public void testMoveFile() throws FileException {
+    String releasePath;
+    String sourceDir;
+    String targetDir;
+    
+    @Before
+    public void setUp() throws IOException, FileException{
         
-        String releasePath = "examples/releaseDir";
-        String sourceDir = "origin";
-        String targetDir = "stage-"+UUID.randomUUID().toString();
-
+        releasePath = "examples/releaseDir";
+        sourceDir = "origin";
+        targetDir = "stage-"+UUID.randomUUID().toString();
+        
+        this.cleanUp();
+        
         fs.createDirectory(releasePath+"/"+targetDir);
         
-        String files = "file1.txt, file2.txt";
+        OutputStream os = fs.openFile(releasePath+"/"+sourceDir+"/file1.txt");
+        IOUtils.write("Hello World", os); 
+        os.close();
+        
+        os = fs.openFile(releasePath+"/"+sourceDir+"/file2.txt");
+        IOUtils.write("Bye World", os); 
+        os.close();
         
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
@@ -81,19 +98,33 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
             myDomain.addKsessionAsset("myKsession", p);
         }
         
-        Iterable<Path> targetFiles = fs.loadFilesByType(releasePath+"/"+targetDir, "txt");
-        List<String> existingFiles = this.pathIteratorAsStringList(targetFiles.iterator());
-        Assert.assertFalse(existingFiles.contains("file1.txt"));
-        Assert.assertFalse(existingFiles.contains("file2.txt"));
-        
-        
-        
         sessionManager.buildSessions();
 
         sessionManager.addKsessionHandler("myKsession", "MoveFile", moveFileWorkItemHandler);
 
         sessionManager.registerHandlersForSession("myKsession");
-         
+    }
+    
+    @After
+    public void cleanUp(){
+        fs.deleteIfExists(releasePath+"/"+sourceDir+"/file1.txt");
+        fs.deleteIfExists(releasePath+"/"+sourceDir+"/file2.txt");
+        fs.deleteIfExists(releasePath+"/"+targetDir+"/file1.txt");
+        fs.deleteIfExists(releasePath+"/"+targetDir+"/file2.txt");
+    }
+    
+    @Test
+    public void testMoveFile() throws FileException {
+        
+        String files = "file1.txt, file2.txt";
+        
+        //Check that the files don't exist before the process
+        Iterable<Path> targetFiles = fs.loadFilesByType(releasePath+"/"+targetDir, "txt");
+        List<String> existingFiles = this.pathIteratorAsStringList(targetFiles.iterator());
+        Assert.assertFalse(existingFiles.contains("file1.txt"));
+        Assert.assertFalse(existingFiles.contains("file2.txt"));
+
+        //Start the process
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("source", sourceDir);
         params.put("target", targetDir);
@@ -101,14 +132,16 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
         params.put("files", files);
         
         
-        ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("MoveFileWorkItemHandlerTest", params);
+        WorkflowProcessInstance pI = (WorkflowProcessInstance) sessionManager.getKsessionByName("myKsession").startProcess("MoveFileWorkItemHandlerTest", params);
         
-        
+        //The files should be there now
         targetFiles = fs.loadFilesByType(releasePath+"/"+targetDir, "txt");
         existingFiles = this.pathIteratorAsStringList(targetFiles.iterator());
         Assert.assertTrue(existingFiles.contains("file1.txt"));
         Assert.assertTrue(existingFiles.contains("file2.txt"));
         
+        //no errors
+        Assert.assertEquals("", pI.getVariable("errors"));
         
     }
 
