@@ -142,12 +142,15 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         return sessionManager.getProcessInSessionByName(processDefId);
     }
     
-     private class DoNothingWorkItemHandler implements WorkItemHandler {
+    
+    private class DoNothingWorkItemHandler implements WorkItemHandler {
 
         @Override
         public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
-            String taskName = (String) wi.getParameter("TaskName");
-            System.out.println(">>> Working on: " + taskName + "...");
+            for(String k : wi.getParameters().keySet()){
+                System.out.println("Key = "+ k + " - value = "+wi.getParameter(k));
+            }
+            
             wim.completeWorkItem(wi.getId(), null);
         }
 

@@ -33,19 +33,19 @@ import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.AfterTaskSkippedEvent;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  *
  * @author salaboy
  */
-@ApplicationScoped @External
+@ApplicationScoped
+@External
 public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
-    
+
     @Inject
     private TaskServiceEntryPoint taskService;
-    
     private KnowledgeRuntime session;
-    
     private ClassLoader classLoader;
 
     public ExternalTaskEventListener() {
@@ -76,6 +76,7 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
     }
 
     public void processTaskState(Task task) {
+
         long workItemId = task.getTaskData().getWorkItemId();
         if (task.getTaskData().getStatus() == Status.Completed) {
             String userId = task.getTaskData().getActualOwner().getId();
@@ -112,7 +113,7 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
         // DO NOTHING
     }
 
-    public void afterTaskSkippedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskSkippedEvent Task task) {
+    public void afterTaskSkippedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskSkippedEvent Task task) {
         processTaskState(task);
     }
 
@@ -124,11 +125,16 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
         // DO NOTHING
     }
 
-    public void afterTaskCompletedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskCompletedEvent Task task) {
-         processTaskState(task);
+    public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskCompletedEvent Task task) {
+        if (task.getTaskData().getProcessSessionId() == ((StatefulKnowledgeSession) session).getId()) {
+            System.out.println(">> I've recieved an event  for this session" + task.getTaskData().getProcessSessionId() + " - " + ((StatefulKnowledgeSession) session).getId());
+            processTaskState(task);
+        } else {
+            System.out.println(">> I've recieved an event but is not for this session");
+        }
     }
 
-    public void afterTaskFailedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskFailedEvent Task task) {
+    public void afterTaskFailedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskFailedEvent Task task) {
         processTaskState(task);
     }
 
@@ -137,6 +143,6 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
     }
 
     public void afterTaskExitedEvent(Task ti) {
-       // DO NOTHING
+        // DO NOTHING
     }
 }

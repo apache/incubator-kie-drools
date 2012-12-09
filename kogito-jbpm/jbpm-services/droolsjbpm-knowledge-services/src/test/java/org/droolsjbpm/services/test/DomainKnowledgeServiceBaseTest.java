@@ -32,6 +32,7 @@ import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
+import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
@@ -67,6 +68,9 @@ public abstract class DomainKnowledgeServiceBaseTest {
     private FileService fs;
     @Inject
     private SessionManager sessionManager;
+    
+    @Inject
+    private KnowledgeDomainService domainService;
 
     @Test
     public void simpleDomainTest() throws FileException {
@@ -179,6 +183,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
          
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("release_name", "first release ever");
+        params.put("release_path", "/releasePath/");
         
         
         
@@ -225,15 +230,23 @@ public abstract class DomainKnowledgeServiceBaseTest {
         assertEquals(1, ((String)taskContent.get("selected_files")).split(",").length);
         
         params = new HashMap<String, Object>();
-        params.put("selected_files", files);
-        params.put("dueDate", new Date());
-        params.put("confirmed", true);
+        params.put("out_selected_files", files);
+        params.put("out_dueDate", new Date());
+        params.put("out_confirmed", true);
         
         taskService.complete(confirmConfigurationTask.getId(), "salaboy", params);
         
         
         
         
+    }
+    
+    @Test
+    public void knowledgeDomainTest(){
+        Map<String, String> availableProcesses = domainService.getAvailableProcesses();
+        
+        assertNotNull(availableProcesses);
+    
     }
 
     @Test
@@ -519,8 +532,10 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
         @Override
         public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
-            String taskName = (String) wi.getParameter("TaskName");
-            System.out.println(">>> Working on: " + taskName + "...");
+            for(String k : wi.getParameters().keySet()){
+                System.out.println("Key = "+ k + " - value = "+wi.getParameter(k));
+            }
+            
             wim.completeWorkItem(wi.getId(), null);
         }
 
