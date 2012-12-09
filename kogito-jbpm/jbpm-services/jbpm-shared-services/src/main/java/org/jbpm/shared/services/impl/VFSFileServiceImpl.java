@@ -15,6 +15,7 @@
  */
 package org.jbpm.shared.services.impl;
 
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,8 @@ import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Path;
 
 import static org.kie.commons.io.FileSystemType.Bootstrap.*;
+import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
+import org.kie.commons.java.nio.file.OpenOption;
 import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**
@@ -43,7 +46,8 @@ public class VFSFileServiceImpl implements FileService {
     private static final String REPO_PLAYGROUND = "git://jbpm-playground";
     private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
 
-    private final IOService ioService = new IOServiceDotFileImpl();
+    //private final IOService ioService = new IOServiceDotFileImpl();
+    private final IOService ioService = new IOServiceNio2WrapperImpl();
 
     @PostConstruct
     public void init() {
@@ -148,6 +152,22 @@ public class VFSFileServiceImpl implements FileService {
         checkNotNull( "path", path );
         
         return ioService.createDirectory(ioService.get( "git://jbpm-playground/" + path));
+    }
+    
+    @Override
+    public boolean deleteIfExists(String path){
+        
+        checkNotNull( "path", path );
+        
+        return ioService.deleteIfExists(ioService.get( "git://jbpm-playground/" + path ));
+    }
+    
+    @Override
+    public OutputStream openFile(String path){
+        
+        checkNotNull( "path", path );
+        
+        return ioService.newOutputStream(ioService.get( "git://jbpm-playground/" + path ));
     }
     
 }

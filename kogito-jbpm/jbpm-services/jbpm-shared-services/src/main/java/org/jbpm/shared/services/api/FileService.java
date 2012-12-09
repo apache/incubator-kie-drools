@@ -16,6 +16,7 @@
 package org.jbpm.shared.services.api;
 
 
+import java.io.OutputStream;
 import org.kie.commons.java.nio.file.Path;
 
 /**
@@ -41,5 +42,9 @@ public interface FileService {
     void move(String source, String dest);
     
     Path createDirectory(String path);
+    
+    boolean deleteIfExists(String path);
+    
+    OutputStream openFile(String path);
     
 }
