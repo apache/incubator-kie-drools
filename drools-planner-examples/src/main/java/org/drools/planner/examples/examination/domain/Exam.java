@@ -115,6 +115,7 @@ public class Exam extends AbstractPersistable {
         clone.topic = topic;
         clone.period = period;
         clone.room = room;
+        // TODO FIXME examCoincidence and examBefore should be deep cloned
         return clone;
     }
 
