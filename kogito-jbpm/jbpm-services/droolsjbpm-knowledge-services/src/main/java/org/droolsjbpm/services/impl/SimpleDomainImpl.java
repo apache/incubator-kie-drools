@@ -138,5 +138,10 @@ public class SimpleDomainImpl implements Domain{
         return processes.get(ksessionName);
     }
 
+    @Override
+    public String getProcessDefinitionBPMN2(String ksessionName, String processId) {
+        return processes.get(ksessionName).get(processId);
+    }
+
  
 }

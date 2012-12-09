@@ -33,6 +33,7 @@ import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
@@ -57,6 +58,8 @@ public abstract class DomainKnowledgeServiceBaseTest {
     @Inject
     protected TaskServiceEntryPoint taskService;
     @Inject
+    private BPMN2DataService bpmn2Service;
+    @Inject
     protected KnowledgeDataService dataService;
     @Inject
     protected KnowledgeAdminDataService adminDataService;
@@ -66,10 +69,10 @@ public abstract class DomainKnowledgeServiceBaseTest {
     private SessionManager sessionManager;
 
     @Test
-    public void simpleDomainTest() {
+    public void simpleDomainTest() throws FileException {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
-
+        
         Iterable<Path> loadFilesByType = null;
         try {
             loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
@@ -77,7 +80,10 @@ public abstract class DomainKnowledgeServiceBaseTest {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (Path p : loadFilesByType) {
-            myDomain.addKsessionAsset("myKsession", p);
+            String kSessionName = "myKsession";
+            myDomain.addKsessionAsset(kSessionName, p);
+            String processString = new String( fs.loadFile(p) );
+            myDomain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
 
         sessionManager.buildSessions(); //DO THIS -> OR oneSessionOneProcessStrategy.buildSessionByName("mySession");
@@ -98,7 +104,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
     }
 
     @Test
-    public void simpleDomainTwoSessionsTest() {
+    public void simpleDomainTwoSessionsTest() throws FileException {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
 
@@ -110,7 +116,11 @@ public abstract class DomainKnowledgeServiceBaseTest {
         }
         int i = 0;
         for (Path p : loadFilesByType) {
-            myDomain.addKsessionAsset("myKsession" + i, p);
+            
+            String kSessionName = "myKsession" + i;
+            myDomain.addKsessionAsset(kSessionName , p);
+            String processString = new String( fs.loadFile(p) );
+            myDomain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
             i++;
         }
 
@@ -137,7 +147,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
     }
 
     @Test
-    public void testReleaseProcess() {
+    public void testReleaseProcess() throws FileException {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
 
@@ -148,7 +158,11 @@ public abstract class DomainKnowledgeServiceBaseTest {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (Path p : loadFilesByType) {
+            String kSessionName = "myKsession";
+            System.out.println(" >>> Loading Path -> "+p.toString());
             myDomain.addKsessionAsset("myKsession", p);
+            String processString = new String( fs.loadFile(p) );
+            myDomain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
 
         sessionManager.buildSessions();
@@ -167,6 +181,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         params.put("release_name", "first release ever");
         
         
+        
         ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
         
         // Configure Release
@@ -182,11 +197,15 @@ public abstract class DomainKnowledgeServiceBaseTest {
         Map<String, Object> taskContent = taskService.getTaskContent(configureReleaseTask.getId());
 
         assertEquals("first release ever", taskContent.get("release_name"));
-
+        
+        Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings("org.jbpm.release.process", configureReleaseTask.getName());
+        
+        assertEquals(1, taskOutputMappings.size());
+        assertEquals("files_output", taskOutputMappings.values().iterator().next());
+            
         Map<String, Object> output = new HashMap<String, Object>();
-        List<String> files = new ArrayList<String>();
-        files.add("asset.drl");
-        output.put("files", files);
+        String files = "asset.drl";
+        output.put("files_output", files);
         taskService.complete(configureReleaseTask.getId(), "salaboy", output);
 
         // Review and Confirm Release Setup 
@@ -201,7 +220,9 @@ public abstract class DomainKnowledgeServiceBaseTest {
         
         taskContent = taskService.getTaskContent(confirmConfigurationTask.getId());
         
-        assertEquals(1, ((List<String>)taskContent.get("selected_files")).size());
+        
+        
+        assertEquals(1, ((String)taskContent.get("selected_files")).split(",").length);
         
         params = new HashMap<String, Object>();
         params.put("selected_files", files);

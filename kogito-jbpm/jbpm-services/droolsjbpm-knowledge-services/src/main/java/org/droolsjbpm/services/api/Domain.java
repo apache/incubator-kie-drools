@@ -48,4 +48,6 @@ public interface Domain {
     
     Map<String, String> getProcessesBySession(String kSessionName);
     
+    String getProcessDefinitionBPMN2(String ksessionName, String processId);
+    
 }

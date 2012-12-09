@@ -18,16 +18,6 @@ package org.droolsjbpm.services.impl.event.listeners;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import org.drools.event.AfterFunctionRemovedEvent;
-import org.drools.event.AfterProcessAddedEvent;
-import org.drools.event.AfterProcessRemovedEvent;
-import org.drools.event.AfterRuleAddedEvent;
-import org.drools.event.AfterRuleRemovedEvent;
-import org.drools.event.BeforeFunctionRemovedEvent;
-import org.drools.event.BeforeProcessAddedEvent;
-import org.drools.event.BeforeProcessRemovedEvent;
-import org.drools.event.BeforeRuleAddedEvent;
-import org.drools.event.BeforeRuleRemovedEvent;
 import org.jboss.seam.transaction.Transactional;
 import org.kie.definition.process.Process;
 import org.droolsjbpm.services.impl.bpmn2.ProcessDescriptionRepository;
@@ -56,51 +46,8 @@ public class CDIKbaseEventListener implements KieBaseEventListener {
     private ProcessDescriptionRepository repository;
     private String domainName;
 
-    public void beforeKnowledgePackageAdded(BeforeKnowledgePackageAddedEvent bkpae) {
-    }
-
-    public void afterKnowledgePackageAdded(AfterKnowledgePackageAddedEvent akpae) {
-    }
-
-    public void beforeKnowledgePackageRemoved(BeforeKnowledgePackageRemovedEvent bkpre) {
-    }
-
-    public void afterKnowledgePackageRemoved(AfterKnowledgePackageRemovedEvent akpre) {
-    }
-
-    public void beforeRuleAdded(BeforeRuleAddedEvent brae) {
-    }
-
-    public void afterRuleAdded(AfterRuleAddedEvent arae) {
-    }
-
-    public void beforeRuleRemoved(BeforeRuleRemovedEvent brre) {
-    }
-
-    public void afterRuleRemoved(AfterRuleRemovedEvent arre) {
-    }
-
-    public void beforeFunctionRemoved(BeforeFunctionRemovedEvent bfre) {
-    }
-
-    public void afterFunctionRemoved(AfterFunctionRemovedEvent afre) {
-    }
-
-    public void beforeProcessAdded(BeforeProcessAddedEvent bpae) {
-    }
-
-    public void afterProcessAdded(AfterProcessAddedEvent apae) {
-        Process process = apae.getProcess();
-        em.persist(ProcessDescFactory.newProcessDesc(this.domainName, process));
-    }
-
-    public void beforeProcessRemoved(BeforeProcessRemovedEvent bpre) {
-    }
-
-    public void afterProcessRemoved(AfterProcessRemovedEvent apre) {
-        repository.removeProcessDescription(apre.getProcess().getId());
-    }
-
+  
+ 
     public String getDomainName() {
         return domainName;
     }
@@ -151,10 +98,13 @@ public class CDIKbaseEventListener implements KieBaseEventListener {
 
     @Override
     public void beforeProcessAdded(org.kie.event.kiebase.BeforeProcessAddedEvent bpae) {
+        
     }
 
     @Override
     public void afterProcessAdded(org.kie.event.kiebase.AfterProcessAddedEvent apae) {
+        Process process = apae.getProcess();
+        em.persist(ProcessDescFactory.newProcessDesc(this.domainName, process));
     }
 
     @Override
@@ -163,5 +113,26 @@ public class CDIKbaseEventListener implements KieBaseEventListener {
 
     @Override
     public void afterProcessRemoved(org.kie.event.kiebase.AfterProcessRemovedEvent apre) {
+        repository.removeProcessDescription(apre.getProcess().getId());
+    }
+
+    @Override
+    public void beforeKnowledgePackageAdded(BeforeKnowledgePackageAddedEvent bkpae) {
+        
+    }
+
+    @Override
+    public void afterKnowledgePackageAdded(AfterKnowledgePackageAddedEvent akpae) {
+        
+    }
+
+    @Override
+    public void beforeKnowledgePackageRemoved(BeforeKnowledgePackageRemovedEvent bkpre) {
+        
+    }
+
+    @Override
+    public void afterKnowledgePackageRemoved(AfterKnowledgePackageRemovedEvent akpre) {
+        
     }
 }

@@ -87,7 +87,6 @@ public class VFSFileServiceImpl implements FileService {
     @Override
     public byte[] loadFile( final Path file ) throws FileException {
         
-        
         checkNotNull( "file", file );
 
         try {
@@ -105,7 +104,8 @@ public class VFSFileServiceImpl implements FileService {
         return ioService.newDirectoryStream( ioService.get( "git://jbpm-playground/" + path ), new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
-                if ( entry.getFileName().toString().endsWith( fileType ) ) {
+                if ( !org.kie.commons.java.nio.file.Files.isDirectory(entry) && 
+                        entry.getFileName().toString().endsWith( fileType ) ) {
                     return true;
                 }
                 return false;
