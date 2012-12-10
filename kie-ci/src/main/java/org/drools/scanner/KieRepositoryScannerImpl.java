@@ -166,6 +166,9 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         List<Artifact> newArtifacts = new ArrayList<Artifact>();
         for (DependencyDescriptor dependency : dependencies) {
             Artifact newArtifact = getArtifactResolver().resolveArtifact(dependency.toResolvableString());
+            if (newArtifact == null) {
+                continue;
+            }
             DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
             if (resolvedDep.isNewerThan(dependency)) {
                 newArtifacts.add(newArtifact);

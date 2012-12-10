@@ -84,7 +84,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .generateAndWritePomXML( gav )
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
-                .writeKModuleXML( createKieProjectWithPackages(kf, "org.pkg1").toXML());
+                .writeKModuleXML(createKieProjectWithPackages(kf, "org.pkg1").toXML());
         ks.newKieBuilder( kfs ).build();
 
         KieSession ksession = ks.getKieContainer(gav).getKieSession("KSession1");
@@ -139,8 +139,64 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( KieSessionType.STATEFUL )
-                .setClockType( ClockTypeOption.get("realtime") );
+                .setClockType(ClockTypeOption.get("realtime"));
 
         return kproj;
+    }
+
+    @Test
+    public void testHelloWorldOnVersionRange() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        KieFactory kf = KieFactory.Factory.get();
+
+        buildVersion(ks, kf, "Hello World", "1.0");
+        buildVersion(ks, kf, "Aloha Earth", "1.1");
+        buildVersion(ks, kf, "Hi Universe", "1.2");
+
+        GAV latestGav = kf.newGav("org.kie", "hello-world", "LATEST");
+
+        KieSession ksession = ks.getKieContainer(latestGav).getKieSession("KSession1");
+        ksession.insert(new Message("Hello World"));
+        assertEquals( 0, ksession.fireAllRules() );
+
+        ksession = ks.getKieContainer(latestGav).getKieSession("KSession1");
+        ksession.insert(new Message("Hi Universe"));
+        assertEquals( 1, ksession.fireAllRules() );
+
+        GAV gav1 = kf.newGav("org.kie", "hello-world", "1.0");
+
+        ksession = ks.getKieContainer(gav1).getKieSession("KSession1");
+        ksession.insert(new Message("Hello World"));
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ksession = ks.getKieContainer(gav1).getKieSession("KSession1");
+        ksession.insert(new Message("Hi Universe"));
+        assertEquals( 0, ksession.fireAllRules() );
+
+        GAV gav2 = kf.newGav("org.kie", "hello-world", "[1.0,1.2)");
+
+        ksession = ks.getKieContainer(gav2).getKieSession("KSession1");
+        ksession.insert(new Message("Aloha Earth"));
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ksession = ks.getKieContainer(gav2).getKieSession("KSession1");
+        ksession.insert(new Message("Hi Universe"));
+        assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    private void buildVersion(KieServices ks, KieFactory kf, String message, String version) {
+        String drl = "package org.drools\n" +
+                "rule R1 when\n" +
+                "   $m : Message( message == \"" + message+ "\" )\n" +
+                "then\n" +
+                "end\n";
+
+        GAV gav = kf.newGav("org.kie", "hello-world", version);
+
+        KieFileSystem kfs = kf.newKieFileSystem()
+                .generateAndWritePomXML( gav )
+                .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl)
+                .writeKModuleXML(createKieProjectWithPackages(kf, "*").toXML());
+        ks.newKieBuilder( kfs ).build();
     }
 }
