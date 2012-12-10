@@ -91,7 +91,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
 
-        sessionManager.buildSessions(); //DO THIS -> OR oneSessionOneProcessStrategy.buildSessionByName("mySession");
+        sessionManager.buildSessions(false); //DO THIS -> OR oneSessionOneProcessStrategy.buildSessionByName("mySession");
 
 
         ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.writedocument");
@@ -129,7 +129,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             i++;
         }
 
-        sessionManager.buildSessions();
+        sessionManager.buildSessions(false);
 
 
         Collection<String> sessionNames = sessionManager.getAllSessionsNames();
@@ -171,7 +171,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
 
-        sessionManager.buildSessions();
+        sessionManager.buildSessions(false);
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
@@ -271,7 +271,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
 
-        sessionManager.buildSessions();
+        sessionManager.buildSessions(false);
 
 
 
@@ -457,7 +457,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
 
-        sessionManager.buildSessions();
+        sessionManager.buildSessions(false);
 
         StatefulKnowledgeSession ksession = sessionManager.getKsessionByName("myKsession");
 

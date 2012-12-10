@@ -99,7 +99,7 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
             myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
         
-        sessionManager.buildSessions();
+        sessionManager.buildSessions(false);
 
         sessionManager.addKsessionHandler("myKsession", "MoveFile", moveFileWorkItemHandler);
 

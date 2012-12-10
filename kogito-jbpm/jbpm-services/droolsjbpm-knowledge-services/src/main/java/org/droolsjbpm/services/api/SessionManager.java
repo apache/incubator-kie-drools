@@ -15,9 +15,7 @@
  */
 package org.droolsjbpm.services.api;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemHandler;
@@ -30,7 +28,7 @@ public interface SessionManager {
 
     void setDomain(Domain domain);
 
-    void buildSessions();
+    void buildSessions(boolean streamMode);
 
     Map<String, StatefulKnowledgeSession> getKsessions();
 

@@ -15,7 +15,9 @@
  */
 package org.droolsjbpm.services.test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,15 +59,11 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
     private FileService fs;
     @Inject
     private SessionManager sessionManager;
-    
     @Inject
     private KnowledgeDomainService domainService;
 
-   
-    
-    
     @Test
-    public void testReleaseProcessWithRules() throws FileException {
+    public void testReleaseProcessWithRules() throws FileException, InterruptedException {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
 
@@ -77,20 +75,20 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+        String kSessionName = "myKsession";
         for (Path p : processFiles) {
-            String kSessionName = "myKsession";
-            System.out.println(" >>> Loading Path -> "+p.toString());
-            myDomain.addProcessDefinitionToKsession("myKsession", p);
-            String processString = new String( fs.loadFile(p) );
-            myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            
+            System.out.println(" >>> Loading Path -> " + p.toString());
+            myDomain.addProcessDefinitionToKsession(kSessionName, p);
+            String processString = new String(fs.loadFile(p));
+            myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId(processString), processString);
         }
-        for(Path p : rulesFiles){
-            String kSessionName = "myKsession";
-            System.out.println(" >>> Loading Path -> "+p.toString());
-            myDomain.addRulesDefinitionToKsession("myKsession", p);
+        for (Path p : rulesFiles) {
+            System.out.println(" >>> Loading Path -> " + p.toString());
+            myDomain.addRulesDefinitionToKsession(kSessionName, p);
         }
 
-        sessionManager.buildSessions();
+        sessionManager.buildSessions(true);
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
@@ -101,41 +99,48 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
         sessionManager.addKsessionHandler("myKsession", "Email", new DoNothingWorkItemHandler());
 
         sessionManager.registerHandlersForSession("myKsession");
-        
+
         sessionManager.registerRuleListenerForSession("myKsession");
-        
+
         // Let's start a couple of processes
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("release_name", "first release");
         params.put("release_path", "/releasePath/");
-        
+
         ProcessInstance firstPI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
-        
+
         params = new HashMap<String, Object>();
         params.put("release_name", "second release");
         params.put("release_path", "/releasePath/");
+
+        sessionManager.getKsessionByName("myKsession").setGlobal("rulesFired", new ArrayList<String>());
         
         ProcessInstance secondPI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
-        
+
         QueryResults queryResults = sessionManager.getKsessionByName("myKsession").getQueryResults("getProcessInstances", new Object[]{});
-        
+
         assertEquals(2, queryResults.size());
+        //LET'S SLEEP FOR 20 SECONDS AND FIRE ALL THE RULES EACH SECOND
         
-        
-        
-        
-     }
-    
-    
-   
+        for(int i = 0; i < 20; i ++){
+            Thread.sleep(1000);
+            System.out.println("Waiting...");
+          
+        }
+        List<String> rulesFired = (List<String>) sessionManager.getKsessionByName("myKsession").getGlobal("rulesFired");
+        assertEquals(2, rulesFired.size());
+
+
+    }
+
     private class DoNothingWorkItemHandler implements WorkItemHandler {
 
         @Override
         public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
-            for(String k : wi.getParameters().keySet()){
-                System.out.println("Key = "+ k + " - value = "+wi.getParameter(k));
+            for (String k : wi.getParameters().keySet()) {
+                System.out.println("Key = " + k + " - value = " + wi.getParameter(k));
             }
-            
+
             wim.completeWorkItem(wi.getId(), null);
         }
 
@@ -143,13 +148,13 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
         public void abortWorkItem(WorkItem wi, WorkItemManager wim) {
         }
     }
-    
-     private class MockTestWorkItemHandler implements WorkItemHandler {
+
+    private class MockTestWorkItemHandler implements WorkItemHandler {
 
         @Override
         public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
-            for(String k : wi.getParameters().keySet()){
-                System.out.println("Key = "+ k + " - value = "+wi.getParameter(k));
+            for (String k : wi.getParameters().keySet()) {
+                System.out.println("Key = " + k + " - value = " + wi.getParameter(k));
             }
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("out_test_successful", "true");

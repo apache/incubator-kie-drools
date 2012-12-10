@@ -107,6 +107,14 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
             String processString = new String( ioService.readAllBytes( p ) );
             domain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
+        for (Path p : releaseRulesFiles) {
+            String kSessionName = "releaseSession";
+            System.out.println(" >>> Adding Path to ReleaseSession- > "+p.toString());
+            // TODO automate this in another service
+            domain.addRulesDefinitionToKsession(kSessionName, p);
+        }
+        
+        
         for (Path p : exampleProcessesFiles) {
             String kSessionName = "generalSession";
             domain.addProcessDefinitionToKsession("generalSession", p);
@@ -115,8 +123,10 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
             String processString = new String( ioService.readAllBytes( p ) );
             domain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
+        
+        
 
-        sessionManager.buildSessions();
+        sessionManager.buildSessions(true);
 
         sessionManager.addKsessionHandler("releaseSession", "MoveToStagingArea",moveFilesWIHandler);
         sessionManager.addKsessionHandler("releaseSession", "MoveToTest", moveFilesWIHandler);

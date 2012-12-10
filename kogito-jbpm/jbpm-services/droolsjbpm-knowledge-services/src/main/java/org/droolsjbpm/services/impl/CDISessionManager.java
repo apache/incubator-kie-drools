@@ -29,11 +29,12 @@ import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
+import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
 import org.droolsjbpm.services.impl.helpers.StatefulKnowledgeSessionDelegate;
-import org.jbpm.process.instance.impl.RuleAwareProcessEventLister;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
@@ -41,6 +42,7 @@ import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
+import org.kie.conf.EventProcessingOption;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
@@ -58,6 +60,8 @@ public class CDISessionManager implements SessionManager {
     private CDIHTWorkItemHandler handler;
     @Inject
     private CDIProcessEventListener processListener;
+    @Inject
+    private CDIRuleAwareProcessEventListener processFactsListener;
     @Inject
     private CDIKbaseEventListener kbaseEventListener;
     @Inject
@@ -115,11 +119,11 @@ public class CDISessionManager implements SessionManager {
 
     @Override
     public void registerRuleListenerForSession(String ksessionName) {
-        ksessions.get(ksessionName).addEventListener(new RuleAwareProcessEventLister());
+        ksessions.get(ksessionName).addEventListener(processFactsListener);
     }
 
     @Override
-    public void buildSessions() {
+    public void buildSessions(boolean streamMode) {
         processListener.setDomainName(domain.getName());
         kbaseEventListener.setDomainName(domain.getName());
         processListener.setSessionManager(this);
@@ -152,8 +156,15 @@ public class CDISessionManager implements SessionManager {
                 }
                 continue;
             }
-
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            KnowledgeBase kbase = null;
+            if (streamMode) {
+                KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+                config.setOption(EventProcessingOption.STREAM);
+                kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
+            } else {
+                kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            }
+            
             kbase.addEventListener(kbaseEventListener);
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
             StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
