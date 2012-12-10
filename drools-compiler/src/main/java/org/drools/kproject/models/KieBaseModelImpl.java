@@ -30,13 +30,11 @@ public class KieBaseModelImpl
         implements
         KieBaseModel {
 
-    public static final String DEFAULT_KIEBASE_NAME = "!DeFaUlT!";
-
     private String                       name;
 
-    private Set<String>                  includes= new HashSet<String>();;
+    private Set<String>                  includes= new HashSet<String>();
 
-    private Set<String>                  packages;
+    private List<String>                 packages;
 
     private AssertBehaviorOption         equalsBehavior = AssertBehaviorOption.IDENTITY;
 
@@ -47,6 +45,8 @@ public class KieBaseModelImpl
     private KieModuleModel               kModule;
     
     private String                       scope = "javax.enterprise.context.ApplicationScoped";
+
+    private boolean                      isDefault = false;
 
     private KieBaseModelImpl() {
     }
@@ -60,17 +60,21 @@ public class KieBaseModelImpl
     }
 
     public boolean isDefault() {
-        return name.equals(DEFAULT_KIEBASE_NAME);
+        return isDefault;
     }
 
-    @SuppressWarnings("unchecked")
-    public Set<String> getPackages() {
-        return (Set<String>) (packages != null ? packages : Collections.emptySet());
+    public KieBaseModel setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+        return this;
+    }
+
+    public List<String> getPackages() {
+        return packages != null ? packages : Collections.<String>emptyList();
     }
 
     public KieBaseModel addPackage(String pkg) {
         if ( packages == null ) {
-            packages = new HashSet<String>();
+            packages = new ArrayList<String>();
         }
         packages.add( pkg );
         return this;
@@ -253,6 +257,7 @@ public class KieBaseModelImpl
                             MarshallingContext context) {
             KieBaseModelImpl kBase = (KieBaseModelImpl) value;
             writer.addAttribute( "name", kBase.getName() );
+            writer.addAttribute( "default", Boolean.toString(kBase.isDefault()) );
             if ( kBase.getEventProcessingMode() != null ) {
                 writer.addAttribute( "eventProcessingMode", kBase.getEventProcessingMode().getMode() );
             }
@@ -304,6 +309,7 @@ public class KieBaseModelImpl
                                 final UnmarshallingContext context) {
             final KieBaseModelImpl kBase = new KieBaseModelImpl();
             kBase.setName( reader.getAttribute( "name" ) );
+            kBase.setDefault( "true".equals(reader.getAttribute( "default" )) );
 
             String eventMode = reader.getAttribute( "eventProcessingMode" );
             if ( eventMode != null ) {

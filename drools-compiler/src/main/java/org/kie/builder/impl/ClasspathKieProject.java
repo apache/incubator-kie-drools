@@ -1,22 +1,5 @@
 package org.kie.builder.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
@@ -27,11 +10,24 @@ import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
-import org.kie.builder.KieSessionModel;
 import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
@@ -43,11 +39,9 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     private static final Logger             log               = LoggerFactory.getLogger( ClasspathKieProject.class );
 
-    private Map<GAV, InternalKieModule>     kJars             = new HashMap<GAV, InternalKieModule>();
+    private Map<GAV, InternalKieModule>     kieModules        = new HashMap<GAV, InternalKieModule>();
 
     private Map<String, InternalKieModule>  kJarFromKBaseName = new HashMap<String, InternalKieModule>();
-
-    private Map<String, KieSessionModel>    kSessionModels    = new HashMap<String, KieSessionModel>();
 
     private KieRepository                   kr;
     
@@ -64,7 +58,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     public void init() {
         this.cl = ClassLoaderUtil.getClassLoader( null, null, true );
         discoverKieModules();
-        AbstractKieModule.indexParts( kJars, kBaseModels, kSessionModels, kJarFromKBaseName );
+        indexParts(kieModules, kJarFromKBaseName);
     }
 
     public GAV getGAV() {
@@ -82,24 +76,15 @@ public class ClasspathKieProject extends AbstractKieProject {
             return;
         }
 
-        List<KieModuleModel> kModules = new ArrayList<KieModuleModel>();
-
         // Map of kmodule urls
-        Map<KieModuleModel, String> urls = new IdentityHashMap<KieModuleModel, String>();
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();
             try {
                 String fixedURL = fixURLFromKProjectPath( url ); 
                 InternalKieModule kModule = fetchKModule( url, fixedURL );
-                KieModuleModel kModuleModel = kModule.getKieModuleModel();
-                
-                kModules.add( kModuleModel );
-                urls.put( kModuleModel,
-                          fixedURL );
 
                 GAV gav = kModule.getGAV();
-                kJars.put( gav,
-                           kModule );
+                kieModules.put(gav, kModule);
 
                 log.debug( "Discovered classpath module " + gav.toExternalForm() );
                 
@@ -126,7 +111,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             rootPath = fixedURL.substring( rootPath.lastIndexOf( ':' ) + 1 );
         }
 
-        InternalKieModule kJar = null;
+        InternalKieModule kJar;
         File file = new File( rootPath );
         if ( fixedURL.endsWith( ".jar" ) ) {
             kJar = new ZipKieModule( gav,
@@ -295,10 +280,6 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     public InternalKieModule getKieModuleForKBase(String kBaseName) {
         return this.kJarFromKBaseName.get( kBaseName );
-    }
-
-    public KieSessionModel getKieSessionModel(String kSessionName) {
-        return kSessionModels.get( kSessionName );
     }
 
     @Override

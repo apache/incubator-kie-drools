@@ -30,7 +30,7 @@ public class WireListenerTest {
         build(ks, kf, gav);
         KieContainer kieContainer = ks.getKieContainer(gav);
 
-        KieSession ksession = kieContainer.getKieSession("KSession1");
+        KieSession ksession = kieContainer.getKieSession();
         ksession.fireAllRules();
 
         assertEquals(1, insertEvents.size());
@@ -41,7 +41,7 @@ public class WireListenerTest {
     private void build(KieServices ks, KieFactory kf, GAV gav) throws IOException {
         KieModuleModel kproj = kf.newKieModuleModel();
 
-        KieSessionModel ksession1 = kproj.newKieBaseModel("KBase1").newKieSessionModel("KSession1");
+        KieSessionModel ksession1 = kproj.newKieBaseModel("KBase1").newKieSessionModel("KSession1").setDefault(true);
 
         ksession1.newListenerModel(RecordingWorkingMemoryEventListener.class.getName(), ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER);
 
