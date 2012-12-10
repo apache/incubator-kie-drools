@@ -1,11 +1,21 @@
 package org.drools.kproject;
 
+import org.drools.cdi.CDITestRunner;
+import org.drools.cdi.KieCDIExtension;
+import org.drools.cdi.CDITestRunner.TestWeldSEDeployment;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.rule.JavaDialectRuntimeData;
+import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.kie.builder.impl.AbstractKieModule;
+import org.kie.cdi.KBase;
+import org.kie.cdi.KGAV;
+import org.kie.cdi.KSession;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.AnnotationLiteral;
@@ -15,7 +25,9 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;
@@ -30,8 +42,8 @@ public class KieProjectCDITest extends AbstractKnowledgeTest {
                 return JavaDialectRuntimeData.class.getProtectionDomain();
             }
         } );
-    }
-
+    }   
+    
     public static class KPTestLiteral extends AnnotationLiteral<KPTest>
             implements
             KPTest {
@@ -78,36 +90,41 @@ public class KieProjectCDITest extends AbstractKnowledgeTest {
             assertNotNull( cls );
             cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar3" );
             assertNotNull( cls );
-
-            Weld weldContainer = new Weld();
-            WeldContainer weld = weldContainer.initialize();
-
             
-            Set<Bean< ? >> beans = weld.getBeanManager().getBeans( KProjectTestClass.class, new KPTestLiteral( "jar1" ) );
+            Weld weld = CDITestRunner.createWeld(KProjectTestClass.class.getName(), 
+                                                 KPTestLiteral.class.getName(),
+                                                 "org.drools.cdi.test.KProjectTestClassjar1",
+                                                 "org.drools.cdi.test.KProjectTestClassjar2",
+                                                 "org.drools.cdi.test.KProjectTestClassjar3",
+                                                 "org.drools.cdi.test.KProjectTestClassfol4");
+            
+            WeldContainer container = weld.initialize();            
+            
+            Set<Bean< ? >> beans = container.getBeanManager().getBeans( KProjectTestClass.class, new KPTestLiteral( "jar1" ) );
             Bean bean = (Bean) beans.toArray()[0];
-            KProjectTestClass o1 = (KProjectTestClass) bean.create( weld.getBeanManager().createCreationalContext( null ) );
+            KProjectTestClass o1 = (KProjectTestClass) bean.create( container.getBeanManager().createCreationalContext( null ) );
             assertNotNull( o1 );            
             testEntry(o1, "jar1");
             
-            beans = weld.getBeanManager().getBeans( KProjectTestClass.class, new KPTestLiteral( "jar2" ) );
+            beans = container.getBeanManager().getBeans( KProjectTestClass.class, new KPTestLiteral( "jar2" ) );
             bean = (Bean) beans.toArray()[0];
-            KProjectTestClass o2 = (KProjectTestClass) bean.create( weld.getBeanManager().createCreationalContext( null ) );
+            KProjectTestClass o2 = (KProjectTestClass) bean.create( container.getBeanManager().createCreationalContext( null ) );
             assertNotNull( o2 );            
             testEntry(o2, "jar2");
             
-            beans = weld.getBeanManager().getBeans( KProjectTestClass.class, new KPTestLiteral( "jar3" ) );
+            beans = container.getBeanManager().getBeans( KProjectTestClass.class, new KPTestLiteral( "jar3" ) );
             bean = (Bean) beans.toArray()[0];
-            KProjectTestClass o3 = (KProjectTestClass) bean.create( weld.getBeanManager().createCreationalContext( null ) );
+            KProjectTestClass o3 = (KProjectTestClass) bean.create( container.getBeanManager().createCreationalContext( null ) );
             assertNotNull( o3 );            
             testEntry(o3, "jar3");
 
-            beans = weld.getBeanManager().getBeans( KProjectTestClass.class, new KPTestLiteral( "fol4" ) );
+            beans = container.getBeanManager().getBeans( KProjectTestClass.class, new KPTestLiteral( "fol4" ) );
             bean = (Bean) beans.toArray()[0];
-            KProjectTestClass o4 = (KProjectTestClass) bean.create( weld.getBeanManager().createCreationalContext( null ) );
+            KProjectTestClass o4 = (KProjectTestClass) bean.create( container.getBeanManager().createCreationalContext( null ) );
             assertNotNull( o4 );            
             testEntry(o4, "fol4");
             
-            weldContainer.shutdown();
+            weld.shutdown();
         } finally {
             Thread.currentThread().setContextClassLoader( origCl );
         }

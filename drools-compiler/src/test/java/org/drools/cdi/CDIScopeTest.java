@@ -1,7 +1,7 @@
 package org.drools.cdi;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -11,17 +11,14 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import org.drools.kproject.KPTest;
-import org.junit.Ignore;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.KieBase;
-import org.kie.KnowledgeBase;
 import org.kie.cdi.KBase;
 import org.kie.cdi.KSession;
 import org.kie.runtime.KieSession;
-
-import static org.junit.Assert.*;
 
 @RunWith(CDITestRunner.class)
 public class CDIScopeTest {
@@ -44,12 +41,19 @@ public class CDIScopeTest {
     @Inject
     BeanManager     beanManager;
 
-    //    
-    //    @Test 
-    //    public void test1() {
-    //        assertNotNull( kBase1 );
-    //        assertEquals( 1, kBase1.getKnowledgePackage( "org.kie.kbase1" ).getRules().size() );
-    //    }
+    
+    @BeforeClass
+    public static void beforeClass() {    
+        CDITestRunner.weld = CDITestRunner.createWeld( CDIScopeTest.class.getName() );
+        CDITestRunner.container = CDITestRunner.weld.initialize();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        CDITestRunner.weld.shutdown();
+        CDITestRunner.container = null;
+        CDITestRunner.weld = null;
+    }  
 
     @Test
     public void testKieBaseScope() {

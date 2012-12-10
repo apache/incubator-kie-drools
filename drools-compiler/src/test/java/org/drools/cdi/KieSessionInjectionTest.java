@@ -18,6 +18,7 @@ public class KieSessionInjectionTest {
 //    @Inject @KSession("ksession1")
 //    private KieSession kSession1;
 //    
+    
 //    @Test 
 //    public void test1() {
 //        assertNotNull( kSession1 );

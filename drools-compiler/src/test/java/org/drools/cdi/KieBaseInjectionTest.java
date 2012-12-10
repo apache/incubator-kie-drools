@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 @Ignore
 public class KieBaseInjectionTest {
 
+
 //    @Inject @KBase("org.kie.kbase1" )
 //    private KieBase kBase1;    
 //    
