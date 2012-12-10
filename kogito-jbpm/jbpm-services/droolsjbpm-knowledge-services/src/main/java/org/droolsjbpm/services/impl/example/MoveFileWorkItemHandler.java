@@ -36,6 +36,7 @@ public class MoveFileWorkItemHandler implements WorkItemHandler {
     public final static String WIP_INPUT_TARGET = "in_target_dir";
     public final static String WIP_INPUT_FILES = "in_files";
     public final static String WIP_OUTPUT_ERRORS = "out_errors";
+    
     @Inject
     private FileService fs;
 

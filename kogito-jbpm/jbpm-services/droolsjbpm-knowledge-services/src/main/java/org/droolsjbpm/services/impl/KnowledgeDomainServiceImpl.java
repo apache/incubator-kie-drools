@@ -34,6 +34,8 @@ import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
+import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
+import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
@@ -68,6 +70,12 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
     
     @Inject
     private MoveFileWorkItemHandler moveFilesWIHandler;
+    
+    @Inject
+    private TriggerTestsWorkItemHandler triggerTestsWorkItemHandler;
+    
+    @Inject
+    private NotificationWorkItemHandler notificationWorkItemHandler;
     
     private Domain domain;
     
@@ -112,11 +120,10 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
         sessionManager.addKsessionHandler("releaseSession", "MoveToStagingArea",moveFilesWIHandler);
         sessionManager.addKsessionHandler("releaseSession", "MoveToTest", moveFilesWIHandler);
-        sessionManager.addKsessionHandler("releaseSession", "TriggerTests", new MockTestWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "TriggerTests", triggerTestsWorkItemHandler);
         sessionManager.addKsessionHandler("releaseSession", "MoveBackToStaging", moveFilesWIHandler);
         sessionManager.addKsessionHandler("releaseSession", "MoveToProduction", moveFilesWIHandler);
-        sessionManager.addKsessionHandler("releaseSession", "ApplyChangestoRuntimes", new DoNothingWorkItemHandler());
-        sessionManager.addKsessionHandler("releaseSession", "Email", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "Email", notificationWorkItemHandler);
 
         sessionManager.registerHandlersForSession("releaseSession");
          
