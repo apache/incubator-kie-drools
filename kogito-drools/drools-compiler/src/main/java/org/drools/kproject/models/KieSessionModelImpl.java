@@ -29,6 +29,8 @@ public class KieSessionModelImpl
     private final List<ListenerModel>        listeners = new ArrayList<ListenerModel>();
     private final List<WorkItemHandlerModel> wihs = new ArrayList<WorkItemHandlerModel>();
 
+    private boolean                      isDefault = false;
+
     private KieSessionModelImpl() { }
 
     public KieSessionModelImpl(KieBaseModelImpl kBase, String name) {
@@ -42,6 +44,15 @@ public class KieSessionModelImpl
     
     public void setKBase(KieBaseModel kieBaseModel) {
         this.kBase = (KieBaseModelImpl) kieBaseModel;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public KieSessionModel setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -143,6 +154,7 @@ public class KieSessionModelImpl
             KieSessionModelImpl kSession = (KieSessionModelImpl) value;
             writer.addAttribute("name", kSession.getName());
             writer.addAttribute("type", kSession.getType().toString().toUpperCase() );
+            writer.addAttribute( "default", Boolean.toString(kSession.isDefault()) );
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
@@ -160,6 +172,8 @@ public class KieSessionModelImpl
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final KieSessionModelImpl kSession = new KieSessionModelImpl();
             kSession.setName(reader.getAttribute("name"));
+            kSession.setDefault( "true".equals(reader.getAttribute( "default" )) );
+
             String kSessionType = reader.getAttribute("type");
             kSession.setType(kSessionType != null ? KieSessionType.valueOf( kSessionType.toUpperCase() ) : KieSessionType.STATEFUL);
 

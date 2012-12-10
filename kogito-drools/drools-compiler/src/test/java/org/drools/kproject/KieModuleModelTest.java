@@ -18,9 +18,11 @@ import org.kie.runtime.conf.ClockTypeOption;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static org.drools.kproject.models.KieModuleModelImpl.fromXML;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class KieModuleModelTest {
 
@@ -32,11 +34,14 @@ public class KieModuleModelTest {
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
-                .setEventProcessingMode( EventProcessingOption.STREAM );
+                .setEventProcessingMode( EventProcessingOption.STREAM )
+                .addPackage("org.kie.pkg1")
+                .addPackage("org.kie.pkg2");
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType(KieSessionType.STATEFUL)
-                .setClockType( ClockTypeOption.get("realtime") );
+                .setClockType( ClockTypeOption.get("realtime") )
+                .setDefault(true);
 
         ksession1.newListenerModel("org.domain.FirstInterface", ListenerModel.Kind.AGENDA_EVENT_LISTENER);
 
@@ -71,11 +76,15 @@ public class KieModuleModelTest {
         assertSame(kprojXml, ((KieBaseModelImpl)kieBaseModelXML).getKModule());
         assertEquals(AssertBehaviorOption.EQUALITY, kieBaseModelXML.getEqualsBehavior());
         assertEquals(EventProcessingOption.STREAM, kieBaseModelXML.getEventProcessingMode());
+        assertFalse(kieBaseModelXML.isDefault());
+        assertEquals("org.kie.pkg1", kieBaseModelXML.getPackages().get(0));
+        assertEquals("org.kie.pkg2", kieBaseModelXML.getPackages().get(1));
 
         KieSessionModel kieSessionModelXML = kieBaseModelXML.getKieSessionModels().get("KSession1");
         assertSame(kieBaseModelXML, ((KieSessionModelImpl)kieSessionModelXML).getKieBaseModel());
         assertEquals(KieSessionType.STATEFUL, kieSessionModelXML.getType());
         assertEquals(ClockTypeOption.get("realtime"), kieSessionModelXML.getClockType());
+        assertTrue(kieSessionModelXML.isDefault());
 
         List<ListenerModel> listeners = kieSessionModelXML.getListenerModels();
 

@@ -1,21 +1,9 @@
 package org.kie.builder.impl;
 
-import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.kproject.models.KieBaseModelImpl;
-import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
 import org.kie.KnowledgeBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
@@ -23,7 +11,6 @@ import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieSessionModel;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -34,6 +21,17 @@ import org.kie.io.ResourceType;
 import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
 
 public abstract class AbstractKieModule
     implements
@@ -105,28 +103,6 @@ public abstract class AbstractKieModule
 
     public Map<String, Collection<KnowledgePackage>> getKnowledgePackageCache() {
         return packageCache;
-    }
-
-    public static void indexParts(Map<GAV, InternalKieModule> kJars,
-                                  Map<String, KieBaseModel> kBaseModels,
-                                  Map<String, KieSessionModel> kSessionModels,
-                                  Map<String, InternalKieModule> kJarFromKBaseName) {
-        for ( InternalKieModule kJar : kJars.values() ) {
-            KieModuleModel kieProject = kJar.getKieModuleModel();
-            for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
-                kBaseModels.put( kieBaseModel.getName(),
-                                 kieBaseModel );
-                ((KieBaseModelImpl) kieBaseModel).setKModule( kieProject ); // should already be set, but just in case
-
-                kJarFromKBaseName.put( kieBaseModel.getName(),
-                                       kJar );
-                for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
-                    ((KieSessionModelImpl) kieSessionModel).setKBase( kieBaseModel ); // should already be set, but just in case
-                    kSessionModels.put( kieSessionModel.getName(),
-                                        kieSessionModel );
-                }
-            }
-        }
     }
 
     static KieBase createKieBase(KieBaseModel kBaseModel,

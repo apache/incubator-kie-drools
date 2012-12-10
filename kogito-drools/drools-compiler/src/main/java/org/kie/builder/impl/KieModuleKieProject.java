@@ -1,16 +1,15 @@
 package org.kie.builder.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.core.util.ClassUtils;
 import org.kie.builder.GAV;
 import org.kie.builder.KieRepository;
-import org.kie.builder.KieSessionModel;
 import org.kie.util.ClassLoaderUtil;
 import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
@@ -26,11 +25,9 @@ public class KieModuleKieProject extends AbstractKieProject {
 
     private final Map<String, InternalKieModule> kJarFromKBaseName = new HashMap<String, InternalKieModule>();
 
-    private final Map<String, KieSessionModel>   kSessionModels    = new HashMap<String, KieSessionModel>();
-
-    private InternalKieModule                    kieModule;
-    private KieRepository                        kr;
-    private CompositeClassLoader                 cl;
+    private final InternalKieModule              kieModule;
+    private final KieRepository                  kr;
+    private final CompositeClassLoader           cl;
 
     public KieModuleKieProject(InternalKieModule kieModule,
                                KieRepository kr) {
@@ -45,10 +42,7 @@ public class KieModuleKieProject extends AbstractKieProject {
             kieModules.putAll( kieModule.getDependencies() );
             kieModules.put( kieModule.getGAV(),
                             kieModule );
-            AbstractKieModule.indexParts( kieModules,
-                                          kBaseModels,
-                                          kSessionModels,
-                                          kJarFromKBaseName );
+            indexParts( kieModules, kJarFromKBaseName );
             initClassLaoder();
         }
     }
@@ -79,14 +73,6 @@ public class KieModuleKieProject extends AbstractKieProject {
 
     public boolean kieBaseExists(String kBaseName) {
         return kBaseModels.containsKey( kBaseName );
-    }
-
-    public boolean kieSessionExists(String kSessionName) {
-        return kSessionModels.containsKey( kSessionName );
-    }
-
-    public KieSessionModel getKieSessionModel(String kSessionName) {
-        return kSessionModels.get( kSessionName );
     }
 
     @Override

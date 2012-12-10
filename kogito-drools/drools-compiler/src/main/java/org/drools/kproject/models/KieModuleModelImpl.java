@@ -1,23 +1,20 @@
 package org.drools.kproject.models;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModuleModel;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.core.util.AbstractXStreamConverter;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieModuleModel;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class KieModuleModelImpl implements KieModuleModel {
 
@@ -43,13 +40,6 @@ public class KieModuleModelImpl implements KieModuleModel {
         return kbase;
     }
 
-    public KieBaseModel newDefaultKieBaseModel() {
-        if ( kBases.containsKey(KieBaseModelImpl.DEFAULT_KIEBASE_NAME) ) {
-            throw new RuntimeException("This project already contains a default kie base");
-        }
-        return newKieBaseModel(KieBaseModelImpl.DEFAULT_KIEBASE_NAME);
-    }
-    
     /* (non-Javadoc)
      * @see org.kie.kModule.KieProject#removeKieBaseModel(org.kie.kModule.KieBaseModel)
      */
@@ -87,11 +77,6 @@ public class KieModuleModelImpl implements KieModuleModel {
      */
     private void setKBases(Map<String, KieBaseModel> kBases) {
         this.kBases = kBases;
-    }
-
-    List<String> validate() {
-        List<String> problems = new ArrayList<String>();
-        return problems;
     }
 
     /* (non-Javadoc)

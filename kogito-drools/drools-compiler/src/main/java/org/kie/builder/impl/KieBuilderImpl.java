@@ -9,7 +9,6 @@ import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.GAVImpl;
-import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
@@ -23,6 +22,7 @@ import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieServices;
+import org.kie.builder.KieSessionModel;
 import org.kie.builder.Message.Level;
 import org.kie.builder.Results;
 import org.kie.io.Resource;
@@ -188,27 +188,32 @@ public class KieBuilderImpl
         if ( !isKieExtension( fileName ) ) {
             return false;
         }
-        if ( ((KieBaseModelImpl) kieBase).isDefault() ) {
-            return true;
-        }
         if ( kieBase.getPackages().isEmpty() ) {
-            return isFileInKiePackage( fileName,
-                                       kieBase.getName() );
+            return isFileInKieBase( fileName, kieBase.getName() );
         }
-        for ( String pkg : kieBase.getPackages() ) {
-            if ( isFileInKiePackage( fileName,
-                                     pkg ) ) {
-                return true;
+        return isFileInKiePackages(fileName, kieBase.getPackages());
+    }
+
+    private boolean isFileInKieBase(String fileName, String kBaseName) {
+        String pathName = kBaseName.replace( '.', '/' );
+        return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.contains( "/" + pathName + "/" );
+    }
+
+    private boolean isFileInKiePackages(String fileName, List<String> pkgNames) {
+        int lastSep = fileName.lastIndexOf("/");
+        String pkgNameForFile = lastSep > 0 ? fileName.substring(0, lastSep) : fileName;
+        pkgNameForFile = pkgNameForFile.replace('/', '.');
+        for (String pkgName : pkgNames) {
+            boolean isNegative = pkgName.startsWith("!");
+            if (isNegative) {
+                pkgName = pkgName.substring(1);
+            }
+            if (pkgName.equals("*") || pkgNameForFile.endsWith(pkgName) ||
+                    (pkgName.endsWith(".*") && pkgNameForFile.contains(pkgName.substring(0, pkgName.length()-2))) ) {
+                return !isNegative;
             }
         }
         return false;
-    }
-
-    private boolean isFileInKiePackage(String fileName,
-                                       String pkgName) {
-        String pathName = pkgName.replace( '.',
-                                           '/' );
-        return (fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.contains( "/" + pathName + "/" ));
     }
 
     static boolean isKieExtension(String fileName) {
@@ -263,10 +268,11 @@ public class KieBuilderImpl
                                       "kmodulet.xml found, but unable to read\n" + e.getMessage() );
             }
         } else {
-            KieFactory kf = KieFactory.Factory.get();
-            kModuleModel = kf.newKieModuleModel();
-
-            ((KieModuleModelImpl) kModuleModel).newDefaultKieBaseModel();
+            // There's no kmodule.xml, create a defualt one
+            kModuleModel = KieFactory.Factory.get().newKieModuleModel();
+            KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel("defaultKieBase").addPackage("*").setDefault(true);
+            kieBaseModel.newKieSessionModel("defaultKieSession").setDefault(true);
+            kieBaseModel.newKieSessionModel("defaultStatelessKieSession").setType(KieSessionModel.KieSessionType.STATELESS).setDefault(true);
             kModuleModelXml = kModuleModel.toXML().getBytes();
         }
     }

@@ -29,7 +29,6 @@ import org.kie.runtime.KieSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -170,7 +169,7 @@ public class KieBuilderTest {
         
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
                
-        createAndTestKieContainer(gav, createKieBuilder(kfs), KieBaseModelImpl.DEFAULT_KIEBASE_NAME );
+        createAndTestKieContainer(gav, createKieBuilder(kfs), null );
     }    
     
     public void testNoPomAndProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
@@ -184,7 +183,7 @@ public class KieBuilderTest {
         
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
                
-        createAndTestKieContainer(gav, createKieBuilder(kfs), KieBaseModelImpl.DEFAULT_KIEBASE_NAME );
+        createAndTestKieContainer(gav, createKieBuilder(kfs), null );
     }
     
     @Test
@@ -307,8 +306,8 @@ public class KieBuilderTest {
         assertNotNull( kJar );
         
         KieContainer kContainer = ks.getKieContainer( gav );
-        KieBase kBase = kContainer.getKieBase( kBaseName );
-        
+        KieBase kBase = kBaseName != null ? kContainer.getKieBase( kBaseName ) : kContainer.getKieBase();
+
         KieSession kSession = kBase.newKieSession();
         List list = new ArrayList();
         kSession.setGlobal( "list", list );

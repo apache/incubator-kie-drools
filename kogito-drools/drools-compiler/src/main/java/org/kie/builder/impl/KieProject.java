@@ -13,8 +13,14 @@ public interface KieProject {
 
     KieBaseModel getKieBaseModel(String kBaseName);
 
-    KieSessionModel getKieSessionModel(String kSessionName); 
-    
+    KieBaseModel getDefaultKieBaseModel();
+
+    KieSessionModel getKieSessionModel(String kSessionName);
+
+    KieSessionModel getDefaultKieSession();
+
+    KieSessionModel getDefaultStatelessKieSession();
+
     void init();   
     
     CompositeClassLoader getClassLoader();

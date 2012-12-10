@@ -1,11 +1,5 @@
 package org.kie.builder.impl;
 
-import static org.kie.util.CDIHelper.wireListnersAndWIHs;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
 import org.kie.KnowledgeBaseFactory;
@@ -20,6 +14,11 @@ import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.kie.util.CDIHelper.wireListnersAndWIHs;
 
 public class KieContainerImpl
     implements
@@ -53,7 +52,11 @@ public class KieContainerImpl
     }
 
     public KieBase getKieBase() {
-        return getKieBase( KieBaseModelImpl.DEFAULT_KIEBASE_NAME );
+        KieBaseModel defaultKieBaseModel = kProject.getDefaultKieBaseModel();
+        if (defaultKieBaseModel == null) {
+            new RuntimeException("Cannot find a defualt KieBase");
+        }
+        return getKieBase( defaultKieBaseModel.getName() );
     }
 
     public KieBase getKieBase(String kBaseName) {
@@ -74,11 +77,19 @@ public class KieContainerImpl
     }
 
     public KieSession getKieSession() {
-        return getKieBase().newKieSession();
+        KieSessionModel defaultKieSessionModel = kProject.getDefaultKieSession();
+        if (defaultKieSessionModel == null) {
+            new RuntimeException("Cannot find a defualt KieSession");
+        }
+        return getKieSession(defaultKieSessionModel.getName());
     }
 
     public StatelessKieSession getKieStatelessSession() {
-        return getKieBase().newStatelessKieSession();
+        KieSessionModel defaultKieSessionModel = kProject.getDefaultStatelessKieSession();
+        if (defaultKieSessionModel == null) {
+            new RuntimeException("Cannot find a defualt StatelessKieSession");
+        }
+        return getKieStatelessSession(defaultKieSessionModel.getName());
     }
 
     public KieSession getKieSession(String kSessionName) {

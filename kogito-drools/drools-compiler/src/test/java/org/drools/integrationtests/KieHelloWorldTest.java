@@ -84,7 +84,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .generateAndWritePomXML( gav )
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
-                .writeKModuleXML( createKieProjectWithPackages(kf).toXML());
+                .writeKModuleXML( createKieProjectWithPackages(kf, "org.pkg1").toXML());
         ks.newKieBuilder( kfs ).build();
 
         KieSession ksession = ks.getKieContainer(gav).getKieSession("KSession1");
@@ -95,13 +95,47 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         assertEquals( 1, count );
     }
 
-    private KieModuleModel createKieProjectWithPackages(KieFactory kf) {
+    @Test
+    public void testHelloWorldWithWildcardPackages() throws Exception {
+        String drl1 = "package org.drools\n" +
+                "rule R1 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl2 = "package org.drools\n" +
+                "rule R2 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFactory kf = KieFactory.Factory.get();
+
+        GAV gav = kf.newGav("org.kie", "hello-world", "1.0-SNAPSHOT");
+
+        KieFileSystem kfs = kf.newKieFileSystem()
+                .generateAndWritePomXML( gav )
+                .write("src/main/resources/KBase1/org/pkg1/test/r1.drl", drl1)
+                .write("src/main/resources/KBase1/org/pkg2/test/r2.drl", drl2)
+                .writeKModuleXML( createKieProjectWithPackages(kf, "org.pkg1.*").toXML());
+        ks.newKieBuilder( kfs ).build();
+
+        KieSession ksession = ks.getKieContainer(gav).getKieSession("KSession1");
+        ksession.insert(new Message("Hello World"));
+
+        int count = ksession.fireAllRules();
+
+        assertEquals( 1, count );
+    }
+
+    private KieModuleModel createKieProjectWithPackages(KieFactory kf, String pkg) {
         KieModuleModel kproj = kf.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
-                .addPackage("org.pkg1");
+                .addPackage(pkg);
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType( KieSessionType.STATEFUL )
