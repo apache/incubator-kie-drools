@@ -26,8 +26,8 @@ import org.kie.runtime.process.WorkItemManager;
 public class NotificationWorkItemHandler implements WorkItemHandler{
 
     public final static String WIP_INPUT_RELEASE = "in_release_name";
-    public final static String WIP_INPUT_REPORT = "in_report";
-    public final static String WIP_INPUT_EMAILS = "in_emails";
+    public final static String WIP_INPUT_REPORT = "in_test_report";
+    public final static String WIP_INPUT_EMAILS = "in_users";
     
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
