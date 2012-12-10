@@ -1,10 +1,9 @@
 package org.drools.kproject.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
@@ -12,10 +11,8 @@ import org.kie.builder.ListenerModel;
 import org.kie.builder.WorkItemHandlerModel;
 import org.kie.runtime.conf.ClockTypeOption;
 
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KieSessionModelImpl
         implements
@@ -25,7 +22,7 @@ public class KieSessionModelImpl
     private KieSessionType                   type =  KieSessionType.STATEFUL;
     private ClockTypeOption                  clockType = ClockTypeOption.get( "realtime" );
     
-    private String                           scope = ApplicationScoped.class.getName();    
+    private String                           scope = "javax.enterprise.context.ApplicationScoped";
 
     private KieBaseModelImpl                 kBase;
 
@@ -163,7 +160,8 @@ public class KieSessionModelImpl
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final KieSessionModelImpl kSession = new KieSessionModelImpl();
             kSession.setName(reader.getAttribute("name"));
-            kSession.setType(KieSessionType.valueOf( reader.getAttribute("type").toUpperCase() ) );
+            String kSessionType = reader.getAttribute("type");
+            kSession.setType(kSessionType != null ? KieSessionType.valueOf( kSessionType.toUpperCase() ) : KieSessionType.STATEFUL);
 
             String clockType = reader.getAttribute("clockType");
             if (clockType != null) {

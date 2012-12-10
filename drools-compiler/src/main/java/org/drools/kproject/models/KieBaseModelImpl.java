@@ -1,6 +1,17 @@
 package org.drools.kproject.models;
 
-import static org.drools.core.util.IoUtils.recursiveListFile;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.core.util.AbstractXStreamConverter;
+import org.drools.core.util.Predicate;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieModuleModel;
+import org.kie.builder.KieSessionModel;
+import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EventProcessingOption;
+import org.kie.io.ResourceType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,21 +24,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.enterprise.context.ApplicationScoped;
-
-import org.drools.core.util.AbstractXStreamConverter;
-import org.drools.core.util.Predicate;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieSessionModel;
-import org.kie.conf.AssertBehaviorOption;
-import org.kie.conf.EventProcessingOption;
-import org.kie.io.ResourceType;
-
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import static org.drools.core.util.IoUtils.recursiveListFile;
 
 public class KieBaseModelImpl
         implements
@@ -49,7 +46,7 @@ public class KieBaseModelImpl
 
     private KieModuleModel               kModule;
     
-    private String                       scope = ApplicationScoped.class.getName();
+    private String                       scope = "javax.enterprise.context.ApplicationScoped";
 
     private KieBaseModelImpl() {
     }

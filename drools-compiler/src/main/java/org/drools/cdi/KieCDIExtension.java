@@ -1,15 +1,26 @@
 package org.drools.cdi;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.drools.kproject.models.KieSessionModelImpl;
+import org.kie.KieBase;
+import org.kie.builder.GAV;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieContainer;
+import org.kie.builder.KieFactory;
+import org.kie.builder.KieServices;
+import org.kie.builder.KieSessionModel;
+import org.kie.builder.KieSessionModel.KieSessionType;
+import org.kie.builder.impl.InternalKieModule;
+import org.kie.builder.impl.KieContainerImpl;
+import org.kie.builder.impl.KieProject;
+import org.kie.cdi.KBase;
+import org.kie.cdi.KGAV;
+import org.kie.cdi.KSession;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKieSession;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -23,31 +34,14 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
-
-import org.drools.kproject.models.KieSessionModelImpl;
-import org.jboss.weld.literal.AnyLiteral;
-import org.kie.KieBase;
-import org.kie.builder.GAV;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieContainer;
-import org.kie.builder.KieFactory;
-import org.kie.builder.KieRepository;
-import org.kie.builder.KieServices;
-import org.kie.builder.KieSessionModel;
-import org.kie.builder.KieSessionModel.KieSessionType;
-import org.kie.builder.impl.ClasspathKieProject;
-import org.kie.builder.impl.InternalKieModule;
-import org.kie.builder.impl.KieContainerImpl;
-import org.kie.builder.impl.KieProject;
-import org.kie.cdi.KBase;
-import org.kie.cdi.KGAV;
-import org.kie.cdi.KSession;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKieSession;
-import org.kie.runtime.StatelessKnowledgeSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class KieCDIExtension
     implements
