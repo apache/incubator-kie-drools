@@ -67,7 +67,7 @@ public class DependencyDescriptor {
     }
 
     public boolean isFixedVersion() {
-        return !isSnapshot() && !version.equals("LATEST") && !version.equals(")");
+        return !isSnapshot() && !version.equals("LATEST") && !version.equals("RELEASE");
     }
 
     public boolean isSnapshot() {

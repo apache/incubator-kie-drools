@@ -141,7 +141,7 @@ public class KieRepositoryScannerTest {
         InternalKieModule kJar1 = createKieJarWithClass(ks, kf, gav1, 2, 7);
         repository.deployArtifact(gav1, kJar1, createKPom(gav1));
 
-        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-master-test", "1.0"));
+        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-master-test", "LATEST"));
         KieSession ksession = kieContainer.getKieSession("KSession1");
         checkKSession(ksession, 14);
 
