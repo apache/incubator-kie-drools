@@ -4,12 +4,15 @@ package org.drools.cdi.example;
 import static org.junit.Assert.assertEquals;
 import javax.inject.Inject;
 
+import org.drools.cdi.CDIScopeTest;
 import org.drools.cdi.CDITestRunner;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(CDITestRunner.class)
-public class CDIExamplesTest {
+public class CDIExamplesTest  {
     
     @Inject
     private Message defaultMsg;    
@@ -38,7 +41,25 @@ public class CDIExamplesTest {
 
     
     @Inject @Msg("chained2")
-    private String msgChained2;    
+    private String msgChained2; 
+    
+    @BeforeClass
+    public static void beforeClass() {    
+        CDITestRunner.weld = CDITestRunner.createWeld( CDIExamplesTest.class.getName(),
+                                                       Msg.class.getName(), Msg1.class.getName(), Msg2.class.getName(), 
+                                                       Message.class.getName(), MessageImpl.class.getName(), 
+                                                       Message2.class.getName(), Message2Impl1.class.getName(), Message2Impl2.class.getName(),
+                                                       MessageProducers.class.getName(), MessageProducers2.class.getName() );
+        CDITestRunner.container = CDITestRunner.weld.initialize();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        CDITestRunner.weld.shutdown();
+        CDITestRunner.container = null;
+        CDITestRunner.weld = null;
+    }          
+    
     @Test
     public void testDefaultInjection() {
         assertEquals( "default.msg", defaultMsg.getText() );        

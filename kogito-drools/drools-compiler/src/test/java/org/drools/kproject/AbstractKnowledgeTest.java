@@ -54,6 +54,10 @@ public class AbstractKnowledgeTest {
         this.fileManager.tearDown();
     }
     
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+    
     public void testEntry(KProjectTestClass testClass, String jarName) {
         List<String> list = new ArrayList<String>();
 
@@ -61,16 +65,16 @@ public class AbstractKnowledgeTest {
         stlsKsession.setGlobal( "list", list );
         stlsKsession.execute( "dummy" );
         assertEquals( 2, list.size() );
-        assertTrue( list.contains( jarName + ".test1:rule1" ) );
-        assertTrue( list.contains( jarName + ".test1:rule2" ) );
+        assertTrue( list.contains( jarName + ".test1:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2:1.0-SNAPSHOT" ) );
 
         list.clear();
         KieSession stflKsession = testClass.getKBase1KSession2();
         stflKsession.setGlobal( "list", list );
         stflKsession.fireAllRules();
         assertEquals( 2, list.size() );
-        assertTrue( list.contains( jarName + ".test1:rule1" ) );
-        assertTrue( list.contains( jarName + ".test1:rule2" ) );
+        assertTrue( list.contains( jarName + ".test1:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2:1.0-SNAPSHOT" ) );
 
         list.clear();
         stflKsession = testClass.getKBase2KSession3();
@@ -78,22 +82,31 @@ public class AbstractKnowledgeTest {
         stflKsession.fireAllRules();
         assertEquals( 2, list.size() );
 
-        assertTrue( list.contains( jarName + ".test2:rule1" ) );
-        assertTrue( list.contains( jarName + ".test2:rule2" ) );
+        assertTrue( list.contains( jarName + ".test2:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test2:rule2:1.0-SNAPSHOT" ) );
 
         list.clear();
         stlsKsession = testClass.getKBase3KSession4();
         stlsKsession.setGlobal( "list", list );
         stlsKsession.execute( "dummy" );
         assertEquals( 4, list.size() );
-        assertTrue( list.contains( jarName + ".test1:rule1" ) );
-        assertTrue( list.contains( jarName + ".test1:rule2" ) );
-        assertTrue( list.contains( jarName + ".test2:rule1" ) );
-        assertTrue( list.contains( jarName + ".test2:rule2" ) );
+        assertTrue( list.contains( jarName + ".test1:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test2:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test2:rule2:1.0-SNAPSHOT" ) );
     }    
 
     public KieModuleModel createKieModule(String namespace,
-                                boolean createJar) throws IOException,
+                                          boolean createJar) throws IOException,
+                      ClassNotFoundException,
+                      InterruptedException {
+        return createKieModule( namespace, createJar, "1.0-SNAPSHOT" );
+        
+    }
+                                          
+    public KieModuleModel createKieModule(String namespace,
+                                boolean createJar,
+                                String version) throws IOException,
             ClassNotFoundException,
             InterruptedException {
         KieModuleModel kproj = new KieModuleModelImpl();
@@ -133,14 +146,14 @@ public class AbstractKnowledgeTest {
         kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
         kfs.writeKModuleXML( ((KieModuleModelImpl)kproj).toXML()  );
         
-        GAV gav = KieFactory.Factory.get().newGav( namespace, "art1", "1.0-SNAPSHOT" );
+        GAV gav = KieFactory.Factory.get().newGav( namespace, "art1", version );
         kfs.generateAndWritePomXML( gav );        
 
-        String kBase1R1 = getRule( namespace + ".test1", "rule1" );
-        String kBase1R2 = getRule( namespace + ".test1", "rule2" );
+        String kBase1R1 = getRule( namespace + ".test1", "rule1", version );
+        String kBase1R2 = getRule( namespace + ".test1", "rule2", version );
 
-        String kbase2R1 = getRule( namespace + ".test2", "rule1" );
-        String kbase2R2 = getRule( namespace + ".test2", "rule2" );
+        String kbase2R1 = getRule( namespace + ".test2", "rule1", version );
+        String kbase2R2 = getRule( namespace + ".test2", "rule2", version );
                 
         String fldKB1 = "src/main/resources/" + kieBaseModel1.getName().replace( '.', '/' );
         String fldKB2 = "src/main/resources/" + kieBaseModel2.getName().replace( '.', '/' );
@@ -174,12 +187,13 @@ public class AbstractKnowledgeTest {
     }
 
     public String getRule(String packageName,
-                          String ruleName) {
+                          String ruleName,
+                          String version) {
         String s = "package " + packageName + "\n" +
                 "global java.util.List list;\n" +
                 "rule " + ruleName + " when \n" +
                 "then \n" +
-                "  list.add(\"" + packageName + ":" + ruleName + "\"); " +
+                "  list.add(\"" + packageName + ":" + ruleName + ":" + version + "\"); " +
                 "end \n" +
                 "";
         return s;

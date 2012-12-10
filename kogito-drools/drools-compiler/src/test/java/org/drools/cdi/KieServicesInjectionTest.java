@@ -19,6 +19,7 @@ import org.kie.runtime.KieSession;
 import static org.junit.Assert.*;
 
 @RunWith(CDITestRunner.class)
+@Ignore
 public class KieServicesInjectionTest {
     
     @Inject
@@ -56,8 +57,7 @@ public class KieServicesInjectionTest {
 //    KieSession ks2;
 //    
 //    @Inject @KSession("xxx") @KGAV(groupId="", artifactId="", version="")
-//    KieSession ks3;
-        
+//    KieSession ks3;    
     
     @Test
     public void testKieServicesInjection() {

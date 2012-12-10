@@ -28,6 +28,10 @@ import org.kie.util.ServiceRegistryImpl;
 public class KieServicesImpl implements KieServices {
     private ResourceFactoryService resourceFactory;
     
+    private volatile KieContainerImpl classpathKContainer;
+    
+    private final Object lock = new Object();
+    
     public ResourceFactoryService getResourceFactory() {
         if ( resourceFactory == null ) {
             this.resourceFactory = new ResourceFactoryServiceImpl();
@@ -43,8 +47,16 @@ public class KieServicesImpl implements KieServices {
      * Returns KieContainer for the classpath
      */
     public KieContainer getKieClasspathContainer() {
-        ClasspathKieProject kProject =  new ClasspathKieProject();
-        return new KieContainerImpl(kProject, null);
+        if ( classpathKContainer == null ) {
+            // these are heavy to create, don't want to end up with two
+            synchronized ( lock ) {
+                if ( classpathKContainer == null ) {
+                    classpathKContainer =  new KieContainerImpl(new ClasspathKieProject(), null);
+                }
+            }        
+        }
+
+        return classpathKContainer;
     }
     
     public KieContainer getKieContainer(GAV gav) {
