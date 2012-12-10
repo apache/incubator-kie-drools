@@ -87,7 +87,7 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler{
         try {
             Iterable<Path> txtFiles = fs.loadFilesByType(testPath, "txt");
             if (txtFiles == null || !txtFiles.iterator().hasNext()){
-                report.append("EE ").append(testPath).append(" doesn't contain any .txt file!");
+                report.append("EE ").append(testPath).append(" doesn't contain any .txt file!\n");
                 success = false;
             } else{
                 Iterator<Path> iterator = txtFiles.iterator();
@@ -97,7 +97,7 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler{
                     String content = new String(fs.loadFile(path));
                     
                     if (content == null || content.isEmpty()){
-                        report.append("EE ").append(path).append(" is empty!");
+                        report.append("EE ").append(path).append(" is empty!\n");
                         success = false;
                         continue;
                     }
@@ -113,7 +113,7 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler{
                             Logger.getLogger(TriggerTestsWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else{
-                        report.append("II ").append(path).append(" -> OK");
+                        report.append("II ").append(path).append(" -> OK\n");
                     }
                     
                 }
@@ -122,14 +122,14 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler{
             throw new RuntimeException(ex);
         }
         
-        this.completeWorkItem(manager, minLength, success, report.toString());
+        this.completeWorkItem(manager, workItem.getId(), success, report.toString());
         
     }
 
-    private void completeWorkItem(WorkItemManager manager, int workItemId, boolean success, String report){
+    private void completeWorkItem(WorkItemManager manager, long workItemId, boolean success, String report){
         
         Map<String, Object> results = new HashMap<String, Object>();
-        results.put(WIP_OUTPUT_SUCCESSFUL, success);
+        results.put(WIP_OUTPUT_SUCCESSFUL, (success+"").toLowerCase());
         results.put(WIP_OUTPUT_REPORT, report);
                 
         manager.completeWorkItem(workItemId, results);

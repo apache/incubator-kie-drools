@@ -15,6 +15,7 @@
  */
 package org.droolsjbpm.services.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,6 +78,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
     @Inject
     private NotificationWorkItemHandler notificationWorkItemHandler;
     
+    
     private Domain domain;
     
 
@@ -136,8 +138,10 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         sessionManager.addKsessionHandler("releaseSession", "Email", notificationWorkItemHandler);
 
         sessionManager.registerHandlersForSession("releaseSession");
+        
+        sessionManager.registerRuleListenerForSession("releaseSession");
          
-
+        sessionManager.getKsessionByName("releaseSession").setGlobal("rulesFired", new ArrayList<String>());
     }
 
     @Override

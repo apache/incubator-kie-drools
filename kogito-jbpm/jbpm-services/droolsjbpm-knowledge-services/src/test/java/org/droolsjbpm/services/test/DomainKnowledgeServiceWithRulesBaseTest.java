@@ -34,6 +34,8 @@ import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
+import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
+import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.junit.Test;
 
@@ -61,6 +63,12 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
     private SessionManager sessionManager;
     @Inject
     private KnowledgeDomainService domainService;
+    
+    @Inject
+    private TriggerTestsWorkItemHandler triggerTestsWorkItemHandler;
+    
+    @Inject
+    private NotificationWorkItemHandler notificationWorkItemHandler;
 
     @Test
     public void testReleaseProcessWithRules() throws FileException, InterruptedException {
@@ -92,11 +100,11 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
-        sessionManager.addKsessionHandler("myKsession", "TriggerTests", new MockTestWorkItemHandler());
+        sessionManager.addKsessionHandler("myKsession", "TriggerTests", triggerTestsWorkItemHandler);
         sessionManager.addKsessionHandler("myKsession", "MoveBackToStaging", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToProduction", new DoNothingWorkItemHandler());
-        sessionManager.addKsessionHandler("myKsession", "ApplyChangestoRuntimes", new DoNothingWorkItemHandler());
-        sessionManager.addKsessionHandler("myKsession", "Email", new DoNothingWorkItemHandler());
+        
+        sessionManager.addKsessionHandler("myKsession", "Email", notificationWorkItemHandler);
 
         sessionManager.registerHandlersForSession("myKsession");
 

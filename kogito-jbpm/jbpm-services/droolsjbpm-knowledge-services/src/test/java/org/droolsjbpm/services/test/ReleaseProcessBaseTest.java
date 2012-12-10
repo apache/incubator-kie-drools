@@ -149,7 +149,7 @@ public abstract class ReleaseProcessBaseTest {
             myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
 
-        sessionManager.buildSessions();
+        sessionManager.buildSessions(false);
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", moveFilesWIHandler);
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", moveFilesWIHandler);
