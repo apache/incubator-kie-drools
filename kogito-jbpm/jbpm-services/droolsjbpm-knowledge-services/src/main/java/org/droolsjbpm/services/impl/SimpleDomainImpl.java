@@ -35,8 +35,11 @@ public class SimpleDomainImpl implements Domain{
     // Asset Name / Assets Definition Path 
     private Map<String, String> assetsDefs = new HashMap<String, String>();
     
-    // Ksession Name / List of assets Paths
-    private Map<String, List<Path>> ksessionAssets = new HashMap<String, List<Path>>();
+    // Ksession Name / List of process assets Paths
+    private Map<String, List<Path>> ksessionProcessDefinitions = new HashMap<String, List<Path>>();
+    
+    // Ksession Name / List of rules assets Paths
+    private Map<String, List<Path>> ksessionRulesDefinitions = new HashMap<String, List<Path>>();
     
     // Process Id (String) / Process Content.. (?? this is really needed??)
     private Map<String, Map<String,String>> processes = new HashMap<String, Map<String,String>>();
@@ -98,26 +101,46 @@ public class SimpleDomainImpl implements Domain{
 
     
     @Override
-    public Map<String, List<Path>> getKsessionAssets() {
-        return ksessionAssets;
+    public Map<String, List<Path>> getProcessDefinitionFromKsession() {
+        return ksessionProcessDefinitions;
     }
 
     @Override
-    public void setKsessionAssets(Map<String, List<Path>> ksessionAssets) {
-        this.ksessionAssets = ksessionAssets;
+    public void setProcessDefinitionToKsessions(Map<String, List<Path>> ksessionProcessDefinitions) {
+        this.ksessionProcessDefinitions = ksessionProcessDefinitions;
     }
     
     @Override
-    public void addKsessionAsset(String ksession, Path path){
-        if(this.ksessionAssets.get(ksession) == null){
-            this.ksessionAssets.put(ksession, new ArrayList<Path>());
+    public void addProcessDefinitionToKsession(String ksession, Path path){
+        if(this.ksessionProcessDefinitions.get(ksession) == null){
+            this.ksessionProcessDefinitions.put(ksession, new ArrayList<Path>());
         }
-        this.ksessionAssets.get(ksession).add(path);
+        this.ksessionProcessDefinitions.get(ksession).add(path);
         
+    }
+    
+    @Override
+    public Map<String, List<Path>> getRulesDefinitionFromKsession() {
+        return ksessionRulesDefinitions;
     }
 
     @Override
-    public void addProcessToKsession(String sessionName, String processId, String bpmn2Content) {
+    public void setRulesDefinitionToKsessions(Map<String, List<Path>> ksessionRulesDefinitions) {
+        this.ksessionRulesDefinitions = ksessionRulesDefinitions;
+    }
+    
+    @Override
+    public void addRulesDefinitionToKsession(String ksession, Path path){
+        if(this.ksessionRulesDefinitions.get(ksession) == null){
+            this.ksessionRulesDefinitions.put(ksession, new ArrayList<Path>());
+        }
+        this.ksessionRulesDefinitions.get(ksession).add(path);
+        
+    }
+    
+
+    @Override
+    public void addProcessBPMN2ContentToKsession(String sessionName, String processId, String bpmn2Content) {
         if(processes.get(sessionName) == null){
             processes.put(sessionName, new HashMap<String, String>());
         }

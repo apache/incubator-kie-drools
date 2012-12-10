@@ -36,18 +36,24 @@ public interface Domain {
     void addAsset(String name, String path);
 
   
-    Map<String, List<Path>> getKsessionAssets();
+    Map<String, List<Path>> getProcessDefinitionFromKsession();
 
-    void setKsessionAssets(Map<String, List<Path>> ksessionAssets);
+    void setProcessDefinitionToKsessions(Map<String, List<Path>> ksessionAssets);
     
-    void addKsessionAsset(String ksession, Path path);
+    void addProcessDefinitionToKsession(String ksession, Path path);
 
-    void addProcessToKsession(String ksessionName, String processId, String bpmn2Content);
+    void addProcessBPMN2ContentToKsession(String ksessionName, String processId, String bpmn2Content);
     
     Map<String, String> getAllProcesses();
     
     Map<String, String> getProcessesBySession(String kSessionName);
     
     String getProcessDefinitionBPMN2(String ksessionName, String processId);
+
+    void addRulesDefinitionToKsession(String ksession, Path path);
+
+    Map<String, List<Path>> getRulesDefinitionFromKsession();
+
+    void setRulesDefinitionToKsessions(Map<String, List<Path>> ksessionRulesDefinitions);
     
 }

@@ -52,7 +52,7 @@
 
       <property name="hibernate.max_fetch_depth" value="3" />
       <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-      <property name="hibernate.show_sql" value="true" />
+      <property name="hibernate.show_sql" value="false" />
 
       <!-- needed for JTA testing 
       <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" /> 

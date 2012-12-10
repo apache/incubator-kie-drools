@@ -27,14 +27,12 @@ import javax.inject.Named;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceDotFileImpl;
 import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Path;
 
 import static org.kie.commons.io.FileSystemType.Bootstrap.*;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
-import org.kie.commons.java.nio.file.OpenOption;
 import static org.kie.commons.validation.PortablePreconditions.*;
 
 /**

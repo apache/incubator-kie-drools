@@ -37,6 +37,7 @@ import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
+import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.junit.After;
 import org.junit.Assert;
@@ -95,7 +96,7 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (Path p : loadFilesByType) {
-            myDomain.addKsessionAsset("myKsession", p);
+            myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
         
         sessionManager.buildSessions();

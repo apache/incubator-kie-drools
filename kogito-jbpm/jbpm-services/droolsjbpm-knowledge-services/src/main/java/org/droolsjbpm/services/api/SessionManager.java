@@ -64,4 +64,6 @@ public interface SessionManager {
 
     void registerHandlersForSession(String ksessionName);
     
+    void registerRuleListenerForSession(String ksessionName);
+    
 }

@@ -33,6 +33,7 @@ import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
+import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
@@ -65,6 +66,9 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
     @Inject
     private SessionManager sessionManager;
     
+    @Inject
+    private MoveFileWorkItemHandler moveFilesWIHandler;
+    
     private Domain domain;
     
 
@@ -77,38 +81,40 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
     public void createDomain() {
         sessionManager.setDomain(domain);
 
-        Iterable<Path> releaseFiles = null;
-        Iterable<Path> exampleFiles = null;
+        Iterable<Path> releaseProcessesFiles = null;
+        Iterable<Path> releaseRulesFiles = null;
+        Iterable<Path> exampleProcessesFiles = null;
         try {
-            releaseFiles = fs.loadFilesByType("examples/release/", "bpmn");
-            exampleFiles = fs.loadFilesByType("examples/general/", "bpmn");
+            releaseProcessesFiles = fs.loadFilesByType("examples/release/", "bpmn");
+            releaseRulesFiles = fs.loadFilesByType("examples/release/", "drl");
+            exampleProcessesFiles = fs.loadFilesByType("examples/general/", "bpmn");
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        for (Path p : releaseFiles) {
+        for (Path p : releaseProcessesFiles) {
             String kSessionName = "releaseSession";
-            domain.addKsessionAsset(kSessionName, p);
+            domain.addProcessDefinitionToKsession(kSessionName, p);
             System.out.println(" >>> Adding Path to ReleaseSession- > "+p.toString());
             // TODO automate this in another service
             String processString = new String( ioService.readAllBytes( p ) );
-            domain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            domain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
-        for (Path p : exampleFiles) {
+        for (Path p : exampleProcessesFiles) {
             String kSessionName = "generalSession";
-            domain.addKsessionAsset("generalSession", p);
+            domain.addProcessDefinitionToKsession("generalSession", p);
             System.out.println(" >>> Adding Path to GeneralSession - > "+p.toString());
             // TODO automate this in another service
             String processString = new String( ioService.readAllBytes( p ) );
-            domain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            domain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
 
         sessionManager.buildSessions();
 
-        sessionManager.addKsessionHandler("releaseSession", "MoveToStagingArea", new DoNothingWorkItemHandler());
-        sessionManager.addKsessionHandler("releaseSession", "MoveToTest", new DoNothingWorkItemHandler());
-        sessionManager.addKsessionHandler("releaseSession", "TriggerTests", new DoNothingWorkItemHandler());
-        sessionManager.addKsessionHandler("releaseSession", "MoveBackToStaging", new DoNothingWorkItemHandler());
-        sessionManager.addKsessionHandler("releaseSession", "MoveToProduction", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "MoveToStagingArea",moveFilesWIHandler);
+        sessionManager.addKsessionHandler("releaseSession", "MoveToTest", moveFilesWIHandler);
+        sessionManager.addKsessionHandler("releaseSession", "TriggerTests", new MockTestWorkItemHandler());
+        sessionManager.addKsessionHandler("releaseSession", "MoveBackToStaging", moveFilesWIHandler);
+        sessionManager.addKsessionHandler("releaseSession", "MoveToProduction", moveFilesWIHandler);
         sessionManager.addKsessionHandler("releaseSession", "ApplyChangestoRuntimes", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("releaseSession", "Email", new DoNothingWorkItemHandler());
 
@@ -152,6 +158,28 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
             }
             
             wim.completeWorkItem(wi.getId(), null);
+        }
+
+        @Override
+        public void abortWorkItem(WorkItem wi, WorkItemManager wim) {
+        }
+    }
+    
+     private class MockTestWorkItemHandler implements WorkItemHandler {
+
+        @Override
+        public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
+            for(String k : wi.getParameters().keySet()){
+                System.out.println("Key = "+ k + " - value = "+wi.getParameter(k));
+            }
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("out_test_successful", "true");
+            params.put("out_test_report", "All Test were SUCCESSFULY executed!");
+            System.out.println("######### Test Output");
+            System.out.println(" out_test_successful = " + params.get("out_test_successful"));
+            System.out.println(" out_test_report = " + params.get("out_test_report"));
+            System.out.println("#####################");
+            wim.completeWorkItem(wi.getId(), params);
         }
 
         @Override

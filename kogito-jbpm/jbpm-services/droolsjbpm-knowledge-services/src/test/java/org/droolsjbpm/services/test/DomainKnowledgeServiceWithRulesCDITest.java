@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.droolsjbpm.services.wih.test;
+package org.droolsjbpm.services.test;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -21,11 +21,11 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
 import org.junit.runner.RunWith;
 
-
 @RunWith(Arquillian.class)
-public class DomainKnowledgeServiceWorkItemsCDITest extends DomainKnowledgeServiceWorkItemsTest {
+public class DomainKnowledgeServiceWithRulesCDITest extends DomainKnowledgeServiceWithRulesBaseTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -67,5 +67,12 @@ public class DomainKnowledgeServiceWorkItemsCDITest extends DomainKnowledgeServi
                 .addAsManifestResource("META-INF/services/org.kie.commons.java.nio.file.spi.FileSystemProvider", ArchivePaths.create("org.kie.commons.java.nio.file.spi.FileSystemProvider"));
 
     }
-
+    
+    @After
+    public void tearDown() throws Exception {
+        int removedTasks = taskService.removeAllTasks();
+        int removedLogs = adminDataService.removeAllData();
+        System.out.println(" --> Removed Tasks = "+removedTasks + " - ");
+        System.out.println(" --> Removed Logs = "+removedLogs + " - ");
+    }
 }

@@ -53,6 +53,7 @@ import org.kie.definition.process.Process;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
+import org.kie.runtime.rule.QueryResults;
 
 public abstract class DomainKnowledgeServiceBaseTest {
 
@@ -85,9 +86,9 @@ public abstract class DomainKnowledgeServiceBaseTest {
         }
         for (Path p : loadFilesByType) {
             String kSessionName = "myKsession";
-            myDomain.addKsessionAsset(kSessionName, p);
+            myDomain.addProcessDefinitionToKsession(kSessionName, p);
             String processString = new String( fs.loadFile(p) );
-            myDomain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
 
         sessionManager.buildSessions(); //DO THIS -> OR oneSessionOneProcessStrategy.buildSessionByName("mySession");
@@ -122,9 +123,9 @@ public abstract class DomainKnowledgeServiceBaseTest {
         for (Path p : loadFilesByType) {
             
             String kSessionName = "myKsession" + i;
-            myDomain.addKsessionAsset(kSessionName , p);
+            myDomain.addProcessDefinitionToKsession(kSessionName , p);
             String processString = new String( fs.loadFile(p) );
-            myDomain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
             i++;
         }
 
@@ -149,6 +150,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
 
     }
+    
 
     @Test
     public void testReleaseProcess() throws FileException {
@@ -164,16 +166,16 @@ public abstract class DomainKnowledgeServiceBaseTest {
         for (Path p : loadFilesByType) {
             String kSessionName = "myKsession";
             System.out.println(" >>> Loading Path -> "+p.toString());
-            myDomain.addKsessionAsset("myKsession", p);
+            myDomain.addProcessDefinitionToKsession("myKsession", p);
             String processString = new String( fs.loadFile(p) );
-            myDomain.addProcessToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
 
         sessionManager.buildSessions();
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
-        sessionManager.addKsessionHandler("myKsession", "TriggerTests", new DoNothingWorkItemHandler());
+        sessionManager.addKsessionHandler("myKsession", "TriggerTests", new MockTestWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveBackToStaging", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToProduction", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "ApplyChangestoRuntimes", new DoNothingWorkItemHandler());
@@ -227,7 +229,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         
         
         
-        assertEquals(1, ((String)taskContent.get("selected_files")).split(",").length);
+        assertEquals(1, ((String)taskContent.get("in_files")).split(",").length);
         
         params = new HashMap<String, Object>();
         params.put("out_selected_files", files);
@@ -240,6 +242,10 @@ public abstract class DomainKnowledgeServiceBaseTest {
         
         
     }
+    
+    
+   
+    
     
     @Test
     public void knowledgeDomainTest(){
@@ -262,7 +268,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (Path p : loadFilesByType) {
-            myDomain.addKsessionAsset("myKsession", p);
+            myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
 
         sessionManager.buildSessions();
@@ -448,7 +454,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (Path p : loadFilesByType) {
-            myDomain.addKsessionAsset("myKsession", p);
+            myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
 
         sessionManager.buildSessions();
@@ -537,6 +543,24 @@ public abstract class DomainKnowledgeServiceBaseTest {
             }
             
             wim.completeWorkItem(wi.getId(), null);
+        }
+
+        @Override
+        public void abortWorkItem(WorkItem wi, WorkItemManager wim) {
+        }
+    }
+    
+     private class MockTestWorkItemHandler implements WorkItemHandler {
+
+        @Override
+        public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
+            for(String k : wi.getParameters().keySet()){
+                System.out.println("Key = "+ k + " - value = "+wi.getParameter(k));
+            }
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("out_test_successful", "true");
+            params.put("out_test_report", "All Test were SUCCESSFULY executed!");
+            wim.completeWorkItem(wi.getId(), params);
         }
 
         @Override

@@ -80,6 +80,7 @@ public class BPMN2DataServicesTest {
                 .addPackage("org.kie.commons.java.nio.fs.jgit")
                 .addPackage("org.droolsjbpm.services.test")
                 .addPackage("org.droolsjbpm.services.impl.event.listeners")
+                .addPackage("org.droolsjbpm.services.impl.example") 
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"))
