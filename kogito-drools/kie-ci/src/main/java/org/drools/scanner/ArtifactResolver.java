@@ -20,7 +20,7 @@ class ArtifactResolver {
 
     private final MavenRepository mavenRepository;
 
-    private ArtifactResolver() {
+    ArtifactResolver() {
         mavenRepository = MavenRepository.getMavenRepository();
         pomParser = new EmbeddedPomParser();
     }

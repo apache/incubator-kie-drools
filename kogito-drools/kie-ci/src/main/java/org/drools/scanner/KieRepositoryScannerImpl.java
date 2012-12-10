@@ -53,6 +53,13 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         init();
     }
 
+    private ArtifactResolver getArtifactResolver() {
+        if (artifactResolver == null) {
+            artifactResolver = new ArtifactResolver();
+        }
+        return artifactResolver;
+    }
+
     private void init() {
         Collection<Artifact> artifacts = findKJarAtifacts();
         log.info("Artifacts containing a kjar: " + artifacts);
@@ -65,7 +72,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     public KieModule loadArtifact(GAV gav) {
         String artifactName = gav.toString();
-        Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName);
+        Artifact artifact = getArtifactResolver().resolveArtifact(artifactName);
         return artifact != null ? buildArtifact(gav, artifact) : loadPomArtifact(gav);
     }
 
@@ -76,21 +83,27 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
 
         MemoryKieModule kieModule = new MemoryKieModule(gav);
-        for (DependencyDescriptor dep : resolver.getPomDirectDependencies()) {
+        addDependencies(kieModule, resolver, resolver.getPomDirectDependencies());
+        build(kieModule);
+        return kieModule;
+    }
+
+    private InternalKieModule buildArtifact(GAV gav, Artifact artifact) {
+        ArtifactResolver resolver = getArtifactResolver();
+        ZipKieModule kieModule = new ZipKieModule(gav, artifact.getFile());
+        addDependencies(kieModule, resolver, resolver.getArtifactDependecies(new DependencyDescriptor(artifact).toString()));
+        build(kieModule);
+        return kieModule;
+    }
+    
+    private void addDependencies(InternalKieModule kieModule, ArtifactResolver resolver, List<DependencyDescriptor> dependencies) {
+        for (DependencyDescriptor dep : dependencies) {
             Artifact depArtifact = resolver.resolveArtifact(dep.toString());
             if (isKJar(depArtifact.getFile())) {
                 GAV depGav = new DependencyDescriptor(depArtifact).getGav();
                 kieModule.addDependency(new ZipKieModule(depGav, depArtifact.getFile()));
             }
         }
-        build(kieModule);
-        return kieModule;
-    }
-
-    private InternalKieModule buildArtifact(GAV gav, Artifact artifact) {
-        ZipKieModule kieModule = new ZipKieModule(gav, artifact.getFile());
-        build(kieModule);
-        return kieModule;
     }
 
     private Messages build(InternalKieModule kieModule) {
@@ -152,7 +165,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private Collection<Artifact> scanForUpdates(Collection<DependencyDescriptor> dependencies) {
         List<Artifact> newArtifacts = new ArrayList<Artifact>();
         for (DependencyDescriptor dependency : dependencies) {
-            Artifact newArtifact = artifactResolver.resolveArtifact(dependency.toResolvableString());
+            Artifact newArtifact = getArtifactResolver().resolveArtifact(dependency.toResolvableString());
             DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
             if (resolvedDep.isNewerThan(dependency)) {
                 newArtifacts.add(newArtifact);
@@ -168,7 +181,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     private Collection<Artifact> findKJarAtifacts() {
-        Collection<DependencyDescriptor> deps = artifactResolver.getAllDependecies();
+        Collection<DependencyDescriptor> deps = getArtifactResolver().getAllDependecies();
         deps = filterNonFixedDependecies(deps);
         Collection<Artifact> artifacts = resolveArtifacts(deps);
         return filterKJarArtifacts(artifacts);
@@ -187,7 +200,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private List<Artifact> resolveArtifacts(Collection<DependencyDescriptor> dependencies) {
         List<Artifact> artifacts = new ArrayList<Artifact>();
         for (DependencyDescriptor dep : dependencies) {
-            Artifact artifact = artifactResolver.resolveArtifact(dep.toString());
+            Artifact artifact = getArtifactResolver().resolveArtifact(dep.toString());
             artifacts.add(artifact);
             log.debug( artifact + " resolved to  " + artifact.getFile() );
         }
