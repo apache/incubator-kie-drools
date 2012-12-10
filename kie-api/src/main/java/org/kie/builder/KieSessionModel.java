@@ -28,8 +28,12 @@ public interface KieSessionModel {
     
     KieSessionModel setScope(String scope);
     
-    String getScope();    
-    
+    String getScope();
+
+    boolean isDefault();
+
+    KieSessionModel setDefault(boolean isDefault);
+
     public static enum KieSessionType {
         STATEFUL, STATELESS;
     }

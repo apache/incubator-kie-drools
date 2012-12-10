@@ -3,8 +3,8 @@ package org.kie.builder;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface KieBaseModel {
 
@@ -22,7 +22,7 @@ public interface KieBaseModel {
     
     KieBaseModel setName(String name);
 
-    Set<String> getPackages();
+    List<String> getPackages();
     
     KieBaseModel addPackage(String pkg);
     
@@ -39,4 +39,8 @@ public interface KieBaseModel {
     KieBaseModel setScope(String scope);
     
     String getScope();
+
+    boolean isDefault();
+
+    KieBaseModel setDefault(boolean isDefault);
 }
