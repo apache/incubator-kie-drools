@@ -79,6 +79,9 @@ public class JpaPersistenceContextManager
             cmdScopedEntityManager = this.cmdScopedEntityManager;
         } else {
             internalCmdScopedEntityManager = false;
+        //	TODO: Gae it should not be empty - tentative to be added always
+        	if ((System.getProperties().get("com.google.appengine.application.id")!=null))
+        		this.cmdScopedEntityManager = cmdScopedEntityManager;
         }
         cmdScopedEntityManager.joinTransaction();
         appScopedEntityManager.joinTransaction();
