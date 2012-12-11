@@ -7,6 +7,7 @@ import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieBase;
 import org.kie.builder.GAV;
@@ -156,7 +157,7 @@ public class KieBuilderTest {
         createAndTestKieContainer(gav, createKieBuilder(kfs), namespace );
     }
     
-    @Test
+    @Test @Ignore
     public void testNoProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
         

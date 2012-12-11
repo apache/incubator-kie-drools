@@ -16,6 +16,9 @@
 
 package org.drools.io.impl;
 
+import org.drools.io.internal.InternalResource;
+import org.kie.io.Resource;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +28,6 @@ import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
-
-import org.drools.io.internal.InternalResource;
-import org.kie.io.Resource;
 
 public class EncodedResource  extends BaseResource implements InternalResource, Externalizable {
     private InternalResource resource;
@@ -56,7 +56,7 @@ public class EncodedResource  extends BaseResource implements InternalResource, 
         }
         this.resource = (InternalResource) resource;
         this.encoding = encoding;
-        setName( resource.getName() );
+        setName( this.resource.getName() );
         setResourceType( resource.getResourceType() );
         setConfiguration( resource.getConfiguration() );
     }

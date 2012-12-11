@@ -1,18 +1,19 @@
 package org.kie.builder.impl;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Properties;
-
 import org.drools.compiler.io.memory.MemoryFileSystem;
+import org.drools.io.internal.InternalResource;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieFileSystem;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceType;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class KieFileSystemImpl
         implements
@@ -51,15 +52,16 @@ public class KieFileSystemImpl
     }
 
     public KieFileSystem write(Resource resource) {
+        String resourceName = ((InternalResource)resource).getName();
         try {
-            if( resource.getName() != null ) {
-                write( RESOURCE_PATH_PREFIX+resource.getName(), readBytesFromInputStream(resource.getInputStream()) );
+            if( resourceName != null ) {
+                write( RESOURCE_PATH_PREFIX + resourceName, readBytesFromInputStream(resource.getInputStream()) );
                 ResourceConfiguration conf = resource.getConfiguration();
                 if( conf != null ) {
                     Properties prop = ResourceType.toProperties( conf );
                     ByteArrayOutputStream buff = new ByteArrayOutputStream();
-                    prop.store( buff, "Configuration properties for resource: "+resource.getName() );
-                    write( RESOURCE_PATH_PREFIX+resource.getName()+".properties", buff.toByteArray() );
+                    prop.store( buff, "Configuration properties for resource: " + resourceName );
+                    write( RESOURCE_PATH_PREFIX + resourceName + ".properties", buff.toByteArray() );
                 }
                 return this;
             } else {
