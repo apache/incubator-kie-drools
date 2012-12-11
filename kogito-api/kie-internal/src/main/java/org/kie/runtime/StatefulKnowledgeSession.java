@@ -98,7 +98,7 @@ import org.kie.KnowledgeBase;
  */
 public interface StatefulKnowledgeSession
     extends
-    KieSession {
+    KieSession, KnowledgeRuntime {
 	
 	KnowledgeBase getKnowledgeBase();
 

@@ -16,17 +16,17 @@
 
 package org.kie.definition.rule;
 
+import org.kie.definition.KieDefinition;
+
 import java.util.Collection;
 import java.util.Map;
-
-import org.kie.definition.KnowledgeDefinition;
 
 /**
  * Public Rule interface for runtime rule inspection.
  */
 public interface Rule
     extends
-    KnowledgeDefinition {
+    KieDefinition {
 
     /**
      * Returns the package name (namespace) this rule is tied to.

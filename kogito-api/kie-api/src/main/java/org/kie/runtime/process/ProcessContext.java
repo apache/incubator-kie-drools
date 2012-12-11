@@ -16,12 +16,12 @@
 
 package org.kie.runtime.process;
 
-import org.kie.runtime.KnowledgeContext;
+import org.kie.runtime.KieContext;
 
 /**
  * Represents the context when executing a process.
  */
-public interface ProcessContext extends KnowledgeContext {
+public interface ProcessContext extends KieContext {
 
     /**
      * Returns the process instance that is currently being

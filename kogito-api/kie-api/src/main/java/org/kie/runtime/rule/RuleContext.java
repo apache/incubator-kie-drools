@@ -17,9 +17,9 @@
 package org.kie.runtime.rule;
 
 import org.kie.definition.rule.Rule;
-import org.kie.runtime.KnowledgeContext;
+import org.kie.runtime.KieContext;
 
-public interface RuleContext extends KnowledgeContext {
+public interface RuleContext extends KieContext {
     
     /**
      * Returns the active Rule for the current context

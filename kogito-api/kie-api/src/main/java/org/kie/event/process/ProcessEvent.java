@@ -16,7 +16,7 @@
 
 package org.kie.event.process;
 
-import org.kie.event.KnowledgeRuntimeEvent;
+import org.kie.event.KieRuntimeEvent;
 import org.kie.runtime.process.ProcessInstance;
 
 /**
@@ -24,7 +24,7 @@ import org.kie.runtime.process.ProcessInstance;
  */
 public interface ProcessEvent
     extends
-    KnowledgeRuntimeEvent {
+    KieRuntimeEvent {
 
 	/**
 	 * The ProcessInstance this event relates to.

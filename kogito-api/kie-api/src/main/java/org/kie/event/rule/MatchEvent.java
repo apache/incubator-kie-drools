@@ -17,12 +17,12 @@
 package org.kie.event.rule;
 
 
-import org.kie.event.KnowledgeRuntimeEvent;
+import org.kie.event.KieRuntimeEvent;
 import org.kie.runtime.rule.Match;
 
 public interface MatchEvent
     extends
-    KnowledgeRuntimeEvent {
+    KieRuntimeEvent {
 
     public Match getMatch();
 
