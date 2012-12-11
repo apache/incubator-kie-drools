@@ -30,18 +30,17 @@
 
 package org.kie.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
 import org.kie.Service;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
 import org.kie.concurrent.KieExecutors;
 import org.kie.marshalling.KieMarshallers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * This is an internal class, not for public consumption.
@@ -191,8 +190,6 @@ public class ServiceRegistryImpl
                      "org.drools.concurrent.ExecutorProviderImpl");
         addDefault(  KieServices.class,
                      "org.kie.builder.impl.KieServicesImpl");
-        addDefault( KieFactory.class,
-                    "org.kie.builder.impl.KieFactoryImpl");
         addDefault( KieScanner.class,
                     "org.drools.scanner.KieRepositoryScannerImpl");
     }

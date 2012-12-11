@@ -16,13 +16,13 @@ public interface KieContainer {
 
     KieBase getKieBase(String kBaseName);
 
-    KieSession getKieSession();
+    KieSession newKieSession();
 
-    KieSession getKieSession(String kSessionName);
+    KieSession newKieSession(String kSessionName);
 
-    StatelessKieSession getKieStatelessSession();
+    StatelessKieSession newKieStatelessSession();
     
-    StatelessKieSession getKieStatelessSession(String kSessionName);
+    StatelessKieSession newKieStatelessSession(String kSessionName);
     
     ClassLoader getClassLoader();
 }
