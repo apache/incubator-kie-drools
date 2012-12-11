@@ -16,25 +16,23 @@
 
 package org.jbpm.process.instance.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.rule.MVELDialectRuntimeData;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
-import org.kie.runtime.process.StatefulProcessSession;
 import org.drools.spi.GlobalResolver;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessContext;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 
 public class MVELAction
     implements
@@ -85,10 +83,10 @@ public class MVELAction
         }
 
         InternalWorkingMemory internalWorkingMemory = null;
-        if( context.getKnowledgeRuntime() instanceof StatefulKnowledgeSessionImpl ) { 
-            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKnowledgeRuntime()).session;
-        } else if( context.getKnowledgeRuntime() instanceof StatelessKnowledgeSessionImpl ) { 
-            StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKnowledgeRuntime()).newWorkingMemory();
+        if( context.getKieRuntime() instanceof StatefulKnowledgeSessionImpl ) {
+            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKieRuntime()).session;
+        } else if( context.getKieRuntime() instanceof StatelessKnowledgeSessionImpl ) {
+            StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKieRuntime()).newWorkingMemory();
             internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).session;
         } 
         
@@ -100,7 +98,7 @@ public class MVELAction
                                null, // No (left) tuples
                                vars, 
                                internalWorkingMemory,
-                               (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
+                               (GlobalResolver) context.getKieRuntime().getGlobals() );
         
 //        KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
 //        if ( pkg != null && pkg instanceof KnowledgePackageImp) {

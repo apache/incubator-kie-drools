@@ -1,18 +1,18 @@
 package org.jbpm.process.instance.impl;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.KieRuntime;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkflowProcessInstance;
 import org.kie.runtime.rule.FactHandle;
+
+import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RuleAwareProcessEventLister implements ProcessEventListener {
     
@@ -20,7 +20,7 @@ public class RuleAwareProcessEventLister implements ProcessEventListener {
 
     public void beforeProcessStarted(ProcessStartedEvent event) {
         
-        FactHandle handle = event.getKnowledgeRuntime().insert(event.getProcessInstance());
+        FactHandle handle = event.getKieRuntime().insert(event.getProcessInstance());
         store.put(event.getProcessInstance().getId(), handle);
     }
 
@@ -33,10 +33,10 @@ public class RuleAwareProcessEventLister implements ProcessEventListener {
     }
 
     public void afterProcessCompleted(ProcessCompletedEvent event) {
-        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKnowledgeRuntime());
+        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKieRuntime());
         
         if (handle != null) {
-            event.getKnowledgeRuntime().retract(handle);
+            event.getKieRuntime().retract(handle);
         }
     }
 
@@ -61,17 +61,17 @@ public class RuleAwareProcessEventLister implements ProcessEventListener {
     }
 
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
-        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKnowledgeRuntime());
+        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKieRuntime());
         
         if (handle != null) {
-            event.getKnowledgeRuntime().update(handle, event.getProcessInstance());
+            event.getKieRuntime().update(handle, event.getProcessInstance());
         } else {
-            handle = event.getKnowledgeRuntime().insert(event.getProcessInstance());
+            handle = event.getKieRuntime().insert(event.getProcessInstance());
             store.put(event.getProcessInstance().getId(), handle);
         }
     }
 
-    protected FactHandle getProcessInstanceFactHandle(final Long processInstanceId, KnowledgeRuntime kruntime) {
+    protected FactHandle getProcessInstanceFactHandle(final Long processInstanceId, KieRuntime kruntime) {
         
         if (store.containsKey(processInstanceId)) {
             return store.get(processInstanceId);

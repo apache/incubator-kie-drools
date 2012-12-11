@@ -16,28 +16,29 @@
 
 package org.jbpm.process;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
+import org.drools.impl.EnvironmentFactory;
+import org.drools.impl.InternalKnowledgeBase;
+import org.kie.definition.KiePackage;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
 import org.kie.event.kiebase.KieBaseEventListener;
-import org.drools.impl.EnvironmentFactory;
-import org.drools.impl.InternalKnowledgeBase;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ProcessBaseImpl implements InternalKnowledgeBase {
     
@@ -165,5 +166,16 @@ public class ProcessBaseImpl implements InternalKnowledgeBase {
 	public Set<String> getEntryPointIds() {
 		throw new UnsupportedOperationException("Entry points not supported");
 	}
-    
+
+    public Collection<KiePackage> getKiePackages() {
+        return getKiePackages();
+    }
+
+    public KiePackage getKiePackage(String packageName) {
+        return getKnowledgePackage(packageName);
+    }
+
+    public void removeKiePackage(String packageName) {
+        removeKnowledgePackage(packageName);
+    }
 }

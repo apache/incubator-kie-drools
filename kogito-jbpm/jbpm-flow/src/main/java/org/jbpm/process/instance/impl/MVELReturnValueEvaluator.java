@@ -16,26 +16,26 @@
 
 package org.jbpm.process.instance.impl;
 
+import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.base.mvel.MVELCompileable;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.impl.StatelessKnowledgeSessionImpl;
+import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.spi.GlobalResolver;
+import org.kie.definition.KiePackage;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.process.ProcessContext;
+import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-
-import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELCompileable;
-import org.drools.common.InternalWorkingMemory;
-import org.kie.definition.KnowledgePackage;
-import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.impl.StatelessKnowledgeSessionImpl;
-import org.drools.rule.MVELDialectRuntimeData;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
-import org.drools.spi.GlobalResolver;
-import org.mvel2.MVEL;
-import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELReturnValueEvaluator
     implements
@@ -87,10 +87,10 @@ public class MVELReturnValueEvaluator
         }
 
         InternalWorkingMemory internalWorkingMemory = null;
-        if( context.getKnowledgeRuntime() instanceof StatefulKnowledgeSessionImpl ) { 
-            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKnowledgeRuntime()).session;
-        } else if( context.getKnowledgeRuntime() instanceof StatelessKnowledgeSession ) { 
-            StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKnowledgeRuntime()).newWorkingMemory();
+        if( context.getKieRuntime() instanceof StatefulKnowledgeSessionImpl ) {
+            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKieRuntime()).session;
+        } else if( context.getKieRuntime() instanceof StatelessKnowledgeSession ) {
+            StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKieRuntime()).newWorkingMemory();
             internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).session;
         }
         
@@ -102,10 +102,10 @@ public class MVELReturnValueEvaluator
                                null, // No (left) tuples
                                vars, 
                                internalWorkingMemory,
-                               (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
+                               (GlobalResolver) context.getKieRuntime().getGlobals() );
 
         // do we have any functions for this namespace?
-        KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
+        KiePackage pkg = context.getKieRuntime().getKnowledgeBase().getKiePackage("MAIN");
         if ( pkg != null && pkg instanceof KnowledgePackageImp) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImp) pkg).pkg.getDialectRuntimeRegistry().getDialectData( id );
             factory.setNextFactory( data.getFunctionFactory() );

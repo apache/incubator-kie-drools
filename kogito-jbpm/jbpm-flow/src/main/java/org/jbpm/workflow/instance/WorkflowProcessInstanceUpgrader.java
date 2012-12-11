@@ -16,21 +16,21 @@
 
 package org.jbpm.workflow.instance;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.common.InternalKnowledgeRuntime;
-import org.kie.definition.process.WorkflowProcess;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.process.NodeInstance;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.kie.definition.process.WorkflowProcess;
+import org.kie.runtime.KieRuntime;
+import org.kie.runtime.process.NodeInstance;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class WorkflowProcessInstanceUpgrader {
 
     public static void upgradeProcessInstance(
-    		KnowledgeRuntime kruntime,
+    		KieRuntime kruntime,
     		long processInstanceId,
     		String processId,
     		Map<String, Long> nodeMapping) {
