@@ -15,22 +15,23 @@
  */
 package org.droolsjbpm.services.impl.event.listeners;
 
+import org.droolsjbpm.services.impl.bpmn2.ProcessDescriptionRepository;
+import org.droolsjbpm.services.impl.helpers.ProcessDescFactory;
+import org.jboss.seam.transaction.Transactional;
+import org.kie.definition.process.Process;
+import org.kie.event.kiebase.AfterKieBaseLockedEvent;
+import org.kie.event.kiebase.AfterKieBaseUnlockedEvent;
+import org.kie.event.kiebase.AfterKiePackageAddedEvent;
+import org.kie.event.kiebase.AfterKiePackageRemovedEvent;
+import org.kie.event.kiebase.BeforeKieBaseLockedEvent;
+import org.kie.event.kiebase.BeforeKieBaseUnlockedEvent;
+import org.kie.event.kiebase.BeforeKiePackageAddedEvent;
+import org.kie.event.kiebase.BeforeKiePackageRemovedEvent;
+import org.kie.event.kiebase.KieBaseEventListener;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import org.jboss.seam.transaction.Transactional;
-import org.kie.definition.process.Process;
-import org.droolsjbpm.services.impl.bpmn2.ProcessDescriptionRepository;
-import org.droolsjbpm.services.impl.helpers.ProcessDescFactory;
-import org.kie.event.kiebase.AfterKieBaseLockedEvent;
-import org.kie.event.kiebase.AfterKieBaseUnlockedEvent;
-import org.kie.event.kiebase.AfterKnowledgePackageAddedEvent;
-import org.kie.event.kiebase.AfterKnowledgePackageRemovedEvent;
-import org.kie.event.kiebase.BeforeKieBaseLockedEvent;
-import org.kie.event.kiebase.BeforeKieBaseUnlockedEvent;
-import org.kie.event.kiebase.BeforeKnowledgePackageAddedEvent;
-import org.kie.event.kiebase.BeforeKnowledgePackageRemovedEvent;
-import org.kie.event.kiebase.KieBaseEventListener;
 
 /**
  *
@@ -57,19 +58,19 @@ public class CDIKbaseEventListener implements KieBaseEventListener {
     }
 
     @Override
-    public void beforeKnowledgeBaseLocked(BeforeKieBaseLockedEvent bkble) {
+    public void beforeKieBaseLocked(BeforeKieBaseLockedEvent bkble) {
     }
 
     @Override
-    public void afterKnowledgeBaseLocked(AfterKieBaseLockedEvent akble) {
+    public void afterKieBaseLocked(AfterKieBaseLockedEvent akble) {
     }
 
     @Override
-    public void beforeKnowledgeBaseUnlocked(BeforeKieBaseUnlockedEvent bkbue) {
+    public void beforeKieBaseUnlocked(BeforeKieBaseUnlockedEvent bkbue) {
     }
 
     @Override
-    public void afterKnowledgeBaseUnlocked(AfterKieBaseUnlockedEvent akbue) {
+    public void afterKieBaseUnlocked(AfterKieBaseUnlockedEvent akbue) {
     }
 
     @Override
@@ -117,22 +118,22 @@ public class CDIKbaseEventListener implements KieBaseEventListener {
     }
 
     @Override
-    public void beforeKnowledgePackageAdded(BeforeKnowledgePackageAddedEvent bkpae) {
+    public void beforeKiePackageAdded(BeforeKiePackageAddedEvent bkpae) {
         
     }
 
     @Override
-    public void afterKnowledgePackageAdded(AfterKnowledgePackageAddedEvent akpae) {
+    public void afterKiePackageAdded(AfterKiePackageAddedEvent akpae) {
         
     }
 
     @Override
-    public void beforeKnowledgePackageRemoved(BeforeKnowledgePackageRemovedEvent bkpre) {
+    public void beforeKiePackageRemoved(BeforeKiePackageRemovedEvent bkpre) {
         
     }
 
     @Override
-    public void afterKnowledgePackageRemoved(AfterKnowledgePackageRemovedEvent akpre) {
+    public void afterKiePackageRemoved(AfterKiePackageRemovedEvent akpre) {
         
     }
 }
