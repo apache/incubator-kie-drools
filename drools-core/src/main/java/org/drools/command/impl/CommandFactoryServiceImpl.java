@@ -16,12 +16,6 @@
 
 package org.drools.command.impl;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Singleton;
-
 import org.drools.command.NewKnowledgeBuilderConfigurationCommand;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
@@ -32,6 +26,7 @@ import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.RegisterWorkItemHandlerCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
+import org.drools.command.runtime.rule.DeleteCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.command.runtime.rule.FromExternalFactHandleCommand;
 import org.drools.command.runtime.rule.GetObjectCommand;
@@ -41,7 +36,6 @@ import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.command.runtime.rule.QueryCommand;
-import org.drools.command.runtime.rule.RetractCommand;
 import org.kie.command.BatchExecutionCommand;
 import org.kie.command.Command;
 import org.kie.command.KieCommands;
@@ -49,6 +43,10 @@ import org.kie.command.Setter;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.rule.FactHandle;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class CommandFactoryServiceImpl implements KieCommands {
 
@@ -86,8 +84,8 @@ public class CommandFactoryServiceImpl implements KieCommands {
         return cmd;
     }
 
-    public Command newRetract(FactHandle factHandle) {
-        return new RetractCommand( factHandle );
+    public Command newDelete(FactHandle factHandle) {
+        return new DeleteCommand( factHandle );
     }
     
     public Setter newSetter(String accessor,
