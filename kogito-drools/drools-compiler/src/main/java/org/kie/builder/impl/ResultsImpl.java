@@ -1,45 +1,93 @@
 package org.kie.builder.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.commons.jci.problems.CompilationProblem;
+import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.Message;
+import org.kie.builder.Message.Level;
 import org.kie.builder.Results;
 
-public class ResultsImpl implements Results {
+public class ResultsImpl
+    implements
+    Results {
+    private List<Message> messages    = new ArrayList<Message>();
 
-    private List<Message> insertedMessages;
-    private List<Message> deletedMessages;
+    private long          idGenerator = 1L;
 
-    public ResultsImpl() { }
-
-    public ResultsImpl(List<Message> insertedMessages, List<Message> deleteMessages) {
-        this.insertedMessages = ( insertedMessages == null )  ? Collections.<Message>emptyList() : insertedMessages;
-        this.deletedMessages = ( deleteMessages == null )  ? Collections.<Message>emptyList() : deleteMessages;
+    public List<Message> getMessages() {
+        return messages;
     }
 
-    public List<Message> getInsertedMessages() {
-        return insertedMessages;
+    @Override
+    public boolean hasMessages(Level... levels) {
+        return !filterMessages( levels ).isEmpty();
     }
 
-    public List<Message> getDeletedMessages() {
-        return deletedMessages;
+    @Override
+    public List<Message> getMessages(Level... levels) {
+        return filterMessages( levels );
     }
-    
+
+    public void addMessage(CompilationProblem problem) {
+        messages.add( new MessageImpl( idGenerator++,
+                                       problem ) );
+    }
+
+    public void addMessage(KnowledgeBuilderResult result) {
+        messages.add( new MessageImpl( idGenerator++,
+                                       result ) );
+    }
+
+    public void addMessage(Level level,
+                           String path,
+                           String text) {
+        messages.add( new MessageImpl( idGenerator++,
+                                       level,
+                                       path,
+                                       text ) );
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public long getIdGenerator() {
+        return idGenerator;
+    }
+
+    public void setIdGenerator(long idGenerator) {
+        this.idGenerator = idGenerator;
+    }
+
+    public List<Message> filterMessages(Level... levels) {
+        return MessageImpl.filterMessages( messages,
+                                           levels );
+    }
+
     public String toString() {
         StringBuilder sBuilder = new StringBuilder();
-        sBuilder.append( "Inserted Messages:\n");
-        for ( Message msg : insertedMessages ) {
-            sBuilder.append(  msg.toString() );
+        sBuilder.append( "Error Messages:\n" );
+        for ( Message msg : filterMessages( Level.ERROR ) ) {
+            sBuilder.append( msg.toString() );
+            sBuilder.append( "\n" );
+        }
+
+        sBuilder.append( "---\n" );
+        sBuilder.append( "Warning Messages:\n" );
+        for ( Message msg : filterMessages( Level.WARNING ) ) {
+            sBuilder.append( msg.toString() );
             sBuilder.append( "\n" );
         }
         
         sBuilder.append( "---\n" );
-        sBuilder.append( "Deleted Messages:\n");
-        for ( Message msg : deletedMessages ) {
-            sBuilder.append(  msg.toString() );
+        sBuilder.append( "Info Messages:\n" );
+        for ( Message msg : filterMessages( Level.INFO ) ) {
+            sBuilder.append( msg.toString() );
             sBuilder.append( "\n" );
         }        
         return sBuilder.toString();
     }
+
 }

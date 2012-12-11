@@ -12,7 +12,9 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.AfterClass;
 import org.junit.Test;
+import org.kie.builder.KieServices;
 import org.kie.builder.impl.AbstractKieModule;
+import org.kie.builder.impl.KieServicesImpl;
 import org.kie.cdi.KBase;
 import org.kie.cdi.KGAV;
 import org.kie.cdi.KSession;
@@ -97,7 +99,7 @@ public class KieProjectCDITest extends AbstractKnowledgeTest {
                                                  "org.drools.cdi.test.KProjectTestClassjar2",
                                                  "org.drools.cdi.test.KProjectTestClassjar3",
                                                  "org.drools.cdi.test.KProjectTestClassfol4");
-            
+            ((KieServicesImpl) KieServices.Factory.get()).nullKieClasspathContainer();
             WeldContainer container = weld.initialize();            
             
             Set<Bean< ? >> beans = container.getBeanManager().getBeans( KProjectTestClass.class, new KPTestLiteral( "jar1" ) );

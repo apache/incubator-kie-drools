@@ -14,6 +14,7 @@ import org.kie.builder.KieModuleModel;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.Results;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceFactory;
@@ -40,6 +41,8 @@ public abstract class AbstractKieModule
     private static final Logger                             log               = LoggerFactory.getLogger( AbstractKieModule.class );
 
     private final Map<String, Collection<KnowledgePackage>> packageCache      = new HashMap<String, Collection<KnowledgePackage>>();
+    
+    private final Map<String, Results>                      resultsCache      = new HashMap<String, Results>();
 
     protected final GAV                                     gav;
     
@@ -105,15 +108,14 @@ public abstract class AbstractKieModule
         return packageCache;
     }
 
-    static KieBase createKieBase(KieBaseModel kBaseModel,
-                                 KieProject indexedParts) {
-        return createKieBase(( KieBaseModelImpl ) kBaseModel, indexedParts, new Messages() );
-    }
+    public Map<String, Results> getKnowledgeResultsCache() {
+        return resultsCache;
+    }    
     
     @SuppressWarnings("deprecation")
-    static KieBase createKieBase(KieBaseModelImpl kBaseModel,
-                                        KieProject indexedParts,
-                                        Messages messages) {
+    static KnowledgeBuilder buildKnowledgePackages(KieBaseModelImpl kBaseModel,
+                                                   KieProject indexedParts,
+                                                   ResultsImpl messages) {
         CompositeClassLoader cl = indexedParts.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
 
         PackageBuilderConfiguration pconf = new PackageBuilderConfiguration( null,
@@ -145,17 +147,49 @@ public abstract class AbstractKieModule
                   kModule );
 
         ckbuilder.build();
-
+        
         if ( kbuilder.hasErrors() ) {
             for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
                 messages.addMessage( error );
             }
             log.error( "Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString() );
+        } else {
+            // no errors, so cache the packages
+            kModule.getKnowledgePackageCache().put( kBaseModel.getName(), 
+                                                    kbuilder.getKnowledgePackages() );     
         }
+        
+        // always cache results
+        kModule.getKnowledgeResultsCache().put( kBaseModel.getName(), 
+                                                messages );   
+        
+        return kbuilder;        
+    }
+    
+    @SuppressWarnings("deprecation")
+    public static KieBase createKieBase(KieBaseModelImpl kBaseModel,
+                                        KieProject indexedParts,
+                                        ResultsImpl messages) {
+        CompositeClassLoader cl = indexedParts.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
+
+        InternalKieModule kModule = indexedParts.getKieModuleForKBase( kBaseModel.getName() );
+        
+        Collection<KnowledgePackage> pkgs = kModule.getKnowledgePackageCache().get( kBaseModel.getName()  );
+        
+        if ( pkgs == null ) {
+            KnowledgeBuilder kbuilder = buildKnowledgePackages(kBaseModel, indexedParts, messages);
+            if ( kbuilder.hasErrors() ) {
+                // Messages already populated by the buildKnowlegePackages
+                return null;
+            }        
+        }
+        
+        // if we get to here, then we know the pkgs is now cached
+        pkgs = kModule.getKnowledgePackageCache().get( kBaseModel.getName()  );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( getKnowledgeBaseConfiguration(kBaseModel, cl) );
 
-        kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kBase.addKnowledgePackages( pkgs );
         return kBase;
     }
 

@@ -3,12 +3,18 @@ package org.kie.builder.impl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
+import org.kie.builder.Results;
+import org.kie.definition.KnowledgePackage;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
 public interface InternalKieModule extends KieModule {
+    
+    Map<String, Collection<KnowledgePackage>> getKnowledgePackageCache();
+
+    Map<String, Results> getKnowledgeResultsCache();    
     
     KieModuleModel getKieModuleModel();    
     

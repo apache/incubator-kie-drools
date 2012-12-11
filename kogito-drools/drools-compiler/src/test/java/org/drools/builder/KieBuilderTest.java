@@ -94,8 +94,8 @@ public class KieBuilderTest {
         generateAll(kfs1, namespace1, gav1, kProj1);
 
         KieBuilder kb1 = createKieBuilder(kfs1);
-        kb1.build();        
-        if ( kb1.hasResults( Level.ERROR  ) ) {
+        kb1.buildAll();        
+        if ( kb1.getResults().hasMessages( Level.ERROR  ) ) {
             fail("Unable to build KieJar\n" + kb1.getResults( ).toString() );
         }
         KieRepository kr = ks.getKieRepository();
@@ -115,8 +115,8 @@ public class KieBuilderTest {
 
         KieBuilder kb2 = createKieBuilder(kfs2);
         kb2.setDependencies( kModule1 );
-        kb2.build();        
-        if ( kb2.hasResults( Level.ERROR  ) ) {
+        kb2.buildAll();        
+        if ( kb2.getResults().hasMessages(Level.ERROR  ) ) {
             fail("Unable to build KieJar\n" + kb2.getResults( ).toString() );
         }
         KieModule kModule2= kr.getKieModule(gav2);
@@ -204,8 +204,8 @@ public class KieBuilderTest {
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
           
         KieBuilder kieBuilder = createKieBuilder(kfs);
-        kieBuilder.build();
-        assertTrue ( kieBuilder.hasResults( Level.ERROR ) );
+        kieBuilder.buildAll();
+        assertTrue ( kieBuilder.getResults().hasMessages(Level.ERROR ) );
     }   
     
     @Test
@@ -223,8 +223,8 @@ public class KieBuilderTest {
         generateRule( kfs, namespace );        
           
         KieBuilder kieBuilder = createKieBuilder(kfs);
-        kieBuilder.build();
-        assertTrue ( kieBuilder.hasResults( Level.ERROR ) );
+        kieBuilder.buildAll();
+        assertTrue ( kieBuilder.getResults().hasMessages( Level.ERROR ) );
     }     
     
     @Test
@@ -242,8 +242,8 @@ public class KieBuilderTest {
         generateRule( kfs, namespace );
         
         KieBuilder kieBuilder = createKieBuilder(kfs);
-        kieBuilder.build();
-        assertTrue ( kieBuilder.hasResults( Level.ERROR ) );
+        kieBuilder.buildAll();
+        assertTrue ( kieBuilder.getResults().hasMessages( Level.ERROR ) );
     }     
     
     
@@ -297,9 +297,9 @@ public class KieBuilderTest {
             InterruptedException {
         KieServices ks = KieServices.Factory.get();
         
-        kb.build();
+        kb.buildAll();
         
-        if ( kb.hasResults( Level.ERROR  ) ) {
+        if ( kb.getResults().hasMessages( Level.ERROR  ) ) {
             fail("Unable to build KieModule\n" + kb.getResults( ).toString() );
         }
         KieRepository kr = ks.getKieRepository();

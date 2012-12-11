@@ -45,12 +45,12 @@ public class KieBuilderImpl
 
     private static final String   RESOURCES_ROOT = "src/main/resources/";
 
-    private Messages              messages;
+    private ResultsImpl           results;
     private final ResourceReader  srcMfs;
 
     private MemoryFileSystem      trgMfs;
 
-    private MemoryKieModule      kModule;
+    private MemoryKieModule       kModule;
 
     private PomModel              pomModel;
     private byte[]                pomXml;
@@ -90,7 +90,7 @@ public class KieBuilderImpl
     private void init() {
         KieFactory kf = KieFactory.Factory.get();
 
-        messages = new Messages();
+        results = new ResultsImpl();
 
         // if pomXML is null it will generate a default, using default GAV
         // if pomXml is invalid, it assign pomModel to null
@@ -109,7 +109,7 @@ public class KieBuilderImpl
         }
     }
 
-    public Results build() {
+    public KieBuilder buildAll() {
         // gav and kModule will be null if a provided pom.xml or kmodule.xml is invalid
         if ( !isBuilt() && gav != null && kModuleModel != null ) {
             trgMfs = new MemoryFileSystem();
@@ -128,13 +128,12 @@ public class KieBuilderImpl
                 }
             }
 
-            buildKieModule(kModule, messages);
+            buildKieModule(kModule, results);
         }
-        return new ResultsImpl( messages.getMessages(),
-                                null );
+        return this;
     }
 
-    public static void buildKieModule(InternalKieModule kModule, Messages messages) {
+    public static void buildKieModule(InternalKieModule kModule, ResultsImpl messages) {
         KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
         kProject.init();
         kProject.verify( messages );
@@ -220,34 +219,20 @@ public class KieBuilderImpl
         return (ResourceType.determineResourceType( fileName ) != null || fileName.endsWith( ".properties" ) );
     }
 
-    public boolean hasResults(Level... levels) {
-        if ( !isBuilt() ) {
-            build();
-        }
-        return !messages.filterMessages( levels ).isEmpty();
-    }
-
-    public Results getResults(Level... levels) {
-        if ( !isBuilt() ) {
-            build();
-        }
-        return new ResultsImpl( messages.filterMessages(levels),
-                                null );
-    }
-
     public Results getResults() {
         if ( !isBuilt() ) {
-            build();
+            buildAll();
         }
-        return new ResultsImpl( messages.getMessages(),
-                                null );
+        return results;
     }
 
     public KieModule getKieModule() {
         if ( !isBuilt() ) {
-            build();
+            buildAll();
         }
-        if ( hasResults( Level.ERROR ) || kModule == null ) {
+        
+        
+        if ( getResults().hasMessages( Level.ERROR ) || kModule == null ) {
             throw new RuntimeException( "Unable to get KieModule, Errors Existed" );
         }
         return kModule;
@@ -263,7 +248,7 @@ public class KieBuilderImpl
             try {
                 kModuleModel = KieModuleModelImpl.fromXML( new ByteArrayInputStream( kModuleModelXml ) );
             } catch ( Exception e ) {
-                messages.addMessage(  Level.ERROR,
+                results.addMessage(  Level.ERROR,
                                       "kmodule.xml",
                                       "kmodulet.xml found, but unable to read\n" + e.getMessage() );
             }
@@ -290,7 +275,7 @@ public class KieBuilderImpl
             validatePomModel( tempPomModel ); // throws an exception if invalid
             pomModel = tempPomModel;
         } catch ( Exception e ) {
-            messages.addMessage( Level.ERROR,
+            results.addMessage( Level.ERROR,
                                  "pom.xml",
                                  "maven pom.xml found, but unable to read\n" + e.getMessage() );
         }
@@ -406,10 +391,10 @@ public class KieBuilderImpl
                                                   trgMfs );
 
         for ( CompilationProblem problem : res.getErrors() ) {
-            messages.addMessage(  problem );
+            results.addMessage(  problem );
         }
         for ( CompilationProblem problem : res.getWarnings() ) {
-            messages.addMessage( problem );
+            results.addMessage( problem );
         }
     }
 

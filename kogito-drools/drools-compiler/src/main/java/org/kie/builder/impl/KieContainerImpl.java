@@ -1,5 +1,6 @@
 package org.kie.builder.impl;
 
+import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
 import org.kie.KnowledgeBaseFactory;
@@ -9,6 +10,8 @@ import org.kie.builder.KieContainer;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.Results;
+import org.kie.builder.Message.Level;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
@@ -58,13 +61,23 @@ public class KieContainerImpl
         }
         return getKieBase( defaultKieBaseModel.getName() );
     }
+    
+    public Results verify() {
+        return this.kProject.verify();
+    }
 
     public KieBase getKieBase(String kBaseName) {
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
             if ( kProject != null ) {
-                kBase = AbstractKieModule.createKieBase( kProject.getKieBaseModel( kBaseName ),
-                                                         kProject );
+                ResultsImpl msgs = new ResultsImpl();
+                kBase = AbstractKieModule.createKieBase( ( KieBaseModelImpl ) kProject.getKieBaseModel( kBaseName ),
+                                                         kProject,
+                                                         msgs );
+                if ( kBase == null ) {
+                    // build error, throw runtime exception
+                    new RuntimeException( "Error while creating KieBase"+  msgs.filterMessages( Level.ERROR  ) );
+                }
                 if ( kBase != null ) {
                     kBases.put( kBaseName,
                                 kBase );
