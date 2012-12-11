@@ -17,7 +17,7 @@ package org.kie.builder.conf;
 
 import org.kie.conf.MultithreadEvaluationOption;
 import org.kie.conf.SequentialOption;
-import org.kie.conf.SingleValueKnowledgeBaseOption;
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
  * <p>
@@ -34,7 +34,7 @@ import org.kie.conf.SingleValueKnowledgeBaseOption;
  * </p>
  * 
  */
-public enum DeclarativeAgendaOption implements SingleValueKnowledgeBaseOption {
+public enum DeclarativeAgendaOption implements SingleValueKieBaseOption {
 
     ENABLED(true), DISABLED(false);
 

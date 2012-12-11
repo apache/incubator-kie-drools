@@ -18,7 +18,6 @@ package org.kie.runtime.rule;
 
 import java.util.Collection;
 
-import org.kie.KnowledgeBaseConfiguration;
 import org.kie.runtime.ObjectFilter;
 
 /**

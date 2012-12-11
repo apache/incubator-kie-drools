@@ -16,7 +16,7 @@
 
 package org.kie.builder.conf;
 
-import org.kie.conf.SingleValueKnowledgeBaseOption;
+import org.kie.conf.SingleValueKieBaseOption;
 
 
 /**
@@ -35,7 +35,7 @@ import org.kie.conf.SingleValueKnowledgeBaseOption;
  * This option is new to Drools 5.1. Before 5.1, Drools would never cache class 
  * resolution results.
  */
-public enum ClassLoaderCacheOption implements SingleValueKnowledgeBuilderOption, SingleValueKnowledgeBaseOption {
+public enum ClassLoaderCacheOption implements SingleValueKnowledgeBuilderOption, SingleValueKieBaseOption {
     
     ENABLED(true),
     DISABLED(false);

@@ -34,7 +34,7 @@ package org.kie.conf;
  * due to session clock continuous increment. </li>
  */
 public enum EventProcessingOption
-        implements SingleValueKnowledgeBaseOption {
+        implements SingleValueKieBaseOption {
 
     CLOUD("cloud"), 
     STREAM("stream");
