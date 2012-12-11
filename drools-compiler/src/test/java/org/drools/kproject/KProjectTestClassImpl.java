@@ -32,22 +32,22 @@ public class KProjectTestClassImpl implements KProjectTestClass {
 
     @Override
     public StatelessKieSession getKBase1KSession1() {
-        return this.kContainer.getKieStatelessSession( namespace + ".KSession1" );        
+        return this.kContainer.newKieStatelessSession(namespace + ".KSession1");
     }
 
     @Override
     public KieSession getKBase1KSession2() {
-        return this.kContainer.getKieSession(namespace + ".KSession2" );
+        return this.kContainer.newKieSession(namespace + ".KSession2");
     }
 
     @Override
     public KieSession getKBase2KSession3() {
-        return this.kContainer.getKieSession(namespace + ".KSession3" );
+        return this.kContainer.newKieSession(namespace + ".KSession3");
     }
 
     @Override
     public StatelessKieSession getKBase3KSession4() {
-        return this.kContainer.getKieStatelessSession( namespace + ".KSession4" );
+        return this.kContainer.newKieStatelessSession(namespace + ".KSession4");
     }
 
 }

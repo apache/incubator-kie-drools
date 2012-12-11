@@ -4,13 +4,13 @@ import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.junit.Test;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
+import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
+import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.builder.ListenerModel;
 import org.kie.builder.QualifierModel;
 import org.kie.builder.WorkItemHandlerModel;
-import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;
@@ -28,9 +28,9 @@ public class KieModuleModelTest {
 
     @Test
     public void testMarshallingUnmarshalling() {
-        KieFactory kf = KieFactory.Factory.get();
+        KieServices ks = KieServices.Factory.get();
 
-        KieModuleModel kproj = kf.newKieModuleModel();
+        KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )

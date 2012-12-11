@@ -17,7 +17,6 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
@@ -45,12 +44,12 @@ public class KieBuilderImpl
 
     private static final String   RESOURCES_ROOT = "src/main/resources/";
 
-    private Messages              messages;
+    private ResultsImpl           results;
     private final ResourceReader  srcMfs;
 
     private MemoryFileSystem      trgMfs;
 
-    private MemoryKieModule      kModule;
+    private MemoryKieModule       kModule;
 
     private PomModel              pomModel;
     private byte[]                pomXml;
@@ -77,7 +76,7 @@ public class KieBuilderImpl
     }
     
     public KieBuilder setDependencies(Resource... resources) {
-        KieRepositoryImpl kr = ( KieRepositoryImpl ) KieServices.Factory.get().getKieRepository();
+        KieRepositoryImpl kr = ( KieRepositoryImpl ) KieServices.Factory.get().getRepository();
         List<KieModule> list = new ArrayList<KieModule>();
         for ( Resource res : resources ) {
             InternalKieModule depKieMod = ( InternalKieModule ) kr.getKieModule( res );
@@ -88,9 +87,9 @@ public class KieBuilderImpl
     }
     
     private void init() {
-        KieFactory kf = KieFactory.Factory.get();
+        KieServices ks = KieServices.Factory.get();
 
-        messages = new Messages();
+        results = new ResultsImpl();
 
         // if pomXML is null it will generate a default, using default GAV
         // if pomXml is invalid, it assign pomModel to null
@@ -103,13 +102,13 @@ public class KieBuilderImpl
         if ( pomModel != null ) {
             // creates GAV from build pom
             // If the pom was generated, it will be the same as teh default GAV 
-            gav = kf.newGav( pomModel.getGroupId(),
+            gav = ks.newGav( pomModel.getGroupId(),
                              pomModel.getArtifactId(),
                              pomModel.getVersion() );
         }
     }
 
-    public Results build() {
+    public KieBuilder buildAll() {
         // gav and kModule will be null if a provided pom.xml or kmodule.xml is invalid
         if ( !isBuilt() && gav != null && kModuleModel != null ) {
             trgMfs = new MemoryFileSystem();
@@ -128,19 +127,18 @@ public class KieBuilderImpl
                 }
             }
 
-            buildKieModule(kModule, messages);
+            buildKieModule(kModule, results);
         }
-        return new ResultsImpl( messages.getMessages(),
-                                null );
+        return this;
     }
 
-    public static void buildKieModule(InternalKieModule kModule, Messages messages) {
+    public static void buildKieModule(InternalKieModule kModule, ResultsImpl messages) {
         KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
         kProject.init();
-        kProject.verify( messages );
+        kProject.verify(messages);
 
         if ( messages.filterMessages( Level.ERROR ).isEmpty()) {
-            KieServices.Factory.get().getKieRepository().addKieModule( kModule );
+            KieServices.Factory.get().getRepository().addKieModule( kModule );
         }
     }
 
@@ -183,7 +181,7 @@ public class KieBuilderImpl
         }
     }
 
-    private boolean filterFileInKBase(KieBaseModel kieBase,
+    static boolean filterFileInKBase(KieBaseModel kieBase,
                                       String fileName) {
         if ( !isKieExtension( fileName ) ) {
             return false;
@@ -194,12 +192,12 @@ public class KieBuilderImpl
         return isFileInKiePackages(fileName, kieBase.getPackages());
     }
 
-    private boolean isFileInKieBase(String fileName, String kBaseName) {
+    private static boolean isFileInKieBase(String fileName, String kBaseName) {
         String pathName = kBaseName.replace( '.', '/' );
-        return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.contains( "/" + pathName + "/" );
+        return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.startsWith(pathName + "/");
     }
 
-    private boolean isFileInKiePackages(String fileName, List<String> pkgNames) {
+    private static boolean isFileInKiePackages(String fileName, List<String> pkgNames) {
         int lastSep = fileName.lastIndexOf("/");
         String pkgNameForFile = lastSep > 0 ? fileName.substring(0, lastSep) : fileName;
         pkgNameForFile = pkgNameForFile.replace('/', '.');
@@ -220,34 +218,20 @@ public class KieBuilderImpl
         return (ResourceType.determineResourceType( fileName ) != null || fileName.endsWith( ".properties" ) );
     }
 
-    public boolean hasResults(Level... levels) {
-        if ( !isBuilt() ) {
-            build();
-        }
-        return !messages.filterMessages( levels ).isEmpty();
-    }
-
-    public Results getResults(Level... levels) {
-        if ( !isBuilt() ) {
-            build();
-        }
-        return new ResultsImpl( messages.filterMessages(levels),
-                                null );
-    }
-
     public Results getResults() {
         if ( !isBuilt() ) {
-            build();
+            buildAll();
         }
-        return new ResultsImpl( messages.getMessages(),
-                                null );
+        return results;
     }
 
     public KieModule getKieModule() {
         if ( !isBuilt() ) {
-            build();
+            buildAll();
         }
-        if ( hasResults( Level.ERROR ) || kModule == null ) {
+        
+        
+        if ( getResults().hasMessages(Level.ERROR) || kModule == null ) {
             throw new RuntimeException( "Unable to get KieModule, Errors Existed" );
         }
         return kModule;
@@ -263,13 +247,13 @@ public class KieBuilderImpl
             try {
                 kModuleModel = KieModuleModelImpl.fromXML( new ByteArrayInputStream( kModuleModelXml ) );
             } catch ( Exception e ) {
-                messages.addMessage(  Level.ERROR,
+                results.addMessage(  Level.ERROR,
                                       "kmodule.xml",
                                       "kmodulet.xml found, but unable to read\n" + e.getMessage() );
             }
         } else {
             // There's no kmodule.xml, create a defualt one
-            kModuleModel = KieFactory.Factory.get().newKieModuleModel();
+            kModuleModel = KieServices.Factory.get().newKieModuleModel();
             KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel("defaultKieBase").addPackage("*").setDefault(true);
             kieBaseModel.newKieSessionModel("defaultKieSession").setDefault(true);
             kieBaseModel.newKieSessionModel("defaultStatelessKieSession").setType(KieSessionModel.KieSessionType.STATELESS).setDefault(true);
@@ -290,7 +274,7 @@ public class KieBuilderImpl
             validatePomModel( tempPomModel ); // throws an exception if invalid
             pomModel = tempPomModel;
         } catch ( Exception e ) {
-            messages.addMessage( Level.ERROR,
+            results.addMessage( Level.ERROR,
                                  "pom.xml",
                                  "maven pom.xml found, but unable to read\n" + e.getMessage() );
         }
@@ -307,7 +291,7 @@ public class KieBuilderImpl
             return mfs.getBytes( "pom.xml" );
         } else {
             // There is no pom.xml, and thus no GAV, so generate a pom.xml from the global detault.
-            return generatePomXml( KieServices.Factory.get().getKieRepository().getDefaultGAV() ).getBytes();
+            return generatePomXml( KieServices.Factory.get().getRepository().getDefaultGAV() ).getBytes();
         }
     }
 
@@ -406,10 +390,10 @@ public class KieBuilderImpl
                                                   trgMfs );
 
         for ( CompilationProblem problem : res.getErrors() ) {
-            messages.addMessage(  problem );
+            results.addMessage(  problem );
         }
         for ( CompilationProblem problem : res.getWarnings() ) {
-            messages.addMessage( problem );
+            results.addMessage( problem );
         }
     }
 

@@ -9,7 +9,7 @@ import org.kie.builder.KieServices;
 import org.kie.builder.Message;
 import org.kie.builder.impl.KieContainerImpl;
 import org.kie.builder.impl.KieProject;
-import org.kie.builder.impl.Messages;
+import org.kie.builder.impl.ResultsImpl;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -56,12 +56,12 @@ public class BuildMojo extends AbstractMojo {
         KieServices ks = KieServices.Factory.get();
 
         try {
-            KieRepository kr = ks.getKieRepository();
+            KieRepository kr = ks.getRepository();
             KieModule kModule = kr.addKieModule( ks.getResources().newFileSystemResource( sourceFolder ) );
-            KieContainerImpl kContainer = (KieContainerImpl)ks.getKieContainer( kModule.getGAV() );
+            KieContainerImpl kContainer = (KieContainerImpl)ks.newKieContainer(kModule.getGAV());
 
             KieProject kieProject = kContainer.getKieProject();
-            Messages messages = kieProject.verify();
+            ResultsImpl messages = kieProject.verify();
 
             List<Message> errors = messages.filterMessages(Message.Level.ERROR);
             if (!errors.isEmpty()) {

@@ -25,5 +25,5 @@ public interface KieProject {
     
     CompositeClassLoader getClassLoader();
 
-    Messages verify();
+    ResultsImpl verify();
 }

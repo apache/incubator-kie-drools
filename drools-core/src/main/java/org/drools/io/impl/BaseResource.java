@@ -16,6 +16,11 @@
 
 package org.drools.io.impl;
 
+import org.drools.io.internal.InternalResource;
+import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,10 +28,6 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import org.drools.io.internal.InternalResource;
-import org.kie.io.ResourceConfiguration;
-import org.kie.io.ResourceType;
 
 public abstract class BaseResource
         implements
@@ -55,6 +56,22 @@ public abstract class BaseResource
         out.writeObject( name );
         out.writeObject( description );
         out.writeObject( categories );
+    }
+
+    public String getSourcePath() {
+        throw new UnsupportedOperationException("getSourcePath");
+    }
+
+    public String getTargetPath() {
+        throw new UnsupportedOperationException("getTargetPath");
+    }
+
+    public Resource setSourcePath( String path ) {
+        throw new UnsupportedOperationException("setSourcePath");
+    }
+
+    public Resource setTargetPath( String path ) {
+        throw new UnsupportedOperationException("setTargetPath");
     }
 
     public ResourceConfiguration getConfiguration() {
