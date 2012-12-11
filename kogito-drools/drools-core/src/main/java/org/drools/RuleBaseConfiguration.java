@@ -35,7 +35,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.spi.ConflictResolver;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.builder.conf.ClassLoaderCacheOption;
 import org.kie.builder.conf.DeclarativeAgendaOption;
 import org.kie.builder.conf.LRUnlinkingOption;
@@ -109,7 +109,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RuleBaseConfiguration
     implements
-    KnowledgeBaseConfiguration,
+    KieBaseConfiguration,
     Externalizable {
     private static final long              serialVersionUID = 510l;
     

@@ -12,7 +12,7 @@ import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
@@ -148,10 +148,10 @@ public class KieBuilderImpl
         }
     }
 
-    private KnowledgeBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModel kieBase,
+    private KieBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModel kieBase,
                                                                      Properties properties,
                                                                      ClassLoader... classLoaders) {
-        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( properties,
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( properties,
                                                                                                 classLoaders );
         kbConf.setOption( kieBase.getEqualsBehavior() );
         kbConf.setOption( kieBase.getEventProcessingMode() );

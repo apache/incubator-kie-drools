@@ -23,7 +23,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -139,7 +139,7 @@ public class ObjectHashMapTest {
     
     @Test
     public void testEqualityWithResize() {        
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( AssertBehaviorOption.EQUALITY );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -182,7 +182,7 @@ public class ObjectHashMapTest {
     
     @Test
     public void testIdentityWithResize() {        
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( AssertBehaviorOption.IDENTITY );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();

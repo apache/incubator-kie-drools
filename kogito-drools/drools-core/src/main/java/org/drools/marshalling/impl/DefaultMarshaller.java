@@ -42,7 +42,7 @@ import org.kie.marshalling.MarshallingConfiguration;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.time.SessionClock;
 
@@ -78,7 +78,7 @@ public class DefaultMarshaller
      * @see org.kie.marshalling.Marshaller#read(java.io.InputStream, org.kie.common.InternalRuleBase, int, org.kie.concurrent.ExecutorService)
      */
     public StatefulKnowledgeSession unmarshall(final InputStream stream,
-                                               KnowledgeSessionConfiguration config,
+                                               KieSessionConfiguration config,
                                                Environment environment) throws IOException,
                                                                        ClassNotFoundException {
         if ( config == null ) {

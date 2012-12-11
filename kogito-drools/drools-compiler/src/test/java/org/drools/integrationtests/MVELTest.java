@@ -49,7 +49,7 @@ import org.drools.type.DateFormatsImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -743,7 +743,7 @@ public class MVELTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBaseConfiguration knowledgeBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null,loader);
+        KieBaseConfiguration knowledgeBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null,loader);
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(knowledgeBaseConfiguration);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

@@ -42,11 +42,11 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.conf.TimerJobFactoryOption;
@@ -207,10 +207,10 @@ public class TestMarshallingUtilsTest {
 
         StatefulKnowledgeSession ksessionA = null;
         {
-            KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             config.setOption(EventProcessingOption.STREAM);
             KnowledgeBase knowledgeBaseA = KnowledgeBaseFactory.newKnowledgeBase(config);
-            KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+            KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             ksconf.setOption(ClockTypeOption.get("pseudo"));
             ksconf.setOption(TimerJobFactoryOption.get("trackable"));
             ksessionA = knowledgeBaseA.newStatefulKnowledgeSession(ksconf, null);
@@ -218,10 +218,10 @@ public class TestMarshallingUtilsTest {
 
         StatefulKnowledgeSession ksessionB = null;
         {
-            KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             config.setOption(EventProcessingOption.STREAM);
             KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(config);
-            KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+            KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             ksconf.setOption(ClockTypeOption.get("pseudo"));
             ksconf.setOption( TimerJobFactoryOption.get("trackable") );
             ksessionB = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);

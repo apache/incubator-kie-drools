@@ -24,7 +24,7 @@ import org.drools.time.TimerService;
 import org.drools.time.impl.TimerJobFactoryManager;
 import org.kie.KnowledgeBase;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.conf.BeliefSystemTypeOption;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.conf.KeepReferenceOption;
@@ -68,7 +68,7 @@ import java.util.Properties;
  */
 public class SessionConfiguration
     implements
-    KnowledgeSessionConfiguration,
+    KieSessionConfiguration,
     Externalizable {
     private static final long              serialVersionUID = 510l;
 
@@ -416,7 +416,7 @@ public class SessionConfiguration
         if ( clazz != null ) {
             try {
                 this.commandService = clazz.getConstructor( KnowledgeBase.class,
-                                                            KnowledgeSessionConfiguration.class,
+                                                            KieSessionConfiguration.class,
                                                             Environment.class ).newInstance( kbase,
                                                                                              this,
                                                                                              environment );

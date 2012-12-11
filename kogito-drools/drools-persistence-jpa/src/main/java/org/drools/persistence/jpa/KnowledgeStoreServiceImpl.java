@@ -26,7 +26,7 @@ import org.kie.KnowledgeBase;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.CommandExecutor;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.TimerJobFactoryOption;
 
@@ -55,7 +55,7 @@ public class KnowledgeStoreServiceImpl
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KieBase kbase,
-                                                                KnowledgeSessionConfiguration configuration,
+                                                                KieSessionConfiguration configuration,
                                                                 Environment environment) {
         if ( configuration == null ) {
             configuration = new SessionConfiguration();
@@ -72,7 +72,7 @@ public class KnowledgeStoreServiceImpl
 
     public StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
                                                                  KieBase kbase,
-                                                                 KnowledgeSessionConfiguration configuration,
+                                                                 KieSessionConfiguration configuration,
                                                                  Environment environment) {
         if ( configuration == null ) {
             configuration = new SessionConfiguration();
@@ -90,14 +90,14 @@ public class KnowledgeStoreServiceImpl
 
     private CommandExecutor buildCommandService(Integer sessionId,
                                                 KieBase kbase,
-                                                KnowledgeSessionConfiguration conf,
+                                                KieSessionConfiguration conf,
                                                 Environment env) {
 
         try {
             Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
             Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( Integer.class,
                                                                                               KnowledgeBase.class,
-                                                                                              KnowledgeSessionConfiguration.class,
+                                                                                              KieSessionConfiguration.class,
                                                                                               Environment.class );
             return constructor.newInstance( sessionId,
                                             kbase,
@@ -119,13 +119,13 @@ public class KnowledgeStoreServiceImpl
     }
 
     private CommandExecutor buildCommandService(KieBase kbase,
-                                                KnowledgeSessionConfiguration conf,
+                                                KieSessionConfiguration conf,
                                                 Environment env) {
 
         Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
         try {
             Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( KnowledgeBase.class,
-                                                                                              KnowledgeSessionConfiguration.class,
+                                                                                              KieSessionConfiguration.class,
                                                                                               Environment.class );
             return constructor.newInstance( kbase,
                                             conf,
@@ -145,7 +145,7 @@ public class KnowledgeStoreServiceImpl
         }
     }
 
-    private KnowledgeSessionConfiguration mergeConfig(KnowledgeSessionConfiguration configuration) {
+    private KieSessionConfiguration mergeConfig(KieSessionConfiguration configuration) {
         ((SessionConfiguration) configuration).addDefaultProperties(configProps);
         configuration.setOption(TimerJobFactoryOption.get("jpa"));
         return configuration;

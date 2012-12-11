@@ -14,7 +14,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Assert;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -24,7 +24,7 @@ import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 
@@ -106,12 +106,12 @@ public class CommonTestMethodBase extends Assert {
     }
 
     protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase,
-                                                              KnowledgeSessionConfiguration ksconf) {
+                                                              KieSessionConfiguration ksconf) {
         return kbase.newStatefulKnowledgeSession( ksconf, null );
     }
 
     protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase,
-                                                              KnowledgeSessionConfiguration ksconf,
+                                                              KieSessionConfiguration ksconf,
                                                               Environment env) {
         return kbase.newStatefulKnowledgeSession( ksconf, env );
     }
@@ -129,13 +129,13 @@ public class CommonTestMethodBase extends Assert {
         return loadKnowledgeBaseFromString( config, null, drlContentStrings );
     }
 
-    protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBaseConfiguration kBaseConfig,
+    protected KnowledgeBase loadKnowledgeBaseFromString(KieBaseConfiguration kBaseConfig,
                                                         String... drlContentStrings) {
         return loadKnowledgeBaseFromString( null, kBaseConfig, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config,
-                                                        KnowledgeBaseConfiguration kBaseConfig,
+                                                        KieBaseConfiguration kBaseConfig,
                                                         String... drlContentStrings) {
         KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder( config );
         for ( String drlContentString : drlContentStrings ) {
@@ -153,7 +153,7 @@ public class CommonTestMethodBase extends Assert {
     }
 
     protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf,
-                                              KnowledgeBaseConfiguration kbaseConf,
+                                              KieBaseConfiguration kbaseConf,
                                               String... classPathResources) {
         Collection<KnowledgePackage> knowledgePackages = loadKnowledgePackages( kbuilderConf, classPathResources );
 
@@ -170,7 +170,7 @@ public class CommonTestMethodBase extends Assert {
     }
 
     protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf,
-                                              KnowledgeBaseConfiguration kbaseConf,
+                                              KieBaseConfiguration kbaseConf,
                                               PackageDescr descr) {
         Collection<KnowledgePackage> knowledgePackages = loadKnowledgePackages( kbuilderConf, descr );
 
@@ -250,7 +250,7 @@ public class CommonTestMethodBase extends Assert {
         return loadKnowledgeBase( kbuilderConf, null, classPathResources );
     }
 
-    protected KnowledgeBase loadKnowledgeBase(KnowledgeBaseConfiguration kbaseConf,
+    protected KnowledgeBase loadKnowledgeBase(KieBaseConfiguration kbaseConf,
                                               String... classPathResources) {
         return loadKnowledgeBase( null, kbaseConf, classPathResources );
     }

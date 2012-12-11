@@ -33,7 +33,7 @@ import org.kie.command.CommandFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -361,7 +361,7 @@ public class JpaPersistentStatefulSessionTest {
 
         Properties properties = new Properties();
         properties.put("drools.processInstanceManagerFactory", "com.example.CustomJPAProcessInstanceManagerFactory");
-        KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
+        KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
 
         KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, config, env );
         SessionConfiguration sessionConfig = (SessionConfiguration)ksession.getSessionConfiguration();

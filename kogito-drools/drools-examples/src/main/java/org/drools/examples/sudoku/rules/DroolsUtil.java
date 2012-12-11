@@ -16,7 +16,7 @@
 package org.drools.examples.sudoku.rules;
 
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
@@ -42,7 +42,7 @@ public class DroolsUtil {
         }
 
         // Add the package to a knowledge base (deploy the rule package).
-        KnowledgeBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 
         KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
         kBase.addKnowledgePackages(kBuilder.getKnowledgePackages());

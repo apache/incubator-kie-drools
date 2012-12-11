@@ -11,7 +11,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -81,7 +81,7 @@ public class UnmarshallingTest {
         if ( kbuilder.hasErrors() ) {
             throw new RuntimeException( kbuilder.getErrors().toString() );
         }
-        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
         knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

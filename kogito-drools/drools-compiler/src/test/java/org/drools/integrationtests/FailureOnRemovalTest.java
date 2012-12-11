@@ -10,7 +10,7 @@ import org.drools.CommonTestMethodBase;
 import org.drools.compiler.DroolsParserException;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -89,12 +89,12 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
     }
 
     private KnowledgeBase createKnowledgeBase(boolean shareBetaNodes) {
-        KnowledgeBaseConfiguration ruleBaseConfiguration = createKnowledgeBaseConfiguration( shareBetaNodes );
+        KieBaseConfiguration ruleBaseConfiguration = createKnowledgeBaseConfiguration( shareBetaNodes );
         return KnowledgeBaseFactory.newKnowledgeBase( ruleBaseConfiguration );
     }
 
-    private KnowledgeBaseConfiguration createKnowledgeBaseConfiguration(boolean shareBetaNodes) {
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+    private KieBaseConfiguration createKnowledgeBaseConfiguration(boolean shareBetaNodes) {
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.NO );
         kconf.setOption( ShareAlphaNodesOption.YES );
         kconf.setOption( shareBetaNodes ? ShareBetaNodesOption.YES : ShareBetaNodesOption.NO );

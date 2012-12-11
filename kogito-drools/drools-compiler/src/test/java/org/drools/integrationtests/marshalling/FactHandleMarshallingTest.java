@@ -36,19 +36,19 @@ import org.drools.rule.EntryPoint;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class FactHandleMarshallingTest {
 
     private RuleBase createRuleBase() { 
-        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( config );
         RuleBase ruleBase = ((KnowledgeBaseImpl) kbase).getRuleBase();
@@ -68,7 +68,7 @@ public class FactHandleMarshallingTest {
        
     private AbstractWorkingMemory createWorkingMemory(RuleBase ruleBase) { 
         // WorkingMemoryEntryPoint
-        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         SessionConfiguration sessionConf = ((SessionConfiguration) ksconf);
         AbstractWorkingMemory wm = new ReteooWorkingMemory(1, (InternalRuleBase) ruleBase, 

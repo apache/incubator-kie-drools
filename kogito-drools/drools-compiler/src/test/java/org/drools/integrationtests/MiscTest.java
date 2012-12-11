@@ -126,7 +126,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -2792,7 +2792,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testDeclaringAndUsingBindsInSamePattern() throws Exception {
-        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbc.setOption( RemoveIdentitiesOption.YES );
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc, "test_DeclaringAndUsingBindsInSamePattern.drl" ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -4112,7 +4112,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testAlphaNodeSharing() throws Exception {
-        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbc.setOption( ShareAlphaNodesOption.YES );
         final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc, "test_alphaNodeSharing.drl" ) );
         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -4756,7 +4756,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testNotInStatelessSession() throws Exception {
-        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbc.setOption( SequentialOption.YES );
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc, "test_NotInStatelessSession.drl" ) );
         StatelessKnowledgeSession session = createStatelessKnowledgeSession( kbase );
@@ -5622,7 +5622,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testGetFactHandleEqualityBehavior() throws Exception {
-        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbc.setOption( AssertBehaviorOption.EQUALITY );
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -8660,7 +8660,7 @@ public class MiscTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbConf.setOption( AssertBehaviorOption.EQUALITY );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbConf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -9155,7 +9155,7 @@ public class MiscTest extends CommonTestMethodBase {
                      "  list.add( \"OK\" ); \n" +
                      "end";
 
-        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbConf.setOption( AssertBehaviorOption.EQUALITY );
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, str );

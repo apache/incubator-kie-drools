@@ -4,7 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -96,7 +96,7 @@ public class GameEngine {
             System.exit( 1 );
         }
 
-        KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbaseConf.setOption( AssertBehaviorOption.EQUALITY );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );

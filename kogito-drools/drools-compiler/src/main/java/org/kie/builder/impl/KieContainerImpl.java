@@ -14,7 +14,7 @@ import org.kie.builder.Results;
 import org.kie.builder.Message.Level;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,8 +136,8 @@ public class KieContainerImpl
         return kBase.newStatelessKieSession(getKnowledgeSessionConfiguration(kSessionModel));
     }
 
-    private KnowledgeSessionConfiguration getKnowledgeSessionConfiguration(KieSessionModelImpl kSessionModel) {
-        KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+    private KieSessionConfiguration getKnowledgeSessionConfiguration(KieSessionModelImpl kSessionModel) {
+        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksConf.setOption( kSessionModel.getClockType() );
         return ksConf;
     }

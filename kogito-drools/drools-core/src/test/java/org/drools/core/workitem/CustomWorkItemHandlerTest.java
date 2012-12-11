@@ -27,7 +27,7 @@ import org.drools.impl.EnvironmentFactory;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
@@ -39,7 +39,7 @@ public class CustomWorkItemHandlerTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Properties props = new Properties();
         props.setProperty("drools.workItemHandlers", "CustomWorkItemHandlers.conf");
-        KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(props);
+        KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(props);
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(config, EnvironmentFactory.newEnvironment());
         assertNotNull(ksession);

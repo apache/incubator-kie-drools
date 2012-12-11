@@ -21,7 +21,7 @@ import static org.junit.Assert.fail;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.AlphaThresholdOption;
 import org.kie.conf.AssertBehaviorOption;
@@ -43,7 +43,7 @@ import org.kie.runtime.rule.ConsequenceExceptionHandler;
 
 public class KnowledgeBaseConfigurationTest {
 
-    private KnowledgeBaseConfiguration config;
+    private KieBaseConfiguration config;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()

@@ -39,7 +39,7 @@ import org.drools.rule.Package;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -61,7 +61,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         return KnowledgeBaseFactory.newKnowledgeBase();
     }
 
-    protected KnowledgeBase getKnowledgeBase(KnowledgeBaseConfiguration config) throws Exception {
+    protected KnowledgeBase getKnowledgeBase(KieBaseConfiguration config) throws Exception {
         return KnowledgeBaseFactory.newKnowledgeBase( config );
     }
 

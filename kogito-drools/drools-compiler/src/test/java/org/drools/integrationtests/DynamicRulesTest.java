@@ -60,7 +60,7 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Package;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -951,7 +951,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             byte[] out = DroolsStreamUtils.streamOut( ((KnowledgePackageImp) pkg).pkg );
 
             // adding original packages to a kbase just to make sure they are fine
-            KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
+            KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
                                                                                                        loader1 );
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
             kbase.addKnowledgePackages( pkgs );
@@ -969,7 +969,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             Collection<KnowledgePackage> pkgs2 = builder2.getKnowledgePackages();
 
             // create another kbase
-            KnowledgeBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
+            KieBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
                                                                                                         loader2 );
             KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf2 );
             kbase2.addKnowledgePackages( pkgs2 );
@@ -1003,7 +1003,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             byte[] out = DroolsStreamUtils.streamOut( pkg );
 
             // adding original packages to a kbase just to make sure they are fine
-            KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
+            KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
                                                                                                        loader1 );
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
             kbase.addKnowledgePackages( pkgs );
@@ -1022,7 +1022,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             Thread.currentThread().setContextClassLoader( ccl );
 
             // create another kbase
-            KnowledgeBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
+            KieBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
                                                                                                         loader2 );
             KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf2 );
             kbase2.addKnowledgePackages( pkgs2 );
@@ -1127,7 +1127,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test
     public void testJBRULES_2206() {
-        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( config );
         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
