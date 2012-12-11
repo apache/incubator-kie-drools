@@ -1,6 +1,6 @@
 package org.kie.runtime;
 
-import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.event.KieRuntimeEventManager;
 import org.kie.runtime.process.StatelessProcessSession;
 import org.kie.runtime.rule.StatelessRuleSession;
 
@@ -9,7 +9,7 @@ public interface StatelessKieSession
         StatelessRuleSession,
         StatelessProcessSession,
         CommandExecutor,
-        KnowledgeRuntimeEventManager {
+        KieRuntimeEventManager {
 
     /**
      * Return the Globals store

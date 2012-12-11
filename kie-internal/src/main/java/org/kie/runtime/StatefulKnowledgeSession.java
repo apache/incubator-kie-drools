@@ -17,6 +17,7 @@
 package org.kie.runtime;
 
 import org.kie.KnowledgeBase;
+import org.kie.event.KnowledgeRuntimeEventManager;
 
 
 /**
@@ -98,7 +99,7 @@ import org.kie.KnowledgeBase;
  */
 public interface StatefulKnowledgeSession
     extends
-    KieSession, KnowledgeRuntime {
+    KieSession, KnowledgeRuntime, KnowledgeRuntimeEventManager {
 	
 	KnowledgeBase getKnowledgeBase();
 

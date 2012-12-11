@@ -22,5 +22,5 @@ import org.kie.KieBase;
 public interface BeforeKieBaseUnlockedEvent
     extends
     KieBaseEvent {
-    KieBase getKnowledgeBase();
+    KieBase getKieBase();
 }
