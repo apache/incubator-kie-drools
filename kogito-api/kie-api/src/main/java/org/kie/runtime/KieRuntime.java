@@ -57,7 +57,7 @@ public interface KieRuntime
      * 
      * @return
      */
-    KieBase getKnowledgeBase();
+    KieBase getKieBase();
 
     void registerChannel(String name,
                          Channel channel);

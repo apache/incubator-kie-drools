@@ -20,13 +20,13 @@ import org.kie.event.KieRuntimeEventManager;
 
 public interface KieLoggers {
 
-    KnowledgeRuntimeLogger newFileLogger(KieRuntimeEventManager session,
+    KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
                                          String fileName);
 
-    KnowledgeRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
+    KieRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
                                                  String fileName,
                                                  int interval);
 
-    KnowledgeRuntimeLogger newConsoleLogger(KieRuntimeEventManager session);
+    KieRuntimeLogger newConsoleLogger(KieRuntimeEventManager session);
 
 }

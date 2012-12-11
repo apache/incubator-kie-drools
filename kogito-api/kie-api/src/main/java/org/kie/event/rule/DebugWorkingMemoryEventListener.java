@@ -36,7 +36,7 @@ public class DebugWorkingMemoryEventListener
         stream.println( event );
     }
 
-    public void objectRetracted(ObjectRetractedEvent event) {
+    public void objectDeleted(ObjectDeletedEvent event) {
         stream.println( event );
     }
 

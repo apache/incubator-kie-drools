@@ -32,15 +32,15 @@ public class DebugAgendaEventListener
         this.stream = stream;
     }
 
-    public void activationCancelled(MatchCancelledEvent event) {
+    public void matchCancelled(MatchCancelledEvent event) {
         stream.println( event );
     }
 
-    public void activationCreated(MatchCreatedEvent event) {
+    public void matchCreated(MatchCreatedEvent event) {
         stream.println( event );
     }
 
-    public void afterActivationFired(AfterMatchFiredEvent event) {
+    public void afterMatchFired(AfterMatchFiredEvent event) {
         stream.println( event );
     }
 
@@ -52,7 +52,7 @@ public class DebugAgendaEventListener
         stream.println( event );
     }
 
-    public void beforeActivationFired(BeforeMatchFiredEvent event) {
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
         stream.println( event );
     }
 

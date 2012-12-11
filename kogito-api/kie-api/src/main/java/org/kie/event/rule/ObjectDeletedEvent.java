@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.logger;
+package org.kie.event.rule;
 
-/**
- * A logger for audit events.
- */
-public interface KnowledgeRuntimeLogger {
 
-    /**
-     * Release any resources allocated within the logger such as file
-     * handles, network connections, etc.
-     * It is a programming error to append to a closed appender.
-     */
-    public void close();
+import org.kie.runtime.rule.FactHandle;
 
+public interface ObjectDeletedEvent
+    extends
+    WorkingMemoryEvent {
+
+    public FactHandle getFactHandle();
+
+    public Object getOldObject();
 }

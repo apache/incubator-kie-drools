@@ -26,5 +26,5 @@ public interface WorkingMemoryEventListener
 
     void objectUpdated(ObjectUpdatedEvent event);
 
-    void objectRetracted(ObjectRetractedEvent event);
+    void objectDeleted(ObjectDeletedEvent event);
 }

@@ -40,5 +40,5 @@ public interface KieBaseEventManager {
      * 
      * @return listeners The listeners.
      */
-    public Collection<KieBaseEventListener> getKnowledgeBaseEventListeners();
+    public Collection<KieBaseEventListener> getKieBaseEventListeners();
 }

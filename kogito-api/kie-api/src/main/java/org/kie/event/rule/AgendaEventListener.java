@@ -22,13 +22,13 @@ import java.util.EventListener;
 public interface AgendaEventListener
     extends
     EventListener {
-    void activationCreated(MatchCreatedEvent event);
+    void matchCreated(MatchCreatedEvent event);
 
-    void activationCancelled(MatchCancelledEvent event);
+    void matchCancelled(MatchCancelledEvent event);
 
-    void beforeActivationFired(BeforeMatchFiredEvent event);
+    void beforeMatchFired(BeforeMatchFiredEvent event);
 
-    void afterActivationFired(AfterMatchFiredEvent event);
+    void afterMatchFired(AfterMatchFiredEvent event);
 
     void agendaGroupPopped(AgendaGroupPoppedEvent event);
 
