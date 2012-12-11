@@ -12,6 +12,7 @@ import org.kie.builder.KieRepository;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.Results;
 import org.kie.builder.Message.Level;
+import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
@@ -84,11 +85,15 @@ public class KieContainerImpl
     }
 
     public KieSession newKieSession() {
+        return newKieSession((Environment)null);
+    }
+
+    public KieSession newKieSession(Environment environment) {
         KieSessionModel defaultKieSessionModel = kProject.getDefaultKieSession();
         if (defaultKieSessionModel == null) {
             new RuntimeException("Cannot find a defualt KieSession");
         }
-        return newKieSession(defaultKieSessionModel.getName());
+        return newKieSession(defaultKieSessionModel.getName(), environment);
     }
 
     public StatelessKieSession newKieStatelessSession() {
@@ -100,6 +105,10 @@ public class KieContainerImpl
     }
 
     public KieSession newKieSession(String kSessionName) {
+        return newKieSession(kSessionName, null);
+    }
+
+    public KieSession newKieSession(String kSessionName, Environment environment) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
         if ( kSessionModel == null ) {
             log.error("Unknown KieSession name: " + kSessionName);
@@ -110,7 +119,7 @@ public class KieContainerImpl
             log.error("Unknown KieBase name: " + kSessionModel.getKieBaseModel().getName());
             return null;
         }
-        KieSession kSession = kBase.newKieSession(getKnowledgeSessionConfiguration(kSessionModel), null);
+        KieSession kSession = kBase.newKieSession(getKnowledgeSessionConfiguration(kSessionModel), environment);
         wireListnersAndWIHs(kSessionModel, kSession);
         return kSession;
     }
