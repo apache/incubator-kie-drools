@@ -20,7 +20,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
 import org.jbpm.JbpmTestCase;

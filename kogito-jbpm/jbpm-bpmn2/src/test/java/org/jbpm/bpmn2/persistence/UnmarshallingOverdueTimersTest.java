@@ -24,7 +24,7 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
@@ -120,7 +120,7 @@ public class UnmarshallingOverdueTimersTest {
             }
 
             // dispose of session 
-            KnowledgeSessionConfiguration config = ksession.getSessionConfiguration();
+            KieSessionConfiguration config = ksession.getSessionConfiguration();
             int ksessionId = knowledgeSessionDispose(ksession);
             
             // print info for next test

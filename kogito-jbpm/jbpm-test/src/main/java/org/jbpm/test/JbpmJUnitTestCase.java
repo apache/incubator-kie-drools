@@ -39,7 +39,7 @@ import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.process.NodeInstance;
@@ -253,7 +253,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
 	    StatefulKnowledgeSession result;
-        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 	    // Do NOT use the Pseudo clock yet.. 
         // conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         
@@ -307,7 +307,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 				env = ksession.getEnvironment();
 				taskService = null;
 			}
-			KnowledgeSessionConfiguration config = ksession.getSessionConfiguration();
+			KieSessionConfiguration config = ksession.getSessionConfiguration();
 			ksession.dispose();
 			
 			// reload knowledge session 
@@ -323,7 +323,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 	public StatefulKnowledgeSession loadSession(int id, String... process) { 
 	    KnowledgeBase kbase = createKnowledgeBase(process);
 	       
-        final KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         config.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         
 	    StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, createEnvironment(emf));

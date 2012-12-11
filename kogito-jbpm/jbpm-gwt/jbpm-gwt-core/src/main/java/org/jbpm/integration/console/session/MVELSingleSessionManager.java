@@ -50,7 +50,7 @@ import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemHandler;
 import org.mvel2.MVEL;
@@ -142,7 +142,7 @@ public class MVELSingleSessionManager extends AbstractSessionManager {
                 sessionconfigproperties.setProperty(propertyName, properties.get(propertyName));
             }
         }
-        KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(sessionconfigproperties);
+        KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(sessionconfigproperties);
         
         // try to load session if id is given as part of template
         if (ksessionId > 0) {

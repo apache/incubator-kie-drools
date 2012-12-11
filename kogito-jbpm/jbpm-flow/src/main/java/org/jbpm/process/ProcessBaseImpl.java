@@ -29,7 +29,7 @@ import org.kie.definition.type.FactType;
 import org.kie.event.kiebase.KieBaseEventListener;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 
@@ -83,11 +83,11 @@ public class ProcessBaseImpl implements InternalKnowledgeBase {
         return newKieSession(new SessionConfiguration(), EnvironmentFactory.newEnvironment());
     }
     
-    public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment) {
+    public StatefulKnowledgeSession newStatefulKnowledgeSession(KieSessionConfiguration conf, Environment environment) {
         return new StatefulProcessSession(this, conf, environment);
     }  
     
-    public KieSession newKieSession(KnowledgeSessionConfiguration conf, Environment environment) {
+    public KieSession newKieSession(KieSessionConfiguration conf, Environment environment) {
         return new StatefulProcessSession(this, conf, environment);
     }  
     
@@ -107,11 +107,11 @@ public class ProcessBaseImpl implements InternalKnowledgeBase {
         throw new UnsupportedOperationException("Stateless sessions not supported");
     }
     
-    public StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf) {        
+    public StatelessKnowledgeSession newStatelessKnowledgeSession(KieSessionConfiguration conf) {        
         throw new UnsupportedOperationException("Stateless sessions not supported");
     } 
 
-    public StatelessKnowledgeSession newStatelessKieSession(KnowledgeSessionConfiguration conf) {        
+    public StatelessKnowledgeSession newStatelessKieSession(KieSessionConfiguration conf) {        
         throw new UnsupportedOperationException("Stateless sessions not supported");
     } 
 

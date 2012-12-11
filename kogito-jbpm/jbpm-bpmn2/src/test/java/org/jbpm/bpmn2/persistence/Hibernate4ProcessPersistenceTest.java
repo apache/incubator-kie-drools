@@ -25,7 +25,7 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
@@ -194,7 +194,7 @@ public class Hibernate4ProcessPersistenceTest {
         KnowledgeBase kbase = ksession.getKieBase();
         Environment env = null;
         env = createEnvironment(context);
-        KnowledgeSessionConfiguration config = ksession.getSessionConfiguration();
+        KieSessionConfiguration config = ksession.getSessionConfiguration();
         StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
         new JPAWorkingMemoryDbLogger(result);
         return result;

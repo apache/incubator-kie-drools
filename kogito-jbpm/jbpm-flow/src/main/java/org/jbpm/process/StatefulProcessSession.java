@@ -19,7 +19,7 @@ import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
 import org.kie.runtime.Globals;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
@@ -45,14 +45,14 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	private KnowledgeBase kbase;
 	private InternalProcessRuntime processRuntime;
 	private WorkItemManager workItemManager;
-	private KnowledgeSessionConfiguration sessionConfiguration;
+	private KieSessionConfiguration sessionConfiguration;
 	private Environment environment;
 	private TimerService timerService;
 	protected Queue<WorkingMemoryAction> actionQueue;
 	private int id;
 	private MapGlobalResolver globals = new MapGlobalResolver();
 	
-	public StatefulProcessSession(KnowledgeBase kbase, KnowledgeSessionConfiguration sessionConfiguration, Environment environment) {
+	public StatefulProcessSession(KnowledgeBase kbase, KieSessionConfiguration sessionConfiguration, Environment environment) {
 		this.kbase = kbase;
 		this.sessionConfiguration = sessionConfiguration;
 		this.environment = environment;
@@ -134,7 +134,7 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		return processRuntime;
 	}
 	
-	public KnowledgeSessionConfiguration getSessionConfiguration() {
+	public KieSessionConfiguration getSessionConfiguration() {
 		return sessionConfiguration;
 	}
 
