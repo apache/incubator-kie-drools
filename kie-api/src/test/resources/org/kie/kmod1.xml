@@ -47,6 +47,11 @@
     <kbase name="org.kie.example7" includes="org.kie.example1, org.kie.example1" >        
         <ksession name="ksession9" type="STATEFUL"  clockType="REALTIME" eventMode="CLOUD">
             <fileLogger name="logger3" file="...." threaded="true" interval="50" />
+            <workItemHandlers>
+                <workItemHandler type="type1"/>
+                <workItemHandler type="type3"/>
+                <workItemHandler type="type4"/>
+            </workItemHandlers>            
             <listeners>
                 <workingMemoryEventListener type="type1"/>
                 <workingMemoryEventListener type="type3"/>
