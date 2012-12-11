@@ -17,7 +17,6 @@
 package org.drools.io.impl;
 
 import org.drools.io.internal.InternalResource;
-import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceType;
 
@@ -59,22 +58,6 @@ public abstract class BaseResource
         out.writeObject( targetPath );
         out.writeObject( description );
         out.writeObject( categories );
-    }
-
-    public String getSourcePath() {
-        throw new UnsupportedOperationException("getSourcePath");
-    }
-
-    public String getTargetPath() {
-        throw new UnsupportedOperationException("getTargetPath");
-    }
-
-    public Resource setSourcePath( String path ) {
-        throw new UnsupportedOperationException("setSourcePath");
-    }
-
-    public Resource setTargetPath( String path ) {
-        throw new UnsupportedOperationException("setTargetPath");
     }
 
     public ResourceConfiguration getConfiguration() {
@@ -129,7 +112,7 @@ public abstract class BaseResource
     }
 
     public void setCategories(String categories) {
-        List list = getCategories();
+        List<String> list = getCategories();
         list.clear();
         if ( categories != null ) {
             StringTokenizer tok = new StringTokenizer( categories, "," );

@@ -55,6 +55,7 @@ import org.drools.command.runtime.rule.ClearActivationGroupCommand;
 import org.drools.command.runtime.rule.ClearAgendaCommand;
 import org.drools.command.runtime.rule.ClearAgendaGroupCommand;
 import org.drools.command.runtime.rule.ClearRuleFlowGroupCommand;
+import org.drools.command.runtime.rule.DeleteCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.command.runtime.rule.FireUntilHaltCommand;
 import org.drools.command.runtime.rule.GetAgendaEventListenersCommand;
@@ -68,7 +69,6 @@ import org.drools.command.runtime.rule.GetWorkingMemoryEventListenersCommand;
 import org.drools.command.runtime.rule.HaltCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.QueryCommand;
-import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.UpdateCommand;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
@@ -404,11 +404,11 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public void retract(FactHandle handle) {
-        commandService.execute( new RetractCommand( handle ) );
+        commandService.execute( new DeleteCommand( handle ) );
     }
 
     public void delete(FactHandle handle) {
-        commandService.execute( new RetractCommand( handle ) );
+        commandService.execute( new DeleteCommand( handle ) );
     }
 
     public void update(FactHandle handle,

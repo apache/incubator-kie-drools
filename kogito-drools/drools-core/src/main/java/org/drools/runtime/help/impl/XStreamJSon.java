@@ -16,41 +16,6 @@
 
 package org.drools.runtime.help.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.runtime.BatchExecutionCommandImpl;
-import org.drools.command.runtime.GetGlobalCommand;
-import org.drools.command.runtime.SetGlobalCommand;
-import org.drools.command.runtime.process.AbortWorkItemCommand;
-import org.drools.command.runtime.process.CompleteWorkItemCommand;
-import org.drools.command.runtime.process.SignalEventCommand;
-import org.drools.command.runtime.process.StartProcessCommand;
-import org.drools.command.runtime.rule.FireAllRulesCommand;
-import org.drools.command.runtime.rule.GetObjectCommand;
-import org.drools.command.runtime.rule.GetObjectsCommand;
-import org.drools.command.runtime.rule.InsertElementsCommand;
-import org.drools.command.runtime.rule.InsertObjectCommand;
-import org.drools.command.runtime.rule.ModifyCommand;
-import org.drools.command.runtime.rule.QueryCommand;
-import org.drools.command.runtime.rule.RetractCommand;
-import org.drools.common.DefaultFactHandle;
-import org.drools.core.util.StringUtils;
-import org.drools.runtime.impl.ExecutionResultImpl;
-import org.drools.runtime.rule.impl.FlatQueryResults;
-import org.kie.command.Command;
-import org.kie.command.CommandFactory;
-import org.kie.command.Setter;
-import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.QueryResultsRow;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -63,6 +28,40 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.mapper.Mapper;
+import org.drools.command.impl.GenericCommand;
+import org.drools.command.runtime.BatchExecutionCommandImpl;
+import org.drools.command.runtime.GetGlobalCommand;
+import org.drools.command.runtime.SetGlobalCommand;
+import org.drools.command.runtime.process.AbortWorkItemCommand;
+import org.drools.command.runtime.process.CompleteWorkItemCommand;
+import org.drools.command.runtime.process.SignalEventCommand;
+import org.drools.command.runtime.process.StartProcessCommand;
+import org.drools.command.runtime.rule.DeleteCommand;
+import org.drools.command.runtime.rule.FireAllRulesCommand;
+import org.drools.command.runtime.rule.GetObjectCommand;
+import org.drools.command.runtime.rule.GetObjectsCommand;
+import org.drools.command.runtime.rule.InsertElementsCommand;
+import org.drools.command.runtime.rule.InsertObjectCommand;
+import org.drools.command.runtime.rule.ModifyCommand;
+import org.drools.command.runtime.rule.QueryCommand;
+import org.drools.common.DefaultFactHandle;
+import org.drools.core.util.StringUtils;
+import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.runtime.rule.impl.FlatQueryResults;
+import org.kie.command.Command;
+import org.kie.command.CommandFactory;
+import org.kie.command.Setter;
+import org.kie.runtime.ExecutionResults;
+import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.QueryResultsRow;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class XStreamJSon {
     public static XStream newJSonMarshaller() {
@@ -492,7 +491,7 @@ public class XStreamJSon {
         public void marshal(Object object,
                             HierarchicalStreamWriter writer,
                             MarshallingContext context) {
-            RetractCommand cmd = (RetractCommand) object;
+            DeleteCommand cmd = (DeleteCommand) object;
             writer.startNode( "fact-handle" );
             writer.setValue( cmd.getFactHandle().toExternalForm() );
             writer.endNode();
@@ -504,13 +503,13 @@ public class XStreamJSon {
             FactHandle factHandle = new DefaultFactHandle( reader.getValue() );
             reader.moveUp();
 
-            Command cmd = CommandFactory.newRetract( factHandle );
+            Command cmd = CommandFactory.newDelete(factHandle);
 
             return cmd;
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals( RetractCommand.class );
+            return clazz.equals( DeleteCommand.class );
         }
     }
 

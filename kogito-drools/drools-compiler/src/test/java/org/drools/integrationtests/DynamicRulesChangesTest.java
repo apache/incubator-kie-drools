@@ -140,7 +140,7 @@ public class DynamicRulesChangesTest {
 
                 // phase 3
                 cmds = new ArrayList<Command>();
-                cmds.add(CommandFactory.newRetract(ksession.getFactHandle(fire1)));
+                cmds.add(CommandFactory.newDelete(ksession.getFactHandle(fire1)));
                 cmds.add(CommandFactory.newFireAllRules());
                 ksession.execute(CommandFactory.newBatchExecution(cmds));
             } catch (Exception e) {

@@ -33,6 +33,7 @@ import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
+import org.drools.command.runtime.rule.DeleteCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.command.runtime.rule.GetObjectCommand;
 import org.drools.command.runtime.rule.GetObjectsCommand;
@@ -40,7 +41,6 @@ import org.drools.command.runtime.rule.InsertElementsCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
-import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.common.DefaultFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.runtime.impl.ExecutionResultImpl;
@@ -63,8 +63,6 @@ import com.thoughtworks.xstream.converters.collections.AbstractCollectionConvert
 import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
-import com.thoughtworks.xstream.mapper.Mapper;
 
 public class XStreamXML {
 
@@ -240,7 +238,7 @@ public class XStreamXML {
         public void marshal(Object object,
                             HierarchicalStreamWriter writer,
                             MarshallingContext context) {
-            RetractCommand cmd = (RetractCommand) object;
+            DeleteCommand cmd = (DeleteCommand) object;
 
             writer.addAttribute( "fact-handle",
                                  cmd.getFactHandle().toExternalForm() );
@@ -250,11 +248,11 @@ public class XStreamXML {
                                 UnmarshallingContext context) {
             FactHandle factHandle = new DefaultFactHandle( reader.getAttribute( "fact-handle" ) );
 
-            return CommandFactory.newRetract( factHandle );
+            return CommandFactory.newDelete(factHandle);
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals( RetractCommand.class );
+            return clazz.equals( DeleteCommand.class );
         }
     }
 
