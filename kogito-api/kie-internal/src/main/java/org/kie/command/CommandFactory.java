@@ -16,13 +16,13 @@
 
 package org.kie.command;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.rule.FactHandle;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -117,8 +117,8 @@ public class CommandFactory {
         return getCommandFactoryProvider().newInsertElements( objects, outIdentifier, returnObject, entryPoint );
     }
 
-    public static Command newRetract(FactHandle factHandle) {
-        return getCommandFactoryProvider().newRetract( factHandle );
+    public static Command newDelete(FactHandle factHandle) {
+        return getCommandFactoryProvider().newDelete(factHandle);
     }
 
     public static Setter newSetter(String accessor,
