@@ -26,13 +26,13 @@ public class KnowledgeBaseEventImpl implements KieBaseEvent {
         this.knowledgeBase = knowledgeBase;
     }
     
-    public KnowledgeBase getKnowledgeBase() {
+    public KnowledgeBase getKieBase() {
         return this.knowledgeBase;
     }
 
     @Override
     public String toString() {
-        return "==>[KnowledgeBaseEventImpl: getKnowledgeBase()=" + getKnowledgeBase() + "]";
+        return "==>[KnowledgeBaseEventImpl: getKieBase()=" + getKieBase() + "]";
     }
 
 }

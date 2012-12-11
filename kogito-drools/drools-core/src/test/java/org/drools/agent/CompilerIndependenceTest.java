@@ -114,7 +114,7 @@ public class CompilerIndependenceTest {
 //        kagent.applyChangeSet(ResourceFactory.newByteArrayResource(xml.getBytes()));
 //        this.kbaseUpdated = false;
 //
-//        assertEquals(1, kagent.getKnowledgeBase().getKnowledgePackages().size());
+//        assertEquals(1, kagent.getKieBase().getKnowledgePackages().size());
 //
 //        Thread.sleep(2000);
 //
@@ -137,7 +137,7 @@ public class CompilerIndependenceTest {
 //        }
 //
 //        this.waitUntilKBaseUpdate();
-//        assertEquals(1, kagent.getKnowledgeBase().getKnowledgePackages().size());
+//        assertEquals(1, kagent.getKieBase().getKnowledgePackages().size());
 //
 //        kagent.dispose();
 //
