@@ -15,13 +15,6 @@ public interface KieServices {
     KieResources getResources();
 
     KieRepository getKieRepository();
-
-    /**
-     * Returns KieContainer for the classpath
-     */
-    KieContainer getKieClasspathContainer();
-    
-    KieContainer getKieContainer(GAV gav);
     
     KieCommands getCommands();
     
@@ -32,6 +25,13 @@ public interface KieServices {
     KieExecutors getExecutors();
     
     KieStoreServices getStoreServices();
+    
+    /**
+     * Returns KieContainer for the classpath
+     */
+    KieContainer getKieClasspathContainer();
+    
+    KieContainer getKieContainer(GAV gav);    
     
     KieScanner newKieScanner(KieContainer kieContainer);    
     
