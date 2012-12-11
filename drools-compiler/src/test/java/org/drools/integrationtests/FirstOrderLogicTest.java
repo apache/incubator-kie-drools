@@ -53,7 +53,7 @@ import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.time.SessionClock;
@@ -1029,7 +1029,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         verify( al,
-                times( 6 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
+                times( 6 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
     }
 
     // JBRULES-2526 
@@ -1057,7 +1057,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         verify( al,
-                times( 8 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
+                times( 8 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
     }
 
     @Test
@@ -1305,7 +1305,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf,
                                                                                      null );

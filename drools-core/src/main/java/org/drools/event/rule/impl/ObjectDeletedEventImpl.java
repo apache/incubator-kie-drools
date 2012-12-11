@@ -18,17 +18,17 @@ package org.drools.event.rule.impl;
 
 import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.kie.event.rule.ObjectRetractedEvent;
+import org.kie.event.rule.ObjectDeletedEvent;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class ObjectRetractedEventImpl  extends WorkingMemoryEventImpl implements ObjectRetractedEvent {
+public class ObjectDeletedEventImpl extends WorkingMemoryEventImpl implements ObjectDeletedEvent {
     private FactHandle factHandle;
     private Object oldbOject;
     
-    public ObjectRetractedEventImpl( org.drools.event.ObjectRetractedEvent event) {
+    public ObjectDeletedEventImpl(org.drools.event.ObjectRetractedEvent event) {
         super( ((InternalWorkingMemory) event.getWorkingMemory() ).getKnowledgeRuntime(), event.getPropagationContext() );
         factHandle = event.getFactHandle();
         oldbOject = event.getOldObject();
@@ -57,7 +57,7 @@ public class ObjectRetractedEventImpl  extends WorkingMemoryEventImpl implements
 
     @Override
     public String toString() {
-        return "==>[ObjectRetractedEventImpl: getFactHandle()=" + getFactHandle() + ", getOldObject()="
+        return "==>[ObjectDeletedEventImpl: getFactHandle()=" + getFactHandle() + ", getOldObject()="
                 + getOldObject() + ", getKnowledgeRuntime()=" + getKieRuntime() + ", getPropagationContext()="
                 + getPropagationContext() + "]";
     }

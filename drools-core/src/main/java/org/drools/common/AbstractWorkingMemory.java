@@ -83,7 +83,6 @@ import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.Globals;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItemHandler;
@@ -159,8 +158,6 @@ public abstract class AbstractWorkingMemory
     protected SessionConfiguration                               config;
 
     private InternalKnowledgeRuntime                             kruntime;
-
-    private Map<String, ExitPoint>                               exitPoints;
 
     private Map<String, Channel>                                 channels;
 
@@ -1185,32 +1182,6 @@ public abstract class AbstractWorkingMemory
 
     public InternalKnowledgeRuntime getKnowledgeRuntime() {
         return this.kruntime;
-    }
-
-    /**
-     * @deprecated Use {@link #registerChannel(String, Channel)} instead.
-     */
-    @Deprecated
-    public void registerExitPoint(String name,
-                                  ExitPoint exitPoint) {
-        getExitPoints().put(name, exitPoint);
-    }
-
-    /**
-     * @deprecated Use {@link #unregisterChannel(String)} instead.
-     */
-    @Deprecated
-    public void unregisterExitPoint(String name) {
-        if (exitPoints != null) exitPoints.remove(name);
-    }
-
-    /**
-     * @deprecated Use {@link #getChannels()} instead.
-     */
-    @Deprecated
-    public Map<String, ExitPoint> getExitPoints() {
-        if (exitPoints == null) exitPoints = new ConcurrentHashMap<String, ExitPoint>();
-        return exitPoints;
     }
 
     public void registerChannel(String name,

@@ -6,7 +6,6 @@ import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.kie.KnowledgeBase;
 import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 import java.util.Collection;
 
@@ -19,7 +18,7 @@ public class ReteDumper {
     }
 
     public static void dumpRete(KnowledgeRuntime session) {
-        dumpRete(((KnowledgeBaseImpl)session.getKnowledgeBase()).getRuleBase());
+        dumpRete(((KnowledgeBaseImpl)session.getKieBase()).getRuleBase());
     }
 
     public static void dumpRete(RuleBase ruleBase) {

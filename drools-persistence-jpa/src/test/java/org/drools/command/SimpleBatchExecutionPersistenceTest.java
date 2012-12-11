@@ -26,7 +26,7 @@ import org.junit.After;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class SimpleBatchExecutionPersistenceTest extends SimpleBatchExecutionTest {
@@ -44,7 +44,7 @@ public class SimpleBatchExecutionPersistenceTest extends SimpleBatchExecutionTes
         if( context == null ) { 
             context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         }
-        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         return JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
     }  
 }

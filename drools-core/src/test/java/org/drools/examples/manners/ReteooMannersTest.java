@@ -39,24 +39,24 @@ public class ReteooMannersTest extends BaseMannersTest {
         final DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
             private int counter = 0;
 
-            //           public void activationCreated(ActivationCreatedEvent event) {
-            //                super.activationCreated( event );
+            //           public void matchCreated(ActivationCreatedEvent event) {
+            //                super.matchCreated( event );
             //                System.out.println( event );
             //            }
             //           
-            //           public void activationCancelled(ActivationCancelledEvent event) {
-            //               super.activationCancelled( event );
+            //           public void matchCancelled(ActivationCancelledEvent event) {
+            //               super.matchCancelled( event );
             //               System.out.println( event );
             //           }
             //           
-            //           public void beforeActivationFired(BeforeActivationFiredEvent event) {
-            //               super.beforeActivationFired( event );
+            //           public void beforeMatchFired(BeforeActivationFiredEvent event) {
+            //               super.beforeMatchFired( event );
             //               System.out.println( event );
             //           }
 
             public void afterActivationFired(AfterActivationFiredEvent event) {
                 this.counter++;
-                //super.afterActivationFired( event );
+                //super.afterMatchFired( event );
                 //System.out.println( event );
             }
 

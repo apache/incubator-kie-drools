@@ -33,11 +33,9 @@ import org.drools.command.runtime.GetGlobalsCommand;
 import org.drools.command.runtime.GetIdCommand;
 import org.drools.command.runtime.GetKnowledgeBaseCommand;
 import org.drools.command.runtime.RegisterChannelCommand;
-import org.drools.command.runtime.RegisterExitPointCommand;
 import org.drools.command.runtime.RemoveEventListenerCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.UnregisterChannelCommand;
-import org.drools.command.runtime.UnregisterExitPointCommand;
 import org.drools.command.runtime.process.AbortProcessInstanceCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
@@ -81,9 +79,8 @@ import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.Globals;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
@@ -262,27 +259,8 @@ public class CommandBasedStatefulKnowledgeSession
         this.commandService.execute( new FireUntilHaltCommand( agendaFilter ) );
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public KnowledgeBase getKieBase() {
         return this.commandService.execute( new GetKnowledgeBaseCommand() );
-    }
-
-    /**
-     * @deprecated Use {@link #registerChannel(String, Channel)} instead
-     */
-    @Deprecated
-    public void registerExitPoint(String name,
-                                  ExitPoint exitPoint) {
-        this.commandService.execute( new RegisterExitPointCommand( name,
-                                                                   exitPoint ) );
-    }
-
-    /**
-     * @deprecated Use {@link #unregisterChannel(String)} instead.
-     */
-    @Deprecated
-    public void unregisterExitPoint(String name) {
-        this.commandService.execute( new UnregisterExitPointCommand( name ) );
-
     }
 
     public void registerChannel(String name,
@@ -507,7 +485,7 @@ public class CommandBasedStatefulKnowledgeSession
         return null;
     }
     
-    public KnowledgeSessionConfiguration getSessionConfiguration() {
+    public KieSessionConfiguration getSessionConfiguration() {
         return ((KnowledgeCommandContext) commandService.getContext()).getStatefulKnowledgesession().getSessionConfiguration();
     }
 

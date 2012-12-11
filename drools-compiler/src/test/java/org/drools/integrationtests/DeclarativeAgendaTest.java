@@ -6,7 +6,7 @@ import java.util.List;
 import org.drools.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.conf.DeclarativeAgendaOption;
 import org.kie.event.rule.MatchCancelledEvent;
@@ -46,7 +46,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    list.add( kcontext.rule.name + ':' + $s ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -98,7 +98,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -304,7 +304,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -354,7 +354,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -446,7 +446,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.unblockAllMatches( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -519,7 +519,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -633,7 +633,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.cancelMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -642,7 +642,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         ksession.addEventListener( new AgendaEventListener() {
 
-            public void beforeActivationFired(BeforeMatchFiredEvent event) {
+            public void beforeMatchFired(BeforeMatchFiredEvent event) {
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
@@ -651,10 +651,10 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
             }
 
-            public void afterActivationFired(AfterMatchFiredEvent event) {
+            public void afterMatchFired(AfterMatchFiredEvent event) {
             }
 
-            public void activationCreated(MatchCreatedEvent event) {
+            public void matchCreated(MatchCreatedEvent event) {
             }
 
             public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
@@ -669,7 +669,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
             }
             
-            public void activationCancelled(MatchCancelledEvent event) {
+            public void matchCancelled(MatchCancelledEvent event) {
                 cancelled.add( event );
             }            
         } );
@@ -725,7 +725,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.halt( ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -772,7 +772,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                 "    kcontext.cancelMatch($i);\n" +
                 "end";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -816,7 +816,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                 "    kcontext.cancelMatch($i);\n" +
                 "end";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);

@@ -47,7 +47,7 @@ import org.kie.command.Context;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +102,7 @@ public class SingleSessionCommandService
     }
 
     public SingleSessionCommandService(KnowledgeBase kbase,
-                                       KnowledgeSessionConfiguration conf,
+                                       KieSessionConfiguration conf,
                                        Environment env) {
         if ( conf == null ) {
             conf = new SessionConfiguration();
@@ -169,7 +169,7 @@ public class SingleSessionCommandService
 
     public SingleSessionCommandService(Integer sessionId,
                                        KnowledgeBase kbase,
-                                       KnowledgeSessionConfiguration conf,
+                                       KieSessionConfiguration conf,
                                        Environment env) {
         if ( conf == null ) {
             conf = new SessionConfiguration();
@@ -211,7 +211,7 @@ public class SingleSessionCommandService
 
     protected void initKsession(Integer sessionId,
                                 KnowledgeBase kbase,
-                                KnowledgeSessionConfiguration conf,
+                                KieSessionConfiguration conf,
                                 PersistenceContext persistenceContext) {
         if ( !doRollback && this.ksession != null ) {
             return;

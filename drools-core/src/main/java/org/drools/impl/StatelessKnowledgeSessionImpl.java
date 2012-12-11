@@ -44,7 +44,7 @@ import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.Environment;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.Globals;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
@@ -74,7 +74,7 @@ public class StatelessKnowledgeSessionImpl
     public ProcessEventSupport                                                processEventSupport       = new ProcessEventSupport();
     private boolean                                                           initialized;
 
-    private KnowledgeSessionConfiguration                                     conf;
+    private KieSessionConfiguration                                     conf;
     private Environment                                                       environment;
     
     public StatelessKnowledgeSessionImpl() {
@@ -82,7 +82,7 @@ public class StatelessKnowledgeSessionImpl
 
     public StatelessKnowledgeSessionImpl(final InternalRuleBase ruleBase,
                                          final KnowledgeAgent kagent,
-                                         final KnowledgeSessionConfiguration conf) {
+                                         final KieSessionConfiguration conf) {
         this.ruleBase = ruleBase;
         this.kagent = kagent;
         this.conf = (conf != null) ? conf : SessionConfiguration.getDefaultInstance();

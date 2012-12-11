@@ -33,7 +33,7 @@ import org.drools.io.impl.ByteArrayResource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -252,7 +252,7 @@ public class AnnotationsTest {
                      "    Person()\n" +
                      "then\n" +
                      "end";
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
 
@@ -283,7 +283,7 @@ public class AnnotationsTest {
                      "    Person()\n" +
                      "then\n" +
                      "end";
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
 
@@ -301,7 +301,7 @@ public class AnnotationsTest {
 
     private KnowledgeBase loadKnowledgeBase( String id,
                                              String drl,
-                                             KnowledgeBaseConfiguration conf ) {
+                                             KieBaseConfiguration conf ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
                       ResourceType.DRL );

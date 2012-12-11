@@ -14,7 +14,7 @@ import org.drools.integrationtests.SerializationHelper;
 import org.drools.rule.Package;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -26,8 +26,8 @@ import org.kie.event.rule.AgendaGroupPushedEvent;
 import org.kie.event.rule.BeforeMatchFiredEvent;
 import org.kie.event.rule.MatchCancelledEvent;
 import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
-import org.kie.event.rule.ObjectRetractedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;
 import org.kie.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
@@ -55,7 +55,7 @@ public class SequentialTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.YES );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
@@ -95,7 +95,7 @@ public class SequentialTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.YES );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
@@ -137,7 +137,7 @@ public class SequentialTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.YES );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
@@ -168,7 +168,7 @@ public class SequentialTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.YES );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
@@ -181,17 +181,17 @@ public class SequentialTest extends CommonTestMethodBase {
         
         ksession.addEventListener( new AgendaEventListener() {
 
-            public void activationCancelled(MatchCancelledEvent event) {
+            public void matchCancelled(MatchCancelledEvent event) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void activationCreated(MatchCreatedEvent event) {
+            public void matchCreated(MatchCreatedEvent event) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void afterActivationFired(AfterMatchFiredEvent event) {
+            public void afterMatchFired(AfterMatchFiredEvent event) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
@@ -206,7 +206,7 @@ public class SequentialTest extends CommonTestMethodBase {
                 list.add( event );
             }
 
-            public void beforeActivationFired(BeforeMatchFiredEvent event) {
+            public void beforeMatchFired(BeforeMatchFiredEvent event) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
@@ -240,7 +240,7 @@ public class SequentialTest extends CommonTestMethodBase {
                 list.add( event );
             }
 
-            public void objectRetracted(ObjectRetractedEvent event) {
+            public void objectDeleted(ObjectDeletedEvent event) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
@@ -268,7 +268,7 @@ public class SequentialTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.YES );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
