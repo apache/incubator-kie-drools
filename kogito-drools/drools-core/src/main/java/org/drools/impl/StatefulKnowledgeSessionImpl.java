@@ -16,6 +16,14 @@
 
 package org.drools.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+
 import org.drools.FactException;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
@@ -76,7 +84,6 @@ import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
 import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.Globals;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
@@ -91,14 +98,6 @@ import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 
 public class StatefulKnowledgeSessionImpl
         implements
@@ -743,24 +742,6 @@ public class StatefulKnowledgeSessionImpl
 
     public Agenda getAgenda() {
         return new AgendaImpl( (InternalAgenda) this.session.getAgenda() );
-    }
-
-    /**
-     * @deprecated Use {@link #registerChannel(String, Channel)} instead.
-     */
-    @Deprecated
-    public void registerExitPoint(String name,
-                                  ExitPoint exitPoint) {
-        this.session.registerExitPoint( name,
-                                        exitPoint );
-    }
-
-    /**
-     * @deprecated Use {@link #unregisterChannel(String)} instead.
-     */
-    @Deprecated
-    public void unregisterExitPoint(String name) {
-        this.session.unregisterExitPoint( name );
     }
 
     public void registerChannel(String name,

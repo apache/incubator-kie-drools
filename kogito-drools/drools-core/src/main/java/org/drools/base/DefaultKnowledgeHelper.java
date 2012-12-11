@@ -16,6 +16,14 @@
 
 package org.drools.base;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -49,7 +57,6 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.kie.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.Channel;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.KieRuntime;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.NodeInstance;
@@ -59,14 +66,6 @@ import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;
 import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 public class DefaultKnowledgeHelper
     implements
@@ -425,14 +424,6 @@ public class DefaultKnowledgeHelper
         return this.workingMemory.getEntryPoints().get( id );
     }
 
-    /**
-     * @deprecated use {@link #getChannel(String)} instead
-     */
-    @Deprecated
-    public ExitPoint getExitPoint(String id) {
-        return this.workingMemory.getExitPoints().get( id );
-    }
-    
     public Channel getChannel(String id) {
         return this.workingMemory.getChannels().get( id );
     }
@@ -441,14 +432,6 @@ public class DefaultKnowledgeHelper
         return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
     }
 
-    /**
-     * @deprecated use {@link #getChannels()} instead
-     */
-    @Deprecated
-    public Map<String, ExitPoint> getExitPoints() {
-        return Collections.unmodifiableMap( this.workingMemory.getExitPoints() );
-    }
-    
     public Map<String, Channel> getChannels() {
         return Collections.unmodifiableMap( this.workingMemory.getChannels() );
     }

@@ -16,6 +16,10 @@
 
 package org.drools.base;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
@@ -30,15 +34,10 @@ import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.kie.runtime.Channel;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.KieRuntime;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
-
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 public class SequentialKnowledgeHelper
     implements
@@ -147,28 +146,12 @@ public class SequentialKnowledgeHelper
         return this.workingMemory.getEntryPoints().get( id );
     }
 
-    /**
-     * @deprecated use {@link #getChannels()} instead
-     */
-    @Deprecated
-    public ExitPoint getExitPoint(String id) {
-        return this.workingMemory.getExitPoints().get( id );
-    }
-
     public Channel getChannel(String id) {
         return this.workingMemory.getChannels().get( id );
     }
 
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
-    }
-
-    /**
-     * @deprecated use {@link #getChannels()} instead
-     */
-    @Deprecated
-    public Map<String, ExitPoint> getExitPoints() {
-        return Collections.unmodifiableMap( this.workingMemory.getExitPoints() );
     }
 
     public Map<String, Channel> getChannels() {

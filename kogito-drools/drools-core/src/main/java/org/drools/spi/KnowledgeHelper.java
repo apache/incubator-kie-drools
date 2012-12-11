@@ -27,7 +27,6 @@ import org.drools.factmodel.traits.TraitableBean;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.kie.runtime.Channel;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.rule.RuleContext;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
@@ -118,18 +117,6 @@ public interface KnowledgeHelper
     WorkingMemoryEntryPoint getEntryPoint( String id );
     
     Map<String, WorkingMemoryEntryPoint> getEntryPoints();
-    
-    /**
-     * @deprecated Use {@link #getChannel(String)} instead.
-     */
-    @Deprecated
-    ExitPoint getExitPoint( String id );
-    
-    /**
-     * @deprecated Use {@link #getChannels()} instead.
-     */
-    @Deprecated
-    Map<String, ExitPoint> getExitPoints();
     
     Channel getChannel( String id );
     

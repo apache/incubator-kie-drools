@@ -11,7 +11,6 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.spi.AgendaFilter;
 import org.kie.event.process.ProcessEventManager;
 import org.kie.runtime.Channel;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.ViewChangedEventListener;
@@ -35,10 +34,6 @@ public interface ReteooWorkingMemoryInterface extends InternalWorkingMemoryActio
     ProcessInstance createProcessInstance( String processId, Map<String, Object> parameters );
 
     ProcessInstance startProcessInstance( long processInstanceId );
-
-    void registerExitPoint( String name, ExitPoint exitPoint );
-
-    void unregisterExitPoint( String name );
 
     void registerChannel( String name, Channel channel );
 

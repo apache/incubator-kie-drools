@@ -38,7 +38,6 @@ import org.drools.time.TimerService;
 import org.drools.type.DateFormats;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public interface InternalWorkingMemory
@@ -119,12 +118,6 @@ public interface InternalWorkingMemory
     public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
     
     public InternalKnowledgeRuntime getKnowledgeRuntime();
-    
-    /**
-     * @deprecated Use {@link #getChannels()} instead.
-     */
-    @Deprecated
-    public Map<String, ExitPoint> getExitPoints();
     
     /**
      * Returns a map of channel Id->Channel of all channels in
