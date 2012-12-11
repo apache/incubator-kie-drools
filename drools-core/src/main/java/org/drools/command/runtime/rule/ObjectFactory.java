@@ -18,13 +18,6 @@ package org.drools.command.runtime.rule;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
-import org.drools.command.runtime.rule.FireAllRulesCommand;
-import org.drools.command.runtime.rule.GetObjectsCommand;
-import org.drools.command.runtime.rule.InsertElementsCommand;
-import org.drools.command.runtime.rule.InsertObjectCommand;
-import org.drools.command.runtime.rule.ModifyCommand;
-import org.drools.command.runtime.rule.QueryCommand;
-import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
 
 @XmlRegistry
@@ -66,8 +59,8 @@ public class ObjectFactory {
         return new QueryCommand();
     }
     
-    public RetractCommand createRetractCommand() {
-        return new RetractCommand();
+    public DeleteCommand createRetractCommand() {
+        return new DeleteCommand();
     }
 
 }
