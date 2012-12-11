@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>drools-persistence-jpa</artifactId>
-
+  <packaging>bundle</packaging>
   <name>Drools :: Persistence :: JPA</name>
   <description>JPA implementation for Drools</description>
 
@@ -28,14 +28,6 @@
     
     <plugins>
       <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -49,7 +41,6 @@
           </execution>
         </executions>
         <configuration>
-          <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}", org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
