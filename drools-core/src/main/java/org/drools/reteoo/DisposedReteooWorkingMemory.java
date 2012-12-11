@@ -60,7 +60,6 @@ import org.kie.event.process.ProcessEventListener;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItemManager;
@@ -194,10 +193,6 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
     }
 
     public InternalKnowledgeRuntime getKnowledgeRuntime() {
-        throw new IllegalStateException( ERRORMSG );
-    }
-
-    public Map<String, ExitPoint> getExitPoints() {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -526,10 +521,6 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
     }
 
     public ProcessInstance startProcessInstance( long processInstanceId ) {
-        throw new IllegalStateException( ERRORMSG );
-    }
-
-    public void registerExitPoint( String name, ExitPoint exitPoint ) {
         throw new IllegalStateException( ERRORMSG );
     }
 
