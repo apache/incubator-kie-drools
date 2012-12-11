@@ -1,7 +1,5 @@
 package org.kie.builder;
 
-import java.io.File;
-
 import org.kie.command.KieCommands;
 import org.kie.concurrent.KieExecutors;
 import org.kie.io.KieResources;
@@ -10,11 +8,13 @@ import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.util.ServiceRegistryImpl;
 
+import java.io.File;
+
 public interface KieServices {
     
     KieResources getResources();
 
-    KieRepository getKieRepository();
+    KieRepository getRepository();
     
     KieCommands getCommands();
     
@@ -29,16 +29,21 @@ public interface KieServices {
     /**
      * Returns KieContainer for the classpath
      */
-    KieContainer getKieClasspathContainer();
+    KieContainer newKieClasspathContainer();
     
-    KieContainer getKieContainer(GAV gav);    
+    KieContainer newKieContainer(GAV gav);
     
     KieScanner newKieScanner(KieContainer kieContainer);    
     
     KieBuilder newKieBuilder(File rootFolder);
     
     KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
-    
+
+    GAV newGav(String groupId, String artifactId, String version);
+
+    KieFileSystem newKieFileSystem( );
+
+    KieModuleModel newKieModuleModel();
 
     public static class Factory {
         private static KieServices INSTANCE;
