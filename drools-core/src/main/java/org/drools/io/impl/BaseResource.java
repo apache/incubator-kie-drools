@@ -36,24 +36,27 @@ public abstract class BaseResource
     private ResourceType          resourceType;
     private ResourceConfiguration configuration;
 
-    private String                name;
+    private String                sourcePath;
+    private String                targetPath;
     private String                description;
 
     private List<String>          categories;
-    
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         resourceType = (ResourceType) in.readObject();
         configuration = (ResourceConfiguration) in.readObject();
-        name = (String) in.readObject();
+        sourcePath = (String) in.readObject();
+        targetPath = (String) in.readObject();
         description = (String) in.readObject();
         categories = (List<String>) in.readObject();
     }
-    
+
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( resourceType );
         out.writeObject( configuration );
-        out.writeObject( name );
+        out.writeObject( sourcePath );
+        out.writeObject( targetPath );
         out.writeObject( description );
         out.writeObject( categories );
     }
@@ -100,12 +103,21 @@ public abstract class BaseResource
         this.description = description;
     }
 
-    public String getName() {
-        return name;
+    public String getSourcePath() {
+        return sourcePath;
     }
 
-    public InternalResource setName(String name) {
-        this.name = name;
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    public InternalResource setSourcePath(String path) {
+        this.sourcePath = path;
+        return this;
+    }
+
+    public InternalResource setTargetPath(String path) {
+        this.targetPath = path;
         return this;
     }
 

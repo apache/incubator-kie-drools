@@ -52,20 +52,20 @@ public class KieFileSystemImpl
     }
 
     public KieFileSystem write(Resource resource) {
-        String resourceName = ((InternalResource)resource).getName();
         try {
-            if( resourceName != null ) {
-                write( RESOURCE_PATH_PREFIX + resourceName, readBytesFromInputStream(resource.getInputStream()) );
+            String target = resource.getTargetPath() != null ? resource.getTargetPath() : resource.getSourcePath();
+            if( target != null ) {
+                write( RESOURCE_PATH_PREFIX+target, readBytesFromInputStream(resource.getInputStream()) );
                 ResourceConfiguration conf = resource.getConfiguration();
                 if( conf != null ) {
                     Properties prop = ResourceType.toProperties( conf );
                     ByteArrayOutputStream buff = new ByteArrayOutputStream();
-                    prop.store( buff, "Configuration properties for resource: " + resourceName );
-                    write( RESOURCE_PATH_PREFIX + resourceName + ".properties", buff.toByteArray() );
+                    prop.store( buff, "Configuration properties for resource: "+target );
+                    write( RESOURCE_PATH_PREFIX+target+".properties", buff.toByteArray() );
                 }
                 return this;
             } else {
-                throw new RuntimeException( "Resource does not have a name. Impossible to add it to the bundle. Please set the name of the resource before adding it." + resource.toString());
+                throw new RuntimeException( "Resource does not have neither a source nor a target path. Impossible to add it to the bundle. Please set either the source or target name of the resource before adding it." + resource.toString());
             }
         } catch (IOException e) {
             throw new RuntimeException("Unable to write Resource: " + resource.toString(), e);
