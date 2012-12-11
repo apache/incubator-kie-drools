@@ -29,7 +29,7 @@ public class AfterActivationFiredEventImpl  extends ActivationEventImpl implemen
     @Override
     public String toString() {
         return "==>[AfterActivationFiredEvent: getActivation()=" + getMatch()
-                + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + "]";
+                + ", getKnowledgeRuntime()=" + getKieRuntime() + "]";
     }        
     
 }
