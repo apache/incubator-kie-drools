@@ -15,7 +15,10 @@
  */
 package org.drools.conf;
 
-import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBaseConfiguration;
@@ -28,7 +31,6 @@ import org.kie.conf.EventProcessingOption;
 import org.kie.conf.IndexLeftBetaMemoryOption;
 import org.kie.conf.IndexPrecedenceOption;
 import org.kie.conf.IndexRightBetaMemoryOption;
-import org.kie.conf.MaintainTMSOption;
 import org.kie.conf.MaxThreadsOption;
 import org.kie.conf.MultithreadEvaluationOption;
 import org.kie.conf.PermGenThresholdOption;
@@ -38,10 +40,6 @@ import org.kie.conf.SequentialOption;
 import org.kie.conf.ShareAlphaNodesOption;
 import org.kie.conf.ShareBetaNodesOption;
 import org.kie.runtime.rule.ConsequenceExceptionHandler;
-
-import static org.junit.Assert.*;
-
-import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 
 public class KnowledgeBaseConfigurationTest {
 
@@ -55,30 +53,6 @@ public class KnowledgeBaseConfigurationTest {
         config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
     }
 
-    @Test
-    public void testMaintainTMSConfiguration() {
-        // setting the option using the type safe method
-        config.setOption( MaintainTMSOption.YES );
-
-        // checking the type safe getOption() method
-        assertEquals( MaintainTMSOption.YES,
-                      config.getOption( MaintainTMSOption.class ) );
-        // checking the string based getProperty() method
-        assertEquals( "true",
-                      config.getProperty( MaintainTMSOption.PROPERTY_NAME ) );
-
-        // setting the options using the string based setProperty() method
-        config.setProperty( MaintainTMSOption.PROPERTY_NAME,
-                            "false" );
-        
-        // checking the type safe getOption() method
-        assertEquals( MaintainTMSOption.NO,
-                      config.getOption( MaintainTMSOption.class ) );
-        // checking the string based getProperty() method
-        assertEquals( "false",
-                      config.getProperty( MaintainTMSOption.PROPERTY_NAME ) );
-    }
-    
     @Test
     public void testSequentialConfiguration() {
         // setting the option using the type safe method
