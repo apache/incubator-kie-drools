@@ -73,9 +73,4 @@ public interface Process
 	 */
     Map<String, Object> getMetaData();
 
-	/**
-	 * Meta data associated with this Node.
-	 */
-    @Deprecated Object getMetaData(String name);
-
 }
