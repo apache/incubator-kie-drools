@@ -24,7 +24,7 @@ public class DefaultWorkingMemoryEventListener
         // intentionally left blank
     }
 
-    public void objectRetracted(ObjectRetractedEvent event) {
+    public void objectDeleted(ObjectDeletedEvent event) {
         // intentionally left blank
     }
 

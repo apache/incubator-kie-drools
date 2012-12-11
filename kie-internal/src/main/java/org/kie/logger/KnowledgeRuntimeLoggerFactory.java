@@ -49,7 +49,7 @@ public class KnowledgeRuntimeLoggerFactory {
      */
     public static KnowledgeRuntimeLogger newFileLogger(KnowledgeRuntimeEventManager session,
                                                        String fileName) {
-        return getKnowledgeRuntimeLoggerProvider().newFileLogger( session,
+        return (KnowledgeRuntimeLogger) getKnowledgeRuntimeLoggerProvider().newFileLogger( session,
                                                                   fileName );
     }
 
@@ -65,7 +65,7 @@ public class KnowledgeRuntimeLoggerFactory {
     public static KnowledgeRuntimeLogger newThreadedFileLogger(KnowledgeRuntimeEventManager session,
                                                                String fileName,
                                                                int interval) {
-        return getKnowledgeRuntimeLoggerProvider().newThreadedFileLogger( session,
+        return (KnowledgeRuntimeLogger) getKnowledgeRuntimeLoggerProvider().newThreadedFileLogger( session,
                                                                           fileName,
                                                                           interval );
     }
@@ -78,7 +78,7 @@ public class KnowledgeRuntimeLoggerFactory {
      * @return
      */
     public static KnowledgeRuntimeLogger newConsoleLogger(KnowledgeRuntimeEventManager session) {
-        return getKnowledgeRuntimeLoggerProvider().newConsoleLogger( session );
+        return (KnowledgeRuntimeLogger) getKnowledgeRuntimeLoggerProvider().newConsoleLogger( session );
     }
 
     private static synchronized void setKnowledgeRuntimeLoggerProvider(KieLoggers provider) {

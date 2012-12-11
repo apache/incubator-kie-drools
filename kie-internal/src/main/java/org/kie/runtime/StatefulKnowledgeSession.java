@@ -101,6 +101,6 @@ public interface StatefulKnowledgeSession
     extends
     KieSession, KnowledgeRuntime, KnowledgeRuntimeEventManager {
 	
-	KnowledgeBase getKnowledgeBase();
+	KnowledgeBase getKieBase();
 
 }
