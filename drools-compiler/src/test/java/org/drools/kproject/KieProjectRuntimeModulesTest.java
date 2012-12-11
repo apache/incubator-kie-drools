@@ -1,13 +1,13 @@
 package org.drools.kproject;
 
+import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.reteoo.ReteooRuleBase;
 import org.junit.Test;
 import org.kie.KieBase;
 import org.kie.builder.GAV;
 import org.kie.builder.KieContainer;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
+import org.kie.builder.KieServices;
 import org.kie.builder.impl.FileKieModule;
 import org.kie.builder.impl.KieContainerImpl;
 import org.kie.builder.impl.KieModuleKieProject;
@@ -28,18 +28,18 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
         KieModuleModel kProjModel3 = createKieModule( "jar3", true );
         KieModuleModel kProjModel4 = createKieModule( "fol4", false );
 
-        GAV gav1 = KieFactory.Factory.get().newGav( "jar1",
-                                                    "art1",
-                                                    "1.0-SNAPSHOT" );
-        GAV gav2 = KieFactory.Factory.get().newGav( "jar2",
-                                                    "art1",
-                                                    "1.0-SNAPSHOT" );
-        GAV gav3 = KieFactory.Factory.get().newGav( "jar3",
-                                                    "art1",
-                                                    "1.0-SNAPSHOT" );
-        GAV gav4 = KieFactory.Factory.get().newGav( "fol4",
-                                                    "art1",
-                                                    "1.0-SNAPSHOT" );
+        GAV gav1 = KieServices.Factory.get().newGav( "jar1",
+                                                     "art1",
+                                                     "1.0-SNAPSHOT" );
+        GAV gav2 = KieServices.Factory.get().newGav( "jar2",
+                                                     "art1",
+                                                     "1.0-SNAPSHOT" );
+        GAV gav3 = KieServices.Factory.get().newGav( "jar3",
+                                                     "art1",
+                                                     "1.0-SNAPSHOT" );
+        GAV gav4 = KieServices.Factory.get().newGav( "fol4",
+                                                     "art1",
+                                                     "1.0-SNAPSHOT" );
 
         java.io.File file1 = fileManager.newFile( "jar1.jar" );
         java.io.File file2 = fileManager.newFile( "jar2.jar" );
@@ -69,7 +69,7 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
                                                         null );
 
         KieBase kBase = kContainer.getKieBase( "jar1.KBase1" );
-        ClassLoader cl = ((ReteooRuleBase) ((KnowledgeBaseImpl) kBase).getRuleBase()).getRootClassLoader();
+        ClassLoader cl = ((InternalRuleBase) ((KnowledgeBaseImpl) kBase).getRuleBase()).getRootClassLoader();
 
         Class cls = cl.loadClass( "org.drools.cdi.test.KProjectTestClassjar1" );
         assertNotNull( cls );

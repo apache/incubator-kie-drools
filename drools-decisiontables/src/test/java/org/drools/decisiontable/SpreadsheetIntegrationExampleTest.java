@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieServices;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -62,14 +61,13 @@ public class SpreadsheetIntegrationExampleTest {
 
     private KieSession getKieSession(Resource dt) {
         KieServices ks = KieServices.Factory.get();
-        KieFactory kf = KieFactory.Factory.get();
-        
-        KieFileSystem kfs = kf.newKieFileSystem().write( dt );
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( dt );
         KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
         assertTrue( kb.getResults().getMessages().isEmpty() );
 
         // get the session
-        KieSession ksession = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieSession();
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultGAV()).newKieSession();
         return ksession;
     }
 

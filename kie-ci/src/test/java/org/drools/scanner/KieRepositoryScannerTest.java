@@ -9,7 +9,6 @@ import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieScanner;
@@ -40,7 +39,7 @@ public class KieRepositoryScannerTest {
     public void setUp() throws Exception {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
-        GAV gav = KieFactory.Factory.get().newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
+        GAV gav = KieServices.Factory.get().newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
         kPom = createKPom(gav);
     }
 
@@ -58,21 +57,20 @@ public class KieRepositoryScannerTest {
     @Test @Ignore
     public void testKScanner() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        KieFactory kf = KieFactory.Factory.get();
-        GAV gav = kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
+        GAV gav = ks.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
-        InternalKieModule kJar1 = createKieJar(ks, kf, gav, "rule1", "rule2");
-        KieContainer kieContainer = ks.getKieContainer(gav);
+        InternalKieModule kJar1 = createKieJar(ks, gav, "rule1", "rule2");
+        KieContainer kieContainer = ks.newKieContainer(gav);
 
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(gav, kJar1, kPom);
 
         // create a ksesion and check it works as expected
-        KieSession ksession = kieContainer.getKieSession("KSession1");
+        KieSession ksession = kieContainer.newKieSession("KSession1");
         checkKSession(ksession, "rule1", "rule2");
 
         // create a new kjar
-        InternalKieModule kJar2 = createKieJar(ks, kf, gav, "rule2", "rule3");
+        InternalKieModule kJar2 = createKieJar(ks, gav, "rule2", "rule3");
 
         // deploy it on maven
         repository.deployArtifact(gav, kJar2, kPom);
@@ -84,33 +82,32 @@ public class KieRepositoryScannerTest {
         scanner.scanNow();
 
         // create a ksesion and check it works as expected
-        KieSession ksession2 = kieContainer.getKieSession("KSession1");
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, "rule2", "rule3");
     }
 
     @Test @Ignore
     public void testKScannerWithKJarContainingClasses() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        KieFactory kf = KieFactory.Factory.get();
-        GAV gav = kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
+        GAV gav = ks.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
-        InternalKieModule kJar1 = createKieJarWithClass(ks, kf, gav, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, gav, 2, 7);
 
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(gav, kJar1, kPom);
 
-        KieContainer kieContainer = ks.getKieContainer(gav);
+        KieContainer kieContainer = ks.newKieContainer(gav);
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
-        KieSession ksession = kieContainer.getKieSession("KSession1");
+        KieSession ksession = kieContainer.newKieSession("KSession1");
         checkKSession(ksession, 14);
 
-        InternalKieModule kJar2 = createKieJarWithClass(ks, kf, gav, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, gav, 3, 5);
         repository.deployArtifact(gav, kJar2, kPom);
 
         scanner.scanNow();
 
-        KieSession ksession2 = kieContainer.getKieSession("KSession1");
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, 15);
     }
 
@@ -118,41 +115,39 @@ public class KieRepositoryScannerTest {
     public void testLoadKieJarFromMavenRepo() throws Exception {
         // This test depends from the former one (UGLY!) and must be run immediately after it
         KieServices ks = KieServices.Factory.get();
-        KieFactory kf = KieFactory.Factory.get();
 
-        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
+        KieContainer kieContainer = ks.newKieContainer(ks.newGav("org.kie", "scanner-test", "1.0-SNAPSHOT"));
 
-        KieSession ksession2 = kieContainer.getKieSession("KSession1");
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, 15);
     }
 
     @Test @Ignore
     public void testScannerOnPomProject() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        KieFactory kf = KieFactory.Factory.get();
-        GAV gav1 = kf.newGav("org.kie", "scanner-test", "1.0");
-        GAV gav2 = kf.newGav("org.kie", "scanner-test", "2.0");
+        GAV gav1 = ks.newGav("org.kie", "scanner-test", "1.0");
+        GAV gav2 = ks.newGav("org.kie", "scanner-test", "2.0");
 
         MavenRepository repository = getMavenRepository();
         repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom());
 
         resetFileManager();
 
-        InternalKieModule kJar1 = createKieJarWithClass(ks, kf, gav1, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, gav1, 2, 7);
         repository.deployArtifact(gav1, kJar1, createKPom(gav1));
 
-        KieContainer kieContainer = ks.getKieContainer(kf.newGav("org.kie", "scanner-master-test", "LATEST"));
-        KieSession ksession = kieContainer.getKieSession("KSession1");
+        KieContainer kieContainer = ks.newKieContainer(ks.newGav("org.kie", "scanner-master-test", "LATEST"));
+        KieSession ksession = kieContainer.newKieSession("KSession1");
         checkKSession(ksession, 14);
 
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
-        InternalKieModule kJar2 = createKieJarWithClass(ks, kf, gav2, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, gav2, 3, 5);
         repository.deployArtifact(gav2, kJar2, createKPom(gav1));
 
         scanner.scanNow();
 
-        KieSession ksession2 = kieContainer.getKieSession("KSession1");
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, 15);
     }
 
@@ -201,14 +196,14 @@ public class KieRepositoryScannerTest {
         return pomFile;
     }
 
-    private InternalKieModule createKieJar(KieServices ks, KieFactory kf, GAV gav, String... rules) throws IOException {
-        KieFileSystem kfs = kf.newKieFileSystem();
+    private InternalKieModule createKieJar(KieServices ks, GAV gav, String... rules) throws IOException {
+        KieFileSystem kfs = ks.newKieFileSystem();
         for (String rule : rules) {
             String file = "org/test/" + rule + ".drl";
             kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
         }
 
-        KieModuleModel kproj = kf.newKieModuleModel();
+        KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
@@ -248,10 +243,10 @@ public class KieRepositoryScannerTest {
         }
     }
 
-    private InternalKieModule createKieJarWithClass(KieServices ks, KieFactory kf, GAV gav, int value, int factor) throws IOException {
-        KieFileSystem kieFileSystem = kf.newKieFileSystem();
+    private InternalKieModule createKieJarWithClass(KieServices ks, GAV gav, int value, int factor) throws IOException {
+        KieFileSystem kieFileSystem = ks.newKieFileSystem();
 
-        KieModuleModel kproj = kf.newKieModuleModel();
+        KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )

@@ -6,7 +6,6 @@ import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
 import org.kie.builder.GAV;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
@@ -48,7 +47,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     private CompositeClassLoader            cl;
 
     public ClasspathKieProject() {
-        this( KieServices.Factory.get().getKieRepository() );
+        this( KieServices.Factory.get().getRepository() );
     }
 
     public ClasspathKieProject(KieRepository kr) {
@@ -81,7 +80,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             URL url = e.nextElement();
             try {
                 String fixedURL = fixURLFromKProjectPath( url ); 
-                InternalKieModule kModule = fetchKModule( url, fixedURL );
+                InternalKieModule kModule = fetchKModule(url, fixedURL);
 
                 GAV gav = kModule.getGAV();
                 kieModules.put(gav, kModule);
@@ -207,9 +206,9 @@ public class ClasspathKieProject extends AbstractKieProject {
                     
                     KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
                     
-                    GAVImpl gav = ( GAVImpl ) KieFactory.Factory.get().newGav( pomModel.getGroupId(),
-                                                                               pomModel.getArtifactId(),
-                                                                               pomModel.getVersion() );
+                    GAVImpl gav = ( GAVImpl ) KieServices.Factory.get().newGav( pomModel.getGroupId(),
+                                                                                pomModel.getArtifactId(),
+                                                                                pomModel.getVersion() );
                     
                     String str =  KieBuilderImpl.generatePomProperties( gav );
                     log.info( "Recursed up folders,  found and used pom.xml " + file );
