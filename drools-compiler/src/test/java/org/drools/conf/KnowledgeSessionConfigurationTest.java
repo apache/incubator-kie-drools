@@ -19,7 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.conf.ClockTypeOption;
 
 import static org.junit.Assert.*;
@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 
 public class KnowledgeSessionConfigurationTest {
 
-    private KnowledgeSessionConfiguration config;
+    private KieSessionConfiguration config;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()

@@ -32,12 +32,12 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.time.SessionClock;
@@ -119,11 +119,11 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 
 	private int processStocks(int stockCount, AgendaEventListener agendaEventListener, String drlContentString)
 			throws DroolsParserException, IOException, Exception {
-		KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+		KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 		kconf.setOption(EventProcessingOption.STREAM);
 		KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, drlContentString);
 
-		KnowledgeSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+		KieSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 		ksessionConfig.setOption(ClockTypeOption.get("pseudo"));
 		ksessionConfig.setProperty("keep.reference", "true");
 		final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksessionConfig,

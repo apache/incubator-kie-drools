@@ -11,13 +11,13 @@ import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class SessionMarshallingHelper {
 
     private KnowledgeBase                 kbase;
-    private KnowledgeSessionConfiguration conf;
+    private KieSessionConfiguration conf;
     private KieSession      			  ksession;
     private Marshaller                    marshaller;
     private Environment                   env;
@@ -30,7 +30,7 @@ public class SessionMarshallingHelper {
      * @param marshallingConfiguration
      */
     public SessionMarshallingHelper(KnowledgeBase kbase,
-                                       KnowledgeSessionConfiguration conf,
+                                       KieSessionConfiguration conf,
                                        Environment env) {
         this.kbase = kbase;
         this.conf = conf;
@@ -52,7 +52,7 @@ public class SessionMarshallingHelper {
      * @param marshallingConfiguration
      */
     public SessionMarshallingHelper(StatefulKnowledgeSession ksession,
-                                       KnowledgeSessionConfiguration conf) {
+                                       KieSessionConfiguration conf) {
         this.ksession = ksession;
         this.kbase = ksession.getKieBase();
         this.conf = conf;
@@ -109,7 +109,7 @@ public class SessionMarshallingHelper {
         return kbase;
     }
 
-    public KnowledgeSessionConfiguration getConf() {
+    public KieSessionConfiguration getConf() {
         return conf;
     }
     

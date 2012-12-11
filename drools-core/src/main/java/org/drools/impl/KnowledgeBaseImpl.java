@@ -71,7 +71,7 @@ import org.kie.definition.type.FactType;
 import org.kie.event.kiebase.KieBaseEventListener;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
@@ -165,7 +165,7 @@ public class KnowledgeBaseImpl
         return newStatefulKnowledgeSession(null, EnvironmentFactory.newEnvironment() );
     }
     
-    public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment) {
+    public StatefulKnowledgeSession newStatefulKnowledgeSession(KieSessionConfiguration conf, Environment environment) {
         // NOTE if you update here, you'll also need to update the JPAService
         if ( conf == null ) {
             conf = SessionConfiguration.getDefaultInstance();
@@ -197,7 +197,7 @@ public class KnowledgeBaseImpl
         return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, null );
     }
     
-    public StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf) {
+    public StatelessKnowledgeSession newStatelessKnowledgeSession(KieSessionConfiguration conf) {
         return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, conf );
     }
 
@@ -371,7 +371,7 @@ public class KnowledgeBaseImpl
 		}
     }
 
-    public KieSession newKieSession(KnowledgeSessionConfiguration conf,
+    public KieSession newKieSession(KieSessionConfiguration conf,
                                     Environment environment) {
         return newStatefulKnowledgeSession( conf, environment );
     }
@@ -384,7 +384,7 @@ public class KnowledgeBaseImpl
         return getStatefulKnowledgeSessions();
     }
 
-    public StatelessKieSession newStatelessKieSession(KnowledgeSessionConfiguration conf) {
+    public StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf) {
         return newStatelessKnowledgeSession( conf );
     }
 

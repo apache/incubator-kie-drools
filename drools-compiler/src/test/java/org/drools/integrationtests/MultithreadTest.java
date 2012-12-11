@@ -30,7 +30,7 @@ import org.drools.StockTick;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -146,7 +146,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                 "    //System.out.println( $c );\n" +
                 "end";
 
-        KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, str);
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
