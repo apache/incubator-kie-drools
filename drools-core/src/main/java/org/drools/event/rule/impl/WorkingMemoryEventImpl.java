@@ -16,14 +16,14 @@
 
 package org.drools.event.rule.impl;
 
+import org.kie.event.rule.WorkingMemoryEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.PropagationContext;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.kie.event.rule.WorkingMemoryEvent;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.rule.PropagationContext;
 
 public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizable {
     private KnowledgeRuntime kruntime;
@@ -39,7 +39,7 @@ public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizabl
         this.propagationContext = propagationContext;
     }
     
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public KnowledgeRuntime getKieRuntime() {
         return this.kruntime;
     }
     
@@ -60,7 +60,7 @@ public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizabl
 
     @Override
     public String toString() {
-        return "==>[WorkingMemoryEventImpl: getKnowledgeRuntime()=" + getKnowledgeRuntime()
+        return "==>[WorkingMemoryEventImpl: getKnowledgeRuntime()=" + getKieRuntime()
                 + ", getPropagationContext()=" + getPropagationContext() + "]";
     }
 }

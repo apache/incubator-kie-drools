@@ -29,6 +29,6 @@ public class ActivationCreatedEventImpl extends ActivationEventImpl implements M
     @Override
     public String toString() {
         return "==>[ActivationCreatedEvent: getActivation()=" + getMatch()
-                + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + "]";
+                + ", getKnowledgeRuntime()=" + getKieRuntime() + "]";
     }    
 }
