@@ -741,13 +741,13 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.insert( tick8 );
 
         ArgumentCaptor<MatchCreatedEvent> arg = ArgumentCaptor.forClass( MatchCreatedEvent.class );
-        verify( ael ).activationCreated( arg.capture() );
+        verify( ael ).matchCreated(arg.capture());
         assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "before" ) );
 
         ksession.fireAllRules();
 
-        verify( ael ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
+        verify( ael ).afterMatchFired(any(AfterMatchFiredEvent.class));
     }
 
     @Test
@@ -828,7 +828,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.insert( tick8 );
 
         ArgumentCaptor<MatchCreatedEvent> arg = ArgumentCaptor.forClass( MatchCreatedEvent.class );
-        verify( ael ).activationCreated( arg.capture() );
+        verify( ael ).matchCreated(arg.capture());
         Match activation = arg.getValue().getMatch();
         assertThat( activation.getRule().getName(),
                     is( "metby" ) );
@@ -836,7 +836,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         ArgumentCaptor<AfterMatchFiredEvent> aaf = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
-        verify( ael ).afterActivationFired( aaf.capture() );
+        verify( ael ).afterMatchFired(aaf.capture());
         assertThat( (InternalFactHandle) aaf.getValue().getMatch().getFactHandles().toArray()[0],
                     is( fh2 ) );
     }
@@ -1756,7 +1756,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ArgumentCaptor<AfterMatchFiredEvent> aafe1 = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael1,
-                times( 1 ) ).afterActivationFired( aafe1.capture() );
+                times( 1 ) ).afterMatchFired(aafe1.capture());
         List<AfterMatchFiredEvent> events1 = aafe1.getAllValues();
         assertThat( events1.get( 0 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 10 ) );
@@ -1765,14 +1765,14 @@ public class CepEspTest extends CommonTestMethodBase {
                                       20 ) );
         ksession1.fireAllRules();
         verify( ael1,
-                times( 2 ) ).afterActivationFired( aafe1.capture() );
+                times( 2 ) ).afterMatchFired(aafe1.capture());
         assertThat( events1.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 15 ) );
         ksession1.insert( new Sensor( 30,
                                       30 ) );
         ksession1.fireAllRules();
         verify( ael1,
-                times( 3 ) ).afterActivationFired( aafe1.capture() );
+                times( 3 ) ).afterMatchFired(aafe1.capture());
         assertThat( events1.get( 2 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 25 ) );
 
@@ -1787,7 +1787,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                       10 ) );
         ksession2.fireAllRules();
         verify( ael2,
-                times( 1 ) ).afterActivationFired( aafe2.capture() );
+                times( 1 ) ).afterMatchFired(aafe2.capture());
         List<AfterMatchFiredEvent> events2 = aafe2.getAllValues();
         assertThat( events2.get( 0 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 10 ) );
@@ -1796,7 +1796,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                       20 ) );
         ksession2.fireAllRules();
         verify( ael2,
-                times( 2 ) ).afterActivationFired( aafe2.capture() );
+                times( 2 ) ).afterMatchFired(aafe2.capture());
         assertThat( events2.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 15 ) );
 
@@ -1804,7 +1804,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                       30 ) );
         ksession2.fireAllRules();
         verify( ael2,
-                times( 3 ) ).afterActivationFired( aafe2.capture() );
+                times( 3 ) ).afterMatchFired(aafe2.capture());
         assertThat( events2.get( 2 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 25 ) );
         ksession2.dispose();
@@ -1853,7 +1853,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         // must have fired 3 times, one for each event identity
         verify( ael1,
-                times( 3 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
+                times( 3 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
 
         ksession.dispose();
     }
@@ -1899,7 +1899,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession1.fireAllRules();
         // must have fired 2 times, one for each event equality
         verify( ael1,
-                times( 2 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
+                times( 2 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
 
         ksession1.dispose();
     }
@@ -2082,7 +2082,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
-                times( 7 ) ).afterActivationFired( captor.capture() );
+                times( 7 ) ).afterMatchFired(captor.capture());
 
         List<AfterMatchFiredEvent> values = captor.getAllValues();
         // first rule
@@ -2282,7 +2282,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
-                times( 4 ) ).afterActivationFired( captor.capture() );
+                times( 4 ) ).afterMatchFired(captor.capture());
         List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
         Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
@@ -2357,7 +2357,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
-                times( 4 ) ).afterActivationFired( captor.capture() );
+                times( 4 ) ).afterMatchFired(captor.capture());
         List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
         Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),

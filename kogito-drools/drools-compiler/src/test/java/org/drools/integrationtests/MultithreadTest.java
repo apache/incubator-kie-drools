@@ -582,7 +582,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 //        session.fireAllRules();
 //        
 //        // facts are being expired
-//        verify( wmel, atLeastOnce() ).objectRetracted( any( ObjectRetractedEvent.class ) );
+//        verify( wmel, atLeastOnce() ).objectDeleted( any( ObjectDeletedEvent.class ) );
 //    }
 
 

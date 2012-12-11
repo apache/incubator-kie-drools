@@ -57,8 +57,8 @@ import org.drools.event.rule.impl.AfterActivationFiredEventImpl;
 import org.drools.event.rule.impl.AgendaGroupPoppedEventImpl;
 import org.drools.event.rule.impl.AgendaGroupPushedEventImpl;
 import org.drools.event.rule.impl.BeforeActivationFiredEventImpl;
+import org.drools.event.rule.impl.ObjectDeletedEventImpl;
 import org.drools.event.rule.impl.ObjectInsertedEventImpl;
-import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.event.rule.impl.RuleFlowGroupActivatedEventImpl;
 import org.drools.event.rule.impl.RuleFlowGroupDeactivatedEventImpl;
@@ -219,7 +219,7 @@ public class StatefulKnowledgeSessionImpl
         getInternalProcessRuntime().removeEventListener( listener );
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public KnowledgeBase getKieBase() {
         if ( this.kbase == null ) {
             this.kbase = new KnowledgeBaseImpl( session.getRuleBase() );
         }
@@ -577,7 +577,7 @@ public class StatefulKnowledgeSessionImpl
         }
 
         public void objectRetracted(ObjectRetractedEvent event) {
-            listener.objectRetracted( new ObjectRetractedEventImpl( event ) );
+            listener.objectDeleted(new ObjectDeletedEventImpl(event));
         }
 
         public void objectUpdated(ObjectUpdatedEvent event) {
@@ -631,28 +631,28 @@ public class StatefulKnowledgeSessionImpl
         public void activationCancelled(ActivationCancelledEvent event,
                                         WorkingMemory workingMemory) {
 
-            listener.activationCancelled( new ActivationCancelledEventImpl( event.getActivation(),
-                                                                            ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime(),
-                                                                            event.getCause() ) );
+            listener.matchCancelled(new ActivationCancelledEventImpl(event.getActivation(),
+                    ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime(),
+                    event.getCause()));
 
         }
 
         public void activationCreated(ActivationCreatedEvent event,
                                       WorkingMemory workingMemory) {
-            listener.activationCreated( new ActivationCreatedEventImpl( event.getActivation(),
-                                                                        ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
+            listener.matchCreated(new ActivationCreatedEventImpl(event.getActivation(),
+                    ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()));
         }
 
         public void beforeActivationFired(BeforeActivationFiredEvent event,
                                           WorkingMemory workingMemory) {
-            listener.beforeActivationFired( new BeforeActivationFiredEventImpl( event.getActivation(),
-                                                                                ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
+            listener.beforeMatchFired(new BeforeActivationFiredEventImpl(event.getActivation(),
+                    ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()));
         }
 
         public void afterActivationFired(AfterActivationFiredEvent event,
                                          WorkingMemory workingMemory) {
-            listener.afterActivationFired( new AfterActivationFiredEventImpl( event.getActivation(),
-                                                                              ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
+            listener.afterMatchFired(new AfterActivationFiredEventImpl(event.getActivation(),
+                    ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()));
         }
 
         public void agendaGroupPopped(AgendaGroupPoppedEvent event,

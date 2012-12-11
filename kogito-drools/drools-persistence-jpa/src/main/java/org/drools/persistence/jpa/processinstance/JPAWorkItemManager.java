@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
@@ -183,7 +181,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     private WorkItem internalGetWorkItem(WorkItemInfo workItemInfo) { 
         Environment env = kruntime.getEnvironment();
-        InternalRuleBase ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) kruntime.getKnowledgeBase()).getRuleBase();
+        InternalRuleBase ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) kruntime.getKieBase()).getRuleBase();
         WorkItem workItem = workItemInfo.getWorkItem(env, ruleBase); 
         return workItem;
     }

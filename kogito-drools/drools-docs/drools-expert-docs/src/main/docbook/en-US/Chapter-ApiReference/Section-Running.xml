@@ -630,8 +630,8 @@ ksession.setGlobal("list", list);           </programlisting>
       <title>Adding an AgendaEventListener</title>
 
       <programlisting language="java">ksession.addEventListener( new DefaultAgendaEventListener() {
-   public void afterActivationFired(AfterActivationFiredEvent event) {
-       super.afterActivationFired( event );
+   public void afterMatchFired(AfterActivationFiredEvent event) {
+       super.afterMatchFired( event );
        System.out.println( event );
    }
 });     </programlisting>

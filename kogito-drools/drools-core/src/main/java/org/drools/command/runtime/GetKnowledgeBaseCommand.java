@@ -18,7 +18,6 @@ package org.drools.command.runtime;
 
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.kie.KieBase;
 import org.kie.KnowledgeBase;
 import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -32,7 +31,7 @@ public class GetKnowledgeBaseCommand
 
     public KnowledgeBase execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        return ksession.getKnowledgeBase();
+        return ksession.getKieBase();
     }
 
     public String toString() {

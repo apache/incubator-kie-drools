@@ -85,8 +85,8 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 				evalFirePseudoClockDeclaration + evalFirePseudoClockRuleA);
 
 		verify(ael,
-				times(evalFirePseudoClockStockCount * (evalFirePseudoClockStockCount - 1) / 2)).afterActivationFired(
-				any(AfterMatchFiredEvent.class));
+				times(evalFirePseudoClockStockCount * (evalFirePseudoClockStockCount - 1) / 2)).afterMatchFired(
+                any(AfterMatchFiredEvent.class));
 	}
 
 	@Test(timeout = 6000)
@@ -98,8 +98,8 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 				evalFirePseudoClockDeclaration + evalFirePseudoClockRuleB);
 
 		verify(ael,
-				times(evalFirePseudoClockStockCount - 1)).afterActivationFired(
-				any(AfterMatchFiredEvent.class));
+				times(evalFirePseudoClockStockCount - 1)).afterMatchFired(
+                any(AfterMatchFiredEvent.class));
 	}
 
 	@Test//(timeout = 60000)
@@ -113,8 +113,8 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 		final int expectedActivationCount = evalFirePseudoClockStockCount * (evalFirePseudoClockStockCount - 1) / 2
 				+ evalFirePseudoClockStockCount - 1;
 		verify(ael,
-				times(expectedActivationCount)).afterActivationFired(
-				any(AfterMatchFiredEvent.class));
+				times(expectedActivationCount)).afterMatchFired(
+                any(AfterMatchFiredEvent.class));
 	}
 
 	private int processStocks(int stockCount, AgendaEventListener agendaEventListener, String drlContentString)

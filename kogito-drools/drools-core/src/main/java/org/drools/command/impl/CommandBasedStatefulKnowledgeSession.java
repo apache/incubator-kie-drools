@@ -259,7 +259,7 @@ public class CommandBasedStatefulKnowledgeSession
         this.commandService.execute( new FireUntilHaltCommand( agendaFilter ) );
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public KnowledgeBase getKieBase() {
         return this.commandService.execute( new GetKnowledgeBaseCommand() );
     }
 

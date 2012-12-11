@@ -642,7 +642,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         ksession.addEventListener( new AgendaEventListener() {
 
-            public void beforeActivationFired(BeforeMatchFiredEvent event) {
+            public void beforeMatchFired(BeforeMatchFiredEvent event) {
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
@@ -651,10 +651,10 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
             }
 
-            public void afterActivationFired(AfterMatchFiredEvent event) {
+            public void afterMatchFired(AfterMatchFiredEvent event) {
             }
 
-            public void activationCreated(MatchCreatedEvent event) {
+            public void matchCreated(MatchCreatedEvent event) {
             }
 
             public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
@@ -669,7 +669,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
             }
             
-            public void activationCancelled(MatchCancelledEvent event) {
+            public void matchCancelled(MatchCancelledEvent event) {
                 cancelled.add( event );
             }            
         } );

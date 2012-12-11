@@ -20,13 +20,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.event.rule.ObjectInsertedEvent;
-import org.kie.event.rule.ObjectRetractedEvent;
+import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -57,7 +55,7 @@ public class WorkingMemoryEventSupportTest {
                 wmList.add( event );
             }
 
-            public void objectRetracted(ObjectRetractedEvent event) {
+            public void objectDeleted(ObjectDeletedEvent event) {
                 wmList.add( event );
             }
 
@@ -86,7 +84,7 @@ public class WorkingMemoryEventSupportTest {
         assertEquals( stilton, ome.getOldObject()  );
 
         wm.retract( stiltonHandle );
-        final ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
+        final ObjectDeletedEvent ore = (ObjectDeletedEvent) wmList.get( 2 );
         assertSame( stiltonHandle,
                     ore.getFactHandle() );
 

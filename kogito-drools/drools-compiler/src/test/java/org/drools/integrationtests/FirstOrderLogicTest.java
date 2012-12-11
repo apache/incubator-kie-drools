@@ -1029,7 +1029,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         verify( al,
-                times( 6 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
+                times( 6 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
     }
 
     // JBRULES-2526 
@@ -1057,7 +1057,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         verify( al,
-                times( 8 ) ).afterActivationFired( any( AfterMatchFiredEvent.class ) );
+                times( 8 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
     }
 
     @Test

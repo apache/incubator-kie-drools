@@ -136,7 +136,7 @@ public class KnowledgeBaseImpl
         this.ruleBase.removeEventListener( wrapper );
     }
     
-    public Collection<KieBaseEventListener> getKnowledgeBaseEventListeners() {
+    public Collection<KieBaseEventListener> getKieBaseEventListeners() {
         return Collections.unmodifiableCollection( this.mappedKnowledgeBaseListeners.keySet() );
     }
 

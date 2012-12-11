@@ -123,19 +123,19 @@ public class AgendaEventSupportTest {
         final List agendaList = new ArrayList();
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
-            public void activationCancelled(MatchCancelledEvent event) {
+            public void matchCancelled(MatchCancelledEvent event) {
                 assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
 
             }
 
-            public void activationCreated(MatchCreatedEvent event) {
+            public void matchCreated(MatchCreatedEvent event) {
                 assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
                 
             }
 
-            public void afterActivationFired(AfterMatchFiredEvent event) {
+            public void afterMatchFired(AfterMatchFiredEvent event) {
                 assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
             }
@@ -150,7 +150,7 @@ public class AgendaEventSupportTest {
                 agendaList.add( event );
             }
 
-            public void beforeActivationFired(BeforeMatchFiredEvent event) {
+            public void beforeMatchFired(BeforeMatchFiredEvent event) {
                 assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
             }

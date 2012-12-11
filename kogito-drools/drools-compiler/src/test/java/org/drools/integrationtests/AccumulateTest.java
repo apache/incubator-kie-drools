@@ -1578,7 +1578,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
-        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        Mockito.verify( ael ).afterMatchFired(cap.capture());
 
         Match activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
@@ -1596,7 +1596,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                          cheese[index] );
         ksession.fireAllRules();
 
-        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        Mockito.verify( ael ).afterMatchFired(cap.capture());
 
         activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
@@ -1613,7 +1613,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                          bob );
         ksession.fireAllRules();
 
-        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        Mockito.verify( ael ).afterMatchFired(cap.capture());
 
         activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
@@ -1628,7 +1628,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.retract( cheeseHandles[3] );
         ksession.fireAllRules();
 
-        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        Mockito.verify( ael ).afterMatchFired(cap.capture());
 
         activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
@@ -1671,7 +1671,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
-        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        Mockito.verify( ael ).afterMatchFired(cap.capture());
 
         Match activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
@@ -1689,7 +1689,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                          cheese[index] );
         ksession.fireAllRules();
 
-        Mockito.verify( ael, Mockito.never() ).afterActivationFired( Mockito.any(AfterMatchFiredEvent.class) );
+        Mockito.verify( ael, Mockito.never() ).afterMatchFired(Mockito.any(AfterMatchFiredEvent.class));
 
         Mockito.reset( ael );
         // ---------------- 3rd scenario
@@ -1698,7 +1698,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                          bob );
         ksession.fireAllRules();
 
-        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        Mockito.verify( ael ).afterMatchFired(cap.capture());
 
         activation = cap.getValue().getMatch();
         assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),

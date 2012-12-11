@@ -1,8 +1,8 @@
 package org.kie.builder;
 
 import org.junit.Test;
+import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
-import org.kie.event.rule.ObjectRetractedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.KieSession;
@@ -19,7 +19,7 @@ public class WireListenerTest {
 
     private static final List<ObjectInsertedEvent> insertEvents = new ArrayList<ObjectInsertedEvent>();
     private static final List<ObjectUpdatedEvent> updateEvents = new ArrayList<ObjectUpdatedEvent>();
-    private static final List<ObjectRetractedEvent> retractEvents = new ArrayList<ObjectRetractedEvent>();
+    private static final List<ObjectDeletedEvent> retractEvents = new ArrayList<ObjectDeletedEvent>();
 
     @Test
     public void testWireListener() throws Exception {
@@ -87,7 +87,7 @@ public class WireListenerTest {
         }
 
         @Override
-        public void objectRetracted(ObjectRetractedEvent event) {
+        public void objectDeleted(ObjectDeletedEvent event) {
             retractEvents.add(event);
         }
     }

@@ -133,7 +133,7 @@ public class SerializationHelper {
                                                                                  boolean dispose,
                                                                                  boolean testRoundTrip ) throws Exception {
 
-        ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(),
+        ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( ksession.getKieBase(),
                                                                  (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
         long time = ksession.<SessionClock>getSessionClock().getCurrentTime();
         // make sure globas are in the environment of the session

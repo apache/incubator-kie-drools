@@ -49,7 +49,7 @@ public class ActivationIterator
 
     public static ActivationIterator iterator(StatefulKnowledgeSession ksession) {
         return new ActivationIterator( ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory(),
-                                       ksession.getKnowledgeBase() );
+                                       ksession.getKieBase() );
     }
 
     public Object next() {

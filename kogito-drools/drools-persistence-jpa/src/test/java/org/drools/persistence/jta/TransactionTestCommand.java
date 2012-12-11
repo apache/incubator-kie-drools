@@ -88,7 +88,7 @@ public class TransactionTestCommand implements GenericCommand<Void> {
   
             // THe following 3 lines are the important ones! (See below for an explanation)
             KnowledgeBase cleanKBase = KnowledgeBaseFactory.newKnowledgeBase();
-            cleanKBase.addKnowledgePackages(ksession.getKnowledgeBase().getKnowledgePackages());
+            cleanKBase.addKnowledgePackages(ksession.getKieBase().getKnowledgePackages());
             StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( cleanKBase, null, initializeEnvironment() );
 
             /**

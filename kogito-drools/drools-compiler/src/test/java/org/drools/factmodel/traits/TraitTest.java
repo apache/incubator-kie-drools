@@ -214,7 +214,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitShed.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
 
         List info = new ArrayList();
@@ -271,7 +271,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -307,7 +307,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitMixin.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -339,7 +339,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitWrapping.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
         List errors = new ArrayList();
         ks.setGlobal( "list",
@@ -373,7 +373,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitWrappingPrimitives.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
         List errors = new ArrayList();
         ks.setGlobal( "list",
@@ -1125,7 +1125,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitIsA.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1166,7 +1166,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitOverride.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1202,7 +1202,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitLegacyTrait.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
 
         List info = new ArrayList();
@@ -1250,7 +1250,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitCollections.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
 
         List info = new ArrayList();
@@ -1294,7 +1294,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitLegacyCore.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1338,7 +1338,7 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitWithEquality.drl";
 
         StatefulKnowledgeSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
         
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1373,7 +1373,7 @@ public class TraitTest extends CommonTestMethodBase {
         List<Integer> untrueTraits = new ArrayList<Integer>();
 
         StatefulKnowledgeSession ks = getSession( "org/drools/factmodel/traits/testDeclaredFactTrait.drl" );
-        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
         
         ks.setGlobal( "trueTraits",
                            trueTraits );
@@ -1411,7 +1411,7 @@ public class TraitTest extends CommonTestMethodBase {
         List<Integer> untrueTraits = new ArrayList<Integer>();
 
         StatefulKnowledgeSession session = getSession( "org/drools/factmodel/traits/testPojoFactTrait.drl" );
-        TraitFactory.setMode( mode, session.getKnowledgeBase() );
+        TraitFactory.setMode( mode, session.getKieBase() );
         
         session.setGlobal( "trueTraits",
                            trueTraits );
@@ -1446,7 +1446,7 @@ public class TraitTest extends CommonTestMethodBase {
     public void isAOperator( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitIsA2.drl";
         StatefulKnowledgeSession ksession = getSession( source );
-        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ksession.getKieBase() );
         
         
         AgendaEventListener ael = mock( AgendaEventListener.class );
@@ -1459,7 +1459,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
-                times( 3 ) ).afterActivationFired( cap.capture() );
+                times( 3 ) ).afterMatchFired(cap.capture());
 
         List<AfterMatchFiredEvent> values = cap.getAllValues();
 
@@ -1529,7 +1529,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "            list.add(\"OK\");\n" +
                 "    end";
         StatefulKnowledgeSession ksession = getSessionFromString( source );
-        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ksession.getKieBase() );
         
 
         List list = new ArrayList();
@@ -1564,7 +1564,7 @@ public class TraitTest extends CommonTestMethodBase {
     public void traitManyTimes( TraitFactory.VirtualPropertyMode mode ) {
 
         StatefulKnowledgeSession ksession = getSession( "org/drools/factmodel/traits/testTraitDonMultiple.drl" );
-        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ksession.getKieBase() );
         
 
         List list = new ArrayList();
@@ -1806,7 +1806,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "end";
 
         StatefulKnowledgeSession ksession = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1881,7 +1881,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
         StatefulKnowledgeSession ksession = getSessionFromString(drl);
-        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );

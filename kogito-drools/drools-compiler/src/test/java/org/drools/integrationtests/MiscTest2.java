@@ -274,16 +274,16 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.setGlobal( "results", res );
 
         AgendaEventListener agendaEventListener = new AgendaEventListener() {
-            public void activationCreated(org.kie.event.rule.MatchCreatedEvent event) {
+            public void matchCreated(org.kie.event.rule.MatchCreatedEvent event) {
             }
 
-            public void activationCancelled(org.kie.event.rule.MatchCancelledEvent event) {
+            public void matchCancelled(org.kie.event.rule.MatchCancelledEvent event) {
             }
 
-            public void beforeActivationFired(org.kie.event.rule.BeforeMatchFiredEvent event) {
+            public void beforeMatchFired(org.kie.event.rule.BeforeMatchFiredEvent event) {
             }
 
-            public void afterActivationFired(org.kie.event.rule.AfterMatchFiredEvent event) {
+            public void afterMatchFired(org.kie.event.rule.AfterMatchFiredEvent event) {
             }
 
             public void agendaGroupPopped(org.kie.event.rule.AgendaGroupPoppedEvent event) {
