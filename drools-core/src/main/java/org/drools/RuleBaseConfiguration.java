@@ -47,9 +47,8 @@ import org.kie.conf.EventProcessingOption;
 import org.kie.conf.IndexLeftBetaMemoryOption;
 import org.kie.conf.IndexPrecedenceOption;
 import org.kie.conf.IndexRightBetaMemoryOption;
-import org.kie.conf.KnowledgeBaseOption;
+import org.kie.conf.KieBaseOption;
 import org.kie.conf.MBeansOption;
-import org.kie.conf.MaintainTMSOption;
 import org.kie.conf.MaxThreadsOption;
 import org.kie.conf.MultiValueKnowledgeBaseOption;
 import org.kie.conf.MultithreadEvaluationOption;
@@ -59,7 +58,7 @@ import org.kie.conf.SequentialAgendaOption;
 import org.kie.conf.SequentialOption;
 import org.kie.conf.ShareAlphaNodesOption;
 import org.kie.conf.ShareBetaNodesOption;
-import org.kie.conf.SingleValueKnowledgeBaseOption;
+import org.kie.conf.SingleValueKieBaseOption;
 import org.kie.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.util.ChainedProperties;
 import org.kie.util.ClassLoaderUtil;
@@ -283,8 +282,6 @@ public class RuleBaseConfiguration
             setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( StringUtils.isEmpty( value ) ? "sequential" : value ) );
         } else if ( name.equals( SequentialOption.PROPERTY_NAME ) ) {
             setSequential( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
-        } else if ( name.equals( MaintainTMSOption.PROPERTY_NAME ) ) {
-            setMaintainTms( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( RemoveIdentitiesOption.PROPERTY_NAME ) ) {
             setRemoveIdentities( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( ShareAlphaNodesOption.PROPERTY_NAME ) ) {
@@ -338,8 +335,6 @@ public class RuleBaseConfiguration
             return getSequentialAgenda().toExternalForm();
         } else if ( name.equals( SequentialOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isSequential() );
-        } else if ( name.equals( MaintainTMSOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isMaintainTms() );
         } else if ( name.equals( RemoveIdentitiesOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isRemoveIdentities() );
         } else if ( name.equals( ShareAlphaNodesOption.PROPERTY_NAME ) ) {
@@ -429,9 +424,6 @@ public class RuleBaseConfiguration
 
         setSequential(Boolean.valueOf(this.chainedProperties.getProperty(SequentialOption.PROPERTY_NAME,
                                                                          "false")).booleanValue());
-
-        setMaintainTms(Boolean.valueOf(this.chainedProperties.getProperty(MaintainTMSOption.PROPERTY_NAME,
-                                                                          "true")).booleanValue());
 
         setRemoveIdentities(Boolean.valueOf(this.chainedProperties.getProperty("drools.removeIdentities",
                                                                                "false")).booleanValue());
@@ -1151,10 +1143,8 @@ public class RuleBaseConfiguration
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends SingleValueKnowledgeBaseOption> T getOption(Class<T> option) {
-        if ( MaintainTMSOption.class.equals( option ) ) {
-            return (T) (this.maintainTms ? MaintainTMSOption.YES : MaintainTMSOption.NO);
-        } else if ( SequentialOption.class.equals( option ) ) {
+    public <T extends SingleValueKieBaseOption> T getOption(Class<T> option) {
+        if ( SequentialOption.class.equals( option ) ) {
             return (T) (this.sequential ? SequentialOption.YES : SequentialOption.NO);
         } else if ( RemoveIdentitiesOption.class.equals( option ) ) {
             return (T) (this.removeIdentities ? RemoveIdentitiesOption.YES : RemoveIdentitiesOption.NO);
@@ -1206,10 +1196,8 @@ public class RuleBaseConfiguration
 
     }
 
-    public <T extends KnowledgeBaseOption> void setOption(T option) {
-        if ( option instanceof MaintainTMSOption ) {
-            setMaintainTms( ((MaintainTMSOption) option).isMaintainTMS() );
-        } else if ( option instanceof SequentialOption ) {
+    public <T extends KieBaseOption> void setOption(T option) {
+        if ( option instanceof SequentialOption ) {
             setSequential( ((SequentialOption) option).isSequential() );
         } else if ( option instanceof RemoveIdentitiesOption ) {
             setRemoveIdentities( ((RemoveIdentitiesOption) option).isRemoveIdentities() );
