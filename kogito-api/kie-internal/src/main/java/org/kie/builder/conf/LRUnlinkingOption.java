@@ -17,7 +17,7 @@ package org.kie.builder.conf;
 
 import org.kie.conf.MultithreadEvaluationOption;
 import org.kie.conf.SequentialOption;
-import org.kie.conf.SingleValueKnowledgeBaseOption;
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
  * <p>
@@ -52,7 +52,7 @@ import org.kie.conf.SingleValueKnowledgeBaseOption;
  * </p>
  * 
  */
-public enum LRUnlinkingOption implements SingleValueKnowledgeBaseOption {
+public enum LRUnlinkingOption implements SingleValueKieBaseOption {
 
     ENABLED(true), DISABLED(false);
 

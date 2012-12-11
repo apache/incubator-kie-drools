@@ -24,7 +24,7 @@ package org.kie.conf;
  * 
  * DEFAULT = identity
  */
-public enum AssertBehaviorOption implements SingleValueKnowledgeBaseOption {
+public enum AssertBehaviorOption implements SingleValueKieBaseOption {
     
     IDENTITY,
     EQUALITY;

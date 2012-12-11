@@ -19,11 +19,11 @@ package org.kie.conf;
 /**
  * An Enum for MBeans Enabled option.
  * 
- * drools.mbeans = &lt;enabled|disabled&gt;
+ * kie.mbeans = &lt;enabled|disabled&gt;
  * 
  * DEFAULT = false
  */
-public enum MBeansOption implements SingleValueKnowledgeBaseOption {
+public enum MBeansOption implements SingleValueKieBaseOption {
     
     ENABLED(true),
     DISABLED(false);
@@ -31,7 +31,7 @@ public enum MBeansOption implements SingleValueKnowledgeBaseOption {
     /**
      * The property name for the mbeans option
      */
-    public static final String PROPERTY_NAME = "drools.mbeans";
+    public static final String PROPERTY_NAME = "kie.mbeans";
     
     private boolean value;
     
