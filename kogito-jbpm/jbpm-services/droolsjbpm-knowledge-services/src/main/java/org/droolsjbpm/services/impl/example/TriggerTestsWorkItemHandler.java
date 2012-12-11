@@ -32,38 +32,38 @@ import org.kie.runtime.process.WorkItemManager;
  *
  * @author esteban
  */
-public class TriggerTestsWorkItemHandler implements WorkItemHandler{
+public class TriggerTestsWorkItemHandler implements WorkItemHandler {
 
     public final static String WIP_INPUT_RELEASE = "in_release_path";
     public final static String WIP_INPUT_TEST = "in_test_dir";
     public final static String WIP_INPUT_MIN_CONTENT_LENGTH = "in_min_lenght";
     public final static String WIP_INPUT_MAX_CONTENT_LENGTH = "in_max_lenght";
-    
     public final static String WIP_OUTPUT_SUCCESSFUL = "out_test_successful";
     public final static String WIP_OUTPUT_REPORT = "out_test_report";
-    
     private static final int DEFAULT_MIN_CONTENT_LENGTH = 10;
     private static final int DEFAULT_MAX_CONTENT_LENGTH = 50;
-    
     @Inject
     private FileService fs;
-    
+
     @Override
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        
-        
-        
+    public void executeWorkItem(final WorkItem workItem, final WorkItemManager manager) {
+
+        Boolean success = true;
+        Boolean sleep = false;
+        StringBuilder report = null;
+
+
         //Read release path
         String releasePath = (String) workItem.getParameter(WIP_INPUT_RELEASE);
 
         //Read test dir
         String testDir = (String) workItem.getParameter(WIP_INPUT_TEST);
-        
-        
+
+
         int minLength = workItem.getParameter(WIP_INPUT_MIN_CONTENT_LENGTH) != null ? Integer.parseInt(workItem.getParameter(WIP_INPUT_MIN_CONTENT_LENGTH).toString()) : DEFAULT_MIN_CONTENT_LENGTH;
-        
+
         int maxLength = workItem.getParameter(WIP_INPUT_MAX_CONTENT_LENGTH) != null ? Integer.parseInt(workItem.getParameter(WIP_INPUT_MAX_CONTENT_LENGTH).toString()) : DEFAULT_MAX_CONTENT_LENGTH;
-        
+
         //check mandatory parameters
         if (releasePath == null || releasePath.isEmpty()) {
             throw new IllegalArgumentException("'" + WIP_INPUT_RELEASE + "' parameter is mandatory!");
@@ -72,71 +72,82 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler{
         if (testDir == null || testDir.isEmpty()) {
             throw new IllegalArgumentException("'" + WIP_INPUT_TEST + "' parameter is mandatory!");
         }
-        
-        String testPath = releasePath+"/"+testDir;
-        
-        if(!fs.exists(testPath)){
+
+        String testPath = releasePath + "/" + testDir;
+
+        if (!fs.exists(testPath)) {
             throw new IllegalArgumentException(testPath + " doesn't exist!");
         }
-        
-        
+
+
         //'test' files inside test dir
-        StringBuilder report = new StringBuilder("");
-        Boolean success = true;
-        
+        report = new StringBuilder("");
+
         try {
             Iterable<Path> txtFiles = fs.loadFilesByType(testPath, "txt");
-            if (txtFiles == null || !txtFiles.iterator().hasNext()){
+            if (txtFiles == null || !txtFiles.iterator().hasNext()) {
                 report.append("EE ").append(testPath).append(" doesn't contain any .txt file!\n");
                 success = false;
-            } else{
+            } else {
                 Iterator<Path> iterator = txtFiles.iterator();
                 while (iterator.hasNext()) {
                     Path path = iterator.next();
 
                     String content = new String(fs.loadFile(path));
-                    
-                    if (content == null || content.isEmpty()){
+
+                    if (content == null || content.isEmpty()) {
                         report.append("EE ").append(path).append(" is empty!\n");
                         success = false;
                         continue;
                     }
-                    
-                    if (content.length() < minLength){
+
+                    if (content.length() < minLength) {
                         report.append("EE ").append(path).append(" -> Content is shorter than ").append(minLength).append(" -> '").append(content).append("'");
                         success = false;
-                    } if (content.length() > maxLength){
-                        try {
-                            report.append("WW ").append(path).append(" -> Took too much time! \n");
-                            Thread.sleep(10000);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(TriggerTestsWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } else{
+                    }
+                    if (content.length() > maxLength) {
+                        report.append("WW ").append(path).append(" -> Took too much time! \n");
+                        sleep = true;
+                    } else {
                         report.append("II ").append(path).append(" -> OK\n");
                     }
-                    
+
                 }
             }
         } catch (FileException ex) {
             throw new RuntimeException(ex);
         }
-        
-        this.completeWorkItem(manager, workItem.getId(), success, report.toString());
-        
+        final Map<String, Object> results = new HashMap<String, Object>();
+        results.put(WIP_OUTPUT_SUCCESSFUL, (success + "").toLowerCase());
+        results.put(WIP_OUTPUT_REPORT, report.toString());
+
+        if (sleep) {
+            new Thread(new Runnable() {
+
+              @Override
+              public void run() {
+                try {
+                    for (int i = 0; i < 11; i++) {
+                        System.out.println(">>> Running Tests ... ");
+                        Thread.sleep(1000);
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TriggerTestsWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                manager.completeWorkItem(workItem.getId(), results);
+                }
+            }).start();
+
+        } else {
+            System.out.println(">>> Running Tests ... ");
+
+
+            manager.completeWorkItem(workItem.getId(), results);
+        }
     }
 
-    private void completeWorkItem(WorkItemManager manager, long workItemId, boolean success, String report){
-        
-        Map<String, Object> results = new HashMap<String, Object>();
-        results.put(WIP_OUTPUT_SUCCESSFUL, (success+"").toLowerCase());
-        results.put(WIP_OUTPUT_REPORT, report);
-                
-        manager.completeWorkItem(workItemId, results);
-    }
-    
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
     }
-    
 }

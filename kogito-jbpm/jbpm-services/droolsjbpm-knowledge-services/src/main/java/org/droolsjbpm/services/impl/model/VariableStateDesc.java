@@ -17,6 +17,7 @@ package org.droolsjbpm.services.impl.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,7 +34,9 @@ public class VariableStateDesc implements Serializable{
     private long pk;
     private String variableId;
     private String variableInstanceId;
+    @Column(length = 5000)
     private String oldValue;
+    @Column(length = 5000)
     private String newValue;
     private String domainName;
     private int sessionId;
