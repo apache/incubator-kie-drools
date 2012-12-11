@@ -14,7 +14,6 @@ import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
@@ -55,11 +54,11 @@ public class KieBuilderTest {
     public void testInMemory() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
 
-        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
+        GAV gav = KieServices.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
         
         KieModuleModel kProj = createKieProject(namespace);
         
-        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generateAll(kfs, namespace, gav, kProj);
         
         createAndTestKieContainer(gav, createKieBuilder(kfs), namespace );
@@ -71,9 +70,9 @@ public class KieBuilderTest {
 
         KieModuleModel kProj = createKieProject(namespace);
         
-        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
+        GAV gav = KieServices.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
         
-        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generateAll(kfs, namespace, gav, kProj);
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
         
@@ -88,41 +87,41 @@ public class KieBuilderTest {
         KieServices ks = KieServices.Factory.get();
         
         String namespace1 = "org.kie.test1";
-        GAV gav1 = KieFactory.Factory.get().newGav( namespace1, "memory", "1.0-SNAPSHOT" );        
+        GAV gav1 = KieServices.Factory.get().newGav( namespace1, "memory", "1.0-SNAPSHOT" );
         KieModuleModel kProj1 = createKieProject(namespace1);        
-        KieFileSystem kfs1 = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs1 = KieServices.Factory.get().newKieFileSystem();
         generateAll(kfs1, namespace1, gav1, kProj1);
 
         KieBuilder kb1 = createKieBuilder(kfs1);
         kb1.buildAll();        
-        if ( kb1.getResults().hasMessages( Level.ERROR  ) ) {
+        if ( kb1.getResults().hasMessages(Level.ERROR) ) {
             fail("Unable to build KieJar\n" + kb1.getResults( ).toString() );
         }
-        KieRepository kr = ks.getKieRepository();
+        KieRepository kr = ks.getRepository();
         KieModule kModule1 = kr.getKieModule(gav1);
         assertNotNull( kModule1 );
         
         
         String namespace2 = "org.kie.test2";
-        GAV gav2 = KieFactory.Factory.get().newGav( namespace2, "memory", "1.0-SNAPSHOT" );        
+        GAV gav2 = KieServices.Factory.get().newGav( namespace2, "memory", "1.0-SNAPSHOT" );
         KieModuleModel kProj2 = createKieProject(namespace2);        
         KieBaseModelImpl kieBase2 = ( KieBaseModelImpl ) kProj2.getKieBaseModels().get( namespace2 );
         kieBase2.addInclude( namespace1 );
         
-        KieFileSystem kfs2 = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs2 = KieServices.Factory.get().newKieFileSystem();
         generateAll(kfs2, namespace2, gav2, kProj2);
         
 
         KieBuilder kb2 = createKieBuilder(kfs2);
         kb2.setDependencies( kModule1 );
         kb2.buildAll();        
-        if ( kb2.getResults().hasMessages(Level.ERROR  ) ) {
+        if ( kb2.getResults().hasMessages(Level.ERROR) ) {
             fail("Unable to build KieJar\n" + kb2.getResults( ).toString() );
         }
         KieModule kModule2= kr.getKieModule(gav2);
         assertNotNull( kModule2);
         
-        KieContainer kContainer = ks.getKieContainer( gav2 );
+        KieContainer kContainer = ks.newKieContainer(gav2);
         KieBase kBase = kContainer.getKieBase( namespace2 );
         
         KieSession kSession = kBase.newKieSession();
@@ -145,9 +144,9 @@ public class KieBuilderTest {
 
         KieModuleModel kProj = createKieProject(namespace);
         
-        GAV gav = KieServices.Factory.get().getKieRepository().getDefaultGAV();
+        GAV gav = KieServices.Factory.get().getRepository().getDefaultGAV();
         
-        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generateKProjectXML( kfs, namespace, kProj );
         generateMessageClass( kfs, namespace );
         generateRule( kfs, namespace );
@@ -161,9 +160,9 @@ public class KieBuilderTest {
     public void testNoProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
         
-        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
+        GAV gav = KieServices.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
         
-        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generatePomXML(kfs, gav);
         generateMessageClass( kfs, namespace );
         generateRule( kfs, namespace );
@@ -176,9 +175,9 @@ public class KieBuilderTest {
     public void testNoPomAndProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
         
-        GAV gav = KieServices.Factory.get().getKieRepository().getDefaultGAV();
+        GAV gav = KieServices.Factory.get().getRepository().getDefaultGAV();
         
-        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generateMessageClass( kfs, namespace );
         generateRule( kfs, namespace );
         
@@ -195,7 +194,7 @@ public class KieBuilderTest {
         
         GAV gav = new GAVImpl( "", "", "" );                
         
-        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generatePomXML(kfs, gav);
         
         generateMessageClass( kfs, namespace );
@@ -205,7 +204,7 @@ public class KieBuilderTest {
           
         KieBuilder kieBuilder = createKieBuilder(kfs);
         kieBuilder.buildAll();
-        assertTrue ( kieBuilder.getResults().hasMessages(Level.ERROR ) );
+        assertTrue ( kieBuilder.getResults().hasMessages(Level.ERROR) );
     }   
     
     @Test
@@ -214,9 +213,9 @@ public class KieBuilderTest {
 
         KieModuleModel kProj = createKieProject(namespace);
         
-        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );            
+        GAV gav = KieServices.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
         
-        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         kfs.write( "pom.xml", "xxxx" );
         generateKProjectXML( kfs, namespace, kProj );
         generateMessageClass( kfs, namespace );
@@ -224,7 +223,7 @@ public class KieBuilderTest {
           
         KieBuilder kieBuilder = createKieBuilder(kfs);
         kieBuilder.buildAll();
-        assertTrue ( kieBuilder.getResults().hasMessages( Level.ERROR ) );
+        assertTrue ( kieBuilder.getResults().hasMessages(Level.ERROR) );
     }     
     
     @Test
@@ -233,9 +232,9 @@ public class KieBuilderTest {
 
         KieModuleModel kProj = createKieProject(namespace);
         
-        GAV gav = KieFactory.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );                
+        GAV gav = KieServices.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
         
-        KieFileSystem kfs = KieFactory.Factory.get().newKieFileSystem();
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generatePomXML(kfs, gav);       
         kfs.writeKModuleXML("xxxx" );
         generateMessageClass( kfs, namespace );
@@ -243,14 +242,14 @@ public class KieBuilderTest {
         
         KieBuilder kieBuilder = createKieBuilder(kfs);
         kieBuilder.buildAll();
-        assertTrue ( kieBuilder.getResults().hasMessages( Level.ERROR ) );
+        assertTrue ( kieBuilder.getResults().hasMessages(Level.ERROR) );
     }     
     
     
-    public KieModuleModel createKieProject(String namespace) {        
-        KieFactory kf = KieFactory.Factory.get();
+    public KieModuleModel createKieProject(String namespace) {
+        KieServices ks = KieServices.Factory.get();
         
-        KieModuleModel kProj = kf.newKieModuleModel();
+        KieModuleModel kProj = ks.newKieModuleModel();
         KieBaseModel kBase1 = kProj.newKieBaseModel(namespace)
                                    .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                                    .setEventProcessingMode( EventProcessingOption.STREAM );        
@@ -299,14 +298,14 @@ public class KieBuilderTest {
         
         kb.buildAll();
         
-        if ( kb.getResults().hasMessages( Level.ERROR  ) ) {
+        if ( kb.getResults().hasMessages(Level.ERROR) ) {
             fail("Unable to build KieModule\n" + kb.getResults( ).toString() );
         }
-        KieRepository kr = ks.getKieRepository();
+        KieRepository kr = ks.getRepository();
         KieModule kJar = kr.getKieModule(gav);
         assertNotNull( kJar );
         
-        KieContainer kContainer = ks.getKieContainer( gav );
+        KieContainer kContainer = ks.newKieContainer(gav);
         KieBase kBase = kBaseName != null ? kContainer.getKieBase( kBaseName ) : kContainer.getKieBase();
 
         KieSession kSession = kBase.newKieSession();

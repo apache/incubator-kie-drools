@@ -11,8 +11,8 @@ public class KProjectTest {
     @Test @Ignore
     public void testKJar() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        KieContainer kContainer = ks.getKieClasspathContainer();
-        KieSession kSession = kContainer.getKieSession( "FireAlarmKBase.session" );
+        KieContainer kContainer = ks.newKieClasspathContainer();
+        KieSession kSession = kContainer.newKieSession("FireAlarmKBase.session");
     }
 
     private void useKSession(KieSession ksession) throws InstantiationException, IllegalAccessException {

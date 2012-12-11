@@ -39,9 +39,7 @@ public class KieContainerImpl
                             KieRepository kr) {
         this.kr = kr;
         this.kProject = kProject;
-        if ( kProject != null ) {
-            kProject.init();
-        }
+        kProject.init();
     }
 
     public GAV getGAV() {
@@ -69,43 +67,39 @@ public class KieContainerImpl
     public KieBase getKieBase(String kBaseName) {
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
-            if ( kProject != null ) {
-                ResultsImpl msgs = new ResultsImpl();
-                kBase = AbstractKieModule.createKieBase( ( KieBaseModelImpl ) kProject.getKieBaseModel( kBaseName ),
-                                                         kProject,
-                                                         msgs );
-                if ( kBase == null ) {
-                    // build error, throw runtime exception
-                    new RuntimeException( "Error while creating KieBase"+  msgs.filterMessages( Level.ERROR  ) );
-                }
-                if ( kBase != null ) {
-                    kBases.put( kBaseName,
-                                kBase );
-                }
-            } else {
-                return KnowledgeBaseFactory.newKnowledgeBase();
+            ResultsImpl msgs = new ResultsImpl();
+            kBase = AbstractKieModule.createKieBase( ( KieBaseModelImpl ) kProject.getKieBaseModel( kBaseName ),
+                                                     kProject,
+                                                     msgs );
+            if ( kBase == null ) {
+                // build error, throw runtime exception
+                new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
+            }
+            if ( kBase != null ) {
+                kBases.put( kBaseName,
+                            kBase );
             }
         }
         return kBase;
     }
 
-    public KieSession getKieSession() {
+    public KieSession newKieSession() {
         KieSessionModel defaultKieSessionModel = kProject.getDefaultKieSession();
         if (defaultKieSessionModel == null) {
             new RuntimeException("Cannot find a defualt KieSession");
         }
-        return getKieSession(defaultKieSessionModel.getName());
+        return newKieSession(defaultKieSessionModel.getName());
     }
 
-    public StatelessKieSession getKieStatelessSession() {
+    public StatelessKieSession newKieStatelessSession() {
         KieSessionModel defaultKieSessionModel = kProject.getDefaultStatelessKieSession();
         if (defaultKieSessionModel == null) {
             new RuntimeException("Cannot find a defualt StatelessKieSession");
         }
-        return getKieStatelessSession(defaultKieSessionModel.getName());
+        return newKieStatelessSession(defaultKieSessionModel.getName());
     }
 
-    public KieSession getKieSession(String kSessionName) {
+    public KieSession newKieSession(String kSessionName) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
         if ( kSessionModel == null ) {
             log.error("Unknown KieSession name: " + kSessionName);
@@ -121,7 +115,7 @@ public class KieContainerImpl
         return kSession;
     }
 
-    public StatelessKieSession getKieStatelessSession(String kSessionName) {
+    public StatelessKieSession newKieStatelessSession(String kSessionName) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
         if ( kSessionName == null ) {
             return null;

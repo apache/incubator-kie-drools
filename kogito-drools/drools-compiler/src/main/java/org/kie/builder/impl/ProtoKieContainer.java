@@ -13,7 +13,7 @@ public class ProtoKieContainer {
 //    }
 //
 //    
-//    public KieContainerImpl getKieContainer() {
+//    public KieContainerImpl newKieContainer() {
 //        
 //    }
     

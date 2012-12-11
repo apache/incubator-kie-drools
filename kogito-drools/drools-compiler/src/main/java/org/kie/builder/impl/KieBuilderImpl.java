@@ -17,7 +17,6 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
@@ -77,7 +76,7 @@ public class KieBuilderImpl
     }
     
     public KieBuilder setDependencies(Resource... resources) {
-        KieRepositoryImpl kr = ( KieRepositoryImpl ) KieServices.Factory.get().getKieRepository();
+        KieRepositoryImpl kr = ( KieRepositoryImpl ) KieServices.Factory.get().getRepository();
         List<KieModule> list = new ArrayList<KieModule>();
         for ( Resource res : resources ) {
             InternalKieModule depKieMod = ( InternalKieModule ) kr.getKieModule( res );
@@ -88,7 +87,7 @@ public class KieBuilderImpl
     }
     
     private void init() {
-        KieFactory kf = KieFactory.Factory.get();
+        KieServices ks = KieServices.Factory.get();
 
         results = new ResultsImpl();
 
@@ -103,7 +102,7 @@ public class KieBuilderImpl
         if ( pomModel != null ) {
             // creates GAV from build pom
             // If the pom was generated, it will be the same as teh default GAV 
-            gav = kf.newGav( pomModel.getGroupId(),
+            gav = ks.newGav( pomModel.getGroupId(),
                              pomModel.getArtifactId(),
                              pomModel.getVersion() );
         }
@@ -136,10 +135,10 @@ public class KieBuilderImpl
     public static void buildKieModule(InternalKieModule kModule, ResultsImpl messages) {
         KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
         kProject.init();
-        kProject.verify( messages );
+        kProject.verify(messages);
 
         if ( messages.filterMessages( Level.ERROR ).isEmpty()) {
-            KieServices.Factory.get().getKieRepository().addKieModule( kModule );
+            KieServices.Factory.get().getRepository().addKieModule( kModule );
         }
     }
 
@@ -195,7 +194,7 @@ public class KieBuilderImpl
 
     private static boolean isFileInKieBase(String fileName, String kBaseName) {
         String pathName = kBaseName.replace( '.', '/' );
-        return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.startsWith( pathName + "/" );
+        return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.startsWith(pathName + "/");
     }
 
     private static boolean isFileInKiePackages(String fileName, List<String> pkgNames) {
@@ -232,7 +231,7 @@ public class KieBuilderImpl
         }
         
         
-        if ( getResults().hasMessages( Level.ERROR ) || kModule == null ) {
+        if ( getResults().hasMessages(Level.ERROR) || kModule == null ) {
             throw new RuntimeException( "Unable to get KieModule, Errors Existed" );
         }
         return kModule;
@@ -254,7 +253,7 @@ public class KieBuilderImpl
             }
         } else {
             // There's no kmodule.xml, create a defualt one
-            kModuleModel = KieFactory.Factory.get().newKieModuleModel();
+            kModuleModel = KieServices.Factory.get().newKieModuleModel();
             KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel("defaultKieBase").addPackage("*").setDefault(true);
             kieBaseModel.newKieSessionModel("defaultKieSession").setDefault(true);
             kieBaseModel.newKieSessionModel("defaultStatelessKieSession").setType(KieSessionModel.KieSessionType.STATELESS).setDefault(true);
@@ -292,7 +291,7 @@ public class KieBuilderImpl
             return mfs.getBytes( "pom.xml" );
         } else {
             // There is no pom.xml, and thus no GAV, so generate a pom.xml from the global detault.
-            return generatePomXml( KieServices.Factory.get().getKieRepository().getDefaultGAV() ).getBytes();
+            return generatePomXml( KieServices.Factory.get().getRepository().getDefaultGAV() ).getBytes();
         }
     }
 

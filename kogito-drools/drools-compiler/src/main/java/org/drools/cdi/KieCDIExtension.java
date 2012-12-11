@@ -1,34 +1,10 @@
 package org.drools.cdi;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Named;
-
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieContainer;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KieSessionModel.KieSessionType;
@@ -44,6 +20,28 @@ import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Named;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class KieCDIExtension
     implements
@@ -72,7 +70,7 @@ public class KieCDIExtension
     public void init() {
         KieServices ks = KieServices.Factory.get();
         gavs = new HashMap<GAV, KieContainer>();
-        classpathKContainer = (KieContainerImpl) ks.getKieClasspathContainer(); //new KieContainerImpl( kProject, null );
+        classpathKContainer = (KieContainerImpl) ks.newKieClasspathContainer(); //new KieContainerImpl( kProject, null );
         named = new HashMap<String, KieCDIExtension.KieCDIEntry>();
     }
 
@@ -82,7 +80,7 @@ public class KieCDIExtension
             init();
         }
 
-        KieFactory kf = KieFactory.Factory.get();
+        KieServices ks = KieServices.Factory.get();
 
         // Find all uses of KieBaseModel and KieSessionModel and add to Set index
         if ( !pit.getInjectionTarget().getInjectionPoints().isEmpty() ) {
@@ -96,7 +94,7 @@ public class KieCDIExtension
                 KGAV kGAV = ip.getAnnotated().getAnnotation( KGAV.class );
                 GAV gav = null;
                 if ( kGAV != null ) {
-                    gav = kf.newGav( kGAV.groupId(),
+                    gav = ks.newGav( kGAV.groupId(),
                                      kGAV.artifactId(),
                                      kGAV.version() );
                     gavs.put( gav,
@@ -105,13 +103,13 @@ public class KieCDIExtension
 
                 Named namedAnn = ip.getAnnotated().getAnnotation( Named.class );
                 String namedStr = null;
-                KieCDIEntry existingEntry = null;
                 if ( namedAnn != null ) {
                     namedStr = namedAnn.value();
                 }
 
                 Class< ? extends Annotation> scope = ApplicationScoped.class;
 
+                KieCDIEntry existingEntry = null;
                 if ( kBase != null ) {
                     addKBaseInjectionPoint(ip, kBase, namedStr, scope, gav,  existingEntry);
 
@@ -208,7 +206,7 @@ public class KieCDIExtension
             // to array, so we don't mutate that which we are iterating over
             if ( !gavs.isEmpty() ) {
                 for ( GAV gav : gavs.keySet().toArray( new GAV[gavs.size()] ) ) {
-                    KieContainer kContainer = ks.getKieContainer( gav );
+                    KieContainer kContainer = ks.newKieContainer(gav);
                     if ( kContainer == null ) {
                         log.error( "Unable to retrieve KieContainer for GAV {}",
                                    gav.toString() );
@@ -279,7 +277,7 @@ public class KieCDIExtension
                                         entry.getNamed(),
                                         entry.getInjectionPoints() );
         if ( log.isDebugEnabled() ) {
-            InternalKieModule kModule = (InternalKieModule) kProject.getKieModuleForKBase( kBaseQName );
+            InternalKieModule kModule = kProject.getKieModuleForKBase( kBaseQName );
             log.debug( "Added Bean for @KBase({})",
                        kBaseQName,
                        kModule );
@@ -325,7 +323,7 @@ public class KieCDIExtension
 
         if ( KieSessionType.STATELESS.equals( kSessionModel.getType() ) ) {
             if ( log.isDebugEnabled() ) {
-                InternalKieModule kModule = (InternalKieModule) kProject.getKieModuleForKBase( ((KieSessionModelImpl) kSessionModel).getKieBaseModel().getName() );
+                InternalKieModule kModule = kProject.getKieModuleForKBase( ((KieSessionModelImpl) kSessionModel).getKieBaseModel().getName() );
                 log.debug( "Added Bean for Stateless @KSession({}) from: {}",
                            kSessionName,
                            kModule );
@@ -336,7 +334,7 @@ public class KieCDIExtension
                                                     entry.getNamed(),
                                                     entry.getInjectionPoints() ) );
         } else {
-            InternalKieModule kModule = (InternalKieModule) kProject.getKieModuleForKBase( ((KieSessionModelImpl) kSessionModel).getKieBaseModel().getName() );
+            InternalKieModule kModule = kProject.getKieModuleForKBase( ((KieSessionModelImpl) kSessionModel).getKieBaseModel().getName() );
             log.debug( "Added Bean for Stateful @KSession({})  from: {}",
                        kSessionName,
                        kModule );
@@ -354,17 +352,17 @@ public class KieCDIExtension
         static final Set<Type>               types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( KieBase.class,
                                                                                                                     Object.class ) ) );
 
-        private Set<Annotation>              qualifiers;
+        private final Set<Annotation>              qualifiers;
 
-        private KieContainer                 kContainer;
+        private KieContainer                       kContainer;
 
-        private KieBaseModel                 kBaseModel;
+        private final KieBaseModel                 kBaseModel;
 
-        private Class< ? extends Annotation> scope;
+        private final Class< ? extends Annotation> scope;
 
-        private String                       named;
+        private final String                       named;
         
-        private Set<InjectionPoint>          injectionPoints;
+        private final Set<InjectionPoint>          injectionPoints;
 
         public KBaseBean(final KieBaseModel kBaseModel,
                          KieContainer kContainer,
@@ -403,7 +401,7 @@ public class KieCDIExtension
                         return "Named[" + named + "]";
                     }
                 } );
-            };
+            }
             if ( kContainer.getGAV() != null ) {
                 final String groupId = kContainer.getGAV().getGroupId();
                 final String artifactId = kContainer.getGAV().getArtifactId();
@@ -435,8 +433,7 @@ public class KieCDIExtension
         }
 
         public KieBase create(CreationalContext ctx) {
-            KieBase kieBase = kContainer.getKieBase( kBaseModel.getName() );
-            return kieBase;
+            return kContainer.getKieBase( kBaseModel.getName() );
         }
 
         public void destroy(KieBase kBase,
@@ -494,17 +491,17 @@ public class KieCDIExtension
         static final Set<Type>               types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( StatelessKieSession.class,
                                                                                                                     Object.class ) ) );
 
-        private Set<Annotation>              qualifiers;
+        private final Set<Annotation>              qualifiers;
 
-        private KieSessionModel              kSessionModel;
+        private final KieSessionModel              kSessionModel;
 
-        private KieContainer                 kContainer;
+        private final KieContainer                 kContainer;
 
-        private Class< ? extends Annotation> scope;
+        private final Class< ? extends Annotation> scope;
 
-        private String                       named;
+        private final String                       named;
         
-        private Set<InjectionPoint>          injectionPoints;        
+        private final Set<InjectionPoint>          injectionPoints;
 
         public StatelessKSessionBean(final KieSessionModel kieSessionModelModel,
                                      KieContainer kContainer,
@@ -543,7 +540,7 @@ public class KieCDIExtension
                         return "Named[" + named + "]";
                     }
                 } );
-            };
+            }
             if ( kContainer.getGAV() != null ) {
                 final String groupId = kContainer.getGAV().getGroupId();
                 final String artifactId = kContainer.getGAV().getArtifactId();
@@ -577,7 +574,7 @@ public class KieCDIExtension
         }
 
         public StatelessKieSession create(CreationalContext ctx) {
-            return kContainer.getKieStatelessSession( kSessionModel.getName() );
+            return kContainer.newKieStatelessSession(kSessionModel.getName());
         }
 
         public void destroy(StatelessKieSession kSession,
@@ -628,17 +625,17 @@ public class KieCDIExtension
         static final Set<Type>               types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( KieSession.class,
                                                                                                                     Object.class ) ) );
 
-        private Set<Annotation>              qualifiers;
+        private final Set<Annotation>              qualifiers;
 
-        private KieSessionModel              kSessionModel;
+        private final KieSessionModel              kSessionModel;
 
-        private KieContainer                 kContainer;
+        private final KieContainer                 kContainer;
 
-        private Class< ? extends Annotation> scope;
+        private final Class< ? extends Annotation> scope;
 
-        private String                       named;
+        private final String                       named;
         
-        private Set<InjectionPoint>          injectionPoints;             
+        private final Set<InjectionPoint>          injectionPoints;
 
         public StatefulKSessionBean(final KieSessionModel kieSessionModelModel,
                                     KieContainer kContainer,
@@ -677,7 +674,7 @@ public class KieCDIExtension
                         return "Named[" + named + "]";
                     }
                 } );
-            };
+            }
             if ( kContainer.getGAV() != null ) {
                 final String groupId = kContainer.getGAV().getGroupId();
                 final String artifactId = kContainer.getGAV().getArtifactId();
@@ -712,7 +709,7 @@ public class KieCDIExtension
         }
 
         public KieSession create(CreationalContext ctx) {
-            return kContainer.getKieSession( kSessionModel.getName() );
+            return kContainer.newKieSession(kSessionModel.getName());
         }
 
         public void destroy(KieSession kBase,

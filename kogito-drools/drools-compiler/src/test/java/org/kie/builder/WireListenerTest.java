@@ -24,13 +24,12 @@ public class WireListenerTest {
     @Test
     public void testWireListener() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        KieFactory kf = KieFactory.Factory.get();
 
-        GAV gav = kf.newGav("org.kie", "listener-test", "1.0-SNAPSHOT");
-        build(ks, kf, gav);
-        KieContainer kieContainer = ks.getKieContainer(gav);
+        GAV gav = ks.newGav("org.kie", "listener-test", "1.0-SNAPSHOT");
+        build(ks, gav);
+        KieContainer kieContainer = ks.newKieContainer(gav);
 
-        KieSession ksession = kieContainer.getKieSession();
+        KieSession ksession = kieContainer.newKieSession();
         ksession.fireAllRules();
 
         assertEquals(1, insertEvents.size());
@@ -38,14 +37,14 @@ public class WireListenerTest {
         assertEquals(1, retractEvents.size());
     }
 
-    private void build(KieServices ks, KieFactory kf, GAV gav) throws IOException {
-        KieModuleModel kproj = kf.newKieModuleModel();
+    private void build(KieServices ks, GAV gav) throws IOException {
+        KieModuleModel kproj = ks.newKieModuleModel();
 
         KieSessionModel ksession1 = kproj.newKieBaseModel("KBase1").newKieSessionModel("KSession1").setDefault(true);
 
         ksession1.newListenerModel(RecordingWorkingMemoryEventListener.class.getName(), ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER);
 
-        KieFileSystem kfs = kf.newKieFileSystem();
+        KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML())
            .writePomXML( generatePomXml(gav) )
            .write("src/main/resources/KBase1/rules.drl", createDRL());

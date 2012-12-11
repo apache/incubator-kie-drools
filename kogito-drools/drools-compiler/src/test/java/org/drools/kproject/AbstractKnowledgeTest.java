@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFactory;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
@@ -140,13 +139,14 @@ public class AbstractKnowledgeTest {
         KieSessionModel ksession4 = kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
                 .setType( KieSessionType.STATELESS )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
-  
-        
-        KieFileSystemImpl kfs =  ( KieFileSystemImpl ) KieFactory.Factory.get().newKieFileSystem();
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystemImpl kfs =  ( KieFileSystemImpl ) ks.newKieFileSystem();
         kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
         kfs.writeKModuleXML( ((KieModuleModelImpl)kproj).toXML()  );
         
-        GAV gav = KieFactory.Factory.get().newGav( namespace, "art1", version );
+        GAV gav = ks.newGav( namespace, "art1", version );
         kfs.generateAndWritePomXML( gav );        
 
         String kBase1R1 = getRule( namespace + ".test1", "rule1", version );
@@ -166,7 +166,6 @@ public class AbstractKnowledgeTest {
         kfs.write( "src/main/java/org/drools/cdi/test/KProjectTestClass" + namespace + ".java" ,generateKProjectTestClass( kproj, namespace ) );        
         
         
-        KieServices ks = KieServices.Factory.get();       
         KieBuilder kBuilder = ks.newKieBuilder( kfs );
         
         kBuilder.buildAll();

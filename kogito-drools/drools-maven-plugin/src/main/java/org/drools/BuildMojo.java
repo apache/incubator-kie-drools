@@ -56,9 +56,9 @@ public class BuildMojo extends AbstractMojo {
         KieServices ks = KieServices.Factory.get();
 
         try {
-            KieRepository kr = ks.getKieRepository();
+            KieRepository kr = ks.getRepository();
             KieModule kModule = kr.addKieModule( ks.getResources().newFileSystemResource( sourceFolder ) );
-            KieContainerImpl kContainer = (KieContainerImpl)ks.getKieContainer( kModule.getGAV() );
+            KieContainerImpl kContainer = (KieContainerImpl)ks.newKieContainer(kModule.getGAV());
 
             KieProject kieProject = kContainer.getKieProject();
             ResultsImpl messages = kieProject.verify();

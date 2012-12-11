@@ -4,11 +4,14 @@ import org.drools.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.command.impl.CommandFactoryServiceImpl;
 import org.drools.concurrent.ExecutorProviderImpl;
 import org.drools.io.impl.ResourceFactoryServiceImpl;
+import org.drools.kproject.GAVImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieContainer;
 import org.kie.builder.KieFileSystem;
+import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
 import org.kie.builder.KieServices;
@@ -39,14 +42,14 @@ public class KieServicesImpl implements KieServices {
         return resourceFactory;
     }
 
-    public KieRepository getKieRepository() {
+    public KieRepository getRepository() {
         return KieRepositoryImpl.INSTANCE;
     }
 
     /**
      * Returns KieContainer for the classpath
      */
-    public KieContainer getKieClasspathContainer() {
+    public KieContainer newKieClasspathContainer() {
         if ( classpathKContainer == null ) {
             // these are heavy to create, don't want to end up with two
             synchronized ( lock ) {
@@ -66,13 +69,13 @@ public class KieServicesImpl implements KieServices {
         }  
     }
     
-    public KieContainer getKieContainer(GAV gav) {
-        InternalKieModule kieModule = (InternalKieModule)getKieRepository().getKieModule(gav);
+    public KieContainer newKieContainer(GAV gav) {
+        InternalKieModule kieModule = (InternalKieModule) getRepository().getKieModule(gav);
         if (kieModule == null) {
             throw new RuntimeException("Cannot find KieModule: " + gav);
         }
-        KieProject kProject = new KieModuleKieProject( kieModule, getKieRepository() );
-        return new KieContainerImpl( kProject, getKieRepository() );
+        KieProject kProject = new KieModuleKieProject( kieModule, getRepository() );
+        return new KieContainerImpl( kProject, getRepository() );
     }
     
 
@@ -118,6 +121,17 @@ public class KieServicesImpl implements KieServices {
     public KieStoreServices getStoreServices() {
         return ServiceRegistryImpl.getInstance().get( KieStoreServices.class );
     }
-    
+
+    public GAV newGav(String groupId, String artifactId, String version) {
+        return new GAVImpl(groupId, artifactId, version);
+    }
+
+    public KieModuleModel newKieModuleModel() {
+        return new KieModuleModelImpl();
+    }
+
+    public KieFileSystem newKieFileSystem() {
+        return new KieFileSystemImpl();
+    }
 }
 
