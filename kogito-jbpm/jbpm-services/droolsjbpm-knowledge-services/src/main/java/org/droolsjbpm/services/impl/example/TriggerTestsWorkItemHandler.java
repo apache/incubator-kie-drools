@@ -18,6 +18,8 @@ package org.droolsjbpm.services.impl.example;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
@@ -35,11 +37,13 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler{
     public final static String WIP_INPUT_RELEASE = "in_release_path";
     public final static String WIP_INPUT_TEST = "in_test_dir";
     public final static String WIP_INPUT_MIN_CONTENT_LENGTH = "in_min_lenght";
+    public final static String WIP_INPUT_MAX_CONTENT_LENGTH = "in_max_lenght";
     
     public final static String WIP_OUTPUT_SUCCESSFUL = "out_test_successful";
     public final static String WIP_OUTPUT_REPORT = "out_test_report";
     
     private static final int DEFAULT_MIN_CONTENT_LENGTH = 10;
+    private static final int DEFAULT_MAX_CONTENT_LENGTH = 50;
     
     @Inject
     private FileService fs;
@@ -57,6 +61,8 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler{
         
         
         int minLength = workItem.getParameter(WIP_INPUT_MIN_CONTENT_LENGTH) != null ? Integer.parseInt(workItem.getParameter(WIP_INPUT_MIN_CONTENT_LENGTH).toString()) : DEFAULT_MIN_CONTENT_LENGTH;
+        
+        int maxLength = workItem.getParameter(WIP_INPUT_MAX_CONTENT_LENGTH) != null ? Integer.parseInt(workItem.getParameter(WIP_INPUT_MAX_CONTENT_LENGTH).toString()) : DEFAULT_MAX_CONTENT_LENGTH;
         
         //check mandatory parameters
         if (releasePath == null || releasePath.isEmpty()) {
@@ -99,6 +105,13 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler{
                     if (content.length() < minLength){
                         report.append("EE ").append(path).append(" -> Content is shorter than ").append(minLength).append(" -> '").append(content).append("'");
                         success = false;
+                    } if (content.length() > maxLength){
+                        try {
+                            report.append("WW ").append(path).append(" -> Took too much time! \n");
+                            Thread.sleep(10000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(TriggerTestsWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     } else{
                         report.append("II ").append(path).append(" -> OK");
                     }
