@@ -16,13 +16,13 @@
 
 package org.kie.command;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.rule.FactHandle;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public interface KieCommands {
     Command newInsert(Object object);
@@ -36,7 +36,7 @@ public interface KieCommands {
     
     Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint);
 
-    Command newRetract(FactHandle factHandle);
+    Command newDelete(FactHandle factHandle);
 
     Setter newSetter(String accessor,
                      String value);
