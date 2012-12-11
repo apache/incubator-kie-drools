@@ -2,7 +2,13 @@ package org.kie.builder;
 
 import java.util.List;
 
+import org.kie.builder.Message.Level;
+
 public interface Results {
-    List<Message> getInsertedMessages();
-    List<Message> getDeletedMessages();
+    
+    boolean hasMessages(Level... levels);
+    
+    List<Message>  getMessages(Level... levels);  
+    
+    List<Message>  getMessages();  
 }

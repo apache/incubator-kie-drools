@@ -1,6 +1,5 @@
 package org.kie.builder;
 
-import org.kie.builder.Message.Level;
 import org.kie.io.Resource;
 
 public interface KieBuilder {
@@ -9,11 +8,7 @@ public interface KieBuilder {
     
     KieBuilder setDependencies(Resource... dependencies);
 
-    Results build();
-
-    boolean hasResults(Level... levels);
-                         
-    Results getResults(Level... levels);
+    KieBuilder buildAll();
     
     Results getResults();
 

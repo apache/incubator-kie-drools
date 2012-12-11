@@ -7,6 +7,8 @@ import org.kie.runtime.StatelessKieSession;
 public interface KieContainer {
 
     GAV getGAV();
+    
+    Results verify();
 
     void updateToVersion(GAV version);
 
@@ -21,8 +23,6 @@ public interface KieContainer {
     StatelessKieSession getKieStatelessSession();
     
     StatelessKieSession getKieStatelessSession(String kSessionName);
-
-    void dispose();
     
     ClassLoader getClassLoader();
 }
