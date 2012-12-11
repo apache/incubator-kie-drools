@@ -22,7 +22,7 @@ import java.io.OutputStream;
 
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 
 public interface Marshaller {
 
@@ -61,7 +61,7 @@ public interface Marshaller {
      * @throws ClassNotFoundException
      */
     public KieSession unmarshall(InputStream stream,
-                                               KnowledgeSessionConfiguration config,
+                                               KieSessionConfiguration config,
                                                Environment environment) throws IOException,
                                                                       ClassNotFoundException;
 

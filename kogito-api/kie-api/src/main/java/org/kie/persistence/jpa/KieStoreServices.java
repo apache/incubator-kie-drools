@@ -19,17 +19,17 @@ package org.kie.persistence.jpa;
 import org.kie.KieBase;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 
 public interface KieStoreServices {
 
     KieSession newStatefulKnowledgeSession(KieBase kbase,
-                                           KnowledgeSessionConfiguration configuration,
+                                           KieSessionConfiguration configuration,
                                            Environment environment);
 
     KieSession loadStatefulKnowledgeSession(int id,
                                             KieBase kbase,
-                                            KnowledgeSessionConfiguration configuration,
+                                            KieSessionConfiguration configuration,
                                             Environment environment);
 
 }

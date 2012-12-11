@@ -25,7 +25,7 @@ import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 
@@ -151,7 +151,7 @@ public interface KnowledgeBase
      * @return
      *     The StatefulKnowledgeSession.
      */
-    StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment);
+    StatefulKnowledgeSession newStatefulKnowledgeSession(KieSessionConfiguration conf, Environment environment);
 
     /**
      * Create a new StatefulKnowledgeSession using the default session configuration.
@@ -178,7 +178,7 @@ public interface KnowledgeBase
      * @return
      *     The StatelessKnowledgeSession.
      */
-    StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf);
+    StatelessKnowledgeSession newStatelessKnowledgeSession(KieSessionConfiguration conf);
 
     /**
      * Create a new StatelessKnowledgeSession using the default session configuration.

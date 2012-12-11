@@ -8,7 +8,7 @@ import org.kie.definition.type.FactType;
 import org.kie.event.kiebase.KieBaseEventManager;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 
 import java.util.Collection;
@@ -120,7 +120,7 @@ public interface KieBase extends KieBaseEventManager {
      * @return
      *     The StatefulKnowledgeSession.
      */
-    KieSession newKieSession(KnowledgeSessionConfiguration conf, Environment environment);
+    KieSession newKieSession(KieSessionConfiguration conf, Environment environment);
 
     /**
      * Create a new StatefulKnowledgeSession using the default session configuration.
@@ -147,7 +147,7 @@ public interface KieBase extends KieBaseEventManager {
      * @return
      *     The StatelessKnowledgeSession.
      */
-    StatelessKieSession newStatelessKieSession(KnowledgeSessionConfiguration conf);
+    StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf);
 
     /**
      * Create a new StatelessKnowledgeSession using the default session configuration.

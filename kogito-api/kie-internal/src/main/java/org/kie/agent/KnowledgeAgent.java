@@ -21,7 +21,7 @@ import org.kie.KnowledgeBase;
 import org.kie.SystemEventListener;
 import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.kie.io.Resource;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatelessKnowledgeSession;
 
 /**
@@ -68,7 +68,7 @@ public interface KnowledgeAgent {
      * StatelessKnowledgeSession created from here will always have the execute() method called against the latest built KnowledgeBase
      * @return
      */    
-    StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf);
+    StatelessKnowledgeSession newStatelessKnowledgeSession(KieSessionConfiguration conf);
 
     void monitorResourceChangeEvents(boolean monitor);
 
