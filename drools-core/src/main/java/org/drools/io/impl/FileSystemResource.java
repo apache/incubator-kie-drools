@@ -62,8 +62,8 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
             throw new IllegalArgumentException( "File must not be null" );
         }
         this.file = new File( StringUtils.cleanPath(file.getPath()) );
-        setName( file.getName() );
-        setResourceType( ResourceType.determineResourceType( getName() ) );
+        setSourcePath( file.getName() );
+        setResourceType( ResourceType.determineResourceType( getSourcePath() ) );
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -92,8 +92,8 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
             throw new IllegalArgumentException( "Path must not be null" );
         }
         this.file = new File(StringUtils.cleanPath(path));
-        setName( path );
-        setResourceType( ResourceType.determineResourceType( getName() ) );
+        setSourcePath( path );
+        setResourceType( ResourceType.determineResourceType( getSourcePath() ) );
     }
     
     /**

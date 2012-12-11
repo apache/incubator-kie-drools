@@ -56,7 +56,7 @@ public class EncodedResource  extends BaseResource implements InternalResource, 
         }
         this.resource = (InternalResource) resource;
         this.encoding = encoding;
-        setName( this.resource.getName() );
+        setSourcePath( resource.getSourcePath() );
         setResourceType( resource.getResourceType() );
         setConfiguration( resource.getConfiguration() );
     }

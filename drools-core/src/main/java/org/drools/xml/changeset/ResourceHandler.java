@@ -91,7 +91,7 @@ public class ResourceHandler extends BaseAbstractHandler
         
         resource.setResourceType( ResourceType.getResourceType( type ) );
         
-        resource.setName(name);
+        resource.setSourcePath(name);
         resource.setDescription(description);
         resource.setCategories(categories);
         
