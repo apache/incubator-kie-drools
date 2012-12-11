@@ -1,12 +1,5 @@
 package org.drools.integrationtests.sequential;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.Message;
@@ -26,13 +19,13 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.conf.SequentialOption;
-import org.kie.event.rule.MatchCancelledEvent;
-import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.AgendaGroupPoppedEvent;
 import org.kie.event.rule.AgendaGroupPushedEvent;
 import org.kie.event.rule.BeforeMatchFiredEvent;
+import org.kie.event.rule.MatchCancelledEvent;
+import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.ObjectRetractedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;
@@ -42,6 +35,13 @@ import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatelessKnowledgeSession;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 public class SequentialTest extends CommonTestMethodBase {
     //  FIXME lots of XXX tests here, need to find out why.
@@ -182,52 +182,52 @@ public class SequentialTest extends CommonTestMethodBase {
         ksession.addEventListener( new AgendaEventListener() {
 
             public void activationCancelled(MatchCancelledEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
             public void activationCreated(MatchCreatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
             public void afterActivationFired(AfterMatchFiredEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
             public void beforeActivationFired(BeforeMatchFiredEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
             public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );    
             }
 
             public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );  
             }
 
             public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event ); 
             }
 
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
@@ -236,17 +236,17 @@ public class SequentialTest extends CommonTestMethodBase {
         ksession.addEventListener( new WorkingMemoryEventListener() {
 
             public void objectInserted(ObjectInsertedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
             public void objectRetracted(ObjectRetractedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
             public void objectUpdated(ObjectUpdatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
             

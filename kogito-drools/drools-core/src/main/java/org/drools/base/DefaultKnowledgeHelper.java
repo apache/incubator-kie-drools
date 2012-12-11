@@ -16,14 +16,6 @@
 
 package org.drools.base;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -36,15 +28,15 @@ import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
-import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.ObjectTypeConfigurationRegistry;
+import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.TruthMaintenanceSystemHelper;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.traits.CoreWrapper;
 import org.drools.factmodel.traits.Thing;
-import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.TraitFactory;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
@@ -58,6 +50,7 @@ import org.drools.spi.Tuple;
 import org.kie.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.Channel;
 import org.kie.runtime.ExitPoint;
+import org.kie.runtime.KieRuntime;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
@@ -66,6 +59,14 @@ import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;
 import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 public class DefaultKnowledgeHelper
     implements
@@ -547,7 +548,11 @@ public class DefaultKnowledgeHelper
         }
         return thing;
     }
-    
+
+    public KieRuntime getKieRuntime() {
+        return getKnowledgeRuntime();
+    }
+
     public static class RetractTrait implements ActivationUnMatchListener {
         private FactHandle fh;
 

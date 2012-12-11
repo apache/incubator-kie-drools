@@ -16,13 +16,13 @@
 
 package org.drools.event.rule.impl;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.kie.event.rule.ObjectUpdatedEvent;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements ObjectUpdatedEvent {
     private FactHandle  factHandle;
@@ -66,7 +66,7 @@ public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements O
     @Override
     public String toString() {
         return "==>[ObjectUpdatedEventImpl: getFactHandle()=" + getFactHandle() + ", getObject()=" + getObject()
-                + ", getOldObject()=" + getOldObject() + ", getKnowledgeRuntime()=" + getKnowledgeRuntime()
+                + ", getOldObject()=" + getOldObject() + ", getKnowledgeRuntime()=" + getKieRuntime()
                 + ", getPropagationContext()=" + getPropagationContext() + "]";
     }
 }

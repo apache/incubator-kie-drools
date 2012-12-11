@@ -16,11 +16,10 @@
 
 package org.drools.event;
 
-import java.util.EventObject;
-
-import org.drools.common.InternalWorkingMemory;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.ProcessInstance;
+
+import java.util.EventObject;
 
 public class ProcessEvent extends EventObject {
 
@@ -37,7 +36,7 @@ public class ProcessEvent extends EventObject {
         return (ProcessInstance) getSource();
     }
     
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public KnowledgeRuntime getKieRuntime() {
         return kruntime;
     }
 

@@ -16,19 +16,6 @@
 
 package org.drools.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
@@ -75,6 +62,7 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.Package;
 import org.kie.KnowledgeBase;
+import org.kie.definition.KiePackage;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
@@ -87,6 +75,19 @@ import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class KnowledgeBaseImpl
     implements
@@ -391,4 +392,15 @@ public class KnowledgeBaseImpl
         return newStatelessKnowledgeSession();
     }
 
+    public Collection<KiePackage> getKiePackages() {
+        return getKiePackages();
+    }
+
+    public KiePackage getKiePackage(String packageName) {
+        return getKnowledgePackage(packageName);
+    }
+
+    public void removeKiePackage(String packageName) {
+        removeKnowledgePackage(packageName);
+    }
 }

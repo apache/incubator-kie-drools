@@ -60,7 +60,7 @@ public class ObjectInsertedEventImpl extends WorkingMemoryEventImpl
     @Override
     public String toString() {
         return "==>[ObjectInsertedEventImpl: getFactHandle()=" + getFactHandle() + ", getObject()=" + getObject()
-                + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + ", getPropagationContext()="
+                + ", getKnowledgeRuntime()=" + getKieRuntime() + ", getPropagationContext()="
                 + getPropagationContext() + "]";
     }
 }

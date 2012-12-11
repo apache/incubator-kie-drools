@@ -29,6 +29,6 @@ public class AgendaGroupPushedEventImpl extends AgendaGroupEventImpl implements 
     @Override
     public String toString() {
         return "==>[AgendaGroupPushedEvent: getAgendaGroup()=" + getAgendaGroup() + ", getKnowledgeRuntime()="
-                + getKnowledgeRuntime() + "]";
+                + getKieRuntime() + "]";
     }
 }

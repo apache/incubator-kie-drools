@@ -16,16 +16,16 @@
 
 package org.drools.io.impl;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.Reader;
-import java.net.URL;
-
-import org.kie.definition.KnowledgeDescr;
+import org.kie.definition.KieDescr;
 import org.kie.io.Resource;
 import org.kie.io.ResourceChangeNotifier;
 import org.kie.io.ResourceChangeScanner;
 import org.kie.io.ResourceFactoryService;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
 
 public class ResourceFactoryServiceImpl
     implements
@@ -131,7 +131,7 @@ public class ResourceFactoryServiceImpl
         return new UrlResource( path );
     }
 
-    public Resource newDescrResource( KnowledgeDescr descr ) {
+    public Resource newDescrResource( KieDescr descr ) {
         return new DescrResource( descr );
     }
 }

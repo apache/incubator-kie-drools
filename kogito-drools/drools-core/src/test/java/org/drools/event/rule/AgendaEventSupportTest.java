@@ -124,54 +124,54 @@ public class AgendaEventSupportTest {
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
             public void activationCancelled(MatchCancelledEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
 
             }
 
             public void activationCreated(MatchCreatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
                 
             }
 
             public void afterActivationFired(AfterMatchFiredEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
             }
 
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
             }
 
             public void beforeActivationFired(BeforeMatchFiredEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
             }
 
             public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
             }
 
             public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
             }
 
             public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event );
             }
 
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                assertNotNull( event.getKnowledgeRuntime() );
+                assertNotNull( event.getKieRuntime() );
                 agendaList.add( event ); 
             }
         };

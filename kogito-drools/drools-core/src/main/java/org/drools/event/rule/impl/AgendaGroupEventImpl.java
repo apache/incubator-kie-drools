@@ -16,14 +16,14 @@
 
 package org.drools.event.rule.impl;
 
+import org.kie.event.rule.AgendaGroupEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.AgendaGroup;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.kie.event.rule.AgendaGroupEvent;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.rule.AgendaGroup;
 
 public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
     private AgendaGroup agendaGroup;
@@ -38,7 +38,7 @@ public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
         return agendaGroup;
     }
 
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public KnowledgeRuntime getKieRuntime() {
         return this.kruntime;
     }
 
@@ -56,6 +56,6 @@ public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
     @Override
     public String toString() {
         return "==>[AgendaGroupEventImpl: getAgendaGroup()=" + getAgendaGroup() + ", getKnowledgeRuntime()="
-                + getKnowledgeRuntime() + "]";
+                + getKieRuntime() + "]";
     }
 }

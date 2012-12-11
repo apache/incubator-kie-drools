@@ -16,18 +16,18 @@
 
 package org.drools.spi;
 
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.KieRuntime;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;
 
 public class ProcessContext implements org.kie.runtime.process.ProcessContext {
     
-    private KnowledgeRuntime kruntime;
+    private KieRuntime kruntime;
     private ProcessInstance processInstance;
     private NodeInstance nodeInstance;
     
-    public ProcessContext(KnowledgeRuntime kruntime) {
+    public ProcessContext(KieRuntime kruntime) {
         this.kruntime = kruntime;
     }
 
@@ -69,7 +69,7 @@ public class ProcessContext implements org.kie.runtime.process.ProcessContext {
         }
     }
 
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public KieRuntime getKieRuntime() {
         return kruntime;
     }
     

@@ -30,6 +30,6 @@ public class BeforeActivationFiredEventImpl extends ActivationEventImpl implemen
     @Override
     public String toString() {
         return "==>[BeforeActivationFiredEvent:  getActivation()=" + getMatch()
-                + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + "]";
+                + ", getKnowledgeRuntime()=" + getKieRuntime() + "]";
     }    
 }

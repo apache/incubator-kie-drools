@@ -16,13 +16,13 @@
 
 package org.drools.event.rule.impl;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.kie.event.rule.ObjectRetractedEvent;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class ObjectRetractedEventImpl  extends WorkingMemoryEventImpl implements ObjectRetractedEvent {
     private FactHandle factHandle;
@@ -58,7 +58,7 @@ public class ObjectRetractedEventImpl  extends WorkingMemoryEventImpl implements
     @Override
     public String toString() {
         return "==>[ObjectRetractedEventImpl: getFactHandle()=" + getFactHandle() + ", getOldObject()="
-                + getOldObject() + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + ", getPropagationContext()="
+                + getOldObject() + ", getKnowledgeRuntime()=" + getKieRuntime() + ", getPropagationContext()="
                 + getPropagationContext() + "]";
     }
 }

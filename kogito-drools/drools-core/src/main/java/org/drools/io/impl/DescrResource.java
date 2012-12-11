@@ -17,7 +17,7 @@
 package org.drools.io.impl;
 
 import org.drools.io.internal.InternalResource;
-import org.kie.definition.KnowledgeDescr;
+import org.kie.definition.KieDescr;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 
@@ -34,11 +34,11 @@ import java.util.Collection;
 public class DescrResource extends BaseResource implements InternalResource, Externalizable {
     private static final long serialVersionUID = 3931132608413160031L;
     
-    private KnowledgeDescr descr;
+    private KieDescr descr;
     
     public DescrResource() { }
 
-    public DescrResource(KnowledgeDescr descr ) {
+    public DescrResource(KieDescr descr ) {
         if ( descr == null ) {
             throw new IllegalArgumentException( "descr cannot be null" );
         }
@@ -50,7 +50,7 @@ public class DescrResource extends BaseResource implements InternalResource, Ext
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        descr = (KnowledgeDescr) in.readObject();
+        descr = (KieDescr) in.readObject();
     }
     
     @Override
@@ -79,7 +79,7 @@ public class DescrResource extends BaseResource implements InternalResource, Ext
         throw new IllegalStateException( "descr does not have a modified date" );
     }
     
-    public KnowledgeDescr getDescr() {
+    public KieDescr getDescr() {
         return this.descr;
     }
     
