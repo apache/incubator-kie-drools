@@ -45,7 +45,13 @@ public interface Resource extends Serializable {
     /**
      * Returns the name of the resource, if one is available.
      */
-    public String getName();
+    public String getSourcePath();
+    
+    /**
+     * Returns the path that should be used when writing this resource down
+     * to KieFileSystem
+     */
+    public String getTargetPath();
     
     /**
      * Returns the type of the resource if one could be inferred by the
@@ -64,11 +70,22 @@ public interface Resource extends Serializable {
      * For instance, a file resource automatically infers its name from the
      * file and path, but a byte array resource has to be given a name.
      *  
-     * @param name the name of the resource
+     * @param path the path of the resource
      * 
      * @return the resource itself in order to use it as a fluent API
      */
-    public Resource setName( String name );
+    public Resource setSourcePath( String path );
+    
+    /**
+     * In case this resource should be written to a different path
+     * when writing it down to the KieFileSystem, this property
+     * allows the application to set such path.
+     *  
+     * @param path the path of the resource
+     * 
+     * @return the resource itself in order to use it as a fluent API
+     */
+    public Resource setTargetPath( String path );
     
     /**
      * Sets the resource type. For some resources it is possible to infer
