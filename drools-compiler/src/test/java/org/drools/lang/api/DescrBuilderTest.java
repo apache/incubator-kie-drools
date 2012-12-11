@@ -433,7 +433,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( 1, rules );
         
         ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
-        verify( ael ).afterActivationFired( cap.capture() );
+        verify( ael ).afterMatchFired(cap.capture());
         
         assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
         assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );

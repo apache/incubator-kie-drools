@@ -23,8 +23,8 @@ import org.drools.examples.sudoku.swing.AbstractSudokuGridModel;
 import org.drools.examples.sudoku.swing.SudokuGridEvent;
 import org.drools.examples.sudoku.swing.SudokuGridModel;
 import org.kie.KnowledgeBase;
+import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
-import org.kie.event.rule.ObjectRetractedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -324,7 +324,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
             }
         }
 
-        public void objectRetracted(ObjectRetractedEvent ev) {
+        public void objectDeleted(ObjectDeletedEvent ev) {
         }
 
         public void objectUpdated(ObjectUpdatedEvent ev) {

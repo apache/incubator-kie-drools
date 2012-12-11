@@ -44,8 +44,8 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
+import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
-import org.kie.event.rule.ObjectRetractedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
@@ -122,7 +122,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );        
 
-        kbase = ksession.getKnowledgeBase();
+        kbase = ksession.getKieBase();
 
         // check all now have just one logical assertion each
         list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
@@ -1037,9 +1037,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertThat( inserts.get( 1 ).getObject(), is(  (Object) mark) );
         assertThat( inserts.get( 2 ).getObject(), is( (Object) "rule 2" ) );
         
-        ArgumentCaptor<ObjectRetractedEvent> retractsCaptor = ArgumentCaptor.forClass( ObjectRetractedEvent.class );
-        verify( wmel, times(1) ).objectRetracted( retractsCaptor.capture() );
-        List<ObjectRetractedEvent> retracts = retractsCaptor.getAllValues();
+        ArgumentCaptor<ObjectDeletedEvent> retractsCaptor = ArgumentCaptor.forClass( ObjectDeletedEvent.class );
+        verify( wmel, times(1) ).objectDeleted(retractsCaptor.capture());
+        List<ObjectDeletedEvent> retracts = retractsCaptor.getAllValues();
         assertThat( retracts.get( 0 ).getOldObject(), is( (Object) "rule 2" ) );
     }
     

@@ -79,8 +79,8 @@ public class ExtendsTest extends CommonTestMethodBase {
         //Test Base Fact Type
         StatefulKnowledgeSession ksession = genSession("test_Extends.drl");
 
-        FactType person = ksession.getKnowledgeBase().getFactType("defaultpkg","Person");
-        FactType eqPair = ksession.getKnowledgeBase().getFactType("defaultpkg","EqualityPair");
+        FactType person = ksession.getKieBase().getFactType("defaultpkg","Person");
+        FactType eqPair = ksession.getKieBase().getFactType("defaultpkg","EqualityPair");
 
         Object p = person.newInstance();
         assertNotNull(p);
@@ -100,7 +100,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     public void testGeneratedMethods() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_Extends.drl");
 
-        FactType student = ksession.getKnowledgeBase().getFactType("defaultpkg","Student");
+        FactType student = ksession.getKieBase().getFactType("defaultpkg","Student");
 
         Constructor constructor = student.getFactClass().getConstructor(String.class,int.class,String.class);
         assertNotNull(constructor);
@@ -146,7 +146,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testDeepExt() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_Extends.drl");
-        FactType LTstudent = ksession.getKnowledgeBase().getFactType("defaultpkg","LongTermStudent");
+        FactType LTstudent = ksession.getKieBase().getFactType("defaultpkg","LongTermStudent");
 
         Constructor constructor = LTstudent.getFactClass().getConstructor(String.class,int.class,String.class,String.class,int.class);
         assertNotNull(constructor);
@@ -172,7 +172,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     public void testExtendsLegacy() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtLegacy.drl",0);
 
-        FactType leg = ksession.getKnowledgeBase().getFactType("org.drools","BetterLegacy");
+        FactType leg = ksession.getKieBase().getFactType("org.drools","BetterLegacy");
         assertNotNull(leg);
 
         Object b = leg.newInstance();
@@ -195,15 +195,15 @@ public class ExtendsTest extends CommonTestMethodBase {
      public void testExtendsAcrossFiles() throws Exception {
         StatefulKnowledgeSession ksession = genSession(new String[] {"test_Ext1.drl","test_Ext2.drl","test_Ext3.drl","test_Ext4.drl"} ,0);
 
-        FactType person = ksession.getKnowledgeBase().getFactType("org.drools.compiler.test","Person");
+        FactType person = ksession.getKieBase().getFactType("org.drools.compiler.test","Person");
             assertNotNull(person);
-        FactType student = ksession.getKnowledgeBase().getFactType("org.drools.compiler.test","Student");
+        FactType student = ksession.getKieBase().getFactType("org.drools.compiler.test","Student");
             assertNotNull(student);
 
-        FactType worker = ksession.getKnowledgeBase().getFactType("org.drools.compiler.anothertest","Worker");
+        FactType worker = ksession.getKieBase().getFactType("org.drools.compiler.anothertest","Worker");
             assertNotNull(worker);
 
-        FactType ltss = ksession.getKnowledgeBase().getFactType("defaultpkg","SubLTStudent");
+        FactType ltss = ksession.getKieBase().getFactType("defaultpkg","SubLTStudent");
             assertNotNull(ltss);
 
         Constructor ctor = worker.getFactClass().getConstructor(String.class,int.class,String.class, double.class, int.class);
@@ -222,7 +222,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
      public void testFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
-        FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler", "MyBean3");
+        FactType test = ksession.getKieBase().getFactType("org.drools.compiler", "MyBean3");
 
         Object x = test.newInstance();
         assertNotNull(x);
@@ -251,7 +251,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     public void testBoxedFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
-        FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MyBoxBean");
+        FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxBean");
 
         Object x = test.newInstance();
         assertNotNull(x);
@@ -275,7 +275,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     public void testExpressionFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
-        FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MyBoxExpressionBean");
+        FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxExpressionBean");
 
         Object x = test.newInstance();
         assertNotNull(x);
@@ -296,7 +296,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
 
-        FactType test2 = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MySimpleExpressionBean");
+        FactType test2 = ksession.getKieBase().getFactType("org.drools.compiler","MySimpleExpressionBean");
 
         x = test2.newInstance();
         assertNotNull(x);
@@ -396,8 +396,8 @@ public class ExtendsTest extends CommonTestMethodBase {
         //Test Base Fact Type
         StatefulKnowledgeSession ksession = genSession("test_Extends.drl");
 
-        FactType person = ksession.getKnowledgeBase().getFactType("defaultpkg","Person");
-        FactType student = ksession.getKnowledgeBase().getFactType("defaultpkg","Student");
+        FactType person = ksession.getKieBase().getFactType("defaultpkg","Person");
+        FactType student = ksession.getKieBase().getFactType("defaultpkg","Student");
 
         Object p = person.newInstance();
         Object s = student.newInstance();

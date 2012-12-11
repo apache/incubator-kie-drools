@@ -367,7 +367,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-               times(3)).afterActivationFired(captor.capture());
+               times(3)).afterMatchFired(captor.capture());
         List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
         Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
@@ -408,7 +408,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-                times(1)).afterActivationFired(captor.capture());
+                times(1)).afterMatchFired(captor.capture());
         List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
         Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
@@ -516,7 +516,7 @@ public class StreamsTest extends CommonTestMethodBase {
         verify(wml,
                times(2)).objectInserted(any(org.kie.event.rule.ObjectInsertedEvent.class));
         verify(ael,
-               times(2)).activationCreated(any(MatchCreatedEvent.class));
+               times(2)).matchCreated(any(MatchCreatedEvent.class));
         assertThat(ksession.getObjects().size(),
                    equalTo(2));
         assertThat(ksession.getObjects(),
@@ -641,7 +641,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-               times(1)).afterActivationFired(captor.capture());
+               times(1)).afterMatchFired(captor.capture());
 
         AfterMatchFiredEvent aafe = captor.getValue();
         Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
@@ -687,7 +687,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-               times(1)).afterActivationFired(captor.capture());
+               times(1)).afterMatchFired(captor.capture());
 
         AfterMatchFiredEvent aafe = captor.getValue();
         Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
@@ -724,7 +724,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-               times(1)).afterActivationFired(captor.capture());
+               times(1)).afterMatchFired(captor.capture());
 
         AfterMatchFiredEvent aafe = captor.getValue();
         Assert.assertThat( (StockTick) aafe.getMatch().getDeclarationValue("f1"),

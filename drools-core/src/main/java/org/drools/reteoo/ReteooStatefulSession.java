@@ -94,7 +94,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         // all we do is create marshall to a byte[] and write to the stream
         StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) getKnowledgeRuntime();
         
-        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(), new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() }   );
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase(), new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() }   );
         
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         marshaller.marshall( stream, (StatefulKnowledgeSession) getKnowledgeRuntime() );

@@ -16,25 +16,18 @@
 
 package org.drools.event.rule;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Cheese;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.event.rule.ObjectInsertedEvent;
-import org.kie.event.rule.ObjectRetractedEvent;
+import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
-import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 
@@ -58,7 +51,7 @@ public class WorkingMemoryEventSupportTest {
                 wmList.add( event );
             }
 
-            public void objectRetracted(ObjectRetractedEvent event) {
+            public void objectDeleted(ObjectDeletedEvent event) {
                 wmList.add( event );
             }
 
@@ -84,7 +77,7 @@ public class WorkingMemoryEventSupportTest {
                     ome.getFactHandle() );
 
         ksession.retract( stiltonHandle );
-        final ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
+        final ObjectDeletedEvent ore = (ObjectDeletedEvent) wmList.get( 2 );
         assertSame( stiltonHandle,
                     ore.getFactHandle() );
 
@@ -107,7 +100,7 @@ public class WorkingMemoryEventSupportTest {
                 wmList.add( event );
             }
 
-            public void objectRetracted(ObjectRetractedEvent event) {
+            public void objectDeleted(ObjectDeletedEvent event) {
                 wmList.add( event );
             }
 

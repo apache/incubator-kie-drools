@@ -54,7 +54,7 @@ public class SessionMarshallingHelper {
     public SessionMarshallingHelper(StatefulKnowledgeSession ksession,
                                        KnowledgeSessionConfiguration conf) {
         this.ksession = ksession;
-        this.kbase = ksession.getKnowledgeBase();
+        this.kbase = ksession.getKieBase();
         this.conf = conf;
         this.env = ksession.getEnvironment();
         ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) this.env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );

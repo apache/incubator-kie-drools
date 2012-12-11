@@ -199,27 +199,27 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                            5 );
         workingMemory.insert( cheddar );
 
-        verify( ael, times( 15 ) ).activationCreated( any( MatchCreatedEvent.class ) );
-        verify( ael, never() ).activationCancelled( any( MatchCancelledEvent.class ) );
+        verify( ael, times( 15 ) ).matchCreated(any(MatchCreatedEvent.class));
+        verify( ael, never() ).matchCancelled(any(MatchCancelledEvent.class));
 
         kbase.removeRule( "org.drools.test",
                           "Who likes Stilton" );
 
-        verify( ael, times( 3 ) ).activationCancelled( any( MatchCancelledEvent.class ) );
+        verify( ael, times( 3 ) ).matchCancelled(any(MatchCancelledEvent.class));
 
         kbase.removeRule( "org.drools.test",
                           "like cheese" );
 
-        verify( ael, times( 7 ) ).activationCancelled( any( MatchCancelledEvent.class ) );
+        verify( ael, times( 7 ) ).matchCancelled(any(MatchCancelledEvent.class));
 
         final Cheese muzzarela = new Cheese( "muzzarela",
                                              5 );
         workingMemory.insert( muzzarela );
 
-        verify( ael, times( 16 ) ).activationCreated( any( MatchCreatedEvent.class ) );
+        verify( ael, times( 16 ) ).matchCreated(any(MatchCreatedEvent.class));
 
         kbase.removeKnowledgePackage( "org.drools.test" );
-        verify( ael, times( 16 ) ).activationCancelled( any( MatchCancelledEvent.class ) );
+        verify( ael, times( 16 ) ).matchCancelled(any(MatchCancelledEvent.class));
 
         kbase = SerializationHelper.serializeObject( kbase );
     }
@@ -334,7 +334,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                           "genericvalue" ) );
         session.fireAllRules();
 
-        KnowledgeBase ruleBaseWM = session.getKnowledgeBase();
+        KnowledgeBase ruleBaseWM = session.getKieBase();
         ruleBaseWM.removeKnowledgePackage( packageName );
         
         kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_RemovePackage.drl" ) );
@@ -834,7 +834,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       ((List) results.get( 0 )).size() );
         results.clear();
 
-        KnowledgeBase ruleBaseWM = workingMemory.getKnowledgeBase();
+        KnowledgeBase ruleBaseWM = workingMemory.getKieBase();
         ruleBaseWM.removeKnowledgePackage( packageName );
         
         Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_DynamicRulesWithSubnetwork.drl" );
@@ -1053,17 +1053,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         // pattern does not match, so do not activate
         ksession.insert( new Person( "toni" ) );
         verify( alistener,
-                never() ).activationCreated( any( org.kie.event.rule.MatchCreatedEvent.class ) );
+                never() ).matchCreated(any(org.kie.event.rule.MatchCreatedEvent.class));
 
         // pattern matches, so create activation
         ksession.insert( new Person( "bob" ) );
         verify( alistener,
-                times( 1 ) ).activationCreated( any( org.kie.event.rule.MatchCreatedEvent.class ) );
+                times( 1 ) ).matchCreated(any(org.kie.event.rule.MatchCreatedEvent.class));
 
         // already active, so no new activation should be created
         ksession.insert( new Person( "mark" ) );
         verify( alistener,
-                times( 1 ) ).activationCreated( any( org.kie.event.rule.MatchCreatedEvent.class ) );
+                times( 1 ) ).matchCreated(any(org.kie.event.rule.MatchCreatedEvent.class));
 
         kbase.removeKnowledgePackage( "org.drools" );
 
@@ -1080,7 +1080,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         // rule should be reactivated, since data is still in the session
         verify( alistener,
-                times( 2 ) ).activationCreated( any( org.kie.event.rule.MatchCreatedEvent.class ) );
+                times( 2 ) ).matchCreated(any(org.kie.event.rule.MatchCreatedEvent.class));
 
     }
 
@@ -1142,7 +1142,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         addDrlToKBase( kbase, "test_JBRULES_2206_1.drl" );
 
         // two matching rules were added, so 2 activations should have been created 
-        verify( ael, times( 2 ) ).activationCreated( any( MatchCreatedEvent.class ) );
+        verify( ael, times( 2 ) ).matchCreated(any(MatchCreatedEvent.class));
         int fireCount = session.fireAllRules();
         // both should have fired
         assertEquals( 2, fireCount );
@@ -1150,7 +1150,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         addDrlToKBase( kbase, "test_JBRULES_2206_2.drl" );
 
         // one rule was overridden and should activate 
-        verify( ael, times( 3 ) ).activationCreated( any( MatchCreatedEvent.class ) );
+        verify( ael, times( 3 ) ).matchCreated(any(MatchCreatedEvent.class));
         fireCount = session.fireAllRules();
         // that rule should fire again
         assertEquals( 1, fireCount );
