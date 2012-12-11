@@ -16,19 +16,19 @@
 
 package org.kie.definition;
 
-import java.util.Collection;
-
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Global;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
 
+import java.util.Collection;
+
 /**
  * This provides a collection of knowledge definitions that can be given to a KnowledgeBase.
  * The name is used to provide "namespace" separation of those definitions.
  */
-public interface KnowledgePackage {
+public interface KiePackage {
 
     /**
      * The namespace for this package

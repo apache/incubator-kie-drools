@@ -16,12 +16,12 @@
 
 package org.kie.event.kiebase;
 
-import org.kie.definition.KnowledgePackage;
+import org.kie.definition.KiePackage;
 
 
 public interface AfterKnowledgePackageAddedEvent
     extends
     KieBaseEvent {
 
-    public KnowledgePackage getKnowledgePackage();
+    public KiePackage getKnowledgePackage();
 }

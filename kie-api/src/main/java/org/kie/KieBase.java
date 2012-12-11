@@ -1,9 +1,6 @@
 package org.kie;
 
-import java.util.Collection;
-import java.util.Set;
-
-import org.kie.definition.KnowledgePackage;
+import org.kie.definition.KiePackage;
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
@@ -14,6 +11,9 @@ import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
 
+import java.util.Collection;
+import java.util.Set;
+
 
 public interface KieBase extends KieBaseEventManager {
 
@@ -21,7 +21,7 @@ public interface KieBase extends KieBaseEventManager {
      * Return an immutable collection of the packages that exist in this KnowledgeBase.
      * @return
      */
-    Collection<KnowledgePackage> getKnowledgePackages();
+    Collection<KiePackage> getKiePackages();
     
     /**
      * Returns a reference to the KnowledgePackage identified by the given name.
@@ -30,13 +30,13 @@ public interface KieBase extends KieBaseEventManager {
      *  
      * @return the KnowledgePackage identified by the the given name or null if package not found.
      */
-    KnowledgePackage getKnowledgePackage( String packageName );
+    KiePackage getKiePackage( String packageName );
 
     /**
      * Remove a KnowledgePackage and all the definitions it contains from the KnowledgeBase.
      * @param packageName
      */
-    void removeKnowledgePackage(String packageName);
+    void removeKiePackage(String packageName);
 
     /**
      * Returns a reference to the Rule identified by the given package and rule names.

@@ -16,15 +16,15 @@
 
 package org.kie.runtime;
 
-import java.util.Map;
-
 import org.kie.KieBase;
 import org.kie.event.KnowledgeRuntimeEventManager;
 import org.kie.runtime.process.ProcessRuntime;
 import org.kie.runtime.rule.WorkingMemory;
 import org.kie.time.SessionClock;
 
-public interface KnowledgeRuntime
+import java.util.Map;
+
+public interface KieRuntime
     extends
     WorkingMemory,
     ProcessRuntime,

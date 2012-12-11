@@ -16,10 +16,10 @@
 
 package org.kie.event.rule;
 
-import org.kie.event.KnowledgeRuntimeEvent;
+import org.kie.event.KieRuntimeEvent;
 import org.kie.runtime.rule.RuleFlowGroup;
 
-public interface RuleFlowGroupEvent extends KnowledgeRuntimeEvent {
+public interface RuleFlowGroupEvent extends KieRuntimeEvent {
 
     /**
      * The RuleFlowGroup for this event

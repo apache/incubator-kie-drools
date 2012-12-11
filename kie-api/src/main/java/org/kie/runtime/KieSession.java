@@ -8,7 +8,7 @@ public interface KieSession
         StatefulRuleSession,
         StatefulProcessSession,
         CommandExecutor,
-        KnowledgeRuntime {
+        KieRuntime {
 
     int getId();
 

@@ -16,13 +16,13 @@
 
 package org.kie.io;
 
+import org.kie.Service;
+import org.kie.definition.KieDescr;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
-
-import org.kie.Service;
-import org.kie.definition.KnowledgeDescr;
 
 /**
  * ResourceFactoryService is used by the ResourceFactory to "provide" it's concrete implementation.
@@ -71,5 +71,5 @@ public interface KieResources extends Service {
                                   String encoding,
                                   Class<?> clazz);
 
-    Resource newDescrResource( KnowledgeDescr descr );
+    Resource newDescrResource( KieDescr descr );
 }

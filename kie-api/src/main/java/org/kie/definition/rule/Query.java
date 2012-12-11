@@ -16,17 +16,17 @@
 
 package org.kie.definition.rule;
 
+import org.kie.definition.KieDefinition;
+
 import java.util.Collection;
 import java.util.Map;
-
-import org.kie.definition.KnowledgeDefinition;
 
 /**
  * Public Query interface for runtime query inspection.
  */
 public interface Query
     extends
-    KnowledgeDefinition {
+    KieDefinition {
 
     /**
      * Returns the package name (namespace) this query is tied to.

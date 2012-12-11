@@ -17,10 +17,10 @@
 package org.kie.event.kiebase;
 
 
-import org.kie.definition.KnowledgePackage;
+import org.kie.definition.KiePackage;
 
 public interface AfterKnowledgePackageRemovedEvent
     extends
     KieBaseEvent {
-    public KnowledgePackage getKnowledgePackage();
+    public KiePackage getKnowledgePackage();
 }
