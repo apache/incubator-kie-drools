@@ -6637,11 +6637,11 @@ public class MiscTest extends CommonTestMethodBase {
                                    "test meta attributes" );
 
         assertNotNull( rule );
-        assertThat( rule.getMetaAttribute( "id" ),
+        assertThat( (String) rule.getMetaData().get( "id" ),
                     is( "1234" ) );
-        assertThat( rule.getMetaAttribute( "author" ),
+        assertThat( (String) rule.getMetaData().get( "author" ),
                     is( "john_doe" ) );
-        assertThat( rule.getMetaAttribute( "text" ),
+        assertThat( (String) rule.getMetaData().get( "text" ),
                     is( "It's an escaped\" string" ) );
 
     }
