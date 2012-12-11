@@ -30,8 +30,8 @@ import org.kie.io.KieResources;
 
 public class CDITestRunner extends BlockJUnit4ClassRunner {
 
-    public static Weld          weld;
-    public static WeldContainer container;
+    public static volatile Weld          weld;
+    public static volatile WeldContainer container;
 
     public CDITestRunner(Class cls) throws InitializationError {
         super( cls );

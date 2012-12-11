@@ -51,7 +51,7 @@ public class WireListenerTest {
            .write("src/main/resources/KBase1/rules.drl", createDRL());
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
     }
 
     private String createDRL() {

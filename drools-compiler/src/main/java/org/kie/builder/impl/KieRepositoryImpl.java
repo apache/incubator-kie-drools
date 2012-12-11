@@ -61,10 +61,6 @@ public class KieRepositoryImpl
         log.info( "KieModule was added:" + kieModule);
     }
 
-    public Results verfyKieModule(GAV gav) {
-        throw new UnsupportedOperationException( "org.kie.builder.impl.KieRepositoryImpl.verfyKieModule -> TODO" );
-    }
-
     public KieModule getKieModule(GAV gav) {
         VersionRange versionRange = new VersionRange(gav.getVersion());
 

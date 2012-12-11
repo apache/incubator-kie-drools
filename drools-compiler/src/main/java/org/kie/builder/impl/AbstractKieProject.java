@@ -12,28 +12,27 @@ import java.util.Map;
 
 public abstract class AbstractKieProject implements KieProject {
 
-    protected final Map<String, KieBaseModel> kBaseModels = new HashMap<String, KieBaseModel>();
+    protected final Map<String, KieBaseModel>    kBaseModels                = new HashMap<String, KieBaseModel>();
 
-    private KieBaseModel defaultKieBase = null;
+    private KieBaseModel                         defaultKieBase             = null;
 
-    private KieSessionModel defaultKieSession = null;
+    private KieSessionModel                      defaultKieSession          = null;
 
-    private KieSessionModel defaultStatelessKieSession = null;
+    private KieSessionModel                      defaultStatelessKieSession = null;
 
-    protected final Map<String, KieSessionModel> kSessionModels = new HashMap<String, KieSessionModel>();
+    protected final Map<String, KieSessionModel> kSessionModels             = new HashMap<String, KieSessionModel>();
 
-    public Messages verify() {
-        Messages messages = new Messages();
+    public ResultsImpl verify() {
+        ResultsImpl messages = new ResultsImpl();
         verify(messages);
         return messages;
     }
 
-    public void verify(Messages messages) {
-
+    public void verify(ResultsImpl messages) {
         for ( KieBaseModel model : kBaseModels.values() ) {
-            AbstractKieModule.createKieBase( (KieBaseModelImpl) model,
-                    this,
-                    messages );
+            AbstractKieModule.buildKnowledgePackages( (KieBaseModelImpl) model,
+                                                      this,
+                                                      messages );
         }
     }
 

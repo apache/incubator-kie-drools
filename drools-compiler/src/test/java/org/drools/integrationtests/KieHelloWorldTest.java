@@ -5,6 +5,7 @@ import org.drools.Message;
 import org.junit.Test;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModuleModel;
@@ -34,7 +35,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieFactory kf = KieFactory.Factory.get();
         
         KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        ks.newKieBuilder( kfs ).build();
+        ks.newKieBuilder( kfs ).buildAll();
 
         KieSession ksession = ks.getKieContainer(ks.getKieRepository().getDefaultGAV()).getKieSession();
         ksession.insert(new Message("Hello World"));
@@ -56,9 +57,10 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieFactory kf = KieFactory.Factory.get();
 
         KieFileSystem kfs = kf.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
-        Results results = ks.newKieBuilder( kfs ).build();
+        
+        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
 
-        assertEquals( 1, results.getInsertedMessages().size() );
+        assertEquals( 1, kb.getResults().getMessages().size() );
     }
 
     @Test
@@ -85,7 +87,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
                 .writeKModuleXML(createKieProjectWithPackages(kf, "org.pkg1").toXML());
-        ks.newKieBuilder( kfs ).build();
+        ks.newKieBuilder( kfs ).buildAll();
 
         KieSession ksession = ks.getKieContainer(gav).getKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
@@ -119,7 +121,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .write("src/main/resources/KBase1/org/pkg1/test/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/test/r2.drl", drl2)
                 .writeKModuleXML( createKieProjectWithPackages(kf, "org.pkg1.*").toXML());
-        ks.newKieBuilder( kfs ).build();
+        ks.newKieBuilder( kfs ).buildAll();
 
         KieSession ksession = ks.getKieContainer(gav).getKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
@@ -197,6 +199,6 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .generateAndWritePomXML( gav )
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl)
                 .writeKModuleXML(createKieProjectWithPackages(kf, "*").toXML());
-        ks.newKieBuilder( kfs ).build();
+        ks.newKieBuilder( kfs ).buildAll();
     }
 }

@@ -169,8 +169,8 @@ public class AbstractKnowledgeTest {
         KieServices ks = KieServices.Factory.get();       
         KieBuilder kBuilder = ks.newKieBuilder( kfs );
         
-        kBuilder.build();
-        if ( kBuilder.hasResults( Level.ERROR  ) ) {
+        kBuilder.buildAll();
+        if ( kBuilder.getResults().hasMessages( Level.ERROR  ) ) {
             fail( "should not have errors" + kBuilder.getResults() );
         }
         MemoryKieModule kieModule = ( MemoryKieModule ) kBuilder.getKieModule();

@@ -59,6 +59,13 @@ public class KieServicesImpl implements KieServices {
         return classpathKContainer;
     }
     
+    public void nullKieClasspathContainer() {
+        // used for testing only
+        synchronized ( lock ) {
+            classpathKContainer = null;
+        }  
+    }
+    
     public KieContainer getKieContainer(GAV gav) {
         InternalKieModule kieModule = (InternalKieModule)getKieRepository().getKieModule(gav);
         if (kieModule == null) {

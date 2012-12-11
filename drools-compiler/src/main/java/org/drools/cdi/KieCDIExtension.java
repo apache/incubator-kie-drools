@@ -66,7 +66,7 @@ public class KieCDIExtension
                                                                   };
 
     public KieCDIExtension() {
-
+        System.out.println("create KieCDIExtension");
     }
 
     public void init() {
