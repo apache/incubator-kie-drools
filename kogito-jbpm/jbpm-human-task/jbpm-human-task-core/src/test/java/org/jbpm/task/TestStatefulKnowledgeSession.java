@@ -1,8 +1,5 @@
 package org.jbpm.task;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.kie.KnowledgeBase;
 import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
@@ -11,7 +8,6 @@ import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.Globals;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.ObjectFilter;
@@ -26,6 +22,9 @@ import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
+
+import java.util.Collection;
+import java.util.Map;
 
 public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 	public static final int DEFAULT_SESSION_ID = 5;
@@ -62,7 +61,7 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 		return null;
 	}
 
-	public KnowledgeBase getKnowledgeBase() {
+	public KnowledgeBase getKieBase() {
 		return null;
 	}
 
@@ -77,16 +76,10 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 	public void registerChannel(String arg0, Channel arg1) {
 	}
 
-	public void registerExitPoint(String arg0, ExitPoint arg1) {
-	}
-
 	public void setGlobal(String arg0, Object arg1) {
 	}
 
 	public void unregisterChannel(String arg0) {
-	}
-
-	public void unregisterExitPoint(String arg0) {
 	}
 
 	public void addEventListener(AgendaEventListener arg0) {

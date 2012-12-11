@@ -1,11 +1,5 @@
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.event.DebugProcessEventListener;
 import org.drools.rule.Rule;
@@ -23,6 +17,12 @@ import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.AgendaFilter;
 import org.kie.runtime.rule.Match;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class AgendaFilterTest {
 
@@ -256,7 +256,7 @@ public class AgendaFilterTest {
     }
 
     private Object newCancelFact(StatefulKnowledgeSession ksession, boolean cancel) {
-        FactType type = ksession.getKnowledgeBase().getFactType("org.jboss.qa.brms.agendafilter", "CancelFact");
+        FactType type = ksession.getKieBase().getFactType("org.jboss.qa.brms.agendafilter", "CancelFact");
         Object instance = null;
         try {
             instance = type.newInstance();

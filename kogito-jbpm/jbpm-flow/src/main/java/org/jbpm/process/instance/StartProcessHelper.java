@@ -15,17 +15,16 @@
  */
 package org.jbpm.process.instance;
 
+import org.kie.KieBase;
+import org.kie.definition.process.Process;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.process.ProcessInstance;
+
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-
-import org.kie.KieBase;
-import org.kie.KnowledgeBase;
-import org.kie.definition.process.Process;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.process.ProcessInstance;
 
 public final class StartProcessHelper {
     
@@ -37,7 +36,7 @@ public final class StartProcessHelper {
 		if (name == null) {
 			throw new IllegalArgumentException("Name cannot be null");
 		}
-		String processId = findLatestProcessByName(kruntime.getKnowledgeBase(), name);
+		String processId = findLatestProcessByName(kruntime.getKieBase(), name);
 		
 		if (processId == null) {
 			throw new IllegalArgumentException("Could not find process with name " + name);
@@ -49,7 +48,7 @@ public final class StartProcessHelper {
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null");
         }
-        String processId = findLatestProcessByName(kruntime.getKnowledgeBase(), name, comparator);
+        String processId = findLatestProcessByName(kruntime.getKieBase(), name, comparator);
         
         if (processId == null) {
             throw new IllegalArgumentException("Could not find process with name " + name);

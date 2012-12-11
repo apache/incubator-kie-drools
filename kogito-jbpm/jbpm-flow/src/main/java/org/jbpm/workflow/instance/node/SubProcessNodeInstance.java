@@ -16,11 +16,6 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Matcher;
-
 import org.drools.RuntimeDroolsException;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
@@ -37,6 +32,11 @@ import org.kie.definition.process.Process;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.NodeInstance;
 import org.mvel2.MVEL;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Matcher;
 
 /**
  * Runtime counterpart of a SubFlow node.
@@ -113,7 +113,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         for (Map.Entry<String, String> replacement: replacements.entrySet()) {
         	processId = processId.replace("#{" + replacement.getKey() + "}", replacement.getValue());
         }
-        KieBase kbase = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getKnowledgeBase();
+        KieBase kbase = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getKieBase();
         // start process instance
         Process process = kbase.getProcess(processId);
         

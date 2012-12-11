@@ -1,15 +1,5 @@
 package org.jbpm.integrationtests;
 
-import static org.jbpm.integrationtests.SerializationHelper.getSerialisedStatefulSession;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
@@ -34,6 +24,16 @@ import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.jbpm.integrationtests.SerializationHelper.getSerialisedStatefulSession;
 
 public class ProcessMarshallingTest extends JbpmTestCase {
 
@@ -574,7 +574,7 @@ public class ProcessMarshallingTest extends JbpmTestCase {
         assertEquals(1, session.getProcessInstances().size());
         
         StatefulKnowledgeSession ksession = new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session );
-        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
+        Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
      
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

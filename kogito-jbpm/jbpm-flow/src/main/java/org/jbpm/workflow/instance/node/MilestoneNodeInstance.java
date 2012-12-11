@@ -76,7 +76,7 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
         getProcessInstance().getKnowledgeRuntime().removeEventListener(this);
     }
 
-    public void activationCreated(MatchCreatedEvent event) {
+    public void matchCreated(MatchCreatedEvent event) {
         // check whether this activation is from the DROOLS_SYSTEM agenda group
         String ruleFlowGroup = ((Rule) event.getMatch().getRule()).getRuleFlowGroup();
         if ("DROOLS_SYSTEM".equals(ruleFlowGroup)) {
@@ -96,11 +96,11 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
         }
     }
 
-    public void activationCancelled(MatchCancelledEvent event) {
+    public void matchCancelled(MatchCancelledEvent event) {
         // Do nothing
     }
 
-    public void afterActivationFired(AfterMatchFiredEvent event) {
+    public void afterMatchFired(AfterMatchFiredEvent event) {
         // Do nothing
     }
 
@@ -112,7 +112,7 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
         // Do nothing
     }
 
-    public void beforeActivationFired(BeforeMatchFiredEvent event) {
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
         // Do nothing
     }
 

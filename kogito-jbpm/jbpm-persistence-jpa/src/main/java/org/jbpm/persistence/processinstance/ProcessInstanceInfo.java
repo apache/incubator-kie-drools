@@ -131,7 +131,7 @@ public class ProcessInstanceInfo{
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream( processInstanceByteArray );
                 MarshallerReaderContext context = new MarshallerReaderContext( bais,
-                                                                               (InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKnowledgeBase()).getRuleBase(),
+                                                                               (InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKieBase()).getRuleBase(),
                                                                                null,
                                                                                null,
                                                                                ProtobufMarshaller.TIMER_READERS,

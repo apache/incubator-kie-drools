@@ -65,7 +65,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
 
     public Process getProcess() {
         if (this.process == null) {
-            this.process = kruntime.getKnowledgeBase().getProcess(processId);
+            this.process = kruntime.getKieBase().getProcess(processId);
         }
         return this.process;
     }

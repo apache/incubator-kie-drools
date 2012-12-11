@@ -46,7 +46,7 @@ public class WorkflowProcessInstanceUpgrader {
             throw new IllegalArgumentException("Null process id");
         }
         WorkflowProcess process = (WorkflowProcess)
-            kruntime.getKnowledgeBase().getProcess(processId);
+            kruntime.getKieBase().getProcess(processId);
         if (process == null) {
             throw new IllegalArgumentException("Could not find process " + processId);
         }

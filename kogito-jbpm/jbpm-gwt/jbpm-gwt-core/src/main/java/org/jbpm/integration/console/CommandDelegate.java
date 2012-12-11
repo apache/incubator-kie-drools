@@ -16,12 +16,6 @@
 
 package org.jbpm.integration.console;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
@@ -40,6 +34,12 @@ import org.kie.definition.process.Process;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.ProcessInstance;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class encapsulates the logic for executing operations via the Drools/jBPM api and retrieving information 
@@ -64,7 +64,7 @@ public class CommandDelegate {
     public static List<Process> getProcesses() {
         List<Process> result = new ArrayList<Process>();
         StatefulKnowledgeSessionUtil.getKnowledgeBaseManager().syncPackages();
-        KnowledgeBase kbase = getSession().getKnowledgeBase();
+        KnowledgeBase kbase = getSession().getKieBase();
         for (KnowledgePackage kpackage: kbase.getKnowledgePackages()) {
             result.addAll(kpackage.getProcesses());
         }
@@ -72,7 +72,7 @@ public class CommandDelegate {
     }
     
     public static Process getProcess(String processId) {
-        KnowledgeBase kbase = getSession().getKnowledgeBase();
+        KnowledgeBase kbase = getSession().getKieBase();
         for (KnowledgePackage kpackage: kbase.getKnowledgePackages()) {
             for (Process process: kpackage.getProcesses()) {
                 if (processId.equals(process.getId())) {
@@ -84,7 +84,7 @@ public class CommandDelegate {
     }
     
     public static Process getProcessByName(String name) {
-        KnowledgeBase kbase = getSession().getKnowledgeBase();
+        KnowledgeBase kbase = getSession().getKieBase();
         for (KnowledgePackage kpackage: kbase.getKnowledgePackages()) {
             for (Process process: kpackage.getProcesses()) {
                 if (name.equals(process.getName())) {
@@ -210,7 +210,7 @@ public class CommandDelegate {
         ProcessInstance processInstance = getSession().getProcessInstance(processInstanceId);
         
         if (processInstance != null){
-            ((ProcessInstanceImpl)processInstance).setProcess(getSession().getKnowledgeBase().getProcess(processInstance.getProcessId()));
+            ((ProcessInstanceImpl)processInstance).setProcess(getSession().getKieBase().getProcess(processInstance.getProcessId()));
             Collection<NodeInstance> activeNodes = ((WorkflowProcessInstance)processInstance).getNodeInstances();
             
             activeNodes.addAll(collectActiveNodeInstances(activeNodes));

@@ -16,21 +16,21 @@
  */
 package org.jbpm.marshalling.impl;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import org.drools.common.InternalKnowledgeRuntime;
-import org.kie.definition.process.Process;
-import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.kie.runtime.process.ProcessInstance;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.kie.definition.process.Process;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.runtime.process.ProcessInstance;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * When using this strategy, knowledge session de/marshalling process will make sure that
@@ -118,7 +118,7 @@ public class ProcessInstanceResolverStrategy
         }
         // Attach the process if not present
         if ( processInstance.getProcess() == null ) {
-            Process process = kruntime.getKnowledgeBase().getProcess( processInstance.getProcessId() );
+            Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );
             processInstanceImpl.setProcess( process );
         }
     }

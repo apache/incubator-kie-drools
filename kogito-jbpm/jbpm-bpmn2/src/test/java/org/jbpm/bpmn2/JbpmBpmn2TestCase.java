@@ -176,7 +176,7 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) {
 		if (persistence) {
 			int id = ksession.getId();
-			KnowledgeBase kbase = ksession.getKnowledgeBase();
+			KnowledgeBase kbase = ksession.getKieBase();
 			Environment env = null;
 			if (noCache) {
 				env = createEnvironment(context);

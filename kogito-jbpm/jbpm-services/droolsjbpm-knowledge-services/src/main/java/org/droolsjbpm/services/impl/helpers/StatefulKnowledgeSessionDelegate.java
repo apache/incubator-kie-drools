@@ -15,8 +15,6 @@
  */
 package org.droolsjbpm.services.impl.helpers;
 
-import java.util.Collection;
-import java.util.Map;
 import org.droolsjbpm.services.api.SessionManager;
 import org.kie.KnowledgeBase;
 import org.kie.command.Command;
@@ -26,7 +24,6 @@ import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.Globals;
 import org.kie.runtime.KnowledgeSessionConfiguration;
 import org.kie.runtime.ObjectFilter;
@@ -41,6 +38,9 @@ import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  *
@@ -107,8 +107,8 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
     }
 
     @Override
-    public KnowledgeBase getKnowledgeBase() {
-        return ksession.getKnowledgeBase();
+    public KnowledgeBase getKieBase() {
+        return ksession.getKieBase();
     }
 
     @Override
@@ -129,16 +129,6 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
     @Override
     public KnowledgeSessionConfiguration getSessionConfiguration() {
         return ksession.getSessionConfiguration();
-    }
-
-    @Override
-    public void registerExitPoint(String string, ExitPoint ep) {
-        ksession.registerExitPoint(string, ep);
-    }
-
-    @Override
-    public void unregisterExitPoint(String string) {
-        ksession.unregisterExitPoint(string);
     }
 
     @Override

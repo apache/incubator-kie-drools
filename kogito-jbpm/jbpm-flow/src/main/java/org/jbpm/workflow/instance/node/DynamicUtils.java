@@ -155,7 +155,7 @@ public class DynamicUtils {
 	}
 	
 	private static void executeSubProcess(StatefulKnowledgeSessionImpl ksession, String processId, Map<String, Object> parameters, ProcessInstance processInstance, SubProcessNodeInstance subProcessNodeInstance) {
-		Process process = ksession.getKnowledgeBase().getProcess(processId);
+		Process process = ksession.getKieBase().getProcess(processId);
         if (process == null) {
         	System.err.println("Could not find process " + processId);
         	System.err.println("Aborting process");

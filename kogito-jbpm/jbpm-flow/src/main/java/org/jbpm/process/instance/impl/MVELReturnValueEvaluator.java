@@ -105,7 +105,7 @@ public class MVELReturnValueEvaluator
                                (GlobalResolver) context.getKieRuntime().getGlobals() );
 
         // do we have any functions for this namespace?
-        KiePackage pkg = context.getKieRuntime().getKnowledgeBase().getKiePackage("MAIN");
+        KiePackage pkg = context.getKieRuntime().getKieBase().getKiePackage("MAIN");
         if ( pkg != null && pkg instanceof KnowledgePackageImp) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImp) pkg).pkg.getDialectRuntimeRegistry().getDialectData( id );
             factory.setNextFactory( data.getFunctionFactory() );

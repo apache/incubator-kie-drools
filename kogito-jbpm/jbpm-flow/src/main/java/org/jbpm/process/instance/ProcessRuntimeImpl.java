@@ -1,36 +1,16 @@
 package org.jbpm.process.instance;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.Process;
 import org.drools.event.ProcessEventSupport;
-import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.event.kiebase.AfterProcessAddedEvent;
-import org.kie.event.kiebase.AfterProcessRemovedEvent;
-import org.kie.event.kiebase.DefaultKieBaseEventListener;
-import org.kie.event.process.ProcessEventListener;
-import org.kie.event.rule.MatchCreatedEvent;
-import org.kie.event.rule.DefaultAgendaEventListener;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.rule.Rule;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.EventListener;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItemManager;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.impl.DefaultTimerJobFactoryManager;
 import org.drools.time.impl.TrackableTimeJobFactoryManager;
-import org.kie.util.CompositeClassLoader;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.event.SignalManager;
@@ -40,6 +20,25 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
+import org.kie.definition.process.Node;
+import org.kie.definition.process.Process;
+import org.kie.event.kiebase.AfterProcessAddedEvent;
+import org.kie.event.kiebase.AfterProcessRemovedEvent;
+import org.kie.event.kiebase.DefaultKieBaseEventListener;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.rule.DefaultAgendaEventListener;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.EventListener;
+import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.process.WorkItemManager;
+import org.kie.util.CompositeClassLoader;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
@@ -119,9 +118,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	}
 	
 	private ClassLoader getRootClassLoader() {
-		RuleBase ruleBase = ((InternalKnowledgeBase) kruntime.getKnowledgeBase()).getRuleBase();
+		RuleBase ruleBase = ((InternalKnowledgeBase) kruntime.getKieBase()).getRuleBase();
 		if (ruleBase != null) {
-			return ((InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKnowledgeBase()).getRuleBase()).getRootClassLoader();
+			return ((InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKieBase()).getRuleBase()).getRootClassLoader();
 		}
 		CompositeClassLoader result = new CompositeClassLoader();
 		result.addClassLoader(this.getClass().getClassLoader());
@@ -149,7 +148,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             if ( !kruntime.getActionQueue().isEmpty() ) {
             	kruntime.executeQueuedActions();
             }
-            final Process process = kruntime.getKnowledgeBase().getProcess( processId );
+            final Process process = kruntime.getKieBase().getProcess( processId );
             if ( process == null ) {
                 throw new IllegalArgumentException( "Unknown process ID: " + processId );
             }
@@ -211,7 +210,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     }
     
     private void initProcessEventListeners() {
-        for ( Process process : kruntime.getKnowledgeBase().getProcesses() ) {
+        for ( Process process : kruntime.getKieBase().getProcesses() ) {
             initProcessEventListener(process);
         }
         knowledgeBaseListener = new DefaultKieBaseEventListener() {
@@ -232,7 +231,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         		}
         	}
 		};
-        kruntime.getKnowledgeBase().addEventListener(knowledgeBaseListener);
+        kruntime.getKieBase().addEventListener(knowledgeBaseListener);
     }
     
     private void initProcessEventListener(Process process) {
@@ -391,7 +390,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         this.processEventSupport.reset();
         this.timerManager.dispose();
         if( kruntime != null ) { 
-            kruntime.getKnowledgeBase().removeEventListener(knowledgeBaseListener);
+            kruntime.getKieBase().removeEventListener(knowledgeBaseListener);
             kruntime = null;
         }
         workingMemory = null;

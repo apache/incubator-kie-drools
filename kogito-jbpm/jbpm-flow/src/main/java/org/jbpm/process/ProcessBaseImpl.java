@@ -54,7 +54,7 @@ public class ProcessBaseImpl implements InternalKnowledgeBase {
         listeners.remove(listener);
     }
     
-    public Collection<KieBaseEventListener> getKnowledgeBaseEventListeners() {
+    public Collection<KieBaseEventListener> getKieBaseEventListeners() {
         return listeners;
     }
 
