@@ -376,19 +376,6 @@ public class CommandFactory {
         }
     }
 
-    @Deprecated
-    public static Command newKBuilderSetPropertyCommand(String id, String name, String value) {
-        return getCommandFactoryProvider().newKBuilderSetPropertyCommand(id, name, value);
-    }
-
-    public static Command newKnowledgeBuilderSetPropertyCommand(String id, String name, String value) {
-        return getCommandFactoryProvider().newKnowledgeBuilderSetPropertyCommand(id, name, value);
-    }
-    
-    public static Command newNewKnowledgeBuilderConfigurationCommand(String localId) {
-        return getCommandFactoryProvider().newNewKnowledgeBuilderConfigurationCommand(localId);
-    }
-    
     public static Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm) {
         return getCommandFactoryProvider().fromExternalFactHandleCommand(factHandleExternalForm);
     }

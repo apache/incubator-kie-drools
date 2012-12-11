@@ -48,9 +48,4 @@ public interface Connection {
 	 */
     Map<String, Object> getMetaData();
 
-	/**
-	 * Meta data associated with this connection.
-	 */
-    @Deprecated Object getMetaData(String name);
-
 }

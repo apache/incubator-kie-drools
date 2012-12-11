@@ -106,13 +106,6 @@ public interface KieCommands {
     Command newCompleteWorkItem(long workItemId,
                                 Map<String, Object> results);
     
-    @Deprecated
-    public Command newKBuilderSetPropertyCommand(String id, String name, String value);
-    
-    public Command newKnowledgeBuilderSetPropertyCommand(String id, String name, String value);
-
-    public Command newNewKnowledgeBuilderConfigurationCommand(String localId);
-
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm);
 
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm, boolean disconnected);
