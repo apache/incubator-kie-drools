@@ -182,7 +182,7 @@ public class KieBuilderImpl
         }
     }
 
-    private boolean filterFileInKBase(KieBaseModel kieBase,
+    static boolean filterFileInKBase(KieBaseModel kieBase,
                                       String fileName) {
         if ( !isKieExtension( fileName ) ) {
             return false;
@@ -193,12 +193,12 @@ public class KieBuilderImpl
         return isFileInKiePackages(fileName, kieBase.getPackages());
     }
 
-    private boolean isFileInKieBase(String fileName, String kBaseName) {
+    private static boolean isFileInKieBase(String fileName, String kBaseName) {
         String pathName = kBaseName.replace( '.', '/' );
-        return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.contains( "/" + pathName + "/" );
+        return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.startsWith( pathName + "/" );
     }
 
-    private boolean isFileInKiePackages(String fileName, List<String> pkgNames) {
+    private static boolean isFileInKiePackages(String fileName, List<String> pkgNames) {
         int lastSep = fileName.lastIndexOf("/");
         String pkgNameForFile = lastSep > 0 ? fileName.substring(0, lastSep) : fileName;
         pkgNameForFile = pkgNameForFile.replace('/', '.');
