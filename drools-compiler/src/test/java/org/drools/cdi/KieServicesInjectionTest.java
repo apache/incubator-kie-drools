@@ -2,6 +2,9 @@ package org.drools.cdi;
 
 import javax.inject.Inject;
 
+import org.drools.kproject.AbstractKnowledgeTest;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +22,6 @@ import org.kie.runtime.KieSession;
 import static org.junit.Assert.*;
 
 @RunWith(CDITestRunner.class)
-@Ignore
 public class KieServicesInjectionTest {
     
     @Inject
@@ -34,30 +36,23 @@ public class KieServicesInjectionTest {
     @Inject
     KieResources  rscs;
     
-//    @Inject @KGAV(groupId="", artifactId="")
-//    KieContainer kr2;
-//
-//    @Inject @KGAV(groupId="", artifactId="", version="")
-//    KieContainer kr3;
-//
-//    @Inject @KBase("xxx")
-//    KieBase kb1;
-//    
-//    @Inject @KBase("xxx") @KGAV(groupId="", artifactId="")
-//    KieBase kb2;
-//    
-//    @Inject @KBase("xxx") @KGAV(groupId="", artifactId="", version="")
-//    KieBase kb3;
-//
-//    
-//    @Inject @KSession("xxx")
-//    KieSession ks1;
-//    
-//    @Inject @KSession("xxx") @KGAV(groupId="", artifactId="")
-//    KieSession ks2;
-//    
-//    @Inject @KSession("xxx") @KGAV(groupId="", artifactId="", version="")
-//    KieSession ks3;    
+    @BeforeClass
+    public static void beforeClass() {          
+        CDITestRunner.weld = CDITestRunner.createWeld( KieServicesInjectionTest.class.getName()  );        
+        CDITestRunner.container = CDITestRunner.weld.initialize();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        if ( CDITestRunner.weld != null ) { 
+            CDITestRunner.weld.shutdown();
+         
+            CDITestRunner.weld = null;
+        }
+        if ( CDITestRunner.container != null ) {
+            CDITestRunner.container = null; 
+        }
+    }     
     
     @Test
     public void testKieServicesInjection() {
