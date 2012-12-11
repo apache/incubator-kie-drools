@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>jbpm-bpmn2</artifactId>
-
+  <packaging>bundle</packaging>
   <name>jBPM :: BPMN2</name>
   <description>jBPM BPMN2</description>
 
@@ -118,14 +118,6 @@
     
     <plugins>
       <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -139,7 +131,6 @@
           </execution>
         </executions>
         <configuration>
-          <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <Bundle-SymbolicName>org.jbpm.bpmn2;singleton:=true</Bundle-SymbolicName>
             <_removeheaders>Ignore-Package</_removeheaders>

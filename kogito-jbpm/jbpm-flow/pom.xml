@@ -11,20 +11,12 @@
   </parent>
 
   <artifactId>jbpm-flow</artifactId>
-
+  <packaging>bundle</packaging>
   <name>jBPM :: Flow</name>
   <description>jBPM Flow</description>
 
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -39,7 +31,6 @@
           </execution>
         </executions>
         <configuration>
-          <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.jbpm.flow.core;singleton:=true</Bundle-SymbolicName>
