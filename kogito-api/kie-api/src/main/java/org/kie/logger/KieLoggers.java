@@ -16,17 +16,17 @@
 
 package org.kie.logger;
 
-import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.event.KieRuntimeEventManager;
 
 public interface KieLoggers {
 
-    KnowledgeRuntimeLogger newFileLogger(KnowledgeRuntimeEventManager session,
+    KnowledgeRuntimeLogger newFileLogger(KieRuntimeEventManager session,
                                          String fileName);
 
-    KnowledgeRuntimeLogger newThreadedFileLogger(KnowledgeRuntimeEventManager session,
+    KnowledgeRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
                                                  String fileName,
                                                  int interval);
 
-    KnowledgeRuntimeLogger newConsoleLogger(KnowledgeRuntimeEventManager session);
+    KnowledgeRuntimeLogger newConsoleLogger(KieRuntimeEventManager session);
 
 }

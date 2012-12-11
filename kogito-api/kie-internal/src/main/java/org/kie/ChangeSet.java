@@ -71,7 +71,7 @@ import org.kie.io.Resource;
  * <pre>
  * KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
  * kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
- * KnowledgeBase kbase = kagent.getKnowledgeBase();
+ * KnowledgeBase kbase = kagent.getKieBase();
  * </pre>
  * 
  * <p>

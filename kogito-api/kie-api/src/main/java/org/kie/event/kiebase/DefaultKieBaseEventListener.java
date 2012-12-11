@@ -24,19 +24,19 @@ public class DefaultKieBaseEventListener
         // intentionally left blank
     }
 
-    public void afterKnowledgeBaseLocked(AfterKieBaseLockedEvent event) {
+    public void afterKieBaseLocked(AfterKieBaseLockedEvent event) {
         // intentionally left blank
     }
 
-    public void afterKnowledgeBaseUnlocked(AfterKieBaseUnlockedEvent event) {
+    public void afterKieBaseUnlocked(AfterKieBaseUnlockedEvent event) {
         // intentionally left blank
     }
 
-    public void afterKnowledgePackageAdded(AfterKnowledgePackageAddedEvent event) {
+    public void afterKiePackageAdded(AfterKiePackageAddedEvent event) {
         // intentionally left blank
     }
 
-    public void afterKnowledgePackageRemoved(AfterKnowledgePackageRemovedEvent event) {
+    public void afterKiePackageRemoved(AfterKiePackageRemovedEvent event) {
         // intentionally left blank
     }
 
@@ -52,19 +52,19 @@ public class DefaultKieBaseEventListener
         // intentionally left blank
     }
 
-    public void beforeKnowledgeBaseLocked(BeforeKieBaseLockedEvent event) {
+    public void beforeKieBaseLocked(BeforeKieBaseLockedEvent event) {
         // intentionally left blank
     }
 
-    public void beforeKnowledgeBaseUnlocked(BeforeKieBaseUnlockedEvent event) {
+    public void beforeKieBaseUnlocked(BeforeKieBaseUnlockedEvent event) {
         // intentionally left blank
     }
 
-    public void beforeKnowledgePackageAdded(BeforeKnowledgePackageAddedEvent event) {
+    public void beforeKiePackageAdded(BeforeKiePackageAddedEvent event) {
         // intentionally left blank
     }
 
-    public void beforeKnowledgePackageRemoved(BeforeKnowledgePackageRemovedEvent event) {
+    public void beforeKiePackageRemoved(BeforeKiePackageRemovedEvent event) {
         // intentionally left blank
     }
 

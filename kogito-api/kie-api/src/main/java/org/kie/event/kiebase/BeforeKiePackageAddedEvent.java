@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.event;
+package org.kie.event.kiebase;
 
-import org.kie.event.process.ProcessEventManager;
-import org.kie.event.rule.WorkingMemoryEventManager;
+import org.kie.definition.KiePackage;
 
-/**
- * A manager for runtime events.
- */
-public interface KnowledgeRuntimeEventManager
+
+public interface BeforeKiePackageAddedEvent
     extends
-    WorkingMemoryEventManager,
-    ProcessEventManager {
-
+    KieBaseEvent {
+    KiePackage getKiePackage();
 }

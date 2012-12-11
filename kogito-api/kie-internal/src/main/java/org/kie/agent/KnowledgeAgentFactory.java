@@ -40,7 +40,7 @@ import org.kie.io.ResourceFactory;
  * <pre>
  * KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
  * kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
- * KnowledgeBase kbase = kagent.getKnowledgeBase();
+ * KnowledgeBase kbase = kagent.getKieBase();
  * </pre>
  * 
  * <p>If you wish to change the polling time of the scanner, this can be done with the ResourceChangeScannerService on the ResourceFactory</p>
@@ -71,7 +71,7 @@ import org.kie.io.ResourceFactory;
  * <p>
  * You'll notice the property "drools.agent.newInstance", which defaults to true. This property when
  * true means the KnowledgeBase will be rebuilt as a new instance when changes are detected and that new instance will be available when
- * kagent.getKnowledgeBase() is next called. 
+ * kagent.getKieBase() is next called.
  * </p>
  * 
  * <p>

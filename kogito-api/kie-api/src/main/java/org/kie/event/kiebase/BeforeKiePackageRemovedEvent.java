@@ -19,9 +19,8 @@ package org.kie.event.kiebase;
 import org.kie.definition.KiePackage;
 
 
-public interface AfterKnowledgePackageAddedEvent
+public interface BeforeKiePackageRemovedEvent
     extends
     KieBaseEvent {
-
-    public KiePackage getKnowledgePackage();
+    KiePackage getKiePackage();
 }

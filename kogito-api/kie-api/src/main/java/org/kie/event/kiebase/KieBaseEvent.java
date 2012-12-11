@@ -20,5 +20,5 @@ import org.kie.KieBase;
 
 
 public interface KieBaseEvent {
-    public KieBase getKnowledgeBase();
+    public KieBase getKieBase();
 }

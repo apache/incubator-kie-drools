@@ -17,7 +17,7 @@
 package org.kie.runtime;
 
 import org.kie.KieBase;
-import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.event.KieRuntimeEventManager;
 import org.kie.runtime.process.ProcessRuntime;
 import org.kie.runtime.rule.WorkingMemory;
 import org.kie.time.SessionClock;
@@ -28,7 +28,7 @@ public interface KieRuntime
     extends
     WorkingMemory,
     ProcessRuntime,
-    KnowledgeRuntimeEventManager {
+    KieRuntimeEventManager {
 
     /**
      * Returns the session clock instance assigned to this session

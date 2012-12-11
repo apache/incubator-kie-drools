@@ -25,49 +25,49 @@ public interface KieBaseEventListener
      * Method called before a new package is added to the knowledge base
      * @param event
      */
-    void beforeKnowledgePackageAdded(BeforeKnowledgePackageAddedEvent event);
+    void beforeKiePackageAdded(BeforeKiePackageAddedEvent event);
 
     /**
      * Method called after a new package is added to the knowledge base
      * @param event
      */
-    void afterKnowledgePackageAdded(AfterKnowledgePackageAddedEvent event);
+    void afterKiePackageAdded(AfterKiePackageAddedEvent event);
 
     /**
      * Method called before a package is removed from the knowledge base
      * @param event
      */
-    void beforeKnowledgePackageRemoved(BeforeKnowledgePackageRemovedEvent event);
+    void beforeKiePackageRemoved(BeforeKiePackageRemovedEvent event);
 
     /**
      * Method called after a package is removed from the knowledge base
      * @param event
      */
-    void afterKnowledgePackageRemoved(AfterKnowledgePackageRemovedEvent event);
+    void afterKiePackageRemoved(AfterKiePackageRemovedEvent event);
 
     /**
      * Method called before a knowledge base is locked
      * @param event
      */
-    void beforeKnowledgeBaseLocked(BeforeKieBaseLockedEvent event);
+    void beforeKieBaseLocked(BeforeKieBaseLockedEvent event);
 
     /**
      * Method called after a knowledge base is locked
      * @param event
      */
-    void afterKnowledgeBaseLocked(AfterKieBaseLockedEvent event);
+    void afterKieBaseLocked(AfterKieBaseLockedEvent event);
 
     /**
      * Method called before a knowledge base is unlocked
      * @param event
      */
-    void beforeKnowledgeBaseUnlocked(BeforeKieBaseUnlockedEvent event);
+    void beforeKieBaseUnlocked(BeforeKieBaseUnlockedEvent event);
 
     /**
      * Method called after a knowledge base is unlocked
      * @param event
      */
-    void afterKnowledgeBaseUnlocked(AfterKieBaseUnlockedEvent event);
+    void afterKieBaseUnlocked(AfterKieBaseUnlockedEvent event);
 
     /**
      * Method called before a new rule is added to the knowledge base
