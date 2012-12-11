@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>drools-templates</artifactId>
-
+  <packaging>bundle</packaging>
   <name>Drools :: Templates</name>
   
   <dependencies>
@@ -32,14 +32,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -53,7 +45,6 @@
           </execution>
         </executions>
         <configuration>
-          <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <Bundle-SymbolicName>org.drools.templates;singleton:=true</Bundle-SymbolicName>
             <_removeheaders>Ignore-Package</_removeheaders>
