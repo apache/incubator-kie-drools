@@ -121,7 +121,7 @@ public class ClassPathResource extends BaseResource
         this.classLoader = ClassLoaderUtil.getClassLoader( classLoader == null ? null : new ClassLoader[] { classLoader },
                                                            clazz,
                                                            false );
-        setName( path );
+        setSourcePath( path );
         setResourceType( ResourceType.determineResourceType( path ) );
     }
 

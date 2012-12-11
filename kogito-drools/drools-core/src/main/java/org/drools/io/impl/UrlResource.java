@@ -76,7 +76,7 @@ public class UrlResource extends BaseResource
     public UrlResource(URL url) {
         this.url = getCleanedUrl( url,
                                   url.toString() );
-        setName( this.url.getPath() );
+        setSourcePath( this.url.getPath() );
         setResourceType( ResourceType.determineResourceType( this.url.getPath() ) );
     }
 
@@ -84,7 +84,7 @@ public class UrlResource extends BaseResource
         try {
             this.url = getCleanedUrl( new URL( path ),
                                       path );
-            setName( this.url.getPath() );
+            setSourcePath( this.url.getPath() );
             setResourceType( ResourceType.determineResourceType( this.url.getPath() ) );
         } catch ( MalformedURLException e ) {
             throw new IllegalArgumentException( "'" + path + "' path is malformed",
