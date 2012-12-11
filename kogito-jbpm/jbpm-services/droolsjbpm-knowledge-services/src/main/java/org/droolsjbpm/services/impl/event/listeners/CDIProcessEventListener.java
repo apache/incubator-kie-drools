@@ -54,10 +54,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
     
     public CDIProcessEventListener() {
     }
-    
-    
-    
-    
+
     public void beforeProcessStarted(ProcessStartedEvent pse) {
         //do nothing
         ProcessInstance processInstance = pse.getProcessInstance();

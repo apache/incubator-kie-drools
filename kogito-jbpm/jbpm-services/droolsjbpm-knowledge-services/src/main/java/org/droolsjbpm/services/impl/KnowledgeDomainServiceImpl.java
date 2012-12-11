@@ -15,7 +15,6 @@
  */
 package org.droolsjbpm.services.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +29,7 @@ import org.droolsjbpm.services.api.Domain;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
+import org.droolsjbpm.services.api.RulesNotificationService;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
@@ -82,6 +82,8 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
     @Inject
     private NotificationWorkItemHandler notificationWorkItemHandler;
     
+    @Inject
+    private RulesNotificationService rulesNotificationService;
     
     private Domain domain;
     
@@ -145,7 +147,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         
         sessionManager.registerRuleListenerForSession("releaseSession");
          
-        sessionManager.getKsessionByName("releaseSession").setGlobal("rulesFired", new ArrayList<String>());
+        sessionManager.getKsessionByName("releaseSession").setGlobal("rulesNotificationService", rulesNotificationService);
         
         sessionManager.getKsessionByName("releaseSession").setGlobal("taskService", taskService);
     }

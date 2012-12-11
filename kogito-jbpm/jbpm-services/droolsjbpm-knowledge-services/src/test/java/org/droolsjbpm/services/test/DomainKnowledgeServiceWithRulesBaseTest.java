@@ -16,6 +16,7 @@
 package org.droolsjbpm.services.test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +31,14 @@ import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
+import org.droolsjbpm.services.api.RulesNotificationService;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
 import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
+import org.droolsjbpm.services.impl.model.RuleNotificationInstanceDesc;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.junit.Test;
 
@@ -63,12 +66,12 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
     private SessionManager sessionManager;
     @Inject
     private KnowledgeDomainService domainService;
-    
     @Inject
     private TriggerTestsWorkItemHandler triggerTestsWorkItemHandler;
-    
     @Inject
     private NotificationWorkItemHandler notificationWorkItemHandler;
+    @Inject
+    private RulesNotificationService rulesNotificationService;
 
     @Test
     public void testReleaseProcessWithRules() throws FileException, InterruptedException {
@@ -85,7 +88,7 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
         }
         String kSessionName = "myKsession";
         for (Path p : processFiles) {
-            
+
             System.out.println(" >>> Loading Path -> " + p.toString());
             myDomain.addProcessDefinitionToKsession(kSessionName, p);
             String processString = new String(fs.loadFile(p));
@@ -103,17 +106,17 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
         sessionManager.addKsessionHandler("myKsession", "TriggerTests", triggerTestsWorkItemHandler);
         sessionManager.addKsessionHandler("myKsession", "MoveBackToStaging", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToProduction", new DoNothingWorkItemHandler());
-        
+
         sessionManager.addKsessionHandler("myKsession", "Email", notificationWorkItemHandler);
 
         sessionManager.registerHandlersForSession("myKsession");
 
         sessionManager.registerRuleListenerForSession("myKsession");
-        
-        sessionManager.getKsessionByName("myKsession").setGlobal("rulesFired", new ArrayList<String>());
-        
+
+        sessionManager.getKsessionByName("myKsession").setGlobal("rulesNotificationService", rulesNotificationService);
+
         sessionManager.getKsessionByName("myKsession").setGlobal("taskService", taskService);
-        
+
         // Let's start a couple of processes
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("release_name", "first release");
@@ -125,34 +128,37 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
         params.put("release_name", "second release");
         params.put("release_path", "/releasePath2/");
 
-        
-        
+
+
         ProcessInstance secondPI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
 
         QueryResults queryResults = sessionManager.getKsessionByName("myKsession").getQueryResults("getProcessInstances", new Object[]{});
-        
+
         assertEquals(2, queryResults.size());
 
         params = new HashMap<String, Object>();
         params.put("release_name", "third release");
         params.put("release_path", "/releasePath/");
 
-        
+
         // This process must be automatically aborted because it's using the same release path than the first process.
         ProcessInstance thirdPI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
-        
+
         assertEquals(ProcessInstance.STATE_ABORTED, thirdPI.getState());
-        
+
         //LET'S SLEEP FOR 20 SECONDS AND FIRE ALL THE RULES EACH SECOND
-        
-        for(int i = 0; i < 20; i ++){
+
+        for (int i = 0; i < 20; i++) {
             Thread.sleep(1000);
             System.out.println("Waiting...");
-          
+
         }
-        List<String> rulesFired = (List<String>) sessionManager.getKsessionByName("myKsession").getGlobal("rulesFired");
-        assertEquals(3, rulesFired.size());
+        Collection<RuleNotificationInstanceDesc> allNotificationInstance = rulesNotificationService.getAllNotificationInstance();
+        assertEquals(4, allNotificationInstance.size());
         
+        Collection<RuleNotificationInstanceDesc> notificationsBySessionId = rulesNotificationService.getAllNotificationInstanceBySessionId(0);
+        assertEquals(4, notificationsBySessionId.size());
+
 
 
     }

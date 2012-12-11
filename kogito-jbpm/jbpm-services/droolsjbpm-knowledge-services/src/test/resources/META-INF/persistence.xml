@@ -37,6 +37,7 @@
     <class>org.droolsjbpm.services.impl.model.NodeInstanceDesc</class>
     <class>org.droolsjbpm.services.impl.model.VariableStateDesc</class>
     <class>org.droolsjbpm.services.impl.model.ProcessInputDesc</class>
+    <class>org.droolsjbpm.services.impl.model.RuleNotificationInstanceDesc</class>
     <!-- Event Classes -->
     <class>org.jbpm.task.TaskEvent</class>
     

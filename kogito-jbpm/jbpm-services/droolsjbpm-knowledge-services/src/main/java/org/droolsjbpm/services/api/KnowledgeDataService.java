@@ -28,6 +28,7 @@ import org.droolsjbpm.services.impl.model.VariableStateDesc;
  * @author salaboy
  */
 public interface KnowledgeDataService {
+    
     Collection<ProcessInstanceDesc> getProcessInstances();
     
     Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states, String initiator);
