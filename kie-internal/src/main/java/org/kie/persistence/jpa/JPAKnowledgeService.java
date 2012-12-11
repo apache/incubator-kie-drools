@@ -18,7 +18,7 @@ package org.kie.persistence.jpa;
 
 import org.kie.KieBase;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
@@ -115,7 +115,7 @@ public class JPAKnowledgeService {
     private static KieStoreServices provider;
 
     public static StatefulKnowledgeSession newStatefulKnowledgeSession(KieBase kbase,
-                                                                       KnowledgeSessionConfiguration configuration,
+                                                                       KieSessionConfiguration configuration,
                                                                        Environment environment) {
         return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().newStatefulKnowledgeSession( kbase,
                                                                              configuration,
@@ -124,7 +124,7 @@ public class JPAKnowledgeService {
 
     public static StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
                                                                         KieBase kbase,
-                                                                        KnowledgeSessionConfiguration configuration,
+                                                                        KieSessionConfiguration configuration,
                                                                         Environment environment) {
         return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().loadStatefulKnowledgeSession( id,
                                                                               kbase,

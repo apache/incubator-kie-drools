@@ -17,7 +17,7 @@
 package org.kie;
 
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 
 import java.util.Properties;
 
@@ -35,7 +35,7 @@ public interface KnowledgeBaseFactoryService extends Service {
      * @return
      *     the KnowledgeBaseConfiguration
      */
-    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration();
+    public KieBaseConfiguration newKnowledgeBaseConfiguration();
 
     /**
      * Instantiate and return a new KnowledgeBaseConfiguration
@@ -47,7 +47,7 @@ public interface KnowledgeBaseFactoryService extends Service {
      * @return
      *     The KnowledgeBaseConfiguration
      */
-    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties,
+    public KieBaseConfiguration newKnowledgeBaseConfiguration(Properties properties,
                                                                     ClassLoader... classLoader);
 
     /**
@@ -56,7 +56,7 @@ public interface KnowledgeBaseFactoryService extends Service {
      * @return
      *     the KnowledgeSessionConfiguration
      */
-    public KnowledgeSessionConfiguration newKnowledgeSessionConfiguration();
+    public KieSessionConfiguration newKnowledgeSessionConfiguration();
 
     /**
      * Instantiate and return a new KnowledgeSessionConfiguration
@@ -68,7 +68,7 @@ public interface KnowledgeBaseFactoryService extends Service {
      * @return
      *     The KnowledgeSessionConfiguration
      */
-    public KnowledgeSessionConfiguration newKnowledgeSessionConfiguration(Properties properties);
+    public KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties);
 
     /**
      * Instantiate and return a KnowledgeBase using a default KnowledgeBaseConfiguration
@@ -100,7 +100,7 @@ public interface KnowledgeBaseFactoryService extends Service {
      * @return
      *     The KnowledgeBase
      */
-    KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf);
+    KnowledgeBase newKnowledgeBase(KieBaseConfiguration conf);
 
     /**
      * Instantiate and return a KnowledgeBase using the given KnowledgeBaseConfiguration and
@@ -116,7 +116,7 @@ public interface KnowledgeBaseFactoryService extends Service {
      * @return
      *     The KnowledgeBase
      */
-    KnowledgeBase newKnowledgeBase(String kbaseId, KnowledgeBaseConfiguration conf);
+    KnowledgeBase newKnowledgeBase(String kbaseId, KieBaseConfiguration conf);
 
     /**
      * Instantiate and return an Environment

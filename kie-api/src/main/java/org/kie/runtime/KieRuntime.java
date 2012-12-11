@@ -66,6 +66,6 @@ public interface KieRuntime
 
     Map< String, Channel> getChannels();
     
-    KnowledgeSessionConfiguration getSessionConfiguration();
+    KieSessionConfiguration getSessionConfiguration();
 
 }

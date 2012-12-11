@@ -17,7 +17,7 @@
 package org.kie;
 
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.util.ServiceRegistryImpl;
 
 import java.util.Properties;
@@ -83,7 +83,7 @@ public class KnowledgeBaseFactory  {
      * @return
      *     The KnowledgeBase
      */
-    public static KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
+    public static KnowledgeBase newKnowledgeBase(KieBaseConfiguration conf) {
         return getKnowledgeBaseFactoryService().newKnowledgeBase( conf );
     }
 
@@ -100,7 +100,7 @@ public class KnowledgeBaseFactory  {
      *     The KnowledgeBase
      */
     public static KnowledgeBase newKnowledgeBase(String kbaseId,
-                                                 KnowledgeBaseConfiguration conf) {
+                                                 KieBaseConfiguration conf) {
         return getKnowledgeBaseFactoryService().newKnowledgeBase( kbaseId, conf );
     }
 
@@ -109,7 +109,7 @@ public class KnowledgeBaseFactory  {
      * @return
      *     The KnowledgeBaseConfiguration.
      */
-    public static KnowledgeBaseConfiguration newKnowledgeBaseConfiguration() {
+    public static KieBaseConfiguration newKnowledgeBaseConfiguration() {
         return getKnowledgeBaseFactoryService().newKnowledgeBaseConfiguration();
     }
 
@@ -119,7 +119,7 @@ public class KnowledgeBaseFactory  {
      * @return
      *     The KnowledgeBaseConfiguration.
      */
-    public static KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties,
+    public static KieBaseConfiguration newKnowledgeBaseConfiguration(Properties properties,
                                                                            ClassLoader... classLoaders) {
         return getKnowledgeBaseFactoryService().newKnowledgeBaseConfiguration( properties,
                                                                                classLoaders );
@@ -130,7 +130,7 @@ public class KnowledgeBaseFactory  {
      * @return
      *     The KnowledgeSessionConfiguration.
      */
-    public static KnowledgeSessionConfiguration newKnowledgeSessionConfiguration() {
+    public static KieSessionConfiguration newKnowledgeSessionConfiguration() {
         return getKnowledgeBaseFactoryService().newKnowledgeSessionConfiguration();
     }
 
@@ -139,7 +139,7 @@ public class KnowledgeBaseFactory  {
      * @return
      *     The KnowledgeSessionConfiguration.
      */
-    public static KnowledgeSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
+    public static KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
         return getKnowledgeBaseFactoryService().newKnowledgeSessionConfiguration( properties );
     }
 
