@@ -7,7 +7,6 @@ import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
-import org.kie.runtime.KieRuntime;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkflowProcessInstance;
@@ -16,6 +15,7 @@ import org.kie.runtime.rule.FactHandle;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import org.kie.runtime.KnowledgeRuntime;
 @ApplicationScoped // This should be something like DomainScoped
 @Transactional
 public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
@@ -24,7 +24,7 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
 
     public void beforeProcessStarted(ProcessStartedEvent event) {
         
-        FactHandle handle = event.getKieRuntime().insert(event.getProcessInstance());
+        FactHandle handle = event.getKnowledgeRuntime().insert(event.getProcessInstance());
         store.put(event.getProcessInstance().getId(), handle);
         
         
@@ -32,27 +32,27 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
 
     public void afterProcessStarted(ProcessStartedEvent event) {
         // do nothing
-        event.getKieRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
-        ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
+        event.getKnowledgeRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
+        ((StatefulKnowledgeSession) event.getKnowledgeRuntime()).fireAllRules();
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
-        event.getKieRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
-        ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
+        event.getKnowledgeRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
+        ((StatefulKnowledgeSession) event.getKnowledgeRuntime()).fireAllRules();
     }
 
     public void afterProcessCompleted(ProcessCompletedEvent event) {
-        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKieRuntime());
+        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKnowledgeRuntime());
         
         if (handle != null) {
-            event.getKieRuntime().retract(handle);
+            event.getKnowledgeRuntime().retract(handle);
         }
     }
 
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         // do nothing
-        event.getKieRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
-        ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
+        event.getKnowledgeRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
+        ((StatefulKnowledgeSession) event.getKnowledgeRuntime()).fireAllRules();
         
     }
 
@@ -61,8 +61,8 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
     }
 
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-        event.getKieRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
-        ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
+        event.getKnowledgeRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
+        ((StatefulKnowledgeSession) event.getKnowledgeRuntime()).fireAllRules();
     }
 
     public void afterNodeLeft(ProcessNodeLeftEvent event) {
@@ -74,17 +74,17 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
     }
 
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
-        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKieRuntime());
+        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKnowledgeRuntime());
         
         if (handle != null) {
-            event.getKieRuntime().update(handle, event.getProcessInstance());
+            event.getKnowledgeRuntime().update(handle, event.getProcessInstance());
         } else {
-            handle = event.getKieRuntime().insert(event.getProcessInstance());
+            handle = event.getKnowledgeRuntime().insert(event.getProcessInstance());
             store.put(event.getProcessInstance().getId(), handle);
         }
     }
 
-    protected FactHandle getProcessInstanceFactHandle(final Long processInstanceId, KieRuntime kruntime) {
+    protected FactHandle getProcessInstanceFactHandle(final Long processInstanceId, KnowledgeRuntime kruntime) {
         
         if (store.containsKey(processInstanceId)) {
             return store.get(processInstanceId);
