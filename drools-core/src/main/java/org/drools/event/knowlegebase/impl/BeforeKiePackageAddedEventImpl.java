@@ -18,24 +18,23 @@ package org.drools.event.knowlegebase.impl;
 
 import org.kie.KnowledgeBase;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.kiebase.AfterKnowledgePackageAddedEvent;
+import org.kie.event.kiebase.BeforeKiePackageAddedEvent;
 
-public class AfterKnowledgePackageAddedEventImpl extends KnowledgeBaseEventImpl implements AfterKnowledgePackageAddedEvent {
+public class BeforeKiePackageAddedEventImpl extends KnowledgeBaseEventImpl implements BeforeKiePackageAddedEvent {
     private KnowledgePackage knowledgePackage;
     
-    public AfterKnowledgePackageAddedEventImpl(KnowledgeBase knowledgeBase, KnowledgePackage knowledgePackage) {
+    public BeforeKiePackageAddedEventImpl(KnowledgeBase knowledgeBase, KnowledgePackage knowledgePackage) {
         super( knowledgeBase );
-        this.knowledgePackage = knowledgePackage;
     }
 
-    public KnowledgePackage getKnowledgePackage() {
+    public KnowledgePackage getKiePackage() {
         return this.knowledgePackage;
     }
 
     @Override
     public String toString() {
-        return "==>[AfterKnowledgePackageAddedEventImpl: getKnowledgePackage()=" + getKnowledgePackage()
-                + ", getKnowledgeBase()=" + getKnowledgeBase() + "]";
+        return "==>[BeforeKiePackageAddedEventImpl: getKiePackage()=" + getKiePackage()
+                + ", getKieBase()=" + getKieBase() + "]";
     }
-    
+
 }

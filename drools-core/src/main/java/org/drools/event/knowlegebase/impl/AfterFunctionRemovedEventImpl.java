@@ -33,8 +33,8 @@ public class AfterFunctionRemovedEventImpl extends KnowledgeBaseEventImpl implem
 
     @Override
     public String toString() {
-        return "==>[AfterFunctionRemovedEventImpl: getFunction()=" + getFunction() + ", getKnowledgeBase()="
-                + getKnowledgeBase() + "]";
+        return "==>[AfterFunctionRemovedEventImpl: getFunction()=" + getFunction() + ", getKieBase()="
+                + getKieBase() + "]";
     }
     
 }
