@@ -63,9 +63,7 @@ public class KieCDIExtension
     private final static AnnotationLiteral<Any>     anyAnnLit     = new AnnotationLiteral<Any>() {
                                                                   };
 
-    public KieCDIExtension() {
-        System.out.println("create KieCDIExtension");
-    }
+    public KieCDIExtension() { }
 
     public void init() {
         KieServices ks = KieServices.Factory.get();
@@ -109,19 +107,16 @@ public class KieCDIExtension
 
                 Class< ? extends Annotation> scope = ApplicationScoped.class;
 
-                KieCDIEntry existingEntry = null;
                 if ( kBase != null ) {
-                    addKBaseInjectionPoint(ip, kBase, namedStr, scope, gav,  existingEntry);
-
-                    continue;
+                    addKBaseInjectionPoint(ip, kBase, namedStr, scope, gav);
                 } else if ( kSession != null ) {
-                    addKSessionInjectionPoint(ip, kSession, namedStr, scope, gav,  existingEntry);
+                    addKSessionInjectionPoint(ip, kSession, namedStr, scope, gav);
                 }
             }
         }
     }
     
-    public void addKBaseInjectionPoint(InjectionPoint ip, KBase kBase, String namedStr, Class< ? extends Annotation> scope, GAV gav, KieCDIEntry existingEntry) {
+    public void addKBaseInjectionPoint(InjectionPoint ip, KBase kBase, String namedStr, Class< ? extends Annotation> scope, GAV gav) {
         if ( kBaseNames == null ) {
             kBaseNames = new HashMap<KieCDIEntry, KieCDIEntry>();
         }
@@ -131,7 +126,7 @@ public class KieCDIExtension
                                                 gav,
                                                 namedStr );
 
-        existingEntry = kBaseNames.remove( newEntry );
+        KieCDIEntry existingEntry = kBaseNames.remove( newEntry );
         if ( existingEntry != null ) {
             // it already exists, so just update its Set of InjectionPoints
             // Note any duplicate "named" would be handled via this.
@@ -159,7 +154,7 @@ public class KieCDIExtension
         }        
     }
 
-    public void addKSessionInjectionPoint(InjectionPoint ip, KSession kSession, String namedStr, Class< ? extends Annotation> scope, GAV gav, KieCDIEntry existingEntry) {
+    public void addKSessionInjectionPoint(InjectionPoint ip, KSession kSession, String namedStr, Class< ? extends Annotation> scope, GAV gav) {
         if ( kSessionNames == null ) {
             kSessionNames = new HashMap<KieCDIEntry, KieCDIEntry>();
         }
@@ -169,7 +164,7 @@ public class KieCDIExtension
                                                 gav,
                                                 namedStr );
 
-        existingEntry = kSessionNames.remove( newEntry );
+        KieCDIEntry existingEntry = kSessionNames.remove( newEntry );
         if ( existingEntry != null ) {
             // it already exists, so just update its Set of InjectionPoints
             // Note any duplicate "named" would be handled via this.
