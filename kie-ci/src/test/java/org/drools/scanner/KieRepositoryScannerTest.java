@@ -222,7 +222,7 @@ public class KieRepositoryScannerTest {
         kfs.writePomXML( getPom(gav) );
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
         return ( InternalKieModule ) kieBuilder.getKieModule();
     }
 
@@ -268,7 +268,7 @@ public class KieRepositoryScannerTest {
                 .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);
-        assertTrue(kieBuilder.build().getInsertedMessages().isEmpty());
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
         return ( InternalKieModule ) kieBuilder.getKieModule();
     }
 

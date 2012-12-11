@@ -9,7 +9,7 @@ import org.kie.builder.Message;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.builder.impl.InternalKieScanner;
 import org.kie.builder.impl.MemoryKieModule;
-import org.kie.builder.impl.Messages;
+import org.kie.builder.impl.ResultsImpl;
 import org.kie.builder.impl.ZipKieModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,8 +106,8 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
     }
 
-    private Messages build(InternalKieModule kieModule) {
-        Messages messages = new Messages();
+    private ResultsImpl build(InternalKieModule kieModule) {
+        ResultsImpl messages = new ResultsImpl();
         buildKieModule(kieModule, messages);
         return messages;
     }
@@ -156,7 +156,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private void updateKieModule(Artifact artifact, GAV gav) {
         ZipKieModule kieModule = new ZipKieModule(gav, artifact.getFile());
-        Messages messages = build(kieModule);
+        ResultsImpl messages = build(kieModule);
         if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
             kieContainer.updateToVersion(gav);
         }

@@ -6,11 +6,15 @@ import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractKieProject implements KieProject {
+
+    private static final Logger                  log                        = LoggerFactory.getLogger(KieProject.class);
 
     protected final Map<String, KieBaseModel>    kBaseModels                = new HashMap<String, KieBaseModel>();
 
@@ -62,7 +66,12 @@ public abstract class AbstractKieProject implements KieProject {
             KieModuleModel kieProject = kJar.getKieModuleModel();
             for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
                 if (kieBaseModel.isDefault()) {
-                    defaultKieBase = kieBaseModel;
+                    if (defaultKieBase == null) {
+                        defaultKieBase = kieBaseModel;
+                    } else {
+                        defaultKieBase = null;
+                        log.warn("Found more than one defualt KieBase: disabling all. KieBases will be accessible only by name");
+                    }
                 }
 
                 kBaseModels.put( kieBaseModel.getName(), kieBaseModel );
@@ -72,9 +81,19 @@ public abstract class AbstractKieProject implements KieProject {
                 for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
                     if (kieSessionModel.isDefault()) {
                         if (kieSessionModel.getType() == KieSessionModel.KieSessionType.STATEFUL) {
-                            defaultKieSession = kieSessionModel;
+                            if (defaultKieSession == null) {
+                                defaultKieSession = kieSessionModel;
+                            } else {
+                                defaultKieSession = null;
+                                log.warn("Found more than one defualt KieSession: disabling all. KieSessions will be accessible only by name");
+                            }
                         } else {
-                            defaultStatelessKieSession = kieSessionModel;
+                            if (defaultStatelessKieSession == null) {
+                                defaultStatelessKieSession = kieSessionModel;
+                            } else {
+                                defaultStatelessKieSession = null;
+                                log.warn("Found more than one defualt StatelessKieSession: disabling all. StatelessKieSessions will be accessible only by name");
+                            }
                         }
                     }
 

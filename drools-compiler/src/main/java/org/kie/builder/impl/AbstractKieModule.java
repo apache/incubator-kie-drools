@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.kie.builder.impl.KieBuilderImpl.isKieExtension;
+import static org.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 
 public abstract class AbstractKieModule
     implements
@@ -204,32 +204,28 @@ public abstract class AbstractKieModule
                                 KieBaseModel kieBaseModel,
                                 InternalKieModule kieModule) {
         int fileCount = 0;
-        String prefixPath = kieBaseModel.getName().replace( '.',
-                                                            '/' );
         for ( String fileName : kieModule.getFileNames() ) {
-            if ( ((KieBaseModelImpl)kieBaseModel).isDefault() || fileName.startsWith( prefixPath ) ) {
-                if ( isKieExtension(fileName) && !fileName.endsWith( ".properties" )) {
-                    ResourceConfiguration conf = null;
-                    if( kieModule.isAvailable( fileName+".properties" ) ) {
-                        // configuration file available
-                        Properties prop = new Properties();
-                        try {
-                            prop.load( new ByteArrayInputStream( kieModule.getBytes(fileName+".properties") ) );
-                        } catch ( IOException e ) {
-                            log.error( "Error loading resource configuration from file: "+fileName+".properties" );
-                        }
-                        conf = ResourceType.fromProperties( prop );
+            if ( !fileName.endsWith( ".properties" ) && filterFileInKBase(kieBaseModel, fileName) ) {
+                ResourceConfiguration conf = null;
+                if( kieModule.isAvailable( fileName+".properties" ) ) {
+                    // configuration file available
+                    Properties prop = new Properties();
+                    try {
+                        prop.load( new ByteArrayInputStream( kieModule.getBytes(fileName+".properties") ) );
+                    } catch ( IOException e ) {
+                        log.error( "Error loading resource configuration from file: "+fileName+".properties" );
                     }
-                    if( conf == null ) {
-                        ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
-                                       ResourceType.determineResourceType( fileName ) );
-                    } else {
-                        ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
-                                       ResourceType.determineResourceType( fileName ),
-                                       conf );
-                    }
-                    fileCount++;
+                    conf = ResourceType.fromProperties( prop );
                 }
+                if( conf == null ) {
+                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
+                                   ResourceType.determineResourceType( fileName ) );
+                } else {
+                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
+                                   ResourceType.determineResourceType( fileName ),
+                                   conf );
+                }
+                fileCount++;
             }
         }
         if ( fileCount == 0 ) {

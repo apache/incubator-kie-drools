@@ -11,7 +11,6 @@ import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
-import org.kie.builder.Results;
 import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
@@ -200,5 +199,82 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl)
                 .writeKModuleXML(createKieProjectWithPackages(kf, "*").toXML());
         ks.newKieBuilder( kfs ).buildAll();
+    }
+
+    @Test
+    public void testHelloWorldWithPackagesAnd2KieBases() throws Exception {
+        String drl1 = "package org.drools\n" +
+                "rule R11 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R12 when\n" +
+                "   $m : Message( message == \"Hi Universe\" )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl2 = "package org.drools\n" +
+                "rule R21 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R22 when\n" +
+                "   $m : Message( message == \"Aloha Earth\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFactory kf = KieFactory.Factory.get();
+
+        GAV gav = kf.newGav("org.kie", "hello-world", "1.0-SNAPSHOT");
+
+        KieFileSystem kfs = kf.newKieFileSystem()
+                .generateAndWritePomXML( gav )
+                .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
+                .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
+                .writeKModuleXML(createKieProjectWithPackagesAnd2KieBases(kf).toXML());
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieSession ksession = ks.getKieContainer(gav).getKieSession("KSession1");
+        ksession.insert(new Message("Hello World"));
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ksession = ks.getKieContainer(gav).getKieSession("KSession1");
+        ksession.insert(new Message("Hi Universe"));
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ksession = ks.getKieContainer(gav).getKieSession("KSession1");
+        ksession.insert(new Message("Aloha Earth"));
+        assertEquals( 0, ksession.fireAllRules() );
+
+        ksession = ks.getKieContainer(gav).getKieSession("KSession2");
+        ksession.insert(new Message("Hello World"));
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ksession = ks.getKieContainer(gav).getKieSession("KSession2");
+        ksession.insert(new Message("Hi Universe"));
+        assertEquals( 0, ksession.fireAllRules() );
+
+        ksession = ks.getKieContainer(gav).getKieSession("KSession2");
+        ksession.insert(new Message("Aloha Earth"));
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    private KieModuleModel createKieProjectWithPackagesAnd2KieBases(KieFactory kf) {
+        KieModuleModel kproj = kf.newKieModuleModel();
+
+        kproj.newKieBaseModel("KBase2")
+                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEventProcessingMode( EventProcessingOption.STREAM )
+                .addPackage("org.pkg1")
+                .newKieSessionModel("KSession1");
+
+        kproj.newKieBaseModel("KBase1")
+                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEventProcessingMode( EventProcessingOption.STREAM )
+                .addPackage("org.pkg2")
+                .newKieSessionModel("KSession2");
+
+        return kproj;
     }
 }

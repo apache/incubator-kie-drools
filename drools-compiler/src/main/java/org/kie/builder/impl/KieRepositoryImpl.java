@@ -74,26 +74,16 @@ public class KieRepositoryImpl
         if ( kieModule == null ) {
             log.debug( "KieModule Lookup. GAV {} was not in cache, checking maven repository",
                        gav.toExternalForm() );   
-            kieModule =  loadKieModuleFromMavenRepo(gav);
+            kieModule = loadKieModuleFromMavenRepo(gav);
         }
         
         return kieModule;
     }
 
     private KieModule checkClasspathForKieModule(GAV gav) {
-        // check classpath
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-        URL url = classLoader.getResource( "((GAVImpl)gav).getPomPropertiesPath()" );
-        if ( url == null ) {
-            log.debug( "KieJar Lookup. GAV {} is not on the classpath",
-                       gav.toExternalForm() );
-        }
-        
-//        KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(artifact.getFile());
-//        Results results = kieBuilder.build();
-//        return results.getInsertedMessages().isEmpty() ? kieBuilder.getKieModule() : null;
-        
+        // TODO
+        // ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        // URL url = classLoader.getResource( ((GAVImpl)gav).getPomPropertiesPath() );
         return null;
     }
 
