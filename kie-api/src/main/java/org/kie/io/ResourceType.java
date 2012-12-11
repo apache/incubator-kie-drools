@@ -25,115 +25,144 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ResourceType implements Serializable {
+public class ResourceType
+        implements
+        Serializable {
 
-    private static final long serialVersionUID = 1613735834228581906L;
+    private static final long                      serialVersionUID        = 1613735834228581906L;
 
-    private static final String KIE_RESOURCE_CONF_CLASS = "kie.resource.conf.class";
-    
-    private static final Logger logger = LoggerFactory.getLogger( ResourceType.class ); 
+    private static final String                    KIE_RESOURCE_CONF_CLASS = "kie.resource.conf.class";
+
+    private static final Logger                    logger                  = LoggerFactory.getLogger( ResourceType.class );
 
     private String                                 name;
 
     private String                                 description;
-    
+
     private String                                 defaultExtension;
-    
+
     private String[]                               otherExtensions;
 
-    private static final Map<String, ResourceType> CACHE = Collections.synchronizedMap( new HashMap<String, ResourceType>() );
+    private String                                 defaultPath;
+
+    private static final Map<String, ResourceType> CACHE                   = Collections.synchronizedMap( new HashMap<String, ResourceType>() );
 
     public ResourceType(String name,
                         String description,
+                        String defaultPath,
                         String defaultExtension,
-                        String... otherExtensions ) {
+                        String... otherExtensions) {
         this.name = name;
         this.description = description;
+        this.defaultPath = defaultPath;
         this.defaultExtension = defaultExtension;
         this.otherExtensions = otherExtensions;
     }
 
     public static ResourceType addResourceTypeToRegistry(final String resourceType,
                                                          final String description,
+                                                         final String defaultPath,
                                                          final String defaultExtension,
-                                                         final String ...otherExtensions) {
-    	
-    	ResourceType resource = new ResourceType( resourceType,
-                                                description,
-                                                defaultExtension,
-                                                otherExtensions);
-        CACHE.put( resourceType, resource );    	
+                                                         final String... otherExtensions) {
+
+        ResourceType resource = new ResourceType( resourceType,
+                                                  description,
+                                                  defaultPath,
+                                                  defaultExtension,
+                                                  otherExtensions );
+        CACHE.put( resourceType, resource );
         return resource;
     }
 
     /** Drools Rule Language */
     public static final ResourceType DRL        = addResourceTypeToRegistry( "DRL",
                                                                              "Drools Rule Language",
-                                                                             "drl");
+                                                                             "src/main/resources",
+                                                                             "drl" );
 
     /** Drools XML Rule Language */
     public static final ResourceType XDRL       = addResourceTypeToRegistry( "XDRL",
                                                                              "Drools XML Rule Language",
+                                                                             "src/main/resources",
                                                                              "xdrl" );
 
     /** Drools DSL */
     public static final ResourceType DSL        = addResourceTypeToRegistry( "DSL",
                                                                              "Drools DSL",
-                                                                             "dsl");
+                                                                             "src/main/resources",
+                                                                             "dsl" );
 
     /** Drools DSL Rule */
     public static final ResourceType DSLR       = addResourceTypeToRegistry( "DSLR",
                                                                              "Drools DSL Rule",
-                                                                             "dslr");
+                                                                             "src/main/resources",
+                                                                             "dslr" );
 
     /** Drools Rule Flow Language */
     public static final ResourceType DRF        = addResourceTypeToRegistry( "DRF",
                                                                              "Drools Rule Flow Language",
+                                                                             "src/main/resources",
                                                                              "rf" );
 
     /** jBPM BPMN2 Language */
     public static final ResourceType BPMN2      = addResourceTypeToRegistry( "BPMN2",
                                                                              "jBPM BPMN2 Language",
+                                                                             "src/main/resources",
                                                                              "bpmn", "bpmn2" );
 
     /** Decision Table */
     public static final ResourceType DTABLE     = addResourceTypeToRegistry( "DTABLE",
                                                                              "Decision Table",
+                                                                             "src/main/resources",
                                                                              "xls" );
 
     /** Binary Package */
     public static final ResourceType PKG        = addResourceTypeToRegistry( "PKG",
                                                                              "Binary Package",
+                                                                             "src/main/resources",
                                                                              "pkg" );
 
     /** Drools Business Rule Language */
     public static final ResourceType BRL        = addResourceTypeToRegistry( "BRL",
                                                                              "Drools Business Rule Language",
+                                                                             "src/main/resources",
                                                                              "brl" );
 
     /** Change Set */
     public static final ResourceType CHANGE_SET = addResourceTypeToRegistry( "CHANGE_SET",
                                                                              "Change Set",
+                                                                             "src/main/resources",
                                                                              "xcs" );
-    
+
     /** XSD */
     public static final ResourceType XSD        = addResourceTypeToRegistry( "XSD",
                                                                              "XSD",
+                                                                             "src/main/resources",
                                                                              "xsd" );
 
     /** PMML */
     public static final ResourceType PMML       = addResourceTypeToRegistry( "PMML",
                                                                              "Predictive Model Markup Language",
+                                                                             "src/main/resources",
                                                                              "pmml" );
 
     /** DESCR */
     public static final ResourceType DESCR      = addResourceTypeToRegistry( "DESCR",
                                                                              "Knowledge Descriptor",
+                                                                             "src/main/resources",
                                                                              "descr" );
 
+    /** JAVA */
+    public static final ResourceType JAVA       = addResourceTypeToRegistry( "JAVA",
+                                                                             "Java class",
+                                                                             "src/main/java",
+                                                                             "java" );
 
-
-
+    /** PROPERTIES */
+    public static final ResourceType PROPERTIES = addResourceTypeToRegistry( "PROPERTIES",
+                                                                             "Properties file",
+                                                                             "src/main/resources",
+                                                                             "properties" );
 
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get( resourceType );
@@ -142,23 +171,23 @@ public class ResourceType implements Serializable {
         }
         return resource;
     }
-    
-    public static ResourceType determineResourceType( final String resourceName ) {
-        for( ResourceType type : CACHE.values() ) {
-            if( type.matchesExtension( resourceName ) ) {
+
+    public static ResourceType determineResourceType(final String resourceName) {
+        for ( ResourceType type : CACHE.values() ) {
+            if ( type.matchesExtension( resourceName ) ) {
                 return type;
             }
         }
         return null;
     }
-    
-    public static Properties toProperties( ResourceConfiguration conf ) {
+
+    public static Properties toProperties(ResourceConfiguration conf) {
         Properties prop = conf.toProperties();
         prop.setProperty( KIE_RESOURCE_CONF_CLASS, conf.getClass().getName() );
         return prop;
     }
-    
-    public static ResourceConfiguration fromProperties( Properties prop ) {
+
+    public static ResourceConfiguration fromProperties(Properties prop) {
         String className = prop.getProperty( KIE_RESOURCE_CONF_CLASS );
         try {
             // not sure how to get the proper classloader here, but the resource configurations
@@ -167,26 +196,30 @@ public class ResourceType implements Serializable {
             conf.fromProperties( prop );
             return conf;
         } catch ( Exception e ) {
-            logger.error( "Error loading resource configuration from properties", e);
+            logger.error( "Error loading resource configuration from properties", e );
         }
         return null;
     }
-    
-    public boolean matchesExtension( String resourceName ) {    	
-    	if (resourceName != null) {
-    		
-    		if (resourceName.endsWith( "." + defaultExtension)) {
-    			return true;
-    		}
-    		for (String extension: otherExtensions) {
-    			if (resourceName.endsWith( "." + extension )) {
-    				return true;
-    			}
-    		}
-    	}
-    	return false;
+
+    public boolean matchesExtension(String resourceName) {
+        if ( resourceName != null ) {
+
+            if ( resourceName.endsWith( "." + defaultExtension ) ) {
+                return true;
+            }
+            for ( String extension : otherExtensions ) {
+                if ( resourceName.endsWith( "." + extension ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
+    public String getDefaultPath() {
+        return defaultPath;
+    }
+    
     public String getDefaultExtension() {
         return defaultExtension;
     }
@@ -198,7 +231,6 @@ public class ResourceType implements Serializable {
     public String getName() {
         return name;
     }
-
 
     public String toString() {
         return "ResourceType = '" + this.description + "'";
