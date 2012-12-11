@@ -27,12 +27,13 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
         FactHandle handle = event.getKnowledgeRuntime().insert(event.getProcessInstance());
         store.put(event.getProcessInstance().getId(), handle);
         
-        event.getKnowledgeRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
-        ((StatefulKnowledgeSession) event.getKnowledgeRuntime()).fireAllRules();
+        
     }
 
     public void afterProcessStarted(ProcessStartedEvent event) {
         // do nothing
+        event.getKnowledgeRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
+        ((StatefulKnowledgeSession) event.getKnowledgeRuntime()).fireAllRules();
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
@@ -52,6 +53,7 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
         // do nothing
         event.getKnowledgeRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
         ((StatefulKnowledgeSession) event.getKnowledgeRuntime()).fireAllRules();
+        
     }
 
     public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {

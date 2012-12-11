@@ -56,9 +56,9 @@ public class NotificationWorkItemHandler implements WorkItemHandler{
 
         
         StringBuilder email = new StringBuilder("");
-        email.append("To: ").append(emails);
-        email.append("Subject: ").append(releaseName).append(" Released!");
-        email.append("Body: \n").append(report);
+        email.append("To: ").append(emails).append("\n");
+        email.append("Subject: ").append(releaseName).append(" Released!\n");
+        email.append("Body: \n").append(report).append("\n");
         
         System.out.println("\n\n"+email.toString()+"\n\n");
         

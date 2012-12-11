@@ -37,6 +37,7 @@ import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
 import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
+import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
@@ -65,6 +66,9 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+    
+    @Inject
+    private TaskServiceEntryPoint taskService;
     
     @Inject
     private SessionManager sessionManager;
@@ -142,6 +146,8 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         sessionManager.registerRuleListenerForSession("releaseSession");
          
         sessionManager.getKsessionByName("releaseSession").setGlobal("rulesFired", new ArrayList<String>());
+        
+        sessionManager.getKsessionByName("releaseSession").setGlobal("taskService", taskService);
     }
 
     @Override

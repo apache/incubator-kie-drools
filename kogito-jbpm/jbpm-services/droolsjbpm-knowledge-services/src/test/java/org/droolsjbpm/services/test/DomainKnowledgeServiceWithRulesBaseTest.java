@@ -109,7 +109,11 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
         sessionManager.registerHandlersForSession("myKsession");
 
         sessionManager.registerRuleListenerForSession("myKsession");
-
+        
+        sessionManager.getKsessionByName("myKsession").setGlobal("rulesFired", new ArrayList<String>());
+        
+        sessionManager.getKsessionByName("myKsession").setGlobal("taskService", taskService);
+        
         // Let's start a couple of processes
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("release_name", "first release");
@@ -119,15 +123,26 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
 
         params = new HashMap<String, Object>();
         params.put("release_name", "second release");
-        params.put("release_path", "/releasePath/");
+        params.put("release_path", "/releasePath2/");
 
-        sessionManager.getKsessionByName("myKsession").setGlobal("rulesFired", new ArrayList<String>());
+        
         
         ProcessInstance secondPI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
 
         QueryResults queryResults = sessionManager.getKsessionByName("myKsession").getQueryResults("getProcessInstances", new Object[]{});
-
+        
         assertEquals(2, queryResults.size());
+
+        params = new HashMap<String, Object>();
+        params.put("release_name", "third release");
+        params.put("release_path", "/releasePath/");
+
+        
+        // This process must be automatically aborted because it's using the same release path than the first process.
+        ProcessInstance thirdPI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
+        
+        assertEquals(ProcessInstance.STATE_ABORTED, thirdPI.getState());
+        
         //LET'S SLEEP FOR 20 SECONDS AND FIRE ALL THE RULES EACH SECOND
         
         for(int i = 0; i < 20; i ++){
@@ -136,7 +151,8 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
           
         }
         List<String> rulesFired = (List<String>) sessionManager.getKsessionByName("myKsession").getGlobal("rulesFired");
-        assertEquals(2, rulesFired.size());
+        assertEquals(3, rulesFired.size());
+        
 
 
     }
