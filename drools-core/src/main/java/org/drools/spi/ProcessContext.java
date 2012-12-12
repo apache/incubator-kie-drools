@@ -73,4 +73,8 @@ public class ProcessContext implements org.kie.runtime.process.ProcessContext {
         return kruntime;
     }
     
+    public KieRuntime getKnowledgeRuntime() {
+    	return kruntime;
+    }
+    
 }

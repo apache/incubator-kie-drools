@@ -6,6 +6,6 @@ rule "remove listener"
 when
     listener : WorkingMemoryEventListener();
 then
-    drools.getKnowledgeRuntime().removeEventListener(listener);
+    drools.getKieRuntime().removeEventListener(listener);
     retract(listener);
 end

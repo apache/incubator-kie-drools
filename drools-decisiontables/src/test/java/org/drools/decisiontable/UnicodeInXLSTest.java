@@ -34,7 +34,7 @@ public class UnicodeInXLSTest {
         if (kbuilder.hasErrors()) {
             System.out.println(kbuilder.getErrors().toString());
             System.out.println(DecisionTableFactory.loadFromInputStream(getClass().getResourceAsStream("unicode.xls"), dtconf));
-            fail("Cannot build XLS decision table containing utf-8 characters.");
+            fail("Cannot build XLS decision table containing utf-8 characters\n" + kbuilder.getErrors().toString() );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());

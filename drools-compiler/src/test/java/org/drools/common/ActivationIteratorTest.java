@@ -223,7 +223,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
-                     "    kcontext.getKnowledgeRuntime().halt();\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "rule rule3 salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +
@@ -454,7 +454,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "rule rule2 salience 1020 when\n" +
                      "    $s1 : String( )\n" +
                      "then\n" +
-                     "    kcontext.getKnowledgeRuntime().halt();\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "rule rule3  salience ( Integer.parseInt( '1'+$s1+'1'+$s2  ) ) when\n" +
                      "    $s1 : String( )\n" +
@@ -521,7 +521,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "    eval( 1 == 1 ) \n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
-                     "    kcontext.getKnowledgeRuntime().halt();\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "\n";
 
@@ -578,7 +578,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "    eval( 1 == 1 ) \n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
-                     "    kcontext.getKnowledgeRuntime().halt();\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "\n";
 
@@ -635,7 +635,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "    eval( 1 == 1 ) \n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
-                     "    kcontext.getKnowledgeRuntime().halt();\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "\n";
 
@@ -689,7 +689,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "    $s1 : Double() from accumulate( $i : Integer(), sum ( $i ) )    " +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
-                     "    kcontext.getKnowledgeRuntime().halt();\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "\n";
 
