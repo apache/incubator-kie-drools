@@ -34,7 +34,7 @@ import java.util.Map.Entry;
 
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.spi.Wireable;
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.MapVariableResolverFactory;

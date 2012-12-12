@@ -23,7 +23,7 @@ public class DroolsEventList extends AbstractEventList<Row> implements ViewChang
 
     }
 
-    public void rowAdded(Row row) {
+    public void rowInserted(Row row) {
         int index = size();
         // create the change event
         updates.beginEvent();
@@ -35,7 +35,7 @@ public class DroolsEventList extends AbstractEventList<Row> implements ViewChang
 
     }
 
-    public void rowRemoved(Row row) {
+    public void rowDeleted(Row row) {
         int index = this.data.indexOf( row );
         // create the change event
         updates.beginEvent();

@@ -7,22 +7,22 @@ import org.drools.io.impl.ResourceFactoryServiceImpl;
 import org.drools.kproject.GAVImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
+import org.kie.KieServices;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
-import org.kie.builder.KieServices;
 import org.kie.command.KieCommands;
 import org.kie.concurrent.KieExecutors;
+import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.io.KieResources;
 import org.kie.io.ResourceFactoryService;
 import org.kie.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.KieContainer;
-import org.kie.util.ServiceRegistryImpl;
 
 import java.io.File;
 
@@ -49,7 +49,7 @@ public class KieServicesImpl implements KieServices {
     /**
      * Returns KieContainer for the classpath
      */
-    public KieContainer newKieClasspathContainer() {
+    public KieContainer getKieClasspathContainer() {
         if ( classpathKContainer == null ) {
             // these are heavy to create, don't want to end up with two
             synchronized ( lock ) {

@@ -12,7 +12,7 @@ import org.drools.rule.*;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.Tuple;
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 

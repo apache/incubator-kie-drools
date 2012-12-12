@@ -25,7 +25,7 @@ import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
 
 import org.junit.Test;
-import org.kie.util.ClassLoaderUtil;
+import org.kie.internal.utils.ClassLoaderUtil;
 
 /**
  * @version $Id$

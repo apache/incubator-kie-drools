@@ -43,7 +43,7 @@ public class OpenQueryViewChangedEventListenerAdapter
         RowAdapter rowAdapter = new RowAdapter(rule,
                                                leftTuple);
         leftTuple.setObject( rowAdapter );
-        this.viewEventListener.rowAdded( rowAdapter );
+        this.viewEventListener.rowInserted( rowAdapter );
     }
 
     public void rowRemoved(final Rule rule,
@@ -51,7 +51,7 @@ public class OpenQueryViewChangedEventListenerAdapter
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         RowAdapter rowAdapter = (RowAdapter) leftTuple.getObject();
-        this.viewEventListener.rowRemoved( rowAdapter );
+        this.viewEventListener.rowDeleted( rowAdapter );
     }
 
     public void rowUpdated(final Rule rule,
