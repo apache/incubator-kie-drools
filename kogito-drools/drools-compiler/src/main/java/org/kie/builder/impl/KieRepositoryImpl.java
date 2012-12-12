@@ -8,9 +8,9 @@ import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
 import org.kie.builder.Results;
+import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.io.Resource;
 import org.kie.runtime.KieContainer;
-import org.kie.util.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

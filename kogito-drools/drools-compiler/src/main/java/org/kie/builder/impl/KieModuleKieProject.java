@@ -3,8 +3,8 @@ package org.kie.builder.impl;
 import org.drools.core.util.ClassUtils;
 import org.kie.builder.GAV;
 import org.kie.builder.KieRepository;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

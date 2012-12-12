@@ -3,7 +3,7 @@ package org.drools.compiler;
 import java.io.InputStream;
 
 import org.kie.builder.DecisionTableConfiguration;
-import org.kie.util.ServiceRegistryImpl;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class DecisionTableFactory {
     private static DecisionTableProvider provider;

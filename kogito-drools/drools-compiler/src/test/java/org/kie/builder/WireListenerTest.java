@@ -1,6 +1,7 @@
 package org.kie.builder;
 
 import org.junit.Test;
+import org.kie.KieServices;
 import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;

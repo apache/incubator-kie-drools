@@ -2,10 +2,10 @@ package org.kie.util;
 
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.Test;
+import org.kie.KieServices;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.builder.impl.InternalKieModule;

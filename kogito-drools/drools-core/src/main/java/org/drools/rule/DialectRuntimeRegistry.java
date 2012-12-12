@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.CompositeClassLoader;
 
 public class DialectRuntimeRegistry
     implements

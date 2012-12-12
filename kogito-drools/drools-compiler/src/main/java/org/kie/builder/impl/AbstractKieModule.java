@@ -16,11 +16,11 @@ import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.Results;
 import org.kie.definition.KnowledgePackage;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.io.ResourceTypeImpl;
-import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

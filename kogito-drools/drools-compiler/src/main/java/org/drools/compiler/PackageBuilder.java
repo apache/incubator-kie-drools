@@ -138,11 +138,11 @@ import org.kie.definition.type.FactField;
 import org.kie.definition.type.Modifies;
 import org.kie.definition.type.Position;
 import org.kie.definition.type.PropertyReactive;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceType;
 import org.kie.runtime.rule.Match;
-import org.kie.util.CompositeClassLoader;
 import org.xml.sax.SAXException;
 
 /**

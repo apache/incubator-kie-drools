@@ -1753,10 +1753,10 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                                                           foodUpdated.addAll( (Collection) row.get( "food" ) );
                                                       }
 
-                                                      public void rowRemoved(Row row) {
+                                                      public void rowDeleted(Row row) {
                                                       }
 
-                                                      public void rowAdded(Row row) {
+                                                      public void rowInserted(Row row) {
                                                           food.addAll( (Collection) row.get( "food" ) );
                                                       }
                                                   } );

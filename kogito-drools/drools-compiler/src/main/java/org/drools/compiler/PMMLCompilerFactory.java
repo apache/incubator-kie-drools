@@ -16,7 +16,7 @@
 
 package org.drools.compiler;
 
-import org.kie.util.ServiceRegistryImpl;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class PMMLCompilerFactory {
 

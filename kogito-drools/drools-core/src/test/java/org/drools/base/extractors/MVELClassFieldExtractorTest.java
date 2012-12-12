@@ -21,7 +21,7 @@ import java.util.Vector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.util.ClassLoaderUtil;
+import org.kie.internal.utils.ClassLoaderUtil;
 
 import static org.junit.Assert.*;
 

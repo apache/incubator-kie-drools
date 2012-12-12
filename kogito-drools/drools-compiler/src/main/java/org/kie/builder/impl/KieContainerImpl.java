@@ -96,12 +96,12 @@ public class KieContainerImpl
         return newKieSession(defaultKieSessionModel.getName(), environment);
     }
 
-    public StatelessKieSession newKieStatelessSession() {
+    public StatelessKieSession newStatelessKieSession() {
         KieSessionModel defaultKieSessionModel = kProject.getDefaultStatelessKieSession();
         if (defaultKieSessionModel == null) {
             new RuntimeException("Cannot find a defualt StatelessKieSession");
         }
-        return newKieStatelessSession(defaultKieSessionModel.getName());
+        return newStatelessKieSession(defaultKieSessionModel.getName());
     }
 
     public KieSession newKieSession(String kSessionName) {
@@ -124,7 +124,7 @@ public class KieContainerImpl
         return kSession;
     }
 
-    public StatelessKieSession newKieStatelessSession(String kSessionName) {
+    public StatelessKieSession newStatelessKieSession(String kSessionName) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
         if ( kSessionName == null ) {
             return null;

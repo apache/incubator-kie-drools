@@ -1,6 +1,6 @@
 package org.drools.marshalling.impl;
 
-import org.kie.util.ServiceRegistryImpl;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class ProcessMarshallerFactory {
 

@@ -2,9 +2,9 @@ package org.drools.cdi;
 
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
+import org.kie.KieServices;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieServices;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.builder.impl.InternalKieModule;
@@ -68,7 +68,7 @@ public class KieCDIExtension
     public void init() {
         KieServices ks = KieServices.Factory.get();
         gavs = new HashMap<GAV, KieContainer>();
-        classpathKContainer = (KieContainerImpl) ks.newKieClasspathContainer(); //new KieContainerImpl( kProject, null );
+        classpathKContainer = (KieContainerImpl) ks.getKieClasspathContainer(); //new KieContainerImpl( kProject, null );
         named = new HashMap<String, KieCDIExtension.KieCDIEntry>();
     }
 
@@ -569,7 +569,7 @@ public class KieCDIExtension
         }
 
         public StatelessKieSession create(CreationalContext ctx) {
-            return kContainer.newKieStatelessSession(kSessionModel.getName());
+            return kContainer.newStatelessKieSession(kSessionModel.getName());
         }
 
         public void destroy(StatelessKieSession kSession,

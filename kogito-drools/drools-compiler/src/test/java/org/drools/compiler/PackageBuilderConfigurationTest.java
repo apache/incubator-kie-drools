@@ -49,8 +49,8 @@ import org.junit.Test;
 import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.ResultSeverity;
 import org.kie.builder.conf.KBuilderSeverityOption;
+import org.kie.internal.utils.ChainedProperties;
 import org.kie.io.Resource;
-import org.kie.util.ChainedProperties;
 
 public class PackageBuilderConfigurationTest {
 

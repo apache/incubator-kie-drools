@@ -3,7 +3,7 @@ package org.kie.builder.impl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.CompositeClassLoader;
 
 public interface KieProject {
     

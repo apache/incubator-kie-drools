@@ -1,6 +1,6 @@
 package org.kie.builder.impl;
 
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.CompositeClassLoader;
 
 public class ProtoKieContainer {
     

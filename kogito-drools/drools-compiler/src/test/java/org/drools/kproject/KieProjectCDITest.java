@@ -12,7 +12,7 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.AfterClass;
 import org.junit.Test;
-import org.kie.builder.KieServices;
+import org.kie.KieServices;
 import org.kie.builder.impl.AbstractKieModule;
 import org.kie.builder.impl.KieServicesImpl;
 import org.kie.cdi.KBase;

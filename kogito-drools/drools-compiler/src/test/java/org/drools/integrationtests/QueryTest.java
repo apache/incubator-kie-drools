@@ -856,7 +856,7 @@ public class QueryTest extends CommonTestMethodBase {
                 updated.add( array );
             }
 
-            public void rowRemoved( Row row ) {
+            public void rowDeleted( Row row ) {
                 Object[] array = new Object[6];
                 array[0] = row.get( "stilton" );
                 array[1] = row.get( "cheddar" );
@@ -867,7 +867,7 @@ public class QueryTest extends CommonTestMethodBase {
                 removed.add( array );
             }
 
-            public void rowAdded( Row row ) {
+            public void rowInserted( Row row ) {
                 Object[] array = new Object[6];
                 array[0] = row.get( "stilton" );
                 array[1] = row.get( "cheddar" );
