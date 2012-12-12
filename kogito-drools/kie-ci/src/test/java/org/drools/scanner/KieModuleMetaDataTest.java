@@ -3,7 +3,7 @@ package org.drools.scanner;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.builder.GAV;
-import org.kie.builder.KieServices;
+import org.kie.KieServices;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;

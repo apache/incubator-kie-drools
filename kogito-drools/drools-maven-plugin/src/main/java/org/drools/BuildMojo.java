@@ -5,7 +5,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
-import org.kie.builder.KieServices;
+import org.kie.KieServices;
 import org.kie.builder.Message;
 import org.kie.builder.impl.KieContainerImpl;
 import org.kie.builder.impl.KieProject;

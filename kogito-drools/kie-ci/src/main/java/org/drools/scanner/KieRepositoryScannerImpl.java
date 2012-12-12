@@ -2,7 +2,6 @@ package org.drools.scanner;
 
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.kie.builder.GAV;
-import org.kie.builder.KieContainer;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieScanner;
 import org.kie.builder.Message;
@@ -11,6 +10,7 @@ import org.kie.builder.impl.InternalKieScanner;
 import org.kie.builder.impl.MemoryKieModule;
 import org.kie.builder.impl.ResultsImpl;
 import org.kie.builder.impl.ZipKieModule;
+import org.kie.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
