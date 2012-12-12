@@ -6,6 +6,7 @@ import org.kie.io.KieResources;
 import org.kie.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
+import org.kie.runtime.KieContainer;
 import org.kie.util.ServiceRegistryImpl;
 
 import java.io.File;

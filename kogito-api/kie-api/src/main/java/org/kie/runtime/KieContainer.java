@@ -1,9 +1,8 @@
-package org.kie.builder;
+package org.kie.runtime;
 
 import org.kie.KieBase;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.StatelessKieSession;
+import org.kie.builder.GAV;
+import org.kie.builder.Results;
 
 public interface KieContainer {
 
