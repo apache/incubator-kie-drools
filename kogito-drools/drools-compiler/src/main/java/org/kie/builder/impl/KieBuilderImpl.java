@@ -255,14 +255,21 @@ public class KieBuilderImpl
             // There's no kmodule.xml, create a defualt one
             kModuleModel = KieServices.Factory.get().newKieModuleModel();
         }
-                
+
+        if (setDefaultsforEmptyKieModule(kModuleModel)) {
+            kModuleModelXml = kModuleModel.toXML().getBytes();
+        }
+    }
+
+    static boolean setDefaultsforEmptyKieModule(KieModuleModel kModuleModel) {
         if ( kModuleModel != null && kModuleModel.getKieBaseModels().isEmpty() ) {
             // would be null if they pass a corrupted kModuleModel
             KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel("defaultKieBase").addPackage("*").setDefault(true);
             kieBaseModel.newKieSessionModel("defaultKieSession").setDefault(true);
             kieBaseModel.newKieSessionModel("defaultStatelessKieSession").setType(KieSessionModel.KieSessionType.STATELESS).setDefault(true);
-            kModuleModelXml = kModuleModel.toXML().getBytes();            
+            return true;
         }
+        return false;
     }
 
     public void buildPomModel() {

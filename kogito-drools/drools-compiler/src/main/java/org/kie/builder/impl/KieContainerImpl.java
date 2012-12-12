@@ -56,7 +56,7 @@ public class KieContainerImpl
     public KieBase getKieBase() {
         KieBaseModel defaultKieBaseModel = kProject.getDefaultKieBaseModel();
         if (defaultKieBaseModel == null) {
-            new RuntimeException("Cannot find a defualt KieBase");
+            throw new RuntimeException("Cannot find a defualt KieBase");
         }
         return getKieBase( defaultKieBaseModel.getName() );
     }
@@ -74,7 +74,7 @@ public class KieContainerImpl
                                                      msgs );
             if ( kBase == null ) {
                 // build error, throw runtime exception
-                new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
+                throw new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
             }
             if ( kBase != null ) {
                 kBases.put( kBaseName,
@@ -91,7 +91,7 @@ public class KieContainerImpl
     public KieSession newKieSession(Environment environment) {
         KieSessionModel defaultKieSessionModel = kProject.getDefaultKieSession();
         if (defaultKieSessionModel == null) {
-            new RuntimeException("Cannot find a defualt KieSession");
+            throw new RuntimeException("Cannot find a defualt KieSession");
         }
         return newKieSession(defaultKieSessionModel.getName(), environment);
     }
@@ -99,7 +99,7 @@ public class KieContainerImpl
     public StatelessKieSession newStatelessKieSession() {
         KieSessionModel defaultKieSessionModel = kProject.getDefaultStatelessKieSession();
         if (defaultKieSessionModel == null) {
-            new RuntimeException("Cannot find a defualt StatelessKieSession");
+            throw new RuntimeException("Cannot find a defualt StatelessKieSession");
         }
         return newStatelessKieSession(defaultKieSessionModel.getName());
     }
