@@ -31,7 +31,7 @@ import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 import org.kie.time.SessionClock;
 
 import java.util.ArrayList;
@@ -260,11 +260,11 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		throw new UnsupportedOperationException();
 	}
 
-	public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
+	public SessionEntryPoint getWorkingMemoryEntryPoint(String name) {
 		throw new UnsupportedOperationException();
 	}
 
-	public Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+	public Collection<? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
 		throw new UnsupportedOperationException();
 	}
 
