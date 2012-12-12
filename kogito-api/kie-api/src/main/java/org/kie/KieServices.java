@@ -1,5 +1,11 @@
-package org.kie.builder;
+package org.kie;
 
+import org.kie.builder.GAV;
+import org.kie.builder.KieBuilder;
+import org.kie.builder.KieFileSystem;
+import org.kie.builder.KieModuleModel;
+import org.kie.builder.KieRepository;
+import org.kie.builder.KieScanner;
 import org.kie.command.KieCommands;
 import org.kie.concurrent.KieExecutors;
 import org.kie.io.KieResources;
@@ -7,7 +13,6 @@ import org.kie.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.KieContainer;
-import org.kie.util.ServiceRegistryImpl;
 
 import java.io.File;
 
@@ -28,9 +33,9 @@ public interface KieServices {
     KieStoreServices getStoreServices();
     
     /**
-     * Returns KieContainer for the classpath
+     * Returns KieContainer for the classpath, this a global singleton
      */
-    KieContainer newKieClasspathContainer();
+    KieContainer getKieClasspathContainer();
     
     KieContainer newKieContainer(GAV gav);
     
@@ -50,8 +55,8 @@ public interface KieServices {
         private static KieServices INSTANCE;
 
         static {
-            try {
-                INSTANCE = ServiceRegistryImpl.getInstance().get( KieServices.class );
+            try {                
+                INSTANCE = ( KieServices ) Class.forName( KieServices.class.getName() + "impl" ).newInstance();
             } catch (Exception e) {
                 throw new RuntimeException("Unable to instance KieServices", e);
             }

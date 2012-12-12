@@ -16,9 +16,9 @@
 
 package org.kie;
 
+import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.util.ServiceRegistryImpl;
 
 import java.util.Properties;
 

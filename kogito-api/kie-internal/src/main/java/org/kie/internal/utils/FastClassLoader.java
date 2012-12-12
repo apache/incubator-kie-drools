@@ -1,4 +1,4 @@
-package org.kie.util;
+package org.kie.internal.utils;
 
 public interface FastClassLoader {
     public Class<?> fastFindClass(String name);

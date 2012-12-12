@@ -17,7 +17,7 @@
 package org.kie.marshalling;
 
 import org.kie.KieBase;
-import org.kie.util.ServiceRegistryImpl;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 
 /**

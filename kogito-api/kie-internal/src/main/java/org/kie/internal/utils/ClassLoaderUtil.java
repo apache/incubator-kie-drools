@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.util;
+package org.kie.internal.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
