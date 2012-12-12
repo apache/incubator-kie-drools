@@ -2,7 +2,7 @@ package org.drools.scanner;
 
 import org.apache.maven.project.MavenProject;
 import org.drools.scanner.embedder.EmbeddedPomParser;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.sonatype.aether.artifact.Artifact;
 
 import java.io.File;
@@ -51,8 +51,8 @@ class ArtifactResolver {
         return dependencies;
     }
 
-    public static ArtifactResolver getResolverFor(GAV gav, boolean allowDefaultPom) {
-        MavenProject mavenProject = getMavenProjectForGAV(gav);
+    public static ArtifactResolver getResolverFor(ReleaseId releaseId, boolean allowDefaultPom) {
+        MavenProject mavenProject = getMavenProjectForGAV(releaseId);
         return mavenProject == null ?
                 (allowDefaultPom ? new ArtifactResolver() : null) :
                 new ArtifactResolver(mavenProject);
@@ -67,8 +67,8 @@ class ArtifactResolver {
         return new ArtifactResolver(mavenProject);
     }
 
-    static MavenProject getMavenProjectForGAV(GAV gav) {
-        String artifactName = gav.getGroupId() + ":" + gav.getArtifactId() + ":pom:" + gav.getVersion();
+    static MavenProject getMavenProjectForGAV(ReleaseId releaseId) {
+        String artifactName = releaseId.getGroupId() + ":" + releaseId.getArtifactId() + ":pom:" + releaseId.getVersion();
         Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(artifactName);
         return artifact != null ? parseMavenPom(artifact.getFile()) : null;
     }

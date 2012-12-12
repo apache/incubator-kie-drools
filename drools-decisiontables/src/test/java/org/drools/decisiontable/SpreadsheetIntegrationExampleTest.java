@@ -67,7 +67,7 @@ public class SpreadsheetIntegrationExampleTest {
         assertTrue( kb.getResults().getMessages().isEmpty() );
 
         // get the session
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultGAV()).newKieSession();
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         return ksession;
     }
 

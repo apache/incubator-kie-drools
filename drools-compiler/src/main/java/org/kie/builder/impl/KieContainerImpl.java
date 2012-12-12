@@ -4,7 +4,7 @@ import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
@@ -43,13 +43,13 @@ public class KieContainerImpl
         kProject.init();
     }
 
-    public GAV getGAV() {
+    public ReleaseId getReleaseId() {
         return kProject.getGAV();
     }
 
-    public void updateToVersion(GAV gav) {
+    public void updateToVersion(ReleaseId releaseId) {
         kBases.clear();
-        this.kProject = new KieModuleKieProject( (InternalKieModule)kr.getKieModule(gav), kr );
+        this.kProject = new KieModuleKieProject( (InternalKieModule)kr.getKieModule(releaseId), kr );
         this.kProject.init();
     }
 

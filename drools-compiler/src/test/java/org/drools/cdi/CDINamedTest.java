@@ -1,48 +1,7 @@
 package org.drools.cdi;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.drools.cdi.example.CDIExamplesTest;
-import org.drools.cdi.example.Message;
-import org.drools.cdi.example.Message2;
-import org.drools.cdi.example.Message2Impl1;
-import org.drools.cdi.example.Message2Impl2;
-import org.drools.cdi.example.MessageImpl;
-import org.drools.cdi.example.MessageProducers;
-import org.drools.cdi.example.MessageProducers2;
-import org.drools.cdi.example.Msg;
-import org.drools.cdi.example.Msg1;
-import org.drools.cdi.example.Msg2;
-import org.drools.kproject.AbstractKnowledgeTest;
-import org.drools.kproject.KPTest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.KieBase;
-import org.kie.KieServices;
-import org.kie.KnowledgeBase;
-import org.kie.builder.KieRepository;
-import org.kie.cdi.KBase;
-import org.kie.cdi.KGAV;
-import org.kie.cdi.KSession;
-import org.kie.command.KieCommands;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.StatelessKieSession;
-
-import static org.junit.Assert.*;
 
 @RunWith(CDITestRunner.class)
 @Ignore
@@ -52,7 +11,7 @@ public class CDINamedTest {
 //    @Inject
 //    @KBase("jar1.KBase1")
 //    @Named("kb1")
-//    @KGAV(groupId    = "jar1", 
+//    @KReleaseId(groupId    = "jar1",
 //          artifactId = "art1", 
 //          version    = "1.0")
 //    private KieBase jar1KBase1kb1;
@@ -60,7 +19,7 @@ public class CDINamedTest {
 //    @Inject
 //    @KBase("jar1.KBase1")
 //    @Named("kb2")
-//    @KGAV(groupId    = "jar1", 
+//    @KReleaseId(groupId    = "jar1",
 //          artifactId = "art1", 
 //          version    = "1.0")
 //    private KieBase jar1KBase1kb2;    
@@ -68,14 +27,14 @@ public class CDINamedTest {
 //    @Inject
 //    @KBase("jar1.KBase1")
 //    @Named("kb2")
-//    @KGAV(groupId    = "jar1", 
+//    @KReleaseId(groupId    = "jar1",
 //          artifactId = "art1", 
 //          version    = "1.0")
 //    private KieBase jar1KBase1kb22;   
 //    
 //    @Inject
 //    @KSession("jar1.KSession1")  
-//    @KGAV( groupId    = "jar1", 
+//    @KReleaseId( groupId    = "jar1",
 //           artifactId = "art1", 
 //           version    = "1.0" )
 //    @Named("sks1")    
@@ -83,7 +42,7 @@ public class CDINamedTest {
 //    
 //    @Inject
 //    @KSession("jar1.KSession1")  
-//    @KGAV( groupId    = "jar1", 
+//    @KReleaseId( groupId    = "jar1",
 //           artifactId = "art1", 
 //           version    = "1.0" )
 //    @Named("sks2")    
@@ -91,7 +50,7 @@ public class CDINamedTest {
 //    
 //    @Inject
 //    @KSession("jar1.KSession1")  
-//    @KGAV( groupId    = "jar1", 
+//    @KReleaseId( groupId    = "jar1",
 //           artifactId = "art1", 
 //           version    = "1.0" )
 //    @Named("sks2")      
@@ -99,7 +58,7 @@ public class CDINamedTest {
 //    
 //    @Inject
 //    @KSession("jar1.KSession2")  
-//    @KGAV( groupId    = "jar1", 
+//    @KReleaseId( groupId    = "jar1",
 //           artifactId = "art1", 
 //           version    = "1.0" )
 //    @Named("ks1")    
@@ -107,7 +66,7 @@ public class CDINamedTest {
 //    
 //    @Inject
 //    @KSession("jar1.KSession2")  
-//    @KGAV( groupId    = "jar1", 
+//    @KReleaseId( groupId    = "jar1",
 //           artifactId = "art1", 
 //           version    = "1.0" )
 //    @Named("ks2")    
@@ -115,7 +74,7 @@ public class CDINamedTest {
 //    
 //    @Inject
 //    @KSession("jar1.KSession2")  
-//    @KGAV( groupId    = "jar1", 
+//    @KReleaseId( groupId    = "jar1",
 //           artifactId = "art1", 
 //           version    = "1.0" )
 //    @Named("ks2")      

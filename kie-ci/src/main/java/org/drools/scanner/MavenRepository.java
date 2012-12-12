@@ -1,7 +1,7 @@
 package org.drools.scanner;
 
 import org.apache.maven.project.MavenProject;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.impl.InternalKieModule;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
@@ -85,8 +85,8 @@ class MavenRepository {
         return artifactResult.getArtifact();
     }
 
-    public void deployArtifact(GAV gav, InternalKieModule kieModule, File pomfile) {
-        File jarFile = new File( System.getProperty( "java.io.tmpdir" ), gav + ".jar");
+    public void deployArtifact(ReleaseId releaseId, InternalKieModule kieModule, File pomfile) {
+        File jarFile = new File( System.getProperty( "java.io.tmpdir" ), releaseId + ".jar");
         try {
             FileOutputStream fos = new FileOutputStream(jarFile);
             fos.write(kieModule.getBytes());
@@ -95,11 +95,11 @@ class MavenRepository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        deployArtifact(gav, jarFile, pomfile);
+        deployArtifact(releaseId, jarFile, pomfile);
     }
 
-    public void deployArtifact(GAV gav, File jar, File pomfile) {
-        Artifact jarArtifact = new DefaultArtifact( gav.getGroupId(), gav.getArtifactId(), "jar", gav.getVersion() );
+    public void deployArtifact(ReleaseId releaseId, File jar, File pomfile) {
+        Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(), releaseId.getArtifactId(), "jar", releaseId.getVersion() );
         jarArtifact = jarArtifact.setFile( jar );
 
         Artifact pomArtifact = new SubArtifact( jarArtifact, "", "pom" );

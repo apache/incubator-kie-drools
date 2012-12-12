@@ -8,16 +8,16 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.drools.core.util.IoUtils;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModuleModel;
 
 public class FileKieModule extends AbstractKieModule implements InternalKieModule {
     private final File             file;   
 
-    public FileKieModule(GAV gav,
+    public FileKieModule(ReleaseId releaseId,
                       KieModuleModel kieProject,
                       File file) {
-        super( gav, kieProject );
+        super(releaseId, kieProject );
         this.file = file;
     }
 
@@ -59,7 +59,7 @@ public class FileKieModule extends AbstractKieModule implements InternalKieModul
     }
 
     public String toString() {
-        return "FileKieModule[ GAV=" + getGAV() + "file=" + file + "]";
+        return "FileKieModule[ ReleaseId=" + getReleaseId() + "file=" + file + "]";
     }
 
 }
