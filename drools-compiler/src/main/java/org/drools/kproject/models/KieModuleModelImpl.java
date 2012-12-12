@@ -97,11 +97,11 @@ public class KieModuleModelImpl implements KieModuleModel {
 
     private static final String KMODULE_XSD =
             "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
-            "         xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">";
+            "         xmlns=\"http://jboss.org/kie/6.0.0/kmodule\""; // missed end >, so we can cater for />
 
     public String toXML() {
         String xml = MARSHALLER.toXML(this);
-        return KMODULE_XSD + xml.substring("<kmodule>".length());
+        return KMODULE_XSD + xml.substring("<kmodule".length());  // missed end >, so we can cater for />
     }
 
     public static KieModuleModel fromXML(InputStream kModuleStream) {

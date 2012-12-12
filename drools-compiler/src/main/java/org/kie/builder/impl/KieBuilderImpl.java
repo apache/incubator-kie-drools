@@ -254,10 +254,14 @@ public class KieBuilderImpl
         } else {
             // There's no kmodule.xml, create a defualt one
             kModuleModel = KieServices.Factory.get().newKieModuleModel();
+        }
+                
+        if ( kModuleModel != null && kModuleModel.getKieBaseModels().isEmpty() ) {
+            // would be null if they pass a corrupted kModuleModel
             KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel("defaultKieBase").addPackage("*").setDefault(true);
             kieBaseModel.newKieSessionModel("defaultKieSession").setDefault(true);
             kieBaseModel.newKieSessionModel("defaultStatelessKieSession").setType(KieSessionModel.KieSessionType.STATELESS).setDefault(true);
-            kModuleModelXml = kModuleModel.toXML().getBytes();
+            kModuleModelXml = kModuleModel.toXML().getBytes();            
         }
     }
 
