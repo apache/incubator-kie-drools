@@ -329,7 +329,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
     private void initProcessActivationListener() {
     	kruntime.addEventListener(new DefaultAgendaEventListener() {
-			public void activationCreated(MatchCreatedEvent event) {
+			public void matchCreated(MatchCreatedEvent event) {
                 String ruleFlowGroup = ((Rule) event.getMatch().getRule()).getRuleFlowGroup();
                 if ( "DROOLS_SYSTEM".equals( ruleFlowGroup ) ) {
                     // new activations of the rule associate with a state node
