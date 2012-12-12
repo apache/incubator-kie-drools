@@ -12,7 +12,7 @@ import org.drools.core.util.FileManager;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieModuleModel;
@@ -23,7 +23,7 @@ import org.kie.builder.impl.KieFileSystemImpl;
 import org.kie.builder.impl.MemoryKieModule;
 import org.kie.KieBase;
 import org.kie.KieServices;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;
@@ -111,7 +111,7 @@ public class AbstractKnowledgeTest {
         KieModuleModel kproj = new KieModuleModelImpl();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
-                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(namespace + ".KSession1")
@@ -123,7 +123,7 @@ public class AbstractKnowledgeTest {
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         KieBaseModel kieBaseModel2 = kproj.newKieBaseModel(namespace + ".KBase2")
-                .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
+                .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         KieSessionModel ksession3 = kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
@@ -133,7 +133,7 @@ public class AbstractKnowledgeTest {
         KieBaseModel kieBaseModel3 = kproj.newKieBaseModel(namespace + ".KBase3")
                 .addInclude( kieBaseModel1.getName() )
                 .addInclude( kieBaseModel2.getName() )
-                .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
+                .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         KieSessionModel ksession4 = kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
@@ -146,8 +146,8 @@ public class AbstractKnowledgeTest {
         kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
         kfs.writeKModuleXML( ((KieModuleModelImpl)kproj).toXML()  );
         
-        GAV gav = ks.newGav( namespace, "art1", version );
-        kfs.generateAndWritePomXML( gav );        
+        ReleaseId releaseId = ks.newReleaseId(namespace, "art1", version);
+        kfs.generateAndWritePomXML(releaseId);
 
         String kBase1R1 = getRule( namespace + ".test1", "rule1", version );
         String kBase1R2 = getRule( namespace + ".test1", "rule2", version );
@@ -169,7 +169,7 @@ public class AbstractKnowledgeTest {
         KieBuilder kBuilder = ks.newKieBuilder( kfs );
         
         kBuilder.buildAll();
-        if ( kBuilder.getResults().hasMessages( Level.ERROR  ) ) {
+        if ( kBuilder.getResults().hasMessages(Level.ERROR) ) {
             fail( "should not have errors" + kBuilder.getResults() );
         }
         MemoryKieModule kieModule = ( MemoryKieModule ) kBuilder.getKieModule();

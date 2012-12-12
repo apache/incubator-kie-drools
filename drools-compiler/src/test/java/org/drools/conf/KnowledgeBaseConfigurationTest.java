@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.AlphaThresholdOption;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.CompositeKeyDepthOption;
 import org.kie.conf.ConsequenceExceptionHandlerOption;
 import org.kie.conf.EventProcessingOption;
@@ -224,25 +224,25 @@ public class KnowledgeBaseConfigurationTest {
     @Test
     public void testAssertBehaviorConfiguration() {
         // setting the option using the type safe method
-        config.setOption( AssertBehaviorOption.EQUALITY );
+        config.setOption( EqualityBehaviorOption.EQUALITY );
 
         // checking the type safe getOption() method
-        assertEquals( AssertBehaviorOption.EQUALITY,
-                      config.getOption( AssertBehaviorOption.class ) );
+        assertEquals( EqualityBehaviorOption.EQUALITY,
+                      config.getOption( EqualityBehaviorOption.class ) );
         // checking the string based getProperty() method
         assertEquals( "equality",
-                      config.getProperty( AssertBehaviorOption.PROPERTY_NAME ) );
+                      config.getProperty( EqualityBehaviorOption.PROPERTY_NAME ) );
 
         // setting the options using the string based setProperty() method
-        config.setProperty( AssertBehaviorOption.PROPERTY_NAME,
+        config.setProperty( EqualityBehaviorOption.PROPERTY_NAME,
                             "identity" );
         
         // checking the type safe getOption() method
-        assertEquals( AssertBehaviorOption.IDENTITY,
-                      config.getOption( AssertBehaviorOption.class ) );
+        assertEquals( EqualityBehaviorOption.IDENTITY,
+                      config.getOption( EqualityBehaviorOption.class ) );
         // checking the string based getProperty() method
         assertEquals( "identity",
-                      config.getProperty( AssertBehaviorOption.PROPERTY_NAME ) );
+                      config.getProperty( EqualityBehaviorOption.PROPERTY_NAME ) );
     }
     
     @Test

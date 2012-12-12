@@ -50,7 +50,7 @@ import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.definition.KnowledgePackage;
 import org.kie.event.rule.MatchCreatedEvent;
@@ -1828,7 +1828,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        kbconf.setOption( AssertBehaviorOption.IDENTITY );
+        kbconf.setOption( EqualityBehaviorOption.IDENTITY );
         final KnowledgeBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_AssertBehaviorOnEntryPoints.drl" );
 
         final StatefulKnowledgeSession ksession = kbase1.newStatefulKnowledgeSession();
@@ -1876,7 +1876,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        kbconf.setOption( AssertBehaviorOption.EQUALITY );
+        kbconf.setOption( EqualityBehaviorOption.EQUALITY );
         final KnowledgeBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_AssertBehaviorOnEntryPoints.drl" );
 
         final StatefulKnowledgeSession ksession1 = kbase1.newStatefulKnowledgeSession();

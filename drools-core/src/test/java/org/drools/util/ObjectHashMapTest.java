@@ -19,13 +19,11 @@ package org.drools.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 
@@ -33,15 +31,10 @@ import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.EqualityAssertMapComparator;
-import org.drools.core.util.AbstractHashTable.EqualityEquals;
 import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
-import org.drools.core.util.TripleImpl;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.core.util.TripleStoreTest.Individual;
-import org.drools.reteoo.ReteooRuleBase;
 
 public class ObjectHashMapTest {
     @Test
@@ -140,7 +133,7 @@ public class ObjectHashMapTest {
     @Test
     public void testEqualityWithResize() {        
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( AssertBehaviorOption.EQUALITY );
+        kconf.setOption( EqualityBehaviorOption.EQUALITY );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         
@@ -183,7 +176,7 @@ public class ObjectHashMapTest {
     @Test
     public void testIdentityWithResize() {        
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( AssertBehaviorOption.IDENTITY );
+        kconf.setOption( EqualityBehaviorOption.IDENTITY );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         

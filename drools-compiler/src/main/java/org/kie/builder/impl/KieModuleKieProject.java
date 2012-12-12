@@ -1,7 +1,7 @@
 package org.kie.builder.impl;
 
 import org.drools.core.util.ClassUtils;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieRepository;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
@@ -21,7 +21,7 @@ public class KieModuleKieProject extends AbstractKieProject {
 
     private static final Logger                  log               = LoggerFactory.getLogger( KieModuleKieProject.class );
 
-    private Map<GAV, InternalKieModule>          kieModules;
+    private Map<ReleaseId, InternalKieModule>          kieModules;
 
     private final Map<String, InternalKieModule> kJarFromKBaseName = new HashMap<String, InternalKieModule>();
 
@@ -38,9 +38,9 @@ public class KieModuleKieProject extends AbstractKieProject {
 
     public void init() {
         if ( kieModules == null ) {
-            kieModules = new HashMap<GAV, InternalKieModule>();
+            kieModules = new HashMap<ReleaseId, InternalKieModule>();
             kieModules.putAll( kieModule.getDependencies() );
-            kieModules.put( kieModule.getGAV(),
+            kieModules.put( kieModule.getReleaseId(),
                             kieModule );
             indexParts( kieModules, kJarFromKBaseName );
             initClassLaoder();
@@ -63,16 +63,16 @@ public class KieModuleKieProject extends AbstractKieProject {
         }
     }
 
-    public GAV getGAV() {
-        return kieModule.getGAV();
+    public ReleaseId getGAV() {
+        return kieModule.getReleaseId();
     }
 
     public InternalKieModule getKieModuleForKBase(String kBaseName) {
-        return this.kJarFromKBaseName.get( kBaseName );
+        return this.kJarFromKBaseName.get(kBaseName);
     }
 
     public boolean kieBaseExists(String kBaseName) {
-        return kBaseModels.containsKey( kBaseName );
+        return kBaseModels.containsKey(kBaseName);
     }
 
     @Override

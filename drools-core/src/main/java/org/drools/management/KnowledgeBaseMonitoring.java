@@ -53,7 +53,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
-import org.kie.management.KBaseConfigurationMonitorMBean;
+import org.kie.management.KieBaseConfigurationMonitorMBean;
 import org.kie.management.ObjectTypeNodeMonitorMBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -242,9 +242,9 @@ public class KnowledgeBaseMonitoring
                 }
             }
         }
-        final KBaseConfigurationMonitor kbcm = new KBaseConfigurationMonitor( kbase.getConfiguration() );
+        final KieBaseConfigurationMonitor kbcm = new KieBaseConfigurationMonitor( kbase.getConfiguration() );
         try {
-            final StandardMBean adapter = new StandardMBean(kbcm, KBaseConfigurationMonitorMBean.class);
+            final StandardMBean adapter = new StandardMBean(kbcm, KieBaseConfigurationMonitorMBean.class);
             ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=Configuration" );
             DroolsManagementAgent.getInstance().registerMBean( kbase,
                                                                adapter,

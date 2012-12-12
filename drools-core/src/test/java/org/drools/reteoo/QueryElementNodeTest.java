@@ -17,17 +17,11 @@
 package org.drools.reteoo;
 
 import org.drools.DroolsTestCase;
-import org.drools.FactException;
-import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
 import org.drools.base.DroolsQuery;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.reteoo.EvalConditionNode.EvalMemory;
-import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
@@ -36,7 +30,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -57,7 +50,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
                                               ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
 
         this.context = new PropagationContextImpl( 0,
-                                                   PropagationContext.ASSERTION,
+                                                   PropagationContext.INSERTION,
                                                    null,
                                                    null,
                                                    null );

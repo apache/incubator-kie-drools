@@ -560,7 +560,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 //
 //        knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
 //            
-//        session = knowledgeBase.newStatefulKnowledgeSession();
+//        session = knowledgeBase.newKieSession();
 //        WorkingMemoryEventListener wmel = Mockito.mock( WorkingMemoryEventListener.class );
 //        session.addEventListener( wmel );
 //            

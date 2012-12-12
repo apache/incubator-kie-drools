@@ -331,7 +331,7 @@ public class ReteDslTestEngineTest {
         assertNotNull( join1 );
 
         PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.ASSERTION,
+                                                                 PropagationContext.INSERTION,
                                                                  null,
                                                                  null,
                                                                  null );

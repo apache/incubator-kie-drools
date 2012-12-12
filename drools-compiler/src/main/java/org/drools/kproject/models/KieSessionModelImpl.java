@@ -121,6 +121,16 @@ public class KieSessionModelImpl
         return listeners;
     }
 
+    private List<ListenerModel> getListenerModels(ListenerModel.Kind kind) {
+        List<ListenerModel> listeners = new ArrayList<ListenerModel>();
+        for (ListenerModel listener : getListenerModels()) {
+            if (listener.getKind() == kind) {
+                listeners.add(listener);
+            }
+        }
+        return listeners;
+    }
+
     private void addListenerModel(ListenerModel listener) {
         listeners.add(listener);
     }
@@ -153,19 +163,29 @@ public class KieSessionModelImpl
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
             KieSessionModelImpl kSession = (KieSessionModelImpl) value;
             writer.addAttribute("name", kSession.getName());
-            writer.addAttribute("type", kSession.getType().toString().toUpperCase() );
+            writer.addAttribute("type", kSession.getType().toString().toLowerCase() );
             writer.addAttribute( "default", Boolean.toString(kSession.isDefault()) );
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
             if (kSession.getScope() != null) {
-                writer.addAttribute("scope", kSession.getScope().toString() );
-            }            
-            for (ListenerModel listener : kSession.getListenerModels()) {
-                writeObject(writer, context, listener.getKind().toString(), listener);
+                writer.addAttribute("scope", kSession.getScope() );
             }
-            for (WorkItemHandlerModel wih : kSession.getWorkItemHandelerModels()) {
-                writeObject(writer, context, "workItemHandler", wih);
+
+            writeObjectList(writer, context, "workItemHandlers", "workItemHandler", kSession.getWorkItemHandelerModels());
+
+            if (!kSession.getListenerModels().isEmpty()) {
+                writer.startNode("listeners");
+                for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER)) {
+                    writeObject(writer, context, listener.getKind().toString(), listener);
+                }
+                for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.AGENDA_EVENT_LISTENER)) {
+                    writeObject(writer, context, listener.getKind().toString(), listener);
+                }
+                for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.PROCESS_EVENT_LISTENER)) {
+                    writeObject(writer, context, listener.getKind().toString(), listener);
+                }
+                writer.endNode();
             }
         }
 
@@ -191,15 +211,22 @@ public class KieSessionModelImpl
                 public void onNode(HierarchicalStreamReader reader,
                                    String name,
                                    String value) {
-                    if ( "agendaEventListener".equals( name ) || "workingMemoryEventListener".equals( name ) || "processEventListener".equals( name ) ) {
-                        ListenerModelImpl listener = readObject(reader, context, ListenerModelImpl.class);
-                        listener.setKSession( kSession );
-                        listener.setKind(ListenerModel.Kind.fromString(name));
-                        kSession.addListenerModel(listener);
-                    } else if ( "workItemHandler".equals( name ) ) {
-                        WorkItemHandlerModelImpl wih = readObject(reader, context, WorkItemHandlerModelImpl.class);
-                        wih.setKSession( kSession );
-                        kSession.addWorkItemHandelerModel(wih);
+                    if ("listeners".equals( name )) {
+                        while (reader.hasMoreChildren()) {
+                            reader.moveDown();
+                            String nodeName = reader.getNodeName();
+                            ListenerModelImpl listener = readObject(reader, context, ListenerModelImpl.class);
+                            listener.setKSession( kSession );
+                            listener.setKind(ListenerModel.Kind.fromString(nodeName));
+                            kSession.addListenerModel(listener);
+                            reader.moveUp();
+                        }
+                    } else if ( "workItemHandlers".equals( name ) ) {
+                        List<WorkItemHandlerModelImpl> wihs = readObjectList(reader, context, WorkItemHandlerModelImpl.class);
+                        for (WorkItemHandlerModelImpl wih : wihs) {
+                            wih.setKSession( kSession );
+                            kSession.addWorkItemHandelerModel(wih);
+                        }
                     }
                 }
             } );

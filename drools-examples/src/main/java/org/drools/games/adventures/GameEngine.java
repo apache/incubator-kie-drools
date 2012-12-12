@@ -8,7 +8,7 @@ import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 import org.mvel2.MVEL;
@@ -97,7 +97,7 @@ public class GameEngine {
         }
 
         KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbaseConf.setOption( AssertBehaviorOption.EQUALITY );
+        kbaseConf.setOption( EqualityBehaviorOption.EQUALITY );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

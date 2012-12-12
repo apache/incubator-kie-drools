@@ -2,22 +2,14 @@ package org.drools.cdi;
 
 import javax.inject.Inject;
 
-import org.drools.kproject.AbstractKnowledgeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.KieBase;
 import org.kie.KieServices;
 import org.kie.builder.KieRepository;
-import org.kie.cdi.KBase;
-import org.kie.cdi.KGAV;
-import org.kie.cdi.KSession;
 import org.kie.command.KieCommands;
 import org.kie.io.KieResources;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
 
 import static org.junit.Assert.*;
 
@@ -64,7 +56,7 @@ public class KieServicesInjectionTest {
     @Test
     public void testKieRepositoryInjection() {
         assertNotNull( kr );
-        assertNotNull( kr.getDefaultGAV() );
+        assertNotNull( kr.getDefaultReleaseId() );
     }
     
     

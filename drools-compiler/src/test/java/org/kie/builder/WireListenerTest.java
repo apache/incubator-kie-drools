@@ -27,9 +27,9 @@ public class WireListenerTest {
     public void testWireListener() throws Exception {
         KieServices ks = KieServices.Factory.get();
 
-        GAV gav = ks.newGav("org.kie", "listener-test", "1.0-SNAPSHOT");
-        build(ks, gav);
-        KieContainer kieContainer = ks.newKieContainer(gav);
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "listener-test", "1.0-SNAPSHOT");
+        build(ks, releaseId);
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         KieSession ksession = kieContainer.newKieSession();
         ksession.fireAllRules();
@@ -39,7 +39,7 @@ public class WireListenerTest {
         assertEquals(1, retractEvents.size());
     }
 
-    private void build(KieServices ks, GAV gav) throws IOException {
+    private void build(KieServices ks, ReleaseId releaseId) throws IOException {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieSessionModel ksession1 = kproj.newKieBaseModel("KBase1").newKieSessionModel("KSession1").setDefault(true);
@@ -48,7 +48,7 @@ public class WireListenerTest {
 
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML())
-           .writePomXML( generatePomXml(gav) )
+           .writePomXML( generatePomXml(releaseId) )
            .write("src/main/resources/KBase1/rules.drl", createDRL());
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
