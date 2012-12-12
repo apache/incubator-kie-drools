@@ -16,7 +16,7 @@
 
 package org.drools.runtime.help.impl;
 
-import org.kie.runtime.help.BatchExecutionHelperProvider;
+import org.kie.runtime.helper.BatchExecutionHelperProvider;
 
 import com.thoughtworks.xstream.XStream;
 
