@@ -55,10 +55,10 @@ import org.kie.builder.conf.MultiValueKnowledgeBuilderOption;
 import org.kie.builder.conf.ProcessStringEscapesOption;
 import org.kie.builder.conf.PropertySpecificOption;
 import org.kie.builder.conf.SingleValueKnowledgeBuilderOption;
+import org.kie.internal.utils.ChainedProperties;
+import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.runtime.rule.AccumulateFunction;
-import org.kie.util.ChainedProperties;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
 
 /**
  * This class configures the package compiler.

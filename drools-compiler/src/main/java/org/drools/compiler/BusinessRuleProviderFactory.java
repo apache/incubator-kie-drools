@@ -17,7 +17,7 @@
 package org.drools.compiler;
 
 import org.drools.CheckedDroolsException;
-import org.kie.util.ServiceRegistryImpl;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class BusinessRuleProviderFactory {
 

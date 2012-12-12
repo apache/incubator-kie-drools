@@ -37,7 +37,7 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.kie.definition.process.Process;
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.CompositeClassLoader;
 
 public interface InternalRuleBase
     extends

@@ -34,9 +34,9 @@ import java.util.List;
 
 import org.drools.core.util.StringUtils;
 import org.drools.io.internal.InternalResource;
+import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
-import org.kie.util.ClassLoaderUtil;
 
 /**
  * Borrowed gratuitously from Spring under ASL2.0.

@@ -18,8 +18,8 @@ package org.drools.core.util;
 
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.internal.utils.CompositeClassLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

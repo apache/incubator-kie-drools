@@ -96,8 +96,8 @@ import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.definition.type.FactField;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.internal.utils.CompositeClassLoader;
 
 public class PackageBuilderTest extends DroolsTestCase {
     

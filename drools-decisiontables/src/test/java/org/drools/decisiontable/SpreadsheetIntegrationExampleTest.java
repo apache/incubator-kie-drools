@@ -18,11 +18,11 @@ package org.drools.decisiontable;
 
 import org.acme.insurance.launcher.PricingRuleLauncher;
 import org.junit.Test;
+import org.kie.KieServices;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieServices;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
