@@ -20,7 +20,11 @@
             </xsd:sequence>
             <xsd:attribute name="name" use="required" type="xsd:ID" />
             <xsd:attribute name="includes" type="xsd:string" />
-            <xsd:attribute name="insertBehaviour" type="insertBehaviorEnum" />
+            <xsd:attribute name="packages" type="xsd:string" />
+            <xsd:attribute name="default" type="xsd:boolean" />
+            <xsd:attribute name="scope" type="xsd:string" />
+            <xsd:attribute name="equalsBehavior" type="insertBehaviorEnum" />
+            <xsd:attribute name="eventProcessingMode" type="eventModeEnum" />
         </xsd:complexType>
     </xsd:element>
 
@@ -36,8 +40,9 @@
 			</xsd:sequence>
 			<xsd:attribute name="name" use="required" type="xsd:ID" />
 			<xsd:attribute name="type" type="ksessionType" />
+      <xsd:attribute name="default" type="xsd:boolean" />
+      <xsd:attribute name="scope" type="xsd:string" />
 			<xsd:attribute name="clockType" type="clockTypeEnum" />
-			<xsd:attribute name="eventMode" type="eventModeEnum" />
 		</xsd:complexType>
 	</xsd:element>
 
@@ -101,29 +106,29 @@
 
 	<xsd:simpleType name="ksessionType">
 		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="STATELESS" />
-			<xsd:enumeration value="STATEFUL" />
+			<xsd:enumeration value="stateless" />
+			<xsd:enumeration value="stateful" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
 	<xsd:simpleType name="eventModeEnum">
 		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="STREAM" />
-			<xsd:enumeration value="CLOUD" />
+			<xsd:enumeration value="stream" />
+			<xsd:enumeration value="cloud" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
 	<xsd:simpleType name="insertBehaviorEnum">
 		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="IDENTITY" />
-			<xsd:enumeration value="EQUALITY" />
+			<xsd:enumeration value="identity" />
+			<xsd:enumeration value="equality" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
 	<xsd:simpleType name="clockTypeEnum">
 		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="REALTIME" />
-			<xsd:enumeration value="PSEUDO" />
+			<xsd:enumeration value="realtime" />
+			<xsd:enumeration value="pseudo" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
