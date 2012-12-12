@@ -36,7 +36,7 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
-                     "    kcontext.getKnowledgeRuntime().halt();\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "rule rule3 ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +

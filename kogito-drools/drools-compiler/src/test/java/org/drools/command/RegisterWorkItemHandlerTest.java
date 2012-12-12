@@ -31,7 +31,7 @@ public class RegisterWorkItemHandlerTest {
                 "then \n" +
                 "  WorkItem wi = new WorkItemImpl(); \n" +
                 "  wi.setName( \"wihandler\" ); \n" +
-                "  DefaultWorkItemManager wim = ( DefaultWorkItemManager ) kcontext.getKnowledgeRuntime().getWorkItemManager(); \n" +
+                "  DefaultWorkItemManager wim = ( DefaultWorkItemManager ) kcontext.getKieRuntime().getWorkItemManager(); \n" +
                 "  wim.internalExecuteWorkItem(wi); \n" +
                 "end \n";
      
