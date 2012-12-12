@@ -14,9 +14,9 @@ import org.drools.kproject.KieProjectCDITest.KPTestLiteral;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;
-import org.kie.builder.KieContainer;
 import org.kie.builder.impl.ClasspathKieProject;
 import org.kie.builder.impl.KieContainerImpl;
+import org.kie.runtime.KieContainer;
 
 public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
 
