@@ -459,7 +459,7 @@ public class ProtobufInputMarshaller {
         ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) handle.getEntryPoint()).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(),
                                                                                                                                                      object );
         final PropagationContext propagationContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
-                                                                                  PropagationContext.ASSERTION,
+                                                                                  PropagationContext.INSERTION,
                                                                                   null,
                                                                                   null,
                                                                                   handle,

@@ -1,6 +1,6 @@
 package org.drools.scanner;
 
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.sonatype.aether.artifact.Artifact;
 
 import java.io.File;
@@ -30,11 +30,11 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private URLClassLoader classLoader;
 
-    private GAV gav;
+    private ReleaseId releaseId;
 
-    public KieModuleMetaDataImpl(GAV gav) {
-        this.artifactResolver = getResolverFor(gav, false);
-        this.gav = gav;
+    public KieModuleMetaDataImpl(ReleaseId releaseId) {
+        this.artifactResolver = getResolverFor(releaseId, false);
+        this.releaseId = releaseId;
         init();
     }
 
@@ -77,8 +77,8 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     private void init() {
-        if (gav != null) {
-            addArtifact(artifactResolver.resolveArtifact(gav.toString()));
+        if (releaseId != null) {
+            addArtifact(artifactResolver.resolveArtifact(releaseId.toString()));
         }
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
             addArtifact(artifactResolver.resolveArtifact(dep.toString()));

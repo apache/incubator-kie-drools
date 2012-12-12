@@ -73,7 +73,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         this.rule = new Rule( "test-rule" );
         this.context = new PropagationContextImpl( 0,
-                                                   PropagationContext.ASSERTION, null, null, null );
+                                                   PropagationContext.INSERTION, null, null, null );
         this.workingMemory = new ReteooWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
@@ -258,13 +258,13 @@ public class JoinNodeTest extends DroolsTestCase {
 
         this.node.assertObject( f0,
                                 new PropagationContextImpl( 0,
-                                                            PropagationContext.ASSERTION, null, null, f0 ),
+                                                            PropagationContext.INSERTION, null, null, f0 ),
                                 this.workingMemory );
 
         // assert tuple
         this.node.assertLeftTuple( tuple0,
                                    new PropagationContextImpl( 0,
-                                                               PropagationContext.ASSERTION, null, null, f0 ),
+                                                               PropagationContext.INSERTION, null, null, f0 ),
                                    this.workingMemory );
 
         assertEquals( 1,
@@ -572,11 +572,11 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testSlotSpecific() {
         PropagationContext contextPassAll = new PropagationContextImpl(0,
-                PropagationContext.ASSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, Long.MAX_VALUE);
+                PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, Long.MAX_VALUE);
         PropagationContext contextPassNothing = new PropagationContextImpl(0,
-                PropagationContext.ASSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 0);
+                PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 0);
         PropagationContext contextPass2And3 = new PropagationContextImpl(0,
-                PropagationContext.ASSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 6);
+                PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 6);
 
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
         when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);

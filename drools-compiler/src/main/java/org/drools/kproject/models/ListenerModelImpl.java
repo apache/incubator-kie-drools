@@ -71,6 +71,7 @@ public class ListenerModelImpl implements ListenerModel {
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
             ListenerModelImpl listener = (ListenerModelImpl) value;
             writer.addAttribute("type", listener.getType());
+            /* TODO make qualifiers working properly before readd them to the xml
             QualifierModelImpl qualifier = (QualifierModelImpl)listener.getQualifierModel();
             if (qualifier != null) {
                 if (qualifier.isSimple()) {
@@ -79,11 +80,13 @@ public class ListenerModelImpl implements ListenerModel {
                     writeObject(writer, context, "qualifier", qualifier);
                 }
             }
+            */
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final ListenerModelImpl listener = new ListenerModelImpl();
             listener.setType(reader.getAttribute("type"));
+            /* TODO make qualifiers working properly before readd them to the xml
             String qualifierType = reader.getAttribute("qualifier");
             if (qualifierType != null) {
                 listener.newQualifierModel(qualifierType);
@@ -99,6 +102,7 @@ public class ListenerModelImpl implements ListenerModel {
                     }
                 }
             } );
+            */
             return listener;
         }
     }

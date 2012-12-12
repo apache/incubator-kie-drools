@@ -65,7 +65,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     public void setUp() throws Exception {
         this.rule = new Rule( "test-rule" );
         this.context = new PropagationContextImpl( 0,
-                                                   PropagationContext.ASSERTION,
+                                                   PropagationContext.INSERTION,
                                                    null,
                                                    null,
                                                    null );
@@ -385,7 +385,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         // assert tuple, should not add to left memory, since we are in sequential mode
         this.node.assertLeftTuple( tuple0,
                                    new PropagationContextImpl( 0,
-                                                               PropagationContext.ASSERTION,
+                                                               PropagationContext.INSERTION,
                                                                null,
                                                                null,
                                                                f0 ),
@@ -404,7 +404,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                 true );
         this.node.assertLeftTuple( tuple1,
                                    new PropagationContextImpl( 0,
-                                                               PropagationContext.ASSERTION,
+                                                               PropagationContext.INSERTION,
                                                                null,
                                                                null,
                                                                f1 ),

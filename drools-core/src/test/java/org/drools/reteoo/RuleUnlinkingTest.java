@@ -95,7 +95,7 @@ public class RuleUnlinkingTest {
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
         buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
 
-        context = new PropagationContextImpl( 0, PropagationContext.ASSERTION, null, null, null );
+        context = new PropagationContextImpl( 0, PropagationContext.INSERTION, null, null, null );
 
         ObjectTypeNode otn = new ObjectTypeNode( 2, null, new ClassObjectType( String.class ), buildContext );
         liaNode = new LeftInputAdapterNode( 3, otn, buildContext );

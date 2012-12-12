@@ -98,7 +98,7 @@ public class LinkingTest {
         for ( int i = 0; i < 29; i++ ) {
             wm.insert(  new C(i) );
         }        
-        //StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        //StatefulKnowledgeSession ksession = kbase.newKieSession();
         
         LeftInputAdapterNode aNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];                        
         JoinNode bNode = ( JoinNode) aNode.getSinkPropagator().getSinks()[0];        

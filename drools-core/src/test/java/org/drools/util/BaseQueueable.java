@@ -133,7 +133,7 @@ public class BaseQueueable
         return null;
     }
 
-    public List<String> getDeclarationIDs() {
+    public List<String> getDeclarationIds() {
         return null;
     }
 

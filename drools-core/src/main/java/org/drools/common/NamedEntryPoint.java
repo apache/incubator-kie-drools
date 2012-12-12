@@ -177,7 +177,7 @@ public class NamedEntryPoint
             }
             
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.ASSERTION,
+                                                                                      PropagationContext.INSERTION,
                                                                                       rule,
                                                                                       (activation == null) ? null : activation.getTuple(),
                                                                                       handle,
@@ -341,7 +341,7 @@ public class NamedEntryPoint
             activation.getPropagationContext().releaseResources();
         }
         final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
-                                                                                  PropagationContext.ASSERTION,
+                                                                                  PropagationContext.INSERTION,
                                                                                   rule,
                                                                                   (activation == null) ? null : activation.getTuple(),
                                                                                   handle,
@@ -574,7 +574,7 @@ public class NamedEntryPoint
                 activation.getPropagationContext().releaseResources();
             }
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RETRACTION,
+                                                                                      PropagationContext.DELETION,
                                                                                       rule,
                                                                                       (activation == null) ? null : activation.getTuple(),
                                                                                       handle,

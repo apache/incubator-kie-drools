@@ -2,7 +2,7 @@ package org.drools.scanner;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.KieServices;
 
 import static junit.framework.Assert.assertEquals;
@@ -12,8 +12,8 @@ public class KieModuleMetaDataTest {
 
     @Test @Ignore
     public void testKScanner() throws Exception {
-        GAV gav = KieServices.Factory.get().newGav("org.drools", "drools-core", "5.5.0.Final");
-        KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(gav);
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.drools", "drools-core", "5.5.0.Final");
+        KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(releaseId);
 
         assertEquals(17, kieModuleMetaData.getClasses("org.drools.runtime").size());
 
