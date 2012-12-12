@@ -19,7 +19,7 @@ package org.kie.runtime.conf;
 /**
  * A base interface for type safe configurations
  */
-public interface KnowledgeSessionOptionsConfiguration {
+public interface KieSessionOptionsConfiguration {
     
     /**
      * Sets an option
@@ -28,7 +28,7 @@ public interface KnowledgeSessionOptionsConfiguration {
      *               itself contains the option key, and so a single parameter
      *               is enough.
      */
-    public <T extends KnowledgeSessionOption> void setOption( T option );
+    public <T extends KieSessionOption> void setOption( T option );
 
     /**
      * Gets an option value
@@ -38,7 +38,7 @@ public interface KnowledgeSessionOptionsConfiguration {
      * @return the Option value for the given option. Returns null if option is 
      *         not configured.
      */
-    public <T extends SingleValueKnowledgeSessionOption> T getOption( Class<T> option );
+    public <T extends SingleValueKieSessionOption> T getOption( Class<T> option );
     
     
     /**
@@ -52,7 +52,7 @@ public interface KnowledgeSessionOptionsConfiguration {
      * @return the Option value for the given option + key. Returns null if option is 
      *         not configured.
      */
-    public <T extends MultiValueKnowledgeSessionOption> T getOption( Class<T> option, String key );
+    public <T extends MultiValueKieSessionOption> T getOption( Class<T> option, String key );
     
 
 }

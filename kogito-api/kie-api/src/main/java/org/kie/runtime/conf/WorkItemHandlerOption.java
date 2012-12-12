@@ -21,7 +21,7 @@ import org.kie.runtime.process.WorkItemHandler;
 /**
  * WorkItemHandlers configuration option
  */
-public class WorkItemHandlerOption implements MultiValueKnowledgeSessionOption {
+public class WorkItemHandlerOption implements MultiValueKieSessionOption {
 
     private static final long serialVersionUID = 510l;
 

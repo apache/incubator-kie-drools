@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.runtime.rule;
+package org.kie.runtime.conf;
+
+import org.kie.conf.Option;
 
 /**
- * An interface for accumulate function implementations
- * that allows the inspection of the result type.
- */ 
-public interface TypedAccumulateFunction extends AccumulateFunction {
-
-    /**
-     * Returns the class type of the result of this function 
-     * @return
-     */
-    public Class<?> getResultType();
+ * A markup interface for KnowledgeSessionConfiguration options
+ */
+public interface KieSessionOption
+    extends
+    Option {
 
 }

@@ -20,7 +20,7 @@ package org.kie.runtime.conf;
 /**
  * A class for the belief system configuration.
  */
-public class BeliefSystemTypeOption implements SingleValueKnowledgeSessionOption {
+public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
 
     private static final long serialVersionUID = 510l;
 

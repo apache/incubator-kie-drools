@@ -27,7 +27,7 @@ package org.kie.runtime.conf;
  * actions, a lightweight listener implementation can be used, preventing
  * the copy and improving query performance significantly.
  */
-public enum QueryListenerOption implements SingleValueKnowledgeSessionOption {
+public enum QueryListenerOption implements SingleValueKieSessionOption {
 
     STANDARD("standard"), 
     LIGHTWEIGHT("lightweight");

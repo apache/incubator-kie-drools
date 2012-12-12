@@ -16,7 +16,7 @@
 
 package org.kie.management;
 
-public interface KBaseConfigurationMonitorMBean {
+public interface KieBaseConfigurationMonitorMBean {
 
     @Deprecated
     public int getAlphaNodeHashingThreshold();
