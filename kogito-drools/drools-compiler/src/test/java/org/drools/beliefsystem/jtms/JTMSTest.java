@@ -99,7 +99,7 @@ public class JTMSTest {
                 "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" + 
                 "        \n" + 
-                "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm,\n" +
+                "        public void unMatch(org.kie.runtime.rule.Session wm,\n" +
                 "                            org.kie.runtime.rule.Match activation) {\n" +
                 "            l.remove( s );\n" + 
                 "        }\n" + 
@@ -115,7 +115,7 @@ public class JTMSTest {
                 "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" +
                 "        \n" +
-                "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm,\n" +
+                "        public void unMatch(org.kie.runtime.rule.Session wm,\n" +
                 "                            org.kie.runtime.rule.Match activation) {\n" +
                 "            l.remove( s );\n" +
                 "        }\n" +
@@ -388,7 +388,7 @@ public class JTMSTest {
                 "    AgendaItem item = ( AgendaItem ) kcontext.getMatch(); \n" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() { \n" + 
                 "        \n" + 
-                "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm, \n" +
+                "        public void unMatch(org.kie.runtime.rule.Session wm, \n" +
                 "                            org.kie.runtime.rule.Match activation) { \n" +
                 "            l.remove( s ); \n" + 
                 "        }\n" + 
