@@ -24,7 +24,7 @@ package org.kie.conf;
  * 
  * DEFAULT = identity
  */
-public enum AssertBehaviorOption implements SingleValueKieBaseOption {
+public enum EqualityBehaviorOption implements SingleValueKieBaseOption {
     
     IDENTITY,
     EQUALITY;
@@ -32,7 +32,7 @@ public enum AssertBehaviorOption implements SingleValueKieBaseOption {
     /**
      * The property name for the sequential mode option
      */
-    public static final String PROPERTY_NAME = "drools.assertBehaviour";
+    public static final String PROPERTY_NAME = "drools.equalityBehavior";
     
     /**
      * {@inheritDoc}

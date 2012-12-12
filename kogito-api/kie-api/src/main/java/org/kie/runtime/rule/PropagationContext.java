@@ -19,16 +19,16 @@ package org.kie.runtime.rule;
 import org.kie.definition.rule.Rule;
 
 public interface PropagationContext {
-    public static final int ASSERTION     = 0;
-    public static final int RETRACTION    = 1;
+    public static final int INSERTION     = 0;
+    public static final int DELETION      = 1;
     public static final int MODIFICATION  = 2;
     public static final int RULE_ADDITION = 3;
     public static final int RULE_REMOVAL  = 4;
     public static final int EXPIRATION    = 5;
     
     public static final String[] typeDescr = new String[] {
-                                                           "ASSERTION",
-                                                           "RETRACTION",
+                                                           "INSERTION",
+                                                           "DELETION",
                                                            "MODIFICATION",
                                                            "RULE_ADDITION",
                                                            "RULE_REMOVAL",
@@ -53,8 +53,8 @@ public interface PropagationContext {
 
     /**
      * The PropagationContextType, numbers may change between Drools versions. Or we may eventually switch this to an enum.
-     * ASSERTION     = 0;
-     * RETRACTION    = 1;
+     * INSERTION     = 0;
+     * DELETION    = 1;
      * MODIFICATION  = 2;
      * RULE_ADDITION = 3;
      * RULE_REMOVAL  = 4;

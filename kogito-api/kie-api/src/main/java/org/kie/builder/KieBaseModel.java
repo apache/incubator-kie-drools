@@ -1,6 +1,6 @@
 package org.kie.builder;
 
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 
 import java.util.List;
@@ -28,9 +28,9 @@ public interface KieBaseModel {
     
     KieBaseModel removePackage(String pkg);
 
-    AssertBehaviorOption getEqualsBehavior();
+    EqualityBehaviorOption getEqualsBehavior();
 
-    KieBaseModel setEqualsBehavior(AssertBehaviorOption equalsBehaviour);
+    KieBaseModel setEqualsBehavior(EqualityBehaviorOption equalsBehaviour);
 
     EventProcessingOption getEventProcessingMode();
 
