@@ -17,16 +17,16 @@
 package org.drools.management;
 
 import org.drools.RuleBaseConfiguration;
-import org.kie.management.KBaseConfigurationMonitorMBean;
+import org.kie.management.KieBaseConfigurationMonitorMBean;
 
 /**
  * An mbean monitor class for the knowledgebase configuration
  */
-public class KBaseConfigurationMonitor implements KBaseConfigurationMonitorMBean {
+public class KieBaseConfigurationMonitor implements KieBaseConfigurationMonitorMBean {
     
     private RuleBaseConfiguration conf;
 
-    public KBaseConfigurationMonitor(RuleBaseConfiguration conf) {
+    public KieBaseConfigurationMonitor(RuleBaseConfiguration conf) {
         this.conf = conf;
     }
 

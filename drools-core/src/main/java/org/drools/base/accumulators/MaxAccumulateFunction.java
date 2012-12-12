@@ -22,6 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
+import org.kie.runtime.rule.AccumulateFunction;
+
 /**
  * An implementation of an accumulator capable of calculating maximum values
  */

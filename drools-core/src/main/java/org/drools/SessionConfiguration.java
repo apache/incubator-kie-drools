@@ -31,10 +31,10 @@ import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.conf.BeliefSystemTypeOption;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.conf.KeepReferenceOption;
-import org.kie.runtime.conf.KnowledgeSessionOption;
-import org.kie.runtime.conf.MultiValueKnowledgeSessionOption;
+import org.kie.runtime.conf.KieSessionOption;
+import org.kie.runtime.conf.MultiValueKieSessionOption;
 import org.kie.runtime.conf.QueryListenerOption;
-import org.kie.runtime.conf.SingleValueKnowledgeSessionOption;
+import org.kie.runtime.conf.SingleValueKieSessionOption;
 import org.kie.runtime.conf.TimerJobFactoryOption;
 import org.kie.runtime.conf.WorkItemHandlerOption;
 import org.kie.runtime.process.WorkItemHandler;
@@ -459,7 +459,7 @@ public class SessionConfiguration
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends SingleValueKnowledgeSessionOption> T getOption(Class<T> option) {
+    public <T extends SingleValueKieSessionOption> T getOption(Class<T> option) {
         if ( ClockTypeOption.class.equals( option ) ) {
             return (T) ClockTypeOption.get( getClockType().toExternalForm() );
         } else if ( KeepReferenceOption.class.equals( option ) ) {
@@ -473,7 +473,7 @@ public class SessionConfiguration
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends MultiValueKnowledgeSessionOption> T getOption(Class<T> option,
+    public <T extends MultiValueKieSessionOption> T getOption(Class<T> option,
                                                                     String key) {
         if ( WorkItemHandlerOption.class.equals( option ) ) {
             return (T) WorkItemHandlerOption.get( key,
@@ -482,7 +482,7 @@ public class SessionConfiguration
         return null;
     }
 
-    public <T extends KnowledgeSessionOption> void setOption(T option) {
+    public <T extends KieSessionOption> void setOption(T option) {
         if ( option instanceof ClockTypeOption ) {
             setClockType( ClockType.resolveClockType( ((ClockTypeOption) option).getClockType() ) );
         } else if ( option instanceof TimerJobFactoryOption ) {
