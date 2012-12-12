@@ -36,7 +36,7 @@ import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 import org.kie.time.SessionClock;
 
 import java.util.Collection;
@@ -142,12 +142,12 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
     }
 
     @Override
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String string) {
+    public SessionEntryPoint getWorkingMemoryEntryPoint(String string) {
         return ksession.getWorkingMemoryEntryPoint(string);
     }
 
     @Override
-    public Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+    public Collection<? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
         return ksession.getWorkingMemoryEntryPoints();
     }
 

@@ -1,5 +1,8 @@
 package org.jbpm.task.test;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.kie.KnowledgeBase;
 import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
@@ -19,12 +22,9 @@ import org.kie.runtime.rule.AgendaFilter;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.SessionEntryPoint;
 import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
-
-import java.util.Collection;
-import java.util.Map;
 
 public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 
@@ -147,11 +147,11 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
         return null;
     }
 
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String arg0) {
+    public SessionEntryPoint getWorkingMemoryEntryPoint(String arg0) {
         return null;
     }
 
-    public Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+    public Collection<? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
         return null;
     }
 
