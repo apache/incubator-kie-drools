@@ -100,7 +100,10 @@ public class ClasspathKieProject extends AbstractKieProject {
     
     public static InternalKieModule fetchKModule(URL url, String fixedURL) {
         KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
-
+        if ( kieProject.getKieBaseModels().isEmpty() ) {
+            
+        }
+        
         String pomProperties = getPomProperties( fixedURL );
         
         ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString(pomProperties);

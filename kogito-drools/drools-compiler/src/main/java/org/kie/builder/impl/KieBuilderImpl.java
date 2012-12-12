@@ -248,8 +248,8 @@ public class KieBuilderImpl
                 kModuleModel = KieModuleModelImpl.fromXML( new ByteArrayInputStream( kModuleModelXml ) );
             } catch ( Exception e ) {
                 results.addMessage(  Level.ERROR,
-                                      "kmodule.xml",
-                                      "kmodulet.xml found, but unable to read\n" + e.getMessage() );
+                                     "kmodule.xml",
+                                     "kmodulet.xml found, but unable to read\n" + e.getMessage() );
             }
         } else {
             // There's no kmodule.xml, create a defualt one
