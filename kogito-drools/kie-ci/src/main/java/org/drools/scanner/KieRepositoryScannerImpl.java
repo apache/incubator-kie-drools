@@ -1,7 +1,7 @@
 package org.drools.scanner;
 
 import org.drools.kproject.models.KieModuleModelImpl;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieScanner;
 import org.kie.builder.Message;
@@ -44,12 +44,12 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     public void setKieContainer(KieContainer kieContainer) {
         this.kieContainer = kieContainer;
-        DependencyDescriptor projectDescr = new DependencyDescriptor(kieContainer.getGAV());
+        DependencyDescriptor projectDescr = new DependencyDescriptor(kieContainer.getReleaseId());
         if (!projectDescr.isFixedVersion()) {
             usedDependencies.add(projectDescr);
         }
 
-        artifactResolver = getResolverFor(kieContainer.getGAV(), true);
+        artifactResolver = getResolverFor(kieContainer.getReleaseId(), true);
         init();
     }
 
@@ -70,27 +70,27 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         indexAtifacts(artifacts);
     }
 
-    public KieModule loadArtifact(GAV gav) {
-        String artifactName = gav.toString();
+    public KieModule loadArtifact(ReleaseId releaseId) {
+        String artifactName = releaseId.toString();
         Artifact artifact = getArtifactResolver().resolveArtifact(artifactName);
-        return artifact != null ? buildArtifact(gav, artifact) : loadPomArtifact(gav);
+        return artifact != null ? buildArtifact(releaseId, artifact) : loadPomArtifact(releaseId);
     }
 
-    private KieModule loadPomArtifact(GAV gav) {
-        ArtifactResolver resolver = getResolverFor(gav, false);
+    private KieModule loadPomArtifact(ReleaseId releaseId) {
+        ArtifactResolver resolver = getResolverFor(releaseId, false);
         if (resolver == null) {
             return null;
         }
 
-        MemoryKieModule kieModule = new MemoryKieModule(gav);
+        MemoryKieModule kieModule = new MemoryKieModule(releaseId);
         addDependencies(kieModule, resolver, resolver.getPomDirectDependencies());
         build(kieModule);
         return kieModule;
     }
 
-    private InternalKieModule buildArtifact(GAV gav, Artifact artifact) {
+    private InternalKieModule buildArtifact(ReleaseId releaseId, Artifact artifact) {
         ArtifactResolver resolver = getArtifactResolver();
-        ZipKieModule kieModule = new ZipKieModule(gav, artifact.getFile());
+        ZipKieModule kieModule = new ZipKieModule(releaseId, artifact.getFile());
         addDependencies(kieModule, resolver, resolver.getArtifactDependecies(new DependencyDescriptor(artifact).toString()));
         build(kieModule);
         return kieModule;
@@ -100,8 +100,8 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         for (DependencyDescriptor dep : dependencies) {
             Artifact depArtifact = resolver.resolveArtifact(dep.toString());
             if (isKJar(depArtifact.getFile())) {
-                GAV depGav = new DependencyDescriptor(depArtifact).getGav();
-                kieModule.addDependency(new ZipKieModule(depGav, depArtifact.getFile()));
+                ReleaseId depReleaseId = new DependencyDescriptor(depArtifact).getGav();
+                kieModule.addDependency(new ZipKieModule(depReleaseId, depArtifact.getFile()));
             }
         }
     }
@@ -154,11 +154,11 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         log.info("The following artifacts have been updated: " + updatedArtifacts);
     }
 
-    private void updateKieModule(Artifact artifact, GAV gav) {
-        ZipKieModule kieModule = new ZipKieModule(gav, artifact.getFile());
+    private void updateKieModule(Artifact artifact, ReleaseId releaseId) {
+        ZipKieModule kieModule = new ZipKieModule(releaseId, artifact.getFile());
         ResultsImpl messages = build(kieModule);
         if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
-            kieContainer.updateToVersion(gav);
+            kieContainer.updateToVersion(releaseId);
         }
     }
 

@@ -12,7 +12,7 @@ import org.drools.core.util.FileManager;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieModuleModel;
@@ -146,8 +146,8 @@ public class AbstractKnowledgeTest {
         kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
         kfs.writeKModuleXML( ((KieModuleModelImpl)kproj).toXML()  );
         
-        GAV gav = ks.newGav( namespace, "art1", version );
-        kfs.generateAndWritePomXML( gav );        
+        ReleaseId releaseId = ks.newReleaseId(namespace, "art1", version);
+        kfs.generateAndWritePomXML(releaseId);
 
         String kBase1R1 = getRule( namespace + ".test1", "rule1", version );
         String kBase1R2 = getRule( namespace + ".test1", "rule2", version );
@@ -169,7 +169,7 @@ public class AbstractKnowledgeTest {
         KieBuilder kBuilder = ks.newKieBuilder( kfs );
         
         kBuilder.buildAll();
-        if ( kBuilder.getResults().hasMessages( Level.ERROR  ) ) {
+        if ( kBuilder.getResults().hasMessages(Level.ERROR) ) {
             fail( "should not have errors" + kBuilder.getResults() );
         }
         MemoryKieModule kieModule = ( MemoryKieModule ) kBuilder.getKieModule();

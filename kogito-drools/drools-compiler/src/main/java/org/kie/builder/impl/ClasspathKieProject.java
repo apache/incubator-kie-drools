@@ -1,12 +1,12 @@
 package org.kie.builder.impl;
 
 import org.drools.core.util.StringUtils;
-import org.drools.kproject.GAVImpl;
+import org.drools.kproject.ReleaseIdImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
 import org.kie.KieServices;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.internal.utils.ClassLoaderUtil;
@@ -38,7 +38,7 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     private static final Logger             log               = LoggerFactory.getLogger( ClasspathKieProject.class );
 
-    private Map<GAV, InternalKieModule>     kieModules        = new HashMap<GAV, InternalKieModule>();
+    private Map<ReleaseId, InternalKieModule>     kieModules        = new HashMap<ReleaseId, InternalKieModule>();
 
     private Map<String, InternalKieModule>  kJarFromKBaseName = new HashMap<String, InternalKieModule>();
 
@@ -60,7 +60,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         indexParts(kieModules, kJarFromKBaseName);
     }
 
-    public GAV getGAV() {
+    public ReleaseId getGAV() {
         return null;
     }
 
@@ -82,10 +82,10 @@ public class ClasspathKieProject extends AbstractKieProject {
                 String fixedURL = fixURLFromKProjectPath( url ); 
                 InternalKieModule kModule = fetchKModule(url, fixedURL);
 
-                GAV gav = kModule.getGAV();
-                kieModules.put(gav, kModule);
+                ReleaseId releaseId = kModule.getReleaseId();
+                kieModules.put(releaseId, kModule);
 
-                log.debug( "Discovered classpath module " + gav.toExternalForm() );
+                log.debug( "Discovered classpath module " + releaseId.toExternalForm() );
                 
                 kr.addKieModule(kModule);
 
@@ -103,7 +103,7 @@ public class ClasspathKieProject extends AbstractKieProject {
 
         String pomProperties = getPomProperties( fixedURL );
         
-        GAV gav = GAVImpl.fromPropertiesString( pomProperties );
+        ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString(pomProperties);
 
         String rootPath = fixedURL;
         if ( rootPath.lastIndexOf( ':' ) > 0 ) {
@@ -113,11 +113,11 @@ public class ClasspathKieProject extends AbstractKieProject {
         InternalKieModule kJar;
         File file = new File( rootPath );
         if ( fixedURL.endsWith( ".jar" ) ) {
-            kJar = new ZipKieModule( gav,
+            kJar = new ZipKieModule(releaseId,
                                   kieProject,
                                   file );
         } else if ( file.isDirectory() ) {
-            kJar = new FileKieModule( gav,
+            kJar = new FileKieModule(releaseId,
                                    kieProject,
                                    file );
         } else {
@@ -206,9 +206,9 @@ public class ClasspathKieProject extends AbstractKieProject {
                     
                     KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
                     
-                    GAVImpl gav = ( GAVImpl ) KieServices.Factory.get().newGav( pomModel.getGroupId(),
-                                                                                pomModel.getArtifactId(),
-                                                                                pomModel.getVersion() );
+                    ReleaseIdImpl gav = (ReleaseIdImpl) KieServices.Factory.get().newReleaseId(pomModel.getGroupId(),
+                            pomModel.getArtifactId(),
+                            pomModel.getVersion());
                     
                     String str =  KieBuilderImpl.generatePomProperties( gav );
                     log.info( "Recursed up folders,  found and used pom.xml " + file );

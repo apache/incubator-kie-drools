@@ -1,23 +1,13 @@
 package org.drools.kproject;
 
 import org.drools.cdi.CDITestRunner;
-import org.drools.cdi.KieCDIExtension;
-import org.drools.cdi.CDITestRunner.TestWeldSEDeployment;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.rule.JavaDialectRuntimeData;
-import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.resources.spi.ResourceLoader;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.kie.KieServices;
-import org.kie.builder.impl.AbstractKieModule;
 import org.kie.builder.impl.KieServicesImpl;
-import org.kie.cdi.KBase;
-import org.kie.cdi.KGAV;
-import org.kie.cdi.KSession;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.AnnotationLiteral;
@@ -27,9 +17,7 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;

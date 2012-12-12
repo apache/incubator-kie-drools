@@ -23,7 +23,7 @@ import org.kie.builder.KieRepository;
 import org.kie.builder.impl.KieRepositoryImpl;
 import org.kie.builder.impl.KieServicesImpl;
 import org.kie.cdi.KBase;
-import org.kie.cdi.KGAV;
+import org.kie.cdi.KReleaseId;
 import org.kie.cdi.KSession;
 import org.kie.command.KieCommands;
 import org.kie.io.KieResources;
@@ -49,7 +49,7 @@ public class CDITestRunner extends BlockJUnit4ClassRunner {
         list.add( KieCDIExtension.class.getName() );
         list.add( KBase.class.getName() );
         list.add( KSession.class.getName() );
-        list.add( KGAV.class.getName() );
+        list.add( KReleaseId.class.getName() );
         list.add( KieServices.class.getName() );
         list.add( KieServicesImpl.class.getName() );
         list.add( KieRepository.class.getName() );

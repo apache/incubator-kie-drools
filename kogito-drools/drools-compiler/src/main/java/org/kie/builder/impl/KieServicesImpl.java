@@ -4,11 +4,11 @@ import org.drools.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.command.impl.CommandFactoryServiceImpl;
 import org.drools.concurrent.ExecutorProviderImpl;
 import org.drools.io.impl.ResourceFactoryServiceImpl;
-import org.drools.kproject.GAVImpl;
+import org.drools.kproject.ReleaseIdImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
 import org.kie.KieServices;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModuleModel;
@@ -69,10 +69,10 @@ public class KieServicesImpl implements KieServices {
         }  
     }
     
-    public KieContainer newKieContainer(GAV gav) {
-        InternalKieModule kieModule = (InternalKieModule) getRepository().getKieModule(gav);
+    public KieContainer newKieContainer(ReleaseId releaseId) {
+        InternalKieModule kieModule = (InternalKieModule) getRepository().getKieModule(releaseId);
         if (kieModule == null) {
-            throw new RuntimeException("Cannot find KieModule: " + gav);
+            throw new RuntimeException("Cannot find KieModule: " + releaseId);
         }
         KieProject kProject = new KieModuleKieProject( kieModule, getRepository() );
         return new KieContainerImpl( kProject, getRepository() );
@@ -122,8 +122,8 @@ public class KieServicesImpl implements KieServices {
         return ServiceRegistryImpl.getInstance().get( KieStoreServices.class );
     }
 
-    public GAV newGav(String groupId, String artifactId, String version) {
-        return new GAVImpl(groupId, artifactId, version);
+    public ReleaseId newReleaseId(String groupId, String artifactId, String version) {
+        return new ReleaseIdImpl(groupId, artifactId, version);
     }
 
     public KieModuleModel newKieModuleModel() {

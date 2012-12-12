@@ -4,7 +4,7 @@ import org.drools.CommonTestMethodBase;
 import org.drools.Message;
 import org.junit.Test;
 import org.kie.KieServices;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
@@ -34,7 +34,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
         ks.newKieBuilder( kfs ).buildAll();
 
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultGAV()).newKieSession();
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         ksession.insert(new Message("Hello World"));
 
         int count = ksession.fireAllRules();
@@ -75,16 +75,16 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieServices ks = KieServices.Factory.get();
 
-        GAV gav = ks.newGav("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
 
         KieFileSystem kfs = ks.newKieFileSystem()
-                .generateAndWritePomXML( gav )
+                .generateAndWritePomXML(releaseId)
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
                 .writeKModuleXML(createKieProjectWithPackages(ks, "org.pkg1").toXML());
         ks.newKieBuilder( kfs ).buildAll();
 
-        KieSession ksession = ks.newKieContainer(gav).newKieSession("KSession1");
+        KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
 
         int count = ksession.fireAllRules();
@@ -108,16 +108,16 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieServices ks = KieServices.Factory.get();
 
-        GAV gav = ks.newGav("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
 
         KieFileSystem kfs = ks.newKieFileSystem()
-                .generateAndWritePomXML( gav )
+                .generateAndWritePomXML(releaseId)
                 .write("src/main/resources/KBase1/org/pkg1/test/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/test/r2.drl", drl2)
                 .writeKModuleXML( createKieProjectWithPackages(ks, "org.pkg1.*").toXML());
         ks.newKieBuilder( kfs ).buildAll();
 
-        KieSession ksession = ks.newKieContainer(gav).newKieSession("KSession1");
+        KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
 
         int count = ksession.fireAllRules();
@@ -148,33 +148,33 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         buildVersion(ks, "Aloha Earth", "1.1");
         buildVersion(ks, "Hi Universe", "1.2");
 
-        GAV latestGav = ks.newGav("org.kie", "hello-world", "LATEST");
+        ReleaseId latestReleaseId = ks.newReleaseId("org.kie", "hello-world", "LATEST");
 
-        KieSession ksession = ks.newKieContainer(latestGav).newKieSession("KSession1");
+        KieSession ksession = ks.newKieContainer(latestReleaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
         assertEquals( 0, ksession.fireAllRules() );
 
-        ksession = ks.newKieContainer(latestGav).newKieSession("KSession1");
+        ksession = ks.newKieContainer(latestReleaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
         assertEquals( 1, ksession.fireAllRules() );
 
-        GAV gav1 = ks.newGav("org.kie", "hello-world", "1.0");
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
-        ksession = ks.newKieContainer(gav1).newKieSession("KSession1");
+        ksession = ks.newKieContainer(releaseId1).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
         assertEquals( 1, ksession.fireAllRules() );
 
-        ksession = ks.newKieContainer(gav1).newKieSession("KSession1");
+        ksession = ks.newKieContainer(releaseId1).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
         assertEquals( 0, ksession.fireAllRules() );
 
-        GAV gav2 = ks.newGav("org.kie", "hello-world", "[1.0,1.2)");
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "hello-world", "[1.0,1.2)");
 
-        ksession = ks.newKieContainer(gav2).newKieSession("KSession1");
+        ksession = ks.newKieContainer(releaseId2).newKieSession("KSession1");
         ksession.insert(new Message("Aloha Earth"));
         assertEquals( 1, ksession.fireAllRules() );
 
-        ksession = ks.newKieContainer(gav2).newKieSession("KSession1");
+        ksession = ks.newKieContainer(releaseId2).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
         assertEquals( 0, ksession.fireAllRules() );
     }
@@ -186,10 +186,10 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        GAV gav = ks.newGav("org.kie", "hello-world", version);
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", version);
 
         KieFileSystem kfs = ks.newKieFileSystem()
-                .generateAndWritePomXML( gav )
+                .generateAndWritePomXML(releaseId)
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl)
                 .writeKModuleXML(createKieProjectWithPackages(ks, "*").toXML());
         ks.newKieBuilder( kfs ).buildAll();
@@ -219,36 +219,36 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieServices ks = KieServices.Factory.get();
 
-        GAV gav = ks.newGav("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
 
         KieFileSystem kfs = ks.newKieFileSystem()
-                .generateAndWritePomXML( gav )
+                .generateAndWritePomXML(releaseId)
                 .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
                 .writeKModuleXML(createKieProjectWithPackagesAnd2KieBases(ks).toXML());
         ks.newKieBuilder( kfs ).buildAll();
 
-        KieSession ksession = ks.newKieContainer(gav).newKieSession("KSession1");
+        KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hello World"));
         assertEquals( 1, ksession.fireAllRules() );
 
-        ksession = ks.newKieContainer(gav).newKieSession("KSession1");
+        ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
         assertEquals( 1, ksession.fireAllRules() );
 
-        ksession = ks.newKieContainer(gav).newKieSession("KSession1");
+        ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
         ksession.insert(new Message("Aloha Earth"));
         assertEquals( 0, ksession.fireAllRules() );
 
-        ksession = ks.newKieContainer(gav).newKieSession("KSession2");
+        ksession = ks.newKieContainer(releaseId).newKieSession("KSession2");
         ksession.insert(new Message("Hello World"));
         assertEquals( 1, ksession.fireAllRules() );
 
-        ksession = ks.newKieContainer(gav).newKieSession("KSession2");
+        ksession = ks.newKieContainer(releaseId).newKieSession("KSession2");
         ksession.insert(new Message("Hi Universe"));
         assertEquals( 0, ksession.fireAllRules() );
 
-        ksession = ks.newKieContainer(gav).newKieSession("KSession2");
+        ksession = ks.newKieContainer(releaseId).newKieSession("KSession2");
         ksession.insert(new Message("Aloha Earth"));
         assertEquals(1, ksession.fireAllRules());
     }

@@ -8,14 +8,14 @@ import org.drools.commons.jci.readers.DiskResourceReader;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
-import org.drools.kproject.GAVImpl;
+import org.drools.kproject.ReleaseIdImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
 import org.kie.KieBaseConfiguration;
 import org.kie.KieServices;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
@@ -53,7 +53,7 @@ public class KieBuilderImpl
 
     private PomModel              pomModel;
     private byte[]                pomXml;
-    private GAV                   gav;
+    private ReleaseId releaseId;
 
     private byte[]                kModuleModelXml;
     private KieModuleModel        kModuleModel;
@@ -91,7 +91,7 @@ public class KieBuilderImpl
 
         results = new ResultsImpl();
 
-        // if pomXML is null it will generate a default, using default GAV
+        // if pomXML is null it will generate a default, using default ReleaseId
         // if pomXml is invalid, it assign pomModel to null
         buildPomModel();
 
@@ -100,24 +100,24 @@ public class KieBuilderImpl
         buildKieModuleModel();
 
         if ( pomModel != null ) {
-            // creates GAV from build pom
-            // If the pom was generated, it will be the same as teh default GAV 
-            gav = ks.newGav( pomModel.getGroupId(),
-                             pomModel.getArtifactId(),
-                             pomModel.getVersion() );
+            // creates ReleaseId from build pom
+            // If the pom was generated, it will be the same as teh default ReleaseId
+            releaseId = ks.newReleaseId(pomModel.getGroupId(),
+                    pomModel.getArtifactId(),
+                    pomModel.getVersion());
         }
     }
 
     public KieBuilder buildAll() {
-        // gav and kModule will be null if a provided pom.xml or kmodule.xml is invalid
-        if ( !isBuilt() && gav != null && kModuleModel != null ) {
+        // releaseId and kModule will be null if a provided pom.xml or kmodule.xml is invalid
+        if ( !isBuilt() && releaseId != null && kModuleModel != null ) {
             trgMfs = new MemoryFileSystem();
             writePomAndKModule();
 
             compileJavaClasses();
             addKBasesFilesToTrg();
 
-            kModule = new MemoryKieModule( gav,
+            kModule = new MemoryKieModule(releaseId,
                                               kModuleModel,
                                               trgMfs );
 
@@ -282,7 +282,7 @@ public class KieBuilderImpl
 
     public static void validatePomModel(PomModel pomModel) {
         if ( StringUtils.isEmpty( pomModel.getGroupId() ) || StringUtils.isEmpty( pomModel.getArtifactId() ) || StringUtils.isEmpty( pomModel.getVersion() ) ) {
-            throw new RuntimeException( "Maven pom.properties exists but GAV content is malformed" );
+            throw new RuntimeException( "Maven pom.properties exists but ReleaseId content is malformed" );
         }
     }
 
@@ -290,8 +290,8 @@ public class KieBuilderImpl
         if ( mfs.isAvailable( "pom.xml" ) ) {
             return mfs.getBytes( "pom.xml" );
         } else {
-            // There is no pom.xml, and thus no GAV, so generate a pom.xml from the global detault.
-            return generatePomXml( KieServices.Factory.get().getRepository().getDefaultGAV() ).getBytes();
+            // There is no pom.xml, and thus no ReleaseId, so generate a pom.xml from the global detault.
+            return generatePomXml( KieServices.Factory.get().getRepository().getDefaultReleaseId() ).getBytes();
         }
     }
 
@@ -299,12 +299,12 @@ public class KieBuilderImpl
         addMetaInfBuilder();
 
         if ( pomXml != null ) {
-            GAVImpl g = (GAVImpl) gav;
+            ReleaseIdImpl g = (ReleaseIdImpl) releaseId;
             trgMfs.write( g.getPomXmlPath(),
                           pomXml,
                           true );
             trgMfs.write( g.getPomPropertiesPath(),
-                          generatePomProperties( gav ).getBytes(),
+                          generatePomProperties(releaseId).getBytes(),
                           true );
 
         }
@@ -316,22 +316,22 @@ public class KieBuilderImpl
         }
     }
 
-    public static String generatePomXml(GAV gav) {
+    public static String generatePomXml(ReleaseId releaseId) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" );
         sBuilder.append( "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\"> \n" );
         sBuilder.append( "    <modelVersion>4.0.0</modelVersion> \n" );
 
         sBuilder.append( "    <groupId>" );
-        sBuilder.append( gav.getGroupId() );
+        sBuilder.append( releaseId.getGroupId() );
         sBuilder.append( "</groupId> \n" );
 
         sBuilder.append( "    <artifactId>" );
-        sBuilder.append( gav.getArtifactId() );
+        sBuilder.append( releaseId.getArtifactId() );
         sBuilder.append( "</artifactId> \n" );
 
         sBuilder.append( "    <version>" );
-        sBuilder.append( gav.getVersion() );
+        sBuilder.append( releaseId.getVersion() );
         sBuilder.append( "</version> \n" );
 
         sBuilder.append( "    <packaging>jar</packaging> \n" );
@@ -342,18 +342,18 @@ public class KieBuilderImpl
         return sBuilder.toString();
     }
 
-    public static String generatePomProperties(GAV gav) {
+    public static String generatePomProperties(ReleaseId releaseId) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append( "groupId=" );
-        sBuilder.append( gav.getGroupId() );
+        sBuilder.append( releaseId.getGroupId() );
         sBuilder.append( "\n" );
 
         sBuilder.append( "artifactId=" );
-        sBuilder.append( gav.getArtifactId() );
+        sBuilder.append( releaseId.getArtifactId() );
         sBuilder.append( "\n" );
 
         sBuilder.append( "version=" );
-        sBuilder.append( gav.getVersion() );
+        sBuilder.append( releaseId.getVersion() );
         sBuilder.append( "\n" );
 
         return sBuilder.toString();

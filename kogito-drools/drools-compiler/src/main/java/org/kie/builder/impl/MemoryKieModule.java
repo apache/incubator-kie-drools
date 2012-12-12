@@ -3,7 +3,7 @@ package org.kie.builder.impl;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.kproject.models.KieModuleModelImpl;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModuleModel;
 
 import java.io.File;
@@ -13,12 +13,12 @@ public class MemoryKieModule extends AbstractKieModule implements ResourceReader
 
     private final MemoryFileSystem mfs;
     
-    public MemoryKieModule(GAV gav) {
-        this(gav, new KieModuleModelImpl(), new MemoryFileSystem());
+    public MemoryKieModule(ReleaseId releaseId) {
+        this(releaseId, new KieModuleModelImpl(), new MemoryFileSystem());
     }
 
-    public MemoryKieModule(GAV gav, KieModuleModel kieProject, MemoryFileSystem mfs) {
-        super(gav, kieProject);
+    public MemoryKieModule(ReleaseId releaseId, KieModuleModel kieProject, MemoryFileSystem mfs) {
+        super(releaseId, kieProject);
         this.mfs = mfs;
     }
     
@@ -52,6 +52,6 @@ public class MemoryKieModule extends AbstractKieModule implements ResourceReader
     }
     
     public String toString() {
-        return "MemoryKieModule[ GAV=" + getGAV() + "]";
+        return "MemoryKieModule[ ReleaseId=" + getReleaseId() + "]";
     }
 }

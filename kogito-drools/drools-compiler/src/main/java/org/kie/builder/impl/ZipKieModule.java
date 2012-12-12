@@ -2,7 +2,7 @@ package org.kie.builder.impl;
 
 import org.drools.core.util.IoUtils;
 import org.drools.kproject.models.KieModuleModelImpl;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModuleModel;
 
 import java.io.File;
@@ -16,14 +16,14 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
     private final File             file;    
     private Map<String, ZipEntry> zipEntries;
 
-    public ZipKieModule(GAV gav, File jar) {
-        this(gav, getKieModuleModelFromJar(jar), jar);
+    public ZipKieModule(ReleaseId releaseId, File jar) {
+        this(releaseId, getKieModuleModelFromJar(jar), jar);
     }
 
-    public ZipKieModule(GAV gav,
+    public ZipKieModule(ReleaseId releaseId,
                         KieModuleModel kieProject,
                         File file) {
-        super( gav, kieProject );
+        super(releaseId, kieProject );
         this.file = file;
         this.zipEntries = IoUtils.buildZipFileMapEntries( file );
     }
@@ -32,7 +32,7 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
         ZipFile zipFile = null;
         try {
             zipFile = new ZipFile( jar );
-            ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
+            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
             return KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
         } catch ( Exception e ) {
             throw new RuntimeException("Unable to load kmodule.xml from " + jar.getAbsolutePath(), e);
@@ -92,6 +92,6 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
     }
 
     public String toString() {
-        return "ZipKieModule[ GAV=" + getGAV() + "file=" + file + "]";
+        return "ZipKieModule[ ReleaseId=" + getReleaseId() + "file=" + file + "]";
     }
 }

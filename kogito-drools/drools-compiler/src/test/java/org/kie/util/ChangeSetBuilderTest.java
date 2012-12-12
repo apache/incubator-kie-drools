@@ -3,7 +3,7 @@ package org.kie.util;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.Test;
 import org.kie.KieServices;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
@@ -196,7 +196,7 @@ public class ChangeSetBuilderTest {
     private InternalKieModule createKieJar( String... drls) {
         InternalKieModule kieJar = mock( InternalKieModule.class );
         KieServices ks = KieServices.Factory.get();
-        GAV gav = ks.newGav("org.kie", "hello-world", "1.0-SNAPSHOT");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
 
         List<String> drlFs = new ArrayList<String>();
         
@@ -207,12 +207,12 @@ public class ChangeSetBuilderTest {
                 when( kieJar.getBytes( fileName ) ).thenReturn( drls[i].getBytes() );
             }
         }
-        when( kieJar.getBytes( KieModuleModelImpl.KMODULE_JAR_PATH ) ).thenReturn( createKieProjectWithPackages(ks, gav).toXML().getBytes() );
+        when( kieJar.getBytes( KieModuleModelImpl.KMODULE_JAR_PATH ) ).thenReturn( createKieProjectWithPackages(ks, releaseId).toXML().getBytes() );
         when( kieJar.getFileNames() ).thenReturn( drlFs );
         return ( InternalKieModule ) kieJar;
     }
     
-    private KieModuleModel createKieProjectWithPackages(KieServices ks, GAV gav) {
+    private KieModuleModel createKieProjectWithPackages(KieServices ks, ReleaseId releaseId) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")

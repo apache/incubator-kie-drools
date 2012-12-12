@@ -2,7 +2,7 @@ package org.kie.builder.impl;
 
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
@@ -34,9 +34,9 @@ public abstract class AbstractKieProject implements KieProject {
 
     public void verify(ResultsImpl messages) {
         for ( KieBaseModel model : kBaseModels.values() ) {
-            AbstractKieModule.buildKnowledgePackages( (KieBaseModelImpl) model,
-                                                      this,
-                                                      messages );
+            AbstractKieModule.buildKnowledgePackages((KieBaseModelImpl) model,
+                    this,
+                    messages);
         }
     }
 
@@ -60,7 +60,7 @@ public abstract class AbstractKieProject implements KieProject {
         return kSessionModels.get( kSessionName );
     }
 
-    protected void indexParts(Map<GAV, InternalKieModule> kieModules,
+    protected void indexParts(Map<ReleaseId, InternalKieModule> kieModules,
                               Map<String, InternalKieModule> kJarFromKBaseName) {
         for ( InternalKieModule kJar : kieModules.values() ) {
             KieModuleModel kieProject = kJar.getKieModuleModel();

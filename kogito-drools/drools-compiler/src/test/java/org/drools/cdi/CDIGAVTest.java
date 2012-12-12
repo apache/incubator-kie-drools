@@ -1,47 +1,7 @@
 package org.drools.cdi;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
-import org.drools.cdi.example.CDIExamplesTest;
-import org.drools.cdi.example.Message;
-import org.drools.cdi.example.Message2;
-import org.drools.cdi.example.Message2Impl1;
-import org.drools.cdi.example.Message2Impl2;
-import org.drools.cdi.example.MessageImpl;
-import org.drools.cdi.example.MessageProducers;
-import org.drools.cdi.example.MessageProducers2;
-import org.drools.cdi.example.Msg;
-import org.drools.cdi.example.Msg1;
-import org.drools.cdi.example.Msg2;
-import org.drools.kproject.AbstractKnowledgeTest;
-import org.drools.kproject.KPTest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.KieBase;
-import org.kie.KieServices;
-import org.kie.KnowledgeBase;
-import org.kie.builder.KieRepository;
-import org.kie.cdi.KBase;
-import org.kie.cdi.KGAV;
-import org.kie.cdi.KSession;
-import org.kie.command.KieCommands;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.StatelessKieSession;
-
-import static org.junit.Assert.*;
 
 @RunWith(CDITestRunner.class)
 @Ignore
@@ -49,37 +9,37 @@ public class CDIGAVTest {
 //    public static AbstractKnowledgeTest helper;
 //   
 //    @Inject
-//    @KBase("jar1.KBase1") @KGAV(groupId    = "jar1", 
+//    @KBase("jar1.KBase1") @KReleaseId(groupId    = "jar1",
 //                                artifactId = "art1", 
 //                                version    = "1.0")
 //    private KieBase jar1KBase1v10;
 //    
 //    @Inject
-//    @KBase("jar1.KBase1") @KGAV(groupId    = "jar1", 
+//    @KBase("jar1.KBase1") @KReleaseId(groupId    = "jar1",
 //                                artifactId = "art1", 
 //                                version    = "1.1")
 //    private KieBase jar1KBase1v11;    
 //
 //    @Inject
-//    @KSession("jar1.KSession1")  @KGAV( groupId    = "jar1", 
+//    @KSession("jar1.KSession1")  @KReleaseId( groupId    = "jar1",
 //                                        artifactId = "art1", 
 //                                        version    = "1.0" )
 //    private StatelessKieSession kbase1ksession1v10;
 //    
 //    @Inject
-//    @KSession("jar1.KSession1")  @KGAV( groupId    = "jar1", 
+//    @KSession("jar1.KSession1")  @KReleaseId( groupId    = "jar1",
 //                                        artifactId = "art1", 
 //                                        version    = "1.1" )
 //    private StatelessKieSession kbase1ksession1v11; 
 //    
 //    @Inject
-//    @KSession("jar1.KSession2")  @KGAV( groupId    = "jar1", 
+//    @KSession("jar1.KSession2")  @KReleaseId( groupId    = "jar1",
 //                                        artifactId = "art1", 
 //                                        version    = "1.0" )
 //    private KieSession kbase1ksession2v10;
 //    
 //    @Inject
-//    @KSession("jar1.KSession2")  @KGAV( groupId    = "jar1", 
+//    @KSession("jar1.KSession2")  @KReleaseId( groupId    = "jar1",
 //                                        artifactId = "art1", 
 //                                        version    = "1.1" )
 //    private KieSession kbase1ksession2v11;    

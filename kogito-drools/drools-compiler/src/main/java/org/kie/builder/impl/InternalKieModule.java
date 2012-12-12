@@ -1,6 +1,6 @@
 package org.kie.builder.impl;
 
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.Results;
@@ -20,7 +20,7 @@ public interface InternalKieModule extends KieModule {
     
     byte[] getBytes( );    
     
-    Map<GAV, InternalKieModule> getDependencies();
+    Map<ReleaseId, InternalKieModule> getDependencies();
 
     void addDependency(InternalKieModule dependency);
 

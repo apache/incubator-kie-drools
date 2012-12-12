@@ -1,13 +1,12 @@
 package org.kie.builder.impl;
 
 import org.drools.io.internal.InternalResource;
-import org.drools.kproject.GAVImpl;
+import org.drools.kproject.ReleaseIdImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
-import org.kie.builder.Results;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.io.Resource;
 import org.kie.runtime.KieContainer;
@@ -42,17 +41,17 @@ public class KieRepositoryImpl
 
     private final KieModuleRepo        kieModuleRepo    = new KieModuleRepo();
 
-    private final AtomicReference<GAV> defaultGAV       = new AtomicReference( new GAVImpl( DEFAULT_GROUP,
+    private final AtomicReference<ReleaseId> defaultGAV       = new AtomicReference( new ReleaseIdImpl( DEFAULT_GROUP,
                                                                                             DEFAULT_ARTIFACT,
                                                                                             DEFAULT_VERSION ) );
 
     private InternalKieScanner         internalKieScanner;
 
-    public void setDefaultGAV(GAV gav) {
-        this.defaultGAV.set( gav );
+    public void setDefaultGAV(ReleaseId releaseId) {
+        this.defaultGAV.set(releaseId);
     }
 
-    public GAV getDefaultGAV() {
+    public ReleaseId getDefaultReleaseId() {
         return this.defaultGAV.get();
     }
 
@@ -61,34 +60,34 @@ public class KieRepositoryImpl
         log.info( "KieModule was added:" + kieModule);
     }
 
-    public KieModule getKieModule(GAV gav) {
-        VersionRange versionRange = new VersionRange(gav.getVersion());
+    public KieModule getKieModule(ReleaseId releaseId) {
+        VersionRange versionRange = new VersionRange(releaseId.getVersion());
 
-        KieModule kieModule = kieModuleRepo.load(gav, versionRange);
+        KieModule kieModule = kieModuleRepo.load(releaseId, versionRange);
         if ( kieModule == null ) {
-            log.debug( "KieModule Lookup. GAV {} was not in cache, checking classpath",
-                       gav.toExternalForm() );
-            kieModule = checkClasspathForKieModule(gav);
+            log.debug( "KieModule Lookup. ReleaseId {} was not in cache, checking classpath",
+                       releaseId.toExternalForm() );
+            kieModule = checkClasspathForKieModule(releaseId);
         }
         
         if ( kieModule == null ) {
-            log.debug( "KieModule Lookup. GAV {} was not in cache, checking maven repository",
-                       gav.toExternalForm() );   
-            kieModule = loadKieModuleFromMavenRepo(gav);
+            log.debug( "KieModule Lookup. ReleaseId {} was not in cache, checking maven repository",
+                       releaseId.toExternalForm() );
+            kieModule = loadKieModuleFromMavenRepo(releaseId);
         }
         
         return kieModule;
     }
 
-    private KieModule checkClasspathForKieModule(GAV gav) {
+    private KieModule checkClasspathForKieModule(ReleaseId releaseId) {
         // TODO
         // ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        // URL url = classLoader.getResource( ((GAVImpl)gav).getPomPropertiesPath() );
+        // URL url = classLoader.getResource( ((ReleaseIdImpl)releaseId).getPomPropertiesPath() );
         return null;
     }
 
-    private KieModule loadKieModuleFromMavenRepo(GAV gav) {
-        return getInternalKieScanner().loadArtifact( gav );
+    private KieModule loadKieModuleFromMavenRepo(ReleaseId releaseId) {
+        return getInternalKieScanner().loadArtifact(releaseId);
     }
 
     private InternalKieScanner getInternalKieScanner() {
@@ -110,7 +109,7 @@ public class KieRepositoryImpl
         public void setKieContainer(KieContainer kieContainer) {
         }
 
-        public KieModule loadArtifact(GAV gav) {
+        public KieModule loadArtifact(ReleaseId releaseId) {
             return null;
         }
 
@@ -166,26 +165,26 @@ public class KieRepositoryImpl
         private final Map<String, TreeMap<ComparableVersion, KieModule>> kieModules = new HashMap<String, TreeMap<ComparableVersion, KieModule>>();
 
         void store(KieModule kieModule) {
-            GAV gav = kieModule.getGAV();
-            String ga = gav.getGroupId() + ":" + gav.getArtifactId();
+            ReleaseId releaseId = kieModule.getReleaseId();
+            String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
 
             TreeMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
             if (artifactMap == null) {
                 artifactMap = new TreeMap<ComparableVersion, KieModule>();
                 kieModules.put(ga, artifactMap);
             }
-            artifactMap.put(new ComparableVersion(gav.getVersion()), kieModule);
+            artifactMap.put(new ComparableVersion(releaseId.getVersion()), kieModule);
         }
 
-        KieModule load(GAV gav, VersionRange versionRange) {
-            String ga = gav.getGroupId() + ":" + gav.getArtifactId();
+        KieModule load(ReleaseId releaseId, VersionRange versionRange) {
+            String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
             TreeMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
             if (artifactMap == null) {
                 return null;
             }
 
             if (versionRange.fixed) {
-                return artifactMap.get(new ComparableVersion(gav.getVersion()));
+                return artifactMap.get(new ComparableVersion(releaseId.getVersion()));
             }
 
             if (versionRange.upperBound == null) {

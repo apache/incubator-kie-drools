@@ -1,13 +1,11 @@
 package org.kie.builder.impl;
 
 import org.drools.compiler.io.memory.MemoryFileSystem;
-import org.drools.io.internal.InternalResource;
 import org.drools.kproject.models.KieModuleModelImpl;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieFileSystem;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
-import org.kie.io.ResourceType;
 import org.kie.io.ResourceTypeImpl;
 
 import java.io.ByteArrayOutputStream;
@@ -87,8 +85,8 @@ public class KieFileSystemImpl
         return mfs;
     }
 
-    public KieFileSystem generateAndWritePomXML(GAV gav) {
-        write("pom.xml", KieBuilderImpl.generatePomXml( gav ) );        
+    public KieFileSystem generateAndWritePomXML(ReleaseId releaseId) {
+        write("pom.xml", KieBuilderImpl.generatePomXml(releaseId) );
         return this;
     }
 

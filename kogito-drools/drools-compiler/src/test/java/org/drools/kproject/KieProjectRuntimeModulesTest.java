@@ -5,7 +5,7 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.junit.Test;
 import org.kie.KieBase;
 import org.kie.KieServices;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.impl.FileKieModule;
 import org.kie.builder.impl.KieContainerImpl;
@@ -28,34 +28,34 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
         KieModuleModel kProjModel3 = createKieModule( "jar3", true );
         KieModuleModel kProjModel4 = createKieModule( "fol4", false );
 
-        GAV gav1 = KieServices.Factory.get().newGav( "jar1",
-                                                     "art1",
-                                                     "1.0-SNAPSHOT" );
-        GAV gav2 = KieServices.Factory.get().newGav( "jar2",
-                                                     "art1",
-                                                     "1.0-SNAPSHOT" );
-        GAV gav3 = KieServices.Factory.get().newGav( "jar3",
-                                                     "art1",
-                                                     "1.0-SNAPSHOT" );
-        GAV gav4 = KieServices.Factory.get().newGav( "fol4",
-                                                     "art1",
-                                                     "1.0-SNAPSHOT" );
+        ReleaseId releaseId1 = KieServices.Factory.get().newReleaseId("jar1",
+                "art1",
+                "1.0-SNAPSHOT");
+        ReleaseId releaseId2 = KieServices.Factory.get().newReleaseId("jar2",
+                "art1",
+                "1.0-SNAPSHOT");
+        ReleaseId releaseId3 = KieServices.Factory.get().newReleaseId("jar3",
+                "art1",
+                "1.0-SNAPSHOT");
+        ReleaseId releaseId4 = KieServices.Factory.get().newReleaseId("fol4",
+                "art1",
+                "1.0-SNAPSHOT");
 
         java.io.File file1 = fileManager.newFile( "jar1.jar" );
         java.io.File file2 = fileManager.newFile( "jar2.jar" );
         java.io.File file3 = fileManager.newFile( "jar3.jar" );
         java.io.File fol4 = fileManager.newFile( "fol4" );
 
-        ZipKieModule mod1 = new ZipKieModule( gav1,
+        ZipKieModule mod1 = new ZipKieModule(releaseId1,
                                               kProjModel1,
                                               file1 );
-        ZipKieModule mod2 = new ZipKieModule( gav2,
+        ZipKieModule mod2 = new ZipKieModule(releaseId2,
                                               kProjModel2,
                                               file2 );
-        ZipKieModule mod3 = new ZipKieModule( gav3,
+        ZipKieModule mod3 = new ZipKieModule(releaseId3,
                                               kProjModel3,
                                               file3 );
-        FileKieModule mod4 = new FileKieModule( gav4,
+        FileKieModule mod4 = new FileKieModule(releaseId4,
                                                 kProjModel4,
                                                 fol4 );
 

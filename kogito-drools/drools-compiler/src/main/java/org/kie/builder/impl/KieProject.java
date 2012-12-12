@@ -1,13 +1,13 @@
 package org.kie.builder.impl;
 
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.internal.utils.CompositeClassLoader;
 
 public interface KieProject {
     
-    GAV getGAV();
+    ReleaseId getGAV();
     
     InternalKieModule getKieModuleForKBase(String kBaseName);
 

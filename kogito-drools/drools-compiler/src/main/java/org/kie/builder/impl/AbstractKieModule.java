@@ -8,7 +8,7 @@ import org.kie.KieBase;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KnowledgeBuilder;
@@ -45,15 +45,15 @@ public abstract class AbstractKieModule
     
     private final Map<String, Results>                      resultsCache      = new HashMap<String, Results>();
 
-    protected final GAV                                     gav;
+    protected final ReleaseId releaseId;
     
     private final KieModuleModel                            kModuleModel;
 
-    private Map<GAV, InternalKieModule>                     dependencies;
+    private Map<ReleaseId, InternalKieModule>                     dependencies;
     
 
-    public AbstractKieModule(GAV gav, KieModuleModel kModuleModel) {
-        this.gav = gav;
+    public AbstractKieModule(ReleaseId releaseId, KieModuleModel kModuleModel) {
+        this.releaseId = releaseId;
         this.kModuleModel = kModuleModel;
     }   
     
@@ -63,14 +63,14 @@ public abstract class AbstractKieModule
     
 //    public void index() {
 //        if ( kieModules == null ) { 
-//            kieModules = new HashMap<GAV, InternalKieModule>();
+//            kieModules = new HashMap<ReleaseId, InternalKieModule>();
 //            kieModules.putAll( dependencies );
-//            kieModules.put( gav, this );
+//            kieModules.put( releaseId, this );
 //            indexParts( kieModules, kBaseModels, kSessionModels, kJarFromKBaseName );
 //        }
 //    }
 //    
-//    public Map<GAV, InternalKieModule> getKieModules() {
+//    public Map<ReleaseId, InternalKieModule> getKieModules() {
 //        if ( kieModules == null ) {
 //            index();
 //        }        
@@ -79,9 +79,9 @@ public abstract class AbstractKieModule
     
 //    public void verify(Messages messages) {
 //        if ( kieModules == null ) {
-//            kieModules = new HashMap<GAV, InternalKieModule>();
+//            kieModules = new HashMap<ReleaseId, InternalKieModule>();
 //            kieModules.putAll( dependencies );
-//            kieModules.put( gav, this );
+//            kieModules.put( releaseId, this );
 //            indexParts( kieModules, kBaseModels, kSessionModels, kJarFromKBaseName );       
 //            
 //            for ( KieBaseModel model : kBaseModels.values() ) {
@@ -90,19 +90,19 @@ public abstract class AbstractKieModule
 //        }
 //     }    
 
-    public Map<GAV, InternalKieModule> getDependencies() {
-        return dependencies == null ? Collections.<GAV, InternalKieModule>emptyMap() : dependencies;
+    public Map<ReleaseId, InternalKieModule> getDependencies() {
+        return dependencies == null ? Collections.<ReleaseId, InternalKieModule>emptyMap() : dependencies;
     }
 
     public void addDependency(InternalKieModule dependency) {
         if (dependencies == null) {
-            dependencies = new HashMap<GAV, InternalKieModule>();
+            dependencies = new HashMap<ReleaseId, InternalKieModule>();
         }
-        dependencies.put(dependency.getGAV(), dependency);
+        dependencies.put(dependency.getReleaseId(), dependency);
     }
 
-    public GAV getGAV() {
-        return gav;
+    public ReleaseId getReleaseId() {
+        return releaseId;
     }
 
     public Map<String, Collection<KnowledgePackage>> getKnowledgePackageCache() {
@@ -175,7 +175,7 @@ public abstract class AbstractKieModule
 
         InternalKieModule kModule = indexedParts.getKieModuleForKBase( kBaseModel.getName() );
         
-        Collection<KnowledgePackage> pkgs = kModule.getKnowledgePackageCache().get( kBaseModel.getName()  );
+        Collection<KnowledgePackage> pkgs = kModule.getKnowledgePackageCache().get(kBaseModel.getName());
         
         if ( pkgs == null ) {
             KnowledgeBuilder kbuilder = buildKnowledgePackages(kBaseModel, indexedParts, messages);

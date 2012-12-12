@@ -3,7 +3,7 @@ package org.drools.cdi;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
 import org.kie.KieServices;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KieSessionModel.KieSessionType;
@@ -11,7 +11,7 @@ import org.kie.builder.impl.InternalKieModule;
 import org.kie.builder.impl.KieContainerImpl;
 import org.kie.builder.impl.KieProject;
 import org.kie.cdi.KBase;
-import org.kie.cdi.KGAV;
+import org.kie.cdi.KReleaseId;
 import org.kie.cdi.KSession;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
@@ -52,7 +52,7 @@ public class KieCDIExtension
     private Map<KieCDIEntry, KieCDIEntry>                        kBaseNames;
     private Map<KieCDIEntry, KieCDIEntry>                        kSessionNames;
 
-    private Map<GAV, KieContainer>                  gavs;
+    private Map<ReleaseId, KieContainer>                  gavs;
 
     private Map<String, KieCDIEntry>                named;
 
@@ -67,7 +67,7 @@ public class KieCDIExtension
 
     public void init() {
         KieServices ks = KieServices.Factory.get();
-        gavs = new HashMap<GAV, KieContainer>();
+        gavs = new HashMap<ReleaseId, KieContainer>();
         classpathKContainer = (KieContainerImpl) ks.getKieClasspathContainer(); //new KieContainerImpl( kProject, null );
         named = new HashMap<String, KieCDIExtension.KieCDIEntry>();
     }
@@ -89,13 +89,13 @@ public class KieCDIExtension
                     continue;
                 }
 
-                KGAV kGAV = ip.getAnnotated().getAnnotation( KGAV.class );
-                GAV gav = null;
-                if ( kGAV != null ) {
-                    gav = ks.newGav( kGAV.groupId(),
-                                     kGAV.artifactId(),
-                                     kGAV.version() );
-                    gavs.put( gav,
+                KReleaseId KReleaseId = ip.getAnnotated().getAnnotation( KReleaseId.class );
+                ReleaseId releaseId = null;
+                if ( KReleaseId != null ) {
+                    releaseId = ks.newReleaseId(KReleaseId.groupId(),
+                            KReleaseId.artifactId(),
+                            KReleaseId.version());
+                    gavs.put(releaseId,
                               null );
                 }
 
@@ -108,22 +108,22 @@ public class KieCDIExtension
                 Class< ? extends Annotation> scope = ApplicationScoped.class;
 
                 if ( kBase != null ) {
-                    addKBaseInjectionPoint(ip, kBase, namedStr, scope, gav);
+                    addKBaseInjectionPoint(ip, kBase, namedStr, scope, releaseId);
                 } else if ( kSession != null ) {
-                    addKSessionInjectionPoint(ip, kSession, namedStr, scope, gav);
+                    addKSessionInjectionPoint(ip, kSession, namedStr, scope, releaseId);
                 }
             }
         }
     }
     
-    public void addKBaseInjectionPoint(InjectionPoint ip, KBase kBase, String namedStr, Class< ? extends Annotation> scope, GAV gav) {
+    public void addKBaseInjectionPoint(InjectionPoint ip, KBase kBase, String namedStr, Class< ? extends Annotation> scope, ReleaseId releaseId) {
         if ( kBaseNames == null ) {
             kBaseNames = new HashMap<KieCDIEntry, KieCDIEntry>();
         }
 
         KieCDIEntry newEntry = new KieCDIEntry( kBase.value(),
                                                 scope,
-                                                gav,
+                releaseId,
                                                 namedStr );
 
         KieCDIEntry existingEntry = kBaseNames.remove( newEntry );
@@ -154,14 +154,14 @@ public class KieCDIExtension
         }        
     }
 
-    public void addKSessionInjectionPoint(InjectionPoint ip, KSession kSession, String namedStr, Class< ? extends Annotation> scope, GAV gav) {
+    public void addKSessionInjectionPoint(InjectionPoint ip, KSession kSession, String namedStr, Class< ? extends Annotation> scope, ReleaseId releaseId) {
         if ( kSessionNames == null ) {
             kSessionNames = new HashMap<KieCDIEntry, KieCDIEntry>();
         }
 
         KieCDIEntry newEntry = new KieCDIEntry( kSession.value(),
                                                 scope,
-                                                gav,
+                releaseId,
                                                 namedStr );
 
         KieCDIEntry existingEntry = kSessionNames.remove( newEntry );
@@ -200,16 +200,16 @@ public class KieCDIExtension
 
             // to array, so we don't mutate that which we are iterating over
             if ( !gavs.isEmpty() ) {
-                for ( GAV gav : gavs.keySet().toArray( new GAV[gavs.size()] ) ) {
-                    KieContainer kContainer = ks.newKieContainer(gav);
+                for ( ReleaseId releaseId : gavs.keySet().toArray( new ReleaseId[gavs.size()] ) ) {
+                    KieContainer kContainer = ks.newKieContainer(releaseId);
                     if ( kContainer == null ) {
-                        log.error( "Unable to retrieve KieContainer for GAV {}",
-                                   gav.toString() );
+                        log.error( "Unable to retrieve KieContainer for ReleaseId {}",
+                                   releaseId.toString() );
                     } else {
-                        log.debug( "KieContainer retrieved for GAV {}",
-                                   gav.toString() );
+                        log.debug( "KieContainer retrieved for ReleaseId {}",
+                                   releaseId.toString() );
                     }
-                    gavs.put( gav,
+                    gavs.put(releaseId,
                               kContainer );
                 }
             }
@@ -234,14 +234,14 @@ public class KieCDIExtension
 
     public void addKBaseBean(AfterBeanDiscovery abd,
                              KieCDIEntry entry) {
-        GAV gav = entry.getkGAV();
+        ReleaseId releaseId = entry.getkGAV();
         KieContainerImpl kieContainer = classpathKContainer; // default to classpath, but allow it to be overriden
-        if ( gav != null ) {
-            kieContainer = (KieContainerImpl) gavs.get( gav );
+        if ( releaseId != null ) {
+            kieContainer = (KieContainerImpl) gavs.get(releaseId);
             if ( kieContainer == null ) {
-                log.error( "Unable to create KBase({}), could not retrieve KieContainer for GAV {}",
+                log.error( "Unable to create KBase({}), could not retrieve KieContainer for ReleaseId {}",
                            entry.getKieTypeName(),
-                           gav.toString() );
+                           releaseId.toString() );
                 return;
             }
         }
@@ -282,14 +282,14 @@ public class KieCDIExtension
 
     public void addKSessionBean(AfterBeanDiscovery abd,
                                 KieCDIEntry entry) {
-        GAV gav = entry.getkGAV();
+        ReleaseId releaseId = entry.getkGAV();
         KieContainerImpl kieContainer = classpathKContainer; // default to classpath, but allow it to be overriden
-        if ( gav != null ) {
-            kieContainer = (KieContainerImpl) gavs.get( gav );
+        if ( releaseId != null ) {
+            kieContainer = (KieContainerImpl) gavs.get(releaseId);
             if ( kieContainer == null ) {
-                log.error( "Unable to create KSession({}), could not retrieve KieContainer for GAV {}",
+                log.error( "Unable to create KSession({}), could not retrieve KieContainer for ReleaseId {}",
                            entry.getKieTypeName(),
-                           gav.toString() );
+                           releaseId.toString() );
                 return;
             }
         }
@@ -397,13 +397,13 @@ public class KieCDIExtension
                     }
                 } );
             }
-            if ( kContainer.getGAV() != null ) {
-                final String groupId = kContainer.getGAV().getGroupId();
-                final String artifactId = kContainer.getGAV().getArtifactId();
-                final String version = kContainer.getGAV().getVersion();
-                set.add( new KGAV() {
+            if ( kContainer.getReleaseId() != null ) {
+                final String groupId = kContainer.getReleaseId().getGroupId();
+                final String artifactId = kContainer.getReleaseId().getArtifactId();
+                final String version = kContainer.getReleaseId().getVersion();
+                set.add( new KReleaseId() {
                     public Class< ? extends Annotation> annotationType() {
-                        return KGAV.class;
+                        return KReleaseId.class;
                     }
 
                     public String groupId() {
@@ -419,7 +419,7 @@ public class KieCDIExtension
                     }
 
                     public String toString() {
-                        return "KGAV[groupId=" + groupId + " artifactId" + artifactId + " version=" + version + "]";
+                        return "KReleaseId[groupId=" + groupId + " artifactId" + artifactId + " version=" + version + "]";
                     }
                 } );
             }
@@ -536,13 +536,13 @@ public class KieCDIExtension
                     }
                 } );
             }
-            if ( kContainer.getGAV() != null ) {
-                final String groupId = kContainer.getGAV().getGroupId();
-                final String artifactId = kContainer.getGAV().getArtifactId();
-                final String version = kContainer.getGAV().getVersion();
-                set.add( new KGAV() {
+            if ( kContainer.getReleaseId() != null ) {
+                final String groupId = kContainer.getReleaseId().getGroupId();
+                final String artifactId = kContainer.getReleaseId().getArtifactId();
+                final String version = kContainer.getReleaseId().getVersion();
+                set.add( new KReleaseId() {
                     public Class< ? extends Annotation> annotationType() {
-                        return KGAV.class;
+                        return KReleaseId.class;
                     }
 
                     @Override
@@ -561,7 +561,7 @@ public class KieCDIExtension
                     }
 
                     public String toString() {
-                        return "KGAV[groupId=" + groupId + " artifactId" + artifactId + " version=" + version + "]";
+                        return "KReleaseId[groupId=" + groupId + " artifactId" + artifactId + " version=" + version + "]";
                     }
                 } );
             }
@@ -670,13 +670,13 @@ public class KieCDIExtension
                     }
                 } );
             }
-            if ( kContainer.getGAV() != null ) {
-                final String groupId = kContainer.getGAV().getGroupId();
-                final String artifactId = kContainer.getGAV().getArtifactId();
-                final String version = kContainer.getGAV().getVersion();
-                set.add( new KGAV() {
+            if ( kContainer.getReleaseId() != null ) {
+                final String groupId = kContainer.getReleaseId().getGroupId();
+                final String artifactId = kContainer.getReleaseId().getArtifactId();
+                final String version = kContainer.getReleaseId().getVersion();
+                set.add( new KReleaseId() {
                     public Class< ? extends Annotation> annotationType() {
-                        return KGAV.class;
+                        return KReleaseId.class;
                     }
 
                     @Override
@@ -695,7 +695,7 @@ public class KieCDIExtension
                     }
 
                     public String toString() {
-                        return "KGAV[groupId=" + groupId + " artifactId" + artifactId + " version=" + version + "]";
+                        return "KReleaseId[groupId=" + groupId + " artifactId" + artifactId + " version=" + version + "]";
                     }
                 } );
             }
@@ -752,18 +752,18 @@ public class KieCDIExtension
     public static class KieCDIEntry {
         private String                       kieTypeName;
         private Class< ? extends Annotation> scope;
-        private GAV                          kGav;
+        private ReleaseId kReleaseId;
         private String                       named;        
         private Set<InjectionPoint>          injectionPoints;
 
         public KieCDIEntry(String kieTypeName,
                            Class< ? extends Annotation> scope,
-                           GAV gav,
+                           ReleaseId releaseId,
                            String named) {
             super();
             this.kieTypeName = kieTypeName;
             this.scope = scope;
-            this.kGav = gav;
+            this.kReleaseId = releaseId;
             this.named = named;
             this.injectionPoints = new HashSet<InjectionPoint>();
         }
@@ -797,12 +797,12 @@ public class KieCDIExtension
             return scope;
         }
 
-        public GAV getkGAV() {
-            return kGav;
+        public ReleaseId getkGAV() {
+            return kReleaseId;
         }
 
-        public void setkGAV(GAV kGav) {
-            this.kGav = kGav;
+        public void setkGAV(ReleaseId kReleaseId) {
+            this.kReleaseId = kReleaseId;
         }         
         
         /**
@@ -833,7 +833,7 @@ public class KieCDIExtension
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((kGav == null) ? 0 : kGav.hashCode());
+            result = prime * result + ((kReleaseId == null) ? 0 : kReleaseId.hashCode());
             result = prime * result + ((kieTypeName == null) ? 0 : kieTypeName.hashCode());
             result = prime * result + ((named == null) ? 0 : named.hashCode());
             result = prime * result + ((scope == null) ? 0 : scope.hashCode());
@@ -846,9 +846,9 @@ public class KieCDIExtension
             if ( obj == null ) return false;
             if ( getClass() != obj.getClass() ) return false;
             KieCDIEntry other = (KieCDIEntry) obj;
-            if ( kGav == null ) {
-                if ( other.kGav != null ) return false;
-            } else if ( !kGav.equals( other.kGav ) ) return false;
+            if ( kReleaseId == null ) {
+                if ( other.kReleaseId != null ) return false;
+            } else if ( !kReleaseId.equals( other.kReleaseId) ) return false;
             if ( kieTypeName == null ) {
                 if ( other.kieTypeName != null ) return false;
             } else if ( !kieTypeName.equals( other.kieTypeName ) ) return false;
@@ -863,7 +863,7 @@ public class KieCDIExtension
 
         @Override
         public String toString() {
-            return "KieCDIEntry [kieTypeName=" + kieTypeName + ", scope=" + scope + ", kGav=" + kGav + ", named=" + named + "]";
+            return "KieCDIEntry [kieTypeName=" + kieTypeName + ", scope=" + scope + ", kReleaseId=" + kReleaseId + ", named=" + named + "]";
         }
 
     }
