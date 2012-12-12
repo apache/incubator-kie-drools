@@ -338,7 +338,7 @@ public class BinaryHeapQueueTest {
         public void setLogicalDependencies(LinkedList<LogicalDependency> arg0) {
         }
 
-        public List<String> getDeclarationIDs() {
+        public List<String> getDeclarationIds() {
             return null;
         }
 

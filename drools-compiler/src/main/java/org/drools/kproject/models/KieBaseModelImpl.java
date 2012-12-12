@@ -297,9 +297,6 @@ public class KieBaseModelImpl
                 writer.addAttribute( "includes", sb.toString() );
             }
             
-            // @TODO We only support attribte of strings for now, added nested elements with filters later 
-            //writeList( writer, "includes", "include", kBase.getIncludes() );
-
             for ( KieSessionModel kSessionModel :  kBase.getKieSessionModels().values()) {
                 writeObject( writer, context, "ksession", kSessionModel);
             }            

@@ -414,7 +414,7 @@ public class AgendaItem
         return decl.getValue( null, handle.getObject() );
     }
 
-    public List<String> getDeclarationIDs() {
+    public List<String> getDeclarationIds() {
         Declaration[] declArray = ((org.drools.reteoo.RuleTerminalNode)this.tuple.getLeftTupleSink()).getDeclarations();
         List<String> declarations = new ArrayList<String>();
         for( Declaration decl : declArray ) {
