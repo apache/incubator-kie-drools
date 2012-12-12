@@ -16,18 +16,17 @@
 
 package org.drools;
 
-import java.util.Properties;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
+import org.junit.Test;
+
+import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class RuleBaseConfigurationTest {
 
@@ -37,13 +36,13 @@ public class RuleBaseConfigurationTest {
         assertEquals( AssertBehaviour.IDENTITY,
                       cfg.getAssertBehaviour() );
 
-        System.setProperty( "drools.assertBehaviour",
+        System.setProperty( "drools.equalityBehavior",
                             "EQUALITY" );
         cfg = new RuleBaseConfiguration();
         assertEquals( AssertBehaviour.EQUALITY,
                       cfg.getAssertBehaviour() );
         
-        System.getProperties().remove( "drools.assertBehaviour" );
+        System.getProperties().remove( "drools.equalityBehavior" );
     }
 
     @Test
@@ -66,13 +65,13 @@ public class RuleBaseConfigurationTest {
     @Test
     public void testAssertBehaviour() {
         Properties properties = new Properties();
-        properties.setProperty( "drools.assertBehaviour", "identity" );
+        properties.setProperty( "drools.equalityBehavior", "identity" );
         RuleBaseConfiguration cfg = new RuleBaseConfiguration(properties);
         
         assertEquals( AssertBehaviour.IDENTITY, cfg.getAssertBehaviour() );
         
         properties = new Properties();
-        properties.setProperty( "drools.assertBehaviour", "equality" );
+        properties.setProperty( "drools.equalityBehavior", "equality" );
         cfg = new RuleBaseConfiguration(properties);
         
         assertEquals( AssertBehaviour.EQUALITY, cfg.getAssertBehaviour() );

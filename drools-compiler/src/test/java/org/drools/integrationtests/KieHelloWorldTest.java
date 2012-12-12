@@ -11,7 +11,7 @@ import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KieSessionModel.KieSessionType;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.conf.ClockTypeOption;
@@ -129,7 +129,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
-                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
                 .addPackage(pkg);
 
@@ -257,13 +257,13 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         kproj.newKieBaseModel("KBase2")
-                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
                 .addPackage("org.pkg1")
                 .newKieSessionModel("KSession1");
 
         kproj.newKieBaseModel("KBase1")
-                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
                 .addPackage("org.pkg2")
                 .newKieSessionModel("KSession2");

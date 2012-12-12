@@ -7,11 +7,9 @@ import org.drools.kproject.ReleaseIdImpl;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieBase;
 import org.kie.KieServices;
-import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
@@ -19,9 +17,10 @@ import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.Message.Level;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.impl.KieBuilderImpl;
 import org.kie.builder.impl.KieFileSystemImpl;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
@@ -273,7 +272,7 @@ public class KieBuilderTest {
         
         KieModuleModel kProj = ks.newKieModuleModel();
         KieBaseModel kBase1 = kProj.newKieBaseModel(namespace)
-                                   .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                                   .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                                    .setEventProcessingMode( EventProcessingOption.STREAM );        
         
         return kProj;

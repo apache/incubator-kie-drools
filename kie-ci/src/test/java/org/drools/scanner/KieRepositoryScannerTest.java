@@ -15,7 +15,7 @@ import org.kie.builder.KieScanner;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.builder.impl.InternalKieModule;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
@@ -206,7 +206,7 @@ public class KieRepositoryScannerTest {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
-                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
@@ -249,7 +249,7 @@ public class KieRepositoryScannerTest {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
-                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")

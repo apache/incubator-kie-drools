@@ -10,7 +10,7 @@ import org.kie.builder.KieSessionModel;
 import org.kie.builder.KieSessionModel.KieSessionType;
 import org.kie.builder.ListenerModel;
 import org.kie.builder.WorkItemHandlerModel;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;
 
@@ -31,7 +31,7 @@ public class KieModuleModelTest {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
-                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
                 .addInclude("OtherKBase")
                 .addPackage("org.kie.pkg1")
@@ -62,7 +62,7 @@ public class KieModuleModelTest {
                 .addArgument("name2", "bbb");
         
 //        KieBaseModel kieBaseModel2 = kproj.newKieBaseModel("KBase2")
-//                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+//                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
 //                .setEventProcessingMode( EventProcessingOption.STREAM );        
 
         String xml = kproj.toXML();
@@ -73,7 +73,7 @@ public class KieModuleModelTest {
 
         KieBaseModel kieBaseModelXML = kprojXml.getKieBaseModels().get("KBase1");
         assertSame(kprojXml, ((KieBaseModelImpl)kieBaseModelXML).getKModule());
-        assertEquals(AssertBehaviorOption.EQUALITY, kieBaseModelXML.getEqualsBehavior());
+        assertEquals(EqualityBehaviorOption.EQUALITY, kieBaseModelXML.getEqualsBehavior());
         assertEquals(EventProcessingOption.STREAM, kieBaseModelXML.getEventProcessingMode());
         assertFalse(kieBaseModelXML.isDefault());
         assertEquals("org.kie.pkg1", kieBaseModelXML.getPackages().get(0));

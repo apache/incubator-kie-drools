@@ -93,7 +93,7 @@ public class RuleUnlinkingWithSubNetworksTest {
         
         buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
 
-        context = new PropagationContextImpl( 0, PropagationContext.ASSERTION, null, null, null );
+        context = new PropagationContextImpl( 0, PropagationContext.INSERTION, null, null, null );
 
         MockTupleSource mockTupleSource = new MockTupleSource( 9 );
 

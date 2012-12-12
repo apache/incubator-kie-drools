@@ -23,7 +23,7 @@ import org.kie.builder.impl.KieFileSystemImpl;
 import org.kie.builder.impl.MemoryKieModule;
 import org.kie.KieBase;
 import org.kie.KieServices;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;
@@ -111,7 +111,7 @@ public class AbstractKnowledgeTest {
         KieModuleModel kproj = new KieModuleModelImpl();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
-                .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
+                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(namespace + ".KSession1")
@@ -123,7 +123,7 @@ public class AbstractKnowledgeTest {
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         KieBaseModel kieBaseModel2 = kproj.newKieBaseModel(namespace + ".KBase2")
-                .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
+                .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         KieSessionModel ksession3 = kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
@@ -133,7 +133,7 @@ public class AbstractKnowledgeTest {
         KieBaseModel kieBaseModel3 = kproj.newKieBaseModel(namespace + ".KBase3")
                 .addInclude( kieBaseModel1.getName() )
                 .addInclude( kieBaseModel2.getName() )
-                .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
+                .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         KieSessionModel ksession4 = kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
