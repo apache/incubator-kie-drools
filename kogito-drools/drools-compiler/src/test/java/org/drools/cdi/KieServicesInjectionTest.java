@@ -9,7 +9,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.KieBase;
-import org.kie.builder.KieContainer;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieServices;
 import org.kie.cdi.KBase;
@@ -17,6 +16,7 @@ import org.kie.cdi.KGAV;
 import org.kie.cdi.KSession;
 import org.kie.command.KieCommands;
 import org.kie.io.KieResources;
+import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 
 import static org.junit.Assert.*;

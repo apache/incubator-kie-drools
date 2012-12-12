@@ -13,7 +13,6 @@ import org.kie.KieBase;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
-import org.kie.builder.KieContainer;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
@@ -24,6 +23,7 @@ import org.kie.builder.impl.KieBuilderImpl;
 import org.kie.builder.impl.KieFileSystemImpl;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
+import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 
 import java.io.File;

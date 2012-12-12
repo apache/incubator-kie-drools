@@ -3,8 +3,8 @@ package org.drools.cdi;
 import javax.inject.Inject;
 
 import org.junit.Ignore;
-import org.kie.builder.KieContainer;
 import org.kie.cdi.KGAV;
+import org.kie.runtime.KieContainer;
 
 @Ignore
 public class KieContainerInjectionTest {

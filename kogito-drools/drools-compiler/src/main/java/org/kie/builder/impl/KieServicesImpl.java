@@ -9,7 +9,6 @@ import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
 import org.kie.builder.GAV;
 import org.kie.builder.KieBuilder;
-import org.kie.builder.KieContainer;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
@@ -22,6 +21,7 @@ import org.kie.io.ResourceFactoryService;
 import org.kie.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
+import org.kie.runtime.KieContainer;
 import org.kie.util.ServiceRegistryImpl;
 
 import java.io.File;

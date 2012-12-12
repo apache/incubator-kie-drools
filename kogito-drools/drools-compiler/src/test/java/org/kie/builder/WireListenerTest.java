@@ -5,6 +5,7 @@ import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 
 import java.io.IOException;
