@@ -181,17 +181,17 @@ public class KieBuilderTest {
         KieModuleModel kProj = ks.newKieModuleModel();
         
         
-        GAV gav = KieServices.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0-SNAPSHOT");
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         generateKProjectXML( kfs, namespace, kProj );
-        generatePomXML(kfs, gav);
+        generatePomXML(kfs, releaseId);
         generateMessageClass( kfs, namespace );
         generateRule( kfs, namespace );
         
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
                
-        createAndTestKieContainer(gav, createKieBuilder(kfs), null );
+        createAndTestKieContainer(releaseId, createKieBuilder(kfs), null );
     }      
     
     public void testNoPomAndProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
