@@ -19,6 +19,7 @@ import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
+import org.kie.io.ResourceTypeImpl;
 import org.kie.util.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -215,7 +216,7 @@ public abstract class AbstractKieModule
                     } catch ( IOException e ) {
                         log.error( "Error loading resource configuration from file: "+fileName+".properties" );
                     }
-                    conf = ResourceType.fromProperties( prop );
+                    conf = ResourceTypeImpl.fromProperties( prop );
                 }
                 if( conf == null ) {
                     ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ),
