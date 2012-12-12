@@ -26,9 +26,9 @@ import java.util.Collection;
  * 
  * @see org.kie.runtime.KieSession 
  */
-public interface WorkingMemory
+public interface Session
     extends
-    WorkingMemoryEntryPoint {
+    SessionEntryPoint {
 
     /**
      * <p>Request the engine to stop firing rules. If the engine is currently firing a rule, it will
@@ -53,7 +53,7 @@ public interface WorkingMemory
      * @param name
      * @return
      */
-    WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
+    SessionEntryPoint getWorkingMemoryEntryPoint(String name);
 
     /**
      * Returns a collection of all available working memory entry points
@@ -61,7 +61,7 @@ public interface WorkingMemory
      * 
      * @return the collection of all available entry points for this session
      */
-    Collection< ? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints();
+    Collection< ? extends SessionEntryPoint> getWorkingMemoryEntryPoints();
 
     /**
      * Retrieve the QueryResults of the specified query and arguments
