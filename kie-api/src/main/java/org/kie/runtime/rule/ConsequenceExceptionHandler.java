@@ -18,6 +18,6 @@ package org.kie.runtime.rule;
 
 public interface ConsequenceExceptionHandler {
     void handleException(Match match,
-                         WorkingMemory workingMemory,
+                         Session workingMemory,
                          Exception exception);
 }
