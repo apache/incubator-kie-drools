@@ -4,11 +4,11 @@ import org.kie.io.Resource;
 
 public interface KieRepository {
     
-    public GAV getDefaultGAV();
+    public ReleaseId getDefaultReleaseId();
     
     void addKieModule(KieModule kModule);
     
     KieModule addKieModule(Resource resource, Resource... dependencies);    
     
-    KieModule getKieModule(GAV gav);     
+    KieModule getKieModule(ReleaseId releaseId);
 }

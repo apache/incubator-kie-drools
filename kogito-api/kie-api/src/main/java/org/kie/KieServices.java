@@ -1,6 +1,6 @@
 package org.kie;
 
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModuleModel;
@@ -37,7 +37,7 @@ public interface KieServices {
      */
     KieContainer getKieClasspathContainer();
     
-    KieContainer newKieContainer(GAV gav);
+    KieContainer newKieContainer(ReleaseId releaseId);
     
     KieScanner newKieScanner(KieContainer kieContainer);    
     
@@ -45,7 +45,7 @@ public interface KieServices {
     
     KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
 
-    GAV newGav(String groupId, String artifactId, String version);
+    ReleaseId newReleaseId(String groupId, String artifactId, String version);
 
     KieFileSystem newKieFileSystem( );
 
