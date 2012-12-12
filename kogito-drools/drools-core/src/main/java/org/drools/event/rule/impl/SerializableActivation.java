@@ -92,7 +92,7 @@ public class SerializableActivation
         return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getPattern().getOffset())).getObject() );
     }
 
-    public List<String> getDeclarationIDs() {
+    public List<String> getDeclarationIds() {
         List<String> decls = new ArrayList<String>();
         for( Declaration decl : this.declarations ) {
             decls.add( decl.getIdentifier() );

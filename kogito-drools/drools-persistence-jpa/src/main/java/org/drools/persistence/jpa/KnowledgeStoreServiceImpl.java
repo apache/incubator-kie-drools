@@ -54,9 +54,9 @@ public class KnowledgeStoreServiceImpl
         setProcessSignalManagerFactoryClass( "org.jbpm.persistence.processinstance.JPASignalManagerFactory" );
     }
 
-    public StatefulKnowledgeSession newStatefulKnowledgeSession(KieBase kbase,
-                                                                KieSessionConfiguration configuration,
-                                                                Environment environment) {
+    public StatefulKnowledgeSession newKieSession(KieBase kbase,
+                                                  KieSessionConfiguration configuration,
+                                                  Environment environment) {
         if ( configuration == null ) {
             configuration = new SessionConfiguration();
         }
@@ -70,10 +70,10 @@ public class KnowledgeStoreServiceImpl
                                                                              environment ) );
     }
 
-    public StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
-                                                                 KieBase kbase,
-                                                                 KieSessionConfiguration configuration,
-                                                                 Environment environment) {
+    public StatefulKnowledgeSession loadKieSession(int id,
+                                                   KieBase kbase,
+                                                   KieSessionConfiguration configuration,
+                                                   Environment environment) {
         if ( configuration == null ) {
             configuration = new SessionConfiguration();
         }

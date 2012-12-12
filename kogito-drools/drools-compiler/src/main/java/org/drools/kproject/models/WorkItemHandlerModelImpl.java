@@ -61,6 +61,7 @@ public class WorkItemHandlerModelImpl implements WorkItemHandlerModel {
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
             WorkItemHandlerModelImpl wih = (WorkItemHandlerModelImpl) value;
             writer.addAttribute("type", wih.getType());
+            /* TODO make qualifiers working properly before readd them to the xml
             QualifierModelImpl qualifier = (QualifierModelImpl)wih.getQualifierModel();
             if (qualifier != null) {
                 if (qualifier.isSimple()) {
@@ -69,11 +70,13 @@ public class WorkItemHandlerModelImpl implements WorkItemHandlerModel {
                     writeObject(writer, context, "qualifier", qualifier);
                 }
             }
+            */
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final WorkItemHandlerModelImpl wih = new WorkItemHandlerModelImpl();
             wih.setType(reader.getAttribute("type"));
+            /* TODO make qualifiers working properly before readd them to the xml
             String qualifierType = reader.getAttribute("qualifier");
             if (qualifierType != null) {
                 wih.newQualifierModel(qualifierType);
@@ -89,6 +92,7 @@ public class WorkItemHandlerModelImpl implements WorkItemHandlerModel {
                     }
                 }
             } );
+            */
             return wih;
         }
     }

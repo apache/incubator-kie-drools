@@ -9,12 +9,22 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
+import org.xml.sax.SAXException;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class KieModuleModelImpl implements KieModuleModel {
 
@@ -23,9 +33,7 @@ public class KieModuleModelImpl implements KieModuleModel {
 
     private Map<String, KieBaseModel>  kBases  = new HashMap<String, KieBaseModel>();
     
-    public KieModuleModelImpl() {
-    }    
-
+    public KieModuleModelImpl() { }
 
     /* (non-Javadoc)
      * @see org.kie.kModule.KieProject#addKBase(org.kie.kModule.KieBaseModelImpl)
@@ -87,8 +95,13 @@ public class KieModuleModelImpl implements KieModuleModel {
         return "KieProject [kbases=" + kBases + "]";
     }
 
+    private static final String KMODULE_XSD =
+            "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+            "         xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">";
+
     public String toXML() {
-        return MARSHALLER.toXML(this);
+        String xml = MARSHALLER.toXML(this);
+        return KMODULE_XSD + xml.substring("<kmodule>".length());
     }
 
     public static KieModuleModel fromXML(InputStream kModuleStream) {
@@ -132,18 +145,28 @@ public class KieModuleModelImpl implements KieModuleModel {
         }
 
         public KieModuleModel fromXML(InputStream kModuleStream) {
-            return (KieModuleModel)xStream.fromXML(kModuleStream);
+            byte[] bytes = null;
+            try {
+                bytes = readBytesFromInputStream(kModuleStream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            KieModuleValidator.validate(new ByteArrayInputStream(bytes));
+            return (KieModuleModel)xStream.fromXML(new ByteArrayInputStream(bytes));
         }
 
         public KieModuleModel fromXML(java.io.File kModuleFile) {
+            KieModuleValidator.validate(kModuleFile);
             return (KieModuleModel)xStream.fromXML(kModuleFile);
         }
 
         public KieModuleModel fromXML(URL kModuleUrl) {
+            KieModuleValidator.validate(kModuleUrl);
             return (KieModuleModel)xStream.fromXML(kModuleUrl);
         }
 
         public KieModuleModel fromXML(String kModuleString) {
+            KieModuleValidator.validate(kModuleString);
             return (KieModuleModel)xStream.fromXML(kModuleString);
         }
     }
@@ -175,6 +198,48 @@ public class KieModuleModelImpl implements KieModuleModel {
             });
 
             return kModule;
+        }
+    }
+
+    private static class KieModuleValidator {
+        private static final Schema schema = loadSchema();
+
+        private static Schema loadSchema() {
+            SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+            try {
+                URL url = KieModuleModel.class.getClassLoader().getResource( "org/kie/kmodule.xsd" );
+                return factory.newSchema(url);
+            } catch (SAXException ex ) {
+                throw new RuntimeException( "Unable to load XSD", ex );
+            }
+        }
+
+        private static void validate(InputStream kModuleStream) {
+            validate(new StreamSource(kModuleStream));
+        }
+
+        private static void validate(java.io.File kModuleFile) {
+            validate(new StreamSource(kModuleFile));
+        }
+
+        private static void validate(URL kModuleUrl) {
+            try {
+                validate(new StreamSource(kModuleUrl.toURI().toString()));
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private static void validate(String kModuleString) {
+            validate(new StreamSource(new ByteArrayInputStream(kModuleString.getBytes())));
+        }
+
+        private static void validate(Source source) {
+            try {
+                schema.newValidator().validate(source);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

@@ -165,7 +165,7 @@ class MockActivation
         return null;
     }
 
-    public List<String> getDeclarationIDs() {
+    public List<String> getDeclarationIds() {
         return null;
     }
 
