@@ -51,7 +51,7 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
 
     public void addHardConstraintMatch(RuleContext kcontext, final long weight) {
         hardScore += weight;
-        AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
+        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         agendaItem.setActivationUnMatchListener(
                 new ActivationUnMatchListener() {
                     public void unMatch(WorkingMemory workingMemory, Match activation) {
@@ -63,7 +63,7 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
 
     public void addSoftConstraintMatch(RuleContext kcontext, final long weight) {
         softScore += weight;
-        AgendaItem agendaItem = (AgendaItem) kcontext.getActivation();
+        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         agendaItem.setActivationUnMatchListener(
                 new ActivationUnMatchListener() {
                     public void unMatch(WorkingMemory workingMemory, Match activation) {
