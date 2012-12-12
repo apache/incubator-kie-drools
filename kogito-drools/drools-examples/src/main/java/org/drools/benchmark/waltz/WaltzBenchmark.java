@@ -24,7 +24,7 @@ import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.WorkingMemory;
+import org.kie.runtime.rule.Session;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -78,7 +78,7 @@ public abstract class WaltzBenchmark {
         System.out.println( "average : " + totalTime / 5 );
     }
 
-    private static void loadLines(WorkingMemory wm,
+    private static void loadLines(Session wm,
                                   String filename) {
         try {
             BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "data/" + filename ) ) );

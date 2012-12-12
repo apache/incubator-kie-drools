@@ -43,7 +43,7 @@ import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.conf.ClockTypeOption;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public class FactHandleMarshallingTest {
 
@@ -60,7 +60,7 @@ public class FactHandleMarshallingTest {
         Rete rete = ((ReteooRuleBase) ruleBase).getRete();
         RuleBasePartitionId partionId = new RuleBasePartitionId("P-MAIN");
         EntryPointNode entryPointNode = new EntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPoint.DEFAULT);
-        WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint(EntryPoint.DEFAULT, entryPointNode, wm);
+        SessionEntryPoint wmEntryPoint = new NamedEntryPoint(EntryPoint.DEFAULT, entryPointNode, wm);
         EventFactHandle factHandle = new EventFactHandle(1, (Object) new Person(),0, (new Date()).getTime(), 0, wmEntryPoint);
         
         return factHandle;

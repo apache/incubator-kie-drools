@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.spi.FactHandleFactory;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public abstract class AbstractFactHandleFactory
     implements
@@ -49,7 +49,7 @@ public abstract class AbstractFactHandleFactory
     public final InternalFactHandle newFactHandle(final Object object,
                                                   final ObjectTypeConf conf,
                                                   final InternalWorkingMemory workingMemory,
-                                                  final WorkingMemoryEntryPoint wmEntryPoint) {
+                                                  final SessionEntryPoint wmEntryPoint) {
         return newFactHandle( this.id.incrementAndGet(),
                               object,
                               conf,
@@ -64,7 +64,7 @@ public abstract class AbstractFactHandleFactory
                                                   final Object object,
                                                   final ObjectTypeConf conf,
                                                   final InternalWorkingMemory workingMemory,
-                                                  final WorkingMemoryEntryPoint wmEntryPoint) {
+                                                  final SessionEntryPoint wmEntryPoint) {
         return newFactHandle( id,
                               object,
                               this.counter.incrementAndGet(),
@@ -81,7 +81,7 @@ public abstract class AbstractFactHandleFactory
                                                      final long recency,
                                                      final ObjectTypeConf conf,
                                                      final InternalWorkingMemory workingMemory,
-                                                     final WorkingMemoryEntryPoint wmEntryPoint);
+                                                     final SessionEntryPoint wmEntryPoint);
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)

@@ -75,7 +75,7 @@ import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public class DynamicRulesTest extends CommonTestMethodBase {
 
@@ -911,7 +911,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         ksession.setGlobal( "results",
                             results );
 
-        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "in-channel" );
+        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "in-channel" );
         ep.insert( new StockTick( 1,
                                   "RHT",
                                   20,

@@ -14,7 +14,7 @@ import org.kie.runtime.Channel;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 /**
  * This is an interface for ReteooWorkingMemory implementations
@@ -25,7 +25,7 @@ public interface ReteooWorkingMemoryInterface extends InternalWorkingMemoryActio
                                              EventSupport,
                                              ProcessEventManager {
 
-    Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints();
+    Collection<? extends SessionEntryPoint> getWorkingMemoryEntryPoints();
 
     void fireUntilHalt();
 

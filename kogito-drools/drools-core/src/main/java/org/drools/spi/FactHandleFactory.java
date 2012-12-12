@@ -23,7 +23,7 @@ import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s
@@ -39,14 +39,14 @@ public interface FactHandleFactory {
     public InternalFactHandle newFactHandle(Object object, 
                                             ObjectTypeConf conf, 
                                             InternalWorkingMemory workingMemory, 
-                                            WorkingMemoryEntryPoint wmEntryPoint );
+                                            SessionEntryPoint wmEntryPoint );
     
     public InternalFactHandle newFactHandle(final int id,
                                             final Object object,
                                             final long recency,
                                             final ObjectTypeConf conf,
                                             final InternalWorkingMemory workingMemory,
-                                            final WorkingMemoryEntryPoint wmEntryPoint);
+                                            final SessionEntryPoint wmEntryPoint);
     
     /**
      * Increases the recency of the FactHandle

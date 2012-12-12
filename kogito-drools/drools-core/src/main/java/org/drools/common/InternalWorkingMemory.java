@@ -38,7 +38,7 @@ import org.drools.time.TimerService;
 import org.drools.type.DateFormats;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public interface InternalWorkingMemory
     extends
@@ -127,7 +127,7 @@ public interface InternalWorkingMemory
      */
     public Map< String, Channel> getChannels();
     
-    public Map<String, ? extends WorkingMemoryEntryPoint> getEntryPoints();
+    public Map<String, ? extends SessionEntryPoint> getEntryPoints();
 
     public SessionConfiguration getSessionConfiguration();
     

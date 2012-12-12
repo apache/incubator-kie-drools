@@ -20,11 +20,11 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public class GetWorkingMemoryEntryPointCommand
     implements
-    GenericCommand<WorkingMemoryEntryPoint> {
+    GenericCommand<SessionEntryPoint> {
 
     private String name;
 
@@ -32,7 +32,7 @@ public class GetWorkingMemoryEntryPointCommand
         this.name = name;
     }
 
-    public WorkingMemoryEntryPoint execute(Context context) {
+    public SessionEntryPoint execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         return ksession.getWorkingMemoryEntryPoint( name );
     }

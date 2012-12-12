@@ -35,7 +35,7 @@ import org.drools.xml.jaxb.util.JaxbCollectionAdapter;
 import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 @XmlAccessorType( XmlAccessType.NONE )
 public class InsertElementsCommand
@@ -82,7 +82,7 @@ public class InsertElementsCommand
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         List<FactHandle> handles = new ArrayList<FactHandle>();
         
-        WorkingMemoryEntryPoint wmep;
+        SessionEntryPoint wmep;
         if ( StringUtils.isEmpty( this.entryPoint ) ) {
             wmep = ksession;
         } else {

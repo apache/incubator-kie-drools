@@ -28,7 +28,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.kie.runtime.Channel;
 import org.kie.runtime.rule.RuleContext;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -114,9 +114,9 @@ public interface KnowledgeHelper
 
     WorkingMemory getWorkingMemory();
     
-    WorkingMemoryEntryPoint getEntryPoint( String id );
+    SessionEntryPoint getEntryPoint( String id );
     
-    Map<String, WorkingMemoryEntryPoint> getEntryPoints();
+    Map<String, SessionEntryPoint> getEntryPoints();
     
     Channel getChannel( String id );
     

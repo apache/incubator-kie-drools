@@ -35,7 +35,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.spi.RuleComponent;
 import org.kie.definition.rule.Rule;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -65,7 +65,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     private LeftTuple               firstLeftTuple;
     private LeftTuple               lastLeftTuple;
 
-    private WorkingMemoryEntryPoint entryPoint;
+    private SessionEntryPoint entryPoint;
 
     private boolean                 disconnected;
 
@@ -94,7 +94,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public DefaultFactHandle(final int id,
             final Object object,
             final long recency,
-            final WorkingMemoryEntryPoint wmEntryPoint) {
+            final SessionEntryPoint wmEntryPoint) {
         this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint );
     }
 
@@ -102,7 +102,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             final int identityHashCode,
             final Object object,
             final long recency,
-            final WorkingMemoryEntryPoint wmEntryPoint) {
+            final SessionEntryPoint wmEntryPoint) {
         this.id = id;
         this.entryPoint = wmEntryPoint;
         this.recency = recency;
@@ -307,11 +307,11 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return this.lastLeftTuple;
     }
 
-    public WorkingMemoryEntryPoint getEntryPoint() {
+    public SessionEntryPoint getEntryPoint() {
         return entryPoint;
     }
 
-    public void setEntryPoint( WorkingMemoryEntryPoint sourceNode ) {
+    public void setEntryPoint( SessionEntryPoint sourceNode ) {
         this.entryPoint = sourceNode;
     }
     

@@ -100,7 +100,7 @@ import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public class InputMarshaller {
 
@@ -272,7 +272,7 @@ public class InputMarshaller {
         }
         while ( context.readShort() == PersisterEnums.ENTRY_POINT) {
             String entryPointId = context.stream.readUTF();
-            WorkingMemoryEntryPoint wmep = context.wm.getEntryPoints().get( entryPointId );
+            SessionEntryPoint wmep = context.wm.getEntryPoints().get( entryPointId );
             readFactHandles( context,
                              ( (NamedEntryPoint) wmep ).getObjectStore() );
         }
@@ -501,7 +501,7 @@ public class InputMarshaller {
             object = strategy.read( context.stream );
         }
 
-        WorkingMemoryEntryPoint entryPoint = null;
+        SessionEntryPoint entryPoint = null;
         if (context.readBoolean()) {
             String entryPointId = context.readUTF();
             if (entryPointId != null && !entryPointId.equals( "" )) {

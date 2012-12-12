@@ -94,7 +94,7 @@ import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.RuleFlowGroup;
 import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 import org.kie.time.SessionClock;
 
 public class CommandBasedStatefulKnowledgeSession
@@ -365,11 +365,11 @@ public class CommandBasedStatefulKnowledgeSession
         return (T) this.commandService.execute( new GetSessionClockCommand() );
     }
 
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
+    public SessionEntryPoint getWorkingMemoryEntryPoint(String name) {
         return this.commandService.execute( new GetWorkingMemoryEntryPointCommand( name ) );
     }
 
-    public Collection< ? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+    public Collection< ? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
         return this.commandService.execute( new GetWorkingMemoryEntryPointsCommand() );
     }
 

@@ -28,7 +28,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.command.Context;
 import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class InsertObjectInEntryPointCommand
@@ -57,7 +57,7 @@ public class InsertObjectInEntryPointCommand
 
     public FactHandle execute(Context context) {
 
-        WorkingMemoryEntryPoint ep = ((KnowledgeCommandContext) context).getWorkingMemoryEntryPoint();
+        SessionEntryPoint ep = ((KnowledgeCommandContext) context).getWorkingMemoryEntryPoint();
         FactHandle factHandle = ep.insert(object);
 
         DefaultFactHandle disconnectedHandle = ((DefaultFactHandle) factHandle).clone();
