@@ -24,9 +24,9 @@ public interface KieContainer {
 
     KieSession newKieSession(String kSessionName, Environment environment);
 
-    StatelessKieSession newKieStatelessSession();
+    StatelessKieSession newStatelessKieSession();
     
-    StatelessKieSession newKieStatelessSession(String kSessionName);
+    StatelessKieSession newStatelessKieSession(String kSessionName);
     
     ClassLoader getClassLoader();
 }

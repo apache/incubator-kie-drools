@@ -22,8 +22,6 @@ import java.util.concurrent.Callable;
 
 import org.kie.Service;
 import org.kie.marshalling.KieMarshallers;
-import org.kie.util.ServiceRegistry;
-import org.kie.util.ServiceRegistryImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -46,9 +44,10 @@ public class Activator
     public void start(BundleContext bc) throws Exception {
         logger.info( "registering api services" );
 
-        this.serviceRegistry = bc.registerService( ServiceRegistry.class.getName(),
-                                                   ServiceRegistryImpl.getInstance(),
-                                                   new Hashtable() );
+        // @TODO (mdp) commented t allow it to compile
+//        this.serviceRegistry = bc.registerService( ServiceRegistry.class.getName(),
+//                                                   ServiceRegistryImpl.getInstance(),
+//                                                   new Hashtable() );
 
         this.registryTracker = new ServiceTracker( bc,
                                                    Service.class.getName(),
@@ -102,9 +101,10 @@ public class Activator
                      "true" );
             activator.serviceRegistry.setProperties( dic );
 
-            ((ServiceRegistryImpl) bc.getService( regServiceRef )).registerLocator( service.getClass().getInterfaces()[0],
-                                                                                    new BundleContextInstantiator( this.bc,
-                                                                                                                   ref ) );
+            // @TODO (mdp) commented t allow it to compile
+//            ((ServiceRegistryImpl) bc.getService( regServiceRef )).registerLocator( service.getClass().getInterfaces()[0],
+//                                                                                    new BundleContextInstantiator( this.bc,
+//                                                                                                                   ref ) );
 
             return service;
         }
@@ -122,7 +122,8 @@ public class Activator
             Dictionary dic = new Hashtable();
             ServiceReference regServiceRef = this.activator.serviceRegistry.getReference();
 
-            ((ServiceRegistryImpl) bc.getService( regServiceRef )).unregisterLocator( service.getClass().getInterfaces()[0] );
+            // @TODO (mdp) commented t allow it to compile
+            // ((ServiceRegistryImpl) bc.getService( regServiceRef )).unregisterLocator( service.getClass().getInterfaces()[0] );
 
             for ( String key : regServiceRef.getPropertyKeys() ) {
                 if ( !key.equals( service.getClass().getInterfaces()[0].getName() ) ) {

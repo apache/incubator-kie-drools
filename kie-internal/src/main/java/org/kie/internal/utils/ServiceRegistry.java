@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.util;
+package org.kie.internal.utils;
 
 import java.util.concurrent.Callable;
 
 import org.kie.Service;
 
+/**
+ * Internal Interface
+ *
+ */
 public interface ServiceRegistry extends Service {
 
     public void registerLocator(Class cls,
-                                  Callable cal);
+                                Callable cal);
 
     public void unregisterLocator(Class cls);
-    
-//    public void registerInstance(Service service);
-//
-//  public void unregisterInstance(Service service);
     
     public <T> T get(Class<T> cls);
     

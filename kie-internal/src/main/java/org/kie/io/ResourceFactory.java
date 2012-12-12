@@ -22,7 +22,7 @@ import java.io.Reader;
 import java.net.URL;
 
 import org.kie.definition.KnowledgeDescr;
-import org.kie.util.ServiceRegistryImpl;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 /**
  * <p>

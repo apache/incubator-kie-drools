@@ -16,7 +16,7 @@
 
 package org.kie;
 
-import org.kie.util.ServiceRegistryImpl;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 /**
  * This factory allows you to set the SystemEventListener that will be used by various components of Drools, such

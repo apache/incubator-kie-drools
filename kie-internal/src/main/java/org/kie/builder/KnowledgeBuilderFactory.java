@@ -19,7 +19,7 @@ package org.kie.builder;
 import java.util.Properties;
 
 import org.kie.KnowledgeBase;
-import org.kie.util.ServiceRegistryImpl;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 import com.sun.tools.xjc.Options;
 

@@ -28,11 +28,11 @@
  * limitations under the License.
  */
 
-package org.kie.util;
+package org.kie.internal.utils;
 
+import org.kie.KieServices;
 import org.kie.Service;
 import org.kie.builder.KieScanner;
-import org.kie.builder.KieServices;
 import org.kie.concurrent.KieExecutors;
 import org.kie.marshalling.KieMarshallers;
 import org.slf4j.Logger;
