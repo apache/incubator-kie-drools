@@ -40,7 +40,7 @@ import org.kie.event.KnowledgeRuntimeEventManager;
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
  * 
- * StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ * StatefulKnowledgeSession ksession = kbase.newKieSession();
  * for( Object fact : facts ) {
  *     ksession.insert( fact );
  * }
@@ -55,7 +55,7 @@ import org.kie.event.KnowledgeRuntimeEventManager;
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * kbuilder.add( ResourceFactory.newFileSystemResource( fileName ), ResourceType.BPMN2 );
  * KnowledgeBase kbase = kbuilder.newKnowledgeBase();
- * StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ * StatefulKnowledgeSession ksession = kbase.newKieSession();
  * ksession.startProcess("com.sample.processid");
  * ksession.signalEvent("SomeEvent", null);
  * ksession.startProcess("com.sample.processid");
@@ -81,7 +81,7 @@ import org.kie.event.KnowledgeRuntimeEventManager;
  * 
  * <p>Code snippet for setting a global:</p>
  * <pre>
- * StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ * StatefulKnowledgeSession ksession = kbase.newKieSession();
  * ksession.setGlobal( "hbnSession", hibernateSession ); // sets a global hibernate session, that can be used for DB interactions in the rules.
  * for( Object fact : facts ) {
  *     ksession.insert( fact );

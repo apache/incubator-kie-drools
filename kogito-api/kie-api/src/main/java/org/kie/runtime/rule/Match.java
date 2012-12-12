@@ -1,8 +1,8 @@
 package org.kie.runtime.rule;
 
-import java.util.List;
-
 import org.kie.definition.rule.Rule;
+
+import java.util.List;
 
 public interface Match {
 
@@ -41,7 +41,7 @@ public interface Match {
      * 
      * @return
      */
-    public List<String> getDeclarationIDs();
+    public List<String> getDeclarationIds();
 
     /**
      * Returns the bound declaration value for the given declaration identifier.

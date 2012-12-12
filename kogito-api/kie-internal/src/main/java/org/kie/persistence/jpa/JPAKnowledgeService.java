@@ -34,7 +34,7 @@ import org.kie.runtime.StatefulKnowledgeSession;
  * env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, Persistence.createEntityManagerFactory( "emf-name" ) );
  * env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
  *          
- * StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env ); // KnowledgeSessionConfiguration may be null, and a default will be used
+ * StatefulKnowledgeSession ksession = JPAKnowledgeService.newKieSession( kbase, null, env ); // KnowledgeSessionConfiguration may be null, and a default will be used
  * int sessionId = ksession.getId();
  * 
  * ksession.insert( data1 );
@@ -48,7 +48,7 @@ import org.kie.runtime.StatefulKnowledgeSession;
  * </p>
  * 
  * <pre>
- * StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );
+ * StatefulKnowledgeSession ksession = JPAKnowledgeService.loadKieSession( sessionId, kbase, null, env );
  * </pre>
  * 
  * <p>
@@ -117,19 +117,19 @@ public class JPAKnowledgeService {
     public static StatefulKnowledgeSession newStatefulKnowledgeSession(KieBase kbase,
                                                                        KieSessionConfiguration configuration,
                                                                        Environment environment) {
-        return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().newStatefulKnowledgeSession( kbase,
-                                                                             configuration,
-                                                                             environment );
+        return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().newKieSession(kbase,
+                configuration,
+                environment);
     }
 
     public static StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
                                                                         KieBase kbase,
                                                                         KieSessionConfiguration configuration,
                                                                         Environment environment) {
-        return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().loadStatefulKnowledgeSession( id,
-                                                                              kbase,
-                                                                              configuration,
-                                                                              environment );
+        return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().loadKieSession(id,
+                kbase,
+                configuration,
+                environment);
     }
 
     private static synchronized void setJPAKnowledgeServiceProvider(KieStoreServices provider) {

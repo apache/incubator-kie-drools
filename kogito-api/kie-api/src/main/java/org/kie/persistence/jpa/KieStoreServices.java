@@ -23,13 +23,13 @@ import org.kie.runtime.KieSessionConfiguration;
 
 public interface KieStoreServices {
 
-    KieSession newStatefulKnowledgeSession(KieBase kbase,
-                                           KieSessionConfiguration configuration,
-                                           Environment environment);
+    KieSession newKieSession(KieBase kbase,
+                             KieSessionConfiguration configuration,
+                             Environment environment);
 
-    KieSession loadStatefulKnowledgeSession(int id,
-                                            KieBase kbase,
-                                            KieSessionConfiguration configuration,
-                                            Environment environment);
+    KieSession loadKieSession(int id,
+                              KieBase kbase,
+                              KieSessionConfiguration configuration,
+                              Environment environment);
 
 }
