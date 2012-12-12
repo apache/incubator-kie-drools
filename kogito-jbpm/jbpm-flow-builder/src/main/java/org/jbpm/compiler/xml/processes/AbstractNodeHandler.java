@@ -158,11 +158,11 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(node.getName()) + "\" ");
         }
         if (includeMeta) {
-            Integer x = (Integer) node.getMetaData("x");
-            Integer y = (Integer) node.getMetaData("y");
-            Integer width = (Integer) node.getMetaData("width");
-            Integer height = (Integer) node.getMetaData("height");
-            Integer color = (Integer) node.getMetaData("color");
+            Integer x = (Integer) node.getMetaData().get("x");
+            Integer y = (Integer) node.getMetaData().get("y");
+            Integer width = (Integer) node.getMetaData().get("width");
+            Integer height = (Integer) node.getMetaData().get("height");
+            Integer color = (Integer) node.getMetaData().get("color");
             if (x != null && x != 0) {
                 xmlDump.append("x=\"" + x + "\" ");
             }

@@ -69,7 +69,7 @@ public class XmlWorkflowProcessDumper {
             xmlDump.append("version=\"" + process.getVersion() + "\" ");
         }
         if (includeMeta) {
-            Integer routerLayout = (Integer) process.getMetaData("routerLayout");
+            Integer routerLayout = (Integer) process.getMetaData().get("routerLayout");
             if (routerLayout != null && routerLayout != 0) {
                 xmlDump.append("routerLayout=\"" + routerLayout + "\" ");
             }
@@ -247,7 +247,7 @@ public class XmlWorkflowProcessDumper {
             xmlDump.append("toType=\"" + connection.getToType() + "\" ");
         }
         if (includeMeta) {
-            String bendpoints = (String) connection.getMetaData("bendpoints");
+            String bendpoints = (String) connection.getMetaData().get("bendpoints");
             if (bendpoints != null) {
                 xmlDump.append("bendpoints=\"" + bendpoints + "\" ");
             }

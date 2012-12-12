@@ -58,7 +58,7 @@ public class MetaDataHandler extends BaseAbstractHandler
     		this.name = name;
     	}
 		public Object getValue() {
-			return node.getMetaData(name);
+			return node.getMetaData().get(name);
 		}
 		public void setValue(Object value) {
 			node.setMetaData(name, value);
