@@ -135,13 +135,19 @@ public class VFSFileServiceImpl implements FileService {
     @Override
     public void move(String source, String dest){
         
+        this.copy(source, dest);
+        ioService.delete(ioService.get( "git://jbpm-playground/" + source ));
+    }
+    
+    @Override
+    public void copy(String source, String dest){
+        
         checkNotNull( "source", source );
         checkNotNull( "dest", dest );
         
         Path sourcePath = ioService.get( "git://jbpm-playground/" + source );
         Path targetPath = ioService.get( "git://jbpm-playground/" + dest );
         ioService.copy(sourcePath, targetPath);
-        ioService.delete(sourcePath);
     }
     
     @Override

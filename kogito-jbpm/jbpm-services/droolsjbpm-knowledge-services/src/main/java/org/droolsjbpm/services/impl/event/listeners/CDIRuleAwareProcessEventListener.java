@@ -7,7 +7,6 @@ import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
-import org.kie.runtime.KieRuntime;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkflowProcessInstance;
@@ -16,6 +15,9 @@ import org.kie.runtime.rule.FactHandle;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.kie.runtime.KieRuntime;
+
 @ApplicationScoped // This should be something like DomainScoped
 @Transactional
 public class CDIRuleAwareProcessEventListener implements ProcessEventListener {

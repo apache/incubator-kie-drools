@@ -41,6 +41,8 @@ public interface FileService {
     
     void move(String source, String dest);
     
+    void copy(String source, String dest);
+    
     Path createDirectory(String path);
     
     boolean deleteIfExists(String path);

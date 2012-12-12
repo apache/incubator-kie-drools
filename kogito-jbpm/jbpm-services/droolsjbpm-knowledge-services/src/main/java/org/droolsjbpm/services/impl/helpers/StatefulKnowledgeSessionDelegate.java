@@ -25,7 +25,7 @@ import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
 import org.kie.runtime.Globals;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
@@ -127,7 +127,7 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
     }
 
     @Override
-    public KnowledgeSessionConfiguration getSessionConfiguration() {
+    public KieSessionConfiguration getSessionConfiguration() {
         return ksession.getSessionConfiguration();
     }
 
@@ -358,8 +358,6 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
     public void fireUntilHalt(AgendaFilter af) {
         ksession.fireUntilHalt(af);
     }
-    
-    
-    
-   
+
+  
 }

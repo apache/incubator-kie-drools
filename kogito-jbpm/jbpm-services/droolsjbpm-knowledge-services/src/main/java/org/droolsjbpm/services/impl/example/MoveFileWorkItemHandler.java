@@ -35,7 +35,10 @@ public class MoveFileWorkItemHandler implements WorkItemHandler {
     public final static String WIP_INPUT_SOURCE = "in_source_dir";
     public final static String WIP_INPUT_TARGET = "in_target_dir";
     public final static String WIP_INPUT_FILES = "in_files";
+    public final static String WIP_INPUT_KEEP_ORIGINAL_FILES = "in_keep_original_files";
     public final static String WIP_OUTPUT_ERRORS = "out_errors";
+    
+    public final static boolean KEEP_ORIGINAL_FILES_DEFAULT_VALUE = false;
     
     @Inject
     private FileService fs;
@@ -63,6 +66,8 @@ public class MoveFileWorkItemHandler implements WorkItemHandler {
         //Read destination dir
         String destination = (String) workItem.getParameter(WIP_INPUT_TARGET);
 
+        //keep original files
+        boolean keepOriginalFiles = workItem.getParameter("WIP_INPUT_KEEP_ORIGINAL_FILES") != null ? Boolean.parseBoolean(workItem.getParameter("WIP_INPUT_KEEP_ORIGINAL_FILES").toString()):KEEP_ORIGINAL_FILES_DEFAULT_VALUE;
 
         //check mandatory parameters
         if (filesNames == null || filesNames.isEmpty()) {
@@ -102,8 +107,12 @@ public class MoveFileWorkItemHandler implements WorkItemHandler {
                         errors.put(fqn, "Doesn't exist");
                         continue;
                     }
-
-                    fs.move(fqn, destination + "/" + file.trim());
+                    if (keepOriginalFiles){
+                        fs.copy(fqn, destination + "/" + file.trim());
+                    }else{
+                        fs.move(fqn, destination + "/" + file.trim());
+                    }
+                        
                 } catch (Exception e) {
                     errors.put(fqn, e.getMessage());
                 }
