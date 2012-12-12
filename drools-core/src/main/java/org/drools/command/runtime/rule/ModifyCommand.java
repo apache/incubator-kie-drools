@@ -35,7 +35,7 @@ import org.kie.command.Context;
 import org.kie.command.Setter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 import org.mvel2.MVEL;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -68,7 +68,7 @@ public class ModifyCommand
 
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        WorkingMemoryEntryPoint wmep = ksession.getWorkingMemoryEntryPoint( handle.getEntryPointId() );
+        SessionEntryPoint wmep = ksession.getWorkingMemoryEntryPoint( handle.getEntryPointId() );
         
         Object object = wmep.getObject( this.handle );
         MVEL.eval( getMvelExpr(),

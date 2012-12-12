@@ -22,7 +22,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 /**
  * A factory for creating <code>Handle</code>s.
@@ -36,7 +36,7 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
                                                      final long recency,
                                                      final ObjectTypeConf conf,
                                                      final InternalWorkingMemory workingMemory,
-                                                     final WorkingMemoryEntryPoint entryPoint) {
+                                                     final SessionEntryPoint entryPoint) {
         if ( conf != null && conf.isEvent() ) {
             // later we need to centralize the following code snippet in a common method
             // shared by all fact handle factory implementations

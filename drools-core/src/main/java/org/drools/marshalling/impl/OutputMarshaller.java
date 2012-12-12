@@ -90,7 +90,7 @@ import org.drools.time.impl.PseudoClockScheduler;
 import org.drools.time.impl.TimerJobInstance;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public class OutputMarshaller {
 
@@ -134,7 +134,7 @@ public class OutputMarshaller {
         
         
         writeInitialFactHandleRightTuples( context );
-        for ( WorkingMemoryEntryPoint wmep : wm.getEntryPoints().values() ) {
+        for ( SessionEntryPoint wmep : wm.getEntryPoints().values() ) {
             context.stream.writeShort( PersisterEnums.ENTRY_POINT );
             context.stream.writeUTF( wmep.getEntryPointId() );
             writeFactHandles( context, (( NamedEntryPoint )wmep).getObjectStore() );

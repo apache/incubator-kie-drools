@@ -152,7 +152,7 @@ import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mvel2.MVEL;
@@ -6127,7 +6127,7 @@ public class MiscTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep2" );
+        final SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep2" );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -6193,7 +6193,7 @@ public class MiscTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep" );
+        final SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep" );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",

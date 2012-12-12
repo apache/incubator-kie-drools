@@ -25,9 +25,9 @@ import org.drools.rule.Rule;
 
 
 import org.drools.spi.Activation;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
-public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint {
+public interface InternalWorkingMemoryEntryPoint extends SessionEntryPoint {
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     RuleBase getRuleBase();
     public void delete(final FactHandle factHandle,

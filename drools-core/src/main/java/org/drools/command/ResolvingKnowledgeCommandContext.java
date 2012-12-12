@@ -8,7 +8,7 @@ import org.kie.command.World;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemManager;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext {
     
@@ -43,8 +43,8 @@ public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext
         return ( ExecutionResults ) context.get( ExecutionResults.class.getName() );
     }
 
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint() {
-        return ( WorkingMemoryEntryPoint ) context.get( WorkingMemoryEntryPoint.class.getName() );
+    public SessionEntryPoint getWorkingMemoryEntryPoint() {
+        return ( SessionEntryPoint ) context.get( SessionEntryPoint.class.getName() );
     }
     
     public World getContextManager() {

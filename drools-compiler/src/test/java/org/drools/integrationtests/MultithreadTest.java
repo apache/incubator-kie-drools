@@ -35,7 +35,7 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 /**
  * This is a test case for multi-thred issues
@@ -150,7 +150,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         kbconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, str);
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint("X");
+        final SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint("X");
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
