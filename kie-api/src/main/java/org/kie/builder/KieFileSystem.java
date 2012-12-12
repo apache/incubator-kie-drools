@@ -4,7 +4,7 @@ import org.kie.io.Resource;
 
 public interface KieFileSystem {
 
-    KieFileSystem generateAndWritePomXML(GAV gav);
+    KieFileSystem generateAndWritePomXML(ReleaseId releaseId);
     
     KieFileSystem writePomXML(byte[] content);
     KieFileSystem writePomXML(String content);

@@ -1,6 +1,6 @@
 package org.kie.builder;
 
-public interface GAV {
+public interface ReleaseId {
 
     String getGroupId();
     String getArtifactId();

@@ -1,16 +1,16 @@
 package org.kie.runtime;
 
 import org.kie.KieBase;
-import org.kie.builder.GAV;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.Results;
 
 public interface KieContainer {
 
-    GAV getGAV();
+    ReleaseId getReleaseId();
     
     Results verify();
 
-    void updateToVersion(GAV version);
+    void updateToVersion(ReleaseId version);
 
     KieBase getKieBase();
 
