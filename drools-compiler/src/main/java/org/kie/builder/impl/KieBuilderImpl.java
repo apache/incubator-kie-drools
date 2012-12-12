@@ -215,7 +215,7 @@ public class KieBuilderImpl
     }
 
     static boolean isKieExtension(String fileName) {
-        return ResourceType.determineResourceType( fileName ) != null;
+        return !fileName.endsWith( ".properties" ) && !fileName.endsWith( ".java" ) && ResourceType.determineResourceType( fileName ) != null;
     }
 
     public Results getResults() {
