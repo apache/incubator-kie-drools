@@ -53,7 +53,6 @@ import org.drools.spi.Accumulator;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.InternalReadAccessor;
 import org.kie.runtime.rule.AccumulateFunction;
-import org.kie.runtime.rule.TypedAccumulateFunction;
 
 /**
  * A builder for the java dialect accumulate version
@@ -252,7 +251,7 @@ public class JavaAccumulateBuilder
         // bind function result on the result pattern
         Declaration declr = pattern.addDeclaration( fc.getBind() );
 
-        Class< ? > type = function instanceof TypedAccumulateFunction ? ((TypedAccumulateFunction) function).getResultType() : Object.class;
+        Class< ? > type = function.getResultType();
 
         // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
         ArrayElementReader reader = new ArrayElementReader( arrayReader,

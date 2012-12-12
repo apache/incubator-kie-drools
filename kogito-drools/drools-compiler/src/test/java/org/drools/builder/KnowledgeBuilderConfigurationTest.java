@@ -349,6 +349,10 @@ public class KnowledgeBuilderConfigurationTest {
             // TODO Auto-generated method stub
 
         }
+        @Override
+        public Class< ? > getResultType() {
+            return Object.class;
+        }
     }
 
 }

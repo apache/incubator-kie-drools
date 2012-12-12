@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.runtime.rule.AccumulateFunction;
+
 /**
  * <p>An implementation of an accumulator capable of collecting sets of values.
  * This is similar to the "collect" CE, but allows us to collect any value, not
