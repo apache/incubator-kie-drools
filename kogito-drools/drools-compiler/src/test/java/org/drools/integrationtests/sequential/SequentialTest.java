@@ -127,7 +127,7 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="when\n";
         str +="    Message( )\n";
         str +="then\n";
-        str +="    System.out.println( drools.getKnowledgeRuntime() );\n";
+        str +="    System.out.println( drools.getKieRuntime() );\n";
         str +="end\n";
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -158,7 +158,7 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="when\n";
         str +="    Message( )\n";
         str +="then\n";
-        str +="    System.out.println( drools.getKnowledgeRuntime() );\n";
+        str +="    System.out.println( drools.getKieRuntime() );\n";
         str +="end\n";
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
