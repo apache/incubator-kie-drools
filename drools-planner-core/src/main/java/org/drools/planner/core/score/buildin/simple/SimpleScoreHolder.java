@@ -22,7 +22,7 @@ import org.drools.planner.core.score.holder.AbstractScoreHolder;
 import org.kie.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.RuleContext;
-import org.kie.runtime.rule.WorkingMemory;
+import org.kie.runtime.rule.Session;
 
 public class SimpleScoreHolder extends AbstractScoreHolder {
 
@@ -45,7 +45,7 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         agendaItem.setActivationUnMatchListener(
                 new ActivationUnMatchListener() {
-                    public void unMatch(WorkingMemory workingMemory, Match activation) {
+                    public void unMatch(Session workingMemory, Match activation) {
                         score -= weight;
                     }
                 }
