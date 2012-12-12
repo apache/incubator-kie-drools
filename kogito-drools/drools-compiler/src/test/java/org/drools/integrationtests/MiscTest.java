@@ -572,7 +572,7 @@ public class MiscTest extends CommonTestMethodBase {
         str += "when\n";
         str += "    Message( )\n";
         str += "then\n";
-        str += "    System.out.println( drools.getKnowledgeRuntime() );\n";
+        str += "    System.out.println( drools.getKieRuntime() );\n";
         str += "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
@@ -6637,8 +6637,8 @@ public class MiscTest extends CommonTestMethodBase {
                                    "test meta attributes" );
 
         assertNotNull( rule );
-        assertThat( (String) rule.getMetaData().get( "id" ),
-                    is( "1234" ) );
+        assertThat( (Integer) rule.getMetaData().get( "id" ),
+                    is( 1234 ) );
         assertThat( (String) rule.getMetaData().get( "author" ),
                     is( "john_doe" ) );
         assertThat( (String) rule.getMetaData().get( "text" ),
