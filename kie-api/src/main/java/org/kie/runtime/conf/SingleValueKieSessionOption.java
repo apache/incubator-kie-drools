@@ -18,10 +18,10 @@ package org.kie.runtime.conf;
 
 
 /**
- * A markup interface for MultiValueKnowledgeSessionConfiguration options
+ * A markup interface for SingleValueKnowledgeSessionConfiguration options
  */
-public interface MultiValueKnowledgeSessionOption
+public interface SingleValueKieSessionOption
     extends
-    KnowledgeSessionOption {
+    KieSessionOption {
 
 }

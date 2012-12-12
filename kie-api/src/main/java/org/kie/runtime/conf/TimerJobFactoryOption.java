@@ -3,7 +3,7 @@ package org.kie.runtime.conf;
 /**
  * A class for the timer job factory manager configuration.
  */
-public class TimerJobFactoryOption implements SingleValueKnowledgeSessionOption {
+public class TimerJobFactoryOption implements SingleValueKieSessionOption {
 
     private static final long serialVersionUID = 510l;
 

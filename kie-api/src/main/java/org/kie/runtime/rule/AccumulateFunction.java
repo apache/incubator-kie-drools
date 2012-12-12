@@ -69,4 +69,11 @@ public interface AccumulateFunction extends Externalizable {
      * @return
      */
     public boolean supportsReverse();
+    
+    /**
+     * Returns the class type of the result of this function 
+     * @return
+     */
+    public Class<?> getResultType();
+    
 }

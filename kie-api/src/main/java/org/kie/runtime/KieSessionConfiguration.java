@@ -17,7 +17,7 @@
 package org.kie.runtime;
 
 import org.kie.PropertiesConfiguration;
-import org.kie.runtime.conf.KnowledgeSessionOptionsConfiguration;
+import org.kie.runtime.conf.KieSessionOptionsConfiguration;
 
 /**
  * KnowledgeSessionConfiguration
@@ -44,6 +44,6 @@ import org.kie.runtime.conf.KnowledgeSessionOptionsConfiguration;
 public interface KieSessionConfiguration
     extends
     PropertiesConfiguration,
-    KnowledgeSessionOptionsConfiguration {
+    KieSessionOptionsConfiguration {
 
 }
