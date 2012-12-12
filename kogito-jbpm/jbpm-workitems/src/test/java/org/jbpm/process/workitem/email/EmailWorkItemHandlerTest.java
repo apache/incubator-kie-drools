@@ -32,9 +32,9 @@ import org.drools.process.instance.impl.WorkItemImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.utils.ChainedProperties;
+import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.runtime.process.WorkItemManager;
-import org.kie.util.ChainedProperties;
-import org.kie.util.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 

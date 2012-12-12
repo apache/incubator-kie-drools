@@ -1,5 +1,8 @@
 package org.jbpm.task;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.kie.KnowledgeBase;
 import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
@@ -22,9 +25,6 @@ import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
-
-import java.util.Collection;
-import java.util.Map;
 
 public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 	public static final int DEFAULT_SESSION_ID = 5;

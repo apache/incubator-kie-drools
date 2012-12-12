@@ -16,13 +16,9 @@
 package org.jbpm.task;
 
 import java.util.List;
+
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Task;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.TaskClientHandler.AddAttachmentResponseHandler;

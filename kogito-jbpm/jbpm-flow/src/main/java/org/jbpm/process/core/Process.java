@@ -19,9 +19,7 @@ package org.jbpm.process.core;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.io.ResourcedObject;
-
-public interface Process extends org.kie.definition.process.Process, ContextContainer, ResourcedObject {
+public interface Process extends org.kie.definition.process.Process, ContextContainer {
 
     /**
      * Sets the id of this process.

@@ -16,7 +16,8 @@
 
 package org.jbpm.task.service;
 
-import static org.jbpm.task.service.persistence.TaskPersistenceManager.*;
+import static org.jbpm.task.service.persistence.TaskPersistenceManager.addParametersToMap;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

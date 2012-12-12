@@ -16,9 +16,10 @@
 package org.jbpm.task.admin;
 
 import java.util.List;
+
 import org.drools.event.DefaultProcessEventListener;
-import org.kie.event.process.ProcessCompletedEvent;
 import org.jbpm.task.query.TaskSummary;
+import org.kie.event.process.ProcessCompletedEvent;
 
 /**
  *

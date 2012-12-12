@@ -1,5 +1,10 @@
 package org.jbpm.process.instance;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.common.AbstractWorkingMemory;
@@ -29,16 +34,11 @@ import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.DefaultAgendaEventListener;
 import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItemManager;
-import org.kie.util.CompositeClassLoader;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	

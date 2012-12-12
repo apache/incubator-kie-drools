@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.persistence.Query;
 
 import org.jbpm.task.BaseTest;
+import org.jbpm.task.MvelFilePath;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.PeopleAssignments;
 import org.jbpm.task.Status;
@@ -38,7 +39,6 @@ import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler;
-import org.jbpm.task.MvelFilePath;
 
 public class QueryTest extends BaseTest {
 

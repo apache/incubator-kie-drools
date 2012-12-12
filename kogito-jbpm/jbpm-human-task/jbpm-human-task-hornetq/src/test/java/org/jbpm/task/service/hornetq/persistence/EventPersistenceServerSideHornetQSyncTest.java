@@ -15,13 +15,11 @@
  */
 package org.jbpm.task.service.hornetq.persistence;
 
-import static org.jbpm.task.event.EventPersistenceServerSideTest.*;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import static org.jbpm.task.event.EventPersistenceServerSideTest.doTestMultiplePersistentEvents;
+import static org.jbpm.task.event.EventPersistenceServerSideTest.doTestPersistentEventHandlers;
 
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.event.EventPersistenceServerSideTest;
 import org.jbpm.task.event.InternalPersistentTaskEventListener;
 import org.jbpm.task.event.TaskEventsAdmin;
 import org.jbpm.task.service.SyncTaskServiceWrapper;

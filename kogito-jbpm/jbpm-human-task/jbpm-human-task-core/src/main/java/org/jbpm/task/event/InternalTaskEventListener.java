@@ -18,10 +18,6 @@ package org.jbpm.task.event;
 
 
 import org.jbpm.task.Status;
-import org.jbpm.task.event.entity.TaskClaimedEvent;
-import org.jbpm.task.event.entity.TaskCompletedEvent;
-import org.jbpm.task.event.entity.TaskFailedEvent;
-import org.jbpm.task.event.entity.TaskSkippedEvent;
 import org.jbpm.task.event.entity.TaskUserEvent;
 import org.jbpm.task.service.TaskServiceSession;
 

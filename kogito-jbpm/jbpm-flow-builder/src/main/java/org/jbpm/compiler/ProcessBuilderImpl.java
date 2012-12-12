@@ -112,9 +112,9 @@ public class ProcessBuilderImpl implements ProcessBuilder {
     }
 
     public void buildProcess(final Process process, Resource resource) {
-        if ( resource != null && ((InternalResource)resource).hasURL() ) {
-            ((org.jbpm.process.core.Process) process).setResource( resource );
-        }
+//        if ( resource != null && ((InternalResource)resource).hasURL() ) {
+//            ((org.jbpm.process.core.Process) process).setResource( resource );
+//        }
         boolean hasErrors = false;
         ProcessValidator validator = processValidators.get(((Process)process).getType());
         if (validator == null) {

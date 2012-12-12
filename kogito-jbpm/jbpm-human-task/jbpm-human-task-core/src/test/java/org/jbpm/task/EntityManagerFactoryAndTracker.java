@@ -15,7 +15,6 @@
  */
 package org.jbpm.task;
 
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;

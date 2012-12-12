@@ -17,6 +17,7 @@ package org.jbpm.task.service.hornetq.sync;
 
 import java.io.StringReader;
 import java.util.Map;
+
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.service.SyncTaskServiceWrapper;

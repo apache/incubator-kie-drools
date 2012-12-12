@@ -29,8 +29,8 @@ import java.util.Map;
 import javax.mail.BodyPart;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
 
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTest;

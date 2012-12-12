@@ -19,7 +19,6 @@ package org.jbpm.task.event;
 import java.util.Iterator;
 
 import org.drools.event.AbstractEventSupport;
-import org.jbpm.task.event.entity.TaskEvent;
 import org.jbpm.task.event.entity.TaskEventFactory;
 import org.jbpm.task.event.entity.TaskUserEvent;
 

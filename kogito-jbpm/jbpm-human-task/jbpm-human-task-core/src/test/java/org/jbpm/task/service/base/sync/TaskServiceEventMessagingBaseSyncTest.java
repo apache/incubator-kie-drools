@@ -16,7 +16,12 @@
 
 package org.jbpm.task.service.base.sync;
 
-import static org.jbpm.task.event.entity.TaskEventType.*;
+import static org.jbpm.task.event.entity.TaskEventType.Claim;
+import static org.jbpm.task.event.entity.TaskEventType.Complete;
+import static org.jbpm.task.event.entity.TaskEventType.Forward;
+import static org.jbpm.task.event.entity.TaskEventType.Release;
+import static org.jbpm.task.event.entity.TaskEventType.Started;
+import static org.jbpm.task.event.entity.TaskEventType.Stop;
 
 import java.io.StringReader;
 import java.util.HashMap;
@@ -24,9 +29,20 @@ import java.util.Map;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.*;
+import org.jbpm.task.BaseTest;
+import org.jbpm.task.Status;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.event.TaskEventKey;
-import org.jbpm.task.event.entity.*;
+import org.jbpm.task.event.entity.TaskClaimedEvent;
+import org.jbpm.task.event.entity.TaskCompletedEvent;
+import org.jbpm.task.event.entity.TaskCreatedEvent;
+import org.jbpm.task.event.entity.TaskEventType;
+import org.jbpm.task.event.entity.TaskForwardedEvent;
+import org.jbpm.task.event.entity.TaskReleasedEvent;
+import org.jbpm.task.event.entity.TaskStartedEvent;
+import org.jbpm.task.event.entity.TaskStoppedEvent;
+import org.jbpm.task.event.entity.TaskUserEvent;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
 
