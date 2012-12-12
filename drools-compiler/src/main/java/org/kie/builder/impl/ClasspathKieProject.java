@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static org.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
  * KieBaseModels and KieSessionModels are then indexed, with helper lookups
@@ -100,10 +102,15 @@ public class ClasspathKieProject extends AbstractKieProject {
     
     public static InternalKieModule fetchKModule(URL url, String fixedURL) {
         KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
+<<<<<<< Updated upstream
         if ( kieProject.getKieBaseModels().isEmpty() ) {
             
         }
         
+=======
+        setDefaultsforEmptyKieModule(kieProject);
+
+>>>>>>> Stashed changes
         String pomProperties = getPomProperties( fixedURL );
         
         ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString(pomProperties);
