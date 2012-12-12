@@ -156,7 +156,7 @@ public class KieBuilderTest {
         createAndTestKieContainer(releaseId, createKieBuilder(kfs), namespace );
     }
     
-    @Test @Ignore
+    @Test
     public void testNoProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
         
@@ -171,6 +171,28 @@ public class KieBuilderTest {
                
         createAndTestKieContainer(releaseId, createKieBuilder(kfs), null );
     }    
+    
+    @Test
+    public void testEmptyProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
+        String namespace = "org.kie.test";
+        
+        KieServices ks = KieServices.Factory.get();
+        
+        KieModuleModel kProj = ks.newKieModuleModel();
+        
+        
+        GAV gav = KieServices.Factory.get().newGav( namespace, "memory", "1.0-SNAPSHOT" );
+        
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
+        generateKProjectXML( kfs, namespace, kProj );
+        generatePomXML(kfs, gav);
+        generateMessageClass( kfs, namespace );
+        generateRule( kfs, namespace );
+        
+        MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
+               
+        createAndTestKieContainer(gav, createKieBuilder(kfs), null );
+    }      
     
     public void testNoPomAndProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
