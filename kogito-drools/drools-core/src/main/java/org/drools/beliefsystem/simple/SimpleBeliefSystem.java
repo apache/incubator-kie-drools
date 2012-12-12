@@ -1,6 +1,5 @@
 package org.drools.beliefsystem.simple;
 
-import org.drools.FactHandle;
 import org.drools.beliefsystem.BeliefSet;
 import org.drools.beliefsystem.BeliefSystem;
 import org.drools.common.InternalFactHandle;
@@ -10,10 +9,8 @@ import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.common.TruthMaintenanceSystem.LogicalCallback;
-import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
@@ -74,7 +71,7 @@ public class SimpleBeliefSystem
         InternalFactHandle bfh = beliefSet.getFactHandle();
         
         if ( beliefSet.isEmpty() &&
-             !((context.getType() == PropagationContext.RETRACTION || context.getType() == PropagationContext.MODIFICATION) // retract and modifies clean up themselves
+             !((context.getType() == PropagationContext.DELETION || context.getType() == PropagationContext.MODIFICATION) // retract and modifies clean up themselves
              &&
              context.getFactHandle() == bfh) ) {
             

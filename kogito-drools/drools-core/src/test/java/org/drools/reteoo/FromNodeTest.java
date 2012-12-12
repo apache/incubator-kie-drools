@@ -74,7 +74,7 @@ public class FromNodeTest {
     @Test
     public void testAlphaNode() {
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        null );
@@ -181,7 +181,7 @@ public class FromNodeTest {
     @Test
     public void testBetaNode() {
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        null );
@@ -302,7 +302,7 @@ public class FromNodeTest {
     @Test
     public void testRestract() {
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        null );
@@ -384,7 +384,7 @@ public class FromNodeTest {
     @Test
     public void testAssignable() {
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        null );

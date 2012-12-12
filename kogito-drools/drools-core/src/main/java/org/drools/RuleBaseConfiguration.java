@@ -40,7 +40,7 @@ import org.kie.builder.conf.ClassLoaderCacheOption;
 import org.kie.builder.conf.DeclarativeAgendaOption;
 import org.kie.builder.conf.LRUnlinkingOption;
 import org.kie.conf.AlphaThresholdOption;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.CompositeKeyDepthOption;
 import org.kie.conf.ConsequenceExceptionHandlerOption;
 import org.kie.conf.EventProcessingOption;
@@ -95,7 +95,7 @@ import org.slf4j.LoggerFactory;
  * drools.compositeKeyDepth  =&lt;1..3&gt;
  * drools.indexLeftBetaMemory = &lt;true/false&gt;
  * drools.indexRightBetaMemory = &lt;true/false&gt;
- * drools.assertBehaviour = &lt;identity|equality&gt;
+ * drools.equalityBehavior = &lt;identity|equality&gt;
  * drools.executorService = &lt;qualified class name&gt;
  * drools.conflictResolver = &lt;qualified class name&gt;
  * drools.consequenceExceptionHandler = &lt;qualified class name&gt;
@@ -283,11 +283,11 @@ public class RuleBaseConfiguration
         } else if ( name.equals( SequentialOption.PROPERTY_NAME ) ) {
             setSequential( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( RemoveIdentitiesOption.PROPERTY_NAME ) ) {
-            setRemoveIdentities( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setRemoveIdentities(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
         } else if ( name.equals( ShareAlphaNodesOption.PROPERTY_NAME ) ) {
-            setShareAlphaNodes( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setShareAlphaNodes(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
         } else if ( name.equals( ShareBetaNodesOption.PROPERTY_NAME ) ) {
-            setShareBetaNodes( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setShareBetaNodes(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
         } else if ( name.equals( PermGenThresholdOption.PROPERTY_NAME ) ) {
             setPermGenThreshold(StringUtils.isEmpty(value) ? PermGenThresholdOption.DEFAULT_VALUE : Integer.parseInt(value));
         } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
@@ -300,7 +300,7 @@ public class RuleBaseConfiguration
             setIndexRightBetaMemory(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
         } else if ( name.equals( IndexPrecedenceOption.PROPERTY_NAME ) ) {
             setIndexPrecedenceOption(StringUtils.isEmpty(value) ? IndexPrecedenceOption.EQUALITY_PRIORITY : IndexPrecedenceOption.determineIndexPrecedence(value));
-        } else if ( name.equals( AssertBehaviorOption.PROPERTY_NAME ) ) {
+        } else if ( name.equals( EqualityBehaviorOption.PROPERTY_NAME ) ) {
             setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(StringUtils.isEmpty(value) ? "identity" : value));
         } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
             setConsequenceExceptionHandler(StringUtils.isEmpty(value) ? DefaultConsequenceExceptionHandler.class.getName() : value);
@@ -321,7 +321,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
         } else if ( name.equals( LRUnlinkingOption.PROPERTY_NAME ) ) {
-            setUnlinkingEnabled( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setUnlinkingEnabled(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
         }
     }
 
@@ -353,7 +353,7 @@ public class RuleBaseConfiguration
             return Boolean.toString(isIndexRightBetaMemory());
         } else if ( name.equals( IndexPrecedenceOption.PROPERTY_NAME ) ) {
             return getIndexPrecedenceOption().getValue();
-        } else if ( name.equals( AssertBehaviorOption.PROPERTY_NAME ) ) {
+        } else if ( name.equals( EqualityBehaviorOption.PROPERTY_NAME ) ) {
             return getAssertBehaviour().toExternalForm();
         } else if ( name.equals( "drools.executorService" ) ) {
             return getExecutorService();
@@ -364,7 +364,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( "drools.conflictResolver" ) ) {
             return getConflictResolver().getClass().getName();
         } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
-            return Boolean.toString( isAdvancedProcessRuleIntegration() );
+            return Boolean.toString(isAdvancedProcessRuleIntegration());
         } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isMultithreadEvaluation() );
         } else if ( name.equals( MaxThreadsOption.PROPERTY_NAME ) ) {
@@ -419,11 +419,11 @@ public class RuleBaseConfiguration
             this.chainedProperties.addProperties( properties );
         }
 
-        setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( this.chainedProperties.getProperty( SequentialAgendaOption.PROPERTY_NAME,
-                                                                                                             "sequential" ) ) );
+        setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(this.chainedProperties.getProperty(SequentialAgendaOption.PROPERTY_NAME,
+                "sequential")));
 
         setSequential(Boolean.valueOf(this.chainedProperties.getProperty(SequentialOption.PROPERTY_NAME,
-                                                                         "false")).booleanValue());
+                "false")).booleanValue());
 
         setRemoveIdentities(Boolean.valueOf(this.chainedProperties.getProperty("drools.removeIdentities",
                                                                                "false")).booleanValue());
@@ -451,7 +451,7 @@ public class RuleBaseConfiguration
         setIndexPrecedenceOption( IndexPrecedenceOption.determineIndexPrecedence( this.chainedProperties.getProperty( IndexPrecedenceOption.PROPERTY_NAME,
                                                                                                                       "equality" ) ) );
 
-        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( this.chainedProperties.getProperty( AssertBehaviorOption.PROPERTY_NAME,
+        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( this.chainedProperties.getProperty( EqualityBehaviorOption.PROPERTY_NAME,
                                                                                                           "identity" ) ) );
 
         setExecutorService( this.chainedProperties.getProperty( "drools.executorService",
@@ -1158,8 +1158,8 @@ public class RuleBaseConfiguration
             return (T) (this.indexRightBetaMemory ? IndexRightBetaMemoryOption.YES : IndexRightBetaMemoryOption.NO);
         } else if ( IndexPrecedenceOption.class.equals( option ) ) {
             return (T) getIndexPrecedenceOption();
-        } else if ( AssertBehaviorOption.class.equals( option ) ) {
-            return (T) ((this.assertBehaviour == AssertBehaviour.IDENTITY) ? AssertBehaviorOption.IDENTITY : AssertBehaviorOption.EQUALITY);
+        } else if ( EqualityBehaviorOption.class.equals( option ) ) {
+            return (T) ((this.assertBehaviour == AssertBehaviour.IDENTITY) ? EqualityBehaviorOption.IDENTITY : EqualityBehaviorOption.EQUALITY);
         } else if ( SequentialAgendaOption.class.equals( option ) ) {
             return (T) ((this.sequentialAgenda == SequentialAgenda.SEQUENTIAL) ? SequentialAgendaOption.SEQUENTIAL : SequentialAgendaOption.DYNAMIC);
         } else if ( PermGenThresholdOption.class.equals( option ) ) {
@@ -1180,7 +1180,7 @@ public class RuleBaseConfiguration
         } else if ( EventProcessingOption.class.equals( option ) ) {
             return (T) getEventProcessingMode();
         } else if ( MaxThreadsOption.class.equals( option ) ) {
-            return (T) MaxThreadsOption.get( getMaxThreads() );
+            return (T) MaxThreadsOption.get(getMaxThreads());
         } else if ( MultithreadEvaluationOption.class.equals( option ) ) {
             return (T) (this.multithread ? MultithreadEvaluationOption.YES : MultithreadEvaluationOption.NO);
         } else if ( MBeansOption.class.equals( option ) ) {
@@ -1198,23 +1198,23 @@ public class RuleBaseConfiguration
 
     public <T extends KieBaseOption> void setOption(T option) {
         if ( option instanceof SequentialOption ) {
-            setSequential( ((SequentialOption) option).isSequential() );
+            setSequential(((SequentialOption) option).isSequential());
         } else if ( option instanceof RemoveIdentitiesOption ) {
-            setRemoveIdentities( ((RemoveIdentitiesOption) option).isRemoveIdentities() );
+            setRemoveIdentities(((RemoveIdentitiesOption) option).isRemoveIdentities());
         } else if ( option instanceof ShareAlphaNodesOption ) {
-            setShareAlphaNodes( ((ShareAlphaNodesOption) option).isShareAlphaNodes() );
+            setShareAlphaNodes(((ShareAlphaNodesOption) option).isShareAlphaNodes());
         } else if ( option instanceof ShareBetaNodesOption ) {
-            setShareBetaNodes( ((ShareBetaNodesOption) option).isShareBetaNodes() );
+            setShareBetaNodes(((ShareBetaNodesOption) option).isShareBetaNodes());
         } else if ( option instanceof IndexLeftBetaMemoryOption ) {
-            setIndexLeftBetaMemory( ((IndexLeftBetaMemoryOption) option).isIndexLeftBetaMemory() );
+            setIndexLeftBetaMemory(((IndexLeftBetaMemoryOption) option).isIndexLeftBetaMemory());
         } else if ( option instanceof IndexRightBetaMemoryOption ) {
-            setIndexRightBetaMemory( ((IndexRightBetaMemoryOption) option).isIndexRightBetaMemory() );
+            setIndexRightBetaMemory(((IndexRightBetaMemoryOption) option).isIndexRightBetaMemory());
         } else if ( option instanceof IndexPrecedenceOption ) {
-            setIndexPrecedenceOption( (IndexPrecedenceOption) option );
-        } else if ( option instanceof AssertBehaviorOption ) {
-            setAssertBehaviour( (option == AssertBehaviorOption.IDENTITY) ? AssertBehaviour.IDENTITY : AssertBehaviour.EQUALITY );
+            setIndexPrecedenceOption((IndexPrecedenceOption) option);
+        } else if ( option instanceof EqualityBehaviorOption) {
+            setAssertBehaviour((option == EqualityBehaviorOption.IDENTITY) ? AssertBehaviour.IDENTITY : AssertBehaviour.EQUALITY);
         } else if ( option instanceof SequentialAgendaOption ) {
-            setSequentialAgenda( (option == SequentialAgendaOption.SEQUENTIAL) ? SequentialAgenda.SEQUENTIAL : SequentialAgenda.DYNAMIC );
+            setSequentialAgenda((option == SequentialAgendaOption.SEQUENTIAL) ? SequentialAgenda.SEQUENTIAL : SequentialAgenda.DYNAMIC);
         } else if ( option instanceof PermGenThresholdOption ) {
             setPermGenThreshold(((PermGenThresholdOption) option).getThreshold());
         } else if ( option instanceof AlphaThresholdOption ) {
@@ -1236,7 +1236,7 @@ public class RuleBaseConfiguration
         } else if ( option instanceof LRUnlinkingOption ) {
             setUnlinkingEnabled(((LRUnlinkingOption) option).isLRUnlinkingEnabled());
         } else if ( option instanceof DeclarativeAgendaOption ) {
-            setDeclarativeAgendaEnabled( ((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled() );
+            setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
         }
 
     }

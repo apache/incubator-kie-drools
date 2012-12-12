@@ -32,13 +32,10 @@ import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.WorkingMemory;
-import org.drools.spi.Duration;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 import org.drools.time.impl.DurationTimer;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -94,7 +91,7 @@ public class SchedulerTest extends DroolsTestCase {
         rule.setTimer( new DurationTimer(100) );
 
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        null );
@@ -171,7 +168,7 @@ public class SchedulerTest extends DroolsTestCase {
         } );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         null,
                                                                         null,
                                                                         null );
@@ -255,7 +252,7 @@ public class SchedulerTest extends DroolsTestCase {
         } );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         null,
                                                                         null,
                                                                         null );
@@ -310,7 +307,7 @@ public class SchedulerTest extends DroolsTestCase {
     //        final List data = new ArrayList();
     //
     //        PropagationContext context = new PropagationContextImpl( 0,
-    //                                                                 PropagationContext.ASSERTION,
+    //                                                                 PropagationContext.INSERTION,
     //                                                                 null,
     //                                                                 null );
     //

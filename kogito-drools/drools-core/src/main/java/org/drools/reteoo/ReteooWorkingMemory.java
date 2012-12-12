@@ -177,7 +177,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                                                           this );
 
             final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.ASSERTION,
+                                                                                      PropagationContext.INSERTION,
                                                                                       null,
                                                                                       null,
                                                                                       handle,
@@ -248,7 +248,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                                                           this );
 
             final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.ASSERTION,
+                                                                                      PropagationContext.INSERTION,
                                                                                       null,
                                                                                       null,
                                                                                       handle,
@@ -281,7 +281,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             this.lock.lock();
 
             final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.ASSERTION,
+                                                                                      PropagationContext.INSERTION,
                                                                                       null,
                                                                                       null,
                                                                                       factHandle,
@@ -426,7 +426,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         public void execute(InternalWorkingMemory workingMemory) {
 
             final PropagationContext context = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                           PropagationContext.ASSERTION,
+                                                                           PropagationContext.INSERTION,
                                                                            this.ruleOrigin,
                                                                            this.leftTuple,
                                                                            this.factHandle );

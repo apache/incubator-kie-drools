@@ -28,7 +28,6 @@ import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.definition.rule.Rule;
@@ -48,7 +47,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                               ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
 
         this.context = new PropagationContextImpl( 0,
-                                                   PropagationContext.ASSERTION,
+                                                   PropagationContext.INSERTION,
                                                    null,
                                                    null,
                                                    null );

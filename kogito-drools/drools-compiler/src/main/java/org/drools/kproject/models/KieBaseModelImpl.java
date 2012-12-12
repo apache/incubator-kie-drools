@@ -9,7 +9,7 @@ import org.drools.core.util.Predicate;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.io.ResourceType;
 
@@ -36,7 +36,7 @@ public class KieBaseModelImpl
 
     private List<String>                 packages;
 
-    private AssertBehaviorOption         equalsBehavior = AssertBehaviorOption.IDENTITY;
+    private EqualityBehaviorOption equalsBehavior = EqualityBehaviorOption.IDENTITY;
 
     private EventProcessingOption        eventProcessingMode = EventProcessingOption.STREAM;
 
@@ -178,14 +178,14 @@ public class KieBaseModelImpl
     /* (non-Javadoc)
      * @see org.kie.kproject.KieBaseModel#getEqualsBehavior()
      */
-    public AssertBehaviorOption getEqualsBehavior() {
+    public EqualityBehaviorOption getEqualsBehavior() {
         return equalsBehavior;
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieBaseModel#setEqualsBehavior(org.kie.conf.AssertBehaviorOption)
+     * @see org.kie.kproject.KieBaseModel#setEqualsBehavior(org.kie.conf.EqualityBehaviorOption)
      */
-    public KieBaseModel setEqualsBehavior(AssertBehaviorOption equalsBehaviour) {
+    public KieBaseModel setEqualsBehavior(EqualityBehaviorOption equalsBehaviour) {
         this.equalsBehavior = equalsBehaviour;
         return this;
     }
@@ -315,7 +315,7 @@ public class KieBaseModelImpl
             
             String equalsBehavior = reader.getAttribute( "equalsBehavior" );
             if ( equalsBehavior != null ) {
-                kBase.setEqualsBehavior( AssertBehaviorOption.valueOf( equalsBehavior.toUpperCase() ) );
+                kBase.setEqualsBehavior( EqualityBehaviorOption.valueOf(equalsBehavior.toUpperCase()) );
             }
             
             String scope = reader.getAttribute( "scope" );

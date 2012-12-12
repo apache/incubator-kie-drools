@@ -11,11 +11,9 @@ import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.TruthMaintenanceSystem.LogicalCallback;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.LinkedListNode;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class JTMSBeliefSystem
         implements
@@ -163,7 +161,7 @@ public class JTMSBeliefSystem
                 retractOrUpdateBelief( node, context, jtmsBeliefSet.getNegativeFactHandle(), false, true );
             }
 
-            if ( !(context.getType() == PropagationContext.RETRACTION && context.getFactHandle() == beliefSet.getFactHandle()) ) { // don't start retract, if the FH is already in the process of being retracted
+            if ( !(context.getType() == PropagationContext.DELETION && context.getFactHandle() == beliefSet.getFactHandle()) ) { // don't start retract, if the FH is already in the process of being retracted
                 // do not if the FH is the root of the context, it means it's already in the process of retraction
                 retractOrUpdateBelief( node, context, (InternalFactHandle) jtmsBeliefSet.getFactHandle(), false, true );
             }

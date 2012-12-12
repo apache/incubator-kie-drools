@@ -70,7 +70,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         this.rule = new Rule( "test-rule" );
         this.context = new PropagationContextImpl( 0,
-                                                   PropagationContext.ASSERTION,
+                                                   PropagationContext.INSERTION,
                                                    null,
                                                    null,
                                                    null );
@@ -430,7 +430,7 @@ public class NotNodeTest extends DroolsTestCase {
         // assert tuple
         this.node.assertLeftTuple( tuple0,
                                    new PropagationContextImpl( 0,
-                                                               PropagationContext.ASSERTION,
+                                                               PropagationContext.INSERTION,
                                                                null,
                                                                null,
                                                                f0 ),

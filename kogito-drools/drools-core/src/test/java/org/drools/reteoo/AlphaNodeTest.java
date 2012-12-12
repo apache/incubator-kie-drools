@@ -61,7 +61,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        null );
@@ -138,7 +138,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        null );
@@ -205,7 +205,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        null );

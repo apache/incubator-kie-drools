@@ -137,7 +137,7 @@ import org.kie.builder.conf.DefaultPackageNameOption;
 import org.kie.builder.conf.LanguageLevelOption;
 import org.kie.command.CommandFactory;
 import org.kie.command.Setter;
-import org.kie.conf.AssertBehaviorOption;
+import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.RemoveIdentitiesOption;
 import org.kie.conf.SequentialOption;
 import org.kie.conf.ShareAlphaNodesOption;
@@ -5623,7 +5623,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testGetFactHandleEqualityBehavior() throws Exception {
         KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbc.setOption( AssertBehaviorOption.EQUALITY );
+        kbc.setOption( EqualityBehaviorOption.EQUALITY );
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
@@ -8661,7 +8661,7 @@ public class MiscTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbConf.setOption( AssertBehaviorOption.EQUALITY );
+        kbConf.setOption( EqualityBehaviorOption.EQUALITY );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbConf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -9156,7 +9156,7 @@ public class MiscTest extends CommonTestMethodBase {
                      "end";
 
         KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbConf.setOption( AssertBehaviorOption.EQUALITY );
+        kbConf.setOption( EqualityBehaviorOption.EQUALITY );
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();

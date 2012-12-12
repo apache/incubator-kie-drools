@@ -26,11 +26,9 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.beliefsystem.BeliefSet;
-import org.drools.common.AgendaItem;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalAgenda;
@@ -56,9 +54,7 @@ import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -139,7 +135,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         null,
                                                                         null,
                                                                         new DefaultFactHandle()  );
@@ -270,7 +266,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         null,
                                                                         null,
                                                                         new DefaultFactHandle()  );
@@ -382,7 +378,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         null,
                                                                         null,
                                                                         new DefaultFactHandle()  );
@@ -537,7 +533,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         true );
 
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        new DefaultFactHandle()  );
@@ -669,7 +665,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         null,
                                                                         null,
                                                                         new DefaultFactHandle()  );
@@ -695,7 +691,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         true );
 
         final PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         null,
                                                                         null,
                                                                         new DefaultFactHandle()  );
@@ -835,7 +831,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         null,
                                                                         null,
                                                                         new DefaultFactHandle()  );
@@ -959,7 +955,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         null,
                                                                         null,
                                                                         new DefaultFactHandle()  );

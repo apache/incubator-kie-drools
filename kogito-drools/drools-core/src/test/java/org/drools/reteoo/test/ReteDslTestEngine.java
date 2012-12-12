@@ -686,7 +686,7 @@ public class ReteDslTestEngine {
                         if ( element instanceof InternalFactHandle ) {
                             InternalFactHandle handle = (InternalFactHandle) element;
                             PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.ASSERTION,
+                                                                                      PropagationContext.INSERTION,
                                                                                       null,
                                                                                       null,
                                                                                       handle );
@@ -699,7 +699,7 @@ public class ReteDslTestEngine {
                             LeftTuple tuple = createTuple( context,
                                                            tlist );
                             PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.ASSERTION,
+                                                                                      PropagationContext.INSERTION,
                                                                                       null,
                                                                                       tuple,
                                                                                       null );
@@ -787,7 +787,7 @@ public class ReteDslTestEngine {
                         if ( element instanceof InternalFactHandle ) {
                             InternalFactHandle handle = (InternalFactHandle) element;
                             PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RETRACTION,
+                                                                                      PropagationContext.DELETION,
                                                                                       null,
                                                                                       null,
                                                                                       handle );
@@ -818,7 +818,7 @@ public class ReteDslTestEngine {
                                 throw new IllegalArgumentException( "Tuple not found: " + id + " : " + tlist.toString() );
                             }
                             PropagationContext pContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RETRACTION,
+                                                                                      PropagationContext.DELETION,
                                                                                       null,
                                                                                       tuple,
                                                                                       null );

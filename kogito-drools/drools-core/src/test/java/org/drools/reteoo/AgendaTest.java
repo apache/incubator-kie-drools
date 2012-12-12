@@ -42,7 +42,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.AgendaEventSupport;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
@@ -57,10 +56,8 @@ import org.drools.spi.ConsequenceException;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
-import org.drools.spi.Salience;
 import org.drools.time.impl.DurationTimer;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.event.rule.MatchCancelledCause;
@@ -109,7 +106,7 @@ public class AgendaTest extends DroolsTestCase {
                                                true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule1,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -214,7 +211,7 @@ public class AgendaTest extends DroolsTestCase {
         final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1, cheese),null,true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule1,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -266,7 +263,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 100, cheese.getPrice() );
         
         final PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.RETRACTION,
+                                                                        PropagationContext.DELETION,
                                                                         rule1,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -333,7 +330,7 @@ public class AgendaTest extends DroolsTestCase {
                                                node,
                                                true );
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        rule,
                                                                        null,
                                                                        new DefaultFactHandle() );
@@ -448,7 +445,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
         rule0.setConsequence( consequence );
         final PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule0,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -463,7 +460,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
         rule1.setConsequence( consequence );
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule1,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -478,7 +475,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
         rule2.setConsequence( consequence );
         final PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule2,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -493,7 +490,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
         rule3.setConsequence( consequence );
         final PropagationContext context3 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule3,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -713,7 +710,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext );
         rule.setConsequence( consequence );
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        rule,
                                                                        null,
                                                                        new DefaultFactHandle() );
@@ -788,7 +785,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext );
 
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        rule,
                                                                        null,
                                                                        new DefaultFactHandle() );
@@ -874,7 +871,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
         rule0.setConsequence( consequence );
         final PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule0,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -890,7 +887,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
         rule1.setConsequence( consequence );
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule1,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -905,7 +902,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
         rule2.setConsequence( consequence );
         final PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule2,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -922,7 +919,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
         rule3.setConsequence( consequence );
         final PropagationContext context3 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule3,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -1112,7 +1109,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
 
         final PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule0,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -1266,7 +1263,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create context
         final PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule1,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -1400,7 +1397,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create context
         final PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule1,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -1538,7 +1535,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create context
         final PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule0,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -1651,7 +1648,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create context
         final PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule0,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -1822,7 +1819,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext );
 
         final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        rule,
                                                                        null,
                                                                        new DefaultFactHandle() );
@@ -1903,7 +1900,7 @@ public class AgendaTest extends DroolsTestCase {
         node0.setSequence( 72 );
         rule0.setConsequence( consequence );
         final PropagationContext context0 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule0,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -1919,7 +1916,7 @@ public class AgendaTest extends DroolsTestCase {
         node1.setSequence( 10 );
         rule1.setConsequence( consequence );
         final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule1,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -1935,7 +1932,7 @@ public class AgendaTest extends DroolsTestCase {
         node2.setSequence( 7 );
         rule2.setConsequence( consequence );
         final PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule2,
                                                                         null,
                                                                         new DefaultFactHandle() );
@@ -1951,7 +1948,7 @@ public class AgendaTest extends DroolsTestCase {
         node3.setSequence( 0 );
         rule3.setConsequence( consequence );
         final PropagationContext context3 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.ASSERTION,
+                                                                        PropagationContext.INSERTION,
                                                                         rule3,
                                                                         null,
                                                                         new DefaultFactHandle() );

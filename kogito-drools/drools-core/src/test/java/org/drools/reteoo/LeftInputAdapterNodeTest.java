@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import org.drools.DroolsTestCase;
@@ -27,10 +26,6 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.junit.Before;
-import org.junit.Test;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -85,7 +80,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
     @Test
     public void testAssertObjectWithoutMemory() throws Exception {
         final PropagationContext pcontext = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
+                                                                       PropagationContext.INSERTION,
                                                                        null,
                                                                        null,
                                                                        null );
