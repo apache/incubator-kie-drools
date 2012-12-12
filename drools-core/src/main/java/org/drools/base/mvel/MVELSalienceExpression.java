@@ -22,17 +22,15 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
+import org.drools.WorkingMemory;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
-import org.drools.WorkingMemory;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Salience;
-import org.drools.spi.Tuple;
 import org.kie.definition.rule.Rule;
-import org.kie.runtime.rule.Activation;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 
@@ -80,8 +78,8 @@ public class MVELSalienceExpression
     public int getValue(final KnowledgeHelper khelper,
                         final Rule rule,
                         final WorkingMemory workingMemory) {
-        VariableResolverFactory factory = unit.getFactory( khelper,  ((AgendaItem)khelper.getActivation()).getRuleTerminalNode().getSalienceDeclarations(), 
-                                                           rule, null, (LeftTuple) khelper.getActivation().getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver() );
+        VariableResolverFactory factory = unit.getFactory( khelper,  ((AgendaItem)khelper.getMatch()).getRuleTerminalNode().getSalienceDeclarations(), 
+                                                           rule, null, (LeftTuple) khelper.getMatch().getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver() );
         
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );

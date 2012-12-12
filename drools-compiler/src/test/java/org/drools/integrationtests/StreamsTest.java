@@ -17,11 +17,13 @@
  */
 package org.drools.integrationtests;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.Cheese;
 import org.drools.ClockType;
 import org.drools.CommonTestMethodBase;
 import org.drools.SessionConfiguration;
@@ -47,19 +48,19 @@ import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.conf.EventProcessingOption;
 import org.kie.definition.type.FactType;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.io.ResourceFactory;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.io.ResourceType;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
@@ -79,7 +80,7 @@ public class StreamsTest extends CommonTestMethodBase {
     }
 
     private KnowledgeBase loadKnowledgeBase( final String fileName,
-            KnowledgeBaseConfiguration kconf ) throws IOException,
+            KieBaseConfiguration kconf ) throws IOException,
             DroolsParserException,
             Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -103,7 +104,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBase("test_EntryPoint.drl");
         //final RuleBase ruleBase = loadRuleBase( reader );
 
-        KnowledgeSessionConfiguration conf = new SessionConfiguration();
+        KieSessionConfiguration conf = new SessionConfiguration();
         ( (SessionConfiguration) conf ).setClockType( ClockType.PSEUDO_CLOCK );
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
                                                                               null );
@@ -338,7 +339,7 @@ public class StreamsTest extends CommonTestMethodBase {
                      "end\n";
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KnowledgeBaseConfiguration)null, str );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.kie.event.rule.AgendaEventListener ael = mock(org.kie.event.rule.AgendaEventListener.class);
@@ -364,16 +365,16 @@ public class StreamsTest extends CommonTestMethodBase {
         assertEquals(3,
                      rulesFired);
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-               times(3)).afterActivationFired(captor.capture());
-        List<org.kie.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+               times(3)).afterMatchFired(captor.capture());
+        List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat(aafe.get(0).getActivation().getRule().getName(),
+        Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
                           is("R1"));
-        Assert.assertThat(aafe.get(1).getActivation().getRule().getName(),
+        Assert.assertThat(aafe.get(1).getMatch().getRule().getName(),
                           is("R2"));
-        Assert.assertThat(aafe.get(2).getActivation().getRule().getName(),
+        Assert.assertThat(aafe.get(2).getMatch().getRule().getName(),
                           is("R3"));
     }
 
@@ -389,7 +390,7 @@ public class StreamsTest extends CommonTestMethodBase {
                 "end\n";
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KnowledgeBaseConfiguration)null, str );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.kie.event.rule.AgendaEventListener ael = mock(org.kie.event.rule.AgendaEventListener.class);
@@ -405,12 +406,12 @@ public class StreamsTest extends CommonTestMethodBase {
         assertEquals(1,
                 rulesFired);
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-                times(1)).afterActivationFired(captor.capture());
-        List<org.kie.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+                times(1)).afterMatchFired(captor.capture());
+        List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat(aafe.get(0).getActivation().getRule().getName(),
+        Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
                 is("R1"));
     }
     
@@ -436,12 +437,12 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testEventDoesNotExpireIfNotInPattern() throws Exception {
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBase("test_EventExpiration.drl",
                 kconf);
 
-        KnowledgeSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksessionConfig.setOption(ClockTypeOption.get("pseudo"));
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksessionConfig,
                 null);
@@ -483,12 +484,12 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testEventExpirationSetToZero() throws Exception {
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBase("test_EventExpirationSetToZero.drl",
                                                 kconf);
 
-        KnowledgeSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksessionConfig.setOption(ClockTypeOption.get("pseudo"));
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksessionConfig,
                                                                               null);
@@ -515,7 +516,7 @@ public class StreamsTest extends CommonTestMethodBase {
         verify(wml,
                times(2)).objectInserted(any(org.kie.event.rule.ObjectInsertedEvent.class));
         verify(ael,
-               times(2)).activationCreated(any(ActivationCreatedEvent.class));
+               times(2)).matchCreated(any(MatchCreatedEvent.class));
         assertThat(ksession.getObjects().size(),
                    equalTo(2));
         assertThat(ksession.getObjects(),
@@ -564,7 +565,7 @@ public class StreamsTest extends CommonTestMethodBase {
                      ResourceType.DRL);
         assertFalse(kbuilder.getErrors().toString(),
                     kbuilder.hasErrors());
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -591,7 +592,7 @@ public class StreamsTest extends CommonTestMethodBase {
                            "        // consequences\n" +
                            "end\n";
         
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KnowledgeBaseConfiguration)null, drl );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         assertNotNull(ksession.getWorkingMemoryEntryPoint("UsedEntryPoint"));
@@ -617,7 +618,7 @@ public class StreamsTest extends CommonTestMethodBase {
                      "                $cnt : count( $s ) )\n" +
                      "then\n" +
                      "end\n";
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf,
                                                           drl);
@@ -638,14 +639,14 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-               times(1)).afterActivationFired(captor.capture());
+               times(1)).afterMatchFired(captor.capture());
 
-        AfterActivationFiredEvent aafe = captor.getValue();
-        Assert.assertThat(((Number) aafe.getActivation().getDeclarationValue("$sum")).intValue(),
+        AfterMatchFiredEvent aafe = captor.getValue();
+        Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
                           is(95));
-        Assert.assertThat(((Number) aafe.getActivation().getDeclarationValue("$cnt")).intValue(),
+        Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$cnt")).intValue(),
                           is(3));
 
     }
@@ -668,7 +669,7 @@ public class StreamsTest extends CommonTestMethodBase {
                      "    )\n" + 
                      "then\n" + 
                      "end";
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf,
                                                           drl);
@@ -684,12 +685,12 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-               times(1)).afterActivationFired(captor.capture());
+               times(1)).afterMatchFired(captor.capture());
 
-        AfterActivationFiredEvent aafe = captor.getValue();
-        Assert.assertThat(((Number) aafe.getActivation().getDeclarationValue("$sum")).intValue(),
+        AfterMatchFiredEvent aafe = captor.getValue();
+        Assert.assertThat(((Number) aafe.getMatch().getDeclarationValue("$sum")).intValue(),
                           is(33));
     }
     
@@ -705,7 +706,7 @@ public class StreamsTest extends CommonTestMethodBase {
                      "   f2 : StockTick( company == \"JBW\" ) over window:length( 1 )\n" + 
                      "then\n" + 
                      "end";
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf,
                                                           drl);
@@ -721,14 +722,14 @@ public class StreamsTest extends CommonTestMethodBase {
         
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterActivationFiredEvent.class);
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
-               times(1)).afterActivationFired(captor.capture());
+               times(1)).afterMatchFired(captor.capture());
 
-        AfterActivationFiredEvent aafe = captor.getValue();
-        Assert.assertThat( (StockTick) aafe.getActivation().getDeclarationValue("f1"),
+        AfterMatchFiredEvent aafe = captor.getValue();
+        Assert.assertThat( (StockTick) aafe.getMatch().getDeclarationValue("f1"),
                            is(st1));
-        Assert.assertThat( (StockTick) aafe.getActivation().getDeclarationValue("f2"),
+        Assert.assertThat( (StockTick) aafe.getMatch().getDeclarationValue("f2"),
                            is(st2));
     }
 
@@ -793,7 +794,7 @@ public class StreamsTest extends CommonTestMethodBase {
                 "    drools.halt();\n" +
                 "end\n";
 
-        KnowledgeBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kBaseConfig.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConfig, str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();

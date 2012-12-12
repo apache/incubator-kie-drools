@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.CompositeClassLoader;
 
 public class ClassTypeResolver
     implements

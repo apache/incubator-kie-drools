@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
+import org.kie.runtime.rule.Match;
 
 /**
  * Filters activations based on a specified regular expression.
@@ -52,7 +53,7 @@ public class RuleNameMatchesAgendaFilter
         }
     }
 
-    public boolean accept( org.kie.runtime.rule.Activation activation ) {
+    public boolean accept( Match activation ) {
         Matcher matcher = pattern.matcher( activation.getRule().getName() );
         if ( matcher.matches() ) {
             return this.accept;

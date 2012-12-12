@@ -62,8 +62,8 @@ import org.drools.rule.WindowDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.kie.definition.process.Process;
 import org.kie.definition.type.FactType;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
+import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.internal.utils.CompositeClassLoader;
 
 import static org.drools.core.util.BitMaskUtil.isSet;
 
@@ -581,10 +581,7 @@ abstract public class AbstractRuleBase
                         }
                     }
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                    throw new RuntimeDroolsException(
-                                                      "unable to resolve Type Declaration class '" + lastType +
-                                                              "'" );
+                    throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType + "'", e );
                 }
             }
 

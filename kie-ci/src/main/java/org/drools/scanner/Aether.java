@@ -1,5 +1,6 @@
 package org.drools.scanner;
 
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.DefaultServiceLocator;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.wagon.Wagon;
@@ -19,12 +20,14 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drools.scanner.embedder.MavenProjectLoader.loadMavenProject;
+
 class Aether {
 
     private static final String M2_REPO = System.getProperty( "user.home" ) + "/.m2/repository";
     private String localRepoDir = M2_REPO;
 
-    public static final Aether INSTANCE = new Aether();
+    static final Aether DEFUALT_AETHER = new Aether();
 
     private final RepositorySystem system;
     private final RepositorySystemSession session;
@@ -33,15 +36,23 @@ class Aether {
     private RemoteRepository localRepository;
 
     private Aether() {
-        initRepositories();
-        system = newRepositorySystem();
-        session = newRepositorySystemSession( system );
-        repositories = initRepositories();
+        this(loadMavenProject());
     }
 
-    private List<RemoteRepository> initRepositories() {
+    Aether(MavenProject mavenProject) {
+        system = newRepositorySystem();
+        session = newRepositorySystemSession( system );
+        repositories = initRepositories(mavenProject);
+    }
+
+    private List<RemoteRepository> initRepositories(MavenProject mavenProject) {
         List<RemoteRepository> reps = new ArrayList<RemoteRepository>();
-        reps.add(newCentralRepository());
+        if (mavenProject != null) {
+            reps.addAll(mavenProject.getRemoteProjectRepositories());
+        } else {
+            reps.add(newCentralRepository());
+        }
+
         RemoteRepository localRepo = newLocalRepository();
         if (localRepo != null) {
             reps.add(localRepo);

@@ -11,13 +11,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.SystemEventListenerFactory;
 import org.kie.agent.KnowledgeAgent;
 import org.kie.agent.KnowledgeAgentFactory;
 import org.kie.io.ResourceChangeScannerConfiguration;
@@ -41,7 +40,7 @@ public class ScannerChangeSetTest {
 		fileManager.tearDown();
 	}
 
-	@Test
+	@Test @Ignore
 	public void testCSVByResourceChangeScanner() throws InterruptedException,
 			IOException {
 
@@ -113,10 +112,8 @@ public class ScannerChangeSetTest {
 	 * @author jsvitak@redhat.com
 	 *
 	 */
-	@Test
+	@Test @Ignore
     public void testXLSByResourceChangeScanner() throws Exception {
-        
-        SystemEventListenerFactory.setSystemEventListener(new PrintStreamSystemEventListener(System.out));        
         
         // first file
         File ruleFile = new File(TMP_DIR + "sample.xls");

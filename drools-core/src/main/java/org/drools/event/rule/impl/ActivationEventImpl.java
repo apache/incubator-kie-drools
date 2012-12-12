@@ -16,32 +16,30 @@
 
 package org.drools.event.rule.impl;
 
+import org.kie.event.rule.MatchEvent;
+import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.Match;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.kie.event.rule.ActivationCancelledEvent;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.ActivationEvent;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.rule.Activation;
 
-
-public class ActivationEventImpl implements ActivationEvent, Externalizable {
-    private Activation activation;
+public class ActivationEventImpl implements MatchEvent, Externalizable {
+    private Match activation;
     private KnowledgeRuntime kruntime;
     
-    public ActivationEventImpl(Activation activation, KnowledgeRuntime kruntime) {
+    public ActivationEventImpl(Match activation, KnowledgeRuntime kruntime) {
         this.activation = activation;
         this.kruntime = kruntime;
     }
     
-    public Activation getActivation() {
+    public Match getMatch() {
         return this.activation;
     }
 
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public KnowledgeRuntime getKieRuntime() {
         return this.kruntime;
     }
     
@@ -58,7 +56,7 @@ public class ActivationEventImpl implements ActivationEvent, Externalizable {
 
     @Override
     public String toString() {
-        return "==>[ActivationEventImpl: getActivation()=" + getActivation() + ", getKnowledgeRuntime()="
-                + getKnowledgeRuntime() + "]";
+        return "==>[ActivationEventImpl: getActivation()=" + getMatch() + ", getKnowledgeRuntime()="
+                + getKieRuntime() + "]";
     }
 }

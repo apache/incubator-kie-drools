@@ -16,27 +16,47 @@
 
 package org.drools.io.impl;
 
+import org.drools.io.internal.InternalResource;
+import org.kie.definition.KieDescr;
+import org.kie.io.Resource;
+import org.kie.io.ResourceType;
+
+import java.io.Externalizable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
-import org.drools.io.internal.InternalResource;
-import org.kie.definition.KnowledgeDescr;
-import org.kie.io.Resource;
-
-public class DescrResource extends BaseResource implements InternalResource {
+public class DescrResource extends BaseResource implements InternalResource, Externalizable {
     private static final long serialVersionUID = 3931132608413160031L;
     
-    private KnowledgeDescr descr;
+    private KieDescr descr;
     
-    public DescrResource(KnowledgeDescr descr ) {
+    public DescrResource() { }
+
+    public DescrResource(KieDescr descr ) {
         if ( descr == null ) {
             throw new IllegalArgumentException( "descr cannot be null" );
         }
         this.descr = descr;
+        setResourceType( ResourceType.DESCR );
+    }
+    
+    @Override
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        descr = (KieDescr) in.readObject();
+    }
+    
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+        out.writeObject( descr );
     }
     
     public URL getURL() throws IOException {
@@ -59,7 +79,7 @@ public class DescrResource extends BaseResource implements InternalResource {
         throw new IllegalStateException( "descr does not have a modified date" );
     }
     
-    public KnowledgeDescr getDescr() {
+    public KieDescr getDescr() {
         return this.descr;
     }
     

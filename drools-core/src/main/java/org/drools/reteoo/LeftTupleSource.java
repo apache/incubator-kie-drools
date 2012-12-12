@@ -16,6 +16,12 @@
 
 package org.drools.reteoo;
 
+import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -26,20 +32,12 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.MemoryFactory;
 import org.drools.common.RuleBasePartitionId;
-import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Pattern;
 import org.drools.spi.ClassWireable;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
-import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
@@ -114,7 +112,9 @@ public abstract class LeftTupleSource extends BaseNode
         out.writeLong( leftInferredMask );
         out.writeLong( leftNegativeMask );
     }
-
+    
+    public abstract LeftTuple createPeer(LeftTuple original);
+    
     public void addTupleSink(final LeftTupleSink tupleSink) {
         addTupleSink(tupleSink, null);
     }
@@ -150,27 +150,13 @@ public abstract class LeftTupleSource extends BaseNode
 
     protected LeftTupleSinkPropagator addTupleSink(final LeftTupleSinkPropagator sinkPropagator, final LeftTupleSink tupleSink, final BuildContext context) {
         if ( sinkPropagator instanceof EmptyLeftTupleSinkAdapter ) {
-            if ( this.partitionsEnabled && !this.partitionId.equals( tupleSink.getPartitionId() ) ) {
-                // if partitions are enabled and the next node belongs to a different partition,
-                // we need to use the asynchronous propagator
-                return new AsyncSingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
-            }
-
             // otherwise, we use the lighter synchronous propagator
             return new SingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
         }
 
         if ( sinkPropagator instanceof SingleLeftTupleSinkAdapter ) {
             final CompositeLeftTupleSinkAdapter sinkAdapter;
-            if ( this.partitionsEnabled ) {
-                // a composite propagator may propagate to both nodes in the same partition
-                // as well as in a different partition, so, if partitions are enabled, we
-                // must use the asynchronous version
-                sinkAdapter = new AsyncCompositeLeftTupleSinkAdapter( this.getPartitionId() );
-            } else {
-                // if partitions are disabled, then it is safe to use the lighter synchronous propagator
-                sinkAdapter = new CompositeLeftTupleSinkAdapter( this.getPartitionId() );
-            }
+            sinkAdapter = new CompositeLeftTupleSinkAdapter( this.getPartitionId() );
             sinkAdapter.addTupleSink( sinkPropagator.getSinks()[0] );
             sinkAdapter.addTupleSink( tupleSink );
             return sinkAdapter;
@@ -197,14 +183,7 @@ public abstract class LeftTupleSource extends BaseNode
             final CompositeLeftTupleSinkAdapter sinkAdapter = (CompositeLeftTupleSinkAdapter) this.sink;
             sinkAdapter.removeTupleSink( tupleSink );
             if ( sinkAdapter.size() == 1 ) {
-                if ( this.partitionsEnabled && !this.partitionId.equals( tupleSink.getPartitionId() ) ) {
-                    // if partitions are enabled and the next node belongs to a different partition,
-                    // we need to use the asynchronous propagator
-                    this.sink = new AsyncSingleLeftTupleSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
-                } else {
-                    // otherwise, we use the lighter synchronous propagator
-                    this.sink = new SingleLeftTupleSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
-                }
+                this.sink = new SingleLeftTupleSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
             }
         }
     }
@@ -412,51 +391,6 @@ public abstract class LeftTupleSource extends BaseNode
         //        }
     }
     
-    public boolean isStagedForModifyRight(final RightTuple rightTuple, 
-                                          final BetaMemory bm,
-                                          final PropagationContext context,
-                                          final InternalWorkingMemory wm ) {
-        if ( !bm.getSegmentMemory().isActive() ) {
-            if ( !rightTuple.getMemory().isStagingMemory() ) {
-                // if not already staged, then stage it
-                bm.getRightTupleMemory().remove( rightTuple );
-               // bm.getSegmentMemory().addModifyRightTuple( rightTuple, wm );
-            }                       
-            return true;
-        } 
-        
-        return false;
-    }
-    
-    public boolean isStagedForAssertLeft(final LeftTuple leftTuple, 
-                                         final BetaMemory bm,
-                                         final PropagationContext context,
-                                         final InternalWorkingMemory wm ) {
-        if ( !bm.getSegmentMemory().isActive() ) {
-            bm.getSegmentMemory().addAssertLeftTuple( leftTuple, wm );
-            return true;
-        }
-        
-        return false;
-    }
-    
-    
-    public boolean isStagedForModifyLeft(final LeftTuple leftTuple, 
-                                         final BetaMemory bm,
-                                         final PropagationContext context,
-                                         final InternalWorkingMemory wm ) {
-//        if ( !bm.getSegmentMemory().isActive() ) {
-//            if ( leftTuple.getMemory() != null && !leftTuple.getMemory().isStagingMemory() ) {
-//                // if not already staged, then stage it
-//                bm.getLeftTupleMemory().remove( leftTuple );
-//                bm.getSegmentMemory().addModifyLeftTuple( leftTuple, wm );
-//            }             
-//            return true;
-//        }
-        
-        return false;
-    }
-
     public long getLeftDeclaredMask() {
         return leftDeclaredMask;
     }

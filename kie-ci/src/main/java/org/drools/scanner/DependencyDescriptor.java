@@ -1,21 +1,25 @@
 package org.drools.scanner;
 
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.model.Dependency;
+import org.drools.kproject.GAVImpl;
+import org.kie.builder.GAV;
 import org.sonatype.aether.artifact.Artifact;
 
-import java.util.Properties;
-
-class DependencyDescriptor {
+public class DependencyDescriptor {
     private final String groupId;
     private final String artifactId;
     private final String version;
     private final String type;
+    private final ArtifactVersion artifactVersion;
 
-    public DependencyDescriptor(Dependency dependency, Properties projectProperties) {
+    public DependencyDescriptor(Dependency dependency) {
         groupId = dependency.getGroupId();
         artifactId = dependency.getArtifactId();
-        version = resolve(dependency.getVersion(), projectProperties);
+        version = dependency.getVersion();
         type = dependency.getType();
+        artifactVersion = new DefaultArtifactVersion(version);
     }
 
     public DependencyDescriptor(Artifact artifact) {
@@ -23,6 +27,7 @@ class DependencyDescriptor {
         artifactId = artifact.getArtifactId();
         version = artifact.isSnapshot() ? artifact.getBaseVersion() : artifact.getVersion();
         type = artifact.getExtension();
+        artifactVersion = new DefaultArtifactVersion(artifact.getVersion());
     }
 
     public DependencyDescriptor(String groupId, String artifactId, String version, String type) {
@@ -30,6 +35,15 @@ class DependencyDescriptor {
         this.artifactId = artifactId;
         this.version = version;
         this.type = type;
+        artifactVersion = new DefaultArtifactVersion(version);
+    }
+
+    public DependencyDescriptor(GAV gav) {
+        groupId = gav.getGroupId();
+        artifactId = gav.getArtifactId();
+        version = gav.getVersion();
+        type = "jar";
+        artifactVersion = new DefaultArtifactVersion(version);
     }
 
     public String getGroupId() {
@@ -44,12 +58,16 @@ class DependencyDescriptor {
         return version;
     }
 
+    public GAV getGav() {
+        return new GAVImpl(groupId, artifactId, version);
+    }
+
     public String getType() {
         return type;
     }
 
     public boolean isFixedVersion() {
-        return !isSnapshot() && !version.equals("LATEST") && !version.equals(")");
+        return !isSnapshot() && !version.equals("LATEST") && !version.equals("RELEASE");
     }
 
     public boolean isSnapshot() {
@@ -58,13 +76,6 @@ class DependencyDescriptor {
 
     public boolean isValid() {
         return version != null;
-    }
-
-    private String resolve(String value, Properties projectProperties) {
-        if (value == null) {
-            return null;
-        }
-        return value.startsWith("${") ? (String)projectProperties.get(value.substring(2, value.length()-1)) : value;
     }
 
     @Override
@@ -98,5 +109,9 @@ class DependencyDescriptor {
         result = 31 * result + (version != null ? version.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
+    }
+
+    public boolean isNewerThan(DependencyDescriptor o) {
+        return artifactVersion.compareTo(o.artifactVersion) > 0;
     }
 }

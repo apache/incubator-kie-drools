@@ -16,28 +16,16 @@
 
 package org.drools.world.impl;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.command.GetDefaultValue;
-import org.drools.command.NewStatefulKnowledgeSessionCommand;
-import org.drools.command.ResolvingKnowledgeCommandContext;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
-import org.drools.time.SessionPseudoClock;
 import org.kie.command.Command;
 import org.kie.command.Context;
 import org.kie.command.World;
 import org.kie.runtime.CommandExecutor;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.simulation.Simulation;
-import org.kie.simulation.SimulationPath;
-import org.kie.simulation.SimulationStep;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class WorldImpl
         implements World, GetDefaultValue, CommandExecutor {

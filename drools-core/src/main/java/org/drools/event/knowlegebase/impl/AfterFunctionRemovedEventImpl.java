@@ -17,7 +17,7 @@
 package org.drools.event.knowlegebase.impl;
 
 import org.kie.KnowledgeBase;
-import org.kie.event.knowledgebase.AfterFunctionRemovedEvent;
+import org.kie.event.kiebase.AfterFunctionRemovedEvent;
 
 public class AfterFunctionRemovedEventImpl extends KnowledgeBaseEventImpl implements AfterFunctionRemovedEvent {
     private String function;
@@ -33,8 +33,8 @@ public class AfterFunctionRemovedEventImpl extends KnowledgeBaseEventImpl implem
 
     @Override
     public String toString() {
-        return "==>[AfterFunctionRemovedEventImpl: getFunction()=" + getFunction() + ", getKnowledgeBase()="
-                + getKnowledgeBase() + "]";
+        return "==>[AfterFunctionRemovedEventImpl: getFunction()=" + getFunction() + ", getKieBase()="
+                + getKieBase() + "]";
     }
     
 }

@@ -96,7 +96,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                           final PropagationContext context,
                                           final InternalWorkingMemory workingMemory) {
         LeftTuple child = leftTuple.getFirstChild();
-        while ( child != null ) {
+        while ( child != null ) { 
             LeftTuple temp = child.getLeftParentNext();
             doPropagateRetractLeftTuple( context,
                                          workingMemory,
@@ -150,29 +150,10 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                              leftTupleMemoryEnabled );
         lt.setPropagationContext( context );
         
-        
-        if ( liaNode.isUnlinkingEnabled() ) {
-            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( liaNode );
-            if ( lm.getSegmentMemory() == null ) {
-                BetaNode.createNodeSegmentMemory( liaNode, workingMemory ); // initialises for all nodes in segment, including this one
-            }          
-            if ( lm.getStagedLeftTupleList().size() == 0 ) {
-                // link. We do this on staged tuples, instead of entire count, as the lazy agenda might need re-activating
-                lm.linkNode( workingMemory );
-            }  
-            if ( context.getReaderContext() == null ) {
-                lm.addAssertLeftTuple( lt, workingMemory );
-                lm.setCounter( lm.getCounter() + 1 ); // we need this to track when we unlink
-            } else {
-                doPropagateAssertLeftTuple( context,
-                                            workingMemory,
-                                            lt );                
-            }
-        } else {
-            doPropagateAssertLeftTuple( context,
-                                        workingMemory,
-                                        lt );
-        }
+
+        doPropagateAssertLeftTuple( context,
+                                    workingMemory,
+                                    lt );        
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
@@ -188,6 +169,10 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     	}
         return array;
     }
+    
+    public LeftTupleSinkNode getFirstLeftTupleSink() {
+        return ( LeftTupleSinkNode ) sink;
+    }    
 
     public int size() {
         return (this.sink != null) ? 1 : 0;

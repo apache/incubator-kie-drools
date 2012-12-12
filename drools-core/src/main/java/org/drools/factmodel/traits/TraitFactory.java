@@ -16,6 +16,18 @@
 
 package org.drools.factmodel.traits;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.RuleBase;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorStore;
@@ -31,18 +43,9 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
-
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes, Externalizable {
     
@@ -68,7 +71,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 //        wrapperCache.clear();
     }
 
-    public static void setMode( VirtualPropertyMode newMode, KnowledgeBase kBase ) {
+    public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
         RuleBase ruleBase = ((KnowledgeBaseImpl) kBase).getRuleBase();
         ReteooComponentFactory rcf = ((AbstractRuleBase) ruleBase).getConfiguration().getComponentFactory();
         ClassBuilderFactory cbf = rcf.getClassBuilderFactory();

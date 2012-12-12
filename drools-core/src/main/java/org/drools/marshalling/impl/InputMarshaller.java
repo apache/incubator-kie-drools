@@ -34,7 +34,6 @@ import org.drools.common.BaseNode;
 import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.EqualityKey;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
@@ -43,17 +42,15 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.common.NamedEntryPoint;
 import org.drools.common.MemoryFactory;
+import org.drools.common.NamedEntryPoint;
 import org.drools.common.ObjectStore;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.ScheduledAgendaItem;
-import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.concurrent.ExecutorService;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.StringUtils;
@@ -76,7 +73,6 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
@@ -165,19 +161,16 @@ public class InputMarshaller {
      * @throws ClassNotFoundException
      */
     public static ReteooStatefulSession readSession( MarshallerReaderContext context,
-            int id,
-            ExecutorService executor ) throws IOException,
+            int id ) throws IOException,
             ClassNotFoundException {
         return readSession( context,
                             id,
-                            executor,
                             EnvironmentFactory.newEnvironment(),
                             SessionConfiguration.getDefaultInstance() );
     }
 
     public static ReteooStatefulSession readSession( MarshallerReaderContext context,
             int id,
-            ExecutorService executor,
             Environment environment,
             SessionConfiguration config ) throws IOException,
             ClassNotFoundException {
@@ -205,7 +198,6 @@ public class InputMarshaller {
                     agenda );
         ReteooStatefulSession session = new ReteooStatefulSession( id,
                                                                    context.ruleBase,
-                                                                   executor,
                                                                    handleFactory,
                                                                    initialFactHandle,
                                                                    propagationCounter,
@@ -336,10 +328,6 @@ public class InputMarshaller {
         // no legacy jBPM timers, so handle locally
         while ( context.readShort() == PersisterEnums.DEFAULT_TIMER) {
             InputMarshaller.readTimer( context );
-        }
-
-        if (multithread) {
-            session.startPartitionManagers();
         }
 
         return session;

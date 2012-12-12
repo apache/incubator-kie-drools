@@ -34,8 +34,9 @@ import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.kie.runtime.Channel;
-import org.kie.runtime.ExitPoint;
+import org.kie.runtime.KieRuntime;
 import org.kie.runtime.KnowledgeRuntime;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class SequentialKnowledgeHelper
@@ -104,7 +105,11 @@ public class SequentialKnowledgeHelper
         return new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory );
      }
 
-    public Activation getActivation() {
+    public KieRuntime getKieRuntime() {
+        return getKnowledgeRuntime();
+     }
+
+    public Activation getMatch() {
         return this.activation;
     }
 
@@ -141,28 +146,12 @@ public class SequentialKnowledgeHelper
         return this.workingMemory.getEntryPoints().get( id );
     }
 
-    /**
-     * @deprecated use {@link #getChannels()} instead
-     */
-    @Deprecated
-    public ExitPoint getExitPoint(String id) {
-        return this.workingMemory.getExitPoints().get( id );
-    }
-
     public Channel getChannel(String id) {
         return this.workingMemory.getChannels().get( id );
     }
 
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
-    }
-
-    /**
-     * @deprecated use {@link #getChannels()} instead
-     */
-    @Deprecated
-    public Map<String, ExitPoint> getExitPoints() {
-        return Collections.unmodifiableMap( this.workingMemory.getExitPoints() );
     }
 
     public Map<String, Channel> getChannels() {
@@ -276,15 +265,15 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
-    public void blockActivation(org.kie.runtime.rule.Activation match) {
+    public void blockMatch(Match match) {
         // TODO Auto-generated method stub
     }
 
-    public void unblockAllActivations(org.kie.runtime.rule.Activation match) {
+    public void unblockAllMatches(Match match) {
         // TODO Auto-generated method stub
     }
 
-    public void cancelActivation(org.kie.runtime.rule.Activation match) {
+    public void cancelMatch(Match match) {
         // TODO Auto-generated method stub
     }
 }

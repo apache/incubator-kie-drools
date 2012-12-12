@@ -41,9 +41,9 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.LiveQuery;
@@ -1753,10 +1753,10 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                                                           foodUpdated.addAll( (Collection) row.get( "food" ) );
                                                       }
 
-                                                      public void rowRemoved(Row row) {
+                                                      public void rowDeleted(Row row) {
                                                       }
 
-                                                      public void rowAdded(Row row) {
+                                                      public void rowInserted(Row row) {
                                                           food.addAll( (Collection) row.get( "food" ) );
                                                       }
                                                   } );

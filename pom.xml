@@ -49,7 +49,6 @@
     <module>drools-core</module>
     <module>drools-compiler</module>
     <module>drools-jsr94</module>
-    <module>drools-clips</module>
     <module>drools-verifier</module>
     <module>drools-persistence-jpa</module>
     <module>drools-templates</module>

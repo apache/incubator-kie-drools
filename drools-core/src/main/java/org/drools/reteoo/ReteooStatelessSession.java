@@ -32,11 +32,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalStatelessSession;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.concurrent.AssertObject;
-import org.drools.concurrent.AssertObjects;
-import org.drools.concurrent.CommandExecutor;
-import org.drools.concurrent.ExecutorService;
-import org.drools.concurrent.FireAllRules;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -46,7 +41,6 @@ import org.drools.impl.EnvironmentFactory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.AgendaFilter;
-import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.GlobalExporter;
 import org.drools.spi.GlobalResolver;
 
@@ -204,36 +198,6 @@ public class ReteooStatelessSession
             wm.insert( it.next() );
         }
         wm.fireAllRules( this.agendaFilter );
-    }
-
-    public void asyncExecute(final Object object) {
-        InternalWorkingMemory wm = newWorkingMemory();
-
-        final AssertObject assertObject = new AssertObject( object );
-        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.ruleBase.getConfiguration().getExecutorService() );
-        executor.setCommandExecutor( new CommandExecutor( wm ) );
-        executor.submit( assertObject );
-        executor.submit( new FireAllRules( this.agendaFilter ) );
-    }
-
-    public void asyncExecute(final Object[] array) {
-        InternalWorkingMemory wm = newWorkingMemory();
-
-        final AssertObjects assertObjects = new AssertObjects( array );
-        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.ruleBase.getConfiguration().getExecutorService() );
-        executor.setCommandExecutor( new CommandExecutor( wm ) );
-        executor.submit( assertObjects );
-        executor.submit( new FireAllRules( this.agendaFilter ) );
-    }
-
-    public void asyncExecute(final Collection collection) {
-        InternalWorkingMemory wm = newWorkingMemory();
-
-        final AssertObjects assertObjects = new AssertObjects( collection );
-        ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.ruleBase.getConfiguration().getExecutorService() );
-        executor.setCommandExecutor( new CommandExecutor( wm ) );
-        executor.submit( assertObjects );
-        executor.submit( new FireAllRules( this.agendaFilter ) );
     }
 
     public StatelessSessionResult executeWithResults(Object object) {

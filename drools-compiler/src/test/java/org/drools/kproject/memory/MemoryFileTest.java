@@ -7,14 +7,17 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import org.drools.compiler.io.File;
+import org.drools.compiler.io.FileSystem;
+import org.drools.compiler.io.Folder;
+import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
-import org.drools.kproject.File;
-import org.drools.kproject.FileSystem;
-import org.drools.kproject.Folder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class MemoryFileTest {
     @Test
+    @Ignore // this now passes, as we want to allow overwriting as default
     public void testFileCreation() throws IOException {
         FileSystem fs = new MemoryFileSystem();
         

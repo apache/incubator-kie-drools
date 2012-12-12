@@ -10,14 +10,15 @@ import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class SessionMarshallingHelper {
 
     private KnowledgeBase                 kbase;
-    private KnowledgeSessionConfiguration conf;
-    private StatefulKnowledgeSession      ksession;
+    private KieSessionConfiguration conf;
+    private KieSession      			  ksession;
     private Marshaller                    marshaller;
     private Environment                   env;
 
@@ -29,7 +30,7 @@ public class SessionMarshallingHelper {
      * @param marshallingConfiguration
      */
     public SessionMarshallingHelper(KnowledgeBase kbase,
-                                       KnowledgeSessionConfiguration conf,
+                                       KieSessionConfiguration conf,
                                        Environment env) {
         this.kbase = kbase;
         this.conf = conf;
@@ -51,9 +52,9 @@ public class SessionMarshallingHelper {
      * @param marshallingConfiguration
      */
     public SessionMarshallingHelper(StatefulKnowledgeSession ksession,
-                                       KnowledgeSessionConfiguration conf) {
+                                       KieSessionConfiguration conf) {
         this.ksession = ksession;
-        this.kbase = ksession.getKnowledgeBase();
+        this.kbase = ksession.getKieBase();
         this.conf = conf;
         this.env = ksession.getEnvironment();
         ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) this.env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );
@@ -79,8 +80,8 @@ public class SessionMarshallingHelper {
         return baos.toByteArray();
     }
 
-    public StatefulKnowledgeSession loadSnapshot(byte[] bytes,
-                                                 StatefulKnowledgeSession ksession) {
+    public KieSession loadSnapshot(byte[] bytes,
+                                   KieSession ksession) {
         this.ksession = ksession;
         ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
         try {
@@ -100,7 +101,7 @@ public class SessionMarshallingHelper {
     }
 
 
-    public StatefulKnowledgeSession getObject() {
+    public KieSession getObject() {
         return ksession;
     }
 
@@ -108,7 +109,7 @@ public class SessionMarshallingHelper {
         return kbase;
     }
 
-    public KnowledgeSessionConfiguration getConf() {
+    public KieSessionConfiguration getConf() {
         return conf;
     }
     

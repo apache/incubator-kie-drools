@@ -16,19 +16,6 @@
 
 package org.drools.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
@@ -54,19 +41,19 @@ import org.drools.event.BeforeRuleBaseLockedEvent;
 import org.drools.event.BeforeRuleBaseUnlockedEvent;
 import org.drools.event.BeforeRuleRemovedEvent;
 import org.drools.event.knowlegebase.impl.AfterFunctionRemovedEventImpl;
+import org.drools.event.knowlegebase.impl.AfterKiePackageAddedEventImpl;
+import org.drools.event.knowlegebase.impl.AfterKiePackageRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterKnowledgeBaseLockedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterKnowledgeBaseUnlockedEventImpl;
-import org.drools.event.knowlegebase.impl.AfterKnowledgePackageAddedEventImpl;
-import org.drools.event.knowlegebase.impl.AfterKnowledgePackageRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterProcessAddedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterProcessRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterRuleAddedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterRuleRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeFunctionRemovedEventImpl;
+import org.drools.event.knowlegebase.impl.BeforeKiePackageAddedEventImpl;
+import org.drools.event.knowlegebase.impl.BeforeKiePackageRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeKnowledgeBaseLockedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeKnowledgeBaseUnlockedEventImpl;
-import org.drools.event.knowlegebase.impl.BeforeKnowledgePackageAddedEventImpl;
-import org.drools.event.knowlegebase.impl.BeforeKnowledgePackageRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeProcessAddedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeProcessRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeRuleAddedEventImpl;
@@ -75,16 +62,32 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.Package;
 import org.kie.KnowledgeBase;
+import org.kie.definition.KiePackage;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
-import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
+import org.kie.event.kiebase.KieBaseEventListener;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class KnowledgeBaseImpl
     implements
@@ -95,7 +98,7 @@ public class KnowledgeBaseImpl
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
 
-    public Map<KnowledgeBaseEventListener, KnowledgeBaseEventListenerWrapper> mappedKnowledgeBaseListeners;
+    public Map<KieBaseEventListener, KnowledgeBaseEventListenerWrapper> mappedKnowledgeBaseListeners;
 
     public KnowledgeBaseImpl() {
 
@@ -103,7 +106,7 @@ public class KnowledgeBaseImpl
 
     public KnowledgeBaseImpl(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
-        this.mappedKnowledgeBaseListeners = new HashMap<KnowledgeBaseEventListener, KnowledgeBaseEventListenerWrapper>();
+        this.mappedKnowledgeBaseListeners = new HashMap<KieBaseEventListener, KnowledgeBaseEventListenerWrapper>();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -120,7 +123,7 @@ public class KnowledgeBaseImpl
         return ruleBase;
     }
 
-    public void addEventListener(KnowledgeBaseEventListener listener) {
+    public void addEventListener(KieBaseEventListener listener) {
         if (!mappedKnowledgeBaseListeners.containsKey(listener)) {
             KnowledgeBaseEventListenerWrapper wrapper = new KnowledgeBaseEventListenerWrapper( this, listener );
             mappedKnowledgeBaseListeners.put( listener, wrapper );
@@ -128,12 +131,12 @@ public class KnowledgeBaseImpl
         }
     }
 
-    public void removeEventListener(KnowledgeBaseEventListener listener) {
+    public void removeEventListener(KieBaseEventListener listener) {
         KnowledgeBaseEventListenerWrapper wrapper = this.mappedKnowledgeBaseListeners.remove( listener );
         this.ruleBase.removeEventListener( wrapper );
     }
     
-    public Collection<KnowledgeBaseEventListener> getKnowledgeBaseEventListeners() {
+    public Collection<KieBaseEventListener> getKieBaseEventListeners() {
         return Collections.unmodifiableCollection( this.mappedKnowledgeBaseListeners.keySet() );
     }
 
@@ -162,7 +165,7 @@ public class KnowledgeBaseImpl
         return newStatefulKnowledgeSession(null, EnvironmentFactory.newEnvironment() );
     }
     
-    public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment) {
+    public StatefulKnowledgeSession newStatefulKnowledgeSession(KieSessionConfiguration conf, Environment environment) {
         // NOTE if you update here, you'll also need to update the JPAService
         if ( conf == null ) {
             conf = SessionConfiguration.getDefaultInstance();
@@ -194,7 +197,7 @@ public class KnowledgeBaseImpl
         return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, null );
     }
     
-    public StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf) {
+    public StatelessKnowledgeSession newStatelessKnowledgeSession(KieSessionConfiguration conf) {
         return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, conf );
     }
 
@@ -226,7 +229,7 @@ public class KnowledgeBaseImpl
     
     public FactType getFactType(String packageName,
                                 String typeName) {
-        return this.ruleBase.getFactType( packageName + "." + typeName );
+        return this.ruleBase.getFactType(packageName + "." + typeName);
     }
 
     public KnowledgePackage getKnowledgePackage(String packageName) {
@@ -264,7 +267,7 @@ public class KnowledgeBaseImpl
     public static class KnowledgeBaseEventListenerWrapper
         implements
         org.drools.event.RuleBaseEventListener {
-        private KnowledgeBaseEventListener listener;
+        private KieBaseEventListener listener;
         private KnowledgeBase              kbase;
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -277,7 +280,7 @@ public class KnowledgeBaseImpl
         }
 
         public KnowledgeBaseEventListenerWrapper(KnowledgeBase kbase,
-                                                 KnowledgeBaseEventListener listener) {
+                                                 KieBaseEventListener listener) {
             this.listener = listener;
         }
 
@@ -287,13 +290,13 @@ public class KnowledgeBaseImpl
         }
 
         public void afterPackageAdded(AfterPackageAddedEvent event) {
-            this.listener.afterKnowledgePackageAdded( new AfterKnowledgePackageAddedEventImpl( this.kbase,
-                                                                                               new KnowledgePackageImp( event.getPackage() ) ) );
+            this.listener.afterKiePackageAdded(new AfterKiePackageAddedEventImpl(this.kbase,
+                    new KnowledgePackageImp(event.getPackage())));
         }
 
         public void afterPackageRemoved(AfterPackageRemovedEvent event) {
-            this.listener.afterKnowledgePackageRemoved( new AfterKnowledgePackageRemovedEventImpl( this.kbase,
-                                                                                                   new KnowledgePackageImp( event.getPackage() ) ) );
+            this.listener.afterKiePackageRemoved(new AfterKiePackageRemovedEventImpl(this.kbase,
+                    new KnowledgePackageImp(event.getPackage())));
         }
 
         public void afterRuleAdded(AfterRuleAddedEvent event) {
@@ -302,11 +305,11 @@ public class KnowledgeBaseImpl
         }
 
         public void afterRuleBaseLocked(AfterRuleBaseLockedEvent event) {
-            this.listener.afterKnowledgeBaseLocked( new AfterKnowledgeBaseLockedEventImpl( this.kbase ) );
+            this.listener.afterKieBaseLocked(new AfterKnowledgeBaseLockedEventImpl(this.kbase));
         }
 
         public void afterRuleBaseUnlocked(AfterRuleBaseUnlockedEvent event) {
-            this.listener.afterKnowledgeBaseUnlocked( new AfterKnowledgeBaseUnlockedEventImpl( this.kbase ) );
+            this.listener.afterKieBaseUnlocked(new AfterKnowledgeBaseUnlockedEventImpl(this.kbase));
         }
 
         public void afterRuleRemoved(AfterRuleRemovedEvent event) {
@@ -320,13 +323,13 @@ public class KnowledgeBaseImpl
         }
 
         public void beforePackageAdded(BeforePackageAddedEvent event) {
-            this.listener.beforeKnowledgePackageAdded( new BeforeKnowledgePackageAddedEventImpl( this.kbase,
-                                                                                                 new KnowledgePackageImp( event.getPackage() ) ) );
+            this.listener.beforeKiePackageAdded(new BeforeKiePackageAddedEventImpl(this.kbase,
+                    new KnowledgePackageImp(event.getPackage())));
         }
 
         public void beforePackageRemoved(BeforePackageRemovedEvent event) {
-            this.listener.beforeKnowledgePackageRemoved( new BeforeKnowledgePackageRemovedEventImpl( this.kbase,
-                                                                                                     new KnowledgePackageImp( event.getPackage() ) ) );
+            this.listener.beforeKiePackageRemoved(new BeforeKiePackageRemovedEventImpl(this.kbase,
+                    new KnowledgePackageImp(event.getPackage())));
         }
 
         public void beforeRuleAdded(BeforeRuleAddedEvent event) {
@@ -335,11 +338,11 @@ public class KnowledgeBaseImpl
         }
 
         public void beforeRuleBaseLocked(BeforeRuleBaseLockedEvent event) {
-            this.listener.beforeKnowledgeBaseLocked( new BeforeKnowledgeBaseLockedEventImpl( this.kbase ) );
+            this.listener.beforeKieBaseLocked(new BeforeKnowledgeBaseLockedEventImpl(this.kbase));
         }
 
         public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
-            this.listener.beforeKnowledgeBaseUnlocked( new BeforeKnowledgeBaseUnlockedEventImpl( this.kbase ) );
+            this.listener.beforeKieBaseUnlocked(new BeforeKnowledgeBaseUnlockedEventImpl(this.kbase));
         }
 
         public void beforeRuleRemoved(BeforeRuleRemovedEvent event) {
@@ -368,4 +371,36 @@ public class KnowledgeBaseImpl
 		}
     }
 
+    public KieSession newKieSession(KieSessionConfiguration conf,
+                                    Environment environment) {
+        return newStatefulKnowledgeSession( conf, environment );
+    }
+
+    public KieSession newKieSession() {
+        return newStatefulKnowledgeSession();
+    }
+
+    public Collection<? extends KieSession> getKieSessions() {
+        return getStatefulKnowledgeSessions();
+    }
+
+    public StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf) {
+        return newStatelessKnowledgeSession( conf );
+    }
+
+    public StatelessKieSession newStatelessKieSession() {
+        return newStatelessKnowledgeSession();
+    }
+
+    public Collection<KiePackage> getKiePackages() {
+        return getKiePackages();
+    }
+
+    public KiePackage getKiePackage(String packageName) {
+        return getKnowledgePackage(packageName);
+    }
+
+    public void removeKiePackage(String packageName) {
+        removeKnowledgePackage(packageName);
+    }
 }

@@ -17,7 +17,11 @@
 
 package org.drools.commons.jci.readers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +58,13 @@ public class MemoryResourceReader implements ResourceReader {
         return (byte[]) resources.get(pResourceName);
     }
 
+    public Collection<String> getFileNames() {
+        if ( resources == null ) {
+            return Collections.emptySet();
+        }
+        
+        return resources.keySet();       
+    }
     /**
      * @deprecated
      */

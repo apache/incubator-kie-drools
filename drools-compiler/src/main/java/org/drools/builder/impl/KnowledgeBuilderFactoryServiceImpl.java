@@ -12,9 +12,7 @@ import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.JaxbConfiguration;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.KnowledgeBuilderFactoryService;
-import org.kie.builder.KnowledgeContainer;
 
 import com.sun.tools.xjc.Options;
 

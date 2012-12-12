@@ -9,6 +9,7 @@ import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
 import org.drools.spi.PropagationContext;
@@ -253,6 +254,10 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
     public Memory createMemory(final RuleBaseConfiguration config) {
         return new ConditionalBranchMemory( branchEvaluator.createContext() );
     }
+    
+    public LeftTuple createPeer(LeftTuple original) {
+        return null;
+    }    
 
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
@@ -372,7 +377,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }
 
-    public static class ConditionalBranchMemory
+    public static class ConditionalBranchMemory extends AbstractBaseLinkedListNode<Memory>
             implements
             Externalizable,
             Memory {
@@ -380,6 +385,8 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         private static final long serialVersionUID = 510l;
 
         public Object             context;
+        
+        private SegmentMemory     segmentMemory;
 
         public ConditionalBranchMemory() {
 
@@ -399,11 +406,20 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         }
 
         public short getNodeType() {
-            return NodeTypeEnums.EvalConditionNode;
+            return NodeTypeEnums.ConditionalBranchNode;
+        }
+        
+        public void setSegmentMemory(SegmentMemory segmentMemory) {
+            this.segmentMemory = segmentMemory;
+        }
+
+        public SegmentMemory getSegmentMemory() {
+            return segmentMemory;
         }
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
         return tupleSource.getObjectTypeNode();
     }
+
 }

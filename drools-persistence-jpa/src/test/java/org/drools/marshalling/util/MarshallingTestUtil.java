@@ -15,9 +15,13 @@
  */
 package org.drools.marshalling.util;
 
-import static org.drools.marshalling.util.MarshallingDBUtil.*;
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.drools.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
+import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.drools.persistence.util.PersistenceUtil.cleanUp;
+import static org.drools.persistence.util.PersistenceUtil.getDatasourceProperties;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.io.ByteArrayInputStream;
@@ -56,6 +60,7 @@ import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -433,7 +438,7 @@ public class MarshallingTestUtil {
         }
     }
     
-    protected static StatefulKnowledgeSession unmarshallSession(MarshalledData marshalledData) throws Exception { 
+    protected static KieSession unmarshallSession(MarshalledData marshalledData) throws Exception { 
         // Setup marshaller
         KnowledgeBase kbase;
         if( STORE_KNOWLEDGE_BASE ) { 
@@ -453,7 +458,7 @@ public class MarshallingTestUtil {
         Environment env = EnvironmentFactory.newEnvironment();
     
         // Unmarshall
-        StatefulKnowledgeSession ksession = marshaller.unmarshall( bais, conf, env );
+        KieSession ksession = marshaller.unmarshall( bais, conf, env );
         
         return ksession;
     }

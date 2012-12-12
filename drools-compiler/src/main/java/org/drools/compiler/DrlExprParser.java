@@ -16,6 +16,9 @@
 
 package org.drools.compiler;
 
+import static org.drools.compiler.DRLFactory.getDRLExpressions;
+import static org.drools.compiler.DRLFactory.getDRLLexer;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -29,9 +32,6 @@ import org.drools.lang.ParserHelper;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.kie.builder.conf.LanguageLevelOption;
-
-import static org.drools.compiler.DRLFactory.getDRLExpressions;
-import static org.drools.compiler.DRLFactory.getDRLLexer;
 
 /**
  * This is a helper class that provides helper methods to parse expressions

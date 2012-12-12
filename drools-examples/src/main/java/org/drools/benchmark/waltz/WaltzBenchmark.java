@@ -16,22 +16,22 @@
 
 package org.drools.benchmark.waltz;
 
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.rule.WorkingMemory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.definition.KnowledgePackage;
-import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.WorkingMemory;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.

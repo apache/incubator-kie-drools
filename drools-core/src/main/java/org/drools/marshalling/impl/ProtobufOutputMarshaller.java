@@ -114,11 +114,6 @@ public class ProtobufOutputMarshaller {
 
         ProtobufMessages.RuleData.Builder _ruleData = ProtobufMessages.RuleData.newBuilder();
 
-        final boolean multithread = wm.isPartitionManagersActive();
-        if ( multithread ) {
-            wm.stopPartitionManagers();
-        }
-
         long time = 0;
         if ( context.wm.getTimerService() instanceof PseudoClockScheduler ) {
             time = context.clockTime;
@@ -156,7 +151,7 @@ public class ProtobufOutputMarshaller {
                           _ruleData );
 
         ProtobufMessages.KnowledgeSession.Builder _session = ProtobufMessages.KnowledgeSession.newBuilder()
-                .setMultithread( multithread )
+                .setMultithread( false )
                 .setTime( time )
                 .setRuleData( _ruleData.build() );
 
@@ -183,10 +178,6 @@ public class ProtobufOutputMarshaller {
                                       context );
         if ( _timers != null ) {
             _session.setTimers( _timers );
-        }
-
-        if ( multithread ) {
-            wm.startPartitionManagers();
         }
 
         return _session.build();
@@ -389,7 +380,7 @@ public class ProtobufOutputMarshaller {
     private static ProtobufMessages.NodeMemory writeQueryElementNodeMemory(final int nodeId,
                                                                            final Memory memory,
                                                                            final InternalWorkingMemory wm) {
-        LeftTupleIterator it = LeftTupleIterator.iterator( wm, ((QueryElementNodeMemory) memory).node );
+        LeftTupleIterator it = LeftTupleIterator.iterator( wm, ((QueryElementNodeMemory) memory).getNode() );
 
         ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder _query = ProtobufMessages.NodeMemory.QueryElementNodeMemory.newBuilder();
         for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {

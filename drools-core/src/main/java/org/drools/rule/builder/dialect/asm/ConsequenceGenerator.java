@@ -34,7 +34,7 @@ import static org.mvel2.asm.Opcodes.RETURN;
 public class ConsequenceGenerator {
 
     public static void generate(final ConsequenceStub stub, KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
-        RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getActivation().getTuple().getLeftTupleSink();
+        RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getMatch().getTuple().getLeftTupleSink();
         final Declaration[] declarations = rtn.getDeclarations();
         final boolean isOrRule = rtn.getRule().getTransformedLhs(
                 ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer()
@@ -59,9 +59,9 @@ public class ConsequenceGenerator {
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 3); // LeftTuple
 
-                // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getActivation().getTuple().getLeftTupleSink()).getDeclarations();
+                // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getLeftTupleSink()).getDeclarations();
                 mv.visitVarInsn(ALOAD, 1);
-                invokeInterface(KnowledgeHelper.class, "getActivation", Activation.class);
+                invokeInterface(KnowledgeHelper.class, "getMatch", Activation.class);
                 invokeInterface(Activation.class, "getTuple", LeftTuple.class);
                 invokeInterface(LeftTuple.class, "getLeftTupleSink", LeftTupleSink.class);
                 cast(RuleTerminalNode.class);

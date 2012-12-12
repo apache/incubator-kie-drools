@@ -1,5 +1,15 @@
 package org.drools.integrationtests;
 
+import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.Person;
@@ -12,31 +22,20 @@ import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectTypeNode;
-
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RuleTerminalNode;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.builder.conf.PropertySpecificOption;
 import org.kie.definition.type.FactType;
 import org.kie.definition.type.Modifies;
 import org.kie.definition.type.PropertyReactive;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
-
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PropertySpecificTest extends CommonTestMethodBase {
     

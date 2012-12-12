@@ -37,25 +37,25 @@ import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.knowledgebase.AfterFunctionRemovedEvent;
-import org.kie.event.knowledgebase.AfterKnowledgeBaseLockedEvent;
-import org.kie.event.knowledgebase.AfterKnowledgeBaseUnlockedEvent;
-import org.kie.event.knowledgebase.AfterKnowledgePackageAddedEvent;
-import org.kie.event.knowledgebase.AfterKnowledgePackageRemovedEvent;
-import org.kie.event.knowledgebase.AfterProcessAddedEvent;
-import org.kie.event.knowledgebase.AfterProcessRemovedEvent;
-import org.kie.event.knowledgebase.AfterRuleAddedEvent;
-import org.kie.event.knowledgebase.AfterRuleRemovedEvent;
-import org.kie.event.knowledgebase.BeforeFunctionRemovedEvent;
-import org.kie.event.knowledgebase.BeforeKnowledgeBaseLockedEvent;
-import org.kie.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
-import org.kie.event.knowledgebase.BeforeKnowledgePackageAddedEvent;
-import org.kie.event.knowledgebase.BeforeKnowledgePackageRemovedEvent;
-import org.kie.event.knowledgebase.BeforeProcessAddedEvent;
-import org.kie.event.knowledgebase.BeforeProcessRemovedEvent;
-import org.kie.event.knowledgebase.BeforeRuleAddedEvent;
-import org.kie.event.knowledgebase.BeforeRuleRemovedEvent;
-import org.kie.event.knowledgebase.KnowledgeBaseEventListener;
+import org.kie.event.kiebase.AfterFunctionRemovedEvent;
+import org.kie.event.kiebase.AfterKieBaseLockedEvent;
+import org.kie.event.kiebase.AfterKieBaseUnlockedEvent;
+import org.kie.event.kiebase.AfterKiePackageAddedEvent;
+import org.kie.event.kiebase.AfterKiePackageRemovedEvent;
+import org.kie.event.kiebase.AfterProcessAddedEvent;
+import org.kie.event.kiebase.AfterProcessRemovedEvent;
+import org.kie.event.kiebase.AfterRuleAddedEvent;
+import org.kie.event.kiebase.AfterRuleRemovedEvent;
+import org.kie.event.kiebase.BeforeFunctionRemovedEvent;
+import org.kie.event.kiebase.BeforeKieBaseLockedEvent;
+import org.kie.event.kiebase.BeforeKieBaseUnlockedEvent;
+import org.kie.event.kiebase.BeforeKiePackageAddedEvent;
+import org.kie.event.kiebase.BeforeKiePackageRemovedEvent;
+import org.kie.event.kiebase.BeforeProcessAddedEvent;
+import org.kie.event.kiebase.BeforeProcessRemovedEvent;
+import org.kie.event.kiebase.BeforeRuleAddedEvent;
+import org.kie.event.kiebase.BeforeRuleRemovedEvent;
+import org.kie.event.kiebase.KieBaseEventListener;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -250,7 +250,7 @@ public class KnowledgeBaseEventSupportTest {
 
     public static class TestRuleBaseListener
         implements
-        KnowledgeBaseEventListener {
+        KieBaseEventListener {
         private String id;
         private int    beforePackageAdded   = 0;
         private int    afterPackageAdded    = 0;
@@ -294,12 +294,12 @@ public class KnowledgeBaseEventSupportTest {
             out.writeInt( afterRuleRemoved );
         }
 
-        public void afterKnowledgePackageAdded(AfterKnowledgePackageAddedEvent event) {
+        public void afterKiePackageAdded(AfterKiePackageAddedEvent event) {
             //            System.out.println( this.id + event );
             this.afterPackageAdded++;
         }
 
-        public void beforeKnowledgePackageAdded(BeforeKnowledgePackageAddedEvent event) {
+        public void beforeKiePackageAdded(BeforeKiePackageAddedEvent event) {
             //            System.out.println( this.id + event );
             this.beforePackageAdded++;
         }
@@ -316,12 +316,12 @@ public class KnowledgeBaseEventSupportTest {
             return id;
         }
 
-        public void afterKnowledgePackageRemoved(AfterKnowledgePackageRemovedEvent event) {
+        public void afterKiePackageRemoved(AfterKiePackageRemovedEvent event) {
             //            System.out.println( this.id + event );
             this.afterPackageRemoved++;
         }
 
-        public void beforeKnowledgePackageRemoved(BeforeKnowledgePackageRemovedEvent event) {
+        public void beforeKiePackageRemoved(BeforeKiePackageRemovedEvent event) {
             //            System.out.println( this.id + event );
             this.beforePackageRemoved++;
         }
@@ -375,12 +375,12 @@ public class KnowledgeBaseEventSupportTest {
 
         }
 
-        public void afterKnowledgeBaseLocked(AfterKnowledgeBaseLockedEvent event) {
+        public void afterKieBaseLocked(AfterKieBaseLockedEvent event) {
             // TODO Auto-generated method stub
 
         }
 
-        public void afterKnowledgeBaseUnlocked(AfterKnowledgeBaseUnlockedEvent event) {
+        public void afterKieBaseUnlocked(AfterKieBaseUnlockedEvent event) {
             // TODO Auto-generated method stub
 
         }
@@ -390,12 +390,12 @@ public class KnowledgeBaseEventSupportTest {
 
         }
 
-        public void beforeKnowledgeBaseLocked(BeforeKnowledgeBaseLockedEvent event) {
+        public void beforeKieBaseLocked(BeforeKieBaseLockedEvent event) {
             // TODO Auto-generated method stub
 
         }
 
-        public void beforeKnowledgeBaseUnlocked(BeforeKnowledgeBaseUnlockedEvent event) {
+        public void beforeKieBaseUnlocked(BeforeKieBaseUnlockedEvent event) {
             // TODO Auto-generated method stub
 
         }

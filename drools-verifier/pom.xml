@@ -17,8 +17,8 @@
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>knowledge-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

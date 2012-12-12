@@ -1,8 +1,5 @@
 package org.drools.games.wumpus;
 
-import static org.kie.builder.ResourceType.DRL;
-import static org.kie.io.ResourceFactory.newClassPathResource;
-
 import org.drools.games.wumpus.view.GameView;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -10,6 +7,9 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.runtime.Channel;
 import org.kie.runtime.StatefulKnowledgeSession;
+
+import static org.kie.io.ResourceFactory.newClassPathResource;
+import static org.kie.io.ResourceType.DRL;
 
 public class WumpusWorldMain {
 

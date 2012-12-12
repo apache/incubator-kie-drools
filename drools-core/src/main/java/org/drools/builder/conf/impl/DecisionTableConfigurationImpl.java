@@ -16,17 +16,22 @@
 
 package org.drools.builder.conf.impl;
 
+import java.util.Properties;
+
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
+import org.kie.io.ResourceConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DecisionTableConfigurationImpl implements DecisionTableConfiguration {
+    private final Logger logger = LoggerFactory.getLogger( DecisionTableConfigurationImpl.class ); 
     
     private DecisionTableInputType inputType;
     
     private String worksheetName;
     
     public DecisionTableConfigurationImpl() {
-        
     }
     
     public void setInputType(DecisionTableInputType inputType) {
@@ -45,4 +50,17 @@ public class DecisionTableConfigurationImpl implements DecisionTableConfiguratio
         return this.worksheetName;
     }
     
+    public Properties toProperties() {
+        Properties prop = new Properties();
+        prop.setProperty( "drools.dt.type", inputType.toString() );
+        prop.setProperty( "drools.dt.worksheet", worksheetName );
+        return prop;
+    }
+
+    public ResourceConfiguration fromProperties(Properties prop) {
+        inputType = DecisionTableInputType.valueOf( prop.getProperty( "drools.dt.type", "XLS" ) );
+        worksheetName = prop.getProperty( "drools.dt.worksheet", null );
+        return this;
+    }
+  
 }

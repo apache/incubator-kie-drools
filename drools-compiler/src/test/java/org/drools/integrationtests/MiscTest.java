@@ -26,8 +26,6 @@ import static org.mockito.Mockito.verify;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
@@ -103,7 +101,6 @@ import org.drools.base.RuleNameEndsWithAgendaFilter;
 import org.drools.base.RuleNameEqualsAgendaFilter;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.base.RuleNameStartsWithAgendaFilter;
-import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DescrBuildError;
@@ -129,33 +126,32 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.builder.conf.DefaultPackageNameOption;
 import org.kie.builder.conf.LanguageLevelOption;
 import org.kie.command.CommandFactory;
 import org.kie.command.Setter;
 import org.kie.conf.AssertBehaviorOption;
-import org.kie.conf.ConsequenceExceptionHandlerOption;
 import org.kie.conf.RemoveIdentitiesOption;
 import org.kie.conf.SequentialOption;
 import org.kie.conf.ShareAlphaNodesOption;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
+import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -576,7 +572,7 @@ public class MiscTest extends CommonTestMethodBase {
         str += "when\n";
         str += "    Message( )\n";
         str += "then\n";
-        str += "    System.out.println( drools.getKnowledgeRuntime() );\n";
+        str += "    System.out.println( drools.getKieRuntime() );\n";
         str += "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
@@ -2302,7 +2298,7 @@ public class MiscTest extends CommonTestMethodBase {
             fail( "Should throw an Exception from the Consequence" );
         } catch ( final org.kie.runtime.rule.ConsequenceException e ) {
             assertEquals( "Throw Consequence Exception",
-                          e.getActivation().getRule().getName() );
+                          e.getMatch().getRule().getName() );
             assertEquals( "this should throw an exception",
                           e.getCause().getMessage() );
         }
@@ -2796,7 +2792,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testDeclaringAndUsingBindsInSamePattern() throws Exception {
-        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbc.setOption( RemoveIdentitiesOption.YES );
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc, "test_DeclaringAndUsingBindsInSamePattern.drl" ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -3115,8 +3111,8 @@ public class MiscTest extends CommonTestMethodBase {
                     ouc.getValue().getFactHandle() );
 
         wm.retract( stiltonHandle );
-        ArgumentCaptor<org.kie.event.rule.ObjectRetractedEvent> orc = ArgumentCaptor.forClass( org.kie.event.rule.ObjectRetractedEvent.class );
-        verify( wmel ).objectRetracted( orc.capture() );
+        ArgumentCaptor<ObjectDeletedEvent> orc = ArgumentCaptor.forClass( ObjectDeletedEvent.class );
+        verify( wmel ).objectDeleted(orc.capture());
         assertSame( stiltonHandle,
                     orc.getValue().getFactHandle() );
 
@@ -3824,21 +3820,21 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael,
-                times( 4 ) ).afterActivationFired( arg.capture() );
-        org.kie.event.rule.AfterActivationFiredEvent aaf = arg.getAllValues().get( 0 );
-        assertThat( aaf.getActivation().getRule().getName(),
+                times( 4 ) ).afterMatchFired(arg.capture());
+        org.kie.event.rule.AfterMatchFiredEvent aaf = arg.getAllValues().get( 0 );
+        assertThat( aaf.getMatch().getRule().getName(),
                     is( "1. home != null" ) );
         aaf = arg.getAllValues().get( 1 );
-        assertThat( aaf.getActivation().getRule().getName(),
+        assertThat( aaf.getMatch().getRule().getName(),
                     is( "2. not home == null" ) );
 
         aaf = arg.getAllValues().get( 2 );
-        assertThat( aaf.getActivation().getRule().getName(),
+        assertThat( aaf.getMatch().getRule().getName(),
                     is( "7. work == null" ) );
         aaf = arg.getAllValues().get( 3 );
-        assertThat( aaf.getActivation().getRule().getName(),
+        assertThat( aaf.getMatch().getRule().getName(),
                     is( "8. not work != null" ) );
     }
 
@@ -4116,7 +4112,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testAlphaNodeSharing() throws Exception {
-        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbc.setOption( ShareAlphaNodesOption.YES );
         final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc, "test_alphaNodeSharing.drl" ) );
         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -4760,7 +4756,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testNotInStatelessSession() throws Exception {
-        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbc.setOption( SequentialOption.YES );
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc, "test_NotInStatelessSession.drl" ) );
         StatelessKnowledgeSession session = createStatelessKnowledgeSession( kbase );
@@ -5626,7 +5622,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testGetFactHandleEqualityBehavior() throws Exception {
-        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbc.setOption( AssertBehaviorOption.EQUALITY );
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -6600,10 +6596,10 @@ public class MiscTest extends CommonTestMethodBase {
                       fired );
 
         // capture the arguments and check that the retracts happened
-        ArgumentCaptor<org.kie.event.rule.ObjectRetractedEvent> retracts = ArgumentCaptor.forClass( org.kie.event.rule.ObjectRetractedEvent.class );
+        ArgumentCaptor<ObjectDeletedEvent> retracts = ArgumentCaptor.forClass( ObjectDeletedEvent.class );
         verify( wml,
-                times( 2 ) ).objectRetracted( retracts.capture() );
-        List<org.kie.event.rule.ObjectRetractedEvent> values = retracts.getAllValues();
+                times( 2 ) ).objectDeleted(retracts.capture());
+        List<ObjectDeletedEvent> values = retracts.getAllValues();
         assertThat( values.get( 0 ).getFactHandle(),
                     is( personFH ) );
         assertThat( values.get( 1 ).getFactHandle(),
@@ -6641,11 +6637,11 @@ public class MiscTest extends CommonTestMethodBase {
                                    "test meta attributes" );
 
         assertNotNull( rule );
-        assertThat( rule.getMetaAttribute( "id" ),
-                    is( "1234" ) );
-        assertThat( rule.getMetaAttribute( "author" ),
+        assertThat( (Integer) rule.getMetaData().get( "id" ),
+                    is( 1234 ) );
+        assertThat( (String) rule.getMetaData().get( "author" ),
                     is( "john_doe" ) );
-        assertThat( rule.getMetaAttribute( "text" ),
+        assertThat( (String) rule.getMetaData().get( "text" ),
                     is( "It's an escaped\" string" ) );
 
     }
@@ -6705,23 +6701,23 @@ public class MiscTest extends CommonTestMethodBase {
                       fired );
 
         // capture the arguments and check that the rules fired in the proper sequence
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> actvs = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> actvs = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael,
-                times( 3 ) ).afterActivationFired( actvs.capture() );
-        List<org.kie.event.rule.AfterActivationFiredEvent> values = actvs.getAllValues();
-        assertThat( values.get( 0 ).getActivation().getRule().getName(),
+                times( 3 ) ).afterMatchFired(actvs.capture());
+        List<org.kie.event.rule.AfterMatchFiredEvent> values = actvs.getAllValues();
+        assertThat( values.get( 0 ).getMatch().getRule().getName(),
                     is( "init" ) );
-        assertThat( values.get( 1 ).getActivation().getRule().getName(),
+        assertThat( values.get( 1 ).getMatch().getRule().getName(),
                     is( "r1" ) );
-        assertThat( values.get( 2 ).getActivation().getRule().getName(),
+        assertThat( values.get( 2 ).getMatch().getRule().getName(),
                     is( "r2" ) );
 
         verify( ael,
-                never() ).activationCancelled( any( org.kie.event.rule.ActivationCancelledEvent.class ) );
+                never() ).matchCancelled(any(org.kie.event.rule.MatchCancelledEvent.class));
         verify( wml,
                 times( 2 ) ).objectInserted( any( org.kie.event.rule.ObjectInsertedEvent.class ) );
         verify( wml,
-                never() ).objectRetracted( any( org.kie.event.rule.ObjectRetractedEvent.class ) );
+                never() ).objectDeleted(any(ObjectDeletedEvent.class));
     }
 
     @Test
@@ -7341,9 +7337,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
-        verify( ael ).afterActivationFired( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        verify( ael ).afterMatchFired(arg.capture());
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Bbb" ) );
     }
 
@@ -7365,9 +7361,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
-        verify( ael ).afterActivationFired( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        verify( ael ).afterMatchFired(arg.capture());
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Aaa" ) );
     }
 
@@ -7389,9 +7385,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
-        verify( ael ).afterActivationFired( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        verify( ael ).afterMatchFired(arg.capture());
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Bbb" ) );
     }
 
@@ -7413,9 +7409,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
-        verify( ael ).afterActivationFired( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        verify( ael ).afterMatchFired(arg.capture());
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Aaa" ) );
     }
 
@@ -7761,17 +7757,17 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 2,
                       rulesFired );
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
         verify( ael,
-                times( 2 ) ).afterActivationFired( captor.capture() );
-        List<org.kie.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+                times( 2 ) ).afterMatchFired(captor.capture());
+        List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
                            is( "kickOff" ) );
-        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
                            is( "r1" ) );
 
-        Object value = aafe.get( 1 ).getActivation().getDeclarationValue( "$t" );
+        Object value = aafe.get( 1 ).getMatch().getDeclarationValue( "$t" );
         String name = (String) MVEL.eval( "$t.name",
                                           Collections.singletonMap( "$t",
                                                                     value ) );
@@ -8131,12 +8127,12 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( c3 );
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterActivationFiredEvent.class );
-        verify( ael, times( 2 ) ).afterActivationFired( captor.capture() );
+        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        verify( ael, times( 2 ) ).afterMatchFired(captor.capture());
 
-        List<org.kie.event.rule.AfterActivationFiredEvent> values = captor.getAllValues();
-        assertThat( (Cheesery) values.get( 0 ).getActivation().getObjects().get( 0 ), is( c1 ) );
-        assertThat( (Cheesery) values.get( 1 ).getActivation().getObjects().get( 0 ), is( c2 ) );
+        List<org.kie.event.rule.AfterMatchFiredEvent> values = captor.getAllValues();
+        assertThat( (Cheesery) values.get( 0 ).getMatch().getObjects().get( 0 ), is( c1 ) );
+        assertThat( (Cheesery) values.get( 1 ).getMatch().getObjects().get( 0 ), is( c2 ) );
 
         ksession.dispose();
     }
@@ -8664,7 +8660,7 @@ public class MiscTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbConf.setOption( AssertBehaviorOption.EQUALITY );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbConf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -9159,7 +9155,7 @@ public class MiscTest extends CommonTestMethodBase {
                      "  list.add( \"OK\" ); \n" +
                      "end";
 
-        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbConf.setOption( AssertBehaviorOption.EQUALITY );
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, str );
@@ -10048,9 +10044,9 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         // both rules should fire exactly once
-        verify( ael, times( 2 ) ).afterActivationFired( any( org.kie.event.rule.AfterActivationFiredEvent.class ) );
+        verify( ael, times( 2 ) ).afterMatchFired(any(org.kie.event.rule.AfterMatchFiredEvent.class));
         // no cancellations should have happened 
-        verify( ael, never() ).activationCancelled( any( org.kie.event.rule.ActivationCancelledEvent.class ) );
+        verify( ael, never() ).matchCancelled(any(org.kie.event.rule.MatchCancelledEvent.class));
     }
 
     @Test

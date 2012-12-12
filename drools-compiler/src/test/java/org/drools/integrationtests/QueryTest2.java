@@ -8,8 +8,8 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 
@@ -18,7 +18,7 @@ public class QueryTest2 extends CommonTestMethodBase {
     @Test
     public void testEvalRewrite() throws Exception {
         String str = "" +
-        "package org.kie;\n" +
+        "package org.drools;\n" +
         "global java.util.List results;\n" +
         "rule \"eval rewrite\"\n" +
         "    when\n" +

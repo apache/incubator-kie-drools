@@ -16,11 +16,10 @@
 
 package org.drools.factmodel.traits;
 
+import java.util.Map;
+
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
-
-import java.lang.reflect.Field;
-import java.util.*;
 
 public class StudentProxy2 extends TraitProxy implements IStudent {
 

@@ -16,16 +16,11 @@
 
 package org.drools.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.drools.SessionConfiguration;
 import org.drools.base.MapGlobalResolver;
 import org.drools.command.impl.ContextImpl;
-import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
+import org.drools.command.impl.GenericCommand;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.common.InternalFactHandle;
@@ -49,14 +44,20 @@ import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.Environment;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.Globals;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.rule.AgendaFilter;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 public class StatelessKnowledgeSessionImpl
     implements
-    StatelessKnowledgeSession {
+    StatelessKnowledgeSession, StatelessKieSession {
 
     private InternalRuleBase                                                  ruleBase;
     private KnowledgeAgent                                                    kagent;
@@ -73,7 +74,7 @@ public class StatelessKnowledgeSessionImpl
     public ProcessEventSupport                                                processEventSupport       = new ProcessEventSupport();
     private boolean                                                           initialized;
 
-    private KnowledgeSessionConfiguration                                     conf;
+    private KieSessionConfiguration                                     conf;
     private Environment                                                       environment;
     
     public StatelessKnowledgeSessionImpl() {
@@ -81,7 +82,7 @@ public class StatelessKnowledgeSessionImpl
 
     public StatelessKnowledgeSessionImpl(final InternalRuleBase ruleBase,
                                          final KnowledgeAgent kagent,
-                                         final KnowledgeSessionConfiguration conf) {
+                                         final KieSessionConfiguration conf) {
         this.ruleBase = ruleBase;
         this.kagent = kagent;
         this.conf = (conf != null) ? conf : SessionConfiguration.getDefaultInstance();
@@ -253,7 +254,6 @@ public class StatelessKnowledgeSessionImpl
 
         FixedKnowledgeCommandContext context = new FixedKnowledgeCommandContext( new ContextImpl( "ksession",
                                                                                         null ),
-                                                                       null,
                                                                        null,
                                                                        null,
                                                                        ksession,

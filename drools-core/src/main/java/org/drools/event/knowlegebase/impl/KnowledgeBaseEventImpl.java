@@ -17,22 +17,22 @@
 package org.drools.event.knowlegebase.impl;
 
 import org.kie.KnowledgeBase;
-import org.kie.event.knowledgebase.KnowledgeBaseEvent;
+import org.kie.event.kiebase.KieBaseEvent;
 
-public class KnowledgeBaseEventImpl implements KnowledgeBaseEvent {
+public class KnowledgeBaseEventImpl implements KieBaseEvent {
     private KnowledgeBase knowledgeBase;
     
     public KnowledgeBaseEventImpl(KnowledgeBase knowledgeBase) {
         this.knowledgeBase = knowledgeBase;
     }
     
-    public KnowledgeBase getKnowledgeBase() {
+    public KnowledgeBase getKieBase() {
         return this.knowledgeBase;
     }
 
     @Override
     public String toString() {
-        return "==>[KnowledgeBaseEventImpl: getKnowledgeBase()=" + getKnowledgeBase() + "]";
+        return "==>[KnowledgeBaseEventImpl: getKieBase()=" + getKieBase() + "]";
     }
 
 }

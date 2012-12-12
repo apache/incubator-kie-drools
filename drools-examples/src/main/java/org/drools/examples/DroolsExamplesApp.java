@@ -16,16 +16,6 @@
 
 package org.drools.examples;
 
-import java.awt.Container;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import org.drools.examples.datadriventemplate.DataDrivenTemplateExample;
 import org.drools.examples.decisiontable.PricingRuleDTExample;
 import org.drools.examples.decisiontable.PricingRuleTemplateExample;
@@ -33,7 +23,6 @@ import org.drools.examples.fibonacci.FibonacciExample;
 import org.drools.examples.golfing.GolfingExample;
 import org.drools.examples.helloworld.HelloWorldExample;
 import org.drools.examples.honestpolitician.HonestPoliticianExample;
-import org.drools.examples.pacman.PacmanExample;
 import org.drools.examples.petstore.PetStoreExample;
 import org.drools.examples.shopping.ShoppingExample;
 import org.drools.examples.state.StateExampleUsingAgendaGroup;
@@ -51,6 +40,10 @@ import org.drools.games.pong.PongMain;
 import org.drools.games.wumpus.WumpusWorldMain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class DroolsExamplesApp extends JFrame {
 
@@ -81,11 +74,6 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("PetStoreExample") {
             public void actionPerformed(ActionEvent e) {
                 new PetStoreExample().init(false);
-            }
-        }));
-        contentPane.add(new JButton(new AbstractAction("PacmanExample") {
-            public void actionPerformed(ActionEvent e) {
-                new PacmanExample().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("TextAdventure") {

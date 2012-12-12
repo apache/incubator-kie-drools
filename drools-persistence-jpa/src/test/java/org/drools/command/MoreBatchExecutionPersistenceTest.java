@@ -1,6 +1,8 @@
 package org.drools.command;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.cleanUp;
+import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
 
 import java.util.HashMap;
 
@@ -9,7 +11,7 @@ import org.junit.After;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class MoreBatchExecutionPersistenceTest extends MoreBatchExecutionTest {
@@ -27,7 +29,7 @@ public class MoreBatchExecutionPersistenceTest extends MoreBatchExecutionTest {
         if( context == null ) { 
             context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         }
-        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         return JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
     }  
     

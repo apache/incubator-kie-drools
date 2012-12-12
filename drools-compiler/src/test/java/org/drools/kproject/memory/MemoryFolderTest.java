@@ -5,12 +5,37 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.drools.kproject.File;
-import org.drools.kproject.FileSystem;
-import org.drools.kproject.Folder;
+import org.drools.compiler.io.File;
+import org.drools.compiler.io.FileSystem;
+import org.drools.compiler.io.Folder;
+import org.drools.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.io.memory.MemoryFolder;
 import org.junit.Test;
 
 public class MemoryFolderTest {
+    
+    @Test
+    public void testGetParentWithLeadingAndTrailingSlash() {
+        MemoryFileSystem mfs = new MemoryFileSystem();        
+        assertEquals( "", new MemoryFolder( mfs, "/src" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "", new MemoryFolder( mfs, "src/" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "", new MemoryFolder( mfs, "/src/" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src", new MemoryFolder( mfs, "/src/main" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src", new MemoryFolder( mfs, "src/main/" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src", new MemoryFolder( mfs, "/src/main/" ).getParent().getPath().toPortableString() ); 
+        
+        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src/main", new MemoryFolder( mfs, "src/main/java/" ).getParent().getPath().toPortableString() );
+        
+        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java/" ).getParent().getPath().toPortableString() );                
+    }
+    
     
     @Test
     public void testRecursiveFolderCreation() {

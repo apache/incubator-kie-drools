@@ -16,6 +16,9 @@
 
 package org.drools.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.CommonTestMethodBase;
 import org.drools.I18nPerson;
 import org.junit.Ignore;
@@ -24,14 +27,11 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Tests DRL's with foreign characters.

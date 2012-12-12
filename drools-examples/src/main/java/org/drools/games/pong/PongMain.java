@@ -1,18 +1,18 @@
 package org.drools.games.pong;
 
-import static org.kie.builder.ResourceType.DRL;
-import static org.kie.io.ResourceFactory.newClassPathResource;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.StatefulKnowledgeSession;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static org.kie.io.ResourceFactory.newClassPathResource;
+import static org.kie.io.ResourceType.DRL;
 
 public class PongMain {
 
@@ -39,7 +39,7 @@ public class PongMain {
             throw new RuntimeException( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( config );        
@@ -55,16 +55,16 @@ public class PongMain {
         ksession.setGlobal("pconf", pconf);
         
 //        ksession.addEventListener( new DefaultAgendaEventListener() {
-//            public void beforeActivationFired(BeforeActivationFiredEvent event)  {
+//            public void beforeMatchFired(BeforeActivationFiredEvent event)  {
 //                System.out.println( "b: " + event.getActivation().getRule().getName() + " : " + event.getActivation().getFactHandles() );
 //            }        
-//            public void afterActivationFired(AfterActivationFiredEvent event)  {
+//            public void afterMatchFired(AfterActivationFiredEvent event)  {
 //                System.out.println( "a: " + event.getActivation().getRule().getName() + " : " + event.getActivation().getFactHandles() );
 //            }
-////            public void activationCreated(ActivationCreatedEvent event)  {
+////            public void matchCreated(ActivationCreatedEvent event)  {
 ////                System.out.println( "cr: " + event.getActivation().getRule().getName() + " : " + event.getActivation().getFactHandles() );
 ////            }
-////            public void activationCancelled(ActivationCancelledEvent event)  {
+////            public void matchCancelled(ActivationCancelledEvent event)  {
 ////                System.out.println( "cl: " + event.getActivation().getRule().getName() + " : " + event.getActivation().getFactHandles() );
 ////            }                      
 //            

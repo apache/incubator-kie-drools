@@ -10,18 +10,18 @@ import org.drools.CommonTestMethodBase;
 import org.drools.compiler.DroolsParserException;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.builder.conf.DefaultDialectOption;
 import org.kie.conf.SequentialOption;
 import org.kie.conf.ShareAlphaNodesOption;
 import org.kie.conf.ShareBetaNodesOption;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class FailureOnRemovalTest extends CommonTestMethodBase {
@@ -89,12 +89,12 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
     }
 
     private KnowledgeBase createKnowledgeBase(boolean shareBetaNodes) {
-        KnowledgeBaseConfiguration ruleBaseConfiguration = createKnowledgeBaseConfiguration( shareBetaNodes );
+        KieBaseConfiguration ruleBaseConfiguration = createKnowledgeBaseConfiguration( shareBetaNodes );
         return KnowledgeBaseFactory.newKnowledgeBase( ruleBaseConfiguration );
     }
 
-    private KnowledgeBaseConfiguration createKnowledgeBaseConfiguration(boolean shareBetaNodes) {
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+    private KieBaseConfiguration createKnowledgeBaseConfiguration(boolean shareBetaNodes) {
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.NO );
         kconf.setOption( ShareAlphaNodesOption.YES );
         kconf.setOption( shareBetaNodes ? ShareBetaNodesOption.YES : ShareBetaNodesOption.NO );

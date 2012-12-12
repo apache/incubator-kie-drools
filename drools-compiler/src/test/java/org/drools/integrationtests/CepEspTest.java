@@ -1,14 +1,13 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -22,12 +21,8 @@ import java.util.concurrent.TimeUnit;
 import org.drools.ClockType;
 import org.drools.CommonTestMethodBase;
 import org.drools.OrderEvent;
-import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.Sensor;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
 import org.drools.StockTick;
 import org.drools.StockTickInterface;
 import org.drools.audit.WorkingMemoryFileLogger;
@@ -37,16 +32,11 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ObjectType;
@@ -56,25 +46,23 @@ import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.builder.conf.LanguageLevelOption;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.definition.KnowledgePackage;
-import org.kie.definition.type.FactType;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.io.ResourceType;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.kie.time.SessionClock;
 import org.mockito.ArgumentCaptor;
@@ -113,7 +101,7 @@ public class CepEspTest extends CommonTestMethodBase {
     public void testEventAssertion() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertion.drl" );
-        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
         StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
 
@@ -193,7 +181,7 @@ public class CepEspTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( pkgs );
 
         // create the session
-        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
 
         final List<StockTick> results = new ArrayList<StockTick>();
@@ -231,7 +219,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventAssertionWithDuration() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertionWithDuration.drl" );
-        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
 
@@ -309,7 +297,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventAssertionWithDateTimestamp() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertionWithDateTimestamp.drl" );
-        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
 
@@ -390,7 +378,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventExpiration2() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbc.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBase( kbc, "test_CEP_EventExpiration2.drl" );
 
@@ -410,7 +398,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventExpiration3() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_EventExpiration3.drl" );
         
@@ -430,11 +418,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testEventExpiration4() throws Exception {
         // read in the source
-        final KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        final KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_EventExpiration4.drl" );
 
-        final KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( "pseudo" ) );
 
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
@@ -471,11 +459,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testTimeRelationalOperators() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_TimeRelationalOperators.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
         
@@ -678,11 +666,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testBeforeOperator() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_BeforeOperator.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase, sconf );
 
@@ -752,24 +740,24 @@ public class CepEspTest extends CommonTestMethodBase {
                            TimeUnit.MILLISECONDS );
         ksession.insert( tick8 );
 
-        ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
-        verify( ael ).activationCreated( arg.capture() );
-        assertThat( arg.getValue().getActivation().getRule().getName(),
+        ArgumentCaptor<MatchCreatedEvent> arg = ArgumentCaptor.forClass( MatchCreatedEvent.class );
+        verify( ael ).matchCreated(arg.capture());
+        assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "before" ) );
 
         ksession.fireAllRules();
 
-        verify( ael ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+        verify( ael ).afterMatchFired(any(AfterMatchFiredEvent.class));
     }
 
     @Test
     public void testMetByOperator() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_MetByOperator.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase, sconf );
 
@@ -839,28 +827,28 @@ public class CepEspTest extends CommonTestMethodBase {
                            TimeUnit.MILLISECONDS );
         ksession.insert( tick8 );
 
-        ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
-        verify( ael ).activationCreated( arg.capture() );
-        Activation activation = arg.getValue().getActivation();
+        ArgumentCaptor<MatchCreatedEvent> arg = ArgumentCaptor.forClass( MatchCreatedEvent.class );
+        verify( ael ).matchCreated(arg.capture());
+        Match activation = arg.getValue().getMatch();
         assertThat( activation.getRule().getName(),
                     is( "metby" ) );
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<AfterActivationFiredEvent> aaf = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
-        verify( ael ).afterActivationFired( aaf.capture() );
-        assertThat( (InternalFactHandle) aaf.getValue().getActivation().getFactHandles().toArray()[0],
+        ArgumentCaptor<AfterMatchFiredEvent> aaf = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
+        verify( ael ).afterMatchFired(aaf.capture());
+        assertThat( (InternalFactHandle) aaf.getValue().getMatch().getFactHandles().toArray()[0],
                     is( fh2 ) );
     }
 
     @Test
     public void testAfterOnArbitraryDates() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_AfterOperatorDates.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
@@ -907,11 +895,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testBeforeOnArbitraryDates() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_BeforeOperatorDates.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
@@ -958,11 +946,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testCoincidesOnArbitraryDates() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_CoincidesOperatorDates.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
@@ -1009,11 +997,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSimpleTimeWindow() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleTimeWindow.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
@@ -1141,11 +1129,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSimpleLengthWindow() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleLengthWindow.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
@@ -1225,11 +1213,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testDelayingNot() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_DelayingNot.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
@@ -1305,7 +1293,7 @@ public class CepEspTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
         
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBaseFromString( conf, str );
         
@@ -1331,11 +1319,11 @@ public class CepEspTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
         
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( conf, str );
 
-        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
         
@@ -1377,7 +1365,7 @@ public class CepEspTest extends CommonTestMethodBase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
         StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
         InternalWorkingMemory iwm = ((StatefulKnowledgeSessionImpl) session).session;
@@ -1457,11 +1445,11 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testIdleTimeAndTimeToNextJob() throws Exception {
         // read in the source
-        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleTimeWindow.drl" );
         
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
@@ -1575,11 +1563,11 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectWithWindows() throws Exception {
-        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_CEP_CollectWithWindows.drl" );
 
-        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
@@ -1709,10 +1697,10 @@ public class CepEspTest extends CommonTestMethodBase {
                       ResourceType.DRL );
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
-        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
 
-        KnowledgeSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( "pseudo" ) );
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
         knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1744,7 +1732,7 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testStreamModeNoSerialization() throws IOException,
                                                ClassNotFoundException {
-        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_StreamMode.drl" );
 
@@ -1766,26 +1754,26 @@ public class CepEspTest extends CommonTestMethodBase {
                                       10 ) );
         ksession1.fireAllRules();
 
-        ArgumentCaptor<AfterActivationFiredEvent> aafe1 = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> aafe1 = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael1,
-                times( 1 ) ).afterActivationFired( aafe1.capture() );
-        List<AfterActivationFiredEvent> events1 = aafe1.getAllValues();
-        assertThat( events1.get( 0 ).getActivation().getDeclarationValue( "$avg" ),
+                times( 1 ) ).afterMatchFired(aafe1.capture());
+        List<AfterMatchFiredEvent> events1 = aafe1.getAllValues();
+        assertThat( events1.get( 0 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 10 ) );
 
         ksession1.insert( new Sensor( 20,
                                       20 ) );
         ksession1.fireAllRules();
         verify( ael1,
-                times( 2 ) ).afterActivationFired( aafe1.capture() );
-        assertThat( events1.get( 1 ).getActivation().getDeclarationValue( "$avg" ),
+                times( 2 ) ).afterMatchFired(aafe1.capture());
+        assertThat( events1.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 15 ) );
         ksession1.insert( new Sensor( 30,
                                       30 ) );
         ksession1.fireAllRules();
         verify( ael1,
-                times( 3 ) ).afterActivationFired( aafe1.capture() );
-        assertThat( events1.get( 2 ).getActivation().getDeclarationValue( "$avg" ),
+                times( 3 ) ).afterMatchFired(aafe1.capture());
+        assertThat( events1.get( 2 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 25 ) );
 
         ksession1.dispose();
@@ -1793,31 +1781,31 @@ public class CepEspTest extends CommonTestMethodBase {
         // -------------
         // now we check the serialized session
         // -------------
-        ArgumentCaptor<AfterActivationFiredEvent> aafe2 = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> aafe2 = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
 
         ksession2.insert( new Sensor( 10,
                                       10 ) );
         ksession2.fireAllRules();
         verify( ael2,
-                times( 1 ) ).afterActivationFired( aafe2.capture() );
-        List<AfterActivationFiredEvent> events2 = aafe2.getAllValues();
-        assertThat( events2.get( 0 ).getActivation().getDeclarationValue( "$avg" ),
+                times( 1 ) ).afterMatchFired(aafe2.capture());
+        List<AfterMatchFiredEvent> events2 = aafe2.getAllValues();
+        assertThat( events2.get( 0 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 10 ) );
 
         ksession2.insert( new Sensor( 20,
                                       20 ) );
         ksession2.fireAllRules();
         verify( ael2,
-                times( 2 ) ).afterActivationFired( aafe2.capture() );
-        assertThat( events2.get( 1 ).getActivation().getDeclarationValue( "$avg" ),
+                times( 2 ) ).afterMatchFired(aafe2.capture());
+        assertThat( events2.get( 1 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 15 ) );
 
         ksession2.insert( new Sensor( 30,
                                       30 ) );
         ksession2.fireAllRules();
         verify( ael2,
-                times( 3 ) ).afterActivationFired( aafe2.capture() );
-        assertThat( events2.get( 2 ).getActivation().getDeclarationValue( "$avg" ),
+                times( 3 ) ).afterMatchFired(aafe2.capture());
+        assertThat( events2.get( 2 ).getMatch().getDeclarationValue( "$avg" ),
                     is( (Object) 25 ) );
         ksession2.dispose();
     }
@@ -1838,7 +1826,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                                 15,
                                                 20 );
 
-        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
         kbconf.setOption( AssertBehaviorOption.IDENTITY );
         final KnowledgeBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_AssertBehaviorOnEntryPoints.drl" );
@@ -1865,7 +1853,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         // must have fired 3 times, one for each event identity
         verify( ael1,
-                times( 3 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+                times( 3 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
 
         ksession.dispose();
     }
@@ -1886,7 +1874,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                                 15,
                                                 20 );
 
-        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
         kbconf.setOption( AssertBehaviorOption.EQUALITY );
         final KnowledgeBase kbase1 = loadKnowledgeBase( kbconf, "test_CEP_AssertBehaviorOnEntryPoints.drl" );
@@ -1911,7 +1899,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession1.fireAllRules();
         // must have fired 2 times, one for each event equality
         verify( ael1,
-                times( 2 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+                times( 2 ) ).afterMatchFired(any(AfterMatchFiredEvent.class));
 
         ksession1.dispose();
     }
@@ -1973,7 +1961,7 @@ public class CepEspTest extends CommonTestMethodBase {
         kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_CEP_TemporalOperators2.drl" );
 
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
@@ -2013,7 +2001,7 @@ public class CepEspTest extends CommonTestMethodBase {
         kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_CEP_TemporalOperators3.drl" );
 
-        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
@@ -2082,7 +2070,7 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    //System.out.println(\"BA: ( \"+$b+\", \"+$a+\" )\");\n" +
                      "end";
 
-        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -2092,18 +2080,18 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
-                times( 7 ) ).afterActivationFired( captor.capture() );
+                times( 7 ) ).afterMatchFired(captor.capture());
 
-        List<AfterActivationFiredEvent> values = captor.getAllValues();
+        List<AfterMatchFiredEvent> values = captor.getAllValues();
         // first rule
-        Activation act = values.get( 0 ).getActivation();
+        Match act = values.get( 0 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "launch" ) );
 
         // second rule
-        act = values.get( 1 ).getActivation();
+        act = values.get( 1 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2112,7 +2100,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 2 ) );
 
         // third rule
-        act = values.get( 2 ).getActivation();
+        act = values.get( 2 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ab" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2121,7 +2109,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 2 ) );
 
         // fourth rule
-        act = values.get( 3 ).getActivation();
+        act = values.get( 3 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2130,7 +2118,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 1 ) );
 
         // fifth rule
-        act = values.get( 4 ).getActivation();
+        act = values.get( 4 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ab" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2139,7 +2127,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 1 ) );
 
         // sixth rule
-        act = values.get( 5 ).getActivation();
+        act = values.get( 5 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2148,7 +2136,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 1 ) );
 
         // seventh rule
-        act = values.get( 6 ).getActivation();
+        act = values.get( 6 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ab" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
@@ -2186,7 +2174,7 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    then\n" +
                      "end";
 
-        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.CLOUD );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -2249,10 +2237,10 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    then\n" +
                      "end\n";
 
-        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
-        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
                                                                                null );
@@ -2292,18 +2280,18 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 4,
                       rulesFired );
 
-        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
-                times( 4 ) ).afterActivationFired( captor.capture() );
-        List<AfterActivationFiredEvent> aafe = captor.getAllValues();
+                times( 4 ) ).afterMatchFired(captor.capture());
+        List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 2 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 3 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
                            is( "R3" ) );
     }
 
@@ -2332,10 +2320,10 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    then\n" +
                      "end\n";
 
-        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
-        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.REALTIME_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
                                                                                null );
@@ -2367,18 +2355,18 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 4,
                       rulesFired );
 
-        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        ArgumentCaptor<AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael,
-                times( 4 ) ).afterActivationFired( captor.capture() );
-        List<AfterActivationFiredEvent> aafe = captor.getAllValues();
+                times( 4 ) ).afterMatchFired(captor.capture());
+        List<AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 1 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 2 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 2 ).getMatch().getRule().getName(),
                            is( "R1" ) );
-        Assert.assertThat( aafe.get( 3 ).getActivation().getRule().getName(),
+        Assert.assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
                            is( "R3" ) );
     }
     

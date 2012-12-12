@@ -19,12 +19,12 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderErrors;
-import org.kie.builder.ResourceType;
 import org.kie.command.Command;
 import org.kie.command.CommandFactory;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.StatefulKnowledgeSession;
 

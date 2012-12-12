@@ -16,10 +16,14 @@
 
 package org.drools.factmodel.traits;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
-
-import java.util.*;
 
 public class StudentProxyWrapper2 implements Map<String, Object>, MapWrapper {
 

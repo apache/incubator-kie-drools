@@ -16,19 +16,26 @@
 
 package org.drools;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
-import org.drools.concurrent.DefaultExecutorService;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.factmodel.ClassBuilderFactory;
-import org.drools.reteoo.LeftTupleSinkNode;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.spi.ConflictResolver;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.builder.conf.ClassLoaderCacheOption;
 import org.kie.builder.conf.DeclarativeAgendaOption;
 import org.kie.builder.conf.LRUnlinkingOption;
@@ -40,10 +47,8 @@ import org.kie.conf.EventProcessingOption;
 import org.kie.conf.IndexLeftBetaMemoryOption;
 import org.kie.conf.IndexPrecedenceOption;
 import org.kie.conf.IndexRightBetaMemoryOption;
-import org.kie.conf.KnowledgeBaseOption;
-import org.kie.conf.LogicalOverrideOption;
+import org.kie.conf.KieBaseOption;
 import org.kie.conf.MBeansOption;
-import org.kie.conf.MaintainTMSOption;
 import org.kie.conf.MaxThreadsOption;
 import org.kie.conf.MultiValueKnowledgeBaseOption;
 import org.kie.conf.MultithreadEvaluationOption;
@@ -53,24 +58,14 @@ import org.kie.conf.SequentialAgendaOption;
 import org.kie.conf.SequentialOption;
 import org.kie.conf.ShareAlphaNodesOption;
 import org.kie.conf.ShareBetaNodesOption;
-import org.kie.conf.SingleValueKnowledgeBaseOption;
+import org.kie.conf.SingleValueKieBaseOption;
+import org.kie.internal.utils.ChainedProperties;
+import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.runtime.rule.ConsequenceExceptionHandler;
-import org.kie.util.ChainedProperties;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * RuleBaseConfiguration
@@ -114,7 +109,7 @@ import java.util.Properties;
  */
 public class RuleBaseConfiguration
     implements
-    KnowledgeBaseConfiguration,
+    KieBaseConfiguration,
     Externalizable {
     private static final long              serialVersionUID = 510l;
     
@@ -287,8 +282,6 @@ public class RuleBaseConfiguration
             setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( StringUtils.isEmpty( value ) ? "sequential" : value ) );
         } else if ( name.equals( SequentialOption.PROPERTY_NAME ) ) {
             setSequential( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
-        } else if ( name.equals( MaintainTMSOption.PROPERTY_NAME ) ) {
-            setMaintainTms( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( RemoveIdentitiesOption.PROPERTY_NAME ) ) {
             setRemoveIdentities( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         } else if ( name.equals( ShareAlphaNodesOption.PROPERTY_NAME ) ) {
@@ -309,8 +302,6 @@ public class RuleBaseConfiguration
             setIndexPrecedenceOption(StringUtils.isEmpty(value) ? IndexPrecedenceOption.EQUALITY_PRIORITY : IndexPrecedenceOption.determineIndexPrecedence(value));
         } else if ( name.equals( AssertBehaviorOption.PROPERTY_NAME ) ) {
             setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(StringUtils.isEmpty(value) ? "identity" : value));
-        } else if ( name.equals( "drools.executorService" ) ) {
-            setExecutorService(StringUtils.isEmpty(value) ? DefaultExecutorService.class.getName() : value);
         } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
             setConsequenceExceptionHandler(StringUtils.isEmpty(value) ? DefaultConsequenceExceptionHandler.class.getName() : value);
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
@@ -344,8 +335,6 @@ public class RuleBaseConfiguration
             return getSequentialAgenda().toExternalForm();
         } else if ( name.equals( SequentialOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isSequential() );
-        } else if ( name.equals( MaintainTMSOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isMaintainTms() );
         } else if ( name.equals( RemoveIdentitiesOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isRemoveIdentities() );
         } else if ( name.equals( ShareAlphaNodesOption.PROPERTY_NAME ) ) {
@@ -406,12 +395,21 @@ public class RuleBaseConfiguration
         init( properties,
               classLoaders );
     }
+    
+    public RuleBaseConfiguration(Properties properties,
+                                 CompositeClassLoader classLoader) {
+        this.classLoader = classLoader; 
+        init( properties);
+    }    
 
     private void init(Properties properties,
                       ClassLoader... classLoaders) {
-        this.immutable = false;
-
         setClassLoader( classLoaders );
+        init(properties);
+    }
+    
+    private void init(Properties properties) {
+        this.immutable = false;
 
         this.chainedProperties = new ChainedProperties( "rulebase.conf",
                                                         this.classLoader,
@@ -426,9 +424,6 @@ public class RuleBaseConfiguration
 
         setSequential(Boolean.valueOf(this.chainedProperties.getProperty(SequentialOption.PROPERTY_NAME,
                                                                          "false")).booleanValue());
-
-        setMaintainTms(Boolean.valueOf(this.chainedProperties.getProperty(MaintainTMSOption.PROPERTY_NAME,
-                                                                          "true")).booleanValue());
 
         setRemoveIdentities(Boolean.valueOf(this.chainedProperties.getProperty("drools.removeIdentities",
                                                                                "false")).booleanValue());
@@ -1148,10 +1143,8 @@ public class RuleBaseConfiguration
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends SingleValueKnowledgeBaseOption> T getOption(Class<T> option) {
-        if ( MaintainTMSOption.class.equals( option ) ) {
-            return (T) (this.maintainTms ? MaintainTMSOption.YES : MaintainTMSOption.NO);
-        } else if ( SequentialOption.class.equals( option ) ) {
+    public <T extends SingleValueKieBaseOption> T getOption(Class<T> option) {
+        if ( SequentialOption.class.equals( option ) ) {
             return (T) (this.sequential ? SequentialOption.YES : SequentialOption.NO);
         } else if ( RemoveIdentitiesOption.class.equals( option ) ) {
             return (T) (this.removeIdentities ? RemoveIdentitiesOption.YES : RemoveIdentitiesOption.NO);
@@ -1203,10 +1196,8 @@ public class RuleBaseConfiguration
 
     }
 
-    public <T extends KnowledgeBaseOption> void setOption(T option) {
-        if ( option instanceof MaintainTMSOption ) {
-            setMaintainTms( ((MaintainTMSOption) option).isMaintainTMS() );
-        } else if ( option instanceof SequentialOption ) {
+    public <T extends KieBaseOption> void setOption(T option) {
+        if ( option instanceof SequentialOption ) {
             setSequential( ((SequentialOption) option).isSequential() );
         } else if ( option instanceof RemoveIdentitiesOption ) {
             setRemoveIdentities( ((RemoveIdentitiesOption) option).isRemoveIdentities() );

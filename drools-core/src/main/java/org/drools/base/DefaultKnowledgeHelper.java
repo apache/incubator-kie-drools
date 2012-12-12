@@ -36,15 +36,15 @@ import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
-import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.ObjectTypeConfigurationRegistry;
+import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.TruthMaintenanceSystemHelper;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.traits.CoreWrapper;
 import org.drools.factmodel.traits.Thing;
-import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.TraitFactory;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
@@ -57,13 +57,14 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.kie.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.Channel;
-import org.kie.runtime.ExitPoint;
+import org.kie.runtime.KieRuntime;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
 import org.kie.runtime.process.ProcessContext;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public class DefaultKnowledgeHelper
@@ -139,7 +140,7 @@ public class DefaultKnowledgeHelper
         return previousJustified;
     }
     
-    public void blockActivation(org.kie.runtime.rule.Activation act) {
+    public void blockMatch(Match act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
@@ -172,7 +173,7 @@ public class DefaultKnowledgeHelper
         }
     }
     
-    public void unblockAllActivations(org.kie.runtime.rule.Activation act) {
+    public void unblockAllMatches(Match act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
         
@@ -288,7 +289,7 @@ public class DefaultKnowledgeHelper
         }        
     }
     
-    public void cancelActivation(org.kie.runtime.rule.Activation act) {
+    public void cancelMatch(Match act) {
         AgendaItem match = ( AgendaItem ) act;
         match.cancel();
         if ( match.isActive() ) {
@@ -363,7 +364,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(final FactHandle handle) {
-        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).retract( handle,
+        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).delete( handle,
                                                                                                    this.activation.getRule(),
                                                                                                    this.activation );
         if ( this.identityMap != null ) {
@@ -387,7 +388,7 @@ public class DefaultKnowledgeHelper
         return ((ReteooWorkingMemory) this.workingMemory).getKnowledgeRuntime();
     }
 
-    public Activation getActivation() {
+    public Activation getMatch() {
         return this.activation;
     }
 
@@ -423,14 +424,6 @@ public class DefaultKnowledgeHelper
         return this.workingMemory.getEntryPoints().get( id );
     }
 
-    /**
-     * @deprecated use {@link #getChannel(String)} instead
-     */
-    @Deprecated
-    public ExitPoint getExitPoint(String id) {
-        return this.workingMemory.getExitPoints().get( id );
-    }
-    
     public Channel getChannel(String id) {
         return this.workingMemory.getChannels().get( id );
     }
@@ -439,14 +432,6 @@ public class DefaultKnowledgeHelper
         return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
     }
 
-    /**
-     * @deprecated use {@link #getChannels()} instead
-     */
-    @Deprecated
-    public Map<String, ExitPoint> getExitPoints() {
-        return Collections.unmodifiableMap( this.workingMemory.getExitPoints() );
-    }
-    
     public Map<String, Channel> getChannels() {
         return Collections.unmodifiableMap( this.workingMemory.getChannels() );
     }
@@ -485,7 +470,7 @@ public class DefaultKnowledgeHelper
     @SuppressWarnings("unchecked")
     public <T> T getContext(Class<T> contextClass) {
         if (ProcessContext.class.equals(contextClass)) {
-            String ruleflowGroupName = getActivation().getRule().getRuleFlowGroup();
+            String ruleflowGroupName = getMatch().getRule().getRuleFlowGroup();
             if (ruleflowGroupName != null) {
                 Map<Long, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
                 if (!nodeInstances.isEmpty()) {
@@ -546,7 +531,11 @@ public class DefaultKnowledgeHelper
         }
         return thing;
     }
-    
+
+    public KieRuntime getKieRuntime() {
+        return getKnowledgeRuntime();
+    }
+
     public static class RetractTrait implements ActivationUnMatchListener {
         private FactHandle fh;
 
@@ -557,7 +546,7 @@ public class DefaultKnowledgeHelper
         }
 
         public void unMatch(org.kie.runtime.rule.WorkingMemory wm,
-                            org.kie.runtime.rule.Activation activation) {
+                            Match activation) {
             wm.retract( fh );
             if ( next != null ) {
                 next.unMatch( wm, activation );
@@ -583,7 +572,7 @@ public class DefaultKnowledgeHelper
     }
 
     protected <T, K> T applyTrait( K core, Class<T> trait, boolean logical ) {
-        AbstractRuleBase arb = (AbstractRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeRuntime().getKnowledgeBase() ).getRuleBase();
+        AbstractRuleBase arb = (AbstractRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeRuntime().getKieBase() ).getRuleBase();
         TraitFactory builder = arb.getConfiguration().getComponentFactory().getTraitFactory();
 
         boolean needsWrapping = ! ( core instanceof TraitableBean );

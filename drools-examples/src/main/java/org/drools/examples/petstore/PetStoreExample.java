@@ -16,41 +16,26 @@
 
 package org.drools.examples.petstore;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
+import org.kie.runtime.StatefulKnowledgeSession;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumnModel;
-
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class PetStoreExample {
 

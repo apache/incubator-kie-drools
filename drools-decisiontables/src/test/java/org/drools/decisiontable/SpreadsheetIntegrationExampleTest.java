@@ -16,125 +16,102 @@
 
 package org.drools.decisiontable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import org.acme.insurance.launcher.PricingRuleLauncher;
+import org.junit.Test;
+import org.kie.KieServices;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.builder.DecisionTableInputType;
+import org.kie.builder.KieBuilder;
+import org.kie.builder.KieFileSystem;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.io.Resource;
+import org.kie.io.ResourceFactory;
+import org.kie.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.acme.insurance.launcher.PricingRuleLauncher;
-import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.DecisionTableConfiguration;
-import org.kie.builder.DecisionTableInputType;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
-import org.kie.io.ResourceFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SpreadsheetIntegrationExampleTest {
 
     @Test
-    public void testExecute() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    public void testExecuteUsingKieAPI() throws Exception {
+        // get the resource
+        Resource dt = ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() );
+        
+        // create the builder
+        KieSession ksession = getKieSession( dt );
 
-        DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-        dtconf.setInputType( DecisionTableInputType.XLS );
-
-        kbuilder.add( ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() ),
-                              ResourceType.DTABLE,
-                              dtconf );
-
-        assertFalse( kbuilder.hasErrors() );
-
-        //BUILD RULEBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        //NEW WORKING MEMORY
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-
-        //ASSERT AND FIRE
-        session.insert( new Cheese( "stilton",
+        ksession.insert( new Cheese( "stilton",
                                     42 ) );
-        session.insert( new Person( "michael",
+        ksession.insert( new Person( "michael",
                                     "stilton",
                                     42 ) );
         final List<String> list = new ArrayList<String>();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
-        session.fireAllRules();
+        ksession.fireAllRules();
         assertEquals( 1,
                       list.size() );
         assertEquals( "Old man stilton",
                       list.get( 0 ) );
     }
 
+    private KieSession getKieSession(Resource dt) {
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( dt );
+        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+        assertTrue( kb.getResults().getMessages().isEmpty() );
+
+        // get the session
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultGAV()).newKieSession();
+        return ksession;
+    }
+
     @Test
     public void testExecuteJBRULES3005() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() ),
-                              ResourceType.DTABLE );
-
-        assertFalse( kbuilder.hasErrors() );
-
-        //BUILD RULEBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        //NEW WORKING MEMORY
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        Resource dt = ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() );
+        KieSession ksession = getKieSession( dt );
 
         //ASSERT AND FIRE
-        session.insert( new Cheese( "stilton",
+        ksession.insert( new Cheese( "stilton",
                                     42 ) );
-        session.insert( new Person( "michael",
+        ksession.insert( new Person( "michael",
                                     "stilton",
                                     42 ) );
         final List<String> list = new ArrayList<String>();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
-        session.fireAllRules();
+        ksession.fireAllRules();
         assertEquals( 1,
                       list.size() );
         assertEquals( "Old man stilton",
                       list.get( 0 ) );
     }
     
-    @Test
+    @Test 
     public void testNamedWorksheet() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType( DecisionTableInputType.XLS );
         dtconf.setWorksheetName( "Tables_2" );
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() ),
-                              ResourceType.DTABLE,
-                              dtconf );
-
-        assertFalse( kbuilder.hasErrors() );
-
-        //BUILD RULEBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        //NEW WORKING MEMORY
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        Resource dt = ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() )
+                                     .setConfiguration( dtconf );
+        KieSession ksession = getKieSession( dt );
 
         //ASSERT AND FIRE
-        session.insert( new Cheese( "cheddar",
+        ksession.insert( new Cheese( "cheddar",
                                     42 ) );
-        session.insert( new Person( "michael",
+        ksession.insert( new Person( "michael",
                                     "stilton",
                                     25 ) );
         final List<String> list = new ArrayList<String>();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
-        session.fireAllRules();
+        ksession.fireAllRules();
         assertEquals( 1,
                       list.size() );
         assertEquals( "Young man cheddar",

@@ -31,7 +31,6 @@ import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
-import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
@@ -58,8 +57,8 @@ import org.drools.event.rule.impl.AfterActivationFiredEventImpl;
 import org.drools.event.rule.impl.AgendaGroupPoppedEventImpl;
 import org.drools.event.rule.impl.AgendaGroupPushedEventImpl;
 import org.drools.event.rule.impl.BeforeActivationFiredEventImpl;
+import org.drools.event.rule.impl.ObjectDeletedEventImpl;
 import org.drools.event.rule.impl.ObjectInsertedEventImpl;
-import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.event.rule.impl.RuleFlowGroupActivatedEventImpl;
 import org.drools.event.rule.impl.RuleFlowGroupDeactivatedEventImpl;
@@ -85,9 +84,9 @@ import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
 import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.Globals;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItemManager;
@@ -104,7 +103,8 @@ public class StatefulKnowledgeSessionImpl
         implements
         StatefulKnowledgeSession,
         InternalWorkingMemoryEntryPoint,
-        InternalKnowledgeRuntime {
+        InternalKnowledgeRuntime,
+        KieSession {
 
     public ReteooWorkingMemoryInterface session;
     public KnowledgeBase                kbase;
@@ -219,7 +219,7 @@ public class StatefulKnowledgeSessionImpl
         getInternalProcessRuntime().removeEventListener( listener );
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public KnowledgeBase getKieBase() {
         if ( this.kbase == null ) {
             this.kbase = new KnowledgeBaseImpl( session.getRuleBase() );
         }
@@ -270,8 +270,11 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void retract(FactHandle factHandle) {
-        this.session.retract( factHandle );
+        this.session.delete( factHandle );
+    }
 
+    public void delete(FactHandle factHandle) {
+        this.session.delete( factHandle );
     }
 
     public void update(FactHandle factHandle) {
@@ -403,10 +406,10 @@ public class StatefulKnowledgeSessionImpl
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public void retract(org.drools.FactHandle factHandle,
+    public void delete(org.drools.FactHandle factHandle,
                         Rule rule,
                         Activation activation) throws FactException {
-        this.session.retract( factHandle,
+        this.session.delete( factHandle,
                               rule,
                               activation );
     }
@@ -574,7 +577,7 @@ public class StatefulKnowledgeSessionImpl
         }
 
         public void objectRetracted(ObjectRetractedEvent event) {
-            listener.objectRetracted( new ObjectRetractedEventImpl( event ) );
+            listener.objectDeleted(new ObjectDeletedEventImpl(event));
         }
 
         public void objectUpdated(ObjectUpdatedEvent event) {
@@ -628,28 +631,28 @@ public class StatefulKnowledgeSessionImpl
         public void activationCancelled(ActivationCancelledEvent event,
                                         WorkingMemory workingMemory) {
 
-            listener.activationCancelled( new ActivationCancelledEventImpl( event.getActivation(),
-                                                                            ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime(),
-                                                                            event.getCause() ) );
+            listener.matchCancelled(new ActivationCancelledEventImpl(event.getActivation(),
+                    ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime(),
+                    event.getCause()));
 
         }
 
         public void activationCreated(ActivationCreatedEvent event,
                                       WorkingMemory workingMemory) {
-            listener.activationCreated( new ActivationCreatedEventImpl( event.getActivation(),
-                                                                        ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
+            listener.matchCreated(new ActivationCreatedEventImpl(event.getActivation(),
+                    ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()));
         }
 
         public void beforeActivationFired(BeforeActivationFiredEvent event,
                                           WorkingMemory workingMemory) {
-            listener.beforeActivationFired( new BeforeActivationFiredEventImpl( event.getActivation(),
-                                                                                ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
+            listener.beforeMatchFired(new BeforeActivationFiredEventImpl(event.getActivation(),
+                    ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()));
         }
 
         public void afterActivationFired(AfterActivationFiredEvent event,
                                          WorkingMemory workingMemory) {
-            listener.afterActivationFired( new AfterActivationFiredEventImpl( event.getActivation(),
-                                                                              ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
+            listener.afterMatchFired(new AfterActivationFiredEventImpl(event.getActivation(),
+                    ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()));
         }
 
         public void agendaGroupPopped(AgendaGroupPoppedEvent event,
@@ -741,24 +744,6 @@ public class StatefulKnowledgeSessionImpl
         return new AgendaImpl( (InternalAgenda) this.session.getAgenda() );
     }
 
-    /**
-     * @deprecated Use {@link #registerChannel(String, Channel)} instead.
-     */
-    @Deprecated
-    public void registerExitPoint(String name,
-                                  ExitPoint exitPoint) {
-        this.session.registerExitPoint( name,
-                                        exitPoint );
-    }
-
-    /**
-     * @deprecated Use {@link #unregisterChannel(String)} instead.
-     */
-    @Deprecated
-    public void unregisterExitPoint(String name) {
-        this.session.unregisterExitPoint( name );
-    }
-
     public void registerChannel(String name,
                                 Channel channel) {
         this.session.registerChannel( name,
@@ -807,7 +792,6 @@ public class StatefulKnowledgeSessionImpl
         if ( !(command instanceof BatchExecutionCommandImpl) ) {
             return (T) ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
                                                                                              null,
-                                                                                             null,
                                                                                              this.kbase,
                                                                                              this,
                                                                                              results ) );
@@ -816,7 +800,6 @@ public class StatefulKnowledgeSessionImpl
         try {
             session.startBatchExecution( results );
             ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
-                                                                                  null,
                                                                                   null,
                                                                                   this.kbase,
                                                                                   this,
@@ -844,7 +827,7 @@ public class StatefulKnowledgeSessionImpl
                                            listener );
     }
 
-    public KnowledgeSessionConfiguration getSessionConfiguration() {
+    public KieSessionConfiguration getSessionConfiguration() {
         return this.session.getSessionConfiguration();
     }
 

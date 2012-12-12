@@ -32,6 +32,7 @@ import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
+import org.drools.command.runtime.rule.DeleteCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.command.runtime.rule.GetObjectCommand;
 import org.drools.command.runtime.rule.GetObjectsCommand;
@@ -39,7 +40,6 @@ import org.drools.command.runtime.rule.InsertElementsCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.command.runtime.rule.QueryCommand;
-import org.drools.command.runtime.rule.RetractCommand;
 import org.kie.command.BatchExecutionCommand;
 import org.kie.command.Context;
 import org.kie.runtime.ExecutionResults;
@@ -100,7 +100,7 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
         @XmlElement(name = "abort-work-item", type = AbortWorkItemCommand.class),
         @XmlElement(name = "signal-event", type = SignalEventCommand.class),
         @XmlElement(name = "start-process", type = StartProcessCommand.class),
-        @XmlElement(name = "retract", type = RetractCommand.class),
+        @XmlElement(name = "retract", type = DeleteCommand.class),
         @XmlElement(name = "get-global", type = GetGlobalCommand.class),
         @XmlElement(name = "set-global", type = SetGlobalCommand.class),
         @XmlElement(name = "insert-elements", type = InsertElementsCommand.class),

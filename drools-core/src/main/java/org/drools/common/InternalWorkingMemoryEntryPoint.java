@@ -30,7 +30,7 @@ import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint {
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     RuleBase getRuleBase();
-    public void retract(final FactHandle factHandle,
+    public void delete(final FactHandle factHandle,
                         final Rule rule,
                         final Activation activation) throws FactException;
     public void update(org.kie.runtime.rule.FactHandle handle,

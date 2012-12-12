@@ -17,8 +17,8 @@
 package org.drools.command;
 
 import org.drools.WorkingMemoryEntryPoint;
-import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
+import org.drools.command.impl.GenericCommand;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
@@ -60,7 +60,6 @@ public class KnowledgeContextResolveFromContextCommand
 
     public Object execute(Context context) {
         FixedKnowledgeCommandContext kcContext = new FixedKnowledgeCommandContext( context,
-                                                                         null,
                                                                          (KnowledgeBuilder) context.get( this.kbuilderIdentifier ),
                                                                          (KnowledgeBase) context.get( this.kbaseIdentifier ),
                                                                          (StatefulKnowledgeSession) context.get( this.statefulKsessionName ),

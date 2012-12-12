@@ -1,6 +1,18 @@
 package org.drools.integrationtests;
 
-import org.drools.compiler.CompositeKnowledgeBuilderImpl;
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.InputStream;
+import java.io.StringReader;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.PMMLCompiler;
 import org.drools.compiler.PMMLCompilerFactory;
 import org.drools.compiler.PackageBuilder;
@@ -14,30 +26,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class KnowledgeBuilderTest {
 

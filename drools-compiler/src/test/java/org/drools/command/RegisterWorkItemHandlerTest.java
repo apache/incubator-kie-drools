@@ -1,6 +1,7 @@
 package org.drools.command;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.impl.DefaultWorkItemManager;
@@ -10,9 +11,9 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.command.CommandFactory;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
@@ -30,7 +31,7 @@ public class RegisterWorkItemHandlerTest {
                 "then \n" +
                 "  WorkItem wi = new WorkItemImpl(); \n" +
                 "  wi.setName( \"wihandler\" ); \n" +
-                "  DefaultWorkItemManager wim = ( DefaultWorkItemManager ) kcontext.getKnowledgeRuntime().getWorkItemManager(); \n" +
+                "  DefaultWorkItemManager wim = ( DefaultWorkItemManager ) kcontext.getKieRuntime().getWorkItemManager(); \n" +
                 "  wim.internalExecuteWorkItem(wi); \n" +
                 "end \n";
      

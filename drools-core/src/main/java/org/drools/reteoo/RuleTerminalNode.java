@@ -53,7 +53,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.time.impl.ExpressionIntervalTimer;
-import org.kie.event.rule.ActivationCancelledCause;
+import org.kie.event.rule.MatchCancelledCause;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -562,7 +562,7 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
                 activation.remove();
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
                                                                                                 workingMemory,
-                                                                                                ActivationCancelledCause.CLEAR );
+                                                                                                MatchCancelledCause.CLEAR );
             }
 
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
@@ -650,6 +650,10 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         rmem.setAllLinkedMaskTest( allLinkedTestMask );
         rmem.setSegmentMemories( new SegmentMemory[segmentCount] );
         return rmem;
+    }
+
+    public LeftTuple createPeer(LeftTuple original) {
+        throw new UnsupportedOperationException();
     }            
 
 }

@@ -19,32 +19,29 @@ package org.drools.impl;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
-import org.kie.KBaseUnit;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactoryService;
-import org.kie.builder.KnowledgeContainerFactory;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSessionConfiguration;
 
 import java.util.Properties;
 
 public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryService {
 
-    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration() {
+    public KieBaseConfiguration newKnowledgeBaseConfiguration() {
         return new RuleBaseConfiguration();
     }
         
-    public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader... classLoaders) {
+    public KieBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader... classLoaders) {
         return new RuleBaseConfiguration(properties, classLoaders);
     }
     
-    public KnowledgeSessionConfiguration newKnowledgeSessionConfiguration() {
+    public KieSessionConfiguration newKnowledgeSessionConfiguration() {
         return new SessionConfiguration();
     }
         
-    public KnowledgeSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
+    public KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
         return new SessionConfiguration(properties);
     }
     
@@ -56,29 +53,17 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
         return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase(kbaseId) );
     }
     
-    public KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
+    public KnowledgeBase newKnowledgeBase(KieBaseConfiguration conf) {
         return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase( ( RuleBaseConfiguration ) conf ) );
     }
 
     public KnowledgeBase newKnowledgeBase(String kbaseId, 
-                                          KnowledgeBaseConfiguration conf) {
+                                          KieBaseConfiguration conf) {
         return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase( kbaseId, 
                                                                    ( RuleBaseConfiguration ) conf ) );
     }
 
     public Environment newEnvironment() {
         return EnvironmentFactory.newEnvironment();//new EnvironmentImpl(); //
-    }
-
-    public KnowledgeBase getKnowledgeBase(String kBaseName) {
-        return KnowledgeContainerFactory.newKnowledgeContainer().getKnowledgeBase(kBaseName);
-    }
-
-    public StatefulKnowledgeSession getStatefulKnowlegeSession(String kSessionName) {
-        return KnowledgeContainerFactory.newKnowledgeContainer().getStatefulKnowlegeSession(kSessionName);
-    }
-
-    public KBaseUnit getKBaseUnit(String kBaseName) {
-        return KnowledgeContainerFactory.newKnowledgeContainer().getKBaseUnit(kBaseName);
     }
 }

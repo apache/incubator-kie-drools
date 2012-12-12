@@ -54,13 +54,13 @@ public class XmlChangeSetReaderTest {
         
         for (Resource r : resourcesAdded) {
             InternalResource resource = (InternalResource) r;
-            if (resource.getName() != null && resource.getName().equals("resource1")){
+            if (resource.getSourcePath() != null && resource.getSourcePath().equals("resource1")){
                 resource1 = resource;
-            } else if (resource.getName() != null && resource.getName().equals("secureResource")){
+            } else if (resource.getSourcePath() != null && resource.getSourcePath().equals("secureResource")){
                 secureResource = resource;
-            } else if (resource.getName() == null && resource.getDescription() == null){
+            } else if (resource.getSourcePath() == null && resource.getDescription() == null){
                 resource3 = resource;
-            } else if (resource.getName() == null){
+            } else if (resource.getSourcePath() == null){
                 resource2 = resource;
             }
         }

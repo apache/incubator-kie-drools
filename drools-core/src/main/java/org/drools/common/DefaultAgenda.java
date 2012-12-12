@@ -38,6 +38,7 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListNode;
+import org.drools.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooComponentFactory;
@@ -59,8 +60,9 @@ import org.drools.spi.RuleFlowGroup;
 import org.drools.time.impl.DefaultJobHandle;
 import org.drools.time.impl.ExpressionIntervalTimer;
 import org.drools.time.impl.Timer;
-import org.kie.event.rule.ActivationCancelledCause;
+import org.kie.event.rule.MatchCancelledCause;
 import org.kie.runtime.process.ProcessInstance;
+import org.kie.runtime.rule.Match;
 
 /**
  * Rule-firing Agenda.
@@ -435,7 +437,7 @@ public class DefaultAgenda
             item.setActivated( false );            
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                           this.workingMemory,
-                                                                          ActivationCancelledCause.CLEAR );            
+                                                                          MatchCancelledCause.CLEAR );            
         }
     }
     
@@ -745,7 +747,7 @@ public class DefaultAgenda
 
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
                                                                                                 workingMemory,
-                                                                                                ActivationCancelledCause.WME_MODIFY );
+                                                                                                MatchCancelledCause.WME_MODIFY );
                 decreaseActiveActivations();
             }
         } else {
@@ -1009,7 +1011,7 @@ public class DefaultAgenda
         final List<Activation> list = new ArrayList<Activation>();
         for ( final java.util.Iterator<InternalAgendaGroup> it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
             final AgendaGroup group = it.next();
-            for ( org.kie.runtime.rule.Activation activation : group.getActivations() ) {
+            for ( Match activation : group.getActivations() ) {
                 list.add((Activation) activation);
             }
         }
@@ -1058,7 +1060,7 @@ public class DefaultAgenda
                 // preserve lazy items.
                 ((InternalAgendaGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
                 lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
-                for ( org.kie.runtime.rule.Activation a : group.getActivations() ) {
+                for ( Match a : group.getActivations() ) {
                     if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
                         lazyItems.add( (RuleNetworkEvaluatorActivation) a );
                     }
@@ -1081,7 +1083,7 @@ public class DefaultAgenda
                 // preserve lazy items
                 ((InternalRuleFlowGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
                 lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
-                for ( org.kie.runtime.rule.Activation a : ((InternalRuleFlowGroup) group).getActivations() ) {
+                for ( Match a : ((InternalRuleFlowGroup) group).getActivations() ) {
                     if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
                         lazyItems.add( (RuleNetworkEvaluatorActivation) a );
                     }
@@ -1124,7 +1126,7 @@ public class DefaultAgenda
                                             this );
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                               this.workingMemory,
-                                                                              ActivationCancelledCause.CLEAR );
+                                                                              MatchCancelledCause.CLEAR );
             }
         }
 
@@ -1198,7 +1200,7 @@ public class DefaultAgenda
 
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                           this.workingMemory,
-                                                                          ActivationCancelledCause.CLEAR );
+                                                                          MatchCancelledCause.CLEAR );
         }
         if ( this.unlinkingEnabled ) {
             // restore lazy items
@@ -1246,7 +1248,7 @@ public class DefaultAgenda
 
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
                                                                               this.workingMemory,
-                                                                              ActivationCancelledCause.CLEAR );
+                                                                              MatchCancelledCause.CLEAR );
             }
         }
         activationGroup.clear();
@@ -1287,7 +1289,7 @@ public class DefaultAgenda
 
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                           this.workingMemory,
-                                                                          ActivationCancelledCause.CLEAR );
+                                                                          MatchCancelledCause.CLEAR );
         }
 
         ruleFlowGroup.clear();
@@ -1363,7 +1365,7 @@ public class DefaultAgenda
                             final EventSupport eventsupport = (EventSupport) this.workingMemory;
                             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                                           this.workingMemory,
-                                                                                          ActivationCancelledCause.FILTER );
+                                                                                          MatchCancelledCause.FILTER );
                             tryagain = true;
                         }
                         // The routine bellow cleans up ruleflow activations

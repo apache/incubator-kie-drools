@@ -28,7 +28,6 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.runtime.impl.ExecutionResultImpl;
@@ -39,7 +38,6 @@ import org.drools.time.TimerService;
 import org.drools.type.DateFormats;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 
 public interface InternalWorkingMemory
@@ -93,7 +91,7 @@ public interface InternalWorkingMemory
      */
     public FactHandle getFactHandleByIdentity(final Object object);
 
-    void retract(final FactHandle factHandle,
+    void delete(final FactHandle factHandle,
                        final Rule rule,
                        final Activation activation) throws FactException;
 
@@ -117,25 +115,9 @@ public interface InternalWorkingMemory
      */
     public TimerService getTimerService();
 
-    /**
-     * Returns the PartitionTaskManager for the given partition ID
-     * in case the rulebase has partitions enabled
-     *
-     * @param partitionId the ID of the partition for which the task manager is assigned
-     *
-     * @return the PartitionTaskManager
-     */
-    public PartitionTaskManager getPartitionTaskManager( RuleBasePartitionId partitionId );
-    
     public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
     
     public InternalKnowledgeRuntime getKnowledgeRuntime();
-    
-    /**
-     * @deprecated Use {@link #getChannels()} instead.
-     */
-    @Deprecated
-    public Map<String, ExitPoint> getExitPoints();
     
     /**
      * Returns a map of channel Id->Channel of all channels in

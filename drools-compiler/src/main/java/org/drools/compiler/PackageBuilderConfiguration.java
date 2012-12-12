@@ -16,6 +16,14 @@
 
 package org.drools.compiler;
 
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
@@ -47,18 +55,10 @@ import org.kie.builder.conf.MultiValueKnowledgeBuilderOption;
 import org.kie.builder.conf.ProcessStringEscapesOption;
 import org.kie.builder.conf.PropertySpecificOption;
 import org.kie.builder.conf.SingleValueKnowledgeBuilderOption;
+import org.kie.internal.utils.ChainedProperties;
+import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.runtime.rule.AccumulateFunction;
-import org.kie.util.ChainedProperties;
-import org.kie.util.ClassLoaderUtil;
-import org.kie.util.CompositeClassLoader;
-
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * This class configures the package compiler.
@@ -154,7 +154,7 @@ public class PackageBuilderConfiguration
      */
     public PackageBuilderConfiguration(Properties properties) {
         init( properties,
-              null );
+              ( ClassLoader[]) null );
     }
 
     /**
@@ -168,14 +168,31 @@ public class PackageBuilderConfiguration
               classLoaders );
     }
 
+    
+    public PackageBuilderConfiguration(Properties properties,
+                                       CompositeClassLoader classLoader) {
+        init( properties,
+              classLoader );
+    }
+    
+    
     public PackageBuilderConfiguration() {
         init( null,
-              null );
+              (ClassLoader[]) null );
     }
 
     private void init(Properties properties,
+                      CompositeClassLoader classLoader) {
+        this.classLoader =  classLoader;
+        init(properties);
+    }
+    private void init(Properties properties,
                       ClassLoader... classLoaders) {
         setClassLoader( classLoaders );
+        init(properties);
+    }
+    
+    private void init(Properties properties) {
 
         this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
                                                         this.classLoader,

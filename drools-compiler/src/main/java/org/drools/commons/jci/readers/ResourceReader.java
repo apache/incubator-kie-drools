@@ -17,12 +17,15 @@
 
 package org.drools.commons.jci.readers;
 
+import java.util.Collection;
+
 /**
- * A ResourceReader provide acces to resource like e.g. source code
+ * A ResourceReader provide access to resource like e.g. source code
  */
 public interface ResourceReader {
 
     boolean isAvailable( final String pResourceName );
     byte[] getBytes( final String pResourceName );
+    public Collection<String> getFileNames();
 
 }

@@ -16,27 +16,31 @@
 
 package org.drools.audit;
 
+import org.kie.event.KieRuntimeEventManager;
 import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.logger.KieLoggers;
 import org.kie.logger.KnowledgeRuntimeLogger;
-import org.kie.logger.KnowledgeRuntimeLoggerFactoryService;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class KnowledgeRuntimeLoggerProviderImpl
     implements
-    KnowledgeRuntimeLoggerFactoryService {
+    KieLoggers {
 
-    public KnowledgeRuntimeLogger newFileLogger(KnowledgeRuntimeEventManager session,
+    public KnowledgeRuntimeLogger newFileLogger(KieRuntimeEventManager session,
                                                 String fileName) {
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( (KnowledgeRuntimeEventManager) session );
         if ( fileName != null ) {
             logger.setFileName( fileName );
         }
         return new KnowledgeRuntimeFileLoggerWrapper( logger );
     }
 
-    public KnowledgeRuntimeLogger newThreadedFileLogger(KnowledgeRuntimeEventManager session,
+    public KnowledgeRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
                                                         String fileName,
                                                         int interval) {
-        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger( session );
+        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger( (KnowledgeRuntimeEventManager) session );
         if ( fileName != null ) {
             logger.setFileName( fileName );
         }
@@ -44,8 +48,8 @@ public class KnowledgeRuntimeLoggerProviderImpl
         return new KnowledgeRuntimeThreadedFileLoggerWrapper( logger );
     }
 
-    public KnowledgeRuntimeLogger newConsoleLogger(KnowledgeRuntimeEventManager session) {
-        WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( session );
+    public KnowledgeRuntimeLogger newConsoleLogger(KieRuntimeEventManager session) {
+        WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( (KnowledgeRuntimeEventManager) session );
         return new KnowledgeRuntimeConsoleLoggerWrapper( logger );
     }
 

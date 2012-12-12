@@ -12,10 +12,10 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.Activation;
+import org.kie.runtime.rule.Match;
 
 public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 
@@ -36,7 +36,7 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
-                     "    kcontext.getKnowledgeRuntime().halt();\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "rule rule3 ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +
@@ -81,7 +81,7 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 
         Iterator it = ActiveActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule7:2:true", "rule7:0:true", "rule7:1:true", "rule0:2:true", "rule0:0:true", "rule0:1:true", "rule1:2:true", "rule1:0:true", "rule1:1:true", "rule2:2:true", "rule2:0:true", "rule2:1:true"},
@@ -92,7 +92,7 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
         it = ActiveActivationIterator.iterator( ksession );
 
         list = new ArrayList();
-        for ( Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
+        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
         }
         assertContains( new String[]{"rule0:2:true", "rule0:0:true", "rule0:1:true", "rule1:2:true", "rule1:0:true", "rule1:1:true", "rule2:2:true", "rule2:0:true", "rule2:1:true"},

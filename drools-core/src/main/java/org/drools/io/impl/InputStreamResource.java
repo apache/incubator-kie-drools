@@ -16,6 +16,9 @@
 
 package org.drools.io.impl;
 
+import org.drools.io.internal.InternalResource;
+import org.kie.io.Resource;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,13 +27,12 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
-import org.drools.io.internal.InternalResource;
-import org.kie.io.Resource;
-
 public class InputStreamResource  extends BaseResource implements InternalResource {
 
     private transient InputStream stream;
     private String encoding;
+
+    public InputStreamResource() { }
 
     public InputStreamResource(InputStream stream) {
         this(stream, null);

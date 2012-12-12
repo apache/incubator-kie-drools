@@ -12,13 +12,14 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NetworkNode;
 import org.drools.common.PropagationContextImpl;
+import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.rule.GroupElement.Type;
 import org.drools.spi.PropagationContext;
 import org.junit.Test;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.conf.LRUnlinkingOption;
 
@@ -89,7 +90,7 @@ public class RuleUnlinkingTest {
     }
 
     public void setUp(int type) {
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( LRUnlinkingOption.ENABLED );        
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
         buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
@@ -155,7 +156,7 @@ public class RuleUnlinkingTest {
     public void testRuleSegmentsAllLinkedTestMasks() {
         setUp( JOIN_NODE );
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( LRUnlinkingOption.ENABLED );        
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
@@ -176,7 +177,7 @@ public class RuleUnlinkingTest {
     public void testSegmentNodeReferencesToSegments() {
         setUp( JOIN_NODE );
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( LRUnlinkingOption.ENABLED );        
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
@@ -272,7 +273,7 @@ public class RuleUnlinkingTest {
     public void testRuleSegmentLinking() {
         setUp( JOIN_NODE );
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( LRUnlinkingOption.ENABLED );        
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
@@ -285,6 +286,7 @@ public class RuleUnlinkingTest {
 
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
 
+        SegmentUtilities.createSegmentMemory( liaNode, wm );
         liaNode.assertObject( f1, context, wm );
         n1.assertObject( f1, context, wm );
         n3.assertObject( f1, context, wm );
@@ -338,7 +340,7 @@ public class RuleUnlinkingTest {
                                                   InternalWorkingMemory wm) {
         BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory( node );
         if ( betaMemory.getSegmentMemory() == null ) {
-            node.createNodeSegmentMemory( node, wm );
+            SegmentUtilities.createSegmentMemory( node, wm );
         }
         return betaMemory;
 

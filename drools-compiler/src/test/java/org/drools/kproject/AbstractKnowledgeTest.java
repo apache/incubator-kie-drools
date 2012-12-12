@@ -3,25 +3,39 @@ package org.drools.kproject;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
+import org.drools.compiler.io.File;
+import org.drools.compiler.io.Folder;
+import org.drools.compiler.io.Resource;
+import org.drools.compiler.io.memory.MemoryFile;
+import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
-import org.drools.kproject.memory.MemoryFile;
-import org.drools.kproject.memory.MemoryFileSystem;
+import org.drools.kproject.models.KieModuleModelImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.kie.KnowledgeBase;
+import org.kie.builder.GAV;
+import org.kie.builder.KieBaseModel;
+import org.kie.builder.KieBuilder;
+import org.kie.builder.KieModuleModel;
+import org.kie.builder.KieSessionModel;
+import org.kie.builder.KieSessionModel.KieSessionType;
+import org.kie.builder.Message.Level;
+import org.kie.builder.impl.KieFileSystemImpl;
+import org.kie.builder.impl.MemoryKieModule;
+import org.kie.KieBase;
+import org.kie.KieServices;
 import org.kie.conf.AssertBehaviorOption;
 import org.kie.conf.EventProcessingOption;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.StatelessKieSession;
 import org.kie.runtime.conf.ClockTypeOption;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class AbstractKnowledgeTest {
@@ -38,122 +52,159 @@ public class AbstractKnowledgeTest {
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
     }
+    
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+    
+    public void testEntry(KProjectTestClass testClass, String jarName) {
+        List<String> list = new ArrayList<String>();
 
-    public void createKProjectJar(String namespace,
-                                  boolean createJar) throws IOException,
+        StatelessKieSession stlsKsession = testClass.getKBase1KSession1();
+        stlsKsession.setGlobal( "list", list );
+        stlsKsession.execute( "dummy" );
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2:1.0-SNAPSHOT" ) );
+
+        list.clear();
+        KieSession stflKsession = testClass.getKBase1KSession2();
+        stflKsession.setGlobal( "list", list );
+        stflKsession.fireAllRules();
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2:1.0-SNAPSHOT" ) );
+
+        list.clear();
+        stflKsession = testClass.getKBase2KSession3();
+        stflKsession.setGlobal( "list", list );
+        stflKsession.fireAllRules();
+        assertEquals( 2, list.size() );
+
+        assertTrue( list.contains( jarName + ".test2:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test2:rule2:1.0-SNAPSHOT" ) );
+
+        list.clear();
+        stlsKsession = testClass.getKBase3KSession4();
+        stlsKsession.setGlobal( "list", list );
+        stlsKsession.execute( "dummy" );
+        assertEquals( 4, list.size() );
+        assertTrue( list.contains( jarName + ".test1:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test1:rule2:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test2:rule1:1.0-SNAPSHOT" ) );
+        assertTrue( list.contains( jarName + ".test2:rule2:1.0-SNAPSHOT" ) );
+    }    
+
+    public KieModuleModel createKieModule(String namespace,
+                                          boolean createJar) throws IOException,
+                      ClassNotFoundException,
+                      InterruptedException {
+        return createKieModule( namespace, createJar, "1.0-SNAPSHOT" );
+        
+    }
+                                          
+    public KieModuleModel createKieModule(String namespace,
+                                boolean createJar,
+                                String version) throws IOException,
             ClassNotFoundException,
             InterruptedException {
-        KProject kproj = new KProjectImpl();
+        KieModuleModel kproj = new KieModuleModelImpl();
 
-        kproj.setGroupArtifactVersion( new GroupArtifactVersion( "org.test", namespace, "0.1" ) );
-
-        kproj.setKProjectPath( "src/main/resources/" );
-        kproj.setKBasesPath( "src/kbases" );
-
-        KBase kBase1 = kproj.newKBase( namespace + ".KBase1" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
                 .setEqualsBehavior( AssertBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KSession ksession1 = kBase1.newKSession( namespace + ".KSession1" )
-                .setType( "stateless" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(namespace + ".KSession1")
+                .setType( KieSessionType.STATELESS )
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        KSession ksession2 = kBase1.newKSession( namespace + ".KSession2" )
-                .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped; @Inject" ) )
+        KieSessionModel ksession2 = kieBaseModel1.newKieSessionModel(namespace + ".KSession2")
+                .setType( KieSessionType.STATEFUL )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KBase kBase2 = kproj.newKBase( namespace + ".KBase2" )
-                .setAnnotations( asList( "@ApplicationScoped" ) )
+        KieBaseModel kieBaseModel2 = kproj.newKieBaseModel(namespace + ".KBase2")
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KSession ksession3 = kBase2.newKSession( namespace + ".KSession3" )
-                .setType( "stateful" )
-                .setAnnotations( asList( "@ApplicationScoped" ) )
+        KieSessionModel ksession3 = kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
+                .setType( KieSessionType.STATEFUL )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KBase kBase3 = kproj.newKBase( namespace + ".KBase3" )
-                .addInclude( kBase1.getName() )
-                .addInclude( kBase2.getName() )
-                .setAnnotations( asList( "@ApplicationScoped" ) )
+        KieBaseModel kieBaseModel3 = kproj.newKieBaseModel(namespace + ".KBase3")
+                .addInclude( kieBaseModel1.getName() )
+                .addInclude( kieBaseModel2.getName() )
                 .setEqualsBehavior( AssertBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KSession ksession4 = kBase3.newKSession( namespace + ".KSession4" )
-                .setType( "stateless" )
-                .setAnnotations( asList( "@ApplicationScoped" ) )
+        KieSessionModel ksession4 = kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
+                .setType( KieSessionType.STATELESS )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        MemoryFileSystem mfs = new MemoryFileSystem();
+        KieServices ks = KieServices.Factory.get();
 
-        Folder fld2 = mfs.getFolder( "META-INF" );
-        fld2.create();
-        File fle2 = fld2.getFile( "beans.xml" );
-        fle2.create( new ByteArrayInputStream( generateBeansXML( kproj ).getBytes() ) );
+        KieFileSystemImpl kfs =  ( KieFileSystemImpl ) ks.newKieFileSystem();
+        kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
+        kfs.writeKModuleXML( ((KieModuleModelImpl)kproj).toXML()  );
+        
+        GAV gav = ks.newGav( namespace, "art1", version );
+        kfs.generateAndWritePomXML( gav );        
 
-        fle2 = fld2.getFile( "kproject.xml" );
-        fle2.create( new ByteArrayInputStream( ((KProjectImpl)kproj).toXML().getBytes() ) );
+        String kBase1R1 = getRule( namespace + ".test1", "rule1", version );
+        String kBase1R2 = getRule( namespace + ".test1", "rule2", version );
 
-        String kBase1R1 = getRule( namespace + ".test1", "rule1" );
-        String kBase1R2 = getRule( namespace + ".test1", "rule2" );
-
-        String kbase2R1 = getRule( namespace + ".test2", "rule1" );
-        String kbase2R2 = getRule( namespace + ".test2", "rule2" );
-
-        String fldKB1 = kproj.getKBasesPath() + "/" + kBase1.getName();
-        String fldKB2 = kproj.getKBasesPath() + "/" + kBase2.getName();
-
-        mfs.getFolder( fldKB1 ).create();
-        mfs.getFolder( fldKB2 ).create();
-
-        mfs.getFile( fldKB1 + "/rule1.drl" ).create( new ByteArrayInputStream( kBase1R1.getBytes() ) );
-        mfs.getFile( fldKB1 + "/rule2.drl" ).create( new ByteArrayInputStream( kBase1R2.getBytes() ) );
-        mfs.getFile( fldKB2 + "/rule1.drl" ).create( new ByteArrayInputStream( kbase2R1.getBytes() ) );
-        mfs.getFile( fldKB2 + "/rule2.drl" ).create( new ByteArrayInputStream( kbase2R2.getBytes() ) );
-
-        MemoryFileSystem trgMfs = new MemoryFileSystem();
-        MemoryFileSystem srcMfs = mfs;
-
-        Folder fld1 = trgMfs.getFolder( "org/drools/cdi/test" );
-        fld1.create();
-        File fle1 = fld1.getFile( "KProjectTestClass" + namespace + ".java" );
-        fle1.create( new ByteArrayInputStream( generateKProjectTestClass( kproj, namespace ).getBytes() ) );
-
-        List<String> inputClasses = new ArrayList<String>();
-        inputClasses.add( "org/drools/cdi/test/KProjectTestClass" + namespace + ".java" );
-
-        //writeFs(namespace + "mod", srcMfs );
-        final List<String> classes = compile( kproj, srcMfs, trgMfs, inputClasses );
-
-        if ( createJar ) {
+        String kbase2R1 = getRule( namespace + ".test2", "rule1", version );
+        String kbase2R2 = getRule( namespace + ".test2", "rule2", version );
+                
+        String fldKB1 = "src/main/resources/" + kieBaseModel1.getName().replace( '.', '/' );
+        String fldKB2 = "src/main/resources/" + kieBaseModel2.getName().replace( '.', '/' );
+        
+        kfs.write( fldKB1 + "/rule1.drl", kBase1R1.getBytes() );
+        kfs.write( fldKB1 + "/rule2.drl", kBase1R2.getBytes() );
+        kfs.write( fldKB2 + "/rule1.drl", kbase2R1.getBytes() );
+        kfs.write( fldKB2 + "/rule2.drl", kbase2R2.getBytes() );
+        
+        kfs.write( "src/main/java/org/drools/cdi/test/KProjectTestClass" + namespace + ".java" ,generateKProjectTestClass( kproj, namespace ) );        
+        
+        
+        KieBuilder kBuilder = ks.newKieBuilder( kfs );
+        
+        kBuilder.buildAll();
+        if ( kBuilder.getResults().hasMessages( Level.ERROR  ) ) {
+            fail( "should not have errors" + kBuilder.getResults() );
+        }
+        MemoryKieModule kieModule = ( MemoryKieModule ) kBuilder.getKieModule();
+        MemoryFileSystem trgMfs = kieModule.getMemoryFileSystem();
+        
+        if ( createJar ) {            
             trgMfs.writeAsJar(fileManager.getRootDirectory(), namespace);
         } else {
-            writeFs( namespace, trgMfs );
+            java.io.File file = fileManager.newFile( namespace );            
+            trgMfs.writeAsFs( file );
         }
+        
+        return kproj;
     }
 
     public String getRule(String packageName,
-                          String ruleName) {
+                          String ruleName,
+                          String version) {
         String s = "package " + packageName + "\n" +
                 "global java.util.List list;\n" +
                 "rule " + ruleName + " when \n" +
                 "then \n" +
-                "  list.add(\"" + packageName + ":" + ruleName + "\"); " +
+                "  list.add(\"" + packageName + ":" + ruleName + ":" + version + "\"); " +
                 "end \n" +
                 "";
         return s;
     }
 
-    public String generateBeansXML(KProject kproject) {
+    public String generateBeansXML(KieModuleModel kproject) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n" +
                 "</beans>";
     }
 
-    public String generateKProjectTestClass(KProject kproject,
+    public String generateKProjectTestClass(KieModuleModel kproject,
                                             String namespace) {
 
         return "package org.drools.cdi.test;\n" +
@@ -162,9 +213,9 @@ public class AbstractKnowledgeTest {
                 "import javax.inject.Inject;\n" +
                 "import javax.enterprise.event.Observes;\n" +
                 "import org.jboss.weld.environment.se.events.ContainerInitialized;\n" +
-                "import " + KnowledgeBase.class.getName() + ";\n" +
-                "import " + StatefulKnowledgeSession.class.getName() + ";\n" +
-                "import " + StatelessKnowledgeSession.class.getName() + ";\n" +
+                "import " + KieBase.class.getName() + ";\n" +
+                "import " + KieSession.class.getName() + ";\n" +
+                "import " + StatelessKieSession.class.getName() + ";\n" +
                 "import " + org.kie.cdi.KBase.class.getName() + ";\n" +
                 "import " + org.kie.cdi.KSession.class.getName() + ";\n" +
                 "import " + KPTest.class.getName() + ";\n" +
@@ -172,45 +223,45 @@ public class AbstractKnowledgeTest {
                 "@KPTest(\"" + namespace + "\") \n" +
                 "public class KProjectTestClass" + namespace + " implements org.drools.kproject.KProjectTestClass {\n" +
                 "    private @Inject @KBase(\"" + namespace + ".KBase1\")  " +
-                "    KnowledgeBase kBase1; \n" +
-                "    public KnowledgeBase getKBase1() {\n" +
+                "    KieBase kBase1; \n" +
+                "    public KieBase getKBase1() {\n" +
                 "        return kBase1;\n" +
                 "    }\n" +
                 "    private @Inject @KBase(\"" + namespace + ".KBase2\") " +
-                "    KnowledgeBase kBase2; \n" +
-                "    public KnowledgeBase getKBase2() {\n" +
+                "    KieBase kBase2; \n" +
+                "    public KieBase getKBase2() {\n" +
                 "        return kBase2;\n" +
                 "    }\n" +
                 "    private @Inject @KBase(\"" + namespace + ".KBase3\") \n" +
-                "    KnowledgeBase kBase3; \n" +
-                "    public KnowledgeBase getKBase3() {\n" +
+                "    KieBase kBase3; \n" +
+                "    public KieBase getKBase3() {\n" +
                 "        return kBase3;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".KSession1\") StatelessKnowledgeSession kBase1kSession1; \n" +
-                "    public StatelessKnowledgeSession getKBase1KSession1() {\n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession1\") StatelessKieSession kBase1kSession1; \n" +
+                "    public StatelessKieSession getKBase1KSession1() {\n" +
                 "        return kBase1kSession1;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".KSession2\") StatefulKnowledgeSession kBase1kSession2; \n" +
-                "    public StatefulKnowledgeSession getKBase1KSession2() {\n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession2\") KieSession kBase1kSession2; \n" +
+                "    public KieSession getKBase1KSession2() {\n" +
                 "        return kBase1kSession2;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".KSession3\") StatefulKnowledgeSession kBase2kSession3; \n" +
-                "    public StatefulKnowledgeSession getKBase2KSession3() {\n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession3\") KieSession kBase2kSession3; \n" +
+                "    public KieSession getKBase2KSession3() {\n" +
                 "        return kBase2kSession3;\n" +
                 "    }\n" +
-                "    private @Inject @KSession(\"" + namespace + ".KSession4\") StatelessKnowledgeSession kBase3kSession4; \n" +
-                "    public StatelessKnowledgeSession getKBase3KSession4() {\n" +
+                "    private @Inject @KSession(\"" + namespace + ".KSession4\") StatelessKieSession kBase3kSession4; \n" +
+                "    public StatelessKieSession getKBase3KSession4() {\n" +
                 "        return kBase3kSession4;\n" +
                 "    }\n" +
                 "}\n";
     }
 
-    public List<String> compile(KProject kproj,
+    public List<String> compile(KieModuleModel kproj,
                                 MemoryFileSystem srcMfs,
                                 MemoryFileSystem trgMfs,
                                 List<String> classes) {
-        for ( KBase kbase : kproj.getKBases().values() ) {
-            Folder srcFolder = srcMfs.getFolder( kproj.getKBasesPath() + "/" + kbase.getName() );
+        for ( KieBaseModel kbase : kproj.getKieBaseModels().values() ) {
+            Folder srcFolder = srcMfs.getFolder( "src/main/resources/" + kbase.getName() );
             Folder trgFolder = trgMfs.getFolder(kbase.getName());
 
             copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
@@ -222,20 +273,14 @@ public class AbstractKnowledgeTest {
 
         copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
 
-        //printFs(trgMfs, trgMfs.getRootFolder());
-        // populateClasses(kproj, classes);
-
-        System.out.println( classes );
-
         EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
         settings.setSourceVersion( "1.5" );
         settings.setTargetVersion( "1.5" );
-        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings );
+        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings, "" );
         CompilationResult res = compiler.compile( classes.toArray( new String[classes.size()] ), trgMfs, trgMfs );
 
         if ( res.getErrors().length > 0 ) {
             fail( res.getErrors()[0].getMessage() );
-            //fail(res.getErrors().toString());
         }
 
         List<String> classes2 = new ArrayList<String>( classes.size() );
@@ -254,7 +299,7 @@ public class AbstractKnowledgeTest {
                            Folder srcFolder,
                            MemoryFileSystem trgMfs,
                            Folder trgFolder,
-                           KProject kproj) {
+                           KieModuleModel kproj) {
         if ( !trgFolder.exists() ) {
             trgMfs.getFolder( trgFolder.getPath() ).create();
         }

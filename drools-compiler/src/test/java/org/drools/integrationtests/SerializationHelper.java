@@ -10,7 +10,6 @@ import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.ProtobufMarshaller;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.kie.marshalling.MarshallerFactory;
@@ -134,7 +133,7 @@ public class SerializationHelper {
                                                                                  boolean dispose,
                                                                                  boolean testRoundTrip ) throws Exception {
 
-        ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(),
+        ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( ksession.getKieBase(),
                                                                  (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
         long time = ksession.<SessionClock>getSessionClock().getCurrentTime();
         // make sure globas are in the environment of the session

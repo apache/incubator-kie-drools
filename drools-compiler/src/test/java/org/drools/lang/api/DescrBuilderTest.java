@@ -16,6 +16,10 @@
 
 package org.drools.lang.api;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -29,20 +33,15 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.type.FactType;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.WorkingMemoryEntryPoint;
 import org.mockito.ArgumentCaptor;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * DescrBuilderTest
@@ -433,11 +432,11 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
         
-        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
-        verify( ael ).afterActivationFired( cap.capture() );
+        ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
+        verify( ael ).afterMatchFired(cap.capture());
         
-        assertThat( ((Number) cap.getValue().getActivation().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
-        assertThat( ((Number) cap.getValue().getActivation().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );
+        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
+        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );
     }
     
     @Test

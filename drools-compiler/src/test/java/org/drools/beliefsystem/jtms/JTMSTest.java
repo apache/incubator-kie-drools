@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.BeliefSystemType;
@@ -22,9 +21,9 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.io.ResourceType;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 
@@ -41,7 +40,7 @@ public class JTMSTest {
         KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
         kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
 
-        KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
         
         StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
@@ -60,7 +59,7 @@ public class JTMSTest {
         KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
         kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
 
-        KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
         
         StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
@@ -97,11 +96,11 @@ public class JTMSTest {
                 "    final String s = '+' + $n;" +
                 "    final List l = list;" +
                 "    l.add( s );\n" +
-                "    AgendaItem item = ( AgendaItem ) kcontext.getActivation();" +
+                "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" + 
                 "        \n" + 
                 "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm,\n" +
-                "                            org.kie.runtime.rule.Activation activation) {\n" +
+                "                            org.kie.runtime.rule.Match activation) {\n" +
                 "            l.remove( s );\n" + 
                 "        }\n" + 
                 "    } );" +
@@ -113,11 +112,11 @@ public class JTMSTest {
                 "    final String s = '-' + $n; \n" +
                 "    final List l = list; \n" +
                 "    l.add( s ); \n" +
-                "    AgendaItem item = ( AgendaItem ) kcontext.getActivation();" +
+                "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" +
                 "        \n" +
                 "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm,\n" +
-                "                            org.kie.runtime.rule.Activation activation) {\n" +
+                "                            org.kie.runtime.rule.Match activation) {\n" +
                 "            l.remove( s );\n" +
                 "        }\n" +
                 "    } );" +
@@ -386,11 +385,11 @@ public class JTMSTest {
                 "    final String s = '-' + $n; \n" +
                 "    final List l = list; \n" +
                 "    l.add( s ); \n" +
-                "    AgendaItem item = ( AgendaItem ) kcontext.getActivation(); \n" +
+                "    AgendaItem item = ( AgendaItem ) kcontext.getMatch(); \n" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() { \n" + 
                 "        \n" + 
                 "        public void unMatch(org.kie.runtime.rule.WorkingMemory wm, \n" +
-                "                            org.kie.runtime.rule.Activation activation) { \n" +
+                "                            org.kie.runtime.rule.Match activation) { \n" +
                 "            l.remove( s ); \n" + 
                 "        }\n" + 
                 "    } );" + 

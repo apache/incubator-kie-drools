@@ -21,18 +21,18 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-import org.kie.builder.ResourceConfiguration;
-import org.kie.builder.ResourceType;
 import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
 
 public interface InternalResource extends Resource {
-    void setResourceType(ResourceType resourceType);
+    InternalResource setResourceType(ResourceType resourceType);
     
     ResourceType getResourceType();
     
     ResourceConfiguration getConfiguration();
 
-    void setConfiguration(ResourceConfiguration configuration);
+    InternalResource setConfiguration(ResourceConfiguration configuration);
     
     URL getURL() throws IOException;
     
@@ -47,15 +47,6 @@ public interface InternalResource extends Resource {
     long getLastRead();
     
     /**
-     * Returns the name of the resource. This is just a descriptive name of
-     * the resource. 
-     * This is not a mandatory attribute
-     * 
-     * @return the name of the resource, or null if is not set.
-     */
-    String getName();
-    
-    /**
      * Returns the description of the resource. This is just a text description
      * of the resource used to add more information about it.
      * This is not a mandatory attribute
@@ -65,8 +56,6 @@ public interface InternalResource extends Resource {
     String getDescription();
 
     void setDescription(String description); 
-
-    void setName(String name);
 
     List<String> getCategories();
 

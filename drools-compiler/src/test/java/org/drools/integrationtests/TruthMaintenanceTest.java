@@ -3,7 +3,6 @@ package org.drools.integrationtests;
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,13 +23,10 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.Sensor;
 import org.drools.StatefulSession;
-import org.drools.TotalHolder;
 import org.drools.WorkingMemory;
 import org.drools.YoungestFather;
 import org.drools.beliefsystem.BeliefSet;
-import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LogicalDependency;
 import org.drools.common.NamedEntryPoint;
 import org.drools.common.TruthMaintenanceSystem;
@@ -43,21 +39,19 @@ import org.drools.rule.Package;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.rule.ActivationUnMatchListener;
+import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
-import org.kie.event.rule.ObjectRetractedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
@@ -67,7 +61,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         return KnowledgeBaseFactory.newKnowledgeBase();
     }
 
-    protected KnowledgeBase getKnowledgeBase(KnowledgeBaseConfiguration config) throws Exception {
+    protected KnowledgeBase getKnowledgeBase(KieBaseConfiguration config) throws Exception {
         return KnowledgeBaseFactory.newKnowledgeBase( config );
     }
 
@@ -128,7 +122,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );        
 
-        kbase = ksession.getKnowledgeBase();
+        kbase = ksession.getKieBase();
 
         // check all now have just one logical assertion each
         list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
@@ -1043,9 +1037,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertThat( inserts.get( 1 ).getObject(), is(  (Object) mark) );
         assertThat( inserts.get( 2 ).getObject(), is( (Object) "rule 2" ) );
         
-        ArgumentCaptor<ObjectRetractedEvent> retractsCaptor = ArgumentCaptor.forClass( ObjectRetractedEvent.class );
-        verify( wmel, times(1) ).objectRetracted( retractsCaptor.capture() );
-        List<ObjectRetractedEvent> retracts = retractsCaptor.getAllValues();
+        ArgumentCaptor<ObjectDeletedEvent> retractsCaptor = ArgumentCaptor.forClass( ObjectDeletedEvent.class );
+        verify( wmel, times(1) ).objectDeleted(retractsCaptor.capture());
+        List<ObjectDeletedEvent> retracts = retractsCaptor.getAllValues();
         assertThat( retracts.get( 0 ).getOldObject(), is( (Object) "rule 2" ) );
     }
     

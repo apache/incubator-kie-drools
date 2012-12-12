@@ -6,7 +6,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -26,25 +25,15 @@ import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.TotalHolder;
 import org.drools.WorkingMemory;
-import org.drools.command.runtime.process.CreateProcessInstanceCommand;
-import org.drools.common.BaseNode;
 import org.drools.common.DefaultAgenda;
-import org.drools.common.InternalAgenda;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
-import org.drools.common.RuleNetworkEvaluatorActivation;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.compiler.PackageBuilder;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.reteoo.RuleMemory;
-import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Package;
-import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -56,9 +45,9 @@ import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {

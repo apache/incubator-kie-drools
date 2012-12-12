@@ -17,12 +17,10 @@
 package org.drools.command.impl;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.command.CommandService;
-import org.drools.command.ExecuteCommand;
 import org.drools.command.GetSessionClockCommand;
 import org.drools.command.Interceptor;
 import org.drools.command.runtime.AddEventListenerCommand;
@@ -35,11 +33,9 @@ import org.drools.command.runtime.GetGlobalsCommand;
 import org.drools.command.runtime.GetIdCommand;
 import org.drools.command.runtime.GetKnowledgeBaseCommand;
 import org.drools.command.runtime.RegisterChannelCommand;
-import org.drools.command.runtime.RegisterExitPointCommand;
 import org.drools.command.runtime.RemoveEventListenerCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.UnregisterChannelCommand;
-import org.drools.command.runtime.UnregisterExitPointCommand;
 import org.drools.command.runtime.process.AbortProcessInstanceCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
@@ -57,6 +53,7 @@ import org.drools.command.runtime.rule.ClearActivationGroupCommand;
 import org.drools.command.runtime.rule.ClearAgendaCommand;
 import org.drools.command.runtime.rule.ClearAgendaGroupCommand;
 import org.drools.command.runtime.rule.ClearRuleFlowGroupCommand;
+import org.drools.command.runtime.rule.DeleteCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.command.runtime.rule.FireUntilHaltCommand;
 import org.drools.command.runtime.rule.GetAgendaEventListenersCommand;
@@ -70,9 +67,7 @@ import org.drools.command.runtime.rule.GetWorkingMemoryEventListenersCommand;
 import org.drools.command.runtime.rule.HaltCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.command.runtime.rule.QueryCommand;
-import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.UpdateCommand;
-import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaFilterWrapper;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.EntryPoint;
@@ -84,9 +79,8 @@ import org.kie.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.Globals;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
@@ -265,27 +259,8 @@ public class CommandBasedStatefulKnowledgeSession
         this.commandService.execute( new FireUntilHaltCommand( agendaFilter ) );
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public KnowledgeBase getKieBase() {
         return this.commandService.execute( new GetKnowledgeBaseCommand() );
-    }
-
-    /**
-     * @deprecated Use {@link #registerChannel(String, Channel)} instead
-     */
-    @Deprecated
-    public void registerExitPoint(String name,
-                                  ExitPoint exitPoint) {
-        this.commandService.execute( new RegisterExitPointCommand( name,
-                                                                   exitPoint ) );
-    }
-
-    /**
-     * @deprecated Use {@link #unregisterChannel(String)} instead.
-     */
-    @Deprecated
-    public void unregisterExitPoint(String name) {
-        this.commandService.execute( new UnregisterExitPointCommand( name ) );
-
     }
 
     public void registerChannel(String name,
@@ -407,7 +382,11 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public void retract(FactHandle handle) {
-        commandService.execute( new RetractCommand( handle ) );
+        commandService.execute( new DeleteCommand( handle ) );
+    }
+
+    public void delete(FactHandle handle) {
+        commandService.execute( new DeleteCommand( handle ) );
     }
 
     public void update(FactHandle handle,
@@ -506,7 +485,7 @@ public class CommandBasedStatefulKnowledgeSession
         return null;
     }
     
-    public KnowledgeSessionConfiguration getSessionConfiguration() {
+    public KieSessionConfiguration getSessionConfiguration() {
         return ((KnowledgeCommandContext) commandService.getContext()).getStatefulKnowledgesession().getSessionConfiguration();
     }
 

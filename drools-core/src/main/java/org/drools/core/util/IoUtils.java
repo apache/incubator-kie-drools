@@ -3,15 +3,20 @@ package org.drools.core.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class IoUtils {
 
@@ -104,6 +109,31 @@ public class IoUtils {
             }
         }
     }
+    
+    public static Map<String, ZipEntry> buildZipFileMapEntries(java.io.File jarFile) {
+        Map<String, ZipEntry> files = new HashMap<String, ZipEntry>();
+        ZipFile zipFile = null;
+        try {
+            zipFile = new ZipFile( jarFile );
+            Enumeration< ? extends ZipEntry> entries = zipFile.entries();
+            while ( entries.hasMoreElements() ) {
+                ZipEntry entry = entries.nextElement();
+                files.put( entry.getName(), 
+                           entry );
+            }
+        } catch ( IOException e ) {
+            throw new RuntimeException( "Unable to get all ZipFile entries: " + jarFile, e );
+        } finally {
+            if ( zipFile != null ) {
+                try {
+                    zipFile.close();
+                } catch ( IOException e ) {
+                    throw new RuntimeException( "Unable to get all ZipFile entries: " + jarFile, e );
+                }
+            }
+        }
+        return files;
+    }    
 
     public static List<String> recursiveListFile(File folder) {
         return recursiveListFile(folder, "", Predicate.PassAll.INSTANCE);
@@ -128,5 +158,18 @@ public class IoUtils {
                 files.add(relativePath + file.getName());
             }
         }
+    }
+
+    public static byte[] readBytesFromInputStream(InputStream is) throws IOException {
+        byte[] resultBuff = new byte[0];
+        byte[] buff = new byte[2048];
+        int k = -1;
+        while ((k = is.read(buff, 0, buff.length)) > -1) {
+            byte[] tbuff = new byte[resultBuff.length + k];
+            System.arraycopy(resultBuff, 0, tbuff, 0, resultBuff.length);
+            System.arraycopy(buff, 0, tbuff, resultBuff.length, k);
+            resultBuff = tbuff;
+        }
+        return resultBuff;
     }
 }

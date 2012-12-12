@@ -6,22 +6,21 @@ import java.util.List;
 import org.drools.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.conf.DeclarativeAgendaOption;
-import org.kie.event.rule.ActivationCancelledEvent;
-import org.kie.event.rule.ActivationCreatedEvent;
-import org.kie.event.rule.AfterActivationFiredEvent;
+import org.kie.event.rule.MatchCancelledEvent;
+import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.AgendaGroupPoppedEvent;
 import org.kie.event.rule.AgendaGroupPushedEvent;
-import org.kie.event.rule.BeforeActivationFiredEvent;
+import org.kie.event.rule.BeforeMatchFiredEvent;
 import org.kie.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.Activation;
 import org.kie.runtime.rule.FactHandle;
+import org.kie.runtime.rule.Match;
 
 public class DeclarativeAgendaTest extends CommonTestMethodBase {
     
@@ -29,7 +28,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testSimpleBlockingUsingForall() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
         str += "rule rule1 @department(sales) salience -100 \n";
@@ -41,13 +40,13 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule rule2 salience 200\n";
         str += "when \n";        
         str += "     $s : String( this == 'go1' ) \n";
-        str += "     exists  Activation( department == 'sales' ) \n";  
-        str += "     forall ( $a : Activation( department == 'sales' ) Activation( this == $a, active == false ) ) \n";
+        str += "     exists  Match( department == 'sales' ) \n";  
+        str += "     forall ( $a : Match( department == 'sales' ) Match( this == $a, active == false ) ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $s ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -69,7 +68,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testBasicBlockOnAnnotation() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
         str += "rule rule1 @department(sales) \n";
@@ -93,13 +92,13 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -285,7 +284,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public StatefulKnowledgeSession getStatefulKnowledgeSession() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
@@ -299,13 +298,13 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -317,7 +316,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testMultipleBlockers() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
@@ -331,31 +330,31 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules1 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go1' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule blockerAllSalesRules2 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule blockerAllSalesRules3 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go3' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -400,7 +399,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         // This test is a bit wierd as it recurses. Maybe unblockAll is not feasible...
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
@@ -414,40 +413,40 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules1 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go1' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule blockerAllSalesRules2 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule blockerAllSalesRules3 @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go3' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
         str += "rule unblockAll @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go4' ) \n";
-        str += "     $i : Activation( department == 'sales', active == true ) \n";
+        str += "     $i : Match( department == 'sales', active == true ) \n";
         str += "then \n";
         str += "    list.add( kcontext.rule.name + ':' + $i.rule.name + ':' + $s  ); \n";
-        str += "    kcontext.unblockAllActivations( $i ); \n";
+        str += "    kcontext.unblockAllMatches( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -485,7 +484,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testIterativeUpdate() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
@@ -513,14 +512,14 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules1 @activationListener('direct') \n";
         str += "when \n";
         str += "     $l : List( ) \n";
-        str += "     $i : Activation( rule.name == $l[0] ) \n";
+        str += "     $i : Match( rule.name == $l[0] ) \n";
         str += "then \n";
         //str += "   System.out.println( kcontext.rule.name  + ':' + $i ); \n";
         str += "    list.add( 'block:' + $i.rule.name  ); \n";
-        str += "    kcontext.blockActivation( $i ); \n";
+        str += "    kcontext.blockMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -617,7 +616,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testCancelActivation() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
         str += "rule rule1 @department(sales) \n";
@@ -629,12 +628,12 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule blockerAllSalesRules @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $i : Activation( department == 'sales' ) \n";
+        str += "     $i : Match( department == 'sales' ) \n";
         str += "then \n";
-        str += "    kcontext.cancelActivation( $i ); \n";
+        str += "    kcontext.cancelMatch( $i ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -643,7 +642,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         ksession.addEventListener( new AgendaEventListener() {
 
-            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+            public void beforeMatchFired(BeforeMatchFiredEvent event) {
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
@@ -652,10 +651,10 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
             }
 
-            public void afterActivationFired(AfterActivationFiredEvent event) {
+            public void afterMatchFired(AfterMatchFiredEvent event) {
             }
 
-            public void activationCreated(ActivationCreatedEvent event) {
+            public void matchCreated(MatchCreatedEvent event) {
             }
 
             public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
@@ -670,7 +669,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
             }
             
-            public void activationCancelled(ActivationCancelledEvent event) {
+            public void matchCancelled(MatchCancelledEvent event) {
                 cancelled.add( event );
             }            
         } );
@@ -687,7 +686,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertEquals( 1,
                       cancelled.size() );
         assertEquals( "rule1",
-                      ((ActivationCancelledEvent) cancelled.get( 0 )).getActivation().getRule().getName() );
+                      ((MatchCancelledEvent) cancelled.get( 0 )).getMatch().getRule().getName() );
         ksession.dispose();
     }
 
@@ -695,7 +694,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     public void testActiveInActiveChanges() {
         String str = "";
         str += "package org.domain.test \n";
-        str += "import " + Activation.class.getName() + "\n";
+        str += "import " + Match.class.getName() + "\n";
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
         str += "rule rule1 @department(sales) \n";
@@ -719,14 +718,14 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "rule countActivateInActive @activationListener('direct') \n";
         str += "when \n";
         str += "     $s : String( this == 'go2' ) \n";
-        str += "     $active : Number( this == 1 ) from accumulate( $a : Activation( department == 'sales', active == true ), count( $a ) )\n";
-        str += "     $inActive : Number( this == 2 ) from  accumulate( $a : Activation( department == 'sales', active == false ), count( $a ) )\n";
+        str += "     $active : Number( this == 1 ) from accumulate( $a : Match( department == 'sales', active == true ), count( $a ) )\n";
+        str += "     $inActive : Number( this == 2 ) from  accumulate( $a : Match( department == 'sales', active == false ), count( $a ) )\n";
         str += "then \n";
         str += "    list.add( $active + ':' + $inActive  ); \n";
         str += "    kcontext.halt( ); \n";
         str += "end \n";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -750,7 +749,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     @Test
     public void testCancelMultipleActivations() {
         String str = "package org.domain.test\n" +
-                "import " + Activation.class.getName() + "\n" +
+                "import " + Match.class.getName() + "\n" +
                 "global java.util.List list\n" +
                 "rule sales1 @department('sales')\n" +
                 "when\n" +
@@ -768,12 +767,12 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                 "\n" +
                 "rule salesCancel @activationListener('direct')\n" +
                 "when\n" +
-                "    $i : Activation( department == 'sales' )\n" +
+                "    $i : Match( department == 'sales' )\n" +
                 "then\n" +
-                "    kcontext.cancelActivation($i);\n" +
+                "    kcontext.cancelMatch($i);\n" +
                 "end";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -792,7 +791,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
     @Test
     public void testCancelActivationOnInsertAndUpdate() {
         String str = "package org.domain.test\n" +
-                "import " + Activation.class.getName() + "\n" +
+                "import " + Match.class.getName() + "\n" +
                 "global java.util.List list\n" +
                 "rule sales1 @department('sales') @category('special')\n" +
                 "salience 10\n" +
@@ -812,12 +811,12 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                 "rule salesCancel @activationListener('direct')\n" +
                 "when\n" +
                 "    String(this == 'fireCancelRule')\n" +
-                "    $i : Activation( department == 'sales', category == 'special' )\n" +
+                "    $i : Match( department == 'sales', category == 'special' )\n" +
                 "then\n" +
-                "    kcontext.cancelActivation($i);\n" +
+                "    kcontext.cancelMatch($i);\n" +
                 "end";
 
-        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);

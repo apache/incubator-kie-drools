@@ -279,14 +279,14 @@ public class PropagationQueuingNode extends ObjectSource
                                          false );
 
         // we limit the propagation to avoid a hang when this queue is never empty
-        Action next = memory.getNext();
-        for ( int counter = 0; next != null && counter < PROPAGATION_SLICE_LIMIT; next = memory.getNext(), counter++ ) {
+        Action next = memory.getNextAction();
+        for ( int counter = 0; next != null && counter < PROPAGATION_SLICE_LIMIT; next = memory.getNextAction(), counter++ ) {
             next.execute( this.sink,
                           workingMemory );
         }
 
-        if ( memory.hasNext() && memory.isQueued().compareAndSet( false,
-                                                                  true ) ) {
+        if ( memory.hasNextAction() && memory.isQueued().compareAndSet( false,
+                                                                        true ) ) {
             // add action to the queue again.
             workingMemory.queueWorkingMemoryAction( this.action );
         }
@@ -330,7 +330,6 @@ public class PropagationQueuingNode extends ObjectSource
      */
     public static class PropagationQueueingNodeMemory
         implements
-        Externalizable,
         Memory {
 
         private static final long             serialVersionUID = 7372028632974484023L;
@@ -346,18 +345,6 @@ public class PropagationQueuingNode extends ObjectSource
             this.isQueued = new AtomicBoolean( false );
         }
 
-        @SuppressWarnings("unchecked")
-        public void readExternal( ObjectInput in ) throws IOException,
-                                                  ClassNotFoundException {
-            queue = (ConcurrentLinkedQueue<Action>) in.readObject();
-            isQueued = (AtomicBoolean) in.readObject();
-        }
-
-        public void writeExternal( ObjectOutput out ) throws IOException {
-            out.writeObject( queue );
-            out.writeObject( isQueued );
-        }
-
         public boolean isEmpty() {
             return this.queue.isEmpty();
         }
@@ -366,11 +353,11 @@ public class PropagationQueuingNode extends ObjectSource
             this.queue.add( action );
         }
 
-        public Action getNext() {
+        public Action getNextAction() {
             return this.queue.poll();
         }
 
-        public boolean hasNext() {
+        public boolean hasNextAction() {
             return this.queue.peek() != null;
         }
 
@@ -384,6 +371,26 @@ public class PropagationQueuingNode extends ObjectSource
  
         public short getNodeType() {
             return NodeTypeEnums.PropagationQueueingNode;
+        }
+
+        public Memory getPrevious() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setPrevious(Memory previous) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setNext(Memory next) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Memory getNext() {
+            throw new UnsupportedOperationException();
+        }
+
+        public SegmentMemory getSegmentMemory() {
+            throw new UnsupportedOperationException();
         }
     }
 

@@ -26,8 +26,8 @@ import org.drools.io.internal.InternalResource;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.kie.builder.ResourceType;
 import org.kie.io.Resource;
+import org.kie.io.ResourceType;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -91,7 +91,7 @@ public class ResourceHandler extends BaseAbstractHandler
         
         resource.setResourceType( ResourceType.getResourceType( type ) );
         
-        resource.setName(name);
+        resource.setSourcePath(name);
         resource.setDescription(description);
         resource.setCategories(categories);
         

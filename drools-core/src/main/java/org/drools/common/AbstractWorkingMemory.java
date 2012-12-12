@@ -28,10 +28,8 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -41,14 +39,12 @@ import org.drools.FactHandle;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.base.CalendarsImpl;
 import org.drools.base.MapGlobalResolver;
-import org.drools.concurrent.ExternalExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -61,8 +57,6 @@ import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.PartitionManager;
-import org.drools.reteoo.PartitionTaskManager;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -89,7 +83,6 @@ import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.Globals;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItemHandler;
@@ -164,13 +157,7 @@ public abstract class AbstractWorkingMemory
 
     protected SessionConfiguration                               config;
 
-    protected PartitionManager                                   partitionManager;
-
-    protected transient AtomicReference<ExternalExecutorService> threadPool = new AtomicReference<ExternalExecutorService>();
-
     private InternalKnowledgeRuntime                             kruntime;
-
-    private Map<String, ExitPoint>                               exitPoints;
 
     private Map<String, Channel>                                 channels;
 
@@ -317,7 +304,6 @@ public abstract class AbstractWorkingMemory
 
         this.firing = new AtomicBoolean( false );
 
-        initPartitionManagers();
         initTransient();
 
         this.opCounter = new AtomicLong( 0 );
@@ -384,63 +370,6 @@ public abstract class AbstractWorkingMemory
                 entryPoints.remove(removedNode.getEntryPoint().getEntryPointId());
             }
         }
-    }
-
-    /**
-     * Creates the actual partition managers and their tasks for multi-thread
-     * processing
-     */
-    private void initPartitionManagers() {
-        if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-            this.partitionManager = new PartitionManager( this );
-
-            for ( RuleBasePartitionId partitionId : this.ruleBase.getPartitionIds() ) {
-                this.partitionManager.manage( partitionId );
-            }
-        }
-    }
-
-    /**
-     * This method is called to start the multiple partition threads when
-     * running in multi-thread mode
-     */
-    public void startPartitionManagers() {
-        startOperation();
-        try {
-            if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-                int maxThreads = (this.ruleBase.getConfiguration().getMaxThreads() > 0) ? this.ruleBase.getConfiguration().getMaxThreads() : this.ruleBase.getPartitionIds().size();
-                if ( this.threadPool.compareAndSet( null,
-                                                    createExecutorService( maxThreads ) ) ) {
-                    this.partitionManager.setPool( this.threadPool.get() );
-                }
-            }
-        } finally {
-            endOperation();
-        }
-    }
-
-    private ExternalExecutorService createExecutorService(final int maxThreads) {
-        return new ExternalExecutorService( Executors.newFixedThreadPool( maxThreads ) );
-    }
-
-    public void stopPartitionManagers() {
-        startOperation();
-        try {
-            if ( this.ruleBase.getConfiguration().isMultithreadEvaluation() ) {
-                ExternalExecutorService service = this.threadPool.get();
-                if ( this.threadPool.compareAndSet( service,
-                                                    null ) ) {
-                    service.shutdown();
-                    partitionManager.shutdown();
-                }
-            }
-        } finally {
-            endOperation();
-        }
-    }
-
-    public boolean isPartitionManagersActive() {
-        return this.threadPool.get() != null;
     }
 
     private void initTransient() {
@@ -911,15 +840,21 @@ public abstract class AbstractWorkingMemory
     }
 
     public void retract(final org.kie.runtime.rule.FactHandle handle) throws FactException {
-        retract( (org.drools.FactHandle) handle,
+        delete( (org.drools.FactHandle) handle,
                  null,
                  null );
     }
 
-    public void retract(final org.drools.FactHandle factHandle,
+    public void delete(final org.kie.runtime.rule.FactHandle handle) throws FactException {
+        delete( (org.drools.FactHandle) handle,
+                 null,
+                 null );
+    }
+
+    public void delete(final org.drools.FactHandle factHandle,
                         final Rule rule,
                         final Activation activation) throws FactException {
-        this.defaultEntryPoint.retract( factHandle,
+        this.defaultEntryPoint.delete( factHandle,
                                         rule,
                                         activation );
     }
@@ -1008,10 +943,8 @@ public abstract class AbstractWorkingMemory
     /**
      * Retrieve the <code>JoinMemory</code> for a particular
      * <code>JoinNode</code>.
-     * 
      * @param node
      *            The <code>JoinNode</code> key.
-     * 
      * @return The node's memory.
      */
     public Memory getNodeMemory(final MemoryFactory node) {
@@ -1206,10 +1139,6 @@ public abstract class AbstractWorkingMemory
         return (SessionClock) this.timerService;
     }
 
-    public PartitionTaskManager getPartitionTaskManager(final RuleBasePartitionId partitionId) {
-        return partitionManager.getPartitionTaskManager( partitionId );
-    }
-
     public void startBatchExecution(ExecutionResultImpl results) {
         this.ruleBase.readLock();
         this.lock.lock();
@@ -1238,7 +1167,6 @@ public abstract class AbstractWorkingMemory
         for ( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
             this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
         }
-        this.stopPartitionManagers();
         if ( processRuntime != null ) {
             this.processRuntime.dispose();
         }
@@ -1254,32 +1182,6 @@ public abstract class AbstractWorkingMemory
 
     public InternalKnowledgeRuntime getKnowledgeRuntime() {
         return this.kruntime;
-    }
-
-    /**
-     * @deprecated Use {@link #registerChannel(String, Channel)} instead.
-     */
-    @Deprecated
-    public void registerExitPoint(String name,
-                                  ExitPoint exitPoint) {
-        getExitPoints().put(name, exitPoint);
-    }
-
-    /**
-     * @deprecated Use {@link #unregisterChannel(String)} instead.
-     */
-    @Deprecated
-    public void unregisterExitPoint(String name) {
-        if (exitPoints != null) exitPoints.remove(name);
-    }
-
-    /**
-     * @deprecated Use {@link #getChannels()} instead.
-     */
-    @Deprecated
-    public Map<String, ExitPoint> getExitPoints() {
-        if (exitPoints == null) exitPoints = new ConcurrentHashMap<String, ExitPoint>();
-        return exitPoints;
     }
 
     public void registerChannel(String name,
@@ -1368,6 +1270,12 @@ public abstract class AbstractWorkingMemory
         return this.lastIdleTimestamp.get();
     }
 
+    public void prepareToFireActivation() {
+    }
+
+    public void activationFired() {
+    }
+    
     /**
      * Returns the number of time units (usually ms) to
      * the next scheduled job
@@ -1377,19 +1285,6 @@ public abstract class AbstractWorkingMemory
      */
     public long getTimeToNextJob() {
         return this.timerService.getTimeToNextJob();
-    }
-
-    public void prepareToFireActivation() {
-        if ( this.partitionManager != null ) {
-            this.partitionManager.holdTasks();
-            this.partitionManager.waitForPendingTasks();
-        }
-    }
-
-    public void activationFired() {
-        if ( this.partitionManager != null ) {
-            this.partitionManager.releaseTasks();
-        }
     }
 
     public ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore() {

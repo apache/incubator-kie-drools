@@ -34,11 +34,10 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemories;
 import org.drools.common.MemoryFactory;
+import org.drools.common.NodeMemories;
 import org.drools.common.ObjectStore;
 import org.drools.common.ObjectTypeConfigurationRegistry;
-import org.drools.common.RuleBasePartitionId;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.AgendaEventListener;
@@ -61,7 +60,6 @@ import org.kie.event.process.ProcessEventListener;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
-import org.kie.runtime.ExitPoint;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItemManager;
@@ -82,7 +80,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void retract( FactHandle handle, Rule rule, Activation activation ) throws FactException {
+    public void delete( FactHandle handle, Rule rule, Activation activation ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -190,19 +188,11 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public PartitionTaskManager getPartitionTaskManager( RuleBasePartitionId partitionId ) {
-        throw new IllegalStateException( ERRORMSG );
-    }
-
     public void setKnowledgeRuntime( InternalKnowledgeRuntime kruntime ) {
         throw new IllegalStateException( ERRORMSG );
     }
 
     public InternalKnowledgeRuntime getKnowledgeRuntime() {
-        throw new IllegalStateException( ERRORMSG );
-    }
-
-    public Map<String, ExitPoint> getExitPoints() {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -446,6 +436,10 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
+    public void delete( org.kie.runtime.rule.FactHandle handle ) throws FactException {
+        throw new IllegalStateException( ERRORMSG );
+    }
+
     public void update( org.kie.runtime.rule.FactHandle handle, Object object ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
@@ -527,10 +521,6 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
     }
 
     public ProcessInstance startProcessInstance( long processInstanceId ) {
-        throw new IllegalStateException( ERRORMSG );
-    }
-
-    public void registerExitPoint( String name, ExitPoint exitPoint ) {
         throw new IllegalStateException( ERRORMSG );
     }
 

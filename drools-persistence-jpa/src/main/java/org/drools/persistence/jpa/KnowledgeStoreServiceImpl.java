@@ -15,27 +15,28 @@
  */
  package org.drools.persistence.jpa;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
-
 import org.drools.SessionConfiguration;
 import org.drools.command.CommandService;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
+import org.kie.KieBase;
 import org.kie.KnowledgeBase;
-import org.kie.persistence.jpa.KnowledgeStoreService;
+import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.CommandExecutor;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.TimerJobFactoryOption;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
+
 public class KnowledgeStoreServiceImpl
     implements
-    KnowledgeStoreService {
+    KieStoreServices {
 
     private Class< ? extends CommandExecutor>               commandServiceClass;
     private Class< ? extends WorkItemManagerFactory>        workItemManagerFactoryClass;
@@ -53,8 +54,8 @@ public class KnowledgeStoreServiceImpl
         setProcessSignalManagerFactoryClass( "org.jbpm.persistence.processinstance.JPASignalManagerFactory" );
     }
 
-    public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
-                                                                KnowledgeSessionConfiguration configuration,
+    public StatefulKnowledgeSession newStatefulKnowledgeSession(KieBase kbase,
+                                                                KieSessionConfiguration configuration,
                                                                 Environment environment) {
         if ( configuration == null ) {
             configuration = new SessionConfiguration();
@@ -70,8 +71,8 @@ public class KnowledgeStoreServiceImpl
     }
 
     public StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
-                                                                 KnowledgeBase kbase,
-                                                                 KnowledgeSessionConfiguration configuration,
+                                                                 KieBase kbase,
+                                                                 KieSessionConfiguration configuration,
                                                                  Environment environment) {
         if ( configuration == null ) {
             configuration = new SessionConfiguration();
@@ -88,15 +89,15 @@ public class KnowledgeStoreServiceImpl
     }
 
     private CommandExecutor buildCommandService(Integer sessionId,
-                                              KnowledgeBase kbase,
-                                              KnowledgeSessionConfiguration conf,
-                                              Environment env) {
+                                                KieBase kbase,
+                                                KieSessionConfiguration conf,
+                                                Environment env) {
 
         try {
             Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
             Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( Integer.class,
                                                                                               KnowledgeBase.class,
-                                                                                              KnowledgeSessionConfiguration.class,
+                                                                                              KieSessionConfiguration.class,
                                                                                               Environment.class );
             return constructor.newInstance( sessionId,
                                             kbase,
@@ -117,14 +118,14 @@ public class KnowledgeStoreServiceImpl
         }
     }
 
-    private CommandExecutor buildCommandService(KnowledgeBase kbase,
-                                              KnowledgeSessionConfiguration conf,
-                                              Environment env) {
+    private CommandExecutor buildCommandService(KieBase kbase,
+                                                KieSessionConfiguration conf,
+                                                Environment env) {
 
         Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
         try {
             Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( KnowledgeBase.class,
-                                                                                              KnowledgeSessionConfiguration.class,
+                                                                                              KieSessionConfiguration.class,
                                                                                               Environment.class );
             return constructor.newInstance( kbase,
                                             conf,
@@ -144,7 +145,7 @@ public class KnowledgeStoreServiceImpl
         }
     }
 
-    private KnowledgeSessionConfiguration mergeConfig(KnowledgeSessionConfiguration configuration) {
+    private KieSessionConfiguration mergeConfig(KieSessionConfiguration configuration) {
         ((SessionConfiguration) configuration).addDefaultProperties(configProps);
         configuration.setOption(TimerJobFactoryOption.get("jpa"));
         return configuration;

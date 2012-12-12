@@ -18,7 +18,7 @@ package org.drools.event.knowlegebase.impl;
 
 import org.kie.KnowledgeBase;
 import org.kie.definition.rule.Rule;
-import org.kie.event.knowledgebase.BeforeRuleRemovedEvent;
+import org.kie.event.kiebase.BeforeRuleRemovedEvent;
 
 public class BeforeRuleRemovedEventImpl extends KnowledgeBaseEventImpl implements BeforeRuleRemovedEvent {
     private Rule rule;
@@ -34,7 +34,7 @@ public class BeforeRuleRemovedEventImpl extends KnowledgeBaseEventImpl implement
 
     @Override
     public String toString() {
-        return "==>[BeforeRuleRemovedEventImpl: getRule()=" + getRule() + ", getKnowledgeBase()=" + getKnowledgeBase()
+        return "==>[BeforeRuleRemovedEventImpl: getRule()=" + getRule() + ", getKieBase()=" + getKieBase()
                 + "]";
     }
 

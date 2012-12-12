@@ -16,8 +16,12 @@
 package org.drools.persistence.util;
 
 import static org.drools.marshalling.util.MarshallingDBUtil.initializeTestDb;
-import static org.junit.Assert.*;
-import static org.kie.runtime.EnvironmentName.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.runtime.EnvironmentName.GLOBALS;
+import static org.kie.runtime.EnvironmentName.TRANSACTION;
+import static org.kie.runtime.EnvironmentName.TRANSACTION_MANAGER;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +45,7 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeSessionConfiguration;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -453,7 +457,7 @@ public class PersistenceUtil {
    }
 
    public static StatefulKnowledgeSession createKnowledgeSessionFromKBase(KnowledgeBase kbase, HashMap<String, Object> context) { 
-       KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+       KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
        StatefulKnowledgeSession knowledgeSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
        return knowledgeSession;
    }

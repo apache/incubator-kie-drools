@@ -16,20 +16,23 @@
 
 package org.drools.io.impl;
 
+import org.drools.io.internal.InternalResource;
+import org.kie.io.Resource;
+
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
-import org.drools.io.internal.InternalResource;
-import org.kie.io.Resource;
+public class EncodedResource  extends BaseResource implements InternalResource, Externalizable {
+    private InternalResource resource;
 
-public class EncodedResource  extends BaseResource implements InternalResource {
-    private final InternalResource resource;
-
-    private final String encoding;
+    private String encoding;
 
 
     /**
@@ -53,6 +56,24 @@ public class EncodedResource  extends BaseResource implements InternalResource {
         }
         this.resource = (InternalResource) resource;
         this.encoding = encoding;
+        setSourcePath( resource.getSourcePath() );
+        setResourceType( resource.getResourceType() );
+        setConfiguration( resource.getConfiguration() );
+    }
+    
+    @Override
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        super.readExternal( in );
+        resource = (InternalResource) in.readObject();
+        encoding = (String) in.readObject();
+    }
+    
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+        out.writeObject( resource );
+        out.writeObject( encoding );
     }
 
     public URL getURL() throws IOException {

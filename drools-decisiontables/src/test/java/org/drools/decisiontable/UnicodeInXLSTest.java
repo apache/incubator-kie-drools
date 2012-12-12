@@ -16,10 +16,10 @@ import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.command.Command;
 import org.kie.command.CommandFactory;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class UnicodeInXLSTest {
@@ -34,7 +34,7 @@ public class UnicodeInXLSTest {
         if (kbuilder.hasErrors()) {
             System.out.println(kbuilder.getErrors().toString());
             System.out.println(DecisionTableFactory.loadFromInputStream(getClass().getResourceAsStream("unicode.xls"), dtconf));
-            fail("Cannot build XLS decision table containing utf-8 characters.");
+            fail("Cannot build XLS decision table containing utf-8 characters\n" + kbuilder.getErrors().toString() );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());

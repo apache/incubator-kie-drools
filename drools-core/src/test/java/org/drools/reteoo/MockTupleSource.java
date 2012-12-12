@@ -74,4 +74,9 @@ public class MockTupleSource extends LeftTupleSource {
         return null;
     }
 
+    @Override
+    public LeftTuple createPeer(LeftTuple original) {
+        return null;
+    }
+
 }

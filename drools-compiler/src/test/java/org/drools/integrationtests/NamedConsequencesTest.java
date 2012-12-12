@@ -1,18 +1,17 @@
 package org.drools.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NamedConsequencesTest extends CommonTestMethodBase {
 

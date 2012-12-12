@@ -1,10 +1,6 @@
 package org.drools.integrationtests;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.kie.runtime.rule.Row;
@@ -27,7 +23,7 @@ public class DroolsEventList extends AbstractEventList<Row> implements ViewChang
 
     }
 
-    public void rowAdded(Row row) {
+    public void rowInserted(Row row) {
         int index = size();
         // create the change event
         updates.beginEvent();
@@ -39,7 +35,7 @@ public class DroolsEventList extends AbstractEventList<Row> implements ViewChang
 
     }
 
-    public void rowRemoved(Row row) {
+    public void rowDeleted(Row row) {
         int index = this.data.indexOf( row );
         // create the change event
         updates.beginEvent();
