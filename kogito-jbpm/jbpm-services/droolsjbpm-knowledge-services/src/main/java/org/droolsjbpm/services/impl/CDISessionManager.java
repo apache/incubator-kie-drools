@@ -34,7 +34,7 @@ import org.droolsjbpm.services.impl.helpers.StatefulKnowledgeSessionDelegate;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseConfiguration;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
@@ -158,7 +158,7 @@ public class CDISessionManager implements SessionManager {
             }
             KnowledgeBase kbase = null;
             if (streamMode) {
-                KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+                KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
                 config.setOption(EventProcessingOption.STREAM);
                 kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
             } else {
