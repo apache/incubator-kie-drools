@@ -53,7 +53,7 @@ public interface Session
      * @param name
      * @return
      */
-    SessionEntryPoint getWorkingMemoryEntryPoint(String name);
+    SessionEntryPoint getEntryPoint(String name);
 
     /**
      * Returns a collection of all available working memory entry points
@@ -61,7 +61,7 @@ public interface Session
      * 
      * @return the collection of all available entry points for this session
      */
-    Collection< ? extends SessionEntryPoint> getWorkingMemoryEntryPoints();
+    Collection< ? extends SessionEntryPoint> getEntryPoints();
 
     /**
      * Retrieve the QueryResults of the specified query and arguments
