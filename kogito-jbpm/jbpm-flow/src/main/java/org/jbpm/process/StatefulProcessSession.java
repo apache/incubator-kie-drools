@@ -260,11 +260,11 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		throw new UnsupportedOperationException();
 	}
 
-	public SessionEntryPoint getWorkingMemoryEntryPoint(String name) {
+	public SessionEntryPoint getEntryPoint(String name) {
 		throw new UnsupportedOperationException();
 	}
 
-	public Collection<? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
+	public Collection<? extends SessionEntryPoint> getEntryPoints() {
 		throw new UnsupportedOperationException();
 	}
 

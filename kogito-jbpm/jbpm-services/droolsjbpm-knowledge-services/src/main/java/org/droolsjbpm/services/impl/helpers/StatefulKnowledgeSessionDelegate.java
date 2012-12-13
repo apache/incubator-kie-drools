@@ -142,13 +142,13 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
     }
 
     @Override
-    public SessionEntryPoint getWorkingMemoryEntryPoint(String string) {
-        return ksession.getWorkingMemoryEntryPoint(string);
+    public SessionEntryPoint getEntryPoint(String string) {
+        return ksession.getEntryPoint(string);
     }
 
     @Override
-    public Collection<? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
-        return ksession.getWorkingMemoryEntryPoints();
+    public Collection<? extends SessionEntryPoint> getEntryPoints() {
+        return ksession.getEntryPoints();
     }
 
     @Override

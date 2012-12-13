@@ -34,12 +34,12 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
 
     public void afterProcessStarted(ProcessStartedEvent event) {
         // do nothing
-        event.getKieRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
+        event.getKieRuntime().getEntryPoint("process-events").insert(event);
         ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
-        event.getKieRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
+        event.getKieRuntime().getEntryPoint("process-events").insert(event);
         ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
     }
 
@@ -53,7 +53,7 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
 
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         // do nothing
-        event.getKieRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
+        event.getKieRuntime().getEntryPoint("process-events").insert(event);
         ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
         
     }
@@ -63,7 +63,7 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
     }
 
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-        event.getKieRuntime().getWorkingMemoryEntryPoint("process-events").insert(event);
+        event.getKieRuntime().getEntryPoint("process-events").insert(event);
         ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
     }
 

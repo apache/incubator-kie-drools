@@ -154,11 +154,11 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 		return null;
 	}
 
-	public SessionEntryPoint getWorkingMemoryEntryPoint(String arg0) {
+	public SessionEntryPoint getEntryPoint(String arg0) {
 		return null;
 	}
 
-	public Collection<? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
+	public Collection<? extends SessionEntryPoint> getEntryPoints() {
 		return null;
 	}
 
