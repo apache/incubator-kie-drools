@@ -30,9 +30,6 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-maven-plugin</artifactId>
         <version>${project.version}</version>
-        <configuration>
-          <jarName>test.jar</jarName>
-        </configuration>
         <extensions>true</extensions>
       </plugin>
     </plugins>
