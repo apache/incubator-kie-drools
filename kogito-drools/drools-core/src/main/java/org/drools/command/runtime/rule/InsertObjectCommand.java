@@ -83,7 +83,7 @@ public class InsertObjectCommand
         if ( StringUtils.isEmpty( this.entryPoint ) ) {
             factHandle = ksession.insert( object );
         } else {
-            factHandle = ksession.getWorkingMemoryEntryPoint( this.entryPoint ).insert( object );
+            factHandle = ksession.getEntryPoint( this.entryPoint ).insert( object );
         }
         
         ReteooWorkingMemoryInterface session = ((StatefulKnowledgeSessionImpl)ksession).session;

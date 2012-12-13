@@ -193,7 +193,7 @@ public class ReteooWorkingMemoryTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         org.kie.runtime.rule.FactHandle f1 = ksession.insert( "f1" );
         
-        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "xxx" );
+        SessionEntryPoint ep = ksession.getEntryPoint( "xxx" );
         try {
             ep.update( f1, "s1" );
             fail( "Should throw an exception" );

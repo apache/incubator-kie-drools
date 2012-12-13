@@ -130,30 +130,30 @@ public class JTMSTest {
         kSession.fireAllRules();
         assertTrue( list.contains( "-neg" ) );
         
-        assertEquals( 1, kSession.getWorkingMemoryEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
-        assertEquals( 1, kSession.getWorkingMemoryEntryPoint( "neg" ).getObjects().size() ); // neg
+        assertEquals( 1, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
+        assertEquals( 1, kSession.getEntryPoint( "neg" ).getObjects().size() ); // neg
         
         FactHandle fhGo2 = kSession.insert( "go2" );
         kSession.fireAllRules();
         assertTrue( list.contains( "-neg" ) );
         assertTrue( list.contains( "+pos" ) );
         
-        assertEquals( 3, kSession.getWorkingMemoryEntryPoint( "DEFAULT" ).getObjects().size() ); //go1, go2, pos
-        assertEquals( 1, kSession.getWorkingMemoryEntryPoint( "neg" ).getObjects().size() ); // neg        
+        assertEquals( 3, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //go1, go2, pos
+        assertEquals( 1, kSession.getEntryPoint( "neg" ).getObjects().size() ); // neg        
         
         kSession.retract( fhGo1 );
         kSession.fireAllRules();
         assertFalse( list.contains( "-neg" ) );
         assertTrue( list.contains( "+pos" ) ); 
-        assertEquals( 2, kSession.getWorkingMemoryEntryPoint( "DEFAULT" ).getObjects().size() ); //go2, pos
-        assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "neg" ).getObjects().size() );         
+        assertEquals( 2, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //go2, pos
+        assertEquals( 0, kSession.getEntryPoint( "neg" ).getObjects().size() );         
 
         kSession.retract( fhGo2 );
         kSession.fireAllRules();
         assertFalse( list.contains( "-neg" ) );
         assertFalse( list.contains( "+pos" ) ); 
-        assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "DEFAULT" ).getObjects().size() );
-        assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "neg" ).getObjects().size() ); 
+        assertEquals( 0, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() );
+        assertEquals( 0, kSession.getEntryPoint( "neg" ).getObjects().size() ); 
     }
     
     @Test
@@ -204,7 +204,7 @@ public class JTMSTest {
         FactHandle fhGo3 = kSession.insert( "go3" );
         kSession.fireAllRules();
         
-        NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getWorkingMemoryEntryPoint( "DEFAULT" );
+        NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
         assertEquals( 4, ep.getObjects().size() ); //just go1, go2, go3, Person(darth)
         
         int count = 0;
@@ -303,10 +303,10 @@ public class JTMSTest {
         FactHandle fhGo3 = kSession.insert( "go3" );
         kSession.fireAllRules();
         
-        NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getWorkingMemoryEntryPoint( "DEFAULT" );
+        NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
         assertEquals( 3, ep.getObjects().size() ); //just go1, go2, go3
 
-        NamedEntryPoint negEp = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getWorkingMemoryEntryPoint( "neg" );
+        NamedEntryPoint negEp = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "neg" );
         assertEquals( 1, negEp.getObjects().size() ); //just Person(darth)        
         
         int count = 0;
@@ -403,10 +403,10 @@ public class JTMSTest {
         kSession.fireAllRules();
         assertTrue( list.contains( "-neg" ) );        
         
-        assertEquals( 1, kSession.getWorkingMemoryEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
-        assertEquals( 1, kSession.getWorkingMemoryEntryPoint( "neg" ).getObjects().size() ); // neg
+        assertEquals( 1, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
+        assertEquals( 1, kSession.getEntryPoint( "neg" ).getObjects().size() ); // neg
         
-        NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getWorkingMemoryEntryPoint( "DEFAULT" );
+        NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
         ObjectHashMap equalityMap =  ep.getTruthMaintenanceSystem().getEqualityKeyMap();
         assertEquals( 2, equalityMap.size() ); // go1, neg are two different strings.
         org.drools.core.util.Iterator it = equalityMap.iterator();
@@ -419,8 +419,8 @@ public class JTMSTest {
         kSession.retract( key.getBeliefSet().getFactHandle() );  
         assertEquals( 0, key.getBeliefSet().size() );     
 
-        assertEquals( 1, kSession.getWorkingMemoryEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
-        assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "neg" ).getObjects().size() ); // neg
+        assertEquals( 1, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
+        assertEquals( 0, kSession.getEntryPoint( "neg" ).getObjects().size() ); // neg
         assertEquals( 0, key.getBeliefSet().size() );
         assertEquals( 1, ep.getTruthMaintenanceSystem().getEqualityKeyMap().size() );
     }  
@@ -433,7 +433,7 @@ public class JTMSTest {
         kSession.setGlobal( "list", list );
 
         
-        NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getWorkingMemoryEntryPoint( "DEFAULT" );
+        NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
         JTMSBeliefSystem bs = ( JTMSBeliefSystem ) ep.getTruthMaintenanceSystem().getBeliefSystem();
         bs.STRICT = true;
 
@@ -462,56 +462,56 @@ public class JTMSTest {
             kSession.fireAllRules();
 
             assertEquals( 4, kSession.getFactCount() );
-            assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 0, list.size() );
 
             kSession.retract( a );
             kSession.fireAllRules();
 
             assertEquals( 3, kSession.getFactCount() );
-            assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 0, list.size() );
 
             kSession.retract( b );
             kSession.fireAllRules();
 
             assertEquals( 2, kSession.getFactCount() );
-            assertEquals( 1, kSession.getWorkingMemoryEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 1, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 1, list.size() );
 
             a = kSession.insert( "a" );
             kSession.fireAllRules();
 
             assertEquals( 3, kSession.getFactCount());
-            assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 1, list.size() );
 
             kSession.retract( c );
             kSession.fireAllRules();
 
             assertEquals( 2, kSession.getFactCount() );
-            assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 1, list.size() );
 
             kSession.retract( d );
             kSession.fireAllRules();
 
             assertEquals( 2, kSession.getFactCount() );
-            assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 2, list.size() );
 
             kSession.retract( a );
             kSession.fireAllRules();
 
             assertEquals( 0, kSession.getFactCount() );
-            assertEquals( 0, kSession.getWorkingMemoryEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 2, list.size() );
 
             c = kSession.insert( "c" );
             kSession.fireAllRules();
 
             assertEquals( 1, kSession.getFactCount() );
-            assertEquals( 1, kSession.getWorkingMemoryEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 1, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 3, list.size() );
 
 

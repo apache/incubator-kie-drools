@@ -427,7 +427,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
 
-        SessionEntryPoint eventStream = ksession.getWorkingMemoryEntryPoint( "Event Stream" );
+        SessionEntryPoint eventStream = ksession.getEntryPoint( "Event Stream" );
 
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
@@ -1834,7 +1834,7 @@ public class CepEspTest extends CommonTestMethodBase {
         final StatefulKnowledgeSession ksession = kbase1.newStatefulKnowledgeSession();
         AgendaEventListener ael1 = mock( AgendaEventListener.class );
         ksession.addEventListener( ael1 );
-        SessionEntryPoint ep1 = ksession.getWorkingMemoryEntryPoint( "stocktick stream" );
+        SessionEntryPoint ep1 = ksession.getEntryPoint( "stocktick stream" );
 
         FactHandle fh1 = ep1.insert( st1 );
         FactHandle fh1_2 = ep1.insert( st1 );
@@ -1882,7 +1882,7 @@ public class CepEspTest extends CommonTestMethodBase {
         final StatefulKnowledgeSession ksession1 = kbase1.newStatefulKnowledgeSession();
         AgendaEventListener ael1 = mock( AgendaEventListener.class );
         ksession1.addEventListener( ael1 );
-        SessionEntryPoint ep1 = ksession1.getWorkingMemoryEntryPoint( "stocktick stream" );
+        SessionEntryPoint ep1 = ksession1.getEntryPoint( "stocktick stream" );
 
         FactHandle fh1 = ep1.insert( st1 );
         FactHandle fh1_2 = ep1.insert( st1 );
@@ -1967,7 +1967,7 @@ public class CepEspTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
-        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
+        SessionEntryPoint ep = ksession.getEntryPoint( "X" );
 
         clock.advanceTime( 1000,
                            TimeUnit.SECONDS );
@@ -2008,7 +2008,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                                                                null );
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
-        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
+        SessionEntryPoint ep = ksession.getEntryPoint( "X" );
 
         clock.advanceTime( 1000,
                            TimeUnit.SECONDS );
@@ -2179,7 +2179,7 @@ public class CepEspTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
+        SessionEntryPoint ep = ksession.getEntryPoint( "X" );
 
         ep.insert( new StockTick( 1,
                                   "RHT",

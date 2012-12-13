@@ -42,7 +42,7 @@ public class DeleteCommand
 
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        ksession.getWorkingMemoryEntryPoint( handle.getEntryPointId() ).retract( handle );
+        ksession.getEntryPoint( handle.getEntryPointId() ).retract( handle );
         return null;
     }
 

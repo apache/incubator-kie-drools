@@ -6127,7 +6127,7 @@ public class MiscTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        final SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep2" );
+        final SessionEntryPoint ep = ksession.getEntryPoint( "testep2" );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -6193,7 +6193,7 @@ public class MiscTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        final SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep" );
+        final SessionEntryPoint ep = ksession.getEntryPoint( "testep" );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",

@@ -92,7 +92,7 @@ public class PongUI {
 
         frame.setVisible( true );
         
-        KeyListener klistener = new PongKeyListener( ksession.getWorkingMemoryEntryPoint( "KeyPressedStream" ), ksession.getWorkingMemoryEntryPoint( "KeyReleasedStream" ) );
+        KeyListener klistener = new PongKeyListener( ksession.getEntryPoint( "KeyPressedStream" ), ksession.getEntryPoint( "KeyReleasedStream" ) );
         frame.addKeyListener( klistener );
         
         updateTable();

@@ -496,7 +496,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
         
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "EventStream" );
+        SessionEntryPoint ep = ksession.getEntryPoint( "EventStream" );
         ep.insert( "Hello World!" );
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );

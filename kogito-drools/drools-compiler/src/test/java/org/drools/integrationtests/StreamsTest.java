@@ -168,7 +168,7 @@ public class StreamsTest extends CommonTestMethodBase {
                                                  50,
                                                  System.currentTimeMillis());
 
-        SessionEntryPoint entry = session.getWorkingMemoryEntryPoint("StockStream");
+        SessionEntryPoint entry = session.getEntryPoint("StockStream");
 
         InternalFactHandle handle5 = (InternalFactHandle) entry.insert(tick5);
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert(tick6);
@@ -221,7 +221,7 @@ public class StreamsTest extends CommonTestMethodBase {
                                                  50,
                                                  System.currentTimeMillis());
 
-        SessionEntryPoint entry = session.getWorkingMemoryEntryPoint("stream1");
+        SessionEntryPoint entry = session.getEntryPoint("stream1");
 
         InternalFactHandle handle5 = (InternalFactHandle) entry.insert(tick5);
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert(tick6);
@@ -274,7 +274,7 @@ public class StreamsTest extends CommonTestMethodBase {
                                                   50,
                                                   System.currentTimeMillis() );
 
-        SessionEntryPoint entry = session.getWorkingMemoryEntryPoint( "stream1" );
+        SessionEntryPoint entry = session.getEntryPoint( "stream1" );
 
         InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert( tick6 );
@@ -345,9 +345,9 @@ public class StreamsTest extends CommonTestMethodBase {
         org.kie.event.rule.AgendaEventListener ael = mock(org.kie.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
 
-        SessionEntryPoint ep1 = ksession.getWorkingMemoryEntryPoint("ep1");
-        SessionEntryPoint ep2 = ksession.getWorkingMemoryEntryPoint("ep2");
-        SessionEntryPoint ep3 = ksession.getWorkingMemoryEntryPoint("ep3");
+        SessionEntryPoint ep1 = ksession.getEntryPoint("ep1");
+        SessionEntryPoint ep2 = ksession.getEntryPoint("ep2");
+        SessionEntryPoint ep3 = ksession.getEntryPoint("ep3");
 
         ep1.insert(new StockTick(1,
                                  "RHT",
@@ -396,7 +396,7 @@ public class StreamsTest extends CommonTestMethodBase {
         org.kie.event.rule.AgendaEventListener ael = mock(org.kie.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
 
-        SessionEntryPoint ep1 = ksession.getWorkingMemoryEntryPoint("ep1");
+        SessionEntryPoint ep1 = ksession.getEntryPoint("ep1");
 
         ep1.insert(new StockTick(1,
                 "RHT",
@@ -421,11 +421,11 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
-        SessionEntryPoint def = session.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId());
-        SessionEntryPoint s1 = session.getWorkingMemoryEntryPoint("stream1");
-        SessionEntryPoint s2 = session.getWorkingMemoryEntryPoint( "stream2" );
-        SessionEntryPoint s3 = session.getWorkingMemoryEntryPoint( "stream3" );
-        Collection<? extends SessionEntryPoint> eps = session.getWorkingMemoryEntryPoints();
+        SessionEntryPoint def = session.getEntryPoint(EntryPoint.DEFAULT.getEntryPointId());
+        SessionEntryPoint s1 = session.getEntryPoint("stream1");
+        SessionEntryPoint s2 = session.getEntryPoint( "stream2" );
+        SessionEntryPoint s3 = session.getEntryPoint( "stream3" );
+        Collection<? extends SessionEntryPoint> eps = session.getEntryPoints();
 
         assertEquals( 4,
                       eps.size() );
@@ -595,8 +595,8 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        assertNotNull(ksession.getWorkingMemoryEntryPoint("UsedEntryPoint"));
-        assertNotNull(ksession.getWorkingMemoryEntryPoint("UnusedEntryPoint"));
+        assertNotNull(ksession.getEntryPoint("UsedEntryPoint"));
+        assertNotNull(ksession.getEntryPoint("UnusedEntryPoint"));
 
         ksession.dispose();
     }
@@ -627,7 +627,7 @@ public class StreamsTest extends CommonTestMethodBase {
         AgendaEventListener ael = mock(AgendaEventListener.class);
         ksession.addEventListener(ael);
 
-        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint("ticks");
+        SessionEntryPoint ep = ksession.getEntryPoint("ticks");
         ep.insert(new StockTick(1, "ACME", 20, 1000)); // not in the window
         ep.insert(new StockTick(2, "RHT", 20, 1000)); // not > 20
         ep.insert(new StockTick(3, "RHT", 30, 1000));
@@ -678,7 +678,7 @@ public class StreamsTest extends CommonTestMethodBase {
         AgendaEventListener ael = mock(AgendaEventListener.class);
         ksession.addEventListener(ael);
 
-        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint("data");
+        SessionEntryPoint ep = ksession.getEntryPoint("data");
         ep.insert(Double.valueOf( 10 )); 
         ep.insert(Double.valueOf( 11 )); 
         ep.insert(Double.valueOf( 12 )); 

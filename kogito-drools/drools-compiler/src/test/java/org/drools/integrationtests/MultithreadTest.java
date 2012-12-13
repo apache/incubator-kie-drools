@@ -150,7 +150,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         kbconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, str);
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        final SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint("X");
+        final SessionEntryPoint ep = ksession.getEntryPoint("X");
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {

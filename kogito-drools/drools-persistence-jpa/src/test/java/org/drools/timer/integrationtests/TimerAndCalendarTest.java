@@ -237,7 +237,7 @@ public class TimerAndCalendarTest {
 
         ksession = disposeAndReloadSession( ksession,
                                             kbase );
-        ksession.getWorkingMemoryEntryPoint( "Test" ).insert( type.newInstance() );
+        ksession.getEntryPoint( "Test" ).insert( type.newInstance() );
         ksession.fireAllRules();
         ksession = disposeAndReloadSession( ksession,
                                             kbase );
