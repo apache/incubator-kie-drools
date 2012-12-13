@@ -24,6 +24,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * KieCommands is a factory for Commands that can be used by classes that implement CommandExecutor. Typically more than one Command
+ * will want to be executed, where is where the BatchExecution comes in, which takes a List of commands, think of it as CompositeCommand.
+ */
 public interface KieCommands {
     Command newInsert(Object object);
 

@@ -14,11 +14,18 @@ import org.kie.runtime.StatelessKieSession;
 import java.util.Collection;
 import java.util.Set;
 
-
+/**
+ * <p>
+ * The KieBase is a repository of all the application's knowledge definitions.
+ * It will contain rules, processes, functions, type models. The KieBase itself
+ * does not contain runtime data, instead sessions are created from the KieBase in which
+ * data can be inserted and process instances started.
+ * </p>
+ */
 public interface KieBase extends KieBaseEventManager {
 
     /**
-     * Return an immutable collection of the packages that exist in this KnowledgeBase.
+     * Return an immutable collection of the packages that exist in this KieBase.
      * @return
      */
     Collection<KiePackage> getKiePackages();

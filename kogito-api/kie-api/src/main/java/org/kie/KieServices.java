@@ -1,13 +1,12 @@
 package org.kie;
 
-import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
+import org.kie.builder.ReleaseId;
 import org.kie.command.KieCommands;
-import org.kie.concurrent.KieExecutors;
 import org.kie.io.KieResources;
 import org.kie.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;
@@ -16,41 +15,95 @@ import org.kie.runtime.KieContainer;
 
 import java.io.File;
 
+/**
+ * <p>
+ * The KieServices is a thread-safe singleton acting as a hub giving access to the other
+ * Services provided by Kie. As general rule a getX() method just returns a reference to another
+ * singleton while a newX() one creates a new instance.
+ * </p>
+ * <p>
+ * It is possible to obtain a KieServices reference via its Factory as it follows
+ * </p>
+ * <pre>
+ * KieServices kieServices = KieServices.Factory.get();
+ * </pre>
+ */
 public interface KieServices {
-    
+
+    /**
+     * Returns the KieResources, a factory that provides Resource implementations for the desired IO resource
+     */
     KieResources getResources();
 
+    /**
+     * Returns the KieRepository, a singleton acting as a repository for all the available KieModules
+     */
     KieRepository getRepository();
-    
+
+    /**
+     * Returns the KieCommands, a factory for Commands
+     */
     KieCommands getCommands();
-    
+
+    /**
+     * Returns the KieMarshallers service
+     */
     KieMarshallers getMarshallers();
-    
+
+    /**
+     * Returns KieLoggers, a factory for KieRuntimeLogger
+     */
     KieLoggers getLoggers();
     
-    KieExecutors getExecutors();
-    
+    /**
+     * Returns KieStoreServices
+     */
     KieStoreServices getStoreServices();
     
     /**
      * Returns KieContainer for the classpath, this a global singleton
      */
     KieContainer getKieClasspathContainer();
-    
+
+    /**
+     * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
+     */
     KieContainer newKieContainer(ReleaseId releaseId);
-    
-    KieScanner newKieScanner(KieContainer kieContainer);    
-    
+
+    /**
+     * Creates a KieScanner to automatically discover if there are new releases of the KieModule
+     * (and its dependencies) wrapped by the given KieContainer
+     */
+    KieScanner newKieScanner(KieContainer kieContainer);
+
+    /**
+     * Creates a new KieBuilder to build the KieModule contained in the given folder
+     */
     KieBuilder newKieBuilder(File rootFolder);
-    
+
+    /**
+     * Creates a new KieBuilder to build the KieModule contained in the given KieFileSystem
+     */
     KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
 
+    /**
+     * Creates a new ReleaseId with the given groupId, artifactId and version
+     */
     ReleaseId newReleaseId(String groupId, String artifactId, String version);
 
+    /**
+     * Creates a new KieFileSystem used to programmatically define the resources composing a KieModule
+     */
     KieFileSystem newKieFileSystem( );
 
+    /**
+     * Creates a new KieModuleModel to programmatically define a KieModule
+     */
     KieModuleModel newKieModuleModel();
 
+    /**
+     * A Factory for this KieServices
+     */
     public static class Factory {
         private static KieServices INSTANCE;
 
@@ -62,6 +115,9 @@ public interface KieServices {
             }
         }
 
+        /**
+         * Returns a reference to the KieServices singleton
+         */
         public static KieServices get() {
             return INSTANCE;
         }

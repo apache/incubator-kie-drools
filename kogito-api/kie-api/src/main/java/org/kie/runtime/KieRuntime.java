@@ -53,9 +53,7 @@ public interface KieRuntime
     Environment getEnvironment();
 
     /**
-     * Returns the KnowledgeBase reference from which this stateful session was created.
-     * 
-     * @return
+     * Returns the KieBase reference from which this stateful session was created.
      */
     KieBase getKieBase();
 
