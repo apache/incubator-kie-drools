@@ -20,7 +20,7 @@ import org.kie.conf.KnowledgeBaseOptionsConfiguration;
 
 /**
  *<p>
- * A class to store KnowledgeBase related configuration. It must be used at KnowledgeBase instantiation time
+ * A class to store KieBase related configuration. It must be used at KieBase instantiation time
  * or not used at all.
  * </p>
  *
@@ -37,8 +37,8 @@ import org.kie.conf.KnowledgeBaseOptionsConfiguration;
  * </p>
  * 
  * <p>
- * After the KnowledgeBase is created, it makes the configuration immutable and there is no way to make it
- * mutable again. This is to avoid inconsistent behaviour inside KnowledgeBase.
+ * After the KieBase is created, it makes the configuration immutable and there is no way to make it
+ * mutable again. This is to avoid inconsistent behaviour inside KieBase.
  * </p>
  * 
  * <p>

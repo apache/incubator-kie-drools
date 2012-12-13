@@ -18,6 +18,9 @@ package org.kie.logger;
 
 import org.kie.event.KieRuntimeEventManager;
 
+/**
+ * KieLoggers is a factory for KieRuntimeLogger
+ */
 public interface KieLoggers {
 
     KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,

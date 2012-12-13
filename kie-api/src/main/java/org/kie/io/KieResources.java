@@ -25,10 +25,7 @@ import java.io.Reader;
 import java.net.URL;
 
 /**
- * ResourceFactoryService is used by the ResourceFactory to "provide" it's concrete implementation.
- * 
- * This class is not considered stable and may change, the user is protected from this change by using 
- * the Factory api, which is considered stable.
+ * KieResources is a factory that provides Resource implementations for the desired IO resource
  */
 public interface KieResources extends Service {
 

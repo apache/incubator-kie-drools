@@ -18,9 +18,9 @@ package org.kie.conf;
 
 
 /**
- * An Enum for AssertBehavior option.
+ * An Enum for EqualityBehavior option.
  * 
- * drools.assertBehaviour = &lt;identity|equality&gt;
+ * drools.equalityBehavior = &lt;identity|equality&gt;
  * 
  * DEFAULT = identity
  */
