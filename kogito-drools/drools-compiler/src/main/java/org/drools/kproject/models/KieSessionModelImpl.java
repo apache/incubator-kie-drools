@@ -62,10 +62,8 @@ public class KieSessionModelImpl
         return name;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieSessionModel#setName(java.lang.String)
-     */
     public KieSessionModel setName(String name) {
+        ((KieBaseModelImpl)kBase).changeKSessionName(this, this.name, name);
         this.name = name;
         return this;
     }
@@ -191,7 +189,7 @@ public class KieSessionModelImpl
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
             final KieSessionModelImpl kSession = new KieSessionModelImpl();
-            kSession.setName(reader.getAttribute("name"));
+            kSession.name = reader.getAttribute("name");
             kSession.setDefault( "true".equals(reader.getAttribute( "default" )) );
 
             String kSessionType = reader.getAttribute("type");

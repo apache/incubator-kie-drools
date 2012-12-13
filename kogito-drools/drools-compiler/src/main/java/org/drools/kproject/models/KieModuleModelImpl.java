@@ -87,6 +87,11 @@ public class KieModuleModelImpl implements KieModuleModel {
         this.kBases = kBases;
     }
 
+    void changeKBaseName(KieBaseModel kieBase, String oldName, String newName) {
+        kBases.remove(oldName);
+        kBases.put(newName, kieBase);
+    }
+
     /* (non-Javadoc)
      * @see org.kie.kModule.KieProject#toString()
      */

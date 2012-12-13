@@ -132,8 +132,8 @@ public class KieBaseModelImpl
     public KieBaseModel removeKieSessionModel(String qName) {
         Map<String, KieSessionModel> newMap = new HashMap<String, KieSessionModel>();
         newMap.putAll( this.kSessions );
-        newMap.remove( qName );
-        setKSessions( newMap );
+        newMap.remove(qName);
+        setKSessions(newMap);
         return this;
     }
 
@@ -142,7 +142,7 @@ public class KieBaseModelImpl
         Map<String, KieSessionModel> newMap = new HashMap<String, KieSessionModel>();
         newMap.putAll( this.kSessions );
         KieSessionModel kieSessionModel = newMap.remove( oldQName );
-        newMap.put( newQName, kieSessionModel );
+        newMap.put(newQName, kieSessionModel);
         setKSessions( newMap );
     }
 
@@ -153,12 +153,15 @@ public class KieBaseModelImpl
         return name;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.kproject.KieBaseModel#setName(java.lang.String)
-     */
     public KieBaseModel setName(String name) {
+        ((KieModuleModelImpl)kModule).changeKBaseName(this, this.name, name);
         this.name = name;
         return this;
+    }
+
+    void changeKSessionName(KieSessionModel kieSession, String oldName, String newName) {
+        kSessions.remove(oldName);
+        kSessions.put(newName, kieSession);
     }
 
     public Set<String> getIncludes() {
@@ -305,7 +308,7 @@ public class KieBaseModelImpl
         public Object unmarshal(HierarchicalStreamReader reader,
                                 final UnmarshallingContext context) {
             final KieBaseModelImpl kBase = new KieBaseModelImpl();
-            kBase.setName( reader.getAttribute( "name" ) );
+            kBase.name = reader.getAttribute( "name" );
             kBase.setDefault( "true".equals(reader.getAttribute( "default" )) );
 
             String eventMode = reader.getAttribute( "eventProcessingMode" );
