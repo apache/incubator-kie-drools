@@ -69,7 +69,7 @@ import org.drools.time.impl.PseudoClockScheduler;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 import com.google.protobuf.ExtensionRegistry;
 
@@ -245,7 +245,7 @@ public class ProtobufInputMarshaller {
                                _session.getRuleData() );
         
         for ( ProtobufMessages.EntryPoint _ep : _session.getRuleData().getEntryPointList() ) {
-            WorkingMemoryEntryPoint wmep = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
+            SessionEntryPoint wmep = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
             readFactHandles( context,
                              _ep,
                              ((NamedEntryPoint) wmep).getObjectStore() );
@@ -425,7 +425,7 @@ public class ProtobufInputMarshaller {
                                                                ClassNotFoundException {
         InternalWorkingMemory wm = context.wm;
 
-        WorkingMemoryEntryPoint entryPoint = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
+        SessionEntryPoint entryPoint = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
         // load the handles
         for ( ProtobufMessages.FactHandle _handle : _ep.getHandleList() ) {
             InternalFactHandle handle = readFactHandle( context,
@@ -478,7 +478,7 @@ public class ProtobufInputMarshaller {
     }
 
     public static InternalFactHandle readFactHandle(MarshallerReaderContext context,
-                                                    WorkingMemoryEntryPoint entryPoint,
+                                                    SessionEntryPoint entryPoint,
                                                     FactHandle _handle) throws IOException,
                                                                        ClassNotFoundException {
         Object object = null;
@@ -526,7 +526,7 @@ public class ProtobufInputMarshaller {
     }
 
     public static void readTruthMaintenanceSystem( MarshallerReaderContext context, 
-                                                   WorkingMemoryEntryPoint wmep,
+                                                   SessionEntryPoint wmep,
                                                    ProtobufMessages.EntryPoint _ep ) throws IOException, ClassNotFoundException {        
         TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
         

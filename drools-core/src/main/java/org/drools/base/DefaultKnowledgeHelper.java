@@ -65,7 +65,7 @@ import org.kie.runtime.process.ProcessContext;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;
 import org.kie.runtime.rule.Match;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public class DefaultKnowledgeHelper
     implements
@@ -420,7 +420,7 @@ public class DefaultKnowledgeHelper
         this.workingMemory.halt();
     }
 
-    public WorkingMemoryEntryPoint getEntryPoint(String id) {
+    public SessionEntryPoint getEntryPoint(String id) {
         return this.workingMemory.getEntryPoints().get( id );
     }
 
@@ -428,7 +428,7 @@ public class DefaultKnowledgeHelper
         return this.workingMemory.getChannels().get( id );
     }
 
-    public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
+    public Map<String, SessionEntryPoint> getEntryPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
     }
 
@@ -454,7 +454,7 @@ public class DefaultKnowledgeHelper
         FactHandle handle = null;
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
-            for ( WorkingMemoryEntryPoint ep : workingMemory.getEntryPoints().values() ) {
+            for ( SessionEntryPoint ep : workingMemory.getEntryPoints().values() ) {
                 handle = (FactHandle) ep.getFactHandle( object );
                 if ( identityMap != null ) {
                     identityMap.put( object,
@@ -545,7 +545,7 @@ public class DefaultKnowledgeHelper
             this.fh = fh;
         }
 
-        public void unMatch(org.kie.runtime.rule.WorkingMemory wm,
+        public void unMatch(org.kie.runtime.rule.Session wm,
                             Match activation) {
             wm.retract( fh );
             if ( next != null ) {

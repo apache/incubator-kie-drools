@@ -40,7 +40,7 @@ import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 import org.mockito.ArgumentCaptor;
 
 /**
@@ -496,7 +496,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
         
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "EventStream" );
+        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "EventStream" );
         ep.insert( "Hello World!" );
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );

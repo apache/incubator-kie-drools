@@ -19,7 +19,7 @@ package org.drools.common;
 import org.drools.FactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public interface InternalFactHandle
     extends
@@ -65,9 +65,9 @@ public interface InternalFactHandle
     
     public LeftTuple getLastLeftTuple();
     
-    public WorkingMemoryEntryPoint getEntryPoint();
+    public SessionEntryPoint getEntryPoint();
     
-    public void setEntryPoint( WorkingMemoryEntryPoint ep );
+    public void setEntryPoint( SessionEntryPoint ep );
     
     public InternalFactHandle clone();
     

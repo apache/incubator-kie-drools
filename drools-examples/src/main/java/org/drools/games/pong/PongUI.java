@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public class PongUI {
     private PongConfiguration pconf;
@@ -100,11 +100,11 @@ public class PongUI {
 
     public static class PongKeyListener implements KeyListener {
         
-        WorkingMemoryEntryPoint keyPressedEntryPoint;
-        WorkingMemoryEntryPoint keyReleasedEntryPoint;
+        SessionEntryPoint keyPressedEntryPoint;
+        SessionEntryPoint keyReleasedEntryPoint;
 
-        public PongKeyListener(WorkingMemoryEntryPoint keyPressedEntryPoint,
-                               WorkingMemoryEntryPoint keyReleasedEntryPoint) {           
+        public PongKeyListener(SessionEntryPoint keyPressedEntryPoint,
+                               SessionEntryPoint keyReleasedEntryPoint) {           
             this.keyPressedEntryPoint = keyPressedEntryPoint;
             this.keyReleasedEntryPoint = keyReleasedEntryPoint;
         }

@@ -37,7 +37,7 @@ import org.kie.runtime.Channel;
 import org.kie.runtime.KieRuntime;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.rule.Match;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 public class SequentialKnowledgeHelper
     implements
@@ -142,7 +142,7 @@ public class SequentialKnowledgeHelper
         this.workingMemory.halt();
     }
 
-    public WorkingMemoryEntryPoint getEntryPoint(String id) {
+    public SessionEntryPoint getEntryPoint(String id) {
         return this.workingMemory.getEntryPoints().get( id );
     }
 
@@ -150,7 +150,7 @@ public class SequentialKnowledgeHelper
         return this.workingMemory.getChannels().get( id );
     }
 
-    public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
+    public Map<String, SessionEntryPoint> getEntryPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
     }
 

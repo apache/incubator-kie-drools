@@ -23,7 +23,7 @@ import org.drools.FactHandle;
  * An interface for instances that allow handling of entry-point-scoped
  * facts
  */
-public interface WorkingMemoryEntryPoint extends org.kie.runtime.rule.WorkingMemoryEntryPoint {
+public interface WorkingMemoryEntryPoint extends org.kie.runtime.rule.SessionEntryPoint {
     /**
      * Assert a fact.
      * 

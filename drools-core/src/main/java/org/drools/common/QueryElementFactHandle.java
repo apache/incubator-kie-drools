@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class QueryElementFactHandle
@@ -79,7 +79,7 @@ public class QueryElementFactHandle
         this.object = object;
     }    
 
-    public WorkingMemoryEntryPoint getEntryPoint() {
+    public SessionEntryPoint getEntryPoint() {
         return null;
         //throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
@@ -104,7 +104,7 @@ public class QueryElementFactHandle
         return true;
     }
 
-    public void setEntryPoint(WorkingMemoryEntryPoint ep) {
+    public void setEntryPoint(SessionEntryPoint ep) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 

@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 import static org.junit.Assert.*;
 
@@ -193,7 +193,7 @@ public class ReteooWorkingMemoryTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         org.kie.runtime.rule.FactHandle f1 = ksession.insert( "f1" );
         
-        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "xxx" );
+        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "xxx" );
         try {
             ep.update( f1, "s1" );
             fail( "Should throw an exception" );

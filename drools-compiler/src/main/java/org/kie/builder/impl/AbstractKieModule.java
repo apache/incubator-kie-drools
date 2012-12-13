@@ -206,7 +206,7 @@ public abstract class AbstractKieModule
                                 InternalKieModule kieModule) {
         int fileCount = 0;
         for ( String fileName : kieModule.getFileNames() ) {
-            if ( filterFileInKBase(kieBaseModel, fileName) ) {
+            if ( filterFileInKBase(kieBaseModel, fileName) && !fileName.endsWith( ".properties" ) ) {
                 ResourceConfiguration conf = null;
                 if( kieModule.isAvailable( fileName+".properties" ) ) {
                     // configuration file available

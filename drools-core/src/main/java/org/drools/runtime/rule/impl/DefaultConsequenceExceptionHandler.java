@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 
 import org.kie.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.runtime.rule.Match;
-import org.kie.runtime.rule.WorkingMemory;
+import org.kie.runtime.rule.Session;
 
 public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionHandler, Externalizable {
 
@@ -34,7 +34,7 @@ public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionH
     }
 
     public void handleException(Match activation,
-                                WorkingMemory workingMemory,
+                                Session workingMemory,
                                 Exception exception) {
         throw new org.kie.runtime.rule.ConsequenceException(exception, workingMemory, activation );
     }

@@ -78,7 +78,7 @@ import org.drools.time.impl.PseudoClockScheduler;
 import org.drools.time.impl.TimerJobInstance;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 import com.google.protobuf.ByteString;
 
@@ -133,7 +133,7 @@ public class ProtobufOutputMarshaller {
 
         writeNodeMemories( context, _ruleData );
 
-        for ( WorkingMemoryEntryPoint wmep : wm.getEntryPoints().values() ) {
+        for ( SessionEntryPoint wmep : wm.getEntryPoints().values() ) {
             org.drools.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
             _epb.setEntryPointId( wmep.getEntryPointId() );
             writeFactHandles( context,
@@ -456,7 +456,7 @@ public class ProtobufOutputMarshaller {
     }
 
     public static void writeTruthMaintenanceSystem(MarshallerWriteContext context,
-                                                   WorkingMemoryEntryPoint wmep, 
+                                                   SessionEntryPoint wmep, 
                                                    ProtobufMessages.EntryPoint.Builder _epb) throws IOException {
         TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
         ObjectHashMap justifiedMap = tms.getEqualityKeyMap();

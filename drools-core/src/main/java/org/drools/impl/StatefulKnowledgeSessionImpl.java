@@ -96,7 +96,7 @@ import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 import org.kie.time.SessionClock;
 
 public class StatefulKnowledgeSessionImpl
@@ -137,11 +137,11 @@ public class StatefulKnowledgeSessionImpl
         return this.session.getId();
     }
 
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
+    public SessionEntryPoint getWorkingMemoryEntryPoint(String name) {
         return session.getWorkingMemoryEntryPoint( name );
     }
 
-    public Collection< ? extends org.kie.runtime.rule.WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+    public Collection< ? extends org.kie.runtime.rule.SessionEntryPoint> getWorkingMemoryEntryPoints() {
         return session.getWorkingMemoryEntryPoints();
     }
 

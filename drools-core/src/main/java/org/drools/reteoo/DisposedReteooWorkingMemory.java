@@ -65,7 +65,7 @@ import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.WorkingMemoryEntryPoint;
+import org.kie.runtime.rule.SessionEntryPoint;
 import org.kie.time.SessionClock;
 
 @SuppressWarnings( "deprecation" )
@@ -200,7 +200,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public Map<String, ? extends WorkingMemoryEntryPoint> getEntryPoints() {
+    public Map<String, ? extends SessionEntryPoint> getEntryPoints() {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -504,7 +504,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public Collection<? extends WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+    public Collection<? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
         throw new IllegalStateException( ERRORMSG );
     }
 
