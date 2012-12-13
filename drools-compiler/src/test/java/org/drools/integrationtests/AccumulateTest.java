@@ -2125,7 +2125,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         for ( int j = 0; j < 33; j++ ) {
-            ksession.getWorkingMemoryEntryPoint( "data" ).insert(1.0 * j);
+            ksession.getEntryPoint( "data" ).insert(1.0 * j);
             ksession.fireAllRules();
         }
     }
@@ -2161,7 +2161,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         for ( int j = 0; j < 33; j++ ) {
-            ksession.getWorkingMemoryEntryPoint( "data" ).insert(1.0 * j);
+            ksession.getEntryPoint( "data" ).insert(1.0 * j);
             ksession.fireAllRules();
         }
     }

@@ -61,8 +61,8 @@ import org.drools.command.runtime.rule.GetFactHandleCommand;
 import org.drools.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.command.runtime.rule.GetObjectCommand;
 import org.drools.command.runtime.rule.GetObjectsCommand;
-import org.drools.command.runtime.rule.GetWorkingMemoryEntryPointCommand;
-import org.drools.command.runtime.rule.GetWorkingMemoryEntryPointsCommand;
+import org.drools.command.runtime.rule.GetEntryPointCommand;
+import org.drools.command.runtime.rule.GetEntryPointsCommand;
 import org.drools.command.runtime.rule.GetWorkingMemoryEventListenersCommand;
 import org.drools.command.runtime.rule.HaltCommand;
 import org.drools.command.runtime.rule.InsertObjectCommand;
@@ -365,12 +365,12 @@ public class CommandBasedStatefulKnowledgeSession
         return (T) this.commandService.execute( new GetSessionClockCommand() );
     }
 
-    public SessionEntryPoint getWorkingMemoryEntryPoint(String name) {
-        return this.commandService.execute( new GetWorkingMemoryEntryPointCommand( name ) );
+    public SessionEntryPoint getEntryPoint(String name) {
+        return this.commandService.execute( new GetEntryPointCommand( name ) );
     }
 
-    public Collection< ? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
-        return this.commandService.execute( new GetWorkingMemoryEntryPointsCommand() );
+    public Collection< ? extends SessionEntryPoint> getEntryPoints() {
+        return this.commandService.execute( new GetEntryPointsCommand() );
     }
 
     public void halt() {

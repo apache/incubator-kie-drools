@@ -42,7 +42,7 @@ public class UpdateCommand
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-        ksession.getWorkingMemoryEntryPoint( handle.getEntryPointId() ).update( handle,
+        ksession.getEntryPoint( handle.getEntryPointId() ).update( handle,
                                                                                 object );
         return null;
     }

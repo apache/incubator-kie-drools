@@ -137,11 +137,11 @@ public class StatefulKnowledgeSessionImpl
         return this.session.getId();
     }
 
-    public SessionEntryPoint getWorkingMemoryEntryPoint(String name) {
+    public SessionEntryPoint getEntryPoint(String name) {
         return session.getWorkingMemoryEntryPoint( name );
     }
 
-    public Collection< ? extends org.kie.runtime.rule.SessionEntryPoint> getWorkingMemoryEntryPoints() {
+    public Collection< ? extends org.kie.runtime.rule.SessionEntryPoint> getEntryPoints() {
         return session.getWorkingMemoryEntryPoints();
     }
 

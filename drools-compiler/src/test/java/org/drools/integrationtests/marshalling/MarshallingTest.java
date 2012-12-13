@@ -2781,17 +2781,17 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
-        SessionEntryPoint aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        SessionEntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        SessionEntryPoint bep = ksession.getWorkingMemoryEntryPoint( "b-ep" );
+        SessionEntryPoint bep = ksession.getEntryPoint( "b-ep" );
         bep.insert( new B() );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        SessionEntryPoint cep = ksession.getWorkingMemoryEntryPoint( "c-ep" );
+        SessionEntryPoint cep = ksession.getEntryPoint( "c-ep" );
         cep.insert( new C() );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
@@ -2803,13 +2803,13 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertEquals( 3,
                       list.size() );
 
-        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep = ksession.getEntryPoint( "a-ep" );
         assertEquals( 1, aep.getFactHandles().size() );
 
-        bep = ksession.getWorkingMemoryEntryPoint( "b-ep" );
+        bep = ksession.getEntryPoint( "b-ep" );
         assertEquals( 1, bep.getFactHandles().size() );
 
-        cep = ksession.getWorkingMemoryEntryPoint( "c-ep" );
+        cep = ksession.getEntryPoint( "c-ep" );
         assertEquals( 1, cep.getFactHandles().size() );
 
         PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
@@ -2821,13 +2821,13 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep = ksession.getEntryPoint( "a-ep" );
         assertEquals( 0, aep.getFactHandles().size() );
 
-        bep = ksession.getWorkingMemoryEntryPoint( "b-ep" );
+        bep = ksession.getEntryPoint( "b-ep" );
         assertEquals( 0, bep.getFactHandles().size() );
 
-        cep = ksession.getWorkingMemoryEntryPoint( "c-ep" );
+        cep = ksession.getEntryPoint( "c-ep" );
         assertEquals( 1, cep.getFactHandles().size() );
     }
 
@@ -2874,7 +2874,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
-        SessionEntryPoint aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        SessionEntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
@@ -2937,11 +2937,11 @@ public class MarshallingTest extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        SessionEntryPoint aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        SessionEntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
@@ -2954,11 +2954,11 @@ public class MarshallingTest extends CommonTestMethodBase {
         timeService.advanceTime( 15, TimeUnit.SECONDS );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
@@ -3021,11 +3021,11 @@ public class MarshallingTest extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        SessionEntryPoint aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        SessionEntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
@@ -3034,11 +3034,11 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = marsallStatefulKnowledgeSession( ksession );
         assertEquals( 2, ((List) list.get( 0 )).size() );
 
-        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 

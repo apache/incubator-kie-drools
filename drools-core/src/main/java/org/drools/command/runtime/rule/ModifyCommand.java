@@ -68,7 +68,7 @@ public class ModifyCommand
 
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        SessionEntryPoint wmep = ksession.getWorkingMemoryEntryPoint( handle.getEntryPointId() );
+        SessionEntryPoint wmep = ksession.getEntryPoint( handle.getEntryPointId() );
         
         Object object = wmep.getObject( this.handle );
         MVEL.eval( getMvelExpr(),

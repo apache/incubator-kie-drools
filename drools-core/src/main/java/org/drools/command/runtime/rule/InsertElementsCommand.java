@@ -86,7 +86,7 @@ public class InsertElementsCommand
         if ( StringUtils.isEmpty( this.entryPoint ) ) {
             wmep = ksession;
         } else {
-            wmep = ksession.getWorkingMemoryEntryPoint( this.entryPoint );
+            wmep = ksession.getEntryPoint( this.entryPoint );
         }
 
         for ( Object object : objects ) {

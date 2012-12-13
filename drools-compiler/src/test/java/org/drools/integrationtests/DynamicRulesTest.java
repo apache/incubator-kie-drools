@@ -911,7 +911,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         ksession.setGlobal( "results",
                             results );
 
-        SessionEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "in-channel" );
+        SessionEntryPoint ep = ksession.getEntryPoint( "in-channel" );
         ep.insert( new StockTick( 1,
                                   "RHT",
                                   20,
