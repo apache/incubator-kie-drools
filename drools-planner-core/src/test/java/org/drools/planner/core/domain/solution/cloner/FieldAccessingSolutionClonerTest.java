@@ -87,7 +87,7 @@ public class FieldAccessingSolutionClonerTest {
 
     @Test
     public void testCloneChainedSolution() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
         FieldAccessingSolutionCloner<TestdataChainedSolution> cloner
                 = new FieldAccessingSolutionCloner<TestdataChainedSolution>(solutionDescriptor);
 
