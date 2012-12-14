@@ -29,7 +29,7 @@
       <title>Positive and negative constraints</title>
 
       <para>All score techniques are based on constraints. Such a constraint can be a simple pattern (such as
-      <emphasis>Maximize the apple harvest in the solution</emphasis>) or a more complex pattern. a positive constraint
+      <emphasis>Maximize the apple harvest in the solution</emphasis>) or a more complex pattern. A positive constraint
       is a constraint you're trying to maximize. A negative constraint is a constraint you're trying to minimize.</para>
 
       <mediaobject>
@@ -86,7 +86,7 @@
 
       <para>Sometimes a score constraint outranks another score constraint, no matter how many times the other is
       broken. In that case, those score constraints are in different levels. For example: a nurse cannot do 2 shifts at
-      the same time (due to the constraints of physical reality), this outranks nurse happiness constraints.</para>
+      the same time (due to the constraints of physical reality), this outranks all nurse happiness constraints.</para>
 
       <para>Most use cases have only 2 score levels: hard and soft. When comparing 2 scores, they are compared
       lexicographically: the first score level gets compared first. If those differ, the others score levels are
