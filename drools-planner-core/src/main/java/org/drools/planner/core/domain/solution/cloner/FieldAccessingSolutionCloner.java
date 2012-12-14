@@ -19,10 +19,14 @@ package org.drools.planner.core.domain.solution.cloner;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.IdentityHashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 
+import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -41,88 +45,173 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
     // Worker methods
     // ************************************************************************
 
-    public SolutionG cloneSolution(SolutionG original) {
-        SolutionG clone = shallowClone(original);
-        cloneEntityProperties(clone);
-
-        return clone;
+    public SolutionG cloneSolution(SolutionG originalSolution) {
+        return new FieldAccessingSolutionClonerRun().cloneSolution(originalSolution);
     }
 
-    private <C> C shallowClone(C original) {
-        Class<C> clazz = (Class<C>) original.getClass();
-        C clone = constructClone(clazz);
-        shallowCopyFields(clazz, original, clone);
-        return clone;
-    }
+    protected static class UnprocessedCloneField {
 
-    private <C> C constructClone(Class<C> clazz) {
-        try {
-            Constructor<C> constructor = clazz.getConstructor(); // TODO move into SolutionDescriptor
-            constructor.setAccessible(true);
-            return constructor.newInstance();
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("The class (" + clazz
-                    + ") should have a no-arg constructor to create a clone.", e);
+        protected Object bean;
+        protected Field field;
+        protected Object originalValue;
+
+        public UnprocessedCloneField(Object bean, Field field, Object originalValue) {
+            this.bean = bean;
+            this.field = field;
+            this.originalValue = originalValue;
         }
+
     }
 
-    private <C> void shallowCopyFields(Class<C> clazz, C original, C clone) {
-        for (Field field : clazz.getDeclaredFields()) {
-            field.setAccessible(true); // no need to reset because getDeclaredFields() creates new Field instances
+    protected class FieldAccessingSolutionClonerRun {
+
+        protected Map<Object,Object> originalToCloneMap;
+        protected Queue<UnprocessedCloneField> unprocessedQueue;
+
+        protected SolutionG cloneSolution(SolutionG originalSolution) {
+            unprocessedQueue = new LinkedList<UnprocessedCloneField>();
+            originalToCloneMap = new IdentityHashMap<Object, Object>(
+                    solutionDescriptor.getPlanningEntityCount(originalSolution) + 1);
+            SolutionG cloneSolution = clone(originalSolution);
+            processQueue();
+            return cloneSolution;
+        }
+
+        protected <C> C clone(C original) {
+            if (original == null) {
+                return null;
+            }
+            C existingClone = (C) originalToCloneMap.get(original);
+            if (existingClone != null) {
+                return  existingClone;
+            }
+            Class<C> clazz = (Class<C>) original.getClass();
+            C clone = constructClone(clazz);
+            originalToCloneMap.put(original, clone);
+            copyFields(clazz, original, clone);
+            return clone;
+        }
+
+        protected <C> C constructClone(Class<C> clazz) {
             try {
-                Object originalValue = field.get(original);
-                field.set(clone, originalValue);
-            } catch (IllegalAccessException e) {
+                Constructor<C> constructor = clazz.getConstructor(); // TODO cache me
+                constructor.setAccessible(true);
+                return constructor.newInstance();
+            } catch (ReflectiveOperationException e) {
                 throw new IllegalStateException("The class (" + clazz
-                        + ") has a field (" + field + ") which could not be accessed to create a clone.", e);
+                        + ") should have a no-arg constructor to create a clone.", e);
             }
         }
-        Class<? super C> superclass = clazz.getSuperclass();
-        if (superclass != null) {
-            shallowCopyFields(superclass, original, clone);
-        }
-    }
 
-    private void cloneEntityProperties(SolutionG clone) {
-        for (PropertyDescriptor descriptor : solutionDescriptor.getEntityPropertyDescriptorMap().values()) {
-            Object originalEntity = DescriptorUtils.executeGetter(descriptor, clone);
-            Object cloneEntity = shallowClone(originalEntity);
-            DescriptorUtils.executeSetter(descriptor, clone, cloneEntity);
-        }
-        for (PropertyDescriptor descriptor : solutionDescriptor.getEntityCollectionPropertyDescriptorMap().values()) {
-            Collection originalEntityCollection = (Collection) DescriptorUtils.executeGetter(descriptor, clone);
-            Collection cloneEntityCollection = shallowCloneEntityCollection(originalEntityCollection);
-            cloneEntityCollection.clear();
-            for (Object originalEntity : originalEntityCollection) {
-                Object cloneEntity = shallowClone(originalEntity);
-                cloneEntityCollection.add(cloneEntity);
+        protected <C> void copyFields(Class<C> clazz, C original, C clone) {
+            for (Field field : clazz.getDeclaredFields()) {
+                field.setAccessible(true); // no need to reset because getDeclaredFields() creates new Field instances
+                Object originalValue = getField(original, field);
+                if (isDeepCloneField(field, originalValue)) {
+                    // Postpone filling in the fields
+                    unprocessedQueue.add(new UnprocessedCloneField(clone, field, originalValue));
+                } else {
+                    // Shallow copy
+                    setField(clone, field, originalValue);
+                }
             }
-            DescriptorUtils.executeSetter(descriptor, clone, cloneEntityCollection);
+            Class<? super C> superclass = clazz.getSuperclass();
+            if (superclass != null) {
+                copyFields(superclass, original, clone);
+            }
         }
-    }
 
-    // TODO this is bad. It should follow hibernate limitations that we use an new empty ArrayList() for List, ...
-    // TODO and detect things like a TreeSet's comparator too through SortedSet.getComparator()
-    private Collection shallowCloneEntityCollection(Collection originalEntityCollection) {
-        if (!(originalEntityCollection instanceof Cloneable)) {
-            throw new IllegalStateException("The entityCollection (" + originalEntityCollection
-                    + ") is an instance of a class (" + originalEntityCollection.getClass()
-                    + ") that does not implement Cloneable.");
+        protected boolean isDeepCloneField(Field field, Object originalValue) {
+            if (originalValue == null) {
+                return false;
+            }
+            Class<?> declaringClass = field.getDeclaringClass();
+            if (declaringClass == ((Class) solutionDescriptor.getSolutionClass())) {
+                String fieldName = field.getName();
+                // This presumes we're dealing with a simple getter/setter. Dangerous?
+                if (solutionDescriptor.getEntityPropertyDescriptorMap().get(fieldName) != null) {
+                    return true;
+                }
+                if (solutionDescriptor.getEntityCollectionPropertyDescriptorMap().get(fieldName) != null) {
+                    return true;
+                }
+            }
+            Class valueClass = originalValue.getClass();
+            if (solutionDescriptor.getPlanningEntityClassSet().contains(valueClass)
+                    || valueClass == ((Class) solutionDescriptor.getSolutionClass())) {
+                return true;
+            }
+            return false;
         }
-        Method cloneMethod = null;
-        try {
-            cloneMethod = originalEntityCollection.getClass().getMethod("clone");
-//            if (!Collection.class.isAssignableFrom(cloneMethod.getReturnType())) {
-//                throw new IllegalStateException("The entityCollection (" + originalEntityCollection
-//                        + ") is an instance of a class (" + originalEntityCollection.getClass()
-//                        + ") that does not implement Cloneable.");
-//            }
-            return (Collection) cloneMethod.invoke(originalEntityCollection);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Could not call clone() on entityCollection (" + originalEntityCollection
-                    + ") which is an instance of a class (" + originalEntityCollection.getClass()
-                    + ") and implements Cloneable.");
+
+        protected void processQueue() {
+            while (!unprocessedQueue.isEmpty()) {
+                UnprocessedCloneField unprocessedCloneField = unprocessedQueue.remove();
+                process(unprocessedCloneField);
+            }
         }
+
+        private void process(UnprocessedCloneField unprocessed) {
+            Object cloneValue;
+            if (unprocessed.originalValue instanceof Collection) {
+                cloneValue = cloneCollection((Collection) unprocessed.originalValue);
+            } else if (unprocessed.originalValue instanceof Map) {
+                cloneValue = cloneMap((Map) unprocessed.originalValue);
+            } else {
+                cloneValue = clone(unprocessed.originalValue);
+            }
+            setField(unprocessed.bean, unprocessed.field, cloneValue);
+        }
+
+        // TODO this is bad. It should follow hibernate limitations that we use an new empty ArrayList() for List, ...
+        // TODO and detect things like a TreeSet's comparator too through SortedSet.getComparator()
+        private Collection cloneCollection(Collection originalCollection) {
+            if (!(originalCollection instanceof Cloneable)) {
+                throw new IllegalStateException("The collection (" + originalCollection
+                        + ") is an instance of a class (" + originalCollection.getClass()
+                        + ") that does not implement Cloneable.");
+            }
+            Collection cloneCollection;
+            try {
+                Method cloneMethod = originalCollection.getClass().getMethod("clone");
+                cloneCollection = (Collection) cloneMethod.invoke(originalCollection);
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
+                        + ") which is an instance of a class (" + originalCollection.getClass()
+                        + ") and implements Cloneable.");
+            }
+            cloneCollection.clear();
+            for (Object originalEntity : originalCollection) {
+                Object cloneElement = clone(originalEntity);
+                cloneCollection.add(cloneElement);
+            }
+            return cloneCollection;
+        }
+
+        private Map cloneMap(Map originalMap) {
+            throw new UnsupportedOperationException(); // TODO
+        }
+
+        private Object getField(Object bean, Field field) {
+            try {
+                return field.get(bean);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("The class (" + bean.getClass()
+                        + ") has a field (" + field
+                        + ") which can not be read to create a clone.", e);
+            }
+        }
+
+        private void setField(Object bean, Field field, Object value) {
+            try {
+                field.set(bean, value);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("The class (" + bean.getClass()
+                        + ") has a field (" + field
+                        + ") which can not be written to create a clone.", e);
+            }
+        }
+
     }
 
 }
