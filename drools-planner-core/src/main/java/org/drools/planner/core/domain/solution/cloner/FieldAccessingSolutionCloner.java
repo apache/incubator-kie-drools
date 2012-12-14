@@ -16,7 +16,6 @@
 
 package org.drools.planner.core.domain.solution.cloner;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -26,9 +25,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
-import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.solution.Solution;
 
@@ -49,13 +46,13 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         return new FieldAccessingSolutionClonerRun().cloneSolution(originalSolution);
     }
 
-    protected static class UnprocessedCloneField {
+    protected static class Unprocessed {
 
         protected Object bean;
         protected Field field;
         protected Object originalValue;
 
-        public UnprocessedCloneField(Object bean, Field field, Object originalValue) {
+        public Unprocessed(Object bean, Field field, Object originalValue) {
             this.bean = bean;
             this.field = field;
             this.originalValue = originalValue;
@@ -66,10 +63,10 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
     protected class FieldAccessingSolutionClonerRun {
 
         protected Map<Object,Object> originalToCloneMap;
-        protected Queue<UnprocessedCloneField> unprocessedQueue;
+        protected Queue<Unprocessed> unprocessedQueue;
 
         protected SolutionG cloneSolution(SolutionG originalSolution) {
-            unprocessedQueue = new LinkedList<UnprocessedCloneField>();
+            unprocessedQueue = new LinkedList<Unprocessed>();
             originalToCloneMap = new IdentityHashMap<Object, Object>(
                     solutionDescriptor.getPlanningEntityCount(originalSolution) + 1);
             SolutionG cloneSolution = clone(originalSolution);
@@ -109,7 +106,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
                 Object originalValue = getField(original, field);
                 if (isDeepCloneField(field, originalValue)) {
                     // Postpone filling in the fields
-                    unprocessedQueue.add(new UnprocessedCloneField(clone, field, originalValue));
+                    unprocessedQueue.add(new Unprocessed(clone, field, originalValue));
                 } else {
                     // Shallow copy
                     setField(clone, field, originalValue);
@@ -146,12 +143,12 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
         protected void processQueue() {
             while (!unprocessedQueue.isEmpty()) {
-                UnprocessedCloneField unprocessedCloneField = unprocessedQueue.remove();
-                process(unprocessedCloneField);
+                Unprocessed unprocessed = unprocessedQueue.remove();
+                process(unprocessed);
             }
         }
 
-        private void process(UnprocessedCloneField unprocessed) {
+        private void process(Unprocessed unprocessed) {
             Object cloneValue;
             if (unprocessed.originalValue instanceof Collection) {
                 cloneValue = cloneCollection((Collection) unprocessed.originalValue);
