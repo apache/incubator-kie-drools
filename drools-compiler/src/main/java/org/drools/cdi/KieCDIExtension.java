@@ -194,6 +194,8 @@ public class KieCDIExtension
     
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd,
                                    BeanManager bm) {
+        //abd.addBean( bean )
+        
         if ( classpathKContainer != null ) {
             // if classpathKContainer null, processInjectionTarget was not called, so beans to create
             KieServices ks = KieServices.Factory.get();

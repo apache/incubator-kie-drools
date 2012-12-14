@@ -45,6 +45,8 @@ public class CDIExamplesTest  {
     
     @BeforeClass
     public static void beforeClass() {    
+        CDITestRunner.setUp();  
+        
         CDITestRunner.weld = CDITestRunner.createWeld( CDIExamplesTest.class.getName(),
                                                        Msg.class.getName(), Msg1.class.getName(), Msg2.class.getName(), 
                                                        Message.class.getName(), MessageImpl.class.getName(), 
@@ -55,9 +57,7 @@ public class CDIExamplesTest  {
 
     @AfterClass
     public static void afterClass() {
-        CDITestRunner.weld.shutdown();
-        CDITestRunner.container = null;
-        CDITestRunner.weld = null;
+        CDITestRunner.tearDown();
     }          
     
     @Test
