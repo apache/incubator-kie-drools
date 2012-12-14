@@ -29,22 +29,17 @@ public class KieServicesInjectionTest {
     KieResources  rscs;
     
     @BeforeClass
-    public static void beforeClass() {          
+    public static void beforeClass() {   
+        CDITestRunner.setUp();
         CDITestRunner.weld = CDITestRunner.createWeld( KieServicesInjectionTest.class.getName()  );        
         CDITestRunner.container = CDITestRunner.weld.initialize();
     }
 
+
     @AfterClass
     public static void afterClass() {
-        if ( CDITestRunner.weld != null ) { 
-            CDITestRunner.weld.shutdown();
-         
-            CDITestRunner.weld = null;
-        }
-        if ( CDITestRunner.container != null ) {
-            CDITestRunner.container = null; 
-        }
-    }     
+        CDITestRunner.tearDown();
+    }   
     
     @Test
     public void testKieServicesInjection() {

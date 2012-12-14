@@ -102,6 +102,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     
     public static InternalKieModule fetchKModule(URL url, String fixedURL) {
         KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
+
         setDefaultsforEmptyKieModule(kieProject);
 
         String pomProperties = getPomProperties( fixedURL );

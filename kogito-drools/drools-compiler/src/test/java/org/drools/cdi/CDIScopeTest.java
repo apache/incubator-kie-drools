@@ -1,6 +1,7 @@
 package org.drools.cdi;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.Set;
 
@@ -44,17 +45,17 @@ public class CDIScopeTest {
 
     
     @BeforeClass
-    public static void beforeClass() {    
+    public static void beforeClass() {  
+        
+        CDITestRunner.setUp();
         CDITestRunner.weld = CDITestRunner.createWeld( CDIScopeTest.class.getName() );
         CDITestRunner.container = CDITestRunner.weld.initialize();
     }
 
     @AfterClass
     public static void afterClass() {
-        CDITestRunner.weld.shutdown();
-        CDITestRunner.container = null;
-        CDITestRunner.weld = null;
-    }  
+        CDITestRunner.tearDown();
+    } 
 
     @Test
     public void testKieBaseScope() {

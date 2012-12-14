@@ -97,17 +97,17 @@ public class AbstractKnowledgeTest {
 
     public KieModuleModel createKieModule(String namespace,
                                           boolean createJar) throws IOException,
-                      ClassNotFoundException,
-                      InterruptedException {
+                                                                    ClassNotFoundException,
+                                                                    InterruptedException {
         return createKieModule( namespace, createJar, "1.0-SNAPSHOT" );
         
     }
-                                          
+
     public KieModuleModel createKieModule(String namespace,
                                 boolean createJar,
                                 String version) throws IOException,
-            ClassNotFoundException,
-            InterruptedException {
+                                                       ClassNotFoundException,
+                                                       InterruptedException {
         KieModuleModel kproj = new KieModuleModelImpl();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
@@ -143,7 +143,7 @@ public class AbstractKnowledgeTest {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystemImpl kfs =  ( KieFileSystemImpl ) ks.newKieFileSystem();
-        kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( kproj ) ); 
+        kfs.write( "src/main/resources/META-INF/beans.xml", generateBeansXML( ) ); 
         kfs.writeKModuleXML( ((KieModuleModelImpl)kproj).toXML()  );
         
         ReleaseId releaseId = ks.newReleaseId(namespace, "art1", version);
@@ -198,7 +198,7 @@ public class AbstractKnowledgeTest {
         return s;
     }
 
-    public String generateBeansXML(KieModuleModel kproject) {
+    public static String generateBeansXML() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n" +
                 "</beans>";
