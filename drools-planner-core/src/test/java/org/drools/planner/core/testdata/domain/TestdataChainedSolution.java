@@ -88,19 +88,4 @@ public class TestdataChainedSolution extends TestdataObject implements Solution<
         return chainedAnchorList;
     }
 
-    public TestdataChainedSolution cloneSolution() {
-        TestdataChainedSolution clone = new TestdataChainedSolution();
-        clone.code = code;
-        clone.chainedAnchorList = chainedAnchorList;
-        List<TestdataChainedEntity> clonedChainedEntityList = new ArrayList<TestdataChainedEntity>(
-                chainedEntityList.size());
-        for (TestdataChainedEntity chainedEntity : chainedEntityList) {
-            TestdataChainedEntity clonedChainedEntity = chainedEntity.clone();
-            clonedChainedEntityList.add(clonedChainedEntity);
-        }
-        clone.chainedEntityList = clonedChainedEntityList;
-        clone.score = score;
-        return clone;
-    }
-
 }

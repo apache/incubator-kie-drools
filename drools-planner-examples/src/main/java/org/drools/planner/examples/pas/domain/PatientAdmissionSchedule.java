@@ -237,35 +237,6 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
 //        return admissionPartSpecialismMissingInRoomList;
 //    }
 
-    /**
-     * Clone will only deep copy the {@link #bedDesignationList}.
-     */
-    public PatientAdmissionSchedule cloneSolution() {
-        PatientAdmissionSchedule clone = new PatientAdmissionSchedule();
-        clone.id = id;
-        clone.specialismList = specialismList;
-        clone.equipmentList = equipmentList;
-        clone.departmentList = departmentList;
-        clone.departmentSpecialismList = departmentSpecialismList;
-        clone.roomList = roomList;
-        clone.roomSpecialismList = roomSpecialismList;
-        clone.roomEquipmentList = roomEquipmentList;
-        clone.bedList = bedList;
-        clone.nightList = nightList;
-        clone.patientList = patientList;
-        clone.admissionPartList = admissionPartList;
-        clone.requiredPatientEquipmentList = requiredPatientEquipmentList;
-        clone.preferredPatientEquipmentList = preferredPatientEquipmentList;
-        List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());
-        for (BedDesignation bedDesignation : bedDesignationList) {
-            BedDesignation clonedBedDesignation = bedDesignation.clone();
-            clonedBedDesignationList.add(clonedBedDesignation);
-        }
-        clone.bedDesignationList = clonedBedDesignationList;
-        clone.score = score;
-        return clone;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

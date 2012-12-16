@@ -40,11 +40,4 @@ public class TestdataEntity extends TestdataObject {
     // Complex methods
     // ************************************************************************
 
-    public TestdataEntity clone() {
-        TestdataEntity clone = new TestdataEntity();
-        clone.code = code;
-        clone.value = value;
-        return clone;
-    }
-
 }

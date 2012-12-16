@@ -108,14 +108,6 @@ public class BedDesignation extends AbstractPersistable {
         return bed.getRoom().getGenderLimitation();
     }
 
-    public BedDesignation clone() {
-        BedDesignation clone = new BedDesignation();
-        clone.id = id;
-        clone.admissionPart = admissionPart;
-        clone.bed = bed;
-        return clone;
-    }
-
     /**
      * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
      * requires them (for performance in their original state).

@@ -95,22 +95,4 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
         return facts;
     }
 
-    /**
-     * Clone will only deep copy the {@link #queenList}.
-     */
-    public NQueens cloneSolution() {
-        NQueens clone = new NQueens();
-        clone.id = id;
-        clone.n = n;
-        clone.columnList = columnList;
-        clone.rowList = rowList;
-        List<Queen> clonedQueenList = new ArrayList<Queen>(queenList.size());
-        for (Queen queen : queenList) {
-            clonedQueenList.add(queen.clone());
-        }
-        clone.queenList = clonedQueenList;
-        clone.score = score;
-        return clone;
-    }
-
 }

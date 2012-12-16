@@ -242,40 +242,6 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
         return facts;
     }
 
-    /**
-     * Clone will only deep copy the {@link #shiftAssignmentList}.
-     */
-    public NurseRoster cloneSolution() {
-        NurseRoster clone = new NurseRoster();
-        clone.id = id;
-        clone.code = code;
-        clone.nurseRosterInfo = nurseRosterInfo;
-        clone.skillList = skillList;
-        clone.shiftTypeList = shiftTypeList;
-        clone.shiftTypeSkillRequirementList = shiftTypeSkillRequirementList;
-        clone.patternList = patternList;
-        clone.contractList = contractList;
-        clone.contractLineList = contractLineList;
-        clone.patternContractLineList = patternContractLineList;
-        clone.employeeList = employeeList;
-        clone.skillProficiencyList = skillProficiencyList;
-        clone.shiftDateList = shiftDateList;
-        clone.shiftList = shiftList;
-        clone.dayOffRequestList = dayOffRequestList;
-        clone.dayOnRequestList = dayOnRequestList;
-        clone.shiftOffRequestList = shiftOffRequestList;
-        clone.shiftOnRequestList = shiftOnRequestList;
-        List<ShiftAssignment> clonedShiftAssignmentList = new ArrayList<ShiftAssignment>(
-                shiftAssignmentList.size());
-        for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
-            ShiftAssignment clonedShiftAssignment = shiftAssignment.clone();
-            clonedShiftAssignmentList.add(clonedShiftAssignment);
-        }
-        clone.shiftAssignmentList = clonedShiftAssignmentList;
-        clone.score = score;
-        return clone;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

@@ -106,15 +106,6 @@ public class ShiftAssignment extends AbstractPersistable {
         return shift.getShiftDate().getWeekendSundayIndex();
     }
 
-    public ShiftAssignment clone() {
-        ShiftAssignment clone = new ShiftAssignment();
-        clone.id = id;
-        clone.shift = shift;
-        clone.indexInShift = indexInShift;
-        clone.employee = employee;
-        return clone;
-    }
-
     /**
      * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
      * requires them (for performance in their original state).

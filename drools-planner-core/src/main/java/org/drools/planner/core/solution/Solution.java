@@ -62,13 +62,4 @@ public interface Solution<S extends Score> {
      */
     Collection<? extends Object> getProblemFacts();
 
-    /**
-     * Called by the {@link Solver} when the solution needs to be cloned,
-     * for example to store a clone of the current solution as the best solution.
-     * <p/>
-     * A clone must also shallow copy the score.
-     * @return never null, a clone of which the properties that change during solving are deep cloned
-     */
-    Solution<S> cloneSolution();
-
 }

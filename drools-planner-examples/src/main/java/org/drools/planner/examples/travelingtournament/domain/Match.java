@@ -64,15 +64,6 @@ public class Match extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
-    public Match clone() {
-        Match clone = new Match();
-        clone.id = id;
-        clone.homeTeam = homeTeam;
-        clone.awayTeam = awayTeam;
-        clone.day = day;
-        return clone;
-    }
-
     /**
      * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used
      * because the rule engine already requires them (for performance in their original state).

@@ -86,19 +86,4 @@ public class TestdataSolution extends TestdataObject implements Solution<SimpleS
         return valueList;
     }
 
-    public TestdataSolution cloneSolution() {
-        TestdataSolution clone = new TestdataSolution();
-        clone.code = code;
-        clone.entityList = entityList;
-        List<TestdataEntity> clonedEntityList = new ArrayList<TestdataEntity>(
-                entityList.size());
-        for (TestdataEntity entity : entityList) {
-            TestdataEntity clonedEntity = entity.clone();
-            clonedEntityList.add(clonedEntity);
-        }
-        clone.entityList = clonedEntityList;
-        clone.score = score;
-        return clone;
-    }
-
 }

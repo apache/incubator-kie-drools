@@ -170,32 +170,6 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         return serviceDependencyList;
     }
 
-    /**
-     * Clone will only deep copy the {@link #processAssignmentList}.
-     */
-    public MachineReassignment cloneSolution() {
-        MachineReassignment clone = new MachineReassignment();
-        clone.id = id;
-        clone.globalPenaltyInfo = globalPenaltyInfo;
-        clone.resourceList = resourceList;
-        clone.neighborhoodList = neighborhoodList;
-        clone.locationList = locationList;
-        clone.machineList = machineList;
-        clone.machineCapacityList = machineCapacityList;
-        clone.serviceList = serviceList;
-        clone.processList = processList;
-        clone.balancePenaltyList = balancePenaltyList;
-        List<MrProcessAssignment> clonedProcessAssignmentList
-                = new ArrayList<MrProcessAssignment>(processAssignmentList.size());
-        for (MrProcessAssignment processAssignment : processAssignmentList) {
-            MrProcessAssignment clonedProcessAssignment = processAssignment.clone();
-            clonedProcessAssignmentList.add(clonedProcessAssignment);
-        }
-        clone.processAssignmentList = clonedProcessAssignmentList;
-        clone.score = score;
-        return clone;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

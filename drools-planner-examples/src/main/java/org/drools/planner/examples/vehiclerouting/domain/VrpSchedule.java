@@ -106,37 +106,6 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardAnd
         return facts;
     }
 
-    /**
-     * Clone will only deep copy the {@link #customerList}.
-     */
-    public VrpSchedule cloneSolution() {
-        VrpSchedule clone = new VrpSchedule();
-        clone.id = id;
-        clone.name = name;
-        clone.locationList = locationList;
-        clone.depotList = depotList;
-        clone.vehicleList = vehicleList;
-        List<VrpCustomer> clonedCustomerList = new ArrayList<VrpCustomer>(customerList.size());
-        Map<Long, VrpCustomer> idToClonedCustomerMap = new HashMap<Long, VrpCustomer>(
-                customerList.size());
-        for (VrpCustomer customer : customerList) {
-            VrpCustomer clonedCustomer = customer.clone();
-            clonedCustomerList.add(clonedCustomer);
-            idToClonedCustomerMap.put(clonedCustomer.getId(), clonedCustomer);
-        }
-        // Fix: Previous should point to the new clones instead of the old instances
-        for (VrpCustomer clonedCustomer : clonedCustomerList) {
-            VrpAppearance previousAppearance = clonedCustomer.getPreviousAppearance();
-            if (previousAppearance instanceof VrpCustomer) {
-                Long previousVrpCustomerId = ((VrpCustomer) previousAppearance).getId();
-                clonedCustomer.setPreviousAppearance(idToClonedCustomerMap.get(previousVrpCustomerId));
-            }
-        }
-        clone.customerList = clonedCustomerList;
-        clone.score = score;
-        return clone;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

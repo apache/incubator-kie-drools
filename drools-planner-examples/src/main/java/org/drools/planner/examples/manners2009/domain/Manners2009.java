@@ -118,26 +118,6 @@ public class Manners2009 extends AbstractPersistable implements Solution<SimpleS
         return facts;
     }
 
-    /**
-     * Clone will only deep copy the {@link #seatDesignationList}.
-     */
-    public Manners2009 cloneSolution() {
-        Manners2009 clone = new Manners2009();
-        clone.id = id;
-        clone.jobList = jobList;
-        clone.guestList = guestList;
-        clone.hobbyPracticianList = hobbyPracticianList;
-        clone.tableList = tableList;
-        clone.seatList = seatList;
-        List<SeatDesignation> clonedSeatDesignationList = new ArrayList<SeatDesignation>(seatDesignationList.size());
-        for (SeatDesignation seatDesignation : seatDesignationList) {
-            clonedSeatDesignationList.add(seatDesignation.clone());
-        }
-        clone.seatDesignationList = clonedSeatDesignationList;
-        clone.score = score;
-        return clone;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

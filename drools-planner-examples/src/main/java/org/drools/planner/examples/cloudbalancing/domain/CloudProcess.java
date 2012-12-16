@@ -84,16 +84,6 @@ public class CloudProcess extends AbstractPersistable {
         return "Process " + id;
     }
 
-    public CloudProcess clone() {
-        CloudProcess clone = new CloudProcess();
-        clone.id = id;
-        clone.requiredCpuPower = requiredCpuPower;
-        clone.requiredMemory = requiredMemory;
-        clone.requiredNetworkBandwidth = requiredNetworkBandwidth;
-        clone.computer = computer;
-        return clone;
-    }
-
     /**
      * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
      * requires them (for performance in their original state).

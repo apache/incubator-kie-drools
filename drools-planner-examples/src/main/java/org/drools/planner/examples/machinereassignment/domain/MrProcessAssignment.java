@@ -98,15 +98,6 @@ public class MrProcessAssignment extends AbstractPersistable {
         return "Process " + getId();
     }
 
-    public MrProcessAssignment clone() {
-        MrProcessAssignment clone = new MrProcessAssignment();
-        clone.id = id;
-        clone.process = process;
-        clone.originalMachine = originalMachine;
-        clone.machine = machine;
-        return clone;
-    }
-
     /**
      * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
      * requires them (for performance in their original state).

@@ -156,31 +156,6 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         return facts;
     }
 
-    /**
-     * Clone will only deep copy the {@link #lectureList}.
-     */
-    public CurriculumCourseSchedule cloneSolution() {
-        CurriculumCourseSchedule clone = new CurriculumCourseSchedule();
-        clone.id = id;
-        clone.name = name;
-        clone.teacherList = teacherList;
-        clone.curriculumList = curriculumList;
-        clone.courseList = courseList;
-        clone.dayList = dayList;
-        clone.timeslotList = timeslotList;
-        clone.periodList = periodList;
-        clone.roomList = roomList;
-        clone.unavailablePeriodPenaltyList = unavailablePeriodPenaltyList;
-        List<Lecture> clonedLectureList = new ArrayList<Lecture>(lectureList.size());
-        for (Lecture lecture : lectureList) {
-            Lecture clonedLecture = lecture.clone();
-            clonedLectureList.add(clonedLecture);
-        }
-        clone.lectureList = clonedLectureList;
-        clone.score = score;
-        return clone;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

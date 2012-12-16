@@ -75,14 +75,6 @@ public class Queen extends AbstractPersistable {
         return (getColumnIndex() - getRowIndex());
     }
 
-    public Queen clone() {
-        Queen clone = new Queen();
-        clone.id = id;
-        clone.column = column;
-        clone.row = row;
-        return clone;
-    }
-
     @Override
     public String toString() {
         return column + "@" + row;

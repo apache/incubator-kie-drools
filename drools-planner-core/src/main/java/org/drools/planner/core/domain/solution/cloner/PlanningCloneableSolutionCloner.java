@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.examination.domain.solver;
+package org.drools.planner.core.domain.solution.cloner;
 
+import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
-import org.drools.planner.examples.examination.domain.Examination;
+import org.drools.planner.core.solution.Solution;
 
-public class ExaminationCloner implements SolutionCloner<Examination> {
+public class PlanningCloneableSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
 
-    public Examination cloneSolution(Examination original) {
-        return original.cloneSolution();
+    public SolutionG cloneSolution(SolutionG original) {
+        return (SolutionG) ((PlanningCloneable) original).planningClone();
     }
 
 }

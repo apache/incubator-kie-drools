@@ -89,23 +89,6 @@ public class TravelingTournament extends AbstractPersistable implements Solution
         return facts;
     }
 
-    /**
-     * Clone will only deep copy the {@link #matchList}.
-     */
-    public TravelingTournament cloneSolution() {
-        TravelingTournament clone = new TravelingTournament();
-        clone.id = id;
-        clone.dayList = dayList;
-        clone.teamList = teamList;
-        List<Match> clonedMatchList = new ArrayList<Match>(matchList.size());
-        for (Match match : matchList) {
-            clonedMatchList.add(match.clone());
-        }
-        clone.matchList = clonedMatchList;
-        clone.score = score;
-        return clone;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

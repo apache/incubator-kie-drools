@@ -75,24 +75,6 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
         return facts;
     }
 
-    /**
-     * Clone will only deep copy the {@link #processList}.
-     */
-    public CloudBalance cloneSolution() {
-        CloudBalance clone = new CloudBalance();
-        clone.id = id;
-        clone.computerList = computerList;
-        List<CloudProcess> clonedProcessList = new ArrayList<CloudProcess>(
-                processList.size());
-        for (CloudProcess process : processList) {
-            CloudProcess clonedProcess = process.clone();
-            clonedProcessList.add(clonedProcess);
-        }
-        clone.processList = clonedProcessList;
-        clone.score = score;
-        return clone;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;

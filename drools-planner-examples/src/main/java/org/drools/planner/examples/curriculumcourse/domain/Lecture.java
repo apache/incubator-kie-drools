@@ -107,16 +107,6 @@ public class Lecture extends AbstractPersistable {
         return course + "-" + lectureIndexInCourse;
     }
 
-    public Lecture clone() {
-        Lecture clone = new Lecture();
-        clone.id = id;
-        clone.course = course;
-        clone.lectureIndexInCourse = lectureIndexInCourse;
-        clone.period = period;
-        clone.room = room;
-        return clone;
-    }
-
     /**
      * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
      * requires them (for performance in their original state).

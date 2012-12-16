@@ -25,15 +25,16 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
+import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.examination.domain.solver.ExaminationCloner;
 import org.drools.planner.examples.examination.domain.solver.TopicConflict;
 
-@PlanningSolution(solutionCloner = ExaminationCloner.class)
+@PlanningSolution()
 @XStreamAlias("Examination")
-public class Examination extends AbstractPersistable implements Solution<HardAndSoftScore> {
+public class Examination extends AbstractPersistable
+        implements Solution<HardAndSoftScore>, PlanningCloneable<Examination> {
 
     private InstitutionParametrization institutionParametrization;
 
@@ -167,7 +168,7 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
     /**
      * Clone will only deep copy the {@link #examList}.
      */
-    public Examination cloneSolution() {
+    public Examination planningClone() {
         Examination clone = new Examination();
         clone.id = id;
         clone.institutionParametrization = institutionParametrization;

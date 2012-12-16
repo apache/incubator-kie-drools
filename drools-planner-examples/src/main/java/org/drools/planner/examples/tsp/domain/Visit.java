@@ -72,18 +72,6 @@ public class Visit extends AbstractPersistable implements Appearance {
     }
 
     /**
-     * Warning: previous and next do not point to new clones.
-     * @return never null
-     */
-    public Visit clone() {
-        Visit clone = new Visit();
-        clone.id = id;
-        clone.city = city;
-        clone.previousAppearance = previousAppearance;
-        return clone;
-    }
-
-    /**
      * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
      * requires them (for performance in their original state).
      * @see #solutionHashCode()

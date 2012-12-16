@@ -94,19 +94,6 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
     }
 
     /**
-     * Warning: previous and next do not point to new clones.
-     * @return never null
-     */
-    public VrpCustomer clone() {
-        VrpCustomer clone = new VrpCustomer();
-        clone.id = id;
-        clone.location = location;
-        clone.demand = demand;
-        clone.previousAppearance = previousAppearance;
-        return clone;
-    }
-
-    /**
      * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
      * requires them (for performance in their original state).
      * @see #solutionHashCode()

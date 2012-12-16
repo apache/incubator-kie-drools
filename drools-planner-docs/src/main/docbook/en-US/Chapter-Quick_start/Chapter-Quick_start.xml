@@ -352,16 +352,6 @@ public class CloudProcess ... {
     // Complex methods
     // ************************************************************************
 
-    public CloudProcess clone() {
-        CloudProcess clone = new CloudProcess();
-        clone.id = id;
-        clone.requiredCpuPower = requiredCpuPower;
-        clone.requiredMemory = requiredMemory;
-        clone.requiredNetworkBandwidth = requiredNetworkBandwidth;
-        clone.computer = computer;
-        return clone;
-    }
-
     ...
 
 }</programlisting>
@@ -371,8 +361,6 @@ public class CloudProcess ... {
         method on the <literal>Solution</literal> implementation: <literal>CloudBalance.getComputerList()</literal>
         which returns a list of all computers in the current data set. We tell Planner about this by using the
         annotation <literal>@ValueRange</literal>.</para>
-
-        <para>The method <literal>clone()</literal> is used by the class <literal>CloudBalance</literal>.</para>
       </section>
 
       <section>
@@ -427,24 +415,6 @@ public class CloudProcess ... {
         return facts;
     }
 
-    /**
-     * Clone will only deep copy the {@link #processList}.
-     */
-    public CloudBalance cloneSolution() {
-        CloudBalance clone = new CloudBalance();
-        clone.id = id;
-        clone.computerList = computerList;
-        List&lt;CloudProcess&gt; clonedProcessList = new ArrayList&lt;CloudProcess&gt;(
-                processList.size());
-        for (CloudProcess process : processList) {
-            CloudProcess clonedProcess = process.clone();
-            clonedProcessList.add(clonedProcess);
-        }
-        clone.processList = clonedProcessList;
-        clone.score = score;
-        return clone;
-    }
-
     ...
 
 }</programlisting>
@@ -452,9 +422,6 @@ public class CloudProcess ... {
 
         <para>The method <literal>getProblemFacts()</literal> is only needed for score calculation with Drools. It's not
         needed for the other score calculation types.</para>
-
-        <para>The method <literal>clone()</literal> is required. Planner uses it to make a clone of the best
-        <literal>Solution</literal> in encounters during search.</para>
       </section>
     </section>
 

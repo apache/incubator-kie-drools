@@ -19,6 +19,7 @@ package org.drools.planner.api.domain.solution;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.core.solution.Solution;
 
@@ -39,6 +40,9 @@ public @interface PlanningSolution {
 
     /**
      * Overrides the default {@link SolutionCloner} to implement a custom {@link Solution} cloning implementation.
+     * <p/>
+     * If this is not specified and the {@link Solution} does not implements {@link PlanningCloneable},
+     * the default reflection-based {@link SolutionCloner} is used, so you don't have to worry about it.
      * @return {@link NullSolutionCloner} when it is null (workaround for annotation limitation)
      */
     Class<? extends SolutionCloner> solutionCloner()

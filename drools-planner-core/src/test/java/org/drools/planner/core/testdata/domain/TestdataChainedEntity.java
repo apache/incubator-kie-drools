@@ -47,11 +47,4 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
     // Complex methods
     // ************************************************************************
 
-    public TestdataChainedEntity clone() {
-        TestdataChainedEntity clone = new TestdataChainedEntity();
-        clone.code = code;
-        clone.chainedObject = chainedObject;
-        return clone;
-    }
-
 }

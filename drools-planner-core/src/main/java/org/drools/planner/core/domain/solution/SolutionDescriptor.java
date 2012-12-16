@@ -31,11 +31,13 @@ import java.util.Set;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningEntityProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
+import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.cloner.FieldAccessingSolutionCloner;
+import org.drools.planner.core.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.solution.Solution;
 
@@ -88,7 +90,11 @@ public class SolutionDescriptor {
         if (solutionClonerClass != null) {
             solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
         } else {
-            solutionCloner = new FieldAccessingSolutionCloner(this);
+            if (PlanningCloneable.class.isAssignableFrom(solutionClass)) {
+                solutionCloner = new PlanningCloneableSolutionCloner();
+            } else {
+                solutionCloner = new FieldAccessingSolutionCloner(this);
+            }
         }
     }
 

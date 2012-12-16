@@ -69,14 +69,6 @@ public class SeatDesignation extends AbstractPersistable {
         return seat.getTable();
     }
 
-    public SeatDesignation clone() {
-        SeatDesignation clone = new SeatDesignation();
-        clone.id = id;
-        clone.guest = guest;
-        clone.seat = seat;
-        return clone;
-    }
-
     /**
      * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
      * requires them (for performance in their original state).

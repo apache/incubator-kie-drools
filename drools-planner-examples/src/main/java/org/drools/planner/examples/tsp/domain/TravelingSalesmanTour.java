@@ -96,36 +96,6 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         return facts;
     }
 
-    /**
-     * Clone will only deep copy the {@link #visitList}.
-     */
-    public TravelingSalesmanTour cloneSolution() {
-        TravelingSalesmanTour clone = new TravelingSalesmanTour();
-        clone.id = id;
-        clone.name = name;
-        clone.cityList = cityList;
-        clone.domicileList = domicileList;
-        List<Visit> clonedVisitList = new ArrayList<Visit>(visitList.size());
-        Map<Long, Visit> idToClonedVisitMap = new HashMap<Long, Visit>(
-                visitList.size());
-        for (Visit visit : visitList) {
-            Visit clonedVisit = visit.clone();
-            clonedVisitList.add(clonedVisit);
-            idToClonedVisitMap.put(clonedVisit.getId(), clonedVisit);
-        }
-        // Fix: Previous should point to the new clones instead of the old instances
-        for (Visit clonedVisit : clonedVisitList) {
-            Appearance previousAppearance = clonedVisit.getPreviousAppearance();
-            if (previousAppearance instanceof Visit) {
-                Long previousVisitId = ((Visit) previousAppearance).getId();
-                clonedVisit.setPreviousAppearance(idToClonedVisitMap.get(previousVisitId));
-            }
-        }
-        clone.visitList = clonedVisitList;
-        clone.score = score;
-        return clone;
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;
