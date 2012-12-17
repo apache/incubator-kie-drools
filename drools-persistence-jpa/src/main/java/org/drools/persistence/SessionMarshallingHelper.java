@@ -24,10 +24,6 @@ public class SessionMarshallingHelper {
 
     /**
      * Exist Info, so load session from here
-     * @param info
-     * @param ruleBase
-     * @param conf
-     * @param marshallingConfiguration
      */
     public SessionMarshallingHelper(KnowledgeBase kbase,
                                        KieSessionConfiguration conf,
@@ -46,10 +42,6 @@ public class SessionMarshallingHelper {
 
     /** 
      * new session, don't write now as info will request it on update callback
-     * @param info
-     * @param session
-     * @param conf
-     * @param marshallingConfiguration
      */
     public SessionMarshallingHelper(StatefulKnowledgeSession ksession,
                                        KieSessionConfiguration conf) {
