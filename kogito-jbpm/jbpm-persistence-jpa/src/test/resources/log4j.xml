@@ -8,14 +8,7 @@
 		</layout>
 	</appender>
 
-	<logger name="org.drools.marshalling.util.CompareViaReflectionUtil">
-		<level value="INFO"/>
-	</logger>
-	
-	<logger name="org.drools.marshalling.util">
-		<level value="DEBUG"/>
-	</logger>
-        <logger name="org.jbpm.persistence">
+    <logger name="org.jbpm.persistence">
 		<level value="INFO"/>
 	</logger>
 	
@@ -25,7 +18,13 @@
 	</logger>
 	
     <logger name="org.hibernate.tool.hbm2ddl">
-        <level value="DEBUG"/>
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.hql.internal">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.engine.jdbc.internal">
+        <level value="WARN"/>
     </logger>
 
 	<root>

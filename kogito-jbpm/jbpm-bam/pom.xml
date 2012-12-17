@@ -63,6 +63,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -108,23 +109,4 @@
 
   </properties>
   
-  <profiles>
-    <profile>
-      <id>hibernate-4</id>
-       <dependencies>
-         <!-- compile necessary for hibernate based (logger) classes -->
-         <dependency>
-           <groupId>org.hibernate</groupId>
-           <artifactId>hibernate-core</artifactId>
-           <scope>compile</scope>
-         </dependency>
-         <dependency>
-           <groupId>org.hibernate</groupId>
-           <artifactId>hibernate-entitymanager</artifactId>
-           <scope>compile</scope>
-         </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-
 </project>

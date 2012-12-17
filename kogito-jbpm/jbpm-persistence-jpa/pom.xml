@@ -28,10 +28,6 @@
       <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
@@ -57,6 +53,11 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -162,7 +163,7 @@
               <directory>${basedir}</directory>
               <includes>
                 <include>btm*</include>
-                <include>JPADroolsFlow.*.db</include>
+                <include>*.db</include>
               </includes>
             </fileset>
           </filesets>

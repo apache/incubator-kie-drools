@@ -25,16 +25,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import javax.transaction.TransactionManager;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.hibernate.service.jta.platform.internal.TransactionManagerAccess;
+import org.hibernate.transaction.TransactionManagerLookup;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import bitronix.tm.BitronixTransactionManager;
+import bitronix.tm.TransactionManagerServices;
 
 /**
  * This class tests the following classes: 
@@ -67,7 +74,7 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
 		properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
 		SessionConfiguration config = new SessionConfiguration(properties);
         StatefulSession session = ruleBase.newStatefulSession(config, createEnvironment(context));
-        new WorkingMemoryDbLogger(session);
+        new JPAWorkingMemoryDbLogger(session);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // start process instance
@@ -75,7 +82,7 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
         
         System.out.println("Checking process instances for process 'com.sample.ruleflow'");
         List<ProcessInstanceLog> processInstances =
-        	ProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        	JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
         assertEquals(1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(0);
         System.out.println(processInstance);
@@ -83,7 +90,7 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
         assertNotNull(processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
-        List<NodeInstanceLog> nodeInstances = ProcessInstanceDbLog.findNodeInstances(processInstanceId);
+        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
         	System.out.println(nodeInstance);
@@ -91,7 +98,10 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
             assertEquals("com.sample.ruleflow", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
-        ProcessInstanceDbLog.clear();
+        JPAProcessInstanceDbLog.clear();
+        
+        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
+        assertTrue("There is still a transaction running!", txm.getCurrentTransaction() == null );
 	}
 
     @Test
@@ -104,7 +114,7 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
 		properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
 		SessionConfiguration config = new SessionConfiguration(properties);
         StatefulSession session = ruleBase.newStatefulSession(config, createEnvironment(context));
-        new WorkingMemoryDbLogger(session);
+        new JPAWorkingMemoryDbLogger(session);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // start process instance
@@ -113,19 +123,22 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
         
         System.out.println("Checking process instances for process 'com.sample.ruleflow'");
         List<ProcessInstanceLog> processInstances =
-        	ProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        	JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
         assertEquals(2, processInstances.size());
         for (ProcessInstanceLog processInstance: processInstances) {
             System.out.print(processInstance);
             System.out.println(" -> " + processInstance.getStart() + " - " + processInstance.getEnd());
-            List<NodeInstanceLog> nodeInstances = ProcessInstanceDbLog.findNodeInstances(processInstance.getProcessInstanceId());
+            List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstance.getProcessInstanceId());
             for (NodeInstanceLog nodeInstance: nodeInstances) {
             	System.out.print(nodeInstance);
                 System.out.println(" -> " + nodeInstance.getDate());
             }
             assertEquals(6, nodeInstances.size());
         }
-        ProcessInstanceDbLog.clear();
+        JPAProcessInstanceDbLog.clear();
+        
+        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
+        assertTrue("There is still a transaction running!", txm.getCurrentTransaction() == null );
 	}
 
     @Test
@@ -138,7 +151,7 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
 		properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
 		SessionConfiguration config = new SessionConfiguration(properties);
         StatefulSession session = ruleBase.newStatefulSession(config, createEnvironment(context));
-        new WorkingMemoryDbLogger(session);
+        new JPAWorkingMemoryDbLogger(session);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // start process instance
@@ -146,7 +159,7 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
         
         System.out.println("Checking process instances for process 'com.sample.ruleflow2'");
         List<ProcessInstanceLog> processInstances =
-        	ProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow2");
+        	JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow2");
         assertEquals(1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(0);
         System.out.print(processInstance);
@@ -155,7 +168,7 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
         assertNotNull(processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow2", processInstance.getProcessId());
-        List<NodeInstanceLog> nodeInstances = ProcessInstanceDbLog.findNodeInstances(processInstanceId);
+        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
         for (NodeInstanceLog nodeInstance: nodeInstances) {
         	System.out.print(nodeInstance);
             System.out.println(" -> " + nodeInstance.getDate());
@@ -164,7 +177,10 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
             assertNotNull(nodeInstance.getDate());
         }
         assertEquals(14, nodeInstances.size());
-        ProcessInstanceDbLog.clear();
+        JPAProcessInstanceDbLog.clear();
+        
+        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
+        assertTrue("There is still a transaction running!", txm.getCurrentTransaction() == null );
 	}
 	
     private static RuleBase createKnowledgeBase() {

@@ -1,33 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="1.0"
-             xmlns="http://java.sun.com/xml/ns/persistence" 
-             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" 
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
+<persistence 
+  version="2.0"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd 
+                      http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  xmlns="http://java.sun.com/xml/ns/persistence" 
+  xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <persistence-unit name="org.jbpm.runtime" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/testDS1</jta-data-source>        
         <mapping-file>META-INF/JBPMorm.xml</mapping-file>
-        <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
         
         <class>org.drools.persistence.info.SessionInfo</class>
         <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
         <class>org.drools.persistence.info.WorkItemInfo</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
         <properties>
             <property name="hibernate.max_fetch_depth" value="3"/>
             <property name="hibernate.hbm2ddl.auto" value="update" />
             <property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
-            
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            
+            <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
+            <property name="hibernate.id.new_generator_mappings" value="false" />            
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
         </properties>        
     </persistence-unit>
      
     <persistence-unit name="org.jbpm.task">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <mapping-file>META-INF/Taskorm.xml</mapping-file>
+
         <class>org.jbpm.task.Attachment</class>
         <class>org.jbpm.task.Content</class>
         <class>org.jbpm.task.BooleanExpression</class>
@@ -52,20 +57,21 @@
         <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
         <class>org.jbpm.task.User</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
         <properties>
             <property name="hibernate.connection.autocommit" value="false" />
             <property name="hibernate.max_fetch_depth" value="3"/>
             <property name="hibernate.hbm2ddl.auto" value="update" />
             <property name="hibernate.show_sql" value="false" />
-            
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+
+            <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
+            <property name="hibernate.id.new_generator_mappings" value="false" />            
             
             <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
             <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
             <property name="hibernate.connection.username" value="sa" />
             <property name="hibernate.connection.password" value="sasa" />
-            
-            
         </properties>
     </persistence-unit>
     
@@ -76,13 +82,15 @@
         <class>org.jbpm.persistence.objects.MedicalRecord</class>
         <class>org.jbpm.persistence.objects.RecordRow</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
         <properties>
             <property name="hibernate.max_fetch_depth" value="3"/>
             <property name="hibernate.hbm2ddl.auto" value="update" />
             <property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
-            
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            
+            <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
+            <property name="hibernate.id.new_generator_mappings" value="false" />            
             
             <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
             <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />

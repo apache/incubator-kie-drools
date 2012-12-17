@@ -61,7 +61,7 @@ class TaskLocalTransactionManager implements TaskTransactionManager {
     }
 
     public void rollback(EntityManager em, boolean txOwner) {
-        if( getStatus(em) == Status.STATUS_NO_TRANSACTION ) { 
+        if( getStatus(em) == TransactionManager.STATUS_NO_TRANSACTION ) { 
             return;
         }
         

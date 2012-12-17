@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="1.0" 
+<persistence version="2.0"
              xmlns="http://java.sun.com/xml/ns/persistence" 
              xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" 
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd 
+                                 http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
 
     <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/testDS1</jta-data-source>        
         <mapping-file>META-INF/JBPMorm.xml</mapping-file> 
-        <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
         
         <class>org.drools.persistence.info.SessionInfo</class>
         <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
@@ -21,24 +21,30 @@
         
         <class>org.jbpm.marshalling.util.MarshalledData</class>
         
-	    <properties>
-	        <property name="hibernate.max_fetch_depth" value="3"/>
-		    <property name="hibernate.hbm2ddl.auto" value="update" />
-            <property name="hibernate.show_sql" value="false" />	
-            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
-            
-	        <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
-         
-            <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
-            <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
-            <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
-            <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
-	    </properties>        
+        <properties>
+          <property name="hibernate.max_fetch_depth" value="3"/>
+          <property name="hibernate.hbm2ddl.auto" value="update" />
+          <property name="hibernate.show_sql" value="false" />  
+              
+          <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+           
+          <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
+          <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
+          <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
+          <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+  
+          <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems
+          <property name="hibernate.id.new_generator_mappings" value="false"  -->     
+
+          <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
+          <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+      </properties>        
     </persistence-unit>
     
-  <persistence-unit name="org.jbpm.task">
+  <persistence-unit name="org.jbpm.task" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
+
     <class>org.jbpm.task.Attachment</class>
     <class>org.jbpm.task.Content</class>
     <class>org.jbpm.task.BooleanExpression</class>
@@ -62,25 +68,30 @@
     <class>org.jbpm.task.OnParentAbortAllSubTasksEndStrategy</class>
     <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
     <class>org.jbpm.task.User</class>
+
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
-      <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
-      <property name="hibernate.connection.username" value="sa"/>
-      <property name="hibernate.connection.password" value="sasa"/>
       <property name="hibernate.connection.autocommit" value="false" />
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="create" />
       <property name="hibernate.show_sql" value="false" />
+ 
+      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+      <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
+      <property name="hibernate.connection.username" value="sa"/>
+      <property name="hibernate.connection.password" value="sasa"/>
+
+       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
+       <property name="hibernate.id.new_generator_mappings" value="false" />            
     </properties>
   </persistence-unit>
   
-   <persistence-unit name="org.jbpm.persistence.local" transaction-type="JTA">
+   <persistence-unit name="org.jbpm.persistence.local" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/jbpm-local-ds</jta-data-source>        
         <mapping-file>META-INF/JBPMorm.xml</mapping-file> 
-        <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
         <mapping-file>META-INF/Taskorm.xml</mapping-file>
+        
         <class>org.jbpm.task.Attachment</class>
         <class>org.jbpm.task.Content</class>
         <class>org.jbpm.task.BooleanExpression</class>
@@ -116,17 +127,19 @@
         <class>org.jbpm.marshalling.util.MarshalledData</class>
         
         <properties>
-            <property name="hibernate.max_fetch_depth" value="3"/>
-            <property name="hibernate.hbm2ddl.auto" value="update" />
-            <property name="hibernate.show_sql" value="false" />    
-            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
-            
-            <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+          <property name="hibernate.max_fetch_depth" value="3"/>
+          <property name="hibernate.hbm2ddl.auto" value="update" />
+          <property name="hibernate.show_sql" value="false" />    
+           
+           <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
          
-            <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
-            <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
-            <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
-            <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+           <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
+           <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
+           <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
+           <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+            
+           <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
+           <property name="hibernate.id.new_generator_mappings" value="false" />            
         </properties>        
     </persistence-unit>
   

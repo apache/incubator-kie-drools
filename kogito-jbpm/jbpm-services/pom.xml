@@ -11,6 +11,16 @@
     <artifactId>jbpm-services</artifactId>
     <name>jBPM :: Services</name>
     <packaging>pom</packaging>
+
+    <modules>
+        <module>jbpm-shared-services</module>
+        <module>jbpm-human-task-services</module>
+        <module>jbpm-human-task-workitems</module>
+        <module>droolsjbpm-knowledge-services</module>
+        <module>form-services</module>
+        <module>executor-services</module>
+    </modules>
+
     <properties>
         <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
     
@@ -28,50 +38,5 @@
         <maven.jdbc.schema/>
         <uberfire.version>0.2.0-SNAPSHOT</uberfire.version>
     </properties>
-    <modules>
-        <module>jbpm-shared-services</module>
-        <module>jbpm-human-task-services</module>
-        <module>jbpm-human-task-workitems</module>
-        <module>droolsjbpm-knowledge-services</module>
-        <module>form-services</module>
-        <module>executor-services</module>
-    </modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.hibernate.javax.persistence</groupId>
-                <artifactId>hibernate-jpa-2.0-api</artifactId>
-                <version>1.0.1.Final</version>
-            </dependency>
-        
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${hibernate.4.ORM.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.javassist</groupId>
-                        <artifactId>javassist</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.4.ORM.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.javassist</groupId>
-                        <artifactId>javassist</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate.4.validator.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

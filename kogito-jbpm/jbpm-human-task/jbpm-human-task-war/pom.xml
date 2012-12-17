@@ -84,12 +84,12 @@
     <dependency>
     	<groupId>org.hibernate</groupId>
     	<artifactId>hibernate-core</artifactId>
-      <scope>runtime</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
     	<groupId>org.hibernate</groupId>
     	<artifactId>hibernate-entitymanager</artifactId>
-      <scope>runtime</scope>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   
@@ -149,18 +149,6 @@
                   <Dependencies>org.jboss.netty</Dependencies>
                 </manifestEntries>
               </archive>
-            </configuration>
-          </execution>
-          <execution>
-            <id>as5</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>src/main/assembly/human-task-war-as5.xml</descriptor>
-              </descriptors>
             </configuration>
           </execution>
         </executions>

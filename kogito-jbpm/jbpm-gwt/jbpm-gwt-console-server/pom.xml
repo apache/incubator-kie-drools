@@ -24,6 +24,12 @@
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>activity-monitor-model</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.bpm</groupId>
@@ -50,12 +56,16 @@
       <artifactId>jbpm-persistence-jpa</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
     </dependency>
 
     <!-- provided (by container at runtime) -->
@@ -137,18 +147,6 @@
                   <Dependencies>org.jboss.netty</Dependencies>
                 </manifestEntries>
               </archive>
-            </configuration>
-          </execution>
-          <execution>
-            <id>as5</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>src/main/assembly/gwt-console-server-as5.xml</descriptor>
-              </descriptors>
             </configuration>
           </execution>
         </executions>

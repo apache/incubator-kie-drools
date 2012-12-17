@@ -23,20 +23,6 @@
   <property name="freemarker.download.url" value="https://repository.jboss.org/nexus/content/repositories/central/org/freemarker/freemarker/2.3.19/freemarker-2.3.19.jar"/>
   <property name="jboss.logging.download.url" value="https://repository.jboss.org/nexus/content/groups/public/org/jboss/logging/jboss-logging/3.1.2.GA/jboss-logging-3.1.2.GA.jar"/>
 	
-  <path id="generate.ddl.JPA1.class.path">
-    <fileset dir="${install.home}/runtime">
-      <include name="**/*.jar"/>
-      <exclude name="jbpm-test-*.jar"/>
-    </fileset>
-    <fileset dir="${install.home}/db/driver">
-      <include name="**/*.jar"/>
-    </fileset>
-    <fileset dir="${install.home}/lib/ddl-dependencies">
-      <include name="hibernate-tools3.jar"/>
-      <include name="freemarker-*.jar"/>
-    </fileset>
-  </path>
-    
   <path id="generate.ddl.JPA2.class.path">
     <fileset dir="${install.home}/runtime">
       <include name="*.jar"/>

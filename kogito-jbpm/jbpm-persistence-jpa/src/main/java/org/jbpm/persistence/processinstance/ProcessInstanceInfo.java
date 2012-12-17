@@ -1,47 +1,33 @@
 package org.jbpm.persistence.processinstance;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.event.ProcessEventSupport;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.marshalling.impl.MarshallerReaderContext;
-import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.PersisterHelper;
-import org.drools.marshalling.impl.ProtobufMarshaller;
-import org.kie.runtime.Environment;
-import org.kie.runtime.process.ProcessInstance;
-import org.jbpm.marshalling.impl.JBPMMessages;
-import org.jbpm.marshalling.impl.ProcessInstanceMarshaller;
-import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
-import org.jbpm.marshalling.impl.ProtobufRuleFlowProcessInstanceMarshaller;
+import org.drools.marshalling.impl.*;
+import org.jbpm.marshalling.impl.*;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.kie.runtime.Environment;
+import org.kie.runtime.process.ProcessInstance;
 
-/**
- * This is the object that contains the 
- * marshalled byte stream of information representing the 
- * ProcessInstance class. 
- * 
- * Because of Hibernate 3.3.x/3.4.x <-> 4.x  compatibility issues,
- * the mapping for this class has been moved to 
- */
+@Entity
+@SequenceGenerator(name="processInstanceInfoIdSeq", sequenceName="PROCESS_INSTANCE_INFO_ID_SEQ")
 public class ProcessInstanceInfo{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="processInstanceInfoIdSeq")
+    @Column(name = "InstanceId")
     private Long                              processInstanceId;
 
+    @Version
+    @Column(name = "OPTLOCK")
     private int                               version;
 
     private String                            processId;
@@ -49,13 +35,19 @@ public class ProcessInstanceInfo{
     private Date                              lastReadDate;
     private Date                              lastModificationDate;
     private int                               state;
-
+    
+    @Lob
+    @Column(length=2147483647)
     byte[]                                    processInstanceByteArray;
 
+    @ElementCollection
+    @CollectionTable(name="EventTypes", joinColumns=@JoinColumn(name="InstanceId"))
     private Set<String>                       eventTypes         = new HashSet<String>();
     
+    @Transient
     ProcessInstance                           processInstance;
     
+    @Transient
     Environment                               env;
 
     protected ProcessInstanceInfo() {
