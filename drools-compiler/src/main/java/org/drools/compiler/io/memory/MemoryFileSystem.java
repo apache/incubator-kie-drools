@@ -326,7 +326,7 @@ public class MemoryFileSystem
     }
 
     public void remove(String pResourceName) {
-        throw new UnsupportedOperationException();
+        remove(getFile(pResourceName));
     }
 
     public byte[] writeAsBytes() {
@@ -359,7 +359,9 @@ public class MemoryFileSystem
             throw new RuntimeException( e );
         } finally {
             try {
-                out.close();
+                if (out != null) {
+                    out.close();
+                }
             } catch ( IOException e ) {
             }
         }
@@ -441,9 +443,7 @@ public class MemoryFileSystem
             if ( zipFile != null ) {
                 try {
                     zipFile.close();
-                } catch ( IOException e ) {
-                    throw new RuntimeException( e );
-                }
+                } catch ( IOException e ) { }
             }
         }
         return mfs;

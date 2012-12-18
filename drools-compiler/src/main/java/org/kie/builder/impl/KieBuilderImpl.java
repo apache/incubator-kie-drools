@@ -15,14 +15,16 @@ import org.drools.xml.PomModel;
 import org.kie.KieBaseConfiguration;
 import org.kie.KieServices;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.ReleaseId;
+import org.kie.builder.InternalKieBuilder;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieBuilder;
+import org.kie.builder.KieBuilderSet;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.Message.Level;
+import org.kie.builder.ReleaseId;
 import org.kie.builder.Results;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
@@ -40,9 +42,9 @@ import java.util.zip.ZipFile;
 
 public class KieBuilderImpl
     implements
-    KieBuilder {
+    InternalKieBuilder {
 
-    private static final String   RESOURCES_ROOT = "src/main/resources/";
+    static final String   RESOURCES_ROOT = "src/main/resources/";
 
     private ResultsImpl           results;
     private final ResourceReader  srcMfs;
@@ -117,9 +119,9 @@ public class KieBuilderImpl
             compileJavaClasses();
             addKBasesFilesToTrg();
 
-            kModule = new MemoryKieModule(releaseId,
-                                              kModuleModel,
-                                              trgMfs );
+            kModule = new MemoryKieModule( releaseId,
+                                           kModuleModel,
+                                           trgMfs );
 
             if ( dependencies != null && !dependencies.isEmpty() ) {
                 for ( KieModule kieModule : dependencies ) {
@@ -151,8 +153,7 @@ public class KieBuilderImpl
     private KieBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModel kieBase,
                                                                      Properties properties,
                                                                      ClassLoader... classLoaders) {
-        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( properties,
-                                                                                                classLoaders );
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( properties, classLoaders );
         kbConf.setOption( kieBase.getEqualsBehavior() );
         kbConf.setOption( kieBase.getEventProcessingMode() );
         return kbConf;
@@ -160,13 +161,18 @@ public class KieBuilderImpl
 
     private void addKBaseFilesToTrg(KieBaseModel kieBase) {
         for ( String fileName : srcMfs.getFileNames() ) {
-            if ( filterFileInKBase(kieBase,
-                    fileName) ) {
-                byte[] bytes = srcMfs.getBytes( fileName );
-                trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ),
-                              bytes,
-                              true );
+            if ( filterFileInKBase(kieBase, fileName) ) {
+                copySourceToTarget(fileName);
             }
+        }
+    }
+
+    void copySourceToTarget(String fileName) {
+        byte[] bytes = srcMfs.getBytes( fileName );
+        if (bytes != null) {
+            trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ), bytes, true );
+        } else {
+            trgMfs.remove( fileName.substring( RESOURCES_ROOT.length() - 1 ) );
         }
     }
 
@@ -226,12 +232,19 @@ public class KieBuilderImpl
     }
 
     public KieModule getKieModule() {
+        return getKieModule(false);
+    }
+
+    KieModule getKieModuleIgnoringErrors() {
+        return getKieModule(true);
+    }
+
+    private KieModule getKieModule(boolean ignoreErrors) {
         if ( !isBuilt() ) {
             buildAll();
         }
-        
-        
-        if ( getResults().hasMessages(Level.ERROR) || kModule == null ) {
+
+        if ( !ignoreErrors && ( getResults().hasMessages(Level.ERROR) || kModule == null ) ) {
             throw new RuntimeException( "Unable to get KieModule, Errors Existed" );
         }
         return kModule;
@@ -446,5 +459,10 @@ public class KieBuilderImpl
         settings.setTargetVersion( "1.5" );
         return new EclipseJavaCompiler( settings,
                                         prefix );
+    }
+
+    @Override
+    public KieBuilderSet createFileSet(String... files) {
+        return new KieBuilderSetImpl(this, files);
     }
 }

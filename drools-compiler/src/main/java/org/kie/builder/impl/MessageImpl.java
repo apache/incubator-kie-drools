@@ -1,11 +1,11 @@
 package org.kie.builder.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.Message;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageImpl implements Message {
 
@@ -46,7 +46,7 @@ public class MessageImpl implements Message {
             default:
                 level = Level.INFO;
         }
-        path = ""; // TODO ?
+        path = result.getResource().getSourcePath();
         line = result.getLines()[0];
         column = 0;
         text = result.getMessage();

@@ -1,8 +1,5 @@
 package org.drools.compiler;
 
-import java.util.HashSet;
-import java.util.Map;
-
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
@@ -13,6 +10,9 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
 import org.kie.io.Resource;
+
+import java.util.HashSet;
+import java.util.Map;
 
 public class PackageRegistry {
     private final Package              pkg;
@@ -102,7 +102,7 @@ public class PackageRegistry {
         this.dialectCompiletimeRegistry.compileAll();
     }
 
-    public void removeObjectsGeneratedFromResource(Resource resource) {
-        pkg.removeObjectsGeneratedFromResource(resource);
+    public boolean removeObjectsGeneratedFromResource(Resource resource) {
+        return pkg.removeObjectsGeneratedFromResource(resource);
     }
 }

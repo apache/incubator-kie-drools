@@ -1,5 +1,6 @@
 package org.kie.builder.impl;
 
+import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieModuleModel;
@@ -11,8 +12,14 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface InternalKieModule extends KieModule {
-    
-    Map<String, Collection<KnowledgePackage>> getKnowledgePackageCache();
+
+    void cacheKnowledgeBuilderForKieBase(String kieBaseName, KnowledgeBuilder kbuilder);
+
+    KnowledgeBuilder getKnowledgeBuilderForKieBase(String kieBaseName);
+
+    Collection<KnowledgePackage> getKnowledgePackagesForKieBase(String kieBaseName);
+
+    void cacheResultsForKieBase(String kieBaseName, Results results);
 
     Map<String, Results> getKnowledgeResultsCache();    
     

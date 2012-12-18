@@ -16,6 +16,16 @@
 
 package org.drools.rule;
 
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
+import org.drools.base.TypeResolver;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.facttemplates.FactTemplate;
+import org.kie.definition.process.Process;
+import org.kie.definition.type.FactType;
+import org.kie.io.Resource;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -30,14 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.drools.base.*;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.facttemplates.FactTemplate;
-import org.kie.definition.process.Process;
-import org.kie.definition.type.FactType;
-import org.kie.io.Resource;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -566,7 +568,7 @@ public class Package
         this.windowDeclarations = windowDeclarations;
     }
 
-    public void removeObjectsGeneratedFromResource(Resource resource) {
+    public boolean removeObjectsGeneratedFromResource(Resource resource) {
         List<Rule> rulesToBeRemoved = new ArrayList<Rule>();
         for (Rule rule : rules.values()) {
             if (resource.equals(rule.getResource())) {
@@ -602,5 +604,7 @@ public class Package
         for (Function function : functionsToBeRemoved) {
             removeFunction(function.getName());
         }
+
+        return !rulesToBeRemoved.isEmpty() || !typesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty();
     }
 }

@@ -1,9 +1,12 @@
 package org.kie.builder.impl;
 
+import org.drools.impl.InternalKnowledgeBase;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBaseModel;
 import org.kie.builder.KieModule;
@@ -11,6 +14,8 @@ import org.kie.builder.KieRepository;
 import org.kie.builder.KieSessionModel;
 import org.kie.builder.Results;
 import org.kie.builder.Message.Level;
+import org.kie.definition.KnowledgePackage;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
@@ -19,9 +24,11 @@ import org.kie.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
 import static org.kie.util.CDIHelper.wireListnersAndWIHs;
 
 public class KieContainerImpl
@@ -69,9 +76,7 @@ public class KieContainerImpl
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
             ResultsImpl msgs = new ResultsImpl();
-            kBase = AbstractKieModule.createKieBase( ( KieBaseModelImpl ) kProject.getKieBaseModel( kBaseName ),
-                                                     kProject,
-                                                     msgs );
+            kBase = createKieBase(kBaseName, kProject, msgs);
             if ( kBase == null ) {
                 // build error, throw runtime exception
                 throw new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
@@ -82,6 +87,38 @@ public class KieContainerImpl
             }
         }
         return kBase;
+    }
+
+    private KieBase createKieBase(String kBaseName, KieProject kieProject, ResultsImpl messages) {
+        KieBaseModelImpl kBaseModel = (KieBaseModelImpl) kProject.getKieBaseModel(kBaseName);
+        CompositeClassLoader cl = kieProject.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
+
+        InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
+
+        Collection<KnowledgePackage> pkgs = kModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
+
+        if ( pkgs == null ) {
+            KnowledgeBuilder kbuilder = buildKnowledgePackages(kBaseModel, kieProject, messages);
+            if ( kbuilder.hasErrors() ) {
+                // Messages already populated by the buildKnowlegePackages
+                return null;
+            }
+        }
+
+        // if we get to here, then we know the pkgs is now cached
+        pkgs = kModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
+
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( getKnowledgeBaseConfiguration(kBaseModel, cl) );
+
+        kBase.addKnowledgePackages( pkgs );
+        return kBase;
+    }
+
+    private KieBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModelImpl kBaseModel, ClassLoader cl) {
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, cl);
+        kbConf.setOption(kBaseModel.getEqualsBehavior());
+        kbConf.setOption(kBaseModel.getEventProcessingMode());
+        return kbConf;
     }
 
     public KieSession newKieSession() {

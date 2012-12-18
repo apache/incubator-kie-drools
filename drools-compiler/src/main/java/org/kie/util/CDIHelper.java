@@ -49,7 +49,7 @@ public class CDIHelper {
             }
         }
 
-        for (WorkItemHandlerModel wihModel : model.getWorkItemHandelerModels()) {
+        for (WorkItemHandlerModel wihModel : model.getWorkItemHandlerModels()) {
             WorkItemHandler wih;
             try {
                 wih = beanCreator.createBean(wihModel.getType(), wihModel.getQualifierModel());

@@ -17,6 +17,7 @@
 package org.drools.io.impl;
 
 import org.drools.io.internal.InternalResource;
+import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceType;
 
@@ -126,4 +127,26 @@ public abstract class BaseResource
         getCategories().add( tag );
     }
 
+    @Override
+    public String toString() {
+        return getSourcePath();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Resource)) {
+            return false;
+        }
+        Resource that = (Resource) o;
+        return sourcePath != null ? sourcePath.equals(that.getSourcePath()) : that.getSourcePath() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return sourcePath != null ? sourcePath.hashCode() : 0;
+    }
 }
