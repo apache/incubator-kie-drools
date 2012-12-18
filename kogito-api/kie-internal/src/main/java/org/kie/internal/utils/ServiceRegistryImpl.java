@@ -35,6 +35,7 @@ import org.kie.Service;
 import org.kie.builder.KieScanner;
 import org.kie.concurrent.KieExecutors;
 import org.kie.marshalling.KieMarshallers;
+import org.kie.persistence.jpa.KieStoreServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,6 +193,8 @@ public class ServiceRegistryImpl
                      "org.kie.builder.impl.KieServicesImpl");
         addDefault( KieScanner.class,
                     "org.drools.scanner.KieRepositoryScannerImpl");
+        addDefault( KieStoreServices.class,
+                    "org.drools.persistence.jpa.KnowledgeStoreServiceImpl");
     }
 
     public synchronized void addDefault(Class cls,
