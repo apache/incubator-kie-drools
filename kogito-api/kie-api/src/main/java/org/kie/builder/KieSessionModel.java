@@ -50,12 +50,12 @@ public interface KieSessionModel {
      * Creates a new WorkItemHandlerModel of the given type (i.e. the name of the class implementing it)
      * and add it to this KieSessionModel
      */
-    WorkItemHandlerModel newWorkItemHandelerModel(String type);
+    WorkItemHandlerModel newWorkItemHandlerModel(String type);
 
     /**
      * Returns all the WorkItemHandlerModels defined for this KieSessionModel
      */
-    List<WorkItemHandlerModel> getWorkItemHandelerModels();
+    List<WorkItemHandlerModel> getWorkItemHandlerModels();
 
     /**
      * Sets the CDI scope for this KieSessionModel
