@@ -16,35 +16,6 @@
 
 package org.drools.compiler;
 
-import static org.drools.core.util.BitMaskUtil.isSet;
-
-import java.beans.IntrospectionException;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.Stack;
-
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
@@ -144,6 +115,35 @@ import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceType;
 import org.kie.runtime.rule.Match;
 import org.xml.sax.SAXException;
+
+import java.beans.IntrospectionException;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.Stack;
+
+import static org.drools.core.util.BitMaskUtil.isSet;
 
 /**
  * This is the main compiler class for parsing and compiling rules and
@@ -3558,10 +3558,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    private void removeObjectsGeneratedFromResource(Resource resource) {
+    public boolean removeObjectsGeneratedFromResource(Resource resource) {
+        boolean modified = false;
         if (pkgRegistryMap != null) {
             for (PackageRegistry packageRegistry : pkgRegistryMap.values()) {
-                packageRegistry.removeObjectsGeneratedFromResource(resource);
+                modified = packageRegistry.removeObjectsGeneratedFromResource(resource) || modified;
             }
         }
 
@@ -3591,6 +3592,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 pkgDescr.removeObjectsGeneratedFromResource(resource);
             }
         }
+
+        return modified;
     }
 
 }

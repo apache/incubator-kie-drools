@@ -133,13 +133,13 @@ public class KieSessionModelImpl
         listeners.add(listener);
     }
 
-    public WorkItemHandlerModel newWorkItemHandelerModel(String type) {
+    public WorkItemHandlerModel newWorkItemHandlerModel(String type) {
         WorkItemHandlerModelImpl wihModel = new WorkItemHandlerModelImpl(this, type);
         wihs.add(wihModel);
         return wihModel;
     }
 
-    public List<WorkItemHandlerModel> getWorkItemHandelerModels() {
+    public List<WorkItemHandlerModel> getWorkItemHandlerModels() {
         return wihs;
     }
 
@@ -170,7 +170,7 @@ public class KieSessionModelImpl
                 writer.addAttribute("scope", kSession.getScope() );
             }
 
-            writeObjectList(writer, context, "workItemHandlers", "workItemHandler", kSession.getWorkItemHandelerModels());
+            writeObjectList(writer, context, "workItemHandlers", "workItemHandler", kSession.getWorkItemHandlerModels());
 
             if (!kSession.getListenerModels().isEmpty()) {
                 writer.startNode("listeners");

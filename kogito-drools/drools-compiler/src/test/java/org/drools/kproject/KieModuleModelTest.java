@@ -56,7 +56,7 @@ public class KieModuleModelTest {
                 .addArgument("name1", "xxxx")
                 .addArgument("name2", "yyyy");
 
-        ksession1.newWorkItemHandelerModel("org.domain.FifthInterface")
+        ksession1.newWorkItemHandlerModel("org.domain.FifthInterface")
                 .newQualifierModel("MyQualfier5")
                 .addArgument("name1", "aaa")
                 .addArgument("name2", "bbb");
@@ -114,7 +114,7 @@ public class KieModuleModelTest {
         // assertEquals("MyQualfier3", qualifier3.getType());
         // assertEquals("v1", qualifier3.getValue());
 
-        WorkItemHandlerModel wihm = kieSessionModelXML.getWorkItemHandelerModels().get(0);
+        WorkItemHandlerModel wihm = kieSessionModelXML.getWorkItemHandlerModels().get(0);
         assertEquals("org.domain.FifthInterface", wihm.getType());
         // QualifierModel qualifier5 = wihm.getQualifierModel();
         // assertEquals("MyQualfier5", qualifier5.getType());

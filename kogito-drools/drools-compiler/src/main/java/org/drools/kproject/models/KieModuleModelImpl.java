@@ -97,7 +97,7 @@ public class KieModuleModelImpl implements KieModuleModel {
      */
     @Override
     public String toString() {
-        return "KieProject [kbases=" + kBases + "]";
+        return "KieModuleModel [kbases=" + kBases + "]";
     }
 
     private static final String KMODULE_XSD =

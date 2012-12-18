@@ -16,14 +16,14 @@
 
 package org.drools.definitions.rule.impl;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.drools.rule.Rule;
 import org.kie.definition.rule.Query;
 
+import java.util.Collection;
+import java.util.Map;
+
 public class RuleImpl implements org.kie.definition.rule.Rule, Query {
-    private Rule rule;
+    private final Rule rule;
 
     public RuleImpl(Rule rule) {
         this.rule = rule;
