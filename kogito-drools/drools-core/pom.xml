@@ -165,51 +165,51 @@
   </profiles>
 
   <build>
-	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-jar-plugin</artifactId>
-			<executions>
-				<execution>
-					<goals>
-						<goal>test-jar</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
-		<plugin>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>maven-bundle-plugin</artifactId>
-			<extensions>true</extensions>
-			<executions>
-				<execution>
-					<id>manifest</id>
-					<phase>process-classes</phase>
-					<goals>
-						<goal>manifest</goal>
-					</goals>
-				</execution>
-			</executions>
-			<configuration>
-				<instructions>
-					<_removeheaders>Ignore-Package</_removeheaders>
-					<Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
-					<Require-Bundle>org.kie.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
-					<Import-Package>!org.drools.*, *,org.osgi.util.tracker</Import-Package>
-					<Export-Package>org.drools.*</Export-Package>
-					<DynamicImport-Package>*</DynamicImport-Package>
-					<Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
-				</instructions>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-javadoc-plugin</artifactId>
-			<configuration>
-				<excludePackageNames>org.kie.asm*,org.kie.objenesis.*,org.kie.commons.jci.*</excludePackageNames>
-			</configuration>
-		</plugin>
-	</plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <_removeheaders>Ignore-Package</_removeheaders>
+            <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
+            <Require-Bundle>org.kie.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
+            <Import-Package>!org.drools.*, *,org.osgi.util.tracker</Import-Package>
+            <Export-Package>org.drools.*</Export-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <excludePackageNames>org.kie.asm*,org.kie.objenesis.*,org.kie.commons.jci.*</excludePackageNames>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>
