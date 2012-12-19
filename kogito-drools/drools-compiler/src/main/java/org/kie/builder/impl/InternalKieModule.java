@@ -38,4 +38,6 @@ public interface InternalKieModule extends KieModule {
     Collection<String> getFileNames();  
     
     File getFile();
+
+    Map<String, byte[]> getClassesMap();
 }

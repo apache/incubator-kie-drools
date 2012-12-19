@@ -33,6 +33,7 @@ import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
+import org.apache.maven.model.building.ModelSource;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.LegacySupport;
@@ -60,6 +61,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -294,14 +296,11 @@ public class MavenEmbedder {
     // Model
     // ----------------------------------------------------------------------
 
-    public Model readModel( File model )
-        throws XmlPullParserException, FileNotFoundException, IOException {
+    public Model readModel( File model ) throws XmlPullParserException, FileNotFoundException, IOException {
         return modelReader.read( new FileReader( model ) );
     }
 
-    public void writeModel( Writer writer, Model model )
-        throws IOException
-    {
+    public void writeModel( Writer writer, Model model ) throws IOException {
         modelWriter.write( writer, model );
     }
 
@@ -309,16 +308,40 @@ public class MavenEmbedder {
     // Project
     // ----------------------------------------------------------------------
 
-    public MavenProject readProject( File mavenProject )
-        throws ProjectBuildingException, MavenEmbedderException {
+    public MavenProject readProject( final InputStream mavenProjectStream ) throws ProjectBuildingException, MavenEmbedderException {
+        ModelSource modelSource = new ModelSource() {
+            @Override
+            public InputStream getInputStream() throws IOException {
+                return mavenProjectStream;
+            }
 
-        List<MavenProject> projects = readProjects( mavenProject, false );
-        return projects == null || projects.isEmpty() ? null : projects.get( 0 );
+            @Override
+            public String getLocation() {
+                return "";
+            }
+        };
 
+        ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader( this.plexusContainer.getContainerRealm() );
+            ProjectBuilder projectBuilder = lookup( ProjectBuilder.class );
+            return projectBuilder.build( modelSource, getProjectBuildingRequest() ).getProject();
+        } catch(ComponentLookupException e) {
+            throw new MavenEmbedderException(e.getMessage(), e);
+        } finally {
+            Thread.currentThread().setContextClassLoader( originalCl );
+            try {
+                mavenProjectStream.close();
+            } catch (IOException e) { }
+        }
     }
 
-    public List<MavenProject> readProjects( File mavenProject, boolean recursive )
-        throws ProjectBuildingException, MavenEmbedderException {
+    public MavenProject readProject( File mavenProject ) throws ProjectBuildingException, MavenEmbedderException {
+        List<MavenProject> projects = readProjects( mavenProject, false );
+        return projects == null || projects.isEmpty() ? null : projects.get( 0 );
+    }
+
+    public List<MavenProject> readProjects( File mavenProject, boolean recursive ) throws ProjectBuildingException, MavenEmbedderException {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
             List<ProjectBuildingResult> results = buildProjects( mavenProject, recursive );
@@ -330,32 +353,29 @@ public class MavenEmbedder {
         } finally {
             Thread.currentThread().setContextClassLoader( originalCl );
         }
-
     }
 
     public List<ProjectBuildingResult> buildProjects( File mavenProject, boolean recursive ) throws ProjectBuildingException, MavenEmbedderException {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( this.plexusContainer.getContainerRealm() );
-            ProjectBuilder projectBuilder = lookup( ProjectBuilder.class );
-            ProjectBuildingRequest projectBuildingRequest = this.mavenExecutionRequest.getProjectBuildingRequest();
-
-            projectBuildingRequest.setValidationLevel( this.mavenRequest.getValidationLevel() );
-
-            RepositorySystemSession repositorySystemSession = buildRepositorySystemSession();
-
-            projectBuildingRequest.setRepositorySession( repositorySystemSession );
-
-            projectBuildingRequest.setProcessPlugins( this.mavenRequest.isProcessPlugins() );
-
-            projectBuildingRequest.setResolveDependencies( this.mavenRequest.isResolveDependencies() );
-
-            return projectBuilder.build( Arrays.asList(mavenProject), recursive, projectBuildingRequest );
+            ProjectBuilder projectBuilder = lookup(ProjectBuilder.class);
+            return projectBuilder.build( Arrays.asList(mavenProject), recursive, getProjectBuildingRequest() );
         } catch(ComponentLookupException e) {
             throw new MavenEmbedderException(e.getMessage(), e);
         } finally {
             Thread.currentThread().setContextClassLoader( originalCl );
         }
+    }
+
+    private ProjectBuildingRequest getProjectBuildingRequest() throws ComponentLookupException {
+        ProjectBuildingRequest projectBuildingRequest = this.mavenExecutionRequest.getProjectBuildingRequest();
+        projectBuildingRequest.setValidationLevel( this.mavenRequest.getValidationLevel() );
+        RepositorySystemSession repositorySystemSession = buildRepositorySystemSession();
+        projectBuildingRequest.setRepositorySession( repositorySystemSession );
+        projectBuildingRequest.setProcessPlugins( this.mavenRequest.isProcessPlugins() );
+        projectBuildingRequest.setResolveDependencies( this.mavenRequest.isResolveDependencies() );
+        return projectBuildingRequest;
     }
 
     private RepositorySystemSession buildRepositorySystemSession() throws ComponentLookupException {

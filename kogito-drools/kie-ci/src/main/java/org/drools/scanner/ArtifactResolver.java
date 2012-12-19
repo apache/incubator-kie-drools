@@ -6,6 +6,7 @@ import org.kie.builder.ReleaseId;
 import org.sonatype.aether.artifact.Artifact;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
@@ -64,6 +65,11 @@ class ArtifactResolver {
 
     public static ArtifactResolver getResolverFor(File pomFile) {
         MavenProject mavenProject = parseMavenPom(pomFile);
+        return new ArtifactResolver(mavenProject);
+    }
+
+    public static ArtifactResolver getResolverFor(InputStream pomStream) {
+        MavenProject mavenProject = parseMavenPom(pomStream);
         return new ArtifactResolver(mavenProject);
     }
 

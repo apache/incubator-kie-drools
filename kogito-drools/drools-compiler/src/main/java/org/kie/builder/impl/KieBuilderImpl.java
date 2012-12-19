@@ -285,7 +285,7 @@ public class KieBuilderImpl
         return false;
     }
 
-    public void buildPomModel() {
+    private void buildPomModel() {
         pomXml = getOrGeneratePomXml( srcMfs );
         if ( pomXml == null ) {
             // will be null if the provided pom is invalid

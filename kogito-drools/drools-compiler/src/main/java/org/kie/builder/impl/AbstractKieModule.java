@@ -93,6 +93,16 @@ public abstract class AbstractKieModule
         resultsCache.put(kieBaseName, results);
     }
 
+    public Map<String, byte[]> getClassesMap() {
+        Map<String, byte[]> classes = new HashMap<String, byte[]>();
+        for ( String fileName : getFileNames() ) {
+            if ( fileName.endsWith( ".class" ) ) {
+                classes.put( fileName, getBytes( fileName ) );
+            }
+        }
+        return classes;
+    }
+
     @SuppressWarnings("deprecation")
     static KnowledgeBuilder buildKnowledgePackages(KieBaseModelImpl kBaseModel,
                                                    KieProject kieProject,

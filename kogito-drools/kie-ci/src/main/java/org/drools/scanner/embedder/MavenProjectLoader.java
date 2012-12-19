@@ -3,6 +3,7 @@ package org.drools.scanner.embedder;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
+import java.io.InputStream;
 
 public class MavenProjectLoader {
     private static class MavenProjectHolder {
@@ -23,6 +24,16 @@ public class MavenProjectLoader {
         try {
             MavenEmbedder mavenEmbedder = new MavenEmbedder( Thread.currentThread().getContextClassLoader(), mavenRequest );
             return mavenEmbedder.readProject( pomFile );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static MavenProject parseMavenPom(InputStream pomStream) {
+        MavenRequest mavenRequest = new MavenRequest();
+        try {
+            MavenEmbedder mavenEmbedder = new MavenEmbedder( Thread.currentThread().getContextClassLoader(), mavenRequest );
+            return mavenEmbedder.readProject( pomStream );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
