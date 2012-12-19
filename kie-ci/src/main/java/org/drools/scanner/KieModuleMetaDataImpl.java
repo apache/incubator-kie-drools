@@ -1,10 +1,16 @@
 package org.drools.scanner;
 
+import org.drools.core.util.ClassUtils;
+import org.drools.kproject.ReleaseIdImpl;
 import org.kie.builder.ReleaseId;
+import org.kie.builder.impl.InternalKieModule;
+import org.kie.internal.utils.CompositeClassLoader;
 import org.sonatype.aether.artifact.Artifact;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -28,9 +34,11 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private final Map<URI, File> jars = new HashMap<URI, File>();
 
-    private URLClassLoader classLoader;
+    private CompositeClassLoader classLoader;
 
     private ReleaseId releaseId;
+
+    private InternalKieModule kieModule;
 
     public KieModuleMetaDataImpl(ReleaseId releaseId) {
         this.artifactResolver = getResolverFor(releaseId, false);
@@ -40,6 +48,17 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     public KieModuleMetaDataImpl(File pomFile) {
         this.artifactResolver = getResolverFor(pomFile);
+        init();
+    }
+
+    public KieModuleMetaDataImpl(InternalKieModule kieModule) {
+        String pomXmlPath = ((ReleaseIdImpl)kieModule.getReleaseId()).getPomXmlPath();
+        InputStream pomStream = new ByteArrayInputStream(kieModule.getBytes(pomXmlPath));
+        this.artifactResolver = getResolverFor(pomStream);
+        this.kieModule = kieModule;
+        for (String file : kieModule.getFileNames()) {
+            indexClass(file);
+        }
         init();
     }
 
@@ -62,6 +81,8 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private ClassLoader getClassLoader() {
         if (classLoader == null) {
+            classLoader = new CompositeClassLoader( );
+
             URL[] urls = new URL[jars.size()];
             int i = 0;
             for (File jar : jars.values()) {
@@ -71,7 +92,14 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
                     throw new RuntimeException(e);
                 }
             }
-            classLoader = new URLClassLoader(urls);
+            classLoader.addClassLoader(new URLClassLoader(urls));
+
+            if (kieModule != null) {
+                Map<String, byte[]> classes = kieModule.getClassesMap();
+                if ( !classes.isEmpty() ) {
+                    classLoader.addClassLoaderToEnd( new ClassUtils.MapClassLoader( classes, classLoader ) );
+                }
+            }
         }
         return classLoader;
     }

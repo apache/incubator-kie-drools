@@ -43,24 +43,23 @@ public class KieModuleKieProject extends AbstractKieProject {
             kieModules.put( kieModule.getReleaseId(),
                             kieModule );
             indexParts( kieModules, kJarFromKBaseName );
-            initClassLaoder();
+            initClassLoader();
         }
     }
 
-    public void initClassLaoder() {
+    private void initClassLoader() {
+        Map<String, byte[]> classes = getClassesMap();
+        if ( !classes.isEmpty() ) {
+            cl.addClassLoaderToEnd( new ClassUtils.MapClassLoader( classes, cl ) );
+        }
+    }
+
+    private Map<String, byte[]> getClassesMap() {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
         for ( InternalKieModule kModule : kieModules.values() ) {
-            for ( String fileName : kModule.getFileNames() ) {
-                if ( fileName.endsWith( ".class" ) ) {
-                    classes.put( fileName,
-                                 kModule.getBytes( fileName ) );
-                }
-            }
+            classes.putAll(kModule.getClassesMap());
         }
-        if ( !classes.isEmpty() ) {
-            cl.addClassLoaderToEnd( new ClassUtils.MapClassLoader( classes,
-                                                                   cl ) );
-        }
+        return classes;
     }
 
     public ReleaseId getGAV() {
