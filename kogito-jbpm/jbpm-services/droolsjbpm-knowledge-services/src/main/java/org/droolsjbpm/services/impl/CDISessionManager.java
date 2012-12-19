@@ -27,6 +27,8 @@ import javax.inject.Named;
 import org.droolsjbpm.services.api.Domain;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
+import org.droolsjbpm.services.impl.event.listeners.BAM;
+import org.droolsjbpm.services.impl.event.listeners.CDIBAMProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
@@ -60,6 +62,9 @@ public class CDISessionManager implements SessionManager {
     private CDIHTWorkItemHandler handler;
     @Inject
     private CDIProcessEventListener processListener;
+    @Inject
+    @BAM
+    private CDIBAMProcessEventListener bamProcessListener;
     @Inject
     private CDIRuleAwareProcessEventListener processFactsListener;
     @Inject
@@ -170,6 +175,8 @@ public class CDISessionManager implements SessionManager {
             StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
             ksession.addEventListener(processListener);
+            
+            ksession.addEventListener(bamProcessListener);
 
             KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 

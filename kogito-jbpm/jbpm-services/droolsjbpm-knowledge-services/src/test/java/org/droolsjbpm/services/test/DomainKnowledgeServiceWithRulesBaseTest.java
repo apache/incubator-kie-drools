@@ -15,10 +15,8 @@
  */
 package org.droolsjbpm.services.test;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,11 +71,9 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
     @Inject
     private RulesNotificationService rulesNotificationService;
 
-    @Test
-    public void testDummy() {
-    }
     
-    public void FIXMEtestReleaseProcessWithRules() throws FileException, InterruptedException {
+    @Test
+    public void testReleaseProcessWithRules() throws FileException, InterruptedException {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
 
@@ -149,18 +145,13 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
 
         assertEquals(ProcessInstance.STATE_ABORTED, thirdPI.getState());
 
-        //LET'S SLEEP FOR 20 SECONDS AND FIRE ALL THE RULES EACH SECOND
+        
 
-        for (int i = 0; i < 20; i++) {
-            Thread.sleep(1000);
-            System.out.println("Waiting...");
-
-        }
         Collection<RuleNotificationInstanceDesc> allNotificationInstance = rulesNotificationService.getAllNotificationInstance();
-        assertEquals(4, allNotificationInstance.size());
+        assertEquals(1, allNotificationInstance.size());
         
         Collection<RuleNotificationInstanceDesc> notificationsBySessionId = rulesNotificationService.getAllNotificationInstanceBySessionId(0);
-        assertEquals(4, notificationsBySessionId.size());
+        assertEquals(1, notificationsBySessionId.size());
 
 
 

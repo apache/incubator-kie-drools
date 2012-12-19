@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.drools.core.util.StringUtils;
@@ -40,6 +42,8 @@ import org.jbpm.task.User;
 import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
+import org.jbpm.task.events.AfterTaskAddedEvent;
+import org.jbpm.task.events.BeforeTaskDelegatedEvent;
 import org.jbpm.task.exception.CannotAddTaskException;
 import org.jbpm.task.identity.UserGroupCallback;
 import org.jbpm.task.impl.factories.TaskFactory;
@@ -53,7 +57,7 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 @Transactional
 @ApplicationScoped
 public class TaskInstanceServiceImpl implements TaskInstanceService {
-    
+
     @Inject
     private TaskDefService taskDefService;
     @Inject
@@ -61,23 +65,24 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     @Inject
     @Mvel
     private LifeCycleManager lifeCycleManager;
-    @Inject 
+    @Inject
     private EntityManager em;
-    
     @Inject
     private Logger logger;
-    
+    @Inject
+    private Event<Task> taskEvents;
+
     public TaskInstanceServiceImpl() {
     }
-    
+
     public TaskInstanceServiceImpl(TaskDefService taskDefService, LifeCycleManager lifeCycleManager) {
         this.taskDefService = taskDefService;
         this.lifeCycleManager = lifeCycleManager;
     }
-    
+
     public long newTask(String name, Map<String, Object> params) {
         TaskDef taskDef = taskDefService.getTaskDefById(name);
-        
+
         Task task = TaskFactory.newTask(taskDef);
         em.persist(task);
         if (params != null) {
@@ -86,15 +91,15 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
             em.persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
-        
+
         return task.getId();
-        
+
     }
-    
+
     public long newTask(TaskDef taskDef, Map<String, Object> params) {
         return newTask(taskDef, params, true);
     }
-    
+
     public long newTask(TaskDef taskDef, Map<String, Object> params, boolean deploy) {
         //TODO: need to deal with the params for the content
         if (deploy) {
@@ -108,10 +113,10 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
             em.persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
-        
+
         return task.getId();
     }
-    
+
     public long addTask(Task task, Map<String, Object> params) {
         doCallbackOperationForPeopleAssignments(task.getPeopleAssignments());
         doCallbackOperationForTaskData(task.getTaskData());
@@ -123,9 +128,10 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
             task.getTaskData().setDocument(content.getId(), contentData);
         }
         em.persist(task);
+        taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
         return task.getId();
     }
-    
+
     public long addTask(Task task, ContentData contentData) {
         doCallbackOperationForPeopleAssignments(task.getPeopleAssignments());
         doCallbackOperationForTaskData(task.getTaskData());
@@ -136,22 +142,22 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
             em.persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
-        
+        taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
         return task.getId();
     }
-    
+
     public void activate(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Activate, taskId, userId, null, null, null);
     }
-    
+
     public void claim(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Claim, taskId, userId, null, null, null);
     }
-    
+
     public void claim(long taskId, String userId, List<String> groupIds) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     public void claimNextAvailable(String userId, String language) {
         List<org.jbpm.task.Status> status = new ArrayList<org.jbpm.task.Status>();
         status.add(org.jbpm.task.Status.Ready);
@@ -162,81 +168,81 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
             //log.log(Level.SEVERE, " No Task Available to Assign");
         }
     }
-    
+
     public void claimNextAvailable(String userId, List<String> groupIds, String language) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     public void complete(long taskId, String userId, Map<String, Object> data) {
         lifeCycleManager.taskOperation(Operation.Complete, taskId, userId, null, data, null);
     }
-    
+
     public void delegate(long taskId, String userId, String targetUserId) {
         lifeCycleManager.taskOperation(Operation.Delegate, taskId, userId, targetUserId, null, null);
     }
-    
+
     public void deleteFault(long taskId, String userId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     public void deleteOutput(long taskId, String userId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     public void exit(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Exit, taskId, userId, null, null, null);
     }
-    
+
     public void fail(long taskId, String userId, Map<String, Object> faultData) {
         lifeCycleManager.taskOperation(Operation.Fail, taskId, userId, null, faultData, null);
     }
-    
+
     public void forward(long taskId, String userId, String targetEntityId) {
         lifeCycleManager.taskOperation(Operation.Forward, taskId, userId, targetEntityId, null, null);
     }
-    
+
     public void release(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Release, taskId, userId, null, null, null);
     }
-    
+
     public void remove(long taskId, String userId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     public void resume(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Resume, taskId, userId, null, null, null);
     }
-    
+
     public void setFault(long taskId, String userId, FaultData fault) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     public void setOutput(long taskId, String userId, Object outputContentData) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     public void setPriority(long taskId, int priority) {
         Task task = em.find(Task.class, taskId);
         task.setPriority(priority);
     }
-    
+
     public void setTaskNames(long taskId, List<I18NText> taskNames) {
         Task task = em.find(Task.class, taskId);
         task.setNames(taskNames);
     }
-    
+
     public void skip(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Skip, taskId, userId, null, null, null);
     }
-    
+
     public void start(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Start, taskId, userId, null, null, null);
     }
-    
+
     public void stop(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Stop, taskId, userId, null, null, null);
     }
-    
+
     public void suspend(long taskId, String userId) {
         lifeCycleManager.taskOperation(Operation.Suspend, taskId, userId, null, null, null);
     }
@@ -246,56 +252,56 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         doCallbackOperationForPotentialOwners(potentialOwners);
         ((MVELLifeCycleManager) lifeCycleManager).nominate(taskId, userId, potentialOwners);
     }
-    
+
     public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
         Task task = em.find(Task.class, taskId);
         task.setSubTaskStrategy(strategy);
     }
-    
+
     public void setExpirationDate(long taskId, Date date) {
         Task task = em.find(Task.class, taskId);
         task.getTaskData().setExpirationTime(date);
     }
-    
+
     public void setDescriptions(long taskId, List<I18NText> descriptions) {
         Task task = em.find(Task.class, taskId);
         task.setDescriptions(descriptions);
     }
-    
+
     public void setSkipable(long taskId, boolean skipable) {
         Task task = em.find(Task.class, taskId);
         task.getTaskData().setSkipable(skipable);
     }
-    
+
     private List<String> doUserGroupCallbackOperation(String userId, List<String> groupIds) {
-        
+
         doCallbackUserOperation(userId);
         doCallbackGroupsOperation(userId, groupIds);
-        
+
         return userGroupCallback.getGroupsForUser(userId, groupIds, null);
-        
+
     }
-    
+
     private boolean doCallbackUserOperation(String userId) {
-        
+
         if (userId != null && userGroupCallback.existsUser(userId)) {
             addUserFromCallbackOperation(userId);
             return true;
         }
         return false;
-        
+
     }
-    
+
     private boolean doCallbackGroupOperation(String groupId) {
-        
+
         if (groupId != null && userGroupCallback.existsGroup(groupId)) {
             addGroupFromCallbackOperation(groupId);
             return true;
         }
         return false;
-        
+
     }
-    
+
     private void addUserFromCallbackOperation(String userId) {
         try {
             boolean userExists = em.find(User.class, userId) != null;
@@ -311,16 +317,16 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     @Inject
     private UserGroupCallback userGroupCallback;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
-    
+
     private void doCallbackGroupsOperation(String userId, List<String> groupIds) {
-        
+
         if (userId != null) {
-            
+
             if (groupIds != null && groupIds.size() > 0) {
-                
+
                 List<String> userGroups = userGroupCallback.getGroupsForUser(userId, groupIds, null);
                 for (String groupId : groupIds) {
-                    
+
                     if (userGroupCallback.existsGroup(groupId) && userGroups != null && userGroups.contains(groupId)) {
                         addGroupFromCallbackOperation(groupId);
                     }
@@ -343,9 +349,9 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                 }
             }
         }
-        
+
     }
-    
+
     private void addGroupFromCallbackOperation(String groupId) {
         try {
             boolean groupExists = em.find(Group.class, groupId) != null;
@@ -357,11 +363,11 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
             logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
         }
     }
-    
+
     private void doCallbackOperationForPeopleAssignments(PeopleAssignments assignments) {
-        
+
         List<OrganizationalEntity> nonExistingEntities = new ArrayList<OrganizationalEntity>();
-        
+
         if (assignments != null) {
             List<OrganizationalEntity> businessAdmins = assignments.getBusinessAdministrators();
             if (businessAdmins != null) {
@@ -379,18 +385,18 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                         }
                     }
                 }
-                
+
                 if (!nonExistingEntities.isEmpty()) {
                     businessAdmins.removeAll(nonExistingEntities);
                     nonExistingEntities.clear();
                 }
             }
-            
+
             if (businessAdmins == null || businessAdmins.isEmpty()) {
                 // throw an exception as it should not be allowed to create task without administrator
                 throw new CannotAddTaskException("There are no known Business Administrators, task cannot be created according to WS-HT specification");
             }
-            
+
             List<OrganizationalEntity> potentialOwners = assignments.getPotentialOwners();
             if (potentialOwners != null) {
                 for (OrganizationalEntity powner : potentialOwners) {
@@ -412,11 +418,11 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                     nonExistingEntities.clear();
                 }
             }
-            
+
             if (assignments.getTaskInitiator() != null && assignments.getTaskInitiator().getId() != null) {
                 doCallbackUserOperation(assignments.getTaskInitiator().getId());
             }
-            
+
             List<OrganizationalEntity> excludedOwners = assignments.getExcludedOwners();
             if (excludedOwners != null) {
                 for (OrganizationalEntity exowner : excludedOwners) {
@@ -438,7 +444,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                     nonExistingEntities.clear();
                 }
             }
-            
+
             List<OrganizationalEntity> recipients = assignments.getRecipients();
             if (recipients != null) {
                 for (OrganizationalEntity recipient : recipients) {
@@ -460,7 +466,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                     nonExistingEntities.clear();
                 }
             }
-            
+
             List<OrganizationalEntity> stakeholders = assignments.getTaskStakeholders();
             if (stakeholders != null) {
                 for (OrganizationalEntity stakeholder : stakeholders) {
@@ -483,10 +489,10 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                 }
             }
         }
-        
-        
+
+
     }
-    
+
     private void doCallbackOperationForTaskDeadlines(Deadlines deadlines) {
         if (deadlines != null) {
             if (deadlines.getStartDeadlines() != null) {
@@ -542,7 +548,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                     }
                 }
             }
-            
+
             if (deadlines.getEndDeadlines() != null) {
                 List<Deadline> endDeadlines = deadlines.getEndDeadlines();
                 for (Deadline endDeadline : endDeadlines) {
@@ -598,9 +604,9 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
             }
         }
     }
-    
+
     private void doCallbackOperationForTaskData(TaskData data) {
-        
+
         if (data.getActualOwner() != null) {
             boolean userExists = doCallbackUserOperation(data.getActualOwner().getId());
             if (!userExists) {
@@ -609,7 +615,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                 data.setStatus(Status.Ready);
             }
         }
-        
+
         if (data.getCreatedBy() != null) {
             boolean userExists = doCallbackUserOperation(data.getCreatedBy().getId());
             if (!userExists) {
@@ -617,13 +623,13 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                 data.setCreatedBy(null);
             }
         }
-        
+
     }
-    
+
     private void doCallbackOperationForPotentialOwners(List<OrganizationalEntity> potentialOwners) {
-        
+
         List<OrganizationalEntity> nonExistingEntities = new ArrayList<OrganizationalEntity>();
-        
+
         for (OrganizationalEntity orgEntity : potentialOwners) {
             if (orgEntity instanceof User) {
                 boolean userExists = doCallbackUserOperation(orgEntity.getId());
@@ -641,7 +647,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         if (!nonExistingEntities.isEmpty()) {
             potentialOwners.removeAll(nonExistingEntities);
         }
-        
+
     }
 
     public int getPriority(long taskId) {
@@ -668,6 +674,4 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         Task task = em.find(Task.class, taskId);
         return task.getSubTaskStrategy();
     }
-
-    
 }

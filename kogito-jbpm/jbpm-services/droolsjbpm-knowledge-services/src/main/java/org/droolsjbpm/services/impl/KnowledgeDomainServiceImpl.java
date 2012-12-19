@@ -95,6 +95,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
     @PostConstruct
     public void createDomain() {
+        // TODO: Do this based on configuration and use the new CDI approach
         sessionManager.setDomain(domain);
 
         Iterable<Path> releaseProcessesFiles = null;
@@ -135,6 +136,8 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         
 
         sessionManager.buildSessions(true);
+        
+        
 
         sessionManager.addKsessionHandler("releaseSession", "MoveToStagingArea",moveFilesWIHandler);
         sessionManager.addKsessionHandler("releaseSession", "MoveToTest", moveFilesWIHandler);
@@ -194,26 +197,6 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         }
     }
     
-     private class MockTestWorkItemHandler implements WorkItemHandler {
-
-        @Override
-        public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
-            for(String k : wi.getParameters().keySet()){
-                System.out.println("Key = "+ k + " - value = "+wi.getParameter(k));
-            }
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put("out_test_successful", "true");
-            params.put("out_test_report", "All Test were SUCCESSFULY executed!");
-            System.out.println("######### Test Output");
-            System.out.println(" out_test_successful = " + params.get("out_test_successful"));
-            System.out.println(" out_test_report = " + params.get("out_test_report"));
-            System.out.println("#####################");
-            wim.completeWorkItem(wi.getId(), params);
-        }
-
-        @Override
-        public void abortWorkItem(WorkItem wi, WorkItemManager wim) {
-        }
-    }
+    
     
 }

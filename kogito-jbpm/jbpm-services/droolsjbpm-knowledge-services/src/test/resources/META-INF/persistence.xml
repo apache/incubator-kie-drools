@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0"
+
              xmlns="http://java.sun.com/xml/ns/persistence" 
              xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd 
                       http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
 
-  <persistence-unit name="org.jbpm.task" transaction-type="RESOURCE_LOCAL">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <persistence-unit name="org.jbpm.task" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
     
-    <mapping-file>META-INF/Taskorm.xml</mapping-file>
+        <mapping-file>META-INF/Taskorm.xml</mapping-file>
 
     <class>org.jbpm.task.Attachment</class>
     <class>org.jbpm.task.Content</class>
@@ -41,6 +42,9 @@
     <class>org.droolsjbpm.services.impl.model.ProcessInputDesc</class>
     <class>org.droolsjbpm.services.impl.model.RuleNotificationInstanceDesc</class>
 
+
+    <class>org.droolsjbpm.services.impl.model.BAMProcessSummary</class>
+    <class>org.droolsjbpm.services.impl.model.BAMTaskSummary</class>
     <!-- Event Classes -->
     <class>org.jbpm.task.TaskEvent</class>
    
@@ -48,9 +52,9 @@
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
       <property name="hibernate.connection.autocommit" value="false" />
 
-      <property name="hibernate.max_fetch_depth" value="3" />
+       <property name="hibernate.max_fetch_depth" value="3" />
       <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-      <property name="hibernate.show_sql" value="false" />
+      <property name="hibernate.show_sql" value="true" />
 
       <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
       <property name="hibernate.connection.url" value="jdbc:h2:mem:test;MVCC=true" />
@@ -62,6 +66,6 @@
     </properties>
   </persistence-unit>
 
-  
-  
+
+
 </persistence>
