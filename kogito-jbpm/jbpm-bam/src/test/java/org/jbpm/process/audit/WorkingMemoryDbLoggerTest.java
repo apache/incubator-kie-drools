@@ -32,6 +32,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.rule.Package;
 import org.hibernate.service.jta.platform.internal.TransactionManagerAccess;
 import org.hibernate.transaction.TransactionManagerLookup;
@@ -39,6 +40,8 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
 
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.TransactionManagerServices;
@@ -57,6 +60,9 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
     @Before
     public void setUp() throws Exception {
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, context.get(EnvironmentName.ENTITY_MANAGER_FACTORY));
+        JPAProcessInstanceDbLog.setEnvironment(env);
     }
 
     @After
