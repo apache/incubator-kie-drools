@@ -21,19 +21,18 @@ import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectTypeNode;
-
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 public class PropertySpecificTest extends CommonTestMethodBase {
     
@@ -2311,5 +2310,55 @@ public class PropertySpecificTest extends CommonTestMethodBase {
             assertEquals(2, factTypeC.get(factC, "y"));
             ksession.dispose();
         }
+    }
+
+    @Test
+    public void testRemovedPendingActivation() {
+        String rule = "declare Person\n" +
+                "@propertyReactive\n" +
+                "   name   : String\n" +
+                "   age    : int\n" +
+                "   weight : int\n" +
+                "end\n" +
+                "\n" +
+                "rule kickoff\n" +
+                "salience 100\n" +
+                "when\n" +
+                "then\n" +
+                "    Person p = new Person( \"Joe\", 20, 20 );\n" +
+                "    insert( p );\n" +
+                "end\n" +
+                "\n" +
+                "rule y\n" +
+                "when\n" +
+                "    $p : Person(name == \"Joe\" )\n" +
+                "then\n" +
+                "    modify($p){\n" +
+                "       setAge( 100 )\n" +
+                "    }\n" +
+                "end\n" +
+                "\n" +
+                "rule x\n" +
+                "when\n" +
+                "    $p : Person(name == \"Joe\" )\n" +
+                "then\n" +
+                "    modify($p){\n" +
+                "        setWeight( 100 )\n" +
+                "    }\n" +
+                "end\n" +
+                "\n" +
+                "rule z\n" +
+                "salience -100\n" +
+                "when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    System.out.println( $p );\n" +
+                "    if ($p.getAge() != 100 || $p.getWeight() != 100) throw new RuntimeException();\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
     }
 }
