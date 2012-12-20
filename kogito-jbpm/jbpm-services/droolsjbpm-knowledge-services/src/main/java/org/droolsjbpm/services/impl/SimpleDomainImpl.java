@@ -44,6 +44,8 @@ public class SimpleDomainImpl implements Domain{
     // Process Id (String) / Process Content.. (?? this is really needed??)
     private Map<String, Map<String,String>> processes = new HashMap<String, Map<String,String>>();
     
+    private Map<String, String> ksessionRepositoryRoot = new HashMap<String, String>();
+    
     private Long parentId;
     
     public SimpleDomainImpl() {
@@ -164,6 +166,18 @@ public class SimpleDomainImpl implements Domain{
     @Override
     public String getProcessDefinitionBPMN2(String ksessionName, String processId) {
         return processes.get(ksessionName).get(processId);
+    }
+
+    public Map<String, String> getKsessionRepositoryRoot() {
+        return ksessionRepositoryRoot;
+    }
+    
+    public void addKsessionRepositoryRoot(String ksession, String ksessionRepositoryRoot) {
+        this.ksessionRepositoryRoot.put(ksession, ksessionRepositoryRoot);
+    }
+
+    public void setKsessionRepositoryRoot(Map<String, String> ksessionRepositoryRoot) {
+        this.ksessionRepositoryRoot = ksessionRepositoryRoot;
     }
 
  

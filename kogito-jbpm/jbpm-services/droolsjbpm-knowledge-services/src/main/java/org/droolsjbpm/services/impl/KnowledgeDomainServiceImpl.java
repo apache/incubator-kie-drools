@@ -108,24 +108,26 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+        String kSessionName = "releaseSession";
+        domain.addKsessionRepositoryRoot(kSessionName, "examples/release/");
         for (Path p : releaseProcessesFiles) {
-            String kSessionName = "releaseSession";
+            
             domain.addProcessDefinitionToKsession(kSessionName, p);
             System.out.println(" >>> Adding Path to ReleaseSession- > "+p.toString());
             // TODO automate this in another service
             String processString = new String( ioService.readAllBytes( p ) );
             domain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
         }
-        for (Path p : releaseRulesFiles) {
-            String kSessionName = "releaseSession";
+        kSessionName = "releaseSession";
+        for (Path p : releaseRulesFiles) {            
             System.out.println(" >>> Adding Path to ReleaseSession- > "+p.toString());
             // TODO automate this in another service
             domain.addRulesDefinitionToKsession(kSessionName, p);
         }
         
-        
+        kSessionName = "generalSession";
+        domain.addKsessionRepositoryRoot(kSessionName, "examples/general/");
         for (Path p : exampleProcessesFiles) {
-            String kSessionName = "generalSession";
             domain.addProcessDefinitionToKsession("generalSession", p);
             System.out.println(" >>> Adding Path to GeneralSession - > "+p.toString());
             // TODO automate this in another service

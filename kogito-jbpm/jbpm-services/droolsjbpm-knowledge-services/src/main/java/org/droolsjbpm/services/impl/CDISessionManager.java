@@ -26,6 +26,7 @@ import javax.inject.Named;
 
 import org.droolsjbpm.services.api.Domain;
 import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.api.WorkItemHandlerProducer;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.BAM;
 import org.droolsjbpm.services.impl.event.listeners.CDIBAMProcessEventListener;
@@ -71,6 +72,8 @@ public class CDISessionManager implements SessionManager {
     private CDIKbaseEventListener kbaseEventListener;
     @Inject
     private BPMN2DataService bpmn2Service;
+    @Inject
+    private WorkItemHandlerProducer workItemHandlerProducer;
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
@@ -172,7 +175,7 @@ public class CDISessionManager implements SessionManager {
             
             kbase.addEventListener(kbaseEventListener);
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();            
 
             ksession.addEventListener(processListener);
             
@@ -185,7 +188,14 @@ public class CDISessionManager implements SessionManager {
             // Register the same handler for all the ksessions
             ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
             // Register the configured handlers
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("ksession", ksession);
+            Map<String, WorkItemHandler> handlers = workItemHandlerProducer.getWorkItemHandlers(domain.getKsessionRepositoryRoot().get(session), params);
             StatefulKnowledgeSessionDelegate statefulKnowledgeSessionDelegate = new StatefulKnowledgeSessionDelegate(session, ksession, this);
+            
+            for (Map.Entry<String, WorkItemHandler> wihandler : handlers.entrySet()) {
+                ksession.getWorkItemManager().registerWorkItemHandler(wihandler.getKey(), wihandler.getValue());
+            }
 
             ksessions.put(session, statefulKnowledgeSessionDelegate);
             ksessionIds.put(session, ksession.getId());

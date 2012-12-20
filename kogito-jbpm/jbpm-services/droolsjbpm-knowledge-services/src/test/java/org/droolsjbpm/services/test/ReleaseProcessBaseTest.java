@@ -141,8 +141,10 @@ public abstract class ReleaseProcessBaseTest {
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+        String kSessionName = "myKsession";
+        myDomain.addKsessionRepositoryRoot(kSessionName, "examples/release/");
         for (Path p : loadFilesByType) {
-            String kSessionName = "myKsession";
+            
             System.out.println(" >>> Loading Path -> "+p.toString());
             myDomain.addProcessDefinitionToKsession("myKsession", p);
             String processString = new String( fs.loadFile(p) );

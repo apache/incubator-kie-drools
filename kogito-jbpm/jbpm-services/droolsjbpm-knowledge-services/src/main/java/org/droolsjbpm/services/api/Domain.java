@@ -56,4 +56,10 @@ public interface Domain {
 
     void setRulesDefinitionToKsessions(Map<String, List<Path>> ksessionRulesDefinitions);
     
+    Map<String, String> getKsessionRepositoryRoot();
+    
+    void addKsessionRepositoryRoot(String ksession, String ksessionRepositoryRoot);
+
+    void setKsessionRepositoryRoot(Map<String, String> ksessionRepositoryRoot);
+    
 }
