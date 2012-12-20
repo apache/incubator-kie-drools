@@ -11,7 +11,8 @@
   </parent>
 
   <artifactId>jbpm-bpmn2-emfextmodel</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+
   <name>jBPM :: BPMN2 EMF Extension Model</name>
   <description>jBPM BPMN2 EMF Extension Model</description>
 
@@ -35,7 +36,7 @@
             <Bundle-SymbolicName>org.jbpm.bpmn2.emfextmodel;singleton:=true</Bundle-SymbolicName>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Require-Bundle>org.jbpm.flow.builder;bundle-version="${jbpm.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.jbpm.*, !org.drools.*, *</Import-Package>
+            <Import-Package>!org.jbpm.*,!org.drools.*,*</Import-Package>
             <Export-Package>org.jbpm.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>

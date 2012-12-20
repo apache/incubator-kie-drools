@@ -11,8 +11,9 @@
   </parent>
 
   <artifactId>jbpm-persistence-jpa</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+
   <name>jBPM :: JPA Persistence</name>
-  <packaging>bundle</packaging>
   <description>jBPM JPA Persistence</description>
 
   <dependencies>
