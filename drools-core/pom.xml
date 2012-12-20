@@ -11,6 +11,7 @@
 
   <artifactId>drools-core</artifactId>
   <packaging>bundle</packaging>
+
   <name>Drools :: Core</name>
   
   <dependencies>
@@ -166,18 +167,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
