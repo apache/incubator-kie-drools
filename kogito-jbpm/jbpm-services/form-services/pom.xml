@@ -55,13 +55,11 @@
     <dependency>
       <groupId>org.jboss.seam.persistence</groupId>
       <artifactId>seam-persistence</artifactId>
-
     </dependency>
 
     <dependency>
       <groupId>org.mvel</groupId>
       <artifactId>mvel2</artifactId>
-
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -115,13 +113,11 @@
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
-
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>
       <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -139,11 +135,6 @@
       <artifactId>freemarker</artifactId>
       <version>2.3.8</version>
       <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

@@ -14,12 +14,6 @@
     <name>Executor Service</name>
     <url>http://maven.apache.org</url>
         <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-           
-            <scope>test</scope>
-        </dependency>
         
         <dependency>
             <groupId>org.jboss.seam.persistence</groupId>
