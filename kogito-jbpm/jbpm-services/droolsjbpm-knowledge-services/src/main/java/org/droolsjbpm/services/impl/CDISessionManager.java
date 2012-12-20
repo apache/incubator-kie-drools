@@ -75,7 +75,7 @@ public class CDISessionManager implements SessionManager {
     @Inject
     private WorkItemHandlerProducer workItemHandlerProducer;
     @Inject
-    @Named("ioStrategy")
+    @Named("fileServiceIOStrategy")
     private IOService ioService;
     private Domain domain;
     // Ksession Name  / Ksession

@@ -20,9 +20,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
@@ -38,7 +38,7 @@ import static org.kie.commons.validation.PortablePreconditions.*;
 /**
  *
  */
-@ApplicationScoped
+@Singleton
 public class VFSFileServiceImpl implements FileService {
 
     private static final String REPO_PLAYGROUND = "git://jbpm-playground";
@@ -116,7 +116,7 @@ public class VFSFileServiceImpl implements FileService {
     }
 
     @Produces
-    @Named("ioStrategy")
+    @Named("fileServiceIOStrategy")
     public IOService ioService() {
         return ioService;
     }
