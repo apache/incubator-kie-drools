@@ -16,6 +16,14 @@
 
 package org.drools.rule;
 
+import org.drools.RuntimeDroolsException;
+import org.drools.core.util.KeyStoreHelper;
+import org.drools.core.util.StringUtils;
+import org.drools.spi.Constraint;
+import org.drools.spi.Wireable;
+import org.kie.internal.utils.CompositeClassLoader;
+import org.kie.internal.utils.FastClassLoader;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -37,20 +45,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-
-import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.core.util.KeyStoreHelper;
-import org.drools.core.util.StringUtils;
-import org.drools.spi.Constraint;
-import org.drools.spi.Wireable;
-import org.kie.internal.utils.CompositeClassLoader;
-import org.kie.internal.utils.FastClassLoader;
 
 public class JavaDialectRuntimeData
                                    implements
@@ -88,7 +86,7 @@ public class JavaDialectRuntimeData
 
     public JavaDialectRuntimeData() {
         this.invokerLookups = new HashMap<String, Object>();
-		this.classLookups = new HashMap();
+		this.classLookups = new HashMap<String,byte[]>();
 		this.store = new HashMap<String, byte[]>();        
         this.dirty = false;
     }
@@ -132,8 +130,7 @@ public class JavaDialectRuntimeData
         }
 
         stream.writeInt( this.classLookups.size() );
-        for (Iterator it = this.classLookups.entrySet().iterator(); it.hasNext();) {
-            Entry<String, byte[]> entry = (Entry<String,byte[]>) it.next();
+        for (Entry<String, byte[]> entry : this.classLookups.entrySet()) {
             stream.writeObject( entry.getKey() );
             stream.writeObject( entry.getValue() );
         }

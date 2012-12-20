@@ -470,10 +470,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     protected void buildClassHeader(ClassVisitor cw,
                                   ClassDefinition classDef) {
         String[] original = classDef.getInterfaces();
-        String[] interfaces = new String[original.length];
+        String[] interfaces = new String[original.length + 1];
         for ( int i = 0; i < original.length; i++ ) {
             interfaces[i] = BuildUtils.getInternalType( original[i] );
         }
+        interfaces[original.length] = BuildUtils.getInternalType( GeneratedFact.class.getName() );
 
         int classModifiers = Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER;
             if ( classDef.isAbstrakt() ) {

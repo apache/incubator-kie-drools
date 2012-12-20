@@ -41,6 +41,7 @@ import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.EnumClassDefinition;
 import org.drools.factmodel.EnumLiteralDefinition;
 import org.drools.factmodel.FieldDefinition;
+import org.drools.factmodel.GeneratedFact;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.Trait;
 import org.drools.factmodel.traits.TraitFactory;
@@ -663,7 +664,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             throw new RuntimeException( "Unable to instantiate a process builder", processBuilderCreationFailure );
         }
 
-        if ( ResourceType.DRF.equals( ( (InternalResource) resource ).getResourceType() ) ) {
+        if ( ResourceType.DRF.equals( resource.getResourceType() ) ) {
             this.results.add( new DeprecatedResourceTypeWarning(resource, "RF") );
         }
 
@@ -2291,17 +2292,19 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      * @return
      */
     private boolean isNovelClass( AbstractClassTypeDeclarationDescr typeDescr ) {
+        return getExistingDeclarationClass( typeDescr ) == null;
+    }
+
+    private Class<?> getExistingDeclarationClass( AbstractClassTypeDeclarationDescr typeDescr ) {
+        PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
+        if (reg == null) {
+            return null;
+        }
+        String availableName = typeDescr.getType().getFullName();
         try {
-            PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
-            if ( reg != null ) {
-                String availableName = typeDescr.getType().getFullName();
-                reg.getTypeResolver().resolveType( availableName );
-                return false;
-            } else {
-                return false;
-            }
-        } catch (ClassNotFoundException cnfe) {
-            return true;
+            return reg.getTypeResolver().resolveType( availableName );
+        } catch (ClassNotFoundException e) {
+            return null;
         }
     }
 
@@ -2477,14 +2480,15 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         // check whether it is necessary to build the class or not
-        type.setNovel( isNovelClass( typeDescr ) );
+        Class<?> existingDeclarationClass = getExistingDeclarationClass( typeDescr );
+        type.setNovel( existingDeclarationClass == null );
 
         // attach the class definition, it will be completed later
         type.setTypeClassDef( def );
 
         //if is not new, search the already existing declaration and
         //compare them o see if they are at least compatibles
-        if ( ! type.isNovel() ) {
+        if ( !type.isNovel() ) {
             TypeDeclaration previousTypeDeclaration = this.pkgRegistryMap.get( typeDescr.getNamespace() ).getPackage().getTypeDeclaration( typeDescr.getTypeName() );
 
             try {
@@ -2501,7 +2505,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 //to the behavior previous these changes
                 if ( previousTypeDeclaration == null ) {
                     // new declarations of a POJO can't declare new fields
-                    if (!type.getTypeClassDef().getFields().isEmpty()){
+                    if (!GeneratedFact.class.isAssignableFrom(existingDeclarationClass) && !type.getTypeClassDef().getFields().isEmpty()) {
                         type.setValid(false);
                         this.results.add(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName()
                                 +" can't declare new fields"));
@@ -2538,7 +2542,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         } else {
             //if the declaration is novel, then it is a DEFINITION
-            type.setNature( TypeDeclaration.Nature.DEFINITION );
+            type.setNature(TypeDeclaration.Nature.DEFINITION);
         }
 
         generateDeclaredBean( typeDescr,

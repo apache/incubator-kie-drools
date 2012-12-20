@@ -79,10 +79,19 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
     @Test @Ignore
     public void testKScannerWithKJarContainingClasses() throws Exception {
+        testKScannerWithType(false);
+    }
+
+    @Test @Ignore
+    public void testKScannerWithKJarContainingTypeDeclaration() throws Exception {
+        testKScannerWithType(true);
+    }
+
+    private void testKScannerWithType(boolean useTypeDeclaration) throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
-        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId, useTypeDeclaration, 2, 7);
 
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(releaseId, kJar1, kPom);
@@ -93,7 +102,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         KieSession ksession = kieContainer.newKieSession("KSession1");
         checkKSession(ksession, 14);
 
-        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId, useTypeDeclaration, 3, 5);
         repository.deployArtifact(releaseId, kJar2, kPom);
 
         scanner.scanNow();
@@ -124,7 +133,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         resetFileManager();
 
-        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, false, 2, 7);
         repository.deployArtifact(releaseId1, kJar1, createKPom(releaseId1));
 
         KieContainer kieContainer = ks.newKieContainer(ks.newReleaseId("org.kie", "scanner-master-test", "LATEST"));
@@ -133,7 +142,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
-        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, false, 3, 5);
         repository.deployArtifact(releaseId2, kJar2, createKPom(releaseId1));
 
         scanner.scanNow();
