@@ -10,10 +10,10 @@
   </parent>
 
   <artifactId>drools-core</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Core</name>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.apache.felix</groupId>
@@ -185,7 +185,7 @@
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
             <Require-Bundle>org.kie.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*, *,org.osgi.util.tracker</Import-Package>
+            <Import-Package>!org.drools.*,*,org.osgi.util.tracker</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>

@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>drools-persistence-jpa</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Persistence :: JPA</name>
   <description>JPA implementation for Drools</description>
@@ -45,10 +45,10 @@
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}", org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*, *</Import-Package>
+            <Import-Package>!org.drools.*,*</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <!--Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator-->
+            <Bundle-Activator>org.drools.persistence.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
