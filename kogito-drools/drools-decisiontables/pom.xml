@@ -11,6 +11,7 @@
 
   <artifactId>drools-decisiontables</artifactId>
   <packaging>bundle</packaging>
+
   <name>Drools :: Decision Tables</name>
   
   <dependencies>
