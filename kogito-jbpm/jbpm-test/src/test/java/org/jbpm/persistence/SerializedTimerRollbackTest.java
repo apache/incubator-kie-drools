@@ -15,9 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.marshalling.impl.MarshallingConfigurationImpl;
@@ -56,6 +59,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 public class SerializedTimerRollbackTest {
 
     private PoolingDataSource ds;
+    private EntityManagerFactory emf;
     
     @Before
     public void setup() {
@@ -69,10 +73,23 @@ public class SerializedTimerRollbackTest {
         ds.getDriverProperties().put( "URL", "jdbc:h2:mem:mydb" );
         ds.init();
         UserGroupCallbackManager.getInstance().setCallback(null);
+        
+        emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
+        try {
+            UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+            ut.begin();
+            EntityManager em = emf.createEntityManager().getEntityManagerFactory().createEntityManager();
+            em.createQuery("delete from SessionInfo").executeUpdate();
+            em.close();
+            ut.commit();
+        } catch (Exception e) {
+            
+        }
     }
     
     @After
     public void tearDown() {
+        emf.close();
         ds.close();
     }
     
@@ -81,10 +98,8 @@ public class SerializedTimerRollbackTest {
         try {
 
             Environment env = KnowledgeBaseFactory.newEnvironment();
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
-            TransactionManager tm = TransactionManagerServices.getTransactionManager();
-            System.out.println("Created JPA EntityManager");
             
+            TransactionManager tm = TransactionManagerServices.getTransactionManager();
             env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
             env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
             TaskService taskService = new org.jbpm.task.service.TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
@@ -96,7 +111,6 @@ public class SerializedTimerRollbackTest {
             org.jbpm.task.TaskService humanTaskClient = new LocalTaskService(taskService);;
             
             System.out.println("Task service created");
-            
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add(ResourceFactory.newClassPathResource("HumanTaskWithBoundaryTimer.bpmn"),ResourceType.BPMN2);
             if (kbuilder.getErrors()!=null){
@@ -151,21 +165,18 @@ public class SerializedTimerRollbackTest {
             for (TimerInstance timerInstance : timers) {
                 assertTrue(committedProcessInstanceIds.contains(timerInstance.getProcessInstanceId()));
             }
-            
         } catch (Exception e){
             e.printStackTrace();
             fail("Exception thrown");
         }
+        
     }
     
     @Test
     public void testSerizliableTestsWithEngineRollback() {
         try {
 
-            Environment env = KnowledgeBaseFactory.newEnvironment();
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
-            System.out.println("Created JPA EntityManager");
-            
+            Environment env = KnowledgeBaseFactory.newEnvironment();            
             env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
             env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
             TaskService taskService = new org.jbpm.task.service.TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
@@ -239,7 +250,6 @@ public class SerializedTimerRollbackTest {
             for (TimerInstance timerInstance : timers) {
                 assertTrue(committedProcessInstanceIds.contains(timerInstance.getProcessInstanceId()));
             }
-            
         } catch (Exception e){
             e.printStackTrace();
             fail("Exception thrown");

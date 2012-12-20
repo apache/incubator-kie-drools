@@ -86,7 +86,7 @@
     </properties>
   </persistence-unit>
   
-   <persistence-unit name="org.jbpm.persistence.local" transaction-type="RESOURCE_LOCAL">
+   <persistence-unit name="org.jbpm.persistence.local" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/jbpm-local-ds</jta-data-source>        
         <mapping-file>META-INF/JBPMorm.xml</mapping-file> 
@@ -139,7 +139,9 @@
            <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
             
            <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
-           <property name="hibernate.id.new_generator_mappings" value="false" />            
+           <property name="hibernate.id.new_generator_mappings" value="false" />           
+           <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
+          <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" /> 
         </properties>        
     </persistence-unit>
   
