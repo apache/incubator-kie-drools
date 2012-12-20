@@ -1,10 +1,6 @@
 package org.drools.compiler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 import junit.framework.Assert;
-
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.TypeDeclaration;
 import org.junit.Test;
@@ -17,6 +13,10 @@ import org.kie.definition.type.FactType;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class TypeDeclarationTest {
 
@@ -236,7 +236,7 @@ public class TypeDeclarationTest {
                       ResourceType.DRL );
 
         if (!kbuilder.hasErrors() ) {
-           fail( kbuilder.getErrors().toString() );
+           fail( "An error should have been generated, redefinition of ClassA is not allowed" );
         }
 
 

@@ -19,6 +19,7 @@ package org.drools.factmodel.traits;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
+import org.drools.factmodel.GeneratedFact;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
@@ -44,15 +45,17 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
             
             if ( Object.class.getName().equals( classDef.getSuperClass() ) ) {
                 String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() );
-                intfaces = new String[ tmp.length + 1 ];
+                intfaces = new String[ tmp.length + 2 ];
                 System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
                 intfaces[ tmp.length ] = Type.getInternalName( Serializable.class );
+                intfaces[ tmp.length + 1 ] = Type.getInternalName( GeneratedFact.class );
             } else {
                 String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() );
-                intfaces = new String[ tmp.length + 2 ];
+                intfaces = new String[ tmp.length + 3 ];
                 System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
                 intfaces[ tmp.length ] = BuildUtils.getInternalType( classDef.getSuperClass() );
                 intfaces[ tmp.length + 1 ] = Type.getInternalName( Serializable.class );
+                intfaces[ tmp.length + 2 ] = Type.getInternalName( GeneratedFact.class );
             }
 
             cw.visit( V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,

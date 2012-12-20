@@ -43,9 +43,7 @@ public class AbstractKieCiTest {
         return ( InternalKieModule ) kieBuilder.getKieModule();
     }
 
-    protected InternalKieModule createKieJarWithClass(KieServices ks, ReleaseId releaseId, int value, int factor, ReleaseId... dependencies) throws IOException {
-        KieFileSystem kieFileSystem = ks.newKieFileSystem();
-
+    protected InternalKieModule createKieJarWithClass(KieServices ks, ReleaseId releaseId, boolean useTypeDeclaration, int value, int factor, ReleaseId... dependencies) throws IOException {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
@@ -56,11 +54,19 @@ public class AbstractKieCiTest {
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
                 .setClockType( ClockTypeOption.get("realtime") );
 
+        KieFileSystem kieFileSystem = ks.newKieFileSystem();
         kieFileSystem
                 .writeKModuleXML(kproj.toXML())
-                .writePomXML(getPom(releaseId, dependencies))
-                .write("src/main/resources/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
-                .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
+                .writePomXML(getPom(releaseId, dependencies));
+
+        if (useTypeDeclaration) {
+            kieFileSystem
+                    .write("src/main/resources/" + kieBaseModel1.getName() + "/rule1.drl", createDRLWithTypeDeclaration(value, factor));
+        } else {
+            kieFileSystem
+                    .write("src/main/resources/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
+                    .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
+        }
 
         KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);
         assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
@@ -118,9 +124,8 @@ public class AbstractKieCiTest {
 
     private String createDRLForJavaSource(int value) {
         return "package org.kie.test\n" +
-                //"import org.kie.test.Bean;\n" +
                 "global java.util.List list\n" +
-                "rule Init\n" +
+                "rule Init salience 100\n" +
                 "when\n" +
                 "then\n" +
                 "insert( new Bean(" + value + ") );\n" +
@@ -130,6 +135,25 @@ public class AbstractKieCiTest {
                 "   $b : Bean()\n" +
                 "then\n" +
                 "   list.add( $b.getValue() );\n" +
+                "end\n";
+    }
+
+    private String createDRLWithTypeDeclaration(int value, int factor) {
+        return "package org.kie.test\n" +
+                "global java.util.List list\n" +
+                "declare Bean\n" +
+                "   value : int\n" +
+                "end\n" +
+                "rule Init salience 100\n" +
+                "when\n" +
+                "then\n" +
+                "insert( new Bean(" + value + ") );\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "   $b : Bean()\n" +
+                "then\n" +
+                "   list.add( $b.getValue() * " + factor + " );\n" +
                 "end\n";
     }
 }

@@ -22,12 +22,21 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     }
 
     @Test @Ignore
-    public void testKieModuleMetaDataInMemory() throws Exception {
+    public void testKieModuleMetaDataInMemoryWithJavaClass() throws Exception {
+        testKieModuleMetaDataInMemory(false);
+    }
+
+    @Test @Ignore
+    public void testKieModuleMetaDataInMemoryWithTypeDeclaration() throws Exception {
+        testKieModuleMetaDataInMemory(true);
+    }
+
+    private void testKieModuleMetaDataInMemory(boolean useTypeDeclaration) throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId dependency = ks.newReleaseId("org.drools", "drools-core", "5.5.0.Final");
         ReleaseId releaseId = ks.newReleaseId("org.kie", "metadata-test", "1.0-SNAPSHOT");
 
-        InternalKieModule kieModule = createKieJarWithClass(ks, releaseId, 2, 7, dependency);
+        InternalKieModule kieModule = createKieJarWithClass(ks, releaseId, useTypeDeclaration, 2, 7, dependency);
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule);
         checkDroolsCoreDep(kieModuleMetaData);
 

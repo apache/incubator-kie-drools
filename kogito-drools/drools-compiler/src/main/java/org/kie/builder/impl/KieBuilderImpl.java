@@ -1,15 +1,18 @@
 package org.kie.builder.impl;
 
+import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.DiskResourceReader;
 import org.drools.commons.jci.readers.ResourceReader;
+import org.drools.compiler.PackageRegistry;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.ReleaseIdImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
 import org.kie.KieBaseConfiguration;
@@ -26,6 +29,8 @@ import org.kie.builder.KieSessionModel;
 import org.kie.builder.Message.Level;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.Results;
+import org.kie.definition.KiePackage;
+import org.kie.definition.type.FactType;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 
@@ -36,6 +41,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -129,19 +135,43 @@ public class KieBuilderImpl
                 }
             }
 
-            buildKieModule(kModule, results);
+            if ( buildKieModule(kModule, results) ) {
+                addTypeDeclarationClassesToTrg();
+            }
         }
         return this;
     }
 
-    public static void buildKieModule(InternalKieModule kModule, ResultsImpl messages) {
+    private void addTypeDeclarationClassesToTrg() {
+        KieModuleModel kieModuleModel = kModule.getKieModuleModel();
+        for (String kieBaseNames : kieModuleModel.getKieBaseModels().keySet()) {
+            KnowledgeBuilderImpl kBuilder = (KnowledgeBuilderImpl)kModule.getKnowledgeBuilderForKieBase(kieBaseNames);
+            Map<String, PackageRegistry> pkgRegistryMap = kBuilder.getPackageBuilder().getPackageRegistry();
+
+            for (KiePackage kPkg : kBuilder.getKnowledgePackages()) {
+                PackageRegistry pkgRegistry = pkgRegistryMap.get(kPkg.getName());
+                JavaDialectRuntimeData runtimeData = (JavaDialectRuntimeData)pkgRegistry.getDialectRuntimeRegistry().getDialectData("java");
+
+                for (FactType factType : kPkg.getFactTypes()) {
+                    String className = factType.getName();
+                    String internalName = className.replace('.', '/') + ".class";
+                    byte[] bytes = runtimeData.getStore().get(internalName);
+                    trgMfs.write( internalName, bytes, true );
+                }
+            }
+        }
+    }
+
+    public static boolean buildKieModule(InternalKieModule kModule, ResultsImpl messages) {
         KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
         kProject.init();
         kProject.verify(messages);
 
         if ( messages.filterMessages( Level.ERROR ).isEmpty()) {
             KieServices.Factory.get().getRepository().addKieModule( kModule );
+            return true;
         }
+        return false;
     }
 
     private void addKBasesFilesToTrg() {
