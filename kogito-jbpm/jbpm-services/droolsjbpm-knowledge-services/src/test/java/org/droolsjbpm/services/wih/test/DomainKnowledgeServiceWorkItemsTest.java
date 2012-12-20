@@ -27,23 +27,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
-import org.apache.commons.io.IOUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.droolsjbpm.services.api.Domain;
-import org.jbpm.shared.services.api.FileException;
-import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
+import org.jbpm.shared.services.api.FileException;
+import org.jbpm.shared.services.api.FileService;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.kie.commons.java.nio.file.Path;
 import org.kie.runtime.process.WorkflowProcessInstance;
 
@@ -75,7 +74,7 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
         targetDir = "stage-"+UUID.randomUUID().toString();
         
         this.cleanUp();
-        
+        fs.createDirectory(releasePath+"/"+sourceDir);
         fs.createDirectory(releasePath+"/"+targetDir);
         
         OutputStream os = fs.openFile(releasePath+"/"+sourceDir+"/file1.txt");
@@ -112,6 +111,9 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
         fs.deleteIfExists(releasePath+"/"+sourceDir+"/file2.txt");
         fs.deleteIfExists(releasePath+"/"+targetDir+"/file1.txt");
         fs.deleteIfExists(releasePath+"/"+targetDir+"/file2.txt");
+        fs.deleteIfExists(releasePath+"/"+targetDir);
+        fs.deleteIfExists(releasePath+"/"+sourceDir);
+        fs.deleteIfExists(releasePath);
     }
     
     @Test

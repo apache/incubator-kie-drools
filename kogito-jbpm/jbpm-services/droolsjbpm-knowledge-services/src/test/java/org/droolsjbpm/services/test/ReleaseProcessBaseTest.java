@@ -15,6 +15,8 @@
  */
 package org.droolsjbpm.services.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,11 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
-import org.apache.commons.io.IOUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.droolsjbpm.services.api.Domain;
-import org.jbpm.shared.services.api.FileException;
-import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.SessionManager;
@@ -38,13 +38,13 @@ import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
 import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
+import org.jbpm.shared.services.api.FileException;
+import org.jbpm.shared.services.api.FileService;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
 import org.junit.After;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.runtime.process.ProcessInstance;
 
