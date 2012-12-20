@@ -10,20 +10,13 @@
   </parent>
 
   <artifactId>kie-api</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>KIE API</name>
   <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
   
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -38,12 +31,11 @@
           </execution>
         </executions>
         <configuration>
-          <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Bundle-SymbolicName>org.drools.api;singleton:=true</Bundle-SymbolicName>
-            <Import-Package>!org.drools.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
-            <Export-Package>org.drools.*</Export-Package>
+            <Bundle-SymbolicName>org.kie.api;singleton:=true</Bundle-SymbolicName>
+            <Import-Package>!org.kie.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
+            <Export-Package>!org.kie.cdi.*,org.kie.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Bundle-Activator>org.kie.osgi.api.Activator</Bundle-Activator>
           </instructions>
@@ -152,6 +144,6 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
-    </dependency>    
+    </dependency>
   </dependencies>
 </project>
