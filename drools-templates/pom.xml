@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>drools-templates</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Templates</name>
   
@@ -50,7 +50,7 @@
             <Bundle-SymbolicName>org.drools.templates;singleton:=true</Bundle-SymbolicName>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*, *</Import-Package>
+            <Import-Package>!org.drools.*,*</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>org.drools.*</DynamicImport-Package>
           </instructions>
