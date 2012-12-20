@@ -16,15 +16,15 @@
 package org.droolsjbpm.services.impl.event.listeners;
 
 import java.util.Date;
-import javax.enterprise.context.ApplicationScoped;
+import java.util.List;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import org.droolsjbpm.services.impl.model.BAMTaskSummary;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Task;
-import org.jbpm.task.TaskEvent;
 import org.jbpm.task.events.AfterTaskActivatedEvent;
 import org.jbpm.task.events.AfterTaskAddedEvent;
 import org.jbpm.task.events.AfterTaskClaimedEvent;
@@ -39,58 +39,83 @@ import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
  *
  * @author salaboy
  */
-@ApplicationScoped
+@Singleton
 @Transactional
 @BAM
-public class CDIBAMTaskEventListener implements TaskLifeCycleEventListener{
+public class CDIBAMTaskEventListener implements TaskLifeCycleEventListener {
 
-   
-    @Inject 
+    @Inject
     private EntityManager em;
-    
+
     public CDIBAMTaskEventListener() {
-        
-    }
-    @Transactional
-    public void afterTaskStartedEvent(@Observes(notifyObserver= Reception.ALWAYS) @AfterTaskStartedEvent Task ti) {
-        BAMTaskSummary taskSummaryById = (BAMTaskSummary)em.createQuery("select bts from BAMTaskSummary bts where bts.taskId=:taskId")
-                                                    .setParameter("taskId", ti.getId()).getSingleResult();
-        taskSummaryById.setStatus("Started");
-        taskSummaryById.setStartDate(new Date());
-        if(ti.getTaskData().getActualOwner() != null){
-            taskSummaryById.setUserId(ti.getTaskData().getActualOwner().getId());
-        }
-        em.merge(taskSummaryById);
-        
     }
 
-    public void afterTaskActivatedEvent(@Observes(notifyObserver= Reception.ALWAYS) @AfterTaskActivatedEvent Task ti) {
-        
+    public void afterTaskStartedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStartedEvent Task ti) {
+        List<BAMTaskSummary> taskSummaries = (List<BAMTaskSummary>) em.createQuery("select bts from BAMTaskSummary bts where bts.taskId=:taskId")
+                .setParameter("taskId", ti.getId()).getResultList();
+        if (taskSummaries.isEmpty()) {
+            String actualOwner = "";
+            if (ti.getTaskData().getActualOwner() != null) {
+                actualOwner = ti.getTaskData().getActualOwner().getId();
+            }
+
+            em.persist(new BAMTaskSummary(ti.getId(), ti.getNames().get(0).getText(), "Started", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId()));
+        } else if (taskSummaries.size() == 1) {
+            
+            BAMTaskSummary taskSummaryById = taskSummaries.get(0);
+            taskSummaryById.setStatus("Started");
+            taskSummaryById.setStartDate(new Date());
+            if (ti.getTaskData().getActualOwner() != null) {
+                taskSummaryById.setUserId(ti.getTaskData().getActualOwner().getId());
+            }
+            em.merge(taskSummaryById);
+
+        } else {
+            throw new IllegalStateException("We cannot have more than one BAM Task Summary for the task id = " + ti.getId());
+        }
+
     }
 
-    public void afterTaskClaimedEvent(@Observes(notifyObserver= Reception.ALWAYS) @AfterTaskClaimedEvent Task ti) {
-       BAMTaskSummary taskSummaryById = (BAMTaskSummary)em.createQuery("select bts from BAMTaskSummary bts where bts.taskId=:taskId")
-                                                    .setParameter("taskId", ti.getId()).getSingleResult();
-        taskSummaryById.setStatus("Claimed");
-        taskSummaryById.setEndDate(new Date());
-        if(ti.getTaskData().getActualOwner() != null){
-            taskSummaryById.setUserId(ti.getTaskData().getActualOwner().getId());
+    public void afterTaskActivatedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskActivatedEvent Task ti) {
+    }
+
+    public void afterTaskClaimedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskClaimedEvent Task ti) {
+        
+        List<BAMTaskSummary> taskSummaries = (List<BAMTaskSummary>) em.createQuery("select bts from BAMTaskSummary bts where bts.taskId=:taskId")
+                .setParameter("taskId", ti.getId()).getResultList();
+        if (taskSummaries.isEmpty()) {
+            
+            String actualOwner = "";
+            if (ti.getTaskData().getActualOwner() != null) {
+                actualOwner = ti.getTaskData().getActualOwner().getId();
+            }
+
+            em.persist(new BAMTaskSummary(ti.getId(), ti.getNames().get(0).getText(), "Claimed", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId()));
+        } else if (taskSummaries.size() == 1) {
+            
+            BAMTaskSummary taskSummaryById = taskSummaries.get(0);
+            taskSummaryById.setStatus("Claimed");
+            if (ti.getTaskData().getActualOwner() != null) {
+                taskSummaryById.setUserId(ti.getTaskData().getActualOwner().getId());
+            }
+            em.merge(taskSummaryById);
+
+        } else {
+            throw new IllegalStateException("We cannot have more than one BAM Task Summary for the task id = " + ti.getId());
         }
-        em.merge(taskSummaryById); 
+
     }
 
     public void afterTaskSkippedEvent(Task ti) {
-        
     }
 
-    public void afterTaskStoppedEvent(@Observes(notifyObserver= Reception.ALWAYS) @AfterTaskStoppedEvent Task ti ) {
-        
+    public void afterTaskStoppedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStoppedEvent Task ti) {
     }
 
-    public void afterTaskCompletedEvent(@Observes(notifyObserver= Reception.ALWAYS) @AfterTaskCompletedEvent Task ti) {
-        
-        BAMTaskSummary taskSummaryById = (BAMTaskSummary)em.createQuery("select bts from BAMTaskSummary bts where bts.taskId=:taskId")
-                                                    .setParameter("taskId", ti.getId()).getSingleResult();
+    public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskCompletedEvent Task ti) {
+
+        BAMTaskSummary taskSummaryById = (BAMTaskSummary) em.createQuery("select bts from BAMTaskSummary bts where bts.taskId=:taskId")
+                .setParameter("taskId", ti.getId()).getSingleResult();
         taskSummaryById.setStatus("Completed");
         Date completedDate = new Date();
         taskSummaryById.setEndDate(completedDate);
@@ -98,23 +123,12 @@ public class CDIBAMTaskEventListener implements TaskLifeCycleEventListener{
         em.merge(taskSummaryById);
     }
 
-    public void afterTaskFailedEvent(@Observes(notifyObserver= Reception.ALWAYS) @AfterTaskFailedEvent Task ti) {
-        
+    public void afterTaskFailedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskFailedEvent Task ti) {
     }
 
-    public void afterTaskAddedEvent(@Observes(notifyObserver= Reception.ALWAYS) @AfterTaskAddedEvent Task ti) {
-        String actualOwner = "";
-        if(ti.getTaskData().getActualOwner()!= null){
-            actualOwner = ti.getTaskData().getActualOwner().getId();
-        }
-
-        em.persist(new BAMTaskSummary(ti.getId(), ti.getNames().get(0).getText(), "Created", new Date(),  actualOwner, ti.getTaskData().getProcessInstanceId()));
-        
+    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskAddedEvent Task ti) {
     }
 
-    public void afterTaskExitedEvent(@Observes(notifyObserver= Reception.ALWAYS) @AfterTaskExitedEvent Task ti) {
-        
+    public void afterTaskExitedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskExitedEvent Task ti) {
     }
-    
 }
-

@@ -6,6 +6,7 @@ with ( new Task() ) {
                    documentAccessType = AccessType.Inline,
                    documentType = "MVEL"
                 }),
+    names = [ new I18NText( 'en-UK', 'Simple Test Task')],
     deadlines = ( with ( new Deadlines() ) {
         startDeadlines = [ 
             (with (new Deadline()) {
