@@ -81,7 +81,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>hibernate3-maven-plugin</artifactId>
-        <version>2.2</version>
         <configuration>
           <configurationfile>target/test-classes/META-INF/persistence.xml</configurationfile>
           <components>
