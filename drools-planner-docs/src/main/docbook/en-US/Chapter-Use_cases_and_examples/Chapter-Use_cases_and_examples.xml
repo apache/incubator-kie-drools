@@ -11,8 +11,7 @@
     <title>Introduction</title>
 
     <para>Drools Planner has several examples. In this manual we explain Drools Planner mainly using the n queens
-    example. So it's advisable to read at least the section about that example. For advanced users, the following
-    examples are recommended: curriculum course and nurse rostering.</para>
+    example. So it's advisable to read at least the section about that example.</para>
 
     <para>You can find the source code of all these examples in the distribution zip under
     <filename>examples/sources</filename> and also in git under
@@ -28,7 +27,16 @@
       <section>
         <title>Problem statement</title>
 
-        <para>The <emphasis>n queens puzzle</emphasis> is a puzzle with the following constraints:</para>
+        <para>Place n queens on a n sized chessboard so no 2 queens can attach each other. The most common n queens
+        puzzle is the 8 queens puzzle, with <emphasis>n = 8</emphasis>:</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotNQueens.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>Constraints:</para>
 
         <itemizedlist>
           <listitem>
@@ -40,13 +48,12 @@
           </listitem>
 
           <listitem>
-            <para>No 2 queens can attack each other. Note that a queen can attack any other queen on the same
-            horizontal, vertical or diagonal line.</para>
+            <para>No 2 queens can attack each other. A queen can attack any other queen on the same horizontal, vertical
+            or diagonal line.</para>
           </listitem>
         </itemizedlist>
 
-        <para>The most common n queens puzzle is the 8 queens puzzle, with <emphasis>n = 8</emphasis>. We'll explain
-        Drools Planner using the 4 queens puzzle as the primary example.</para>
+        <para>This documentation heavily uses the 4 queens puzzle as the primary example.</para>
 
         <para>A proposed solution could be:</para>
 
@@ -66,10 +73,6 @@
         other (so can queens <literal>B0</literal> and <literal>D0</literal>). Removing queen <literal>B0</literal>
         would respect the "no 2 queens can attack each other" constraint, but would break the "place n queens"
         constraint.</para>
-      </section>
-
-      <section>
-        <title>Solution(s)</title>
 
         <para>Below is a correct solution:</para>
 
@@ -89,129 +92,25 @@
       </section>
 
       <section>
-        <title>Screenshot</title>
-
-        <para>Here is a screenshot of the example:</para>
-
-        <figure>
-          <title>Screenshot of the n queens example</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotNQueens.png"/>
-            </imageobject>
-          </mediaobject>
-        </figure>
-      </section>
-
-      <section>
         <title>Problem size</title>
 
-        <para>These numbers might give you some insight in the size of this problem.</para>
-
-        <table>
-          <title>NQueens problem size</title>
-
-          <tgroup cols="5">
-            <thead>
-              <row>
-                <entry># queens (n)</entry>
-
-                <entry># possible solutions (each queen its own column)</entry>
-
-                <entry># feasible solutions (= optimal in this use case)</entry>
-
-                <entry># optimal solutions</entry>
-
-                <entry># optimal <emphasis>out of</emphasis> # possible</entry>
-              </row>
-            </thead>
-
-            <tbody>
-              <row>
-                <entry>4</entry>
-
-                <entry>256</entry>
-
-                <entry>2</entry>
-
-                <entry>2</entry>
-
-                <entry>1 <emphasis>out of </emphasis>128</entry>
-              </row>
-
-              <row>
-                <entry>8</entry>
-
-                <entry>16777216</entry>
-
-                <entry>64</entry>
-
-                <entry>64</entry>
-
-                <entry>1 <emphasis>out of</emphasis> 262144</entry>
-              </row>
-
-              <row>
-                <entry>16</entry>
-
-                <entry>18446744073709551616</entry>
-
-                <entry>14772512</entry>
-
-                <entry>14772512</entry>
-
-                <entry>1 <emphasis>out of</emphasis> 1248720872503</entry>
-              </row>
-
-              <row>
-                <entry>32</entry>
-
-                <entry>1.46150163733090291820368483e+48</entry>
-
-                <entry>?</entry>
-
-                <entry>?</entry>
-
-                <entry>?</entry>
-              </row>
-
-              <row>
-                <entry>64</entry>
-
-                <entry>3.94020061963944792122790401e+115</entry>
-
-                <entry>?</entry>
-
-                <entry>?</entry>
-
-                <entry>?</entry>
-              </row>
-
-              <row>
-                <entry>n</entry>
-
-                <entry>n ^ n</entry>
-
-                <entry>?</entry>
-
-                <entry># feasible solutions</entry>
-
-                <entry>?</entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </table>
+        <programlisting>4   has   4 queens with a search space of    256.
+8   has   8 queens with a search space of   10^7.
+16  has  16 queens with a search space of  10^19.
+32  has  32 queens with a search space of  10^48.
+64  has  64 queens with a search space of 10^115.
+256 has 256 queens with a search space of 10^616.</programlisting>
 
         <para>The Drools Planner implementation of the N queens example has not been optimized because it functions as a
-        beginner example. Nevertheless, it can easily handle 64 queens.</para>
+        beginner example. Nevertheless, it can easily handle 64 queens. With a few changes it has been shown to easily
+        handle 5000 queens and more.</para>
       </section>
 
       <section>
         <title>Domain model</title>
 
-        <para>Use a good domain model: it will be easier to understand and solve your planning problem with Drools
-        Planner. This is the domain model for the n queens example:</para>
+        <para>Use a good domain model: it will be easier to understand and solve your planning problem. This is the
+        domain model for the n queens example:</para>
 
         <programlisting language="java">public class Column {
     
@@ -238,6 +137,11 @@
     // ... getters and setters
 }</programlisting>
 
+        <para>A <literal>Queen</literal> instance has a <literal>Column</literal> (for example: 0 is column A, 1 is
+        column B, ...) and a <literal>Row</literal> (its row, for example: 0 is row 0, 1 is row 1, ...). Based on the
+        column and the row, the ascending diagonal line as well as the descending diagonal line can be calculated. The
+        column and row indexes start from the upper left corner of the chessboard.</para>
+
         <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
     
     private int n;
@@ -251,13 +155,13 @@
     // ... getters and setters
 }</programlisting>
 
-        <para>A <literal>Queen</literal> instance has a <literal>Column</literal> (for example: 0 is column A, 1 is
-        column B, ...) and a <literal>Row</literal> (its row, for example: 0 is row 0, 1 is row 1, ...). Based on the
-        column and the row, the ascending diagonal line as well as the descending diagonal line can be calculated. The
-        column and row indexes start from the upper left corner of the chessboard.</para>
+        <para>A single <literal>NQueens</literal> instance contains a list of all <literal>Queen</literal> instances. It
+        is the <literal>Solution</literal> implementation which will be supplied to, solved by and retrieved from the
+        Solver. Notice that in the 4 queens example, NQueens's <literal>getN()</literal> method will always return
+        4.</para>
 
         <table>
-          <title>A solution for the 4 queens puzzle shown in the domain model</title>
+          <title>A solution for 4 queens shown in the domain model</title>
 
           <tgroup cols="6">
             <thead>
@@ -337,11 +241,6 @@
 
         <para>When 2 queens share the same column, row or diagonal line, such as (*) and (**), they can attack each
         other.</para>
-
-        <para>A single <literal>NQueens</literal> instance contains a list of all <literal>Queen</literal> instances. It
-        is the <literal>Solution</literal> implementation which will be supplied to, solved by and retrieved from the
-        Solver. Notice that in the 4 queens example, NQueens's <literal>getN()</literal> method will always return
-        4.</para>
       </section>
     </section>
 
@@ -357,13 +256,23 @@
       <section>
         <title>Problem statement</title>
 
-        <para>Given a list of cities, find the shortest tour for a salesman that visits each city exactly once. <link
-        xlink:href="http://en.wikipedia.org/wiki/Travelling_salesman_problem">See the wikipedia definition of the
-        traveling Salesman Problem.</link></para>
+        <para>Given a list of cities, find the shortest tour for a salesman that visits each city exactly once.</para>
 
-        <para>It is <link xlink:href="http://www.tsp.gatech.edu/">one of the most intensively studied problems</link> in
-        computational mathematics. Yet, in the real world, it's often only part of a planning problem, along with other
-        constraints, such as employee shift rostering constraints.</para>
+        <para>The problem is defined by <link
+        xlink:href="http://en.wikipedia.org/wiki/Travelling_salesman_problem">Wikipedia</link>. It is <link
+        xlink:href="http://www.tsp.gatech.edu/">one of the most intensively studied problems</link> in computational
+        mathematics. Yet, in the real world, it's often only part of a planning problem, along with other constraints,
+        such as employee shift rostering constraints.</para>
+      </section>
+
+      <section>
+        <title>Problem size</title>
+
+        <programlisting>dj38     has  38 cities with a search space of   10^58.
+europe40 has  40 cities with a search space of   10^62.
+st70     has  70 cities with a search space of  10^126.
+pcb442   has 442 cities with a search space of 10^1166.
+lu980    has 980 cities with a search space of 10^2927.</programlisting>
       </section>
     </section>
 
@@ -402,6 +311,13 @@
         heuristic to solve it. Drools Planner's implementation is far more scalable because it uses heuristics to find
         the best solution and Drools Expert to calculate the score of each solution.</para>
       </section>
+
+      <section>
+        <title>Problem size</title>
+
+        <programlisting>geoffrey1              has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seats with a search space of 10^310.
+james1WithGenderChange has 18 jobs, 144 guests, 432 hobby practicians, 12 tables and 144 seats with a search space of 10^310.</programlisting>
+      </section>
     </section>
   </section>
 
@@ -415,10 +331,6 @@
         <title>Problem statement</title>
 
         <para>Schedule each lecture into a timeslot and into a room.</para>
-
-        <para>The problem is defined by <link
-        xlink:href="http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm">the International
-        Timetabling Competition 2007 track 3</link>.</para>
 
         <para>Hard constraints:</para>
 
@@ -436,7 +348,8 @@
           </listitem>
 
           <listitem>
-            <para>Unavailable period: Some lectures must not be assigned to some periods.</para>
+            <para>Unavailable period (specified per dataset): A specific lecture must not be assigned to a specific
+            period.</para>
           </listitem>
         </itemizedlist>
 
@@ -461,6 +374,29 @@
             <para>Room stability: Lectures of the same course should be assigned the same room.</para>
           </listitem>
         </itemizedlist>
+
+        <para>The problem is defined by <link
+        xlink:href="http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm">the International
+        Timetabling Competition 2007 track 3</link>.</para>
+      </section>
+
+      <section>
+        <title>Problem size</title>
+
+        <programlisting>comp01 has 24 teachers,  14 curricula,  30 courses, 30 periods,  6 rooms and   53 unavailable period constraints with a search space of  10^360.
+comp02 has 71 teachers,  70 curricula,  82 courses, 25 periods, 16 rooms and  513 unavailable period constraints with a search space of  10^736.
+comp03 has 61 teachers,  68 curricula,  72 courses, 25 periods, 16 rooms and  382 unavailable period constraints with a search space of  10^653.
+comp04 has 70 teachers,  57 curricula,  79 courses, 25 periods, 18 rooms and  396 unavailable period constraints with a search space of  10^758.
+comp05 has 47 teachers, 139 curricula,  54 courses, 36 periods,  9 rooms and  771 unavailable period constraints with a search space of  10^381.
+comp06 has 87 teachers,  70 curricula, 108 courses, 25 periods, 18 rooms and  632 unavailable period constraints with a search space of  10^957.
+comp07 has 99 teachers,  77 curricula, 131 courses, 25 periods, 20 rooms and  667 unavailable period constraints with a search space of 10^1171.
+comp08 has 76 teachers,  61 curricula,  86 courses, 25 periods, 18 rooms and  478 unavailable period constraints with a search space of  10^859.
+comp09 has 68 teachers,  75 curricula,  76 courses, 25 periods, 18 rooms and  405 unavailable period constraints with a search space of  10^740.
+comp10 has 88 teachers,  67 curricula, 115 courses, 25 periods, 18 rooms and  694 unavailable period constraints with a search space of  10^981.
+comp11 has 24 teachers,  13 curricula,  30 courses, 45 periods,  5 rooms and   94 unavailable period constraints with a search space of  10^381.
+comp12 has 74 teachers, 150 curricula,  88 courses, 36 periods, 11 rooms and 1368 unavailable period constraints with a search space of  10^566.
+comp13 has 77 teachers,  66 curricula,  82 courses, 25 periods, 19 rooms and  468 unavailable period constraints with a search space of  10^824.
+comp14 has 68 teachers,  60 curricula,  85 courses, 25 periods, 17 rooms and  486 unavailable period constraints with a search space of  10^722.</programlisting>
       </section>
     </section>
 
@@ -473,9 +409,6 @@
         <para>Assign each process to a machine. All processes already have an original (unoptimized) assignment. Each
         process requires an amount of each resource (such as CPU, RAM, ...). This is more complex version of the Cloud
         Balancing example.</para>
-
-        <para>The problem is defined by <link xlink:href="http://challenge.roadef.org/2012/en/">the Google ROADEF/EURO
-        Challenge 2012</link>.</para>
 
         <para>Hard constraints:</para>
 
@@ -528,21 +461,34 @@
             cost.</para>
           </listitem>
         </itemizedlist>
+
+        <para>The problem is defined by <link xlink:href="http://challenge.roadef.org/2012/en/">the Google ROADEF/EURO
+        Challenge 2012</link>.</para>
       </section>
 
       <section>
         <title>Problem size</title>
 
-        <programlisting>model_a1_1: 2 resources, 1 neighborhoods, 4 locations, 4 machines, 79 services, 100 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^60).
-model_a1_2: 4 resources, 2 neighborhoods, 4 locations, 100 machines, 980 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
-model_a1_3: 3 resources, 5 neighborhoods, 25 locations, 100 machines, 216 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
-model_a1_4: 3 resources, 50 neighborhoods, 50 locations, 50 machines, 142 services, 1000 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^1698).
-model_a1_5: 4 resources, 2 neighborhoods, 4 locations, 12 machines, 981 services, 1000 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^1079).
-model_a2_1: 3 resources, 1 neighborhoods, 1 locations, 100 machines, 1000 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
-model_a2_2: 12 resources, 5 neighborhoods, 25 locations, 100 machines, 170 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
-model_a2_3: 12 resources, 5 neighborhoods, 25 locations, 100 machines, 129 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
-model_a2_4: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 180 services, 1000 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^1698).
-model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^1698).</programlisting>
+        <programlisting>model_a1_1 has  2 resources,  1 neighborhoods,   4 locations,    4 machines,    79 services,   100 processes and 1 balancePenalties with a search space of     10^60.
+model_a1_2 has  4 resources,  2 neighborhoods,   4 locations,  100 machines,   980 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a1_3 has  3 resources,  5 neighborhoods,  25 locations,  100 machines,   216 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a1_4 has  3 resources, 50 neighborhoods,  50 locations,   50 machines,   142 services,  1000 processes and 1 balancePenalties with a search space of   10^1698.
+model_a1_5 has  4 resources,  2 neighborhoods,   4 locations,   12 machines,   981 services,  1000 processes and 1 balancePenalties with a search space of   10^1079.
+model_a2_1 has  3 resources,  1 neighborhoods,   1 locations,  100 machines,  1000 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a2_2 has 12 resources,  5 neighborhoods,  25 locations,  100 machines,   170 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a2_3 has 12 resources,  5 neighborhoods,  25 locations,  100 machines,   129 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a2_4 has 12 resources,  5 neighborhoods,  25 locations,   50 machines,   180 services,  1000 processes and 1 balancePenalties with a search space of   10^1698.
+model_a2_5 has 12 resources,  5 neighborhoods,  25 locations,   50 machines,   153 services,  1000 processes and 0 balancePenalties with a search space of   10^1698.
+model_b_1  has 12 resources,  5 neighborhoods,  10 locations,  100 machines,  2512 services,  5000 processes and 0 balancePenalties with a search space of  10^10000.
+model_b_2  has 12 resources,  5 neighborhoods,  10 locations,  100 machines,  2462 services,  5000 processes and 1 balancePenalties with a search space of  10^10000.
+model_b_3  has  6 resources,  5 neighborhoods,  10 locations,  100 machines, 15025 services, 20000 processes and 0 balancePenalties with a search space of  10^40000.
+model_b_4  has  6 resources,  5 neighborhoods,  50 locations,  500 machines,  1732 services, 20000 processes and 1 balancePenalties with a search space of  10^53979.
+model_b_5  has  6 resources,  5 neighborhoods,  10 locations,  100 machines, 35082 services, 40000 processes and 0 balancePenalties with a search space of  10^80000.
+model_b_6  has  6 resources,  5 neighborhoods,  50 locations,  200 machines, 14680 services, 40000 processes and 1 balancePenalties with a search space of  10^92041.
+model_b_7  has  6 resources,  5 neighborhoods,  50 locations, 4000 machines, 15050 services, 40000 processes and 1 balancePenalties with a search space of 10^144082.
+model_b_8  has  3 resources,  5 neighborhoods,  10 locations,  100 machines, 45030 services, 50000 processes and 0 balancePenalties with a search space of 10^100000.
+model_b_9  has  3 resources,  5 neighborhoods, 100 locations, 1000 machines,  4609 services, 50000 processes and 1 balancePenalties with a search space of 10^150000.
+model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  4896 services, 50000 processes and 1 balancePenalties with a search space of 10^184948.</programlisting>
       </section>
     </section>
 
@@ -564,6 +510,41 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
         <para>The capacitated vehicle routing problem (CRVP) is defined by <link
         xlink:href="http://neo.lcc.uma.es/radi-aeb/WebVRP/">the VRP web</link>.</para>
       </section>
+
+      <section>
+        <title>Problem size</title>
+
+        <programlisting>A-n32-k5  has 1 depots,  5 vehicles and  31 customers with a search space of  10^46.
+A-n33-k5  has 1 depots,  5 vehicles and  32 customers with a search space of  10^48.
+A-n33-k6  has 1 depots,  6 vehicles and  32 customers with a search space of  10^48.
+A-n34-k5  has 1 depots,  5 vehicles and  33 customers with a search space of  10^50.
+A-n36-k5  has 1 depots,  5 vehicles and  35 customers with a search space of  10^54.
+A-n37-k5  has 1 depots,  5 vehicles and  36 customers with a search space of  10^56.
+A-n37-k6  has 1 depots,  6 vehicles and  36 customers with a search space of  10^56.
+A-n38-k5  has 1 depots,  5 vehicles and  37 customers with a search space of  10^58.
+A-n39-k5  has 1 depots,  5 vehicles and  38 customers with a search space of  10^60.
+A-n39-k6  has 1 depots,  6 vehicles and  38 customers with a search space of  10^60.
+A-n44-k7  has 1 depots,  7 vehicles and  43 customers with a search space of  10^70.
+A-n45-k6  has 1 depots,  6 vehicles and  44 customers with a search space of  10^72.
+A-n45-k7  has 1 depots,  7 vehicles and  44 customers with a search space of  10^72.
+A-n46-k7  has 1 depots,  7 vehicles and  45 customers with a search space of  10^74.
+A-n48-k7  has 1 depots,  7 vehicles and  47 customers with a search space of  10^78.
+A-n53-k7  has 1 depots,  7 vehicles and  52 customers with a search space of  10^89.
+A-n54-k7  has 1 depots,  7 vehicles and  53 customers with a search space of  10^91.
+A-n55-k9  has 1 depots,  9 vehicles and  54 customers with a search space of  10^93.
+A-n60-k9  has 1 depots,  9 vehicles and  59 customers with a search space of 10^104.
+A-n61-k9  has 1 depots,  9 vehicles and  60 customers with a search space of 10^106.
+A-n62-k8  has 1 depots,  8 vehicles and  61 customers with a search space of 10^108.
+A-n63-k10 has 1 depots, 10 vehicles and  62 customers with a search space of 10^111.
+A-n63-k9  has 1 depots,  9 vehicles and  62 customers with a search space of 10^111.
+A-n64-k9  has 1 depots,  9 vehicles and  63 customers with a search space of 10^113.
+A-n65-k9  has 1 depots,  9 vehicles and  64 customers with a search space of 10^115.
+A-n69-k9  has 1 depots,  9 vehicles and  68 customers with a search space of 10^124.
+A-n80-k10 has 1 depots, 10 vehicles and  79 customers with a search space of 10^149.
+F-n135-k7 has 1 depots,  7 vehicles and 134 customers with a search space of 10^285.
+F-n45-k4  has 1 depots,  4 vehicles and  44 customers with a search space of  10^72.
+F-n72-k4  has 1 depots,  4 vehicles and  71 customers with a search space of 10^131.</programlisting>
+      </section>
     </section>
 
     <section>
@@ -576,11 +557,17 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
         in the hospital. Each bed belongs to a room and each room belongs to a department. The arrival and departure
         dates of the patients is fixed: only a bed needs to be assigned for each night.</para>
 
-        <para>There are a couple of hard constraints:</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/patientAdmissionScheduleUseCase.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>Hard constraints:</para>
 
         <itemizedlist>
           <listitem>
-            <para>2 patients shouldn't be assigned to the same bed in the same night.</para>
+            <para>2 patients must not be assigned to the same bed in the same night.</para>
           </listitem>
 
           <listitem>
@@ -597,7 +584,7 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
           </listitem>
         </itemizedlist>
 
-        <para>And of course, there are also some soft constraints:</para>
+        <para>Soft constraints:</para>
 
         <itemizedlist>
           <listitem>
@@ -619,12 +606,24 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
 
         <para>The problem is defined on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">this webpage</link> and
         the test data comes from real world hospitals.</para>
+      </section>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/patientAdmissionScheduleUseCase.png"/>
-          </imageobject>
-        </mediaobject>
+      <section>
+        <title>Problem size</title>
+
+        <programlisting>testdata01 has 4 specialisms, 2 equipments, 4 departments,  98 rooms, 286 beds, 14 nights,  652 patients and  652 admissions with a search space of 10^1601.
+testdata02 has 6 specialisms, 2 equipments, 6 departments, 151 rooms, 465 beds, 14 nights,  755 patients and  755 admissions with a search space of 10^2013.
+testdata03 has 5 specialisms, 2 equipments, 5 departments, 131 rooms, 395 beds, 14 nights,  708 patients and  708 admissions with a search space of 10^1838.
+testdata04 has 6 specialisms, 2 equipments, 6 departments, 155 rooms, 471 beds, 14 nights,  746 patients and  746 admissions with a search space of 10^1994.
+testdata05 has 4 specialisms, 2 equipments, 4 departments, 102 rooms, 325 beds, 14 nights,  587 patients and  587 admissions with a search space of 10^1474.
+testdata06 has 4 specialisms, 2 equipments, 4 departments, 104 rooms, 313 beds, 14 nights,  685 patients and  685 admissions with a search space of 10^1709.
+testdata07 has 6 specialisms, 4 equipments, 6 departments, 162 rooms, 472 beds, 14 nights,  519 patients and  519 admissions with a search space of 10^1387.
+testdata08 has 6 specialisms, 4 equipments, 6 departments, 148 rooms, 441 beds, 21 nights,  895 patients and  895 admissions with a search space of 10^2366.
+testdata09 has 4 specialisms, 4 equipments, 4 departments, 105 rooms, 310 beds, 28 nights, 1400 patients and 1400 admissions with a search space of 10^3487.
+testdata10 has 4 specialisms, 4 equipments, 4 departments, 104 rooms, 308 beds, 56 nights, 1575 patients and 1575 admissions with a search space of 10^3919.
+testdata11 has 4 specialisms, 4 equipments, 4 departments, 107 rooms, 318 beds, 91 nights, 2514 patients and 2514 admissions with a search space of 10^6291.
+testdata12 has 4 specialisms, 4 equipments, 4 departments, 105 rooms, 310 beds, 84 nights, 2750 patients and 2750 admissions with a search space of 10^6851.
+testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 28 nights,  907 patients and 1109 admissions with a search space of 10^2845.</programlisting>
       </section>
     </section>
   </section>
@@ -641,60 +640,65 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
         <para>Schedule each exam into a period and into a room. Multiple exams can share the same room during the same
         period.</para>
 
-        <para>There are a number of hard constraints that cannot be broken:</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationTimetablingUseCase.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>Hard constraints:</para>
 
         <itemizedlist>
           <listitem>
-            <para>Exam conflict: 2 exams that share students should not occur in the same period.</para>
+            <para>Exam conflict: 2 exams that share students must not occur in the same period.</para>
           </listitem>
 
           <listitem>
-            <para>Room capacity: A room's seating capacity should suffice at all times.</para>
+            <para>Room capacity: A room's seating capacity must suffice at all times.</para>
           </listitem>
 
           <listitem>
-            <para>Period duration: A period's duration should suffice for all of its exams.</para>
+            <para>Period duration: A period's duration must suffice for all of its exams.</para>
           </listitem>
 
           <listitem>
-            <para>Period related hard constraints should be fulfilled:</para>
+            <para>Period related hard constraints (specified per dataset):</para>
 
             <itemizedlist>
               <listitem>
-                <para>Coincidence: 2 exams should use the same period (but possibly another room).</para>
+                <para>Coincidence: 2 specified exams must use the same period (but possibly another room).</para>
               </listitem>
 
               <listitem>
-                <para>Exclusion: 2 exams should not use the same period.</para>
+                <para>Exclusion: 2 specified exams must not use the same period.</para>
               </listitem>
 
               <listitem>
-                <para>After: 1 exam should occur in a period after another exam's period.</para>
+                <para>After: A specified exam must occur in a period after another specified exam's period.</para>
               </listitem>
             </itemizedlist>
           </listitem>
 
           <listitem>
-            <para>Room related hard constraints should be fulfilled:</para>
+            <para>Room related hard constraints (specified per dataset):</para>
 
             <itemizedlist>
               <listitem>
-                <para>Exclusive: 1 exam should not have to share its room with any other exam.</para>
+                <para>Exclusive: 1 specified exam should not have to share its room with any other exam.</para>
               </listitem>
             </itemizedlist>
           </listitem>
         </itemizedlist>
 
-        <para>There are also a number of soft constraints that should be minimized (each of which has parametrized
-        penalty's):</para>
+        <para>Soft constraints (each of which has a parametrized penalty):</para>
 
         <itemizedlist>
           <listitem>
-            <para>2 exams in a row.</para>
+            <para>The same student should not have 2 exams in a row.</para>
           </listitem>
 
           <listitem>
-            <para>2 exams in a day.</para>
+            <para>The same student should not have 2 exams on the same day.</para>
           </listitem>
 
           <listitem>
@@ -710,11 +714,11 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
           </listitem>
 
           <listitem>
-            <para>Period penalty: Some periods have a penalty when used.</para>
+            <para>Period penalty (specified per dataset): Some periods have a penalty when used.</para>
           </listitem>
 
           <listitem>
-            <para>Room penalty: Some rooms have a penalty when used.</para>
+            <para>Room penalty (specified per dataset): Some rooms have a penalty when used.</para>
           </listitem>
         </itemizedlist>
 
@@ -722,213 +726,21 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
 
         <para>The problem is defined by <link
         xlink:href="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">the International Timetabling
-        Competition 2007 track 1</link>.</para>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationTimetablingUseCase.png"/>
-          </imageobject>
-        </mediaobject>
+        Competition 2007 track 1</link>. Geoffrey De Smet finished 4th in that competition with a very early version of
+        Drools Planner. Many improvements have been made since then.</para>
       </section>
 
       <section>
         <title>Problem size</title>
 
-        <para>These numbers might give you some insight on the size of this problem.</para>
-
-        <table>
-          <title>Examination problem size</title>
-
-          <tgroup cols="8">
-            <thead>
-              <row>
-                <entry>Set</entry>
-
-                <entry># students</entry>
-
-                <entry># exams/topics</entry>
-
-                <entry># periods</entry>
-
-                <entry># rooms</entry>
-
-                <entry># possible solutions</entry>
-
-                <entry># feasible solutions</entry>
-
-                <entry># optimal solutions</entry>
-              </row>
-            </thead>
-
-            <tbody>
-              <row>
-                <entry>exam_comp_set1</entry>
-
-                <entry>7883</entry>
-
-                <entry>607</entry>
-
-                <entry>54</entry>
-
-                <entry>7</entry>
-
-                <entry>10^1564</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>exam_comp_set2</entry>
-
-                <entry>12484</entry>
-
-                <entry>870</entry>
-
-                <entry>40</entry>
-
-                <entry>49</entry>
-
-                <entry>10^2864</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>exam_comp_set3</entry>
-
-                <entry>16365</entry>
-
-                <entry>934</entry>
-
-                <entry>36</entry>
-
-                <entry>48</entry>
-
-                <entry>10^3023</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>exam_comp_set4</entry>
-
-                <entry>4421</entry>
-
-                <entry>273</entry>
-
-                <entry>21</entry>
-
-                <entry>1</entry>
-
-                <entry>10^360</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>exam_comp_set5</entry>
-
-                <entry>8719</entry>
-
-                <entry>1018</entry>
-
-                <entry>42</entry>
-
-                <entry>3</entry>
-
-                <entry>10^2138</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>exam_comp_set6</entry>
-
-                <entry>7909</entry>
-
-                <entry>242</entry>
-
-                <entry>16</entry>
-
-                <entry>8</entry>
-
-                <entry>10^509</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>exam_comp_set7</entry>
-
-                <entry>13795</entry>
-
-                <entry>1096</entry>
-
-                <entry>80</entry>
-
-                <entry>28</entry>
-
-                <entry>10^3671</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>exam_comp_set8</entry>
-
-                <entry>7718</entry>
-
-                <entry>598</entry>
-
-                <entry>80</entry>
-
-                <entry>8</entry>
-
-                <entry>10^1678</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>?</entry>
-
-                <entry>s</entry>
-
-                <entry>t</entry>
-
-                <entry>p</entry>
-
-                <entry>r</entry>
-
-                <entry>(p * r) ^ e</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </table>
-
-        <para>Geoffrey De Smet (the Drools Planner lead) finished 4th in the International Timetabling Competition
-        2007's examination track with a very early version of Drools Planner. Many improvements have been made since
-        then.</para>
+        <programlisting>exam_comp_set1 has  7883 students,  607 exams, 54 periods,  7 rooms,  12 period constraints and  0 room constraints with a search space of 10^1564.
+exam_comp_set2 has 12484 students,  870 exams, 40 periods, 49 rooms,  12 period constraints and  2 room constraints with a search space of 10^2864.
+exam_comp_set3 has 16365 students,  934 exams, 36 periods, 48 rooms, 168 period constraints and 15 room constraints with a search space of 10^3023.
+exam_comp_set4 has  4421 students,  273 exams, 21 periods,  1 rooms,  40 period constraints and  0 room constraints with a search space of  10^360.
+exam_comp_set5 has  8719 students, 1018 exams, 42 periods,  3 rooms,  27 period constraints and  0 room constraints with a search space of 10^2138.
+exam_comp_set6 has  7909 students,  242 exams, 16 periods,  8 rooms,  22 period constraints and  0 room constraints with a search space of  10^509.
+exam_comp_set7 has 13795 students, 1096 exams, 80 periods, 15 rooms,  28 period constraints and  0 room constraints with a search space of 10^3374.
+exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period constraints and  1 room constraints with a search space of 10^1678.</programlisting>
       </section>
 
       <section>
@@ -948,7 +760,7 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
 
         <para>Notice that we've split up the exam concept into an <literal>Exam</literal> class and a
         <literal>Topic</literal> class. The <literal>Exam</literal> instances change during solving (this is the
-        planning entity class), when they get another period or room property. The <literal>Topic</literal>,
+        planning entity class), when their period or room property changes. The <literal>Topic</literal>,
         <literal>Period</literal> and <literal>Room</literal> instances never change during solving (these are problem
         facts, just like some other classes).</para>
       </section>
@@ -961,9 +773,6 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
         <title>Problem statement</title>
 
         <para>For each shift, assign a nurse to work that shift.</para>
-
-        <para>The problem is defined by <link xlink:href="http://www.kuleuven-kortrijk.be/nrpcompetition">the
-        International Nurse Rostering Competition 2010</link>.</para>
 
         <mediaobject>
           <imageobject>
@@ -982,6 +791,84 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
             <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringSoftConstraints.png"/>
           </imageobject>
         </mediaobject>
+
+        <para>The problem is defined by <link xlink:href="http://www.kuleuven-kortrijk.be/nrpcompetition">the
+        International Nurse Rostering Competition 2010</link>.</para>
+      </section>
+
+      <section>
+        <title>Problem size</title>
+
+        <para>There are 3 dataset types:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>sprint: must be solved in seconds.</para>
+          </listitem>
+
+          <listitem>
+            <para>medium: must be solved in minutes.</para>
+          </listitem>
+
+          <listitem>
+            <para>long: must be solved in hours.</para>
+          </listitem>
+        </itemizedlist>
+
+        <programlisting>toy1          has 1 skills, 3 shiftTypes, 2 patterns, 1 contracts,  6 employees,  7 shiftDates,  21 shifts and   0 requests with a search space of  10^16.
+toy2          has 1 skills, 3 shiftTypes, 3 patterns, 2 contracts, 20 employees, 28 shiftDates,  84 shifts and 140 requests with a search space of 10^109.
+
+sprint01      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint02      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint03      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint04      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint05      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint06      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint07      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint08      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint09      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint10      has 1 skills, 4 shiftTypes, 3 patterns, 4 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_hint01 has 1 skills, 4 shiftTypes, 8 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_hint02 has 1 skills, 4 shiftTypes, 0 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_hint03 has 1 skills, 4 shiftTypes, 8 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_late01 has 1 skills, 4 shiftTypes, 8 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_late02 has 1 skills, 3 shiftTypes, 4 patterns, 3 contracts, 10 employees, 28 shiftDates,  84 shifts and 139 requests with a search space of  10^84.
+sprint_late03 has 1 skills, 4 shiftTypes, 8 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_late04 has 1 skills, 4 shiftTypes, 8 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_late05 has 1 skills, 4 shiftTypes, 8 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_late06 has 1 skills, 4 shiftTypes, 0 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_late07 has 1 skills, 4 shiftTypes, 0 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+sprint_late08 has 1 skills, 4 shiftTypes, 0 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and   0 requests with a search space of 10^112.
+sprint_late09 has 1 skills, 4 shiftTypes, 0 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and   0 requests with a search space of 10^112.
+sprint_late10 has 1 skills, 4 shiftTypes, 0 patterns, 3 contracts, 10 employees, 28 shiftDates, 112 shifts and 150 requests with a search space of 10^112.
+
+medium01      has 1 skills, 4 shiftTypes, 0 patterns, 4 contracts, 31 employees, 28 shiftDates, 112 shifts and 403 requests with a search space of 10^167.
+medium02      has 1 skills, 4 shiftTypes, 0 patterns, 4 contracts, 31 employees, 28 shiftDates, 112 shifts and 403 requests with a search space of 10^167.
+medium03      has 1 skills, 4 shiftTypes, 0 patterns, 4 contracts, 31 employees, 28 shiftDates, 112 shifts and 403 requests with a search space of 10^167.
+medium04      has 1 skills, 4 shiftTypes, 0 patterns, 4 contracts, 31 employees, 28 shiftDates, 112 shifts and 403 requests with a search space of 10^167.
+medium05      has 1 skills, 4 shiftTypes, 0 patterns, 4 contracts, 31 employees, 28 shiftDates, 112 shifts and 403 requests with a search space of 10^167.
+medium_hint01 has 1 skills, 4 shiftTypes, 7 patterns, 4 contracts, 30 employees, 28 shiftDates, 112 shifts and 390 requests with a search space of 10^165.
+medium_hint02 has 1 skills, 4 shiftTypes, 7 patterns, 3 contracts, 30 employees, 28 shiftDates, 112 shifts and 390 requests with a search space of 10^165.
+medium_hint03 has 1 skills, 4 shiftTypes, 7 patterns, 4 contracts, 30 employees, 28 shiftDates, 112 shifts and 390 requests with a search space of 10^165.
+medium_late01 has 1 skills, 4 shiftTypes, 7 patterns, 4 contracts, 30 employees, 28 shiftDates, 112 shifts and 390 requests with a search space of 10^165.
+medium_late02 has 1 skills, 4 shiftTypes, 7 patterns, 3 contracts, 30 employees, 28 shiftDates, 112 shifts and 390 requests with a search space of 10^165.
+medium_late03 has 1 skills, 4 shiftTypes, 0 patterns, 4 contracts, 30 employees, 28 shiftDates, 112 shifts and 390 requests with a search space of 10^165.
+medium_late04 has 1 skills, 4 shiftTypes, 7 patterns, 3 contracts, 30 employees, 28 shiftDates, 112 shifts and 390 requests with a search space of 10^165.
+medium_late05 has 2 skills, 5 shiftTypes, 7 patterns, 4 contracts, 30 employees, 28 shiftDates, 140 shifts and 390 requests with a search space of 10^206.
+
+long01        has 2 skills, 5 shiftTypes, 3 patterns, 3 contracts, 49 employees, 28 shiftDates, 140 shifts and 735 requests with a search space of 10^236.
+long02        has 2 skills, 5 shiftTypes, 3 patterns, 3 contracts, 49 employees, 28 shiftDates, 140 shifts and 735 requests with a search space of 10^236.
+long03        has 2 skills, 5 shiftTypes, 3 patterns, 3 contracts, 49 employees, 28 shiftDates, 140 shifts and 735 requests with a search space of 10^236.
+long04        has 2 skills, 5 shiftTypes, 3 patterns, 3 contracts, 49 employees, 28 shiftDates, 140 shifts and 735 requests with a search space of 10^236.
+long05        has 2 skills, 5 shiftTypes, 3 patterns, 3 contracts, 49 employees, 28 shiftDates, 140 shifts and 735 requests with a search space of 10^236.
+long_hint01   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees, 28 shiftDates, 140 shifts and   0 requests with a search space of 10^237.
+long_hint02   has 2 skills, 5 shiftTypes, 7 patterns, 3 contracts, 50 employees, 28 shiftDates, 140 shifts and   0 requests with a search space of 10^237.
+long_hint03   has 2 skills, 5 shiftTypes, 7 patterns, 3 contracts, 50 employees, 28 shiftDates, 140 shifts and   0 requests with a search space of 10^237.
+long_late01   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees, 28 shiftDates, 140 shifts and   0 requests with a search space of 10^237.
+long_late02   has 2 skills, 5 shiftTypes, 9 patterns, 4 contracts, 50 employees, 28 shiftDates, 140 shifts and   0 requests with a search space of 10^237.
+long_late03   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees, 28 shiftDates, 140 shifts and   0 requests with a search space of 10^237.
+long_late04   has 2 skills, 5 shiftTypes, 9 patterns, 4 contracts, 50 employees, 28 shiftDates, 140 shifts and   0 requests with a search space of 10^237.
+long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees, 28 shiftDates, 140 shifts and   0 requests with a search space of 10^237.</programlisting>
       </section>
     </section>
 
@@ -991,7 +878,15 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
       <section>
         <title>Problem statement</title>
 
-        <para>Schedule matches between <emphasis>n</emphasis> teams with the following hard constraints:</para>
+        <para>Schedule matches between <emphasis>n</emphasis> teams.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/travelingTournamentUseCase.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>Hard constraints:</para>
 
         <itemizedlist>
           <listitem>
@@ -1011,7 +906,7 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
           </listitem>
         </itemizedlist>
 
-        <para>and the following soft constraint:</para>
+        <para>Soft constraints:</para>
 
         <itemizedlist>
           <listitem>
@@ -1021,154 +916,53 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
 
         <para>The problem is defined on <link xlink:href="http://mat.gsia.cmu.edu/TOURN/">Michael Trick's website (which
         contains the world records too)</link>.</para>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/travelingTournamentUseCase.png"/>
-          </imageobject>
-        </mediaobject>
       </section>
 
       <section>
         <title>Problem size</title>
 
-        <para>These numbers might give you some insight on the size of this problem.</para>
-
-        <table>
-          <title>Traveling tournament problem size</title>
-
-          <tgroup cols="6">
-            <thead>
-              <row>
-                <entry># teams</entry>
-
-                <entry># days</entry>
-
-                <entry># matches</entry>
-
-                <entry># possible solutions (smart)</entry>
-
-                <entry># feasible solutions</entry>
-
-                <entry># optimal solutions</entry>
-              </row>
-            </thead>
-
-            <tbody>
-              <row>
-                <entry>4</entry>
-
-                <entry>6</entry>
-
-                <entry>12</entry>
-
-                <entry>&lt;= 518400</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>6</entry>
-
-                <entry>10</entry>
-
-                <entry>30</entry>
-
-                <entry>&lt;= 47784725839872000000</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>8</entry>
-
-                <entry>14</entry>
-
-                <entry>56</entry>
-
-                <entry>&lt;= 5.77608277425558771434498864e+43</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>10</entry>
-
-                <entry>18</entry>
-
-                <entry>90</entry>
-
-                <entry>&lt;= 1.07573451027871200629339068e+79</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>12</entry>
-
-                <entry>22</entry>
-
-                <entry>132</entry>
-
-                <entry>&lt;= 2.01650616733413376416949843e+126</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>14</entry>
-
-                <entry>26</entry>
-
-                <entry>182</entry>
-
-                <entry>&lt;= 1.73513467024013808570420241e+186</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>16</entry>
-
-                <entry>30</entry>
-
-                <entry>240</entry>
-
-                <entry>&lt;= 2.45064610271441678267620602e+259</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-
-              <row>
-                <entry>n</entry>
-
-                <entry>2 * (n - 1)</entry>
-
-                <entry>n * (n - 1)</entry>
-
-                <entry>&lt;= (((2 * (n - 1))!) ^ (n / 2))</entry>
-
-                <entry>?</entry>
-
-                <entry>1?</entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </table>
+        <programlisting>1-nl04     has  6 days,  4 teams and   12 matches with a search space of    10^9.
+1-nl06     has 10 days,  6 teams and   30 matches with a search space of   10^30.
+1-nl08     has 14 days,  8 teams and   56 matches with a search space of   10^64.
+1-nl10     has 18 days, 10 teams and   90 matches with a search space of  10^112.
+1-nl12     has 22 days, 12 teams and  132 matches with a search space of  10^177.
+1-nl14     has 26 days, 14 teams and  182 matches with a search space of  10^257.
+1-nl16     has 30 days, 16 teams and  240 matches with a search space of  10^354.
+2-bra24    has 46 days, 24 teams and  552 matches with a search space of  10^917.
+3-nfl16    has 30 days, 16 teams and  240 matches with a search space of  10^354.
+3-nfl18    has 34 days, 18 teams and  306 matches with a search space of  10^468.
+3-nfl20    has 38 days, 20 teams and  380 matches with a search space of  10^600.
+3-nfl22    has 42 days, 22 teams and  462 matches with a search space of  10^749.
+3-nfl24    has 46 days, 24 teams and  552 matches with a search space of  10^917.
+3-nfl26    has 50 days, 26 teams and  650 matches with a search space of 10^1104.
+3-nfl28    has 54 days, 28 teams and  756 matches with a search space of 10^1309.
+3-nfl30    has 58 days, 30 teams and  870 matches with a search space of 10^1534.
+3-nfl32    has 62 days, 32 teams and  992 matches with a search space of 10^1778.
+4-super04  has  6 days,  4 teams and   12 matches with a search space of    10^9.
+4-super06  has 10 days,  6 teams and   30 matches with a search space of   10^30.
+4-super08  has 14 days,  8 teams and   56 matches with a search space of   10^64.
+4-super10  has 18 days, 10 teams and   90 matches with a search space of  10^112.
+4-super12  has 22 days, 12 teams and  132 matches with a search space of  10^177.
+4-super14  has 26 days, 14 teams and  182 matches with a search space of  10^257.
+5-galaxy04 has  6 days,  4 teams and   12 matches with a search space of    10^9.
+5-galaxy06 has 10 days,  6 teams and   30 matches with a search space of   10^30.
+5-galaxy08 has 14 days,  8 teams and   56 matches with a search space of   10^64.
+5-galaxy10 has 18 days, 10 teams and   90 matches with a search space of  10^112.
+5-galaxy12 has 22 days, 12 teams and  132 matches with a search space of  10^177.
+5-galaxy14 has 26 days, 14 teams and  182 matches with a search space of  10^257.
+5-galaxy16 has 30 days, 16 teams and  240 matches with a search space of  10^354.
+5-galaxy18 has 34 days, 18 teams and  306 matches with a search space of  10^468.
+5-galaxy20 has 38 days, 20 teams and  380 matches with a search space of  10^600.
+5-galaxy22 has 42 days, 22 teams and  462 matches with a search space of  10^749.
+5-galaxy24 has 46 days, 24 teams and  552 matches with a search space of  10^917.
+5-galaxy26 has 50 days, 26 teams and  650 matches with a search space of 10^1104.
+5-galaxy28 has 54 days, 28 teams and  756 matches with a search space of 10^1309.
+5-galaxy30 has 58 days, 30 teams and  870 matches with a search space of 10^1534.
+5-galaxy32 has 62 days, 32 teams and  992 matches with a search space of 10^1778.
+5-galaxy34 has 66 days, 34 teams and 1122 matches with a search space of 10^2041.
+5-galaxy36 has 70 days, 36 teams and 1260 matches with a search space of 10^2324.
+5-galaxy38 has 74 days, 38 teams and 1406 matches with a search space of 10^2628.
+5-galaxy40 has 78 days, 40 teams and 1560 matches with a search space of 10^2951.</programlisting>
       </section>
     </section>
   </section>

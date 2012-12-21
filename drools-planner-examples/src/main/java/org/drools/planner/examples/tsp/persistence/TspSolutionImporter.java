@@ -62,12 +62,12 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             readCityList();
             readConstantLine("EOF");
             createVisitList();
-            logger.info("TravelingSalesmanTour with {} cities.",
-                    travelingSalesmanTour.getCityList().size());
             BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getCityList().size() - 1);
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("TravelingSalesmanTour with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
-                    flooredPossibleSolutionSize, possibleSolutionSize);
+            logger.info("TravelingSalesmanTour {} has {} cities with a search space of {}.",
+                    getInputId(),
+                    travelingSalesmanTour.getCityList().size(),
+                    flooredPossibleSolutionSize);
             return travelingSalesmanTour;
         }
 
@@ -123,14 +123,6 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             }
             travelingSalesmanTour.setDomicileList(domicileList);
             travelingSalesmanTour.setVisitList(visitList);
-        }
-
-        private BigInteger factorial(int base) {
-            BigInteger value = BigInteger.ONE;
-            for (int i = 1; i <= base; i++) {
-                value = value.multiply(BigInteger.valueOf(base));
-            }
-            return value;
         }
 
     }

@@ -84,20 +84,20 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             readBalancePenaltyList();
             readGlobalPenaltyInfo();
             readProcessAssignmentList();
-            logger.info("MachineReassignment with {} resources, {} neighborhoods, {} locations, {} machines," +
-                    " {} services, {} processes and {} balancePenalties.",
-                    new Object[]{machineReassignment.getResourceList().size(),
-                            machineReassignment.getNeighborhoodList().size(),
-                            machineReassignment.getLocationList().size(),
-                            machineReassignment.getMachineList().size(),
-                            machineReassignment.getServiceList().size(),
-                            machineReassignment.getProcessList().size(),
-                            machineReassignment.getBalancePenaltyList().size()});
             BigInteger possibleSolutionSize = BigInteger.valueOf(machineReassignment.getMachineList().size()).pow(
                     machineReassignment.getProcessList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("MachineReassignment with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
-                    flooredPossibleSolutionSize, possibleSolutionSize);
+            logger.info("MachineReassignment {} has {} resources, {} neighborhoods, {} locations, {} machines," +
+                    " {} services, {} processes and {} balancePenalties with a search space of {}.",
+                    getInputId(),
+                    machineReassignment.getResourceList().size(),
+                    machineReassignment.getNeighborhoodList().size(),
+                    machineReassignment.getLocationList().size(),
+                    machineReassignment.getMachineList().size(),
+                    machineReassignment.getServiceList().size(),
+                    machineReassignment.getProcessList().size(),
+                    machineReassignment.getBalancePenaltyList().size(),
+                    flooredPossibleSolutionSize);
             return machineReassignment;
         }
 

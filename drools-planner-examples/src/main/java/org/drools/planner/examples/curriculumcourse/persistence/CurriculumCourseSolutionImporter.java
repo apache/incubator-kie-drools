@@ -93,20 +93,20 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             readConstantLine("END.");
             createLectureList(schedule);
 
-            logger.info("CurriculumCourseSchedule with {} teachers, {} curricula, {} courses, {} periods, {} rooms" +
-                    " and {} unavailable period constraints.",
-                    new Object[]{schedule.getTeacherList().size(),
-                            schedule.getCurriculumList().size(),
-                            schedule.getCourseList().size(),
-                            schedule.getPeriodList().size(),
-                            schedule.getRoomList().size(),
-                            schedule.getUnavailablePeriodPenaltyList().size()});
             int possibleForOneLectureSize = schedule.getPeriodList().size() * schedule.getRoomList().size();
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneLectureSize).pow(
                     schedule.getLectureList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("CurriculumCourseSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
-                    flooredPossibleSolutionSize, possibleSolutionSize);
+            logger.info("CurriculumCourseSchedule {} has {} teachers, {} curricula, {} courses, {} periods, {} rooms" +
+                    " and {} unavailable period constraints with a search space of {}.",
+                    getInputId(),
+                    schedule.getTeacherList().size(),
+                    schedule.getCurriculumList().size(),
+                    schedule.getCourseList().size(),
+                    schedule.getPeriodList().size(),
+                    schedule.getRoomList().size(),
+                    schedule.getUnavailablePeriodPenaltyList().size(),
+                    flooredPossibleSolutionSize);
             return schedule;
         }
 

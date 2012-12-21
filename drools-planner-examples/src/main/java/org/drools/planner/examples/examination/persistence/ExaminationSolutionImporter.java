@@ -94,18 +94,20 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
 
             createExamList(examination);
 
-            logger.info("Examination with {} students, {} topics/exams, {} periods, {} rooms, {} period constraints" +
-                    " and {} room constraints.",
-                    new Object[]{examination.getStudentList().size(), examination.getTopicList().size(),
-                            examination.getPeriodList().size(), examination.getRoomList().size(),
-                            examination.getPeriodPenaltyList().size(),
-                            examination.getRoomPenaltyList().size()});
             int possibleForOneExamSize = examination.getPeriodList().size() * examination.getRoomList().size();
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneExamSize).pow(
-                    examination.getTopicList().size());
+                    examination.getExamList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("Examination with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
-                    flooredPossibleSolutionSize, possibleSolutionSize);
+            logger.info("Examination {} has {} students, {} exams, {} periods, {} rooms, {} period constraints"
+                    + " and {} room constraints with a search space of {}.",
+                    getInputId(),
+                    examination.getStudentList().size(),
+                    examination.getExamList().size(),
+                    examination.getPeriodList().size(),
+                    examination.getRoomList().size(),
+                    examination.getPeriodPenaltyList().size(),
+                    examination.getRoomPenaltyList().size(),
+                    flooredPossibleSolutionSize);
             return examination;
         }
 

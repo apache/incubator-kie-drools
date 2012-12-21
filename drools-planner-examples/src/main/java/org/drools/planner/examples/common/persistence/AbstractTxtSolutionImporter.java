@@ -23,8 +23,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.URL;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.util.encoders.UrlBase64;
 import org.drools.planner.core.solution.Solution;
@@ -106,6 +108,10 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         // ************************************************************************
         // Helper methods
         // ************************************************************************
+
+        public String getInputId() {
+            return FilenameUtils.getBaseName(inputFile.getPath());
+        }
 
         public void readEmptyLine() throws IOException {
             readConstantLine("");
@@ -286,6 +292,14 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
                 throw new IllegalArgumentException("The token (" + token
                         + ") is expected to be 0 or 1 representing a boolean.");
             }
+        }
+
+        public BigInteger factorial(int base) {
+            BigInteger value = BigInteger.ONE;
+            for (int i = 1; i <= base; i++) {
+                value = value.multiply(BigInteger.valueOf(base));
+            }
+            return value;
         }
 
     }

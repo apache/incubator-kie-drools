@@ -70,13 +70,15 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
             readDepotList();
             createVehicleList();
             readConstantLine("EOF");
-            logger.info("VrpSchedule with {} depots, {} vehicles and {} customers.",
-                    new Object[]{schedule.getDepotList().size(), schedule.getVehicleList().size(),
-                            schedule.getCustomerList().size()});
+            // TODO search space does not take different vehicles into account
             BigInteger possibleSolutionSize = factorial(schedule.getLocationList().size() - 1);
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("VrpSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
-                    flooredPossibleSolutionSize, possibleSolutionSize);
+            logger.info("VrpSchedule {} has {} depots, {} vehicles and {} customers with a search space of {}.",
+                    getInputId(),
+                    schedule.getDepotList().size(),
+                    schedule.getVehicleList().size(),
+                    schedule.getCustomerList().size(),
+                    flooredPossibleSolutionSize);
             return schedule;
         }
 
@@ -183,14 +185,6 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                 vehicleList.add(vehicle);
             }
             schedule.setVehicleList(vehicleList);
-        }
-
-        private BigInteger factorial(int base) {
-            BigInteger value = BigInteger.ONE;
-            for (int i = 1; i <= base; i++) {
-                value = value.multiply(BigInteger.valueOf(base));
-            }
-            return value;
         }
 
     }

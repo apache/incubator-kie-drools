@@ -17,6 +17,7 @@
 package org.drools.planner.examples.manners2009.persistence;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,13 +60,18 @@ public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
             readJobListGuestListAndHobbyPracticianList(manners2009);
             createSeatDesignationList(manners2009);
 
-            logger.info("Manners2009 with {} jobs, {} guests, {} hobby practicians, {} tables and {} seats.",
-                    new Object[]{manners2009.getJobList().size(),
-                            manners2009.getGuestList().size(),
-                            manners2009.getHobbyPracticianList().size(),
-                            manners2009.getTableList().size(),
-                            manners2009.getSeatList().size()});
-
+            BigInteger possibleSolutionSize = BigInteger.valueOf(manners2009.getGuestList().size()).pow(
+                    manners2009.getSeatDesignationList().size());
+            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+            logger.info("Manners2009 {} has {} jobs, {} guests, {} hobby practicians, {} tables and {} seats"
+                    + " with a search space of {}.",
+                    getInputId(),
+                    manners2009.getJobList().size(),
+                    manners2009.getGuestList().size(),
+                    manners2009.getHobbyPracticianList().size(),
+                    manners2009.getTableList().size(),
+                    manners2009.getSeatList().size(),
+                    flooredPossibleSolutionSize);
             return manners2009;
         }
 

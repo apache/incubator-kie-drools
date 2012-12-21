@@ -115,24 +115,22 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             readShiftOnRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOnRequests"));
             createShiftAssignmentList(nurseRoster);
 
-            logger.info("NurseRoster {} with {} skills, {} shiftTypes, {} patterns, {} contracts, {} employees," +
-                    " {} shiftDates, {} shifts and {} requests.",
-                    new Object[]{nurseRoster.getCode(),
-                            nurseRoster.getSkillList().size(),
-                            nurseRoster.getShiftTypeList().size(),
-                            nurseRoster.getPatternList().size(),
-                            nurseRoster.getContractList().size(),
-                            nurseRoster.getEmployeeList().size(),
-                            nurseRoster.getShiftDateList().size(),
-                            nurseRoster.getShiftList().size(),
-                            nurseRoster.getDayOffRequestList().size() + nurseRoster.getDayOnRequestList().size()
-                                    + nurseRoster.getShiftOffRequestList().size() + nurseRoster.getShiftOnRequestList().size()
-                    });
             BigInteger possibleSolutionSize = BigInteger.valueOf(nurseRoster.getEmployeeList().size()).pow(
                     nurseRoster.getShiftList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("NurseRoster with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
-                    flooredPossibleSolutionSize, possibleSolutionSize);
+            logger.info("NurseRoster {} has {} skills, {} shiftTypes, {} patterns, {} contracts, {} employees," +
+                    " {} shiftDates, {} shifts and {} requests with a search space of {}.",
+                    getInputId(),
+                    nurseRoster.getSkillList().size(),
+                    nurseRoster.getShiftTypeList().size(),
+                    nurseRoster.getPatternList().size(),
+                    nurseRoster.getContractList().size(),
+                    nurseRoster.getEmployeeList().size(),
+                    nurseRoster.getShiftDateList().size(),
+                    nurseRoster.getShiftList().size(),
+                    nurseRoster.getDayOffRequestList().size() + nurseRoster.getDayOnRequestList().size()
+                            + nurseRoster.getShiftOffRequestList().size() + nurseRoster.getShiftOnRequestList().size(),
+                    flooredPossibleSolutionSize);
             return nurseRoster;
         }
 

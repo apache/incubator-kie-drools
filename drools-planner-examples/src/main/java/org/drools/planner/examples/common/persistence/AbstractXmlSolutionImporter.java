@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.solution.Solution;
 import org.jdom.Document;
@@ -88,6 +89,10 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
         // ************************************************************************
         // Helper methods
         // ************************************************************************
+
+        public String getInputId() {
+            return FilenameUtils.getBaseName(inputFile.getPath());
+        }
 
         protected void assertElementName(Element element, String name) {
             if (!element.getName().equals(name)) {

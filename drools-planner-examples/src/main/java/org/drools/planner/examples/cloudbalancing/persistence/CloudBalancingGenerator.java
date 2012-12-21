@@ -168,7 +168,7 @@ public class CloudBalancingGenerator extends LoggingMain {
                     + NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getCost();
             logger.debug("Created cloudComputer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
                     + " networkBandwidthPricesIndex({}).",
-                    new Object[]{cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex});
+                    cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex);
             cloudComputer.setCost(cost);
             cloudComputerList.add(cloudComputer);
         }
@@ -204,7 +204,7 @@ public class CloudBalancingGenerator extends LoggingMain {
             cloudProcess.setRequiredNetworkBandwidth(requiredNetworkBandwidth);
             logger.debug("Created CloudProcess with requiredCpuPower ({}), requiredMemory({}),"
                     + " requiredNetworkBandwidth({}).",
-                    new Object[]{requiredCpuPower, requiredMemory, requiredNetworkBandwidth});
+                    requiredCpuPower, requiredMemory, requiredNetworkBandwidth);
             // Notice that we leave the PlanningVariable properties on null
             cloudProcessList.add(cloudProcess);
         }

@@ -17,6 +17,7 @@
 package org.drools.planner.examples.travelingtournament.persistence;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +56,14 @@ public class TravelingTournamentSolutionImporter extends AbstractTxtSolutionImpo
             // TODO setting the distances should be a separate method
             createMatchListAndSetDistancesInTeamList(travelingTournament, outerDistanceList);
             initializeMatchDays(travelingTournament);
+            BigInteger possibleSolutionSize = factorial(2 * (n - 1)).pow(n / 2);
+            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+            logger.info("TravelingTournament {} has {} days, {} teams and {} matches with a search space of {}.",
+                    getInputId(),
+                    travelingTournament.getDayList().size(),
+                    travelingTournament.getTeamList().size(),
+                    travelingTournament.getMatchList().size(),
+                    flooredPossibleSolutionSize);
             return travelingTournament;
         }
 

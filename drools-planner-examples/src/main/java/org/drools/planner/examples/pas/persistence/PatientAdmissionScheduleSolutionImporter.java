@@ -101,21 +101,21 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
             readConstantLine("END.");
             createBedDesignationList();
             // TODO not all nights are planned, only the "planning horizon" nights are planned
-            logger.info("PatientAdmissionSchedule with {} specialisms, {} equipments, {} departments, {} rooms, "
-                    + "{} beds, {} nights, {} patients and {} admissions.",
-                    new Object[]{patientAdmissionSchedule.getSpecialismList().size(),
-                            patientAdmissionSchedule.getEquipmentList().size(),
-                            patientAdmissionSchedule.getDepartmentList().size(),
-                            patientAdmissionSchedule.getRoomList().size(),
-                            patientAdmissionSchedule.getBedList().size(),
-                            patientAdmissionSchedule.getNightList().size(),
-                            patientAdmissionSchedule.getPatientList().size(),
-                            patientAdmissionSchedule.getAdmissionPartList().size()});
             BigInteger possibleSolutionSize = BigInteger.valueOf(patientAdmissionSchedule.getBedList().size()).pow(
                     patientAdmissionSchedule.getAdmissionPartList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("PatientAdmissionSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
-                    flooredPossibleSolutionSize, possibleSolutionSize);
+            logger.info("PatientAdmissionSchedule {} has {} specialisms, {} equipments, {} departments, {} rooms, "
+                    + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
+                    getInputId(),
+                    patientAdmissionSchedule.getSpecialismList().size(),
+                    patientAdmissionSchedule.getEquipmentList().size(),
+                    patientAdmissionSchedule.getDepartmentList().size(),
+                    patientAdmissionSchedule.getRoomList().size(),
+                    patientAdmissionSchedule.getBedList().size(),
+                    patientAdmissionSchedule.getNightList().size(),
+                    patientAdmissionSchedule.getPatientList().size(),
+                    patientAdmissionSchedule.getAdmissionPartList().size(),
+                    flooredPossibleSolutionSize);
             return patientAdmissionSchedule;
         }
 

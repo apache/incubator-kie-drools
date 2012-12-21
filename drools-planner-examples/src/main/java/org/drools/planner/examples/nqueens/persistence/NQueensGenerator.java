@@ -59,6 +59,19 @@ public class NQueensGenerator extends LoggingMain {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
         nQueens.setN(n);
+        List<Column> columnList = createColumnList(n, nQueens);
+        createRowList(n, nQueens);
+        createQueenList(n, nQueens, columnList);
+        BigInteger possibleSolutionSize = BigInteger.valueOf(nQueens.getN()).pow(nQueens.getN());
+        String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+        logger.info("NQueens {} has {} queens with a search space of {}.",
+                n, nQueens.getN(),
+                possibleSolutionSize.compareTo(BigInteger.valueOf(1000L)) < 0
+                ? possibleSolutionSize : flooredPossibleSolutionSize);
+        return nQueens;
+    }
+
+    private List<Column> createColumnList(int n, NQueens nQueens) {
         List<Column> columnList = new ArrayList<Column>(n);
         for (int i = 0; i < n; i++) {
             Column column = new Column();
@@ -67,6 +80,10 @@ public class NQueensGenerator extends LoggingMain {
             columnList.add(column);
         }
         nQueens.setColumnList(columnList);
+        return columnList;
+    }
+
+    private void createRowList(int n, NQueens nQueens) {
         List<Row> rowList = new ArrayList<Row>(n);
         for (int i = 0; i < n; i++) {
             Row row = new Row();
@@ -75,6 +92,9 @@ public class NQueensGenerator extends LoggingMain {
             rowList.add(row);
         }
         nQueens.setRowList(rowList);
+    }
+
+    private void createQueenList(int n, NQueens nQueens, List<Column> columnList) {
         List<Queen> queenList = new ArrayList<Queen>(n);
         long id = 0;
         for (Column column : columnList) {
@@ -86,12 +106,6 @@ public class NQueensGenerator extends LoggingMain {
             queenList.add(queen);
         }
         nQueens.setQueenList(queenList);
-        logger.info("NQueens with {} queens.", nQueens.getN());
-        BigInteger possibleSolutionSize = BigInteger.valueOf(nQueens.getN()).pow(nQueens.getN());
-        String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-        logger.info("NQueens with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
-                flooredPossibleSolutionSize, possibleSolutionSize);
-        return nQueens;
     }
 
 }
