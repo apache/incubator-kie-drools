@@ -16,6 +16,8 @@
 
 package org.kie.runtime;
 
+import org.kie.event.KnowledgeRuntimeEventManager;
+
 
 /**
  * StatelessKnowledgeSession provides a convenience API, wrapping StatefulKnowledgeSession. It avoids the need to
@@ -115,7 +117,7 @@ package org.kie.runtime;
  */
 public interface StatelessKnowledgeSession
     extends
-    StatelessKieSession {
+    StatelessKieSession, KnowledgeRuntimeEventManager {
 
     
 }
