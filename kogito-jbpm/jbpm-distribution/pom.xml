@@ -230,5 +230,10 @@
       <artifactId>junit</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency><!-- Workaround, maybe for http://jira.codehaus.org/browse/MJAVADOC-340 -->
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 </project>

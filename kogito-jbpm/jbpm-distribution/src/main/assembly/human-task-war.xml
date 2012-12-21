@@ -9,8 +9,8 @@
     <file>
       <source>../jbpm-human-task/jbpm-human-task-war/target/jbpm-human-task-war-${project.version}-EE6.war</source>
     </file>
-    <file>
+    <!--file>
       <source>../jbpm-human-task/jbpm-human-task-war/target/jbpm-human-task-war-${project.version}-AS5.war</source>
-    </file>
+    </file-->
   </files>
 </assembly>

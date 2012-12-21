@@ -9,9 +9,9 @@
     <file>
       <source>../jbpm-gwt/jbpm-gwt-console-server/target/jbpm-gwt-console-server-${project.version}-EE6.war</source>
     </file>
-    <file>
+    <!--file>
       <source>../jbpm-gwt/jbpm-gwt-console-server/target/jbpm-gwt-console-server-${project.version}-AS5.war</source>
-    </file>
+    </file-->
     <file>
       <source>../jbpm-gwt/jbpm-gwt-console/target/jbpm-gwt-console-${project.version}.war</source>
     </file>
