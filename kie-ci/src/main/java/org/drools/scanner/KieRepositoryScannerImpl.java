@@ -44,7 +44,11 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     public void setKieContainer(KieContainer kieContainer) {
         this.kieContainer = kieContainer;
-        DependencyDescriptor projectDescr = new DependencyDescriptor(kieContainer.getReleaseId());
+        ReleaseId releaseId = kieContainer.getReleaseId();
+        if (releaseId == null) {
+            throw new RuntimeException("The KieContainer's ReleaseId cannot be null. Are you using a KieClasspathContainer?");
+        }
+        DependencyDescriptor projectDescr = new DependencyDescriptor(releaseId);
         if (!projectDescr.isFixedVersion()) {
             usedDependencies.add(projectDescr);
         }
