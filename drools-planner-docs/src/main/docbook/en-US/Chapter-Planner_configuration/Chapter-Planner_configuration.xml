@@ -562,7 +562,7 @@ public class Queen {
 
           <important>
             <para><emphasis role="bold">ValueRange from planning entity is currently not yet supported by the new
-            MoveSelectors.</emphasis></para>
+            MoveSelectors. Do not use it for now.</emphasis></para>
           </important>
 
           <para>Each planning entity has its own set of possible planning values for a planning variable. For example,
@@ -902,8 +902,6 @@ public class Visit ... implements Appearance {
 
     Collection&lt;? extends Object&gt; getProblemFacts();
 
-    Solution&lt;S&gt; cloneSolution();
-
 }</programlisting>
 
         <para>For example, an <literal>NQueens</literal> instance holds a list of all columns, all rows and all
@@ -925,7 +923,7 @@ public class Visit ... implements Appearance {
       </section>
 
       <section>
-        <title>The getScore and setScore methods</title>
+        <title>The <literal>getScore()</literal> and <literal>setScore()</literal> methods</title>
 
         <para>A <literal>Solution</literal> requires a score property. The score property is <literal>null</literal> if
         the <literal>Solution</literal> is uninitialized or if the score has not yet been (re)calculated. The
@@ -969,7 +967,7 @@ public class Visit ... implements Appearance {
       </section>
 
       <section xml:id="getProblemFacts">
-        <title>The getProblemFacts method</title>
+        <title>The <literal>getProblemFacts()</literal> method</title>
 
         <para>The method is only used if Drools is used for score calculation. Other score directors do not use
         it.</para>
@@ -1039,20 +1037,63 @@ public class Visit ... implements Appearance {
       </section>
 
       <section>
-        <title>The cloneSolution method</title>
+        <title>Cloning a <literal>Solution</literal></title>
 
-        <para>Most optimization algorithms use the <literal>cloneSolution()</literal> method to clone the solution each
-        time they encounter a new best solution (so they can recall it later) or to work with multiple solutions in
-        parallel.</para>
+        <para>Most (if not all) optimization algorithms clone the solution each time they encounter a new best solution
+        (so they can recall it later) or to work with multiple solutions in parallel.</para>
 
-        <para>The <literal>NQueens</literal> implementation only deep clones all <literal>Queen</literal> instances.
-        When the original solution is changed during planning, by changing a <literal>Queen</literal>, the clone stays
-        the same.</para>
+        <note>
+          <para>There are many ways to clone, such as a shallow clone, deep clone, ... This context focuses on
+          <emphasis>a planning clone</emphasis>.</para>
+        </note>
 
-        <programlisting language="java">    /**
+        <para>A planning clone of a <literal>Solution</literal> must fulfill these requirements:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The clone must represent the same planning problem. Usually it reuses the same instances of the
+            problem facts and problem fact collections as the original.</para>
+          </listitem>
+
+          <listitem>
+            <para>The clone must use different, cloned instances of the entities and entity collections. Changes to the
+            original <literal>Solution</literal>'s entities must not effect its clone.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para><emphasis role="bold">Implementing a planning clone method is hard.</emphasis> Therefore you don't have
+        to.</para>
+
+        <section>
+          <title><literal>FieldAccessingSolutionCloner</literal></title>
+
+          <para>This <literal>SolutionCloner</literal> is used by default. It works for the majority of use
+          cases.</para>
+        </section>
+
+        <section>
+          <title>Custom cloning: Make <literal>Solution</literal> implement <literal>PlanningCloneable</literal></title>
+
+          <para>If your Solution implements PlanningCloneable, Planner will automatically choose to clone it by calling
+          the method <literal>planningClone()</literal>.</para>
+
+          <programlisting language="java">public interface PlanningCloneable&lt;T&gt; {
+
+    T planningClone();
+
+}</programlisting>
+
+          <para>For example: If <literal>NQueens</literal> implements <literal>PlanningCloneable</literal>, it would
+          only deep clone all <literal>Queen</literal> instances. When the original solution is changed during planning,
+          by changing a <literal>Queen</literal>, the clone stays the same.</para>
+
+          <programlisting language="java">public class NQueens implements Solution&lt;...&gt;, PlanningCloneable&lt;NQueens&gt; {
+    ...
+
+    /**
      * Clone will only deep copy the {@link #queenList}.
      */
-    public NQueens cloneSolution() {
+    public NQueens planningClone() {
         NQueens clone = new NQueens();
         clone.id = id;
         clone.n = n;
@@ -1060,24 +1101,29 @@ public class Visit ... implements Appearance {
         clone.rowList = rowList;
         List&lt;Queen&gt; clonedQueenList = new ArrayList&lt;Queen&gt;(queenList.size());
         for (Queen queen : queenList) {
-            clonedQueenList.add(queen.clone());
+            clonedQueenList.add(queen.planningClone());
         }
         clone.queenList = clonedQueenList;
         clone.score = score;
         return clone;
-    }</programlisting>
+    }
+}</programlisting>
 
-        <para><emphasis>The <literal>cloneSolution()</literal> method should only deep clone the planning
-        entities.</emphasis> Notice that the problem facts, such as <literal>Column</literal> and <literal>Row</literal>
-        are normally <emphasis>not</emphasis> cloned: even their <literal>List</literal> instances are
-        <emphasis>not</emphasis> cloned.</para>
+          <para><emphasis>The <literal>planningClone()</literal> method should only deep clone the planning
+          entities.</emphasis> Notice that the problem facts, such as <literal>Column</literal> and
+          <literal>Row</literal> are normally <emphasis>not</emphasis> cloned: even their <literal>List</literal>
+          instances are <emphasis>not</emphasis> cloned. If you were to clone the problem facts too, then you'd have to
+          make sure that the new planning entity clones also refer to the new problem facts clones used by the solution.
+          For example, if you would clone all <literal>Row</literal> instances, then each <literal>Queen</literal> clone
+          and the <literal>NQueens</literal> clone itself should refer to those new <literal>Row</literal>
+          clones.</para>
 
-        <note>
-          <para>If you were to clone the problem facts too, then you'd have to make sure that the new planning entity
-          clones also refer to the new problem facts clones used by the solution. For example, if you 'd clone all
-          <literal>Row</literal> instances, then each <literal>Queen</literal> clone and the <literal>NQueens</literal>
-          clone itself should refer to the same set of new <literal>Row</literal> clones.</para>
-        </note>
+          <warning>
+            <para>Cloning an entity with a <link linkend="chainedPlanningVariable">chained</link> variable is devious: a
+            variable of an entity A might point to another entity B. If A is cloned, then it's variable must point to
+            the clone of B, not the original B.</para>
+          </warning>
+        </section>
       </section>
 
       <section>
@@ -1093,34 +1139,25 @@ public class Visit ... implements Appearance {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
         nQueens.setN(n);
-        List&lt;Column&gt; columnList = new ArrayList&lt;Column&gt;(n);
-        for (int i = 0; i &lt; n; i++) {
-            Column column = new Column();
-            column.setId((long) i);
-            column.setIndex(i);
-            columnList.add(column);
-        }
-        nQueens.setColumnList(columnList);
-        List&lt;Row&gt; rowList = new ArrayList&lt;Row&gt;(n);
-        for (int i = 0; i &lt; n; i++) {
-            Row row = new Row();
-            row.setId((long) i);
-            row.setIndex(i);
-            rowList.add(row);
-        }
-        nQueens.setRowList(rowList);
+        nQueens.setColumnList(createColumnList(nQueens));
+        nQueens.setRowList(createRowList(nQueens));
+        nQueens.setQueenList(createQueenList(nQueens));
+        return nQueens;
+    }
+
+    private List&lt;Queen&gt; createQueenList(NQueens nQueens) {
+        int n = nQueens.getN();
         List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
         long id = 0;
-        for (Column column : columnList) {
+        for (Column column : nQueens.getColumnList()) {
             Queen queen = new Queen();
             queen.setId(id);
             id++;
             queen.setColumn(column);
-            // Notice that we leave the PlanningVariable properties (row) on null
+            // Notice that we leave the PlanningVariable properties on null
             queenList.add(queen);
         }
-        nQueens.setQueenList(queenList);
-        return nQueens;
+        return queenList;
     }</programlisting>
 
         <figure>
@@ -1323,8 +1360,8 @@ public class Visit ... implements Appearance {
           <note>
             <para><emphasis role="bold">If an error happens, Planner normally fails fast</emphasis>: it throws a
             subclass of <literal>RuntimeException</literal> with a detailed message to the calling code. It does not log
-            it as an error itself to avoid duplicate log messages. Unless the calling code explicitly catches and eats
-            that <literal>RuntimeException</literal>, a <literal>Thread</literal>'s default
+            it as an error itself to avoid duplicate log messages. Except if the calling code explicitly catches and
+            eats that <literal>RuntimeException</literal>, a <literal>Thread</literal>'s default
             <literal>ExceptionHandler</literal> will log it as an error anyway. Meanwhile, the code is disrupted from
             doing further harm or obfuscating the error.</para>
           </note>
@@ -1395,8 +1432,8 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
 
 &lt;configuration&gt;</programlisting>
 
-      <para>If instead, you're still using Log4J (and you don't want to switch to its faster spiritual successor,
-      Logback), add the bridge dependency:</para>
+      <para>If instead, you're still using Log4J (and you don't want to switch to its faster successor, Logback), add
+      the bridge dependency:</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
       &lt;groupId&gt;org.slf4j&lt;/groupId&gt;

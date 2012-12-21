@@ -20,6 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRangeType;
@@ -29,7 +30,7 @@ import org.drools.planner.examples.examination.domain.solver.ExamCoincidence;
 
 @PlanningEntity
 @XStreamAlias("Exam")
-public class Exam extends AbstractPersistable {
+public class Exam extends AbstractPersistable implements PlanningCloneable<Exam> {
 
     private Topic topic;
 
@@ -109,7 +110,7 @@ public class Exam extends AbstractPersistable {
         return period.getDuration();
     }
 
-    public Exam clone() {
+    public Exam planningClone() {
         Exam clone = new Exam();
         clone.id = id;
         clone.topic = topic;

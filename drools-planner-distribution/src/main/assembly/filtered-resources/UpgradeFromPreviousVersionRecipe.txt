@@ -2380,3 +2380,59 @@ Before in *.java:
 After in *.java:
     @PlanningSolution
     public class ... implements Solution<...Score> {...}
+
+[MAJOR] A Solution no longer need to implement the method cloneSolution(Solution)
+Before in *.java:
+    @PlanningSolution
+    public class Examination implements Solution<...> {
+        ...
+        public Examination cloneSolution() {
+            Examination clone = new Examination();
+            ...
+            for (Exam exam : examList) {
+                Exam clonedExam = exam.clone();
+                ...
+            }
+            ...
+            return clone;
+        }
+    }
+    public class Exam {
+        ...
+        public Exam clone() {
+            Exam clone = new Exam();
+            ...
+            return clone;
+        }
+    }
+After in *.java, option 1: if you want to use the automatic cloning system:
+    @PlanningSolution
+    public class Examination implements Solution<...> {
+        ...
+    }
+    public class Exam {
+        ...
+    }
+After in *.java, option 2: if you want keep your code:
+    @PlanningSolution
+    public class Examination implements Solution<...>, PlanningCloneable<Examination> {
+        ...
+        public Examination planningClone() {
+            Examination clone = new Examination();
+            ...
+            for (Exam exam : examList) {
+                Exam clonedExam = exam.planningClone();
+                ...
+            }
+            ...
+            return clone;
+        }
+    }
+    public class Exam implements PlanningCloneable<Exam> {
+        ...
+        public Exam planningClone() {
+            Exam clone = new Exam();
+            ...
+            return clone;
+        }
+    }

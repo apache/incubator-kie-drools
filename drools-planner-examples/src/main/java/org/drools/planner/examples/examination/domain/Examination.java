@@ -180,7 +180,7 @@ public class Examination extends AbstractPersistable
         clone.roomPenaltyList = roomPenaltyList;
         List<Exam> clonedExamList = new ArrayList<Exam>(examList.size());
         for (Exam exam : examList) {
-            Exam clonedExam = exam.clone();
+            Exam clonedExam = exam.planningClone();
             clonedExamList.add(clonedExam);
         }
         clone.examList = clonedExamList;

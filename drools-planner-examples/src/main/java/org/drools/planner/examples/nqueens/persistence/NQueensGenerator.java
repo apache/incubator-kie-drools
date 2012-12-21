@@ -59,9 +59,9 @@ public class NQueensGenerator extends LoggingMain {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
         nQueens.setN(n);
-        List<Column> columnList = createColumnList(n, nQueens);
-        createRowList(n, nQueens);
-        createQueenList(n, nQueens, columnList);
+        nQueens.setColumnList(createColumnList(nQueens));
+        nQueens.setRowList(createRowList(nQueens));
+        nQueens.setQueenList(createQueenList(nQueens));
         BigInteger possibleSolutionSize = BigInteger.valueOf(nQueens.getN()).pow(nQueens.getN());
         String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
         logger.info("NQueens {} has {} queens with a search space of {}.",
@@ -71,7 +71,8 @@ public class NQueensGenerator extends LoggingMain {
         return nQueens;
     }
 
-    private List<Column> createColumnList(int n, NQueens nQueens) {
+    private List<Column> createColumnList(NQueens nQueens) {
+        int n = nQueens.getN();
         List<Column> columnList = new ArrayList<Column>(n);
         for (int i = 0; i < n; i++) {
             Column column = new Column();
@@ -79,11 +80,11 @@ public class NQueensGenerator extends LoggingMain {
             column.setIndex(i);
             columnList.add(column);
         }
-        nQueens.setColumnList(columnList);
         return columnList;
     }
 
-    private void createRowList(int n, NQueens nQueens) {
+    private List<Row> createRowList(NQueens nQueens) {
+        int n = nQueens.getN();
         List<Row> rowList = new ArrayList<Row>(n);
         for (int i = 0; i < n; i++) {
             Row row = new Row();
@@ -91,13 +92,14 @@ public class NQueensGenerator extends LoggingMain {
             row.setIndex(i);
             rowList.add(row);
         }
-        nQueens.setRowList(rowList);
+        return rowList;
     }
 
-    private void createQueenList(int n, NQueens nQueens, List<Column> columnList) {
+    private List<Queen> createQueenList(NQueens nQueens) {
+        int n = nQueens.getN();
         List<Queen> queenList = new ArrayList<Queen>(n);
         long id = 0;
-        for (Column column : columnList) {
+        for (Column column : nQueens.getColumnList()) {
             Queen queen = new Queen();
             queen.setId(id);
             id++;
@@ -105,7 +107,7 @@ public class NQueensGenerator extends LoggingMain {
             // Notice that we leave the PlanningVariable properties on null
             queenList.add(queen);
         }
-        nQueens.setQueenList(queenList);
+        return queenList;
     }
 
 }
