@@ -25,6 +25,12 @@
         <cacheType>PHASE</cacheType>
         <selectionOrder>SHUFFLED</selectionOrder>
       </swapMoveSelector>
+      <!--<subChainChangeMoveSelector>-->
+        <!--<selectReversingMoveToo>false</selectReversingMoveToo>-->
+      <!--</subChainChangeMoveSelector>-->
+      <!--<subChainSwapMoveSelector>-->
+        <!--<selectReversingMoveToo>false</selectReversingMoveToo>-->
+      <!--</subChainSwapMoveSelector>-->
     </unionMoveSelector>
     <acceptor>
       <solutionTabuSize>1000</solutionTabuSize>
