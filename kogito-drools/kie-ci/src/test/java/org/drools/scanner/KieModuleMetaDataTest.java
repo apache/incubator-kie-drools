@@ -21,12 +21,12 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         checkDroolsCoreDep(kieModuleMetaData);
     }
 
-    @Test @Ignore
+    @Test
     public void testKieModuleMetaDataInMemoryWithJavaClass() throws Exception {
         testKieModuleMetaDataInMemory(false);
     }
 
-    @Test @Ignore
+    @Test
     public void testKieModuleMetaDataInMemoryWithTypeDeclaration() throws Exception {
         testKieModuleMetaDataInMemory(true);
     }

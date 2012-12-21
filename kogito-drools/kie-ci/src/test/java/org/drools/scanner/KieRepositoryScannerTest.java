@@ -20,6 +20,7 @@ import java.util.List;
 import static org.drools.scanner.MavenRepository.getMavenRepository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
@@ -193,5 +194,15 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         for (Object result : results) {
             assertTrue( list.contains( result ) );
         }
+    }
+
+    @Test
+    public void testKieScannerOnClasspathContainerMustFail() {
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kieContainer = ks.getKieClasspathContainer();
+        try {
+            KieScanner scanner = ks.newKieScanner(kieContainer);
+            fail("Creating a KieScanner from a KieClasspathContainer must fail");
+        } catch (RuntimeException e) { }
     }
 }
