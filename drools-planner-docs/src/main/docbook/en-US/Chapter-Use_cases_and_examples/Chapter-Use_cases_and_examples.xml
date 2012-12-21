@@ -363,7 +363,7 @@
 
         <para>It is <link xlink:href="http://www.tsp.gatech.edu/">one of the most intensively studied problems</link> in
         computational mathematics. Yet, in the real world, it's often only part of a planning problem, along with other
-        constraints, such as employee shift time constraints.</para>
+        constraints, such as employee shift rostering constraints.</para>
       </section>
     </section>
 
@@ -399,8 +399,8 @@
         </itemizedlist>
 
         <para>Drools Expert also has the normal miss Manners examples (which is much smaller) and employs a brute force
-        heuristic to solve it. Drools Planner's implementation employs far more scalable heuristics while still using
-        Drools Expert to calculate the score..</para>
+        heuristic to solve it. Drools Planner's implementation is far more scalable because it uses heuristics to find
+        the best solution and Drools Expert to calculate the score of each solution.</para>
       </section>
     </section>
   </section>
@@ -419,6 +419,48 @@
         <para>The problem is defined by <link
         xlink:href="http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm">the International
         Timetabling Competition 2007 track 3</link>.</para>
+
+        <para>Hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Teacher conflict: A teacher must not have 2 lectures in the same period.</para>
+          </listitem>
+
+          <listitem>
+            <para>Curriculum conflict: A curriculum must not have 2 lectures in the same period.</para>
+          </listitem>
+
+          <listitem>
+            <para>Room occupancy: 2 lectures must not be in the same room in the same period.</para>
+          </listitem>
+
+          <listitem>
+            <para>Unavailable period: Some lectures must not be assigned to some periods.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Room capacity: A room's capacity should not be less than the number of students in its lecture.</para>
+          </listitem>
+
+          <listitem>
+            <para>Minimum working days: Lectures of the same course should be spread into a minimum number of
+            days.</para>
+          </listitem>
+
+          <listitem>
+            <para>Curriculum compactness: Lectures belonging to the same curriculum should be adjacent to each other (so
+            in consecutive periods).</para>
+          </listitem>
+
+          <listitem>
+            <para>Room stability: Lectures of the same course should be assigned the same room.</para>
+          </listitem>
+        </itemizedlist>
       </section>
     </section>
 
@@ -430,7 +472,7 @@
 
         <para>Assign each process to a machine. All processes already have an original (unoptimized) assignment. Each
         process requires an amount of each resource (such as CPU, RAM, ...). This is more complex version of the Cloud
-        balancing example.</para>
+        Balancing example.</para>
 
         <para>The problem is defined by <link xlink:href="http://challenge.roadef.org/2012/en/">the Google ROADEF/EURO
         Challenge 2012</link>.</para>

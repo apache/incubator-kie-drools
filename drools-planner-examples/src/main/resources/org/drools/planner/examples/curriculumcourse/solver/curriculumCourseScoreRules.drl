@@ -90,7 +90,7 @@ end
 // ############################################################################
 
 
-// RoomCapacity: For each lecture, the number of students that attend the course must be less or equal
+// RoomCapacity: For each lecture, the number of students that attend the course should be less or equal
 // than the number of seats of all the rooms that host its lectures.
 // Each student above the capacity counts as 1 point of penalty.
 rule "roomCapacity"
@@ -103,7 +103,7 @@ rule "roomCapacity"
                 $room, $lecture));
 end
 
-// MinimumWorkingDays: The lectures of each course must be spread into a minimum number of days.
+// MinimumWorkingDays: The lectures of each course should be spread into a minimum number of days.
 // Each day below the minimum counts as 5 points of penalty.
 rule "minimumWorkingDays"
     when
