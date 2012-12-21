@@ -58,8 +58,10 @@ public class CDIBAMTaskEventListener implements TaskLifeCycleEventListener {
             if (ti.getTaskData().getActualOwner() != null) {
                 actualOwner = ti.getTaskData().getActualOwner().getId();
             }
-
-            em.persist(new BAMTaskSummary(ti.getId(), ti.getNames().get(0).getText(), "Started", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId()));
+            BAMTaskSummary bamTaskSummary = new BAMTaskSummary(ti.getId(), ti.getNames().get(0).getText(), "Started", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
+            bamTaskSummary.setStartDate(new Date());
+            em.persist(bamTaskSummary);
+            
         } else if (taskSummaries.size() == 1) {
             
             BAMTaskSummary taskSummaryById = taskSummaries.get(0);
