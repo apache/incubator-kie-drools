@@ -17,6 +17,7 @@
 package org.drools.planner.core.score.buildin.hardandsoftlong;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.score.holder.ScoreHolder;
 import org.drools.planner.core.score.definition.AbstractScoreDefinition;
 
@@ -68,26 +69,24 @@ public class HardAndSoftLongScoreDefinition extends AbstractScoreDefinition<Hard
 
     public double calculateTimeGradient(HardAndSoftLongScore startScore, HardAndSoftLongScore endScore,
             HardAndSoftLongScore score) {
-        if (score.getHardScore() > endScore.getHardScore()) {
+        if (score.compareTo(endScore) > 0) {
             return 1.0;
-        } else if (startScore.getHardScore() > score.getHardScore()) {
+        } else if (score.compareTo(startScore) < 0) {
             return 0.0;
         }
-        double softScoreTimeGradientWeight;
-        double timeGradient;
+        double softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight;
+        double timeGradient = 0.0;
         if (startScore.getHardScore() == endScore.getHardScore()) {
-            softScoreTimeGradientWeight = 1.0;
-            timeGradient = 0.0;
+            timeGradient += hardScoreTimeGradientWeight;
         } else {
-            softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight;
             long hardScoreTotal = endScore.getHardScore() - startScore.getHardScore();
             long hardScoreDelta = score.getHardScore() - startScore.getHardScore();
             double hardTimeGradient = (double) hardScoreDelta / (double) hardScoreTotal;
-            timeGradient = hardTimeGradient * hardScoreTimeGradientWeight;
+            timeGradient += hardTimeGradient * hardScoreTimeGradientWeight;
         }
         if (score.getSoftScore() >= endScore.getSoftScore()) {
             timeGradient += softScoreTimeGradientWeight;
-        } else if (startScore.getSoftScore() >= score.getSoftScore()) {
+        } else if (score.getSoftScore() <= startScore.getSoftScore()) {
             // No change: timeGradient += 0.0
         } else {
             long softScoreTotal = endScore.getSoftScore() - startScore.getSoftScore();

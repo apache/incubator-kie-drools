@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.hardandsoftlong;
+package org.drools.planner.core.score.buildin.hardmediumsoft;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
+import org.drools.planner.core.solution.Solution;
 
 /**
- * This is a Score based on hard and soft long constraints.
- * Hard constraints have priority over soft constraints.
+ * This is a Score based on hard, medium and soft int constraints.
+ * Hard constraints have priority over medium constraints.
+ * Medium constraints have priority over soft constraints.
  * <p/>
  * Implementations must be immutable.
  * @see Score
- * @see DefaultHardAndSoftLongScore
+ * @see DefaultHardMediumSoftScore
  */
-public interface HardAndSoftLongScore extends Score<HardAndSoftLongScore> {
+public interface HardMediumSoftScore extends Score<HardMediumSoftScore> {
 
     /**
      * The total of the broken negative hard constraints and fulfilled positive hard constraints.
@@ -34,20 +37,31 @@ public interface HardAndSoftLongScore extends Score<HardAndSoftLongScore> {
      * The hard score is usually a negative number because most use cases only have negative constraints.
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
-    long getHardScore();
+    int getHardScore();
+
+    /**
+     * The total of the broken negative medium constraints and fulfilled positive medium constraints.
+     * Their weight is included in the total.
+     * The medium score is usually a negative number because most use cases only have negative constraints.
+     * <p/>
+     * In a normal score comparison, the medium score is irrelevant if the 2 scores don't have the same score.
+     * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
+     */
+    int getMediumScore();
 
     /**
      * The total of the broken negative soft constraints and fulfilled positive soft constraints.
      * Their weight is included in the total.
      * The soft score is usually a negative number because most use cases only have negative constraints.
      * <p/>
-     * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard score.
+     * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard and medium score.
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
-    long getSoftScore();
+    int getSoftScore();
 
     /**
-     * @return true if the {@link #getHardScore()} is 0L or higher
+     * A {@link Solution} is feasible if it has no broken hard constraints.
+     * @return true if the {@link #getHardScore()} is 0 or higher
      */
     boolean isFeasible();
 

@@ -36,6 +36,7 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
 import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScoreDefinition;
+import org.drools.planner.core.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
 import org.drools.planner.core.score.buildin.simpledouble.SimpleDoubleScoreDefinition;
@@ -203,6 +204,8 @@ public class ScoreDirectorFactoryConfig {
                     return new HardAndSoftScoreDefinition();
                 case HARD_AND_SOFT_LONG:
                     return new HardAndSoftLongScoreDefinition();
+                case HARD_MEDIUM_SOFT:
+                    return new HardMediumSoftScoreDefinition();
                 default:
                     throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
                             + ") is not implemented");
@@ -304,6 +307,7 @@ public class ScoreDirectorFactoryConfig {
         SIMPLE_DOUBLE,
         HARD_AND_SOFT,
         HARD_AND_SOFT_LONG,
+        HARD_MEDIUM_SOFT,
     }
 
 }
