@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>DEBUG</environmentMode>-->
+  <!--<environmentMode>TRACE</environmentMode>-->
   <solutionClass>org.drools.planner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
   <planningEntityClass>org.drools.planner.examples.tsp.domain.Visit</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+    <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/drools/planner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDrl>/org/drools/planner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>
