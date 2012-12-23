@@ -235,6 +235,20 @@
       </itemizedlist>
     </section>
 
+    <section>
+      <title>HardMediumSoftScore</title>
+
+      <para>The <literal>HardMediumSoftScoreDefinition</literal> defines the <literal>Score</literal> as a
+      <literal>HardMediumSoftScore</literal> which has a hard <literal>int</literal> value, a medium
+      <literal>int</literal> value and a soft <literal>int</literal> value, for example
+      <literal>-123hard/-456medium/-789soft</literal>. It has 3 score levels (hard, medium and soft).</para>
+
+      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+    &lt;scoreDefinitionType&gt;HARD_MEDIUM_SOFT&lt;/scoreDefinitionType&gt;
+    ...
+  &lt;/scoreDirectorFactory&gt;</programlisting>
+    </section>
+
     <section xml:id="customScore">
       <title>Implementing a custom Score</title>
 

@@ -2436,3 +2436,10 @@ After in *.java, option 2: if you want keep your code:
             return clone;
         }
     }
+
+[MINOR] If you've defined a custom ScoreDefinition to be able to use 3 score levels of int's,
+consider using the new HardMediumSoftScoreDefinition instead.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+        <scoreDefinitionClass>...</scoreDefinitionClass>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+        <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
