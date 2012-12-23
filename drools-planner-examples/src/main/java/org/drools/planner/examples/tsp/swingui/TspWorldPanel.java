@@ -24,6 +24,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -111,6 +113,12 @@ public class TspWorldPanel extends JPanel {
                 g.drawString(city.getName(), x + 3, y - 3);
             }
         }
+        Set<Visit> needsBackToDomicileLineSet = new HashSet<Visit>(travelingSalesmanTour.getVisitList());
+        for (Visit trailingVisit : travelingSalesmanTour.getVisitList()) {
+            if (trailingVisit.getPreviousAppearance() instanceof Visit) {
+                needsBackToDomicileLineSet.remove(trailingVisit.getPreviousAppearance());
+            }
+        }
         g.setColor(TangoColors.CHOCOLATE_1);
         for (Visit visit : travelingSalesmanTour.getVisitList()) {
             if (visit.getPreviousAppearance() != null) {
@@ -122,14 +130,7 @@ public class TspWorldPanel extends JPanel {
                 int y = translator.translateLatitudeToY(city.getLatitude());
                 g.drawLine(previousX, previousY, x, y);
                 // Back to domicile line
-                boolean needsBackToDomicileLineDraw = true;
-                for (Visit trailingVisit : travelingSalesmanTour.getVisitList()) {
-                    if (trailingVisit.getPreviousAppearance() == visit) {
-                        needsBackToDomicileLineDraw = false;
-                        break;
-                    }
-                }
-                if (needsBackToDomicileLineDraw) {
+                if (needsBackToDomicileLineSet.contains(visit)) {
                     // TODO support more than 1 domicile
                     Domicile domicile = travelingSalesmanTour.getDomicileList().get(0);
                     City domicileCity = domicile.getCity();
