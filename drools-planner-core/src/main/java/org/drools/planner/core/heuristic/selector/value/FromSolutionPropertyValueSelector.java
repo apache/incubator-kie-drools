@@ -61,6 +61,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector imp
     // ************************************************************************
 
     public void constructCache(DefaultSolverScope solverScope) {
+        // TODO FIXME extractAllPlanningValues filters out uninitialized entities of another variable
         Collection<?> planningValues = variableDescriptor.extractAllPlanningValues(solverScope.getWorkingSolution());
         cachedValueList = new ArrayList<Object>(planningValues.size() + 1);
         cachedValueList.addAll(planningValues);
