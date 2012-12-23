@@ -168,9 +168,16 @@ public class ValueSelectorConfig extends SelectorConfig {
             EnvironmentMode environmentMode, PlanningVariableDescriptor variableDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
         // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
-        if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
-            // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
-            minimumCacheType = SelectionCacheType.PHASE;
+        if (variableDescriptor.isPlanningValuesCacheable()) {
+            if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
+                // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
+                minimumCacheType = SelectionCacheType.PHASE;
+            }
+        } else {
+            if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
+                // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
+                minimumCacheType = SelectionCacheType.STEP;
+            }
         }
         return new FromSolutionPropertyValueSelector(variableDescriptor,
                     minimumCacheType, resolvedSelectionOrder == SelectionOrder.RANDOM);
