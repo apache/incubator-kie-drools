@@ -74,6 +74,7 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
                 phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
                 phaseScope.assertExpectedWorkingScore(stepScope.getScore());
             }
+            // TODO FIXME broken if a construction heuristic only initializes 1 variable
             if (!hackEntityPlacer.hasPlacement()) {
                 stepScope.setSolutionInitialized(true);
             }
