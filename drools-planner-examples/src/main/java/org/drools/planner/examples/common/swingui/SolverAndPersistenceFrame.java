@@ -283,8 +283,10 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private class OpenAction extends AbstractAction {
 
+        private static final String NAME = "Open...";
+
         public OpenAction() {
-            super("Open...");
+            super(NAME);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -298,6 +300,7 @@ public class SolverAndPersistenceFrame extends JFrame {
                     return "Solver xml files";
                 }
             });
+            fileChooser.setDialogTitle(NAME);
             int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -314,8 +317,10 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private class SaveAction extends AbstractAction {
 
+        private static final String NAME = "Save as...";
+
         public SaveAction() {
-            super("Save as...");
+            super(NAME);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -329,6 +334,7 @@ public class SolverAndPersistenceFrame extends JFrame {
                     return "Solver xml files";
                 }
             });
+            fileChooser.setDialogTitle(NAME);
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -344,8 +350,10 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private class ImportAction extends AbstractAction {
 
+        private static final String NAME = "Import...";
+
         public ImportAction() {
-            super("Import...");
+            super(NAME);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -358,6 +366,7 @@ public class SolverAndPersistenceFrame extends JFrame {
                     return "Import files (*" + solutionBusiness.getImportFileSuffix() + ")";
                 }
             });
+            fileChooser.setDialogTitle(NAME);
             int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -374,8 +383,10 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private class ExportAction extends AbstractAction {
 
+        private static final String NAME = "Export as...";
+
         public ExportAction() {
-            super("Export as...");
+            super(NAME);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -388,6 +399,7 @@ public class SolverAndPersistenceFrame extends JFrame {
 //                    return "Export files";
 //                }
 //            });
+            fileChooser.setDialogTitle(NAME);
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
