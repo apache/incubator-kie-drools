@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import java.io.File;
+
 import org.drools.command.impl.CommandFactoryServiceImpl;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
@@ -28,8 +30,10 @@ import org.junit.AfterClass;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.kie.KieServices;
+import org.kie.builder.impl.KieContainerImpl;
 import org.kie.builder.impl.KieRepositoryImpl;
 import org.kie.builder.impl.KieServicesImpl;
+import org.kie.runtime.KieContainer;
 
 public class CDITestRunner extends BlockJUnit4ClassRunner {
 
@@ -39,22 +43,30 @@ public class CDITestRunner extends BlockJUnit4ClassRunner {
     public static volatile FileManager   fileManager;
 
     public static volatile ClassLoader   origCl;
-
-    public static void setUp() {
+    
+    public static void setUp(File... files) {
         fileManager = new FileManager();
         fileManager.setUp();
         origCl = Thread.currentThread().getContextClassLoader();
 
+        // hack to ensure atleast one beans.xml can be found, which is needed for Weld initialization
         MemoryFileSystem mfs = new MemoryFileSystem();
         mfs.write( "META-INF/beans.xml",
                    AbstractKnowledgeTest.generateBeansXML().getBytes() );
         mfs.writeAsJar( CDITestRunner.fileManager.getRootDirectory(),
-                        "jar1" );
-        java.io.File file1 = CDITestRunner.fileManager.newFile( "jar1.jar" );
+                        "emptyCDIJar" );
+        File file1 = CDITestRunner.fileManager.newFile( "emptyCDIJar.jar" );
 
         URLClassLoader urlClassLoader;
         try {
-            urlClassLoader = new URLClassLoader( new URL[]{file1.toURI().toURL()},
+            List<URL> urls = new ArrayList<URL>();
+            urls.add( file1.toURI().toURL() );            
+            if ( files != null && files.length > 0 ) {
+                for (  File file : files) {
+                    urls.add( file.toURI().toURL() );
+                }                
+            }
+            urlClassLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ),
                                                  Thread.currentThread().getContextClassLoader() );
             Thread.currentThread().setContextClassLoader( urlClassLoader );
         } catch ( MalformedURLException e ) {
@@ -99,6 +111,8 @@ public class CDITestRunner extends BlockJUnit4ClassRunner {
         //        list.add( KReleaseId.class.getName() );
         //        list.add( KieServices.class.getName() );
                list.add( KieServicesImpl.class.getName() );
+               list.add( KieContainer.class.getName() );
+               list.add( KieContainerImpl.class.getName() );
         //        list.add( KieRepository.class.getName() );
                 list.add( KieRepositoryImpl.class.getName() );
         //        list.add( KieCommands.class.getName() );

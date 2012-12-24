@@ -113,6 +113,10 @@ public class CDIScopeTest {
         public String value() {
             return this.value;
         }
+        
+        public String name() {
+            return "";
+        }        
     }
 
     public static class KSessionLiteral extends AnnotationLiteral<KSession>
@@ -127,6 +131,10 @@ public class CDIScopeTest {
         public String value() {
             return this.value;
         }
+        
+        public String name() {
+            return "";
+        }                
     }
 
 }

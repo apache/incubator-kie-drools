@@ -393,7 +393,8 @@ public class KnowledgeBaseImpl
     }
 
     public Collection<KiePackage> getKiePackages() {
-        return getKiePackages();
+        Object o = getKnowledgePackages();
+        return (Collection<KiePackage>) o;
     }
 
     public KiePackage getKiePackage(String packageName) {

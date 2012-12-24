@@ -340,6 +340,7 @@ public class MemoryFileSystem
         try {
             java.io.File jarFile = new java.io.File( folder,
                                                      jarName + ".jar" );
+            System.out.println( jarFile );
             zip( new FileOutputStream( jarFile ) );
             return jarFile;
         } catch ( IOException e ) {

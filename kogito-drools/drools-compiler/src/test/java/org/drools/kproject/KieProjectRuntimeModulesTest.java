@@ -41,10 +41,10 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
                 "art1",
                 "1.0-SNAPSHOT");
 
-        java.io.File file1 = fileManager.newFile( "jar1.jar" );
-        java.io.File file2 = fileManager.newFile( "jar2.jar" );
-        java.io.File file3 = fileManager.newFile( "jar3.jar" );
-        java.io.File fol4 = fileManager.newFile( "fol4" );
+        java.io.File file1 = fileManager.newFile( "jar1-1.0-SNAPSHOT.jar" );
+        java.io.File file2 = fileManager.newFile( "jar2-1.0-SNAPSHOT.jar" );
+        java.io.File file3 = fileManager.newFile( "jar3-1.0-SNAPSHOT.jar" );
+        java.io.File fol4 = fileManager.newFile( "fol4-1.0-SNAPSHOT" );
 
         ZipKieModule mod1 = new ZipKieModule(releaseId1,
                                               kProjModel1,
