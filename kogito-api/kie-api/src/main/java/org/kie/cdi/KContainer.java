@@ -16,7 +16,6 @@ import javax.inject.Qualifier;
 @Qualifier
 @Target({TYPE, METHOD, PARAMETER, FIELD})
 @Retention(RUNTIME)
-public @interface KBase {
-    String value() default "";
+public @interface KContainer {
     String name() default "";
 }

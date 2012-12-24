@@ -18,4 +18,5 @@ import javax.inject.Qualifier;
 @Retention(RUNTIME)
 public @interface KSession {
     String value();
+    String name() default "";    
 }
