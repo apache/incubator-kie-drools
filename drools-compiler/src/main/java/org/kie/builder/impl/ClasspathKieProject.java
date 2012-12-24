@@ -67,11 +67,9 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public void discoverKieModules() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
         final Enumeration<URL> e;
         try {
-            e = classLoader.getResources( KieModuleModelImpl.KMODULE_JAR_PATH );
+            e = cl.getResources( KieModuleModelImpl.KMODULE_JAR_PATH );
         } catch ( IOException exc ) {
             log.error( "Unable to find and build index of kmodule.xml \n" + exc.getMessage() );
             return;

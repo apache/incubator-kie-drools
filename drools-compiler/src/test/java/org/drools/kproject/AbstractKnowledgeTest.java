@@ -99,28 +99,32 @@ public class AbstractKnowledgeTest {
                                           boolean createJar) throws IOException,
                                                                     ClassNotFoundException,
                                                                     InterruptedException {
-        return createKieModule( namespace, createJar, "1.0-SNAPSHOT" );
+        return createKieModule( namespace, true, "1.0-SNAPSHOT" );
         
     }
 
     public KieModuleModel createKieModule(String namespace,
-                                boolean createJar,
-                                String version) throws IOException,
+                                          boolean createJar,
+                                          String version) throws IOException,
                                                        ClassNotFoundException,
                                                        InterruptedException {
         KieModuleModel kproj = new KieModuleModelImpl();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
-                .setEventProcessingMode( EventProcessingOption.STREAM );
+                .setEventProcessingMode( EventProcessingOption.STREAM )
+                .setDefault( true );
+            
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(namespace + ".KSession1")
                 .setType( KieSessionType.STATELESS )
-                .setClockType( ClockTypeOption.get("realtime") );
+                .setClockType( ClockTypeOption.get("realtime") )
+                .setDefault( true );
 
         KieSessionModel ksession2 = kieBaseModel1.newKieSessionModel(namespace + ".KSession2")
                 .setType( KieSessionType.STATEFUL )
-                .setClockType( ClockTypeOption.get( "pseudo" ) );
+                .setClockType( ClockTypeOption.get( "pseudo" ) )
+                .setDefault( true );
 
         KieBaseModel kieBaseModel2 = kproj.newKieBaseModel(namespace + ".KBase2")
                 .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
@@ -176,9 +180,9 @@ public class AbstractKnowledgeTest {
         MemoryFileSystem trgMfs = kieModule.getMemoryFileSystem();
         
         if ( createJar ) {            
-            trgMfs.writeAsJar(fileManager.getRootDirectory(), namespace);
+            trgMfs.writeAsJar(fileManager.getRootDirectory(), namespace + "-" + version);
         } else {
-            java.io.File file = fileManager.newFile( namespace );            
+            java.io.File file = fileManager.newFile( namespace + "-" +  version );            
             trgMfs.writeAsFs( file );
         }
         
