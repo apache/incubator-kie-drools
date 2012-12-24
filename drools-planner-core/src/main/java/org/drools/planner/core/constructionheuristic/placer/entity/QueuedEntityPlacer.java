@@ -40,6 +40,7 @@ public class QueuedEntityPlacer extends AbstractPlacer implements EntityPlacer {
 
         // TODO add uninitialized entities immediately and remove logic in SolutionDescriptor.getAllFacts()
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
+        // TODO FIXME entity has already been added if another variable is already initialized
         scoreDirector.beforeEntityAdded(entity);
         scoreDirector.afterEntityAdded(entity);
 
