@@ -6,6 +6,7 @@ import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristic
 import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.move.generic.ChangeMove;
+import org.drools.planner.core.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
@@ -54,7 +55,12 @@ public class ValuePlacer extends AbstractPlacer {
         for (Object value : valueSelector) {
             ConstructionHeuristicMoveScope moveScope = new ConstructionHeuristicMoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
-            ChangeMove move = new ChangeMove(entity, variableDescriptor, value);
+            Move move;
+            if (variableDescriptor.isChained()) {
+                move = new ChainedChangeMove(entity, variableDescriptor, value);
+            } else {
+                move = new ChangeMove(entity, variableDescriptor, value);
+            }
             moveScope.setMove(move);
             if (!move.isMoveDoable(stepScope.getScoreDirector())) {
                 logger.trace("        Ignoring not doable move ({}).", move);
