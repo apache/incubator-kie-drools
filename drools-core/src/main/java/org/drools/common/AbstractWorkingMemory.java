@@ -1015,11 +1015,21 @@ public abstract class AbstractWorkingMemory
         return processRuntime.startProcess( processId,
                                             parameters );
     }
+    
+    public ProcessInstance startProcess(String processId, String businessKey,
+            Map<String, Object> parameters) {
+        return processRuntime.startProcess( processId, businessKey, parameters );
+    }
 
 	public ProcessInstance createProcessInstance(String processId,
 			                                     Map<String, Object> parameters) {
 		return processRuntime.createProcessInstance(processId, parameters);
 	}
+	
+    public ProcessInstance createProcessInstance(String processId, String businessKey, 
+            Map<String, Object> parameters) {
+        return processRuntime.createProcessInstance(processId, businessKey, parameters);
+    }
 
 	public ProcessInstance startProcessInstance(long processInstanceId) {
 		return processRuntime.startProcessInstance(processInstanceId);
@@ -1031,6 +1041,10 @@ public abstract class AbstractWorkingMemory
 
     public ProcessInstance getProcessInstance(long processInstanceId) {
         return processRuntime.getProcessInstance( processInstanceId );
+    }
+    
+    public ProcessInstance getProcessInstance(String businessKey) {
+        return processRuntime.getProcessInstance( businessKey );
     }
 
     public WorkItemManager getWorkItemManager() {

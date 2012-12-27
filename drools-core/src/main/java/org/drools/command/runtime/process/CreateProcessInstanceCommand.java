@@ -50,6 +50,8 @@ public class CreateProcessInstanceCommand implements GenericCommand<ProcessInsta
     private List<Object> data = null;
     @XmlAttribute(name="out-identifier")
     private String outIdentifier;
+    @XmlAttribute
+    private String businessKey;
 
     public CreateProcessInstanceCommand() {
     }
@@ -121,7 +123,7 @@ public class CreateProcessInstanceCommand implements GenericCommand<ProcessInsta
                 ksession.insert(o);
             }
         }
-        ProcessInstance processInstance = (ProcessInstance) ksession.createProcessInstance(processId, parameters);
+        ProcessInstance processInstance = (ProcessInstance) ksession.createProcessInstance(processId, businessKey, parameters);
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put(this.outIdentifier,
                                                                                                                processInstance.getId());
@@ -142,5 +144,13 @@ public class CreateProcessInstanceCommand implements GenericCommand<ProcessInsta
         }
         result += "]);";
         return result;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
     }
 }

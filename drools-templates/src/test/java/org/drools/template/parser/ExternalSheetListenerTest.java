@@ -419,6 +419,17 @@ public class ExternalSheetListenerTest {
                     return 0;
                 }
 
+                public ProcessInstance startProcess(String processId,
+                        String businessKey, Map<String, Object> parameters) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                public ProcessInstance getProcessInstance(String businessKey) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
             };
         }
     }
