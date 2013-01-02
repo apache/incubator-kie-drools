@@ -58,7 +58,6 @@ public class StatelessKieSessionDefaultInjectionTest {
         }
 
         CDITestRunner.setUp( helper.getFileManager().newFile( "jar2-2.0.jar" ) );
-        CDITestRunner.setUp( );
 
         CDITestRunner.weld = CDITestRunner.createWeld( StatelessKieSessionDefaultInjectionTest.class.getName() );
 
