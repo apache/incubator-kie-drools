@@ -52,6 +52,6 @@ public interface TimerService extends SchedulerService {
      * This method may return null for some TimerService implementations that do not want the overhead of maintain this.
      * @return
      */
-    public Collection<TimerJobInstance> getTimerJobInstances();
+    public Collection<TimerJobInstance> getTimerJobInstances(int id);
 
 }

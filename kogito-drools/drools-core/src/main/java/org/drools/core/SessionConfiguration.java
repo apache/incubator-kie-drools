@@ -447,14 +447,19 @@ public class SessionConfiguration
             try {
                 return clazz.newInstance();
             } catch ( Exception e ) {
+                
                 throw new IllegalArgumentException(
                                                     "Unable to instantiate timer service '" + className
                                                             + "'",
                                                     e );
             }
         } else {
-            throw new IllegalArgumentException( "Timer service '" + className
+            try {
+                return (TimerService) MVEL.eval(className);
+            } catch (Exception e) {
+                throw new IllegalArgumentException( "Timer service '" + className
                                                 + "' not found" );
+            }
         }
     }
 

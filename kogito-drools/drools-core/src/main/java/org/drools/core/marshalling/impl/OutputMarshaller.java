@@ -172,7 +172,7 @@ public class OutputMarshaller {
         }
         
         // Only works for JpaJDKTimerService
-        writeTimers( context.wm.getTimerService().getTimerJobInstances(), context );
+        writeTimers( context.wm.getTimerService().getTimerJobInstances(context.wm.getId()), context );
 
         //context.out.println( "--- write session --- END");
     }

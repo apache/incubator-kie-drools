@@ -227,7 +227,7 @@ public class PseudoClockScheduler
         }
     }
 
-    public Collection<TimerJobInstance> getTimerJobInstances() {
+    public Collection<TimerJobInstance> getTimerJobInstances(int id) {
         return jobFactoryManager.getTimerJobInstances();
     }
 

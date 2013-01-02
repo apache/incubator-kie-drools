@@ -173,7 +173,7 @@ public class ProtobufOutputMarshaller {
             _session.setProcessData( _pdata.build() );
         }
 
-        Timers _timers = writeTimers( context.wm.getTimerService().getTimerJobInstances(),
+        Timers _timers = writeTimers( context.wm.getTimerService().getTimerJobInstances(context.wm.getId()),
                                       context );
         if ( _timers != null ) {
             _session.setTimers( _timers );
@@ -730,7 +730,9 @@ public class ProtobufOutputMarshaller {
                 JobContext jctx = ((SelfRemovalJobContext) timer.getJobContext()).getJobContext();
                 TimersOutputMarshaller writer = outCtx.writersByClass.get( jctx.getClass() );
                 Timer _timer = writer.serialize( jctx, outCtx );
-                _timers.addTimer( _timer );
+                if (_timer != null) {
+                    _timers.addTimer( _timer );
+                }
             }
             return _timers.build();
         }

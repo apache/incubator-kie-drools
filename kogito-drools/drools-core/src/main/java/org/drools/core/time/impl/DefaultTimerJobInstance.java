@@ -1,5 +1,6 @@
 package org.drools.core.time.impl;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.Callable;
 
@@ -15,14 +16,16 @@ public class DefaultTimerJobInstance
     implements
     Callable<Void>,
     Comparable<DefaultTimerJobInstance>,
-    TimerJobInstance {
+    TimerJobInstance, Serializable {
+
+    private static final long serialVersionUID = -4441139572159254264L;
 
     protected static transient Logger logger = LoggerFactory.getLogger(DefaultTimerJobInstance.class);
     
     private final Job                         job;
     private final Trigger                     trigger;
     private final JobContext                  ctx;
-    protected final InternalSchedulerService  scheduler;
+    protected transient InternalSchedulerService  scheduler;
     private final JobHandle                   handle;
 
     public DefaultTimerJobInstance(Job job,
