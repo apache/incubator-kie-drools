@@ -127,9 +127,12 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         }
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            logger.debug("    Step index ({}), time spend ({}), score ({}) for constructing step ({}).",
+            logger.debug("    Step index ({}), time spend ({}), score ({}), selected move count ({})"
+                    + " for constructing step ({}).",
                     stepScope.getStepIndex(), timeMillisSpend,
-                    stepScope.getScore(), stepScope.getStep());
+                    stepScope.getScore(),
+                    stepScope.getSelectedMoveCount(),
+                    stepScope.getStepString());
         }
     }
 
