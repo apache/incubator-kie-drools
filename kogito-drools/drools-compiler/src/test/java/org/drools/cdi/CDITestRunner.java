@@ -48,6 +48,8 @@ public class CDITestRunner extends BlockJUnit4ClassRunner {
         fileManager = new FileManager();
         fileManager.setUp();
         origCl = Thread.currentThread().getContextClassLoader();
+        
+        ((KieServicesImpl) KieServices.Factory.get()).nullKieClasspathContainer();
 
         // hack to ensure atleast one beans.xml can be found, which is needed for Weld initialization
         MemoryFileSystem mfs = new MemoryFileSystem();

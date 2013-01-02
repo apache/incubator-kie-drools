@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import org.drools.kproject.AbstractKnowledgeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.KieServices;
@@ -77,7 +78,6 @@ public class StatelessKieSessionInjectionTest {
             helper.createKieModule( "jar1", true, "1.0" );
             helper.createKieModule( "jar1", true, "1.1" );
         } catch ( Exception e ) {
-            e.printStackTrace();
             fail( "Unable to build dynamic KieModules:\n" + e.toString() );
         }
 

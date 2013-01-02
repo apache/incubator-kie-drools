@@ -55,8 +55,6 @@ public class KieBaseDefaultInjectionTest {
         }
 
         CDITestRunner.setUp( helper.getFileManager().newFile( "jar2-2.0.jar" ) );
-        CDITestRunner.setUp( );
-
         CDITestRunner.weld = CDITestRunner.createWeld( KieBaseDefaultInjectionTest.class.getName() );
 
         CDITestRunner.container = CDITestRunner.weld.initialize();

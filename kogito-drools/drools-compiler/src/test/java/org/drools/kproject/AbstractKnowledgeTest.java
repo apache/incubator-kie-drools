@@ -99,7 +99,7 @@ public class AbstractKnowledgeTest {
                                           boolean createJar) throws IOException,
                                                                     ClassNotFoundException,
                                                                     InterruptedException {
-        return createKieModule( namespace, true, "1.0-SNAPSHOT" );
+        return createKieModule( namespace, createJar, "1.0-SNAPSHOT" );
         
     }
 

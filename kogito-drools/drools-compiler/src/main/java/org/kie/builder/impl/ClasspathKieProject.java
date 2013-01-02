@@ -78,6 +78,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         // Map of kmodule urls
         while ( e.hasMoreElements() ) {
             URL url = e.nextElement();
+            System.out.println( "kmodules: " + url);
             try {
                 String fixedURL = fixURLFromKProjectPath( url ); 
                 InternalKieModule kModule = fetchKModule(url, fixedURL);

@@ -29,17 +29,17 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
         KieModuleModel kProjModel4 = createKieModule( "fol4", false );
 
         ReleaseId releaseId1 = KieServices.Factory.get().newReleaseId("jar1",
-                "art1",
-                "1.0-SNAPSHOT");
+                                                                      "art1",
+                                                                      "1.0-SNAPSHOT");
         ReleaseId releaseId2 = KieServices.Factory.get().newReleaseId("jar2",
-                "art1",
-                "1.0-SNAPSHOT");
+                                                                       "art1",
+                                                                       "1.0-SNAPSHOT");
         ReleaseId releaseId3 = KieServices.Factory.get().newReleaseId("jar3",
-                "art1",
-                "1.0-SNAPSHOT");
+                                                                      "art1",
+                                                                      "1.0-SNAPSHOT");
         ReleaseId releaseId4 = KieServices.Factory.get().newReleaseId("fol4",
-                "art1",
-                "1.0-SNAPSHOT");
+                                                                      "art1",
+                                                                      "1.0-SNAPSHOT");
 
         java.io.File file1 = fileManager.newFile( "jar1-1.0-SNAPSHOT.jar" );
         java.io.File file2 = fileManager.newFile( "jar2-1.0-SNAPSHOT.jar" );
