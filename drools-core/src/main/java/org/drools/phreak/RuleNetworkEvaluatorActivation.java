@@ -1,6 +1,5 @@
 package org.drools.phreak;
 
-import java.util.List;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
@@ -18,21 +17,17 @@ import org.drools.common.StagedLeftTuples;
 import org.drools.common.StagedRightTuples;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleList;
+import org.drools.reteoo.AccumulateNode;
+import org.drools.reteoo.AccumulateNode.AccumulateContext;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.AccumulateNode.ActivitySource;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
-import org.drools.reteoo.AccumulateNode.AccumulateContext;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.AccumulateNode.ActivitySource;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.reteoo.RiaRuleMemory;
-import org.drools.reteoo.ReteooWorkingMemory.EvaluateResultConstraints;
-import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
-import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.LeftTupleSink;
@@ -42,18 +37,16 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.RightInputAdapterNode;
+import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.RuleMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.SegmentMemory;
-import org.drools.reteoo.Sink;
 import org.drools.rule.Accumulate;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Rule;
-import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-import org.junit.Ignore;
 
 public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
