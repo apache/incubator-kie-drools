@@ -37,6 +37,7 @@ import junit.framework.Assert;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
+import org.drools.core.audit.event.RuleFlowLogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.util.DroolsStreamUtils;
@@ -46,6 +47,7 @@ import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -406,6 +408,7 @@ public abstract class JbpmTestCase extends Assert {
             KieSessionConfiguration config = ksession.getSessionConfiguration();
             StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
             AuditLoggerFactory.newInstance(Type.JPA, result, null);
+            ksession.dispose();
             return result;
         } else {
             return ksession;
@@ -491,6 +494,53 @@ public abstract class JbpmTestCase extends Assert {
         List<String> names = getNotTriggeredNodes(processInstanceId, nodeNames);
         assertTrue(Arrays.equals(names.toArray(), nodeNames));
     }
+    
+    public int getNumberOfNodeTriggered(long processInstanceId,
+            String node) {
+        int counter = 0;
+        if (sessionPersistence) {
+            List<NodeInstanceLog> logs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+            if (logs != null) {
+                for (NodeInstanceLog l : logs) {
+                    String nodeName = l.getNodeName();
+                    if ((l.getType() == NodeInstanceLog.TYPE_ENTER 
+                            || l.getType() == NodeInstanceLog.TYPE_EXIT)
+                            && node.equals(nodeName)) {
+                        counter++;
+                    }
+                }
+            }
+        } else {
+            for (LogEvent event : logger.getLogEvents()) {
+                if (event instanceof RuleFlowNodeLogEvent) {
+                    String nodeName = ((RuleFlowNodeLogEvent) event).getNodeName();
+                    if (node.equals(nodeName)) {
+                        counter++;
+                    }
+                }
+            }
+        }
+        return counter;
+    }
+    
+    public int getNumberOfProcessInstances(String processId) {
+        int counter = 0;
+        if (sessionPersistence) {
+            List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findProcessInstances(processId);
+            if (logs != null) {
+                return logs.size();
+            }
+        } else {
+            for (LogEvent event : logger.getLogEvents()) {
+                if (event.getType() == LogEvent.BEFORE_RULEFLOW_CREATED) {
+                    if(((RuleFlowLogEvent) event).getProcessId().equals(processId)) {
+                        counter++;                    
+                    }
+                }
+            }
+        }
+        return counter;
+    }
 
     private List<String> getNotTriggeredNodes(long processInstanceId,
             String... nodeNames) {
@@ -527,9 +577,15 @@ public abstract class JbpmTestCase extends Assert {
 
     protected void clearHistory() {
         if (sessionPersistence) {
-            JPAProcessInstanceDbLog.clear();
+            try {
+                JPAProcessInstanceDbLog.clear();
+            } catch(Exception e) {
+                
+            }
         } else {
-            logger.clear();
+            if (logger != null) {
+                logger.clear();
+            }
         }
     }
 

@@ -90,6 +90,4 @@ public abstract class AbstractRuntimeManager implements RuntimeManager {
         this.identifier = identifier;
     }
 
-    
-
 }

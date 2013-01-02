@@ -147,6 +147,9 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                     }
                     timerInstance.setDelay(repeatValues[1]);
                     timerInstance.setPeriod(repeatValues[2]);
+                }else if (repeatValues.length == 2) {
+                    timerInstance.setDelay(repeatValues[0]);
+                    timerInstance.setPeriod(repeatValues[1]);
                 } else {
                     timerInstance.setDelay(repeatValues[0]);
                     timerInstance.setPeriod(0);

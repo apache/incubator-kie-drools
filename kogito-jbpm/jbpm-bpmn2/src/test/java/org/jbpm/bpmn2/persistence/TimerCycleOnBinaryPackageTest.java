@@ -20,6 +20,7 @@ import org.jbpm.bpmn2.JbpmTestCase;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -41,6 +42,11 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
     public static void setup() throws Exception {
         setUpDataSource();
     }
+    
+    @Before
+    public void prepare() {
+        clearHistory();
+    }
 
     @After
     public void dispose() {
@@ -54,7 +60,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBaseFromDisc("BPMN2-StartTimerCycle.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
+        assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
         int sessionId = ksession.getId();
         Environment env = ksession.getEnvironment();
 
@@ -69,11 +75,11 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
                 .getCommandService().getContext()).getKieSession()).session
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
-        ksession.fireAllRules();
+        
 
         Thread.sleep(5000);
 
-        assertEquals(2, list.size());
+        assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
         System.out.println("dispose");
         ksession.dispose();
 
@@ -92,11 +98,11 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
                 .getCommandService().getContext()).getKieSession()).session
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
-        ksession.fireAllRules();
+        
 
         Thread.sleep(5000);
-
-        assertEquals(3, list2.size());
+        ksession.dispose();
+        assertEquals(4, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
     }
 
     @Test
@@ -104,7 +110,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-StartTimerCycle.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
+        assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
         int sessionId = ksession.getId();
         Environment env = ksession.getEnvironment();
 
@@ -119,11 +125,11 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
                 .getCommandService().getContext()).getKieSession()).session
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
-        ksession.fireAllRules();
+        
 
         Thread.sleep(5000);
 
-        assertEquals(2, list.size());
+        assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
         System.out.println("dispose");
         ksession.dispose();
 
@@ -142,11 +148,10 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
                 .getCommandService().getContext()).getKieSession()).session
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
-        ksession.fireAllRules();
 
         Thread.sleep(5000);
-
-        assertEquals(3, list2.size());
+        ksession.dispose();
+        assertEquals(4, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
     }
 
     @Test
@@ -154,7 +159,6 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBaseFromDisc("rules-timer.drl");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
         int sessionId = ksession.getId();
         Environment env = ksession.getEnvironment();
 
@@ -186,7 +190,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
 
         ksession.fireAllRules();
 
-        Thread.sleep(5000);
+        Thread.sleep(6000);
 
         assertEquals(3, list2.size());
     }
@@ -196,7 +200,6 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("rules-timer.drl");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
         int sessionId = ksession.getId();
         Environment env = ksession.getEnvironment();
 

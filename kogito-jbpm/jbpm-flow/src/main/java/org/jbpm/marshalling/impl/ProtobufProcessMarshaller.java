@@ -5,29 +5,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProcessMarshaller;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkItem;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder;
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
+import org.jbpm.process.instance.timer.TimerManager.StartProcessJobContext;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
-import java.util.*;
 
 public class ProtobufProcessMarshaller
         implements
@@ -56,6 +57,7 @@ public class ProtobufProcessMarshaller
 
     public void writeProcessTimers(MarshallerWriteContext outCtx) throws IOException {
         outCtx.writersByClass.put( ProcessJobContext.class, new TimerManager.ProcessTimerOutputMarshaller() );
+        outCtx.writersByClass.put( StartProcessJobContext.class, new TimerManager.ProcessTimerOutputMarshaller() );
         ProtobufMessages.ProcessData.Builder _pdata = (ProtobufMessages.ProcessData.Builder) outCtx.parameterObject;
 
         TimerManager timerManager = ((InternalProcessRuntime) ((InternalWorkingMemory) outCtx.wm).getProcessRuntime()).getTimerManager();
@@ -137,6 +139,7 @@ public class ProtobufProcessMarshaller
         Builder _timer = JBPMMessages.ProcessTimer.TimerInstance.newBuilder()
                 .setId( timer.getId() )
                 .setTimerId( timer.getTimerId() )
+                .setSessionId( timer.getSessionId() )
                 .setDelay( timer.getDelay() )
                 .setPeriod( timer.getPeriod() )
                 .setProcessInstanceId( timer.getProcessInstanceId() )
@@ -156,6 +159,7 @@ public class ProtobufProcessMarshaller
         timer.setDelay( _timer.getDelay() );
         timer.setPeriod( _timer.getPeriod() );
         timer.setProcessInstanceId( _timer.getProcessInstanceId() );
+        timer.setSessionId( _timer.getSessionId() );
         timer.setActivated( new Date( _timer.getActivatedTime() ) );
         if ( _timer.hasLastTriggered() ) {
             timer.setLastTriggered( new Date( _timer.getLastTriggered() ) );

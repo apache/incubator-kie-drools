@@ -1407,10 +1407,9 @@ public class IntermediateEventTest extends JbpmTestCase {
 
         Thread.sleep(500);
         for (int i = 0; i < 5; i++) {
-            ksession.fireAllRules();
             Thread.sleep(1000);
         }
-        assertEquals(6, list.size());
+        assertEquals(5, list.size());
 
     }
 

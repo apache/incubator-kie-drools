@@ -193,7 +193,8 @@ public class ActivityTest extends JbpmTestCase {
         ksession.setGlobal("list", list);
         ProcessInstance processInstance = ksession.startProcess("RuleTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
+        ksession.setGlobal("list", list);
         ksession.fireAllRules();
         assertTrue(list.size() == 1);
         assertProcessInstanceFinished(processInstance, ksession);
@@ -211,7 +212,7 @@ public class ActivityTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession.startProcess("RuleTask",
                 params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
         ksession.fireAllRules();
         assertTrue(list.size() == 0);
         assertProcessInstanceFinished(processInstance, ksession);
@@ -878,6 +879,7 @@ public class ActivityTest extends JbpmTestCase {
                 .startProcess("ReceiveTask");
         assertProcessInstanceActive(processInstance);
         ksession = restoreSession(ksession, true);
+        receiveTaskHandler.setKnowledgeRuntime(ksession);
         receiveTaskHandler.messageReceived("HelloMessage", "Hello john!");
         assertProcessInstanceFinished(processInstance, ksession);
     }
@@ -907,7 +909,7 @@ public class ActivityTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("BPMN2-BusinessRuleTask");
 
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
         ksession.addEventListener(new RuleAwareProcessEventLister());
 
         int fired = ksession.fireAllRules();

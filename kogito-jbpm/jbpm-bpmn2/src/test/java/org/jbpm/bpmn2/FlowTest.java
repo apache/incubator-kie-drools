@@ -250,7 +250,7 @@ public class FlowTest extends JbpmTestCase {
         List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
 
         for (WorkItem wi : activeWorkItems) {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
@@ -274,7 +274,7 @@ public class FlowTest extends JbpmTestCase {
         List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(3, activeWorkItems.size());
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
 
         for (WorkItem wi : activeWorkItems) {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
@@ -298,7 +298,7 @@ public class FlowTest extends JbpmTestCase {
         List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(3, activeWorkItems.size());
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
 
         for (WorkItem wi : activeWorkItems) {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
@@ -322,7 +322,9 @@ public class FlowTest extends JbpmTestCase {
         List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
 
         for (WorkItem wi : activeWorkItems) {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
@@ -330,7 +332,9 @@ public class FlowTest extends JbpmTestCase {
 
         activeWorkItems = workItemHandler.getWorkItems();
         assertEquals(2, activeWorkItems.size());
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
 
         for (WorkItem wi : activeWorkItems) {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
@@ -354,7 +358,7 @@ public class FlowTest extends JbpmTestCase {
         List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
 
         for (WorkItem wi : activeWorkItems) {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
@@ -378,7 +382,7 @@ public class FlowTest extends JbpmTestCase {
         List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(4, activeWorkItems.size());
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
 
         for (WorkItem wi : activeWorkItems) {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
@@ -402,7 +406,7 @@ public class FlowTest extends JbpmTestCase {
         List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(3, activeWorkItems.size());
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
 
         for (int i = 0; i < 2; i++) {
             ksession.getWorkItemManager().completeWorkItem(
@@ -433,7 +437,7 @@ public class FlowTest extends JbpmTestCase {
         assertEquals(1, activeWorkItems.size());
         ksession.getWorkItemManager().completeWorkItem(
                 activeWorkItems.get(0).getId(), null);
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         assertProcessInstanceActive(processInstance);
 
         activeWorkItems = workItemHandler.getWorkItems();
@@ -465,7 +469,7 @@ public class FlowTest extends JbpmTestCase {
         List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(4, activeWorkItems.size());
-        restoreSession(ksession, true);
+        ksession = restoreSession(ksession, true);
 
         for (int i = 0; i < 3; i++) {
             ksession.getWorkItemManager().completeWorkItem(

@@ -47,6 +47,26 @@
       <artifactId>jbpm-shared-services</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-runtime-manager</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opensymphony.quartz</groupId>
+      <artifactId>quartz</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.0.1</version>
+        <scope>test</scope>
+    </dependency>
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <scope>test</scope>
+      </dependency>
+    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
@@ -94,7 +114,15 @@
   </dependencies>
 
   <build>
-    <plugins>
+    <plugins>  
+      <plugin>
+      <!-- we need to fork always as we have mixture of both arquillian tests and regular 
+    and to avoid clashing between them as both need to setup data source and bound it to JNDI -->
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>always</forkMode>
+        </configuration>
+      </plugin>   
       <plugin>
         <!--  ensure that db/tx log files are deleted before runs -->
         <artifactId>maven-clean-plugin</artifactId>

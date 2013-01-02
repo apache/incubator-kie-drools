@@ -188,7 +188,7 @@ public class DomainServicesTest {
         RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
         testProcessStartOnManager(manager, EmptyContext.get());
 
-
+        manager.close();
 
     }
 
@@ -254,9 +254,7 @@ public class DomainServicesTest {
         salaboysTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
         assertEquals(1, salaboysTasks.size());
         
-        
-        
-
+                       
     }
     
     @Test

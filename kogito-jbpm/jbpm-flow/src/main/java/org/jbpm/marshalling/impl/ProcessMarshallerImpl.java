@@ -24,6 +24,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
+import org.jbpm.process.instance.timer.TimerManager.StartProcessJobContext;
 
 public class ProcessMarshallerImpl implements ProcessMarshaller {
 
@@ -50,6 +51,7 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
 
     public void writeProcessTimers(MarshallerWriteContext outCtx) throws IOException {
         outCtx.writersByClass.put( ProcessJobContext.class, new TimerManager.ProcessTimerOutputMarshaller() );
+        outCtx.writersByClass.put( StartProcessJobContext.class, new TimerManager.ProcessTimerOutputMarshaller() );
         
         // this is deprecated, will delete soon (mdp)
 //        ObjectOutputStream stream = context.stream;

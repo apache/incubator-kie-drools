@@ -36,7 +36,6 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     @Override
     public org.kie.internal.runtime.manager.Runtime getRuntime(Context context) {
   
-
         Object contextId = context.getContextId();
         KieSession ksession = null;
         Integer ksessionId = null;
@@ -50,7 +49,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             }
             ksessionId = mapper.findMapping(context);
             if (ksessionId == null) {
-                throw new SessionNotFoundException("No session found for context " + context);
+                throw new SessionNotFoundException("No session found for context " + context.getContextId());
             }
             ksession = factory.findKieSessionById(ksessionId);
         }
@@ -59,6 +58,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         ((RuntimeImpl) runtime).setManager(this);
         registerDisposeCallback(runtime);
         registerItems(runtime);
+        
+        saveLocalRuntime(contextId, runtime);
         
         ksession.addEventListener(new MaintainMappingListener(ksessionId, runtime));
         return runtime;
@@ -138,6 +139,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
     
     protected org.kie.internal.runtime.manager.Runtime findLocalRuntime(Object processInstanceId) {
+        if (processInstanceId == null) {
+            return null;
+        }
         Map<Object, org.kie.internal.runtime.manager.Runtime> map = local.get();
         if (map == null) {
             return null;
@@ -146,7 +150,10 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         }
     }
     
-    protected void saveLocalRuntime(Long processInstanceId, Runtime runtime) {
+    protected void saveLocalRuntime(Object processInstanceId, Runtime runtime) {
+        if (processInstanceId == null) {
+            return;
+        }
         Map<Object, org.kie.internal.runtime.manager.Runtime> map = local.get();
         if (map == null) {
             map = new HashMap<Object, Runtime>();

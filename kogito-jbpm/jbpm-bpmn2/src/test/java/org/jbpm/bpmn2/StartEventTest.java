@@ -24,6 +24,7 @@ import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,6 +60,11 @@ public class StartEventTest extends JbpmTestCase {
     public static void setup() throws Exception {
         setUpDataSource();
     }
+    
+    @Before
+    public void prepare() {
+        clearHistory();
+    }
 
     @After
     public void dispose() {
@@ -89,7 +95,6 @@ public class StartEventTest extends JbpmTestCase {
      * @throws Exception
      */
     @Test
-    @RequirePersistence
     public void testTimerStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -99,13 +104,11 @@ public class StartEventTest extends JbpmTestCase {
                 list.add(event.getProcessInstance().getId());
             }
         });
-        Thread.sleep(250);
         assertEquals(0, list.size());
         for (int i = 0; i < 5; i++) {
-            ksession.fireAllRules();
             Thread.sleep(500);
         }
-        assertEquals(5, list.size());
+        assertEquals(5, getNumberOfProcessInstances("Minimal"));
 
     }
 
@@ -119,13 +122,11 @@ public class StartEventTest extends JbpmTestCase {
                 list.add(event.getProcessInstance().getId());
             }
         });
-        Thread.sleep(250);
         assertEquals(0, list.size());
         for (int i = 0; i < 6; i++) {
-            ksession.fireAllRules();
             Thread.sleep(1000);
         }
-        assertEquals(6, list.size());
+        assertEquals(6, getNumberOfProcessInstances("Minimal"));
 
     }
 
@@ -141,16 +142,14 @@ public class StartEventTest extends JbpmTestCase {
         });
         Thread.sleep(250);
         assertEquals(0, list.size());
-        ksession.fireAllRules();
 
         Thread.sleep(3000);
 
-        assertEquals(1, list.size());
+        assertEquals(1, getNumberOfProcessInstances("Minimal"));
 
     }
 
     @Test
-    @RequirePersistence(false)
     public void testTimerStartCron() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStartCron.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -160,12 +159,10 @@ public class StartEventTest extends JbpmTestCase {
                 list.add(event.getProcessInstance().getId());
             }
         });
-        Thread.sleep(500);
         for (int i = 0; i < 5; i++) {
-            ksession.fireAllRules();
             Thread.sleep(1000);
         }
-        assertEquals(6, list.size());
+        assertEquals(5, getNumberOfProcessInstances("Minimal"));
 
     }
 
@@ -189,7 +186,8 @@ public class StartEventTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("SignalIntermediateEvent");
         assertProcessInstanceFinished(processInstance, ksession);
-        assertEquals(2, startedProcesses.size());
+        assertEquals(1, getNumberOfProcessInstances("Minimal"));
+        assertEquals(1, getNumberOfProcessInstances("SignalIntermediateEvent"));
     }
 
     @Test
@@ -204,12 +202,11 @@ public class StartEventTest extends JbpmTestCase {
         });
         ksession.signalEvent("MySignal", "NewValue");
         Thread.sleep(500);
-        assertEquals(1, list.size());
+        assertEquals(1, getNumberOfProcessInstances("Minimal"));
 
     }
 
     @Test
-    @RequirePersistence(false)
     public void testSignalStartDynamic() throws Exception {
         KieBase kbase = createKnowledgeBase();
         ksession = createKnowledgeSession(kbase);
@@ -224,7 +221,7 @@ public class StartEventTest extends JbpmTestCase {
         });
         ksession.signalEvent("MySignal", "NewValue");
         Thread.sleep(500);
-        assertEquals(1, list.size());
+        assertEquals(1, getNumberOfProcessInstances("Minimal"));
 
     }
 
@@ -233,7 +230,7 @@ public class StartEventTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MessageStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.signalEvent("Message-HelloMessage", "NewValue");
-
+        assertEquals(1, getNumberOfProcessInstances("Minimal"));
     }
 
     @Test
@@ -256,7 +253,6 @@ public class StartEventTest extends JbpmTestCase {
     }
 
     @Test
-    @RequirePersistence
     public void testMultipleStartEventsStartOnTimer() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -269,13 +265,11 @@ public class StartEventTest extends JbpmTestCase {
                 list.add(event.getProcessInstance().getId());
             }
         });
-        Thread.sleep(500);
         assertEquals(0, list.size());
         for (int i = 0; i < 5; i++) {
-            ksession.fireAllRules();
             Thread.sleep(500);
         }
-        assertEquals(5, list.size());
+        assertEquals(5, getNumberOfProcessInstances("MultipleStartEvents"));
 
     }
 
@@ -313,7 +307,6 @@ public class StartEventTest extends JbpmTestCase {
     }
 
     @Test
-    @RequirePersistence
     public void testMultipleEventBasedStartEventsStartOnTimer()
             throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");
@@ -327,13 +320,11 @@ public class StartEventTest extends JbpmTestCase {
                 list.add(event.getProcessInstance().getId());
             }
         });
-        Thread.sleep(500);
         assertEquals(0, list.size());
         for (int i = 0; i < 5; i++) {
-            ksession.fireAllRules();
             Thread.sleep(500);
         }
-        assertEquals(5, list.size());
+        assertEquals(5, getNumberOfProcessInstances("MultipleStartEvents"));
 
     }
 

@@ -34,7 +34,6 @@ import org.kie.internal.task.api.model.NotificationType;
 
 
 @Entity
-@Table(name="EmailNotification")
 public class EmailNotificationImpl extends NotificationImpl implements org.kie.internal.task.api.model.EmailNotification{
 
     @OneToMany(cascade = CascadeType.ALL)

@@ -65,6 +65,10 @@ public class DateTimeUtils extends TimeUtils {
             }
             DateTime startAtDelay =  ISODateTimeFormat.dateTimeParser().parseDateTime(delayIn);
             Duration startAtDelayDur = new Duration(System.currentTimeMillis(), startAtDelay.getMillis());
+            if (startAtDelayDur.getMillis() <= 0) {
+                // need to introduce delay to allow all initialization
+                startAtDelayDur = Duration.standardSeconds(1);
+            }
             Period period = ISOPeriodFormat.standard().parsePeriod(periodIn);
             result[0] = Long.parseLong(repeats.length()==0?"-1":repeats);
             result[1] = startAtDelayDur.getMillis();
@@ -72,9 +76,18 @@ public class DateTimeUtils extends TimeUtils {
             
             return result;
         } else {
+            
+            int index = dateTimeStr.indexOf("###");
+            if (index != -1) {
+                String period = dateTimeStr.substring(index + 3);
+                String delay = dateTimeStr.substring(0, index);
+                result = new long[]{TimeUtils.parseTimeString(delay), TimeUtils.parseTimeString(period)};
+                
+                return result;
+            }
             result = new long[]{TimeUtils.parseTimeString(dateTimeStr)};
             return result;
-        }
+        }  
     }
     
 }

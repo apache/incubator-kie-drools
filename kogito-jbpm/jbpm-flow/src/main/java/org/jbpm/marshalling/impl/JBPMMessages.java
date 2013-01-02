@@ -17212,6 +17212,16 @@ public final class JBPMMessages {
        * <code>optional int64 last_triggered = 7;</code>
        */
       long getLastTriggered();
+
+      // optional int32 sessionId = 8;
+      /**
+       * <code>optional int32 sessionId = 8;</code>
+       */
+      boolean hasSessionId();
+      /**
+       * <code>optional int32 sessionId = 8;</code>
+       */
+      int getSessionId();
     }
     /**
      * Protobuf type {@code org.jbpm.marshalling.ProcessTimer.TimerInstance}
@@ -17297,6 +17307,11 @@ public final class JBPMMessages {
               case 56: {
                 bitField0_ |= 0x00000040;
                 lastTriggered_ = input.readInt64();
+                break;
+              }
+              case 64: {
+                bitField0_ |= 0x00000080;
+                sessionId_ = input.readInt32();
                 break;
               }
             }
@@ -17451,6 +17466,22 @@ public final class JBPMMessages {
         return lastTriggered_;
       }
 
+      // optional int32 sessionId = 8;
+      public static final int SESSIONID_FIELD_NUMBER = 8;
+      private int sessionId_;
+      /**
+       * <code>optional int32 sessionId = 8;</code>
+       */
+      public boolean hasSessionId() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional int32 sessionId = 8;</code>
+       */
+      public int getSessionId() {
+        return sessionId_;
+      }
+
       private void initFields() {
         id_ = 0L;
         timerId_ = 0L;
@@ -17459,6 +17490,7 @@ public final class JBPMMessages {
         processInstanceId_ = 0L;
         activatedTime_ = 0L;
         lastTriggered_ = 0L;
+        sessionId_ = 0;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -17492,6 +17524,9 @@ public final class JBPMMessages {
         }
         if (((bitField0_ & 0x00000040) == 0x00000040)) {
           output.writeInt64(7, lastTriggered_);
+        }
+        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+          output.writeInt32(8, sessionId_);
         }
         getUnknownFields().writeTo(output);
       }
@@ -17529,6 +17564,10 @@ public final class JBPMMessages {
         if (((bitField0_ & 0x00000040) == 0x00000040)) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt64Size(7, lastTriggered_);
+        }
+        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(8, sessionId_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -17660,6 +17699,8 @@ public final class JBPMMessages {
           bitField0_ = (bitField0_ & ~0x00000020);
           lastTriggered_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000040);
+          sessionId_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000080);
           return this;
         }
 
@@ -17716,6 +17757,10 @@ public final class JBPMMessages {
             to_bitField0_ |= 0x00000040;
           }
           result.lastTriggered_ = lastTriggered_;
+          if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+            to_bitField0_ |= 0x00000080;
+          }
+          result.sessionId_ = sessionId_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -17752,6 +17797,9 @@ public final class JBPMMessages {
           }
           if (other.hasLastTriggered()) {
             setLastTriggered(other.getLastTriggered());
+          }
+          if (other.hasSessionId()) {
+            setSessionId(other.getSessionId());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -18007,6 +18055,39 @@ public final class JBPMMessages {
         public Builder clearLastTriggered() {
           bitField0_ = (bitField0_ & ~0x00000040);
           lastTriggered_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        // optional int32 sessionId = 8;
+        private int sessionId_ ;
+        /**
+         * <code>optional int32 sessionId = 8;</code>
+         */
+        public boolean hasSessionId() {
+          return ((bitField0_ & 0x00000080) == 0x00000080);
+        }
+        /**
+         * <code>optional int32 sessionId = 8;</code>
+         */
+        public int getSessionId() {
+          return sessionId_;
+        }
+        /**
+         * <code>optional int32 sessionId = 8;</code>
+         */
+        public Builder setSessionId(int value) {
+          bitField0_ |= 0x00000080;
+          sessionId_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int32 sessionId = 8;</code>
+         */
+        public Builder clearSessionId() {
+          bitField0_ = (bitField0_ & ~0x00000080);
+          sessionId_ = 0;
           onChanged();
           return this;
         }
@@ -18833,27 +18914,27 @@ public final class JBPMMessages {
       "\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_instanc" +
       "es_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005" +
       "\0220\n\010variable\030\005 \003(\0132\036.org.jbpm.marshallin" +
-      "g.Variable\"\242\002\n\014ProcessTimer\022?\n\005timer\030\001 \001" +
+      "g.Variable\"\265\002\n\014ProcessTimer\022?\n\005timer\030\001 \001" +
       "(\01320.org.jbpm.marshalling.ProcessTimer.T" +
       "imerInstance\0225\n\007trigger\030\002 \001(\0132$.org.droo" +
-      "ls.core.marshalling.Trigger\032\231\001\n\rTimerIns" +
+      "ls.core.marshalling.Trigger\032\254\001\n\rTimerIns" +
       "tance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005d",
       "elay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_in" +
       "stance_id\030\005 \001(\003\022\026\n\016activated_time\030\006 \001(\003\022" +
-      "\026\n\016last_triggered\030\007 \001(\003:i\n\020process_insta" +
-      "nce\022(.org.drools.core.marshalling.Proces" +
-      "sData\030\n \003(\0132%.org.jbpm.marshalling.Proce" +
-      "ssInstance:[\n\twork_item\022(.org.drools.cor" +
-      "e.marshalling.ProcessData\030\013 \003(\0132\036.org.jb" +
-      "pm.marshalling.WorkItem::\n\010timer_id\022(.or" +
-      "g.drools.core.marshalling.ProcessData\030\r " +
-      "\001(\003:c\n\rprocess_timer\022(.org.drools.core.m",
-      "arshalling.ProcessData\030\014 \003(\0132\".org.jbpm." +
-      "marshalling.ProcessTimer:a\n\nproc_timer\022)" +
-      ".org.drools.core.marshalling.Timers.Time" +
-      "r\030d \001(\0132\".org.jbpm.marshalling.ProcessTi" +
-      "merB)\n\031org.jbpm.marshalling.implB\014JBPMMe" +
-      "ssages"
+      "\026\n\016last_triggered\030\007 \001(\003\022\021\n\tsessionId\030\010 \001" +
+      "(\005:i\n\020process_instance\022(.org.drools.core" +
+      ".marshalling.ProcessData\030\n \003(\0132%.org.jbp" +
+      "m.marshalling.ProcessInstance:[\n\twork_it" +
+      "em\022(.org.drools.core.marshalling.Process" +
+      "Data\030\013 \003(\0132\036.org.jbpm.marshalling.WorkIt" +
+      "em::\n\010timer_id\022(.org.drools.core.marshal" +
+      "ling.ProcessData\030\r \001(\003:c\n\rprocess_timer\022",
+      "(.org.drools.core.marshalling.ProcessDat" +
+      "a\030\014 \003(\0132\".org.jbpm.marshalling.ProcessTi" +
+      "mer:a\n\nproc_timer\022).org.drools.core.mars" +
+      "halling.Timers.Timer\030d \001(\0132\".org.jbpm.ma" +
+      "rshalling.ProcessTimerB)\n\031org.jbpm.marsh" +
+      "alling.implB\014JBPMMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -18991,7 +19072,7 @@ public final class JBPMMessages {
           internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_jbpm_marshalling_ProcessTimer_TimerInstance_descriptor,
-              new java.lang.String[] { "Id", "TimerId", "Delay", "Period", "ProcessInstanceId", "ActivatedTime", "LastTriggered", });
+              new java.lang.String[] { "Id", "TimerId", "Delay", "Period", "ProcessInstanceId", "ActivatedTime", "LastTriggered", "SessionId", });
           processInstance.internalInit(descriptor.getExtensions().get(0));
           workItem.internalInit(descriptor.getExtensions().get(1));
           timerId.internalInit(descriptor.getExtensions().get(2));

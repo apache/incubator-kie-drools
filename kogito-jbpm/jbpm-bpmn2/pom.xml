@@ -40,7 +40,6 @@
       <artifactId>slf4j-log4j12</artifactId>
       <scope>test</scope>
     </dependency>
-    
     <!-- Test -->
     <dependency>
       <groupId>org.jbpm</groupId>

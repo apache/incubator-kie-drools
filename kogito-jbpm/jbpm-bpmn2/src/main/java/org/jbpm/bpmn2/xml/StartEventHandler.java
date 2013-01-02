@@ -19,18 +19,25 @@ package org.jbpm.bpmn2.xml;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
-import org.jbpm.bpmn2.core.*;
 import org.jbpm.bpmn2.core.Error;
+import org.jbpm.bpmn2.core.Escalation;
+import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventTypeFilter;
-import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
-import org.jbpm.workflow.core.node.*;
+import org.jbpm.workflow.core.node.ConstraintTrigger;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.EventTrigger;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.Trigger;
 import org.w3c.dom.Element;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class StartEventHandler extends AbstractNodeHandler {
     
@@ -98,108 +105,11 @@ public class StartEventHandler extends AbstractNodeHandler {
                     throw new IllegalArgumentException("Could not find message " + messageRef);
                 }
                 startNode.setMetaData("MessageType", message.getType());
+
                 
                 addTriggerWithInMappings(startNode, "Message-" + messageRef);
-            } else if ("timerEventDefinition".equals(nodeName)) {
-            	org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-                while (subNode instanceof Element) {
-                    String subNodeName = subNode.getNodeName();
-                    Timer timer = null;   
-                    
-                    if (parser.getParent() instanceof EventSubProcessNode) {
-                        // handle timer on start events like normal (non rule) timers for event sub process
-                        timer = new Timer();
-                        
-                        addTriggerWithInMappings(startNode, "Timer-" + ((EventSubProcessNode) parser.getParent()).getId());
-                    }
-                    if ("timeCycle".equals(subNodeName)) {
-                        String period = "";
-                        String repeatLimit = "-1";
-                        String delay = subNode.getTextContent();
-                        
-                        String language = ((Element) subNode).getAttribute("language");
-                        if (language == null || language.trim().length() == 0) {
-                        	language = "int";
-                        }
-                        if ("int".equalsIgnoreCase(language)) {
-                            long[] repeatTimer = DateTimeUtils.parseRepeatableDateTime(delay);
-                            if (repeatTimer.length == 1) {
-                                startNode.setMetaData("TimerDef", delay);
-                                delay = Long.toString(repeatTimer[0]);
-                                period = Long.toString(repeatTimer[0]);
-                            } else {
-                                startNode.setMetaData("TimerDef", delay);
-                                repeatLimit = Long.toString(repeatTimer[0]+1);
-                                delay = Long.toString(repeatTimer[1]);
-                                period = Long.toString(repeatTimer[2]);
-                                
-                            }
-                        }
-                        if (delay != null && delay.trim().length() > 0) {
-                            startNode.setMetaData("TimerType", Timer.TIME_CYCLE);
-                            if (timer != null) {
-                                timer.setDelay(delay);
-                                timer.setPeriod(period);
-                                timer.setTimeType(Integer.valueOf(Timer.TIME_CYCLE));
-                                ((EventSubProcessNode) parser.getParent()).addTimer(timer, new DroolsConsequenceAction("java", ""));
-                            } else {
-    	                        ConstraintTrigger trigger = new ConstraintTrigger();
-    	                        trigger.setConstraint("");
-    	                        if ("int".equals(language)) {
-    	                            if (repeatLimit.equals("-1")) {
-    	                                trigger.setHeader("timer (int:" + delay + " " + period + ")");
-    	                            } else {
-    	                                trigger.setHeader("timer (int:" + delay + " " + period + " repeat-limit=" + repeatLimit + ")");
-    	                            }
-    	                        } else {
-    	                        	trigger.setHeader("timer (" + language + ":" + delay + ")");
-    	                        }
-    	                        startNode.addTrigger(trigger);
-                            }
-	                        break;
-                        }
-                    } else if ("timeDuration".equals(subNodeName)) {
-                        String period = Long.toString(DateTimeUtils.parseDuration(subNode.getTextContent()));
-                        
-                        if (period != null && period.trim().length() > 0) {
-                            startNode.setMetaData("TimerDef", period);
-                            startNode.setMetaData("TimerType", Timer.TIME_DURATION);
-                            if (timer != null) {
-                                timer.setDelay(period);
-                                timer.setTimeType(Integer.valueOf(Timer.TIME_DURATION));
-                                ((EventSubProcessNode) parser.getParent()).addTimer(timer, new DroolsConsequenceAction("java", ""));
-                            } else {
-                                ConstraintTrigger trigger = new ConstraintTrigger();
-                                trigger.setConstraint("");
-                                trigger.setHeader("timer (int:" + period + " 0)");
-                                
-                                startNode.addTrigger(trigger);
-                            }
-                            break;
-                        }
-                    } else if ("timeDate".equals(subNodeName)) {
-                        String period = Long.toString(DateTimeUtils.parseDateAsDuration(subNode.getTextContent()));
-                 
-                        if (period != null && period.trim().length() > 0) {
-                            startNode.setMetaData("TimerDef", period);
-                            startNode.setMetaData("TimerType", Timer.TIME_DATE);
-                            if (timer != null) {
-                                timer.setDate(period);
-                                timer.setTimeType(Integer.valueOf(Timer.TIME_DATE));
-                                ((EventSubProcessNode) parser.getParent()).addTimer(timer, new DroolsConsequenceAction("java", ""));
-                            } else {
-                                ConstraintTrigger trigger = new ConstraintTrigger();
-                                trigger.setConstraint("");
-                                trigger.setHeader("timer (int:" + period + " 0)");
-                                
-                                startNode.addTrigger(trigger);
-                            }
-                            break;
-                        }
-                    }
-                    subNode = subNode.getNextSibling();
-                    
-               }
+            } else if ("timerEventDefinition".equals(nodeName)) {            	
+            	handleTimerNode(startNode, element, uri, localName, parser);
                 // following event definitions are only for event sub process and will be validated to not be included in top process definitions
             } else if ("errorEventDefinition".equals(nodeName)) {
                 if( ! startNode.isInterrupting() ) { 
@@ -320,6 +230,7 @@ public class StartEventHandler extends AbstractNodeHandler {
 		    if (triggers.size() > 1) {
 		        throw new IllegalArgumentException("Multiple start triggers not supported");
 		    }
+		    
 		    Trigger trigger = triggers.get(0);
 		    if (trigger instanceof ConstraintTrigger) {
 		    	ConstraintTrigger constraintTrigger = (ConstraintTrigger) trigger;
@@ -327,35 +238,6 @@ public class StartEventHandler extends AbstractNodeHandler {
 			        xmlDump.append("      <conditionalEventDefinition>" + EOL);
 	                xmlDump.append("        <condition xsi:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + constraintTrigger.getConstraint() + "</condition>" + EOL);
 	                xmlDump.append("      </conditionalEventDefinition>" + EOL);
-		    	} else {
-		    	    Integer timerType = (Integer) startNode.getMetaData("TimerType");
-		    	    if (timerType == Timer.TIME_DURATION) {
-		    	        xmlDump.append("      <timerEventDefinition>" + EOL);
-	                    xmlDump.append("        <timeDuration xsi:type=\"tFormalExpression\" >" + startNode.getMetaData("TimerDef") + "</timeDuration>" + EOL);
-	                    xmlDump.append("      </timerEventDefinition>" + EOL);
-		    	    } else if (timerType == Timer.TIME_DATE) {
-		    	        xmlDump.append("      <timerEventDefinition>" + EOL);
-	                    xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\" >" + startNode.getMetaData("TimerDef") + "</timeDate>" + EOL);
-	                    xmlDump.append("      </timerEventDefinition>" + EOL);    
-                    } else {
-    		    		String header = constraintTrigger.getHeader();
-    		    		header = header.substring(7, header.length() - 1);
-    		    		int index = header.indexOf(":");
-    		    		String language = header.substring(0, index);
-    		    		header = header.substring(index + 1);
-    		    		String cycle = null;
-    		    		if (startNode.getMetaData("TimerDef") != null){
-    		    		    cycle = (String) startNode.getMetaData("TimerDef");
-    		    		}else if ("int".equals(language)) {
-    		    			int lenght = (header.length() - 1)/2;
-    			    		cycle = header.substring(0, lenght);
-    		    		} else {
-    		    			cycle = header;
-    		    		}
-    			        xmlDump.append("      <timerEventDefinition>" + EOL);
-    	                xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\" language=\"" + language + "\">" + cycle + "</timeCycle>" + EOL);
-    	                xmlDump.append("      </timerEventDefinition>" + EOL);
-                    }
 		    	}
 		    } else if (trigger instanceof EventTrigger) {
 		        EventTrigger eventTrigger = (EventTrigger) trigger;
@@ -395,10 +277,110 @@ public class StartEventHandler extends AbstractNodeHandler {
             } else {
 		        throw new IllegalArgumentException("Unsupported trigger type " + trigger);
 		    }
+		    
+		    if (startNode.getTimer() != null) {
+	            Timer timer = startNode.getTimer(); 
+	            xmlDump.append("      <timerEventDefinition>" + EOL);
+	            if (timer != null && (timer.getDelay() != null || timer.getDate() != null)) {
+	                if (timer.getTimeType() == Timer.TIME_DURATION) {
+	                    xmlDump.append("        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
+	                } else if (timer.getTimeType() == Timer.TIME_CYCLE) {
+	                    
+	                    if (timer.getPeriod() != null) {
+	                        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);
+	                    } else {
+	                        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeCycle>" + EOL);
+	                    }
+	                } else if (timer.getTimeType() == Timer.TIME_DATE) {
+	                    xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDate>" + EOL);           
+	                }
+	            }
+	            xmlDump.append("      </timerEventDefinition>" + EOL);
+		    }
+		    
 		    endNode("startEvent", xmlDump);
-		} else {
+		} else if (startNode.getTimer() != null) {
+            xmlDump.append(">" + EOL);
+            Timer timer = startNode.getTimer(); 
+            xmlDump.append("      <timerEventDefinition>" + EOL);
+            if (timer != null && (timer.getDelay() != null || timer.getDate() != null)) {
+                if (timer.getTimeType() == Timer.TIME_DURATION) {
+                    xmlDump.append("        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
+                } else if (timer.getTimeType() == Timer.TIME_CYCLE) {
+                    
+                    if (timer.getPeriod() != null) {
+                        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);
+                    } else {
+                        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeCycle>" + EOL);
+                    }
+                } else if (timer.getTimeType() == Timer.TIME_DATE) {
+                    xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDate>" + EOL);           
+                }
+            }
+            xmlDump.append("      </timerEventDefinition>" + EOL);
+            endNode("startEvent", xmlDump);
+        } else {
 		    endNode(xmlDump);
 		}
 	}
+    
+    protected void handleTimerNode(final Node node, final Element element,
+            final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
+        super.handleNode(node, element, uri, localName, parser);
+        StartNode startNode = (StartNode) node;
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("timerEventDefinition".equals(nodeName)) {
+                Timer timer = new Timer();
+                org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+                while (subNode instanceof Element) {
+                    String subNodeName = subNode.getNodeName();
+                    if ("timeCycle".equals(subNodeName)) {
+                        String delay = subNode.getTextContent();
+                        int index = delay.indexOf("###");
+                        if (index != -1) {
+                            String period = delay.substring(index + 3);
+                            delay = delay.substring(0, index);
+                            timer.setPeriod(period);
+                        } else {
+                            timer.setPeriod(delay);
+                        }
+                        timer.setTimeType(Timer.TIME_CYCLE);
+                        timer.setDelay(delay);
+                        break;
+                    } else if ("timeDuration".equals(subNodeName)) {
+                        String delay = subNode.getTextContent();
+                        timer.setTimeType(Timer.TIME_DURATION);
+                        timer.setDelay(delay);
+                        break;
+                    } else if ("timeDate".equals(subNodeName)) {
+                        String date = subNode.getTextContent();
+                        timer.setTimeType(Timer.TIME_DATE);
+                        timer.setDate(date);
+                        break;
+                    }
+                    subNode = subNode.getNextSibling();
+                }
+                startNode.setTimer(timer);
+                if (parser.getParent() instanceof EventSubProcessNode) {
+                  // handle timer on start events like normal (non rule) timers for event sub process
+                  
+                  EventTrigger trigger = new EventTrigger();
+                  EventTypeFilter eventFilter = new EventTypeFilter();
+                  eventFilter.setType("Timer-" + ((EventSubProcessNode) parser.getParent()).getId());
+                  trigger.addEventFilter(eventFilter);
+                  String mapping = (String) startNode.getMetaData("TriggerMapping");
+                  if (mapping != null) {
+                      trigger.addInMapping(mapping, "event");
+                  }
+                  startNode.addTrigger(trigger);
+                  ((EventSubProcessNode) parser.getParent()).addTimer(timer, new DroolsConsequenceAction("java", ""));
+              }
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
 
 }

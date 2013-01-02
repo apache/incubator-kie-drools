@@ -1,5 +1,8 @@
 package org.jbpm.process.instance;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -10,21 +13,33 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.rule.Rule;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
+import org.drools.core.time.TimeUtils;
+import org.drools.core.time.impl.CronExpression;
 import org.drools.core.time.impl.DefaultTimerJobFactoryManager;
 import org.drools.core.time.impl.TrackableTimeJobFactoryManager;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.process.core.timer.BusinessCalendar;
+import org.jbpm.process.core.timer.DateTimeUtils;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.event.SignalManager;
 import org.jbpm.process.instance.event.SignalManagerFactory;
+import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
+import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.event.kiebase.AfterProcessAddedEvent;
@@ -34,12 +49,12 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.utils.CompositeClassLoader;
-import org.kie.internal.process.CorrelationKey;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.CompositeClassLoader;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
@@ -66,7 +81,23 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         processEventSupport = new ProcessEventSupport();
         initProcessEventListeners();
         initProcessActivationListener();        
+        initStartTimers();
 	}
+	
+	private void initStartTimers() {
+	    KieBase kbase = kruntime.getKieBase();
+        Collection<Process> processes = kbase.getProcesses();
+        for (Process process : processes) {
+            RuleFlowProcess p = (RuleFlowProcess) process;
+            List<StartNode> startNodes = p.getTimerStart();
+            if (startNodes != null && !startNodes.isEmpty()) {
+                kruntime.queueWorkingMemoryAction(new RegisterStartTimerAction(p.getId(), startNodes, this.timerManager));
+                kruntime.executeQueuedActions();
+            }
+        }
+    }
+
+    
 	
 	public ProcessRuntimeImpl(AbstractWorkingMemory workingMemory) {
 		this.workingMemory = workingMemory;
@@ -83,6 +114,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         processEventSupport = new ProcessEventSupport();
         initProcessEventListeners();
         initProcessActivationListener();
+        initStartTimers();
 	}
 	
 	private void initProcessInstanceManager() {
@@ -435,5 +467,135 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         
     }
 
+    public static class RegisterStartTimerAction implements WorkingMemoryAction {
+
+        private List<StartNode> startNodes;
+        private String processId;
+        private TimerManager timerManager;
+        
+        public RegisterStartTimerAction(String processId, List<StartNode> startNodes, TimerManager timerManager) {
+            this.processId = processId;
+            this.startNodes = startNodes;
+            this.timerManager = timerManager;
+        }
+        
+        public RegisterStartTimerAction(MarshallerReaderContext context) {
+            
+        }
+        
+        @Override
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+            
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {            
+        }
+
+        @Override
+        public void execute(InternalWorkingMemory workingMemory) {
+            initTimer(workingMemory.getKnowledgeRuntime());
+        }
+
+        @Override
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            initTimer(kruntime);
+        }
+
+        @Override
+        public void write(MarshallerWriteContext context) throws IOException {
+            
+        }
+
+        @Override
+        public Action serialize(MarshallerWriteContext context)
+                throws IOException {
+            return null;
+        }
+        
+        
+        private void initTimer(InternalKnowledgeRuntime kruntime) {
+            
+            for (StartNode startNode : startNodes) {
+                if (startNode != null && startNode.getTimer() != null) {
+                    TimerInstance timerInstance = null;
+                    if (CronExpression.isValidExpression(startNode.getTimer().getDelay())) {
+                        timerInstance = new TimerInstance();
+                        timerInstance.setCronExpression(startNode.getTimer().getDelay());
+                        
+                    } else {
+                        timerInstance = createTimerInstance(startNode.getTimer(), kruntime);    
+                    }
+                                        
+                    timerManager.registerTimer(timerInstance, processId, null);
+                }
+            }
+        }
+        
+        protected TimerInstance createTimerInstance(Timer timer, InternalKnowledgeRuntime kruntime) {
+            TimerInstance timerInstance = new TimerInstance();
+
+            if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null){
+                BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
+                
+                String delay = timer.getDelay();
+                
+                timerInstance.setDelay(businessCalendar.calculateBusinessTimeAsDuration(delay));
+                
+                if (timer.getPeriod() == null) {
+                    timerInstance.setPeriod(0);
+                } else {
+                    String period = timer.getPeriod();
+                    timerInstance.setPeriod(businessCalendar.calculateBusinessTimeAsDuration(period));
+                }
+            } else {
+                configureTimerInstance(timer, timerInstance);
+            }
+            timerInstance.setTimerId(timer.getId());
+            return timerInstance;
+        }
+        
+        private void configureTimerInstance(Timer timer, TimerInstance timerInstance) {
+            String s = null;
+            long duration = -1;
+            switch (timer.getTimeType()) {
+            case Timer.TIME_CYCLE:
+                // when using ISO date/time period is not set
+                long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                if (repeatValues.length == 3) {
+                    int parsedReapedCount = (int)repeatValues[0];
+                    if (parsedReapedCount > -1) {
+                        timerInstance.setRepeatLimit(parsedReapedCount+1);
+                    }
+                    timerInstance.setDelay(repeatValues[1]);
+                    timerInstance.setPeriod(repeatValues[2]);
+                } else {
+                    timerInstance.setDelay(repeatValues[0]);
+                    timerInstance.setPeriod(repeatValues[0]);
+                }
+                
+                break;
+            case Timer.TIME_DURATION:
+
+                duration = DateTimeUtils.parseDuration(timer.getDelay());
+                timerInstance.setDelay(duration);
+                timerInstance.setPeriod(0);
+                break;
+            case Timer.TIME_DATE:
+                duration = DateTimeUtils.parseDateAsDuration(timer.getDate());
+                timerInstance.setDelay(duration);
+                timerInstance.setPeriod(0);
+                break;
+
+            default:
+                break;
+            }
+
+        }
+        private long resolveValue(String s) {
+            return TimeUtils.parseTimeString(s);
+        }
+    }
 
 }

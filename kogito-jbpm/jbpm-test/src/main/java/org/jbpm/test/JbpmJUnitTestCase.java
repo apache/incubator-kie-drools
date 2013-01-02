@@ -91,12 +91,12 @@ public abstract class JbpmJUnitTestCase extends Assert {
     private JPAProcessInstanceDbLog log;
     private Logger testLogger = null;
 
-    @Rule
-    public KnowledgeSessionCleanup ksessionCleanupRule = new KnowledgeSessionCleanup();	
-	protected static ThreadLocal<Set<StatefulKnowledgeSession>> knowledgeSessionSetLocal 
-	    = KnowledgeSessionCleanup.knowledgeSessionSetLocal;
-    @Rule
-    public TestName testName = new TestName();
+//    @Rule
+//    public KnowledgeSessionCleanup ksessionCleanupRule = new KnowledgeSessionCleanup();	
+//	protected static ThreadLocal<Set<StatefulKnowledgeSession>> knowledgeSessionSetLocal 
+//	    = KnowledgeSessionCleanup.knowledgeSessionSetLocal;
+//    @Rule
+//    public TestName testName = new TestName();
     
     public JbpmJUnitTestCase() {
         this(false);
@@ -116,7 +116,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
         pds.setAllowLocalTransactions(true);
         pds.getDriverProperties().put("user", "sa");
         pds.getDriverProperties().put("password", "");
-        pds.getDriverProperties().put("url", "jdbc:h2:tcp://localhost/~/jbpm-db");
+        pds.getDriverProperties().put("url", "jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=true");
         pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
         pds.init();
         return pds;

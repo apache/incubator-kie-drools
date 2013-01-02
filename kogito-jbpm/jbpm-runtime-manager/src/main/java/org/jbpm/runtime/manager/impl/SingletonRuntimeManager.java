@@ -6,10 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.annotation.PostConstruct;
 
 import org.kie.internal.runtime.manager.Context;
 import org.kie.internal.runtime.manager.Disposable;
@@ -20,13 +16,12 @@ import org.kie.internal.runtime.manager.TaskServiceFactory;
 
 public class SingletonRuntimeManager extends AbstractRuntimeManager {
     
-    protected static List<String> activeSingletons = new CopyOnWriteArrayList<String>();
+
     
     private Runtime singleton;
     private SessionFactory factory;
     private TaskServiceFactory taskServiceFactory;
-    private String identifier;
-    
+
     public SingletonRuntimeManager() {
         super(null, null);
         // no-op just for cdi, spring and other frameworks
@@ -38,7 +33,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         this.taskServiceFactory = taskServiceFactory;
         this.identifier = identifier;
     }
-    @PostConstruct
+    
     public void init() {
 
         // TODO should we proxy/wrap the ksession so we capture dispose.destroy method calls?
@@ -62,7 +57,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public Runtime getRuntime(Context context) {
+    public Runtime getRuntime(Context context) {        
         // always return the same instance
         return this.singleton;
     }

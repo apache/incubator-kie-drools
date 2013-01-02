@@ -16,6 +16,7 @@
 
 package org.jbpm.process.instance.timer;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.drools.core.time.JobHandle;
@@ -24,7 +25,7 @@ import org.drools.core.time.JobHandle;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class TimerInstance {
+public class TimerInstance implements Serializable{
 
     private long id;
     private long timerId;
@@ -35,6 +36,8 @@ public class TimerInstance {
     private Date lastTriggered;
     private long processInstanceId;
     private int repeatLimit = -1;
+    private int sessionId;
+    private String cronExpression;
     
     public long getId() {
         return id;
@@ -112,6 +115,22 @@ public class TimerInstance {
 
     public void setRepeatLimit(int stopAfter) {
         this.repeatLimit = stopAfter;
+    }
+
+    public int getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(int sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getCronExpression() {
+        return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
     }
     
 }

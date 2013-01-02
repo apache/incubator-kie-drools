@@ -1,0 +1,22 @@
+//created on: Mar 20, 2013
+package defaultPackage
+
+//list any import classes here.
+
+
+
+//declare any global variables here
+
+
+
+
+rule "Send SMS every 15 minutes"
+
+    timer (int: 1s 1s)
+
+when
+
+then
+   System.out.println("Timer rule fired");
+
+end
