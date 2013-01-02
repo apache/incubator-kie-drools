@@ -39,7 +39,6 @@ import static org.junit.Assert.*;
 import static org.drools.phreak.A.*;
 import static org.drools.phreak.B.*;
 
-@Ignore
 public class PhreakNotNodeTest {
 
     PhreakJoinNode        phreakJoinNode;
@@ -92,7 +91,6 @@ public class PhreakNotNodeTest {
     B b4 = b( 4 );
 
     @Test
-    @Ignore
     public void test1() throws IntrospectionException {
         setupNotNode();
 

@@ -105,6 +105,22 @@ public class AccumulateNode extends BetaNode {
         out.writeObject( resultConstraints );
         out.writeObject( resultBinder );
     }
+    
+    public Accumulate getAccumulate() {
+        return this.accumulate;
+    }       
+
+    public AlphaNodeFieldConstraint[] getResultConstraints() {
+        return resultConstraints;
+    }
+
+    public BetaConstraints getResultBinder() {
+        return resultBinder;
+    }
+
+    public boolean isUnwrapRightObject() {
+        return unwrapRightObject;
+    }
 
     /**
      * @inheritDoc

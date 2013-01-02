@@ -592,7 +592,10 @@ public class ExistsNode extends BetaNode {
     }
     
     public LeftTuple createPeer(LeftTuple original) {
-        return null;
+        NotNodeLeftTuple peer = new NotNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
     }    
 
 }

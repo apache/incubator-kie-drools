@@ -24,7 +24,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import static org.drools.phreak.Pair.t;
 
-@Ignore
 public class PhreakJoinNodeTest {
     BuildContext          buildContext;
     JoinNode              joinNode;
@@ -127,8 +126,8 @@ public class PhreakJoinNodeTest {
               .preStaged(smem0).insert( )      
                                .delete( )
                                .update( )
-              .postStaged(smem0).insert( t(a0, b1),
-                                         t(a1, b0) )
+              .postStaged(smem0).insert( t(a1, b0),
+                                         t(a0, b1) )
                                 .delete( )
                                 .update( )                                      
               .run();
@@ -168,10 +167,10 @@ public class PhreakJoinNodeTest {
               .preStaged(smem0).insert( )      
                                .delete( )
                                .update( )
-              .postStaged(smem0).insert( t(a0, b1),
-                                         t(a0, b2),
+              .postStaged(smem0).insert( t(a1, b2),
                                          t(a1, b0),
-                                         t(a1, b2) )
+                                         t(a0, b2),
+                                         t(a0, b1) )
                                 .delete( )
                                 .update( )                                      
               .run();
@@ -180,13 +179,13 @@ public class PhreakJoinNodeTest {
         wm.getObjectStore().updateHandle( fh, a2 );
         
         test().left().update( a2 )
-                .preStaged(smem0).insert( t(a1, b0),
-                                          t(a1, b2) )
+                .preStaged(smem0).insert( t(a1, b2),
+                                          t(a1, b0) )
                                  .delete( )
                                  .update( )                                       
-                .postStaged(smem0).insert( t(a1, b0),
-                                      t(a1, b2),
-                                      t(a2, b0) )                                      
+                .postStaged(smem0).insert( t(a2, b0),
+                                           t(a1, b2),
+                                           t(a1, b0) )                                      
                                   .delete( t(a2, b2) )
                                   .update( t(a2, b1) )                                      
                 .run();             

@@ -125,7 +125,7 @@ public class RightInputAdapterNode extends ObjectSource
         RiaNodeMemory rianMem = new RiaNodeMemory();
         
         if ( this.unlinkingEnabled ) {
-            int segmentCount = 0;
+            int segmentCount = 1;
             int segmentPosMask = 1;
             long allLinkedTestMask = 1; // set to one to cover current segment
             
@@ -146,7 +146,6 @@ public class RightInputAdapterNode extends ObjectSource
             // now iterate to root, but just shift, don't set
             // This is because the RIANode mask only cares about nodes in it's subnetwork, 
             // but offsets are still calculated from root
-    
             while (tupleSource != null ) {
                 if ( !BetaNode.parentInSameSegment( tupleSource ) ) {
                     allLinkedTestMask = allLinkedTestMask << 1;   
@@ -156,7 +155,7 @@ public class RightInputAdapterNode extends ObjectSource
                 
             }           
             rmem.setAllLinkedMaskTest( allLinkedTestMask ); 
-            rianMem.setRuleSegments( rmem );
+            rianMem.setRiaRuleMemory( rmem );
             rmem.setSegmentMemories( new SegmentMemory[segmentCount] );
         }
         
@@ -484,11 +483,11 @@ public class RightInputAdapterNode extends ObjectSource
             this.map = map;
         }
 
-        public RuleMemory getRuleSegments() {
+        public RuleMemory getRiaRuleMemory() {
             return ruleSegments;
         }
 
-        public void setRuleSegments(RuleMemory ruleSegments) {
+        public void setRiaRuleMemory(RuleMemory ruleSegments) {
             this.ruleSegments = ruleSegments;
         }
         

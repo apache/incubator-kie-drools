@@ -81,7 +81,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return subnetworkSegmentMemory;
     }
 
-    public void setSubnetworkSegmentMemor(SegmentMemory subnetworkSegmentMemory) {
+    public void setSubnetworkSegmentMemory(SegmentMemory subnetworkSegmentMemory) {
         this.subnetworkSegmentMemory = subnetworkSegmentMemory;
     }
 
