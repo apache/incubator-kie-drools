@@ -160,7 +160,7 @@ public class JDKTimerService
         return 0;
     }
 
-    public Collection<TimerJobInstance> getTimerJobInstances() {
+    public Collection<TimerJobInstance> getTimerJobInstances(int id) {
         return jobFactoryManager.getTimerJobInstances();
     }
 

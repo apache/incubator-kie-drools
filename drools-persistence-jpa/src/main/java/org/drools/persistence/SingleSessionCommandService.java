@@ -118,7 +118,6 @@ public class SingleSessionCommandService
         // Use the App scoped EntityManager if the user has provided it, and it is open.
         // - open the entity manager before the transaction begins. 
         PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
-
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
