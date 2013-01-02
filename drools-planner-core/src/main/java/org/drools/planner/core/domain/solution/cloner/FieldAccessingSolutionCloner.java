@@ -18,6 +18,7 @@ package org.drools.planner.core.domain.solution.cloner;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.IdentityHashMap;
@@ -94,7 +95,17 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
                 Constructor<C> constructor = clazz.getConstructor(); // TODO cache me
                 constructor.setAccessible(true);
                 return constructor.newInstance();
-            } catch (ReflectiveOperationException e) {
+                // TODO Upgrade to JDK 1.7: catch (ReflectiveOperationException e) instead of these 4
+            } catch (InvocationTargetException e) {
+                throw new IllegalStateException("The class (" + clazz
+                        + ") should have a no-arg constructor to create a clone.", e);
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException("The class (" + clazz
+                        + ") should have a no-arg constructor to create a clone.", e);
+            } catch (InstantiationException e) {
+                throw new IllegalStateException("The class (" + clazz
+                        + ") should have a no-arg constructor to create a clone.", e);
+            } catch (IllegalAccessException e) {
                 throw new IllegalStateException("The class (" + clazz
                         + ") should have a no-arg constructor to create a clone.", e);
             }
@@ -172,7 +183,16 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             try {
                 Method cloneMethod = originalCollection.getClass().getMethod("clone");
                 cloneCollection = (Collection) cloneMethod.invoke(originalCollection);
-            } catch (ReflectiveOperationException e) {
+                // TODO Upgrade to JDK 1.7: catch (ReflectiveOperationException e) instead of these 4
+            } catch (InvocationTargetException e) {
+                throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
+                        + ") which is an instance of a class (" + originalCollection.getClass()
+                        + ") and implements Cloneable.");
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
+                        + ") which is an instance of a class (" + originalCollection.getClass()
+                        + ") and implements Cloneable.");
+            } catch (IllegalAccessException e) {
                 throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
                         + ") which is an instance of a class (" + originalCollection.getClass()
                         + ") and implements Cloneable.");
