@@ -120,7 +120,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         if (!CollectionUtils.isEmpty(entityFilterClassList)
                 || entityDescriptor.hasMovableEntitySelectionFilter()) {
             List<SelectionFilter> entityFilterList = new ArrayList<SelectionFilter>(
-                    entityFilterClassList == null ? 1 : entityFilterClassList.size());
+                    entityFilterClassList == null ? 1 : entityFilterClassList.size() + 1);
             if (entityFilterClassList != null) {
                 for (Class<? extends SelectionFilter> entityFilterClass : entityFilterClassList) {
                     entityFilterList.add(ConfigUtils.newInstance(this, "entityFilterClass", entityFilterClass));
