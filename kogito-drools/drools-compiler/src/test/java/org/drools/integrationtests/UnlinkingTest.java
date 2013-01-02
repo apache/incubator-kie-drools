@@ -21,7 +21,6 @@ import org.junit.Test;
 public class UnlinkingTest {
 
     @Test
-    @Ignore
     public void multipleJoinsUsingSameOTN() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();

@@ -1,6 +1,7 @@
 package org.drools.phreak;
 
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
@@ -64,8 +65,13 @@ public class SegmentUtilities {
                         sinkNode = sinkNode.getNextLeftTupleSinkNode();
                     }
                     
-                    SegmentMemory subNetworkSegmentMemory = createSegmentMemory( ( LeftTupleSource ) sinkNode, wm );
-                    betaMemory.setSubnetworkSegmentMemor( subNetworkSegmentMemory );
+                    Memory mem = wm.getNodeMemory( (MemoryFactory) sinkNode );
+                    SegmentMemory subNetworkSegmentMemory = mem.getSegmentMemory();
+                    if ( subNetworkSegmentMemory == null ) {
+                        // we need to stop recursion here
+                        subNetworkSegmentMemory = createSegmentMemory( ( LeftTupleSource ) sinkNode, wm );
+                    }
+                    betaMemory.setSubnetworkSegmentMemory( subNetworkSegmentMemory );
                 }
                 
                 betaMemory.setSegmentMemory( smem );
@@ -99,6 +105,16 @@ public class SegmentUtilities {
                     tupleSource = ( LeftTupleSource ) firstSink;
                 } else {
                     // rtn or rian
+                    // While not technically in a segment, we want to be able to iterate easily from the last node memory to the ria/rtn memory
+                    // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
+                    if ( firstSink.getType() == NodeTypeEnums.RightInputAdaterNode) {
+                        RiaNodeMemory memory = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
+                        smem.getNodeMemories().add( memory.getRiaRuleMemory() );
+                    } else if ( NodeTypeEnums.isTerminalNode( firstSink) ) {             
+                        RuleMemory rmem = ( RuleMemory ) wm.getNodeMemory( (MemoryFactory) firstSink );
+                        smem.getNodeMemories().add( rmem );
+                    }                    
+                    smem.setTipNode( firstSink );
                     break;
                 }
             } else if ( sink.size() == 2 && 
@@ -108,13 +124,12 @@ public class SegmentUtilities {
                 tupleSource = ( LeftTupleSource )secondSink;
             } else {
                 // not in same segment
+                smem.setTipNode( tupleSource );
                 break;
             }   
             
     	}		
-    	smem.setAllLinkedMaskTest( allLinkedTestMask );
-    	smem.setTipNode( tupleSource );
-    
+    	smem.setAllLinkedMaskTest( allLinkedTestMask );    
     	
     	// iterate to find root and determine the SegmentNodes position in the RuleSegment
         LeftTupleSource parent = segmentRoot;	
@@ -137,6 +152,8 @@ public class SegmentUtilities {
 
     /**
      * Is the LeftTupleSource a node in the sub network for the RightInputAdapterNode
+     * To be in the same network, it must be a node is after the two output of the parent
+     * and before the rianode.
      * 
      * @param riaNode
      * @param leftTupleSource
@@ -154,8 +171,21 @@ public class SegmentUtilities {
         }
         
         return false;
-    }
+    }     
 
+    /**
+     * This adds the segment memory to the terminal node or ria node's list of memories.
+     * In the case of the terminal node this allows it to know that all segments from 
+     * the tip to root are linked.
+     * In the case of the ria node its all the segments up to the start of the subnetwork.
+     * This is because the rianode only cares if all of it's segments are linked, then
+     * it sets the bit of node it is the right input for. 
+     * @param pos
+     * @param lt
+     * @param originalLt
+     * @param smem
+     * @param wm
+     */
     public static void updateRiaAndTerminalMemory(int pos, LeftTupleSource lt,
                                                   LeftTupleSource originalLt,
                                                   SegmentMemory smem,
@@ -163,21 +193,23 @@ public class SegmentUtilities {
         for ( LeftTupleSink sink : lt.getSinkPropagator().getSinks() ) {
     	    if (NodeTypeEnums.isLeftTupleSource( sink ) ) {
     	        if ( sink.getType() == NodeTypeEnums.NotNode ) {
-    	            BetaMemory bm = ( BetaMemory) smem.createNodeMemory( (MemoryFactory) sink, wm  );
+    	            BetaMemory bm = ( BetaMemory) wm.getNodeMemory( (MemoryFactory) sink );
     	             if ( bm.getSegmentMemory() == null ) {
     	                 // Not nodes must be initialised
     	                 createSegmentMemory( (NotNode) sink, wm );
     	             }
     	        }
     	        updateRiaAndTerminalMemory(++pos, ( LeftTupleSource ) sink, originalLt, smem, wm);
-    	    } else if ( sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
-    	        RiaNodeMemory memory = ( RiaNodeMemory ) smem.createNodeMemory( (MemoryFactory) sink, wm  );        	        
+    	    } else if ( sink.getType() == NodeTypeEnums.RightInputAdaterNode) {      
     	        // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
-    	        if ( inSubNetwork( (RightInputAdapterNode)sink, originalLt ) ) {    	        
-    	            smem.getRuleMemories().add( memory.getRuleSegments() );
+    	        if ( inSubNetwork( (RightInputAdapterNode)sink, originalLt ) ) {
+    	            RiaNodeMemory riaMem = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) sink );
+    	            RuleMemory rmem = ( RuleMemory ) riaMem.getRiaRuleMemory();
+                    smem.getRuleMemories().add( rmem );
+                    rmem.getSegmentMemories()[smem.getPos()] = smem;
     	        }
-    	    } else if ( NodeTypeEnums.isTerminalNode( sink) ) {
-    	        RuleMemory rmem = ( RuleMemory ) smem.createNodeMemory( (MemoryFactory) sink, wm  );
+    	    } else if ( NodeTypeEnums.isTerminalNode( sink) ) {    	        
+    	        RuleMemory rmem = ( RuleMemory ) wm.getNodeMemory( (MemoryFactory) sink );
                 smem.getRuleMemories().add( rmem );
                 rmem.getSegmentMemories()[smem.getPos()] = smem;
     	        

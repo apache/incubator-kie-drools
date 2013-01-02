@@ -6,6 +6,7 @@ import java.util.List;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
+import org.drools.common.NetworkNode;
 import org.drools.common.StagedLeftTuples;
 import org.drools.core.util.Entry;
 import org.drools.core.util.LinkedList;
@@ -16,7 +17,7 @@ import org.drools.phreak.SegmentPropagator;
 
 public class SegmentMemory extends LinkedList<SegmentMemory> implements LinkedListNode<SegmentMemory>{
     private LeftTupleSource   rootNode;
-    private LeftTupleSource     tipNode;
+    private NetworkNode       tipNode;
     
     private LinkedList<Memory> nodeMemories;
     
@@ -52,14 +53,14 @@ public class SegmentMemory extends LinkedList<SegmentMemory> implements LinkedLi
         return rootNode;
     }
     
-    public LeftTupleSource getTipNode() {
+    public NetworkNode getTipNode() {
         return tipNode;
     }
     
-    public void setTipNode(LeftTupleSource tipNode) {
+    public void setTipNode(NetworkNode tipNode) {
         this.tipNode = tipNode;
     }
-
+    
     public Memory createNodeMemory(MemoryFactory memoryFactory, InternalWorkingMemory wm) {
         Memory memory = wm.getNodeMemory( memoryFactory );        
         nodeMemories.add( memory );

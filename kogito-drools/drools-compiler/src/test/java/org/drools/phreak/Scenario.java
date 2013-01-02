@@ -44,6 +44,8 @@ public class Scenario {
     StagedBuilder         expectedResultBuilder;
     
     StagedLeftTuples      actualResultLeftTuples;
+    
+    StagedLeftTuples      previousResultTuples;
 
     List<StagedBuilder>   preStagedBuilders;
     List<StagedBuilder>   postStagedBuilders;
@@ -156,7 +158,7 @@ public class Scenario {
     }
 
     public Scenario run() {
-        StagedLeftTuples previousResultTuples = actualResultLeftTuples;
+        previousResultTuples = ( StagedLeftTuples ) ((SegmentMemory) bm.getSegmentMemory().getFirst()).getStagedLeftTuples();
         actualResultLeftTuples = new StagedLeftTuples();
         
         if ( phreakNode == PhreakJoinNode.class ) {
@@ -186,7 +188,7 @@ public class Scenario {
         }        
         
         SegmentMemory smem = bm.getSegmentMemory();
-        SegmentPropagator.propagate( smem, actualResultLeftTuples, wm );        
+        SegmentPropagator.propagate( smem, actualResultLeftTuples, wm );
 
         if ( testLeftMemory ) {
             equalsLeftMemory( leftMemory );

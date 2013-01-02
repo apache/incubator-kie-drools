@@ -150,7 +150,7 @@ public class NotNode extends BetaNode {
 
         if ( isUnlinkingEnabled() ) {              
             // strangely we link here, this is actually just to force a network evaluation
-            // The assert is then processed and the rule unlink then. 
+            // The assert is then processed and the rule unlinks then. 
             // This is because we need the first RightTuple to link with it's blocked
             if (  memory.getAndIncCounter() == 0 && !isRightInputIsRiaNode() && isEmptyBetaConstraints()  ) {
                 // NotNodes can only be unlinked, if they have no variable constraints

@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import static org.drools.phreak.Pair.t;
 
-@Ignore
 public class ScenarioTest {
     BuildContext          buildContext;
     JoinNode              joinNode;
@@ -424,11 +423,12 @@ public class ScenarioTest {
                   .run();
             
             test().left().insert( a3 )
-                  .preStaged(smem0).insert( t(a1, b0) )
+                  .preStaged(smem0).insert( t(a0, b1) )
                   .run();            
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
+            System.out.println( e.getMessage() );
             assertTrue( e.getMessage().contains( "Insert excpected more" ) );
         }
     }    
@@ -469,12 +469,13 @@ public class ScenarioTest {
             
             test().left().insert( a3 )
                   .preStaged(smem0).insert( t(a1, b2),
-                                            t(a0, b1),
-                                            t(a1, b0) )
+                                            t(a1, b0),
+                                            t(a0, b1) )
                   .run();            
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
+            System.out.println( e.getMessage() );
             assertTrue( e.getMessage().contains( "insert 2 expected" ) );
         }
     }     
@@ -516,7 +517,7 @@ public class ScenarioTest {
                   .run();         
             
             test().left().delete( a2 )
-                  .preStaged(smem0).delete( t(a1, b0) )
+                  .preStaged(smem0).delete( t(a0, b1) )
                   .run();               
             // @formatter:on
             fail("Should not reach here");
@@ -585,7 +586,7 @@ public class ScenarioTest {
                   .run();         
       
             test().left().update( a2 )
-                  .preStaged(smem0).update( t(a1, b0) )
+                  .preStaged(smem0).update( t(a0, b1) )
                   .run();              
             // @formatter:on            
             fail("Should not reach here");
@@ -645,7 +646,7 @@ public class ScenarioTest {
                   .run();
             
             test().left().delete( a0, a1 )
-                  .postStaged(smem0).delete( t(a1, b0) )
+                  .postStaged(smem0).delete( t(a0, b1) )
                   .run();            
             // @formatter:on            
             fail("Should not reach here");
@@ -705,7 +706,7 @@ public class ScenarioTest {
                   .run();
             
             test().left().update( a0, a1 )
-                  .postStaged(smem0).update( t(a1, b0) )
+                  .postStaged(smem0).update( t(a0, b1) )
                   .run();            
             // @formatter:on            
             fail("Should not reach here");

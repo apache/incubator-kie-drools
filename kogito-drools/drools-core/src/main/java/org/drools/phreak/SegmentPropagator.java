@@ -18,7 +18,7 @@ import org.drools.reteoo.EvalConditionNode.EvalMemory;
 public class SegmentPropagator {
     
     public static void propagate(SegmentMemory sourceSegment, StagedLeftTuples stagedLeftTuples, InternalWorkingMemory wm) {
-        LeftTupleSource source = sourceSegment.getTipNode();
+        LeftTupleSource source = ( LeftTupleSource )  sourceSegment.getTipNode();
         
         if ( sourceSegment.isEmpty() ) {
             // We know it's a Composite  
@@ -113,8 +113,8 @@ public class SegmentPropagator {
         }
         
         // Process Inserts        
-        for ( LeftTuple leftTuple = leftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {                        
-            peerLeftTuples.addInsert( sink.createPeer( leftTuple.getPeer() ) );
+        for ( LeftTuple leftTuple = leftTuples.getInsertFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {                        
+            peerLeftTuples.addInsert( sink.createPeer( leftTuple ) );
         }                     
     }    
 }

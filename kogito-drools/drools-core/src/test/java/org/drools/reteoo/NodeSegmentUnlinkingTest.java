@@ -13,6 +13,7 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
@@ -24,7 +25,6 @@ import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.conf.LRUnlinkingOption;
 
-@Ignore
 public class NodeSegmentUnlinkingTest {
     ReteooRuleBase       ruleBase;
     BuildContext         buildContext;
@@ -100,15 +100,37 @@ public class NodeSegmentUnlinkingTest {
         // 3, 4, 5, 6 are in same shared segment
         n1 = createBetaNode( 10, type[0], liaNode );
         n2 = createBetaNode( 11, type[1], n1 );
-
+        RuleTerminalNode rtn1 = new RuleTerminalNode( 18,
+                                                      n2,
+                                                      rule1,
+                                                      rule1.getLhs(),
+                                                      0,
+                                                      buildContext );
+        rtn1.attach();
+        
+        
         n3 = createBetaNode( 12, type[2], n1 );
         n4 = createBetaNode( 13, type[3], n3 );
         n5 = createBetaNode( 14, type[4], n4 );
-        n6 = createBetaNode( 15, type[5], n5 );
+        n6 = createBetaNode( 15, type[5], n5 ); 
+        RuleTerminalNode rtn2 = new RuleTerminalNode( 19,
+                                                      n6,
+                                                      rule2,
+                                                      rule2.getLhs(),
+                                                      0,
+                                                      buildContext );
+        rtn2.attach();       
 
         n7 = createBetaNode( 16, type[6], n6 );
-        n8 = createBetaNode( 17, type[7], n6 );
-
+        n8 = createBetaNode( 17, type[7], n7 );
+        RuleTerminalNode rtn3 = new RuleTerminalNode( 20,
+                                                      n8,
+                                                      rule3,
+                                                      rule3.getLhs(),
+                                                      0,
+                                                      buildContext );
+        rtn3.attach(); 
+        
         // n1 -> n2 -> r1
         //  \ 
         //   n3 -> n4 -> n5 -> n6 -> r2
@@ -447,7 +469,7 @@ public class NodeSegmentUnlinkingTest {
     public void testAllLinkedInWithNotNodesOnly() {
         setUp( NOT_NODE );
 
-        assertEquals( NotNode.class, n3.getClass() ); // make sure it created ExistsNodes
+        assertEquals( NotNode.class, n3.getClass() ); // make sure it created NotNodes
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( LRUnlinkingOption.ENABLED );        
@@ -460,6 +482,8 @@ public class NodeSegmentUnlinkingTest {
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" ); // unlinked after first assertion
         n3.assertObject( f1, context, wm );
                 
+        // this doesn't unlink on the assertObject, as the node's memory must be processed. So use the helper method the main network evaluator uses.
+        RuleNetworkEvaluatorActivation.PhreakNotNode.unlinkNotNodeOnRightInsert( (NotNode) n3, bm, wm );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() );                
 
         n3.retractRightTuple( f1.getFirstRightTuple(), context, wm );

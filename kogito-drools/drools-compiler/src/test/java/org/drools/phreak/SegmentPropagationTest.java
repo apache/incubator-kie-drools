@@ -22,7 +22,6 @@ import org.drools.rule.Rule;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class SegmentPropagationTest {
     
     BuildContext          buildContext;
@@ -125,37 +124,37 @@ public class SegmentPropagationTest {
               .preStaged(smem0).insert( )      
                                .delete( )
                                .update( )
-              .postStaged(smem0).insert( t(a0, b1),
+              .postStaged(smem0).insert( t(a1, b2),
+                                         t(a1, b0),                                         
                                          t(a0, b2),
-                                         t(a1, b0),
-                                         t(a1, b2) )
+                                         t(a0, b1) )
                                 .delete( )
                                 .update( ) 
               .postStaged( smem1 ).insert( t(a0, b1),
                                            t(a0, b2),
                                            t(a1, b0),
                                            t(a1, b2) )
-                              .delete( )
-                              .update( )                                        
+                                  .delete( )
+                                  .update( )                                        
               .postStaged( smem2 ).insert( t(a0, b1),
                                            t(a0, b2),
-                                          t(a1, b0),
-                                          t(a1, b2) )  
-                           .delete( )
-                           .update( )                                        
+                                           t(a1, b0),
+                                           t(a1, b2) )  
+                                 .delete( )
+                                 .update( )                                        
               .run();
         
         
         test().left().update( a0 )
-              .preStaged(smem0).insert( t(a1, b0),
-                                   t(a1, b2) )
+              .preStaged(smem0).insert( t(a1, b2),
+                                        t(a1, b0) )
                           .delete( )
                           .update( ) 
-              .postStaged(smem0).insert( t(a1, b0),
-                                         t(a1, b2) )
+              .postStaged(smem0).insert( t(a1, b2),
+                                         t(a1, b0) )
                                 .delete( )
-                                .update( t(a0, b1),
-                                         t(a0, b2) ) 
+                                .update( t(a0, b2),
+                                         t(a0, b1) ) 
               .postStaged( smem1 ).insert( t(a1, b0),
                                            t(a1, b2) )
                                   .delete( )
@@ -174,8 +173,8 @@ public class SegmentPropagationTest {
                                .update( t(a0, b1) ) 
                                      
               .postStaged(smem0).insert( t(a1, b0) )
-                                .delete( t(a0, b2), 
-                                         t(a1, b2) )
+                                .delete( t(a1, b2), 
+                                         t(a0, b2) )
                                 .update( t(a0, b1) ) 
               .postStaged( smem1 ).insert( t(a1, b0) )
                                   .delete( t(a0, b2), 
