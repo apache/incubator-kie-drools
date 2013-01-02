@@ -1,14 +1,14 @@
-package org.drools.scanner.embedder;
+package org.kie.scanner.embedder;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
-import org.drools.scanner.DependencyDescriptor;
-import org.drools.scanner.PomParser;
+import org.kie.scanner.DependencyDescriptor;
+import org.kie.scanner.PomParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drools.scanner.embedder.MavenProjectLoader.loadMavenProject;
+import static org.kie.scanner.embedder.MavenProjectLoader.loadMavenProject;
 
 public class EmbeddedPomParser implements PomParser {
 

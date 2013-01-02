@@ -1,4 +1,4 @@
-package org.drools.scanner;
+package org.kie.scanner;
 
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.kie.builder.ReleaseId;
@@ -27,7 +27,7 @@ import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.drools.scanner.ArtifactResolver.getResolverFor;
+import static org.kie.scanner.ArtifactResolver.getResolverFor;
 import static org.kie.builder.impl.KieBuilderImpl.buildKieModule;
 
 public class KieRepositoryScannerImpl implements InternalKieScanner {

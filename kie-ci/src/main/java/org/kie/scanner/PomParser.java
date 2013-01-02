@@ -1,4 +1,4 @@
-package org.drools.scanner;
+package org.kie.scanner;
 
 import java.util.List;
 

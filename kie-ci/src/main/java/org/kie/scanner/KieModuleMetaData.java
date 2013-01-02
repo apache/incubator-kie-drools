@@ -1,5 +1,6 @@
-package org.drools.scanner;
+package org.kie.scanner;
 
+import org.kie.builder.KieModule;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.impl.InternalKieModule;
 
@@ -15,8 +16,8 @@ public interface KieModuleMetaData {
     Class<?> getClass(String pkgName, String className);
 
     public static class Factory {
-        public static KieModuleMetaData newKieModuleMetaData(InternalKieModule kieModule) {
-            return new KieModuleMetaDataImpl(kieModule);
+        public static KieModuleMetaData newKieModuleMetaData(KieModule kieModule) {
+            return new KieModuleMetaDataImpl((InternalKieModule) kieModule);
         }
 
         public static KieModuleMetaData newKieModuleMetaData(ReleaseId releaseId) {

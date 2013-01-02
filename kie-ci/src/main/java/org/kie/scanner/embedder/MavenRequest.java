@@ -1,4 +1,4 @@
-package org.drools.scanner.embedder;
+package org.kie.scanner.embedder;
 
 import org.apache.maven.execution.ExecutionListener;
 import org.apache.maven.execution.MavenExecutionRequest;

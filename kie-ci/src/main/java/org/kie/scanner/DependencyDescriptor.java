@@ -1,4 +1,4 @@
-package org.drools.scanner;
+package org.kie.scanner;
 
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;

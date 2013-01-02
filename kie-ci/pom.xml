@@ -9,6 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <groupId>org.kie</groupId>
   <artifactId>kie-ci</artifactId>
 
   <name>KIE :: CI</name>

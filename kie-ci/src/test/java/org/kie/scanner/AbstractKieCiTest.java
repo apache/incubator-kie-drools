@@ -1,4 +1,4 @@
-package org.drools.scanner;
+package org.kie.scanner;
 
 import org.kie.KieServices;
 import org.kie.builder.KieBaseModel;

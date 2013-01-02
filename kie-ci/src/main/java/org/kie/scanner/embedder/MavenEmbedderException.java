@@ -1,4 +1,4 @@
-package org.drools.scanner.embedder;
+package org.kie.scanner.embedder;
 
 public class MavenEmbedderException extends Exception {
 

@@ -1,4 +1,4 @@
-package org.drools.scanner.embedder;
+package org.kie.scanner.embedder;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.codehaus.plexus.ContainerConfiguration;
