@@ -136,13 +136,13 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             long timeMillisSpend = localSearchSolverPhaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({})," +
                     " accepted/selected move count ({}/{}) for picked step ({}).",
-                    new Object[]{stepScope.getStepIndex(), timeMillisSpend,
-                            stepScope.getScore(),
-                            (stepScope.getBestScoreImproved() ? "new" : "   "),
-                            localSearchSolverPhaseScope.getBestScore(),
-                            stepScope.getAcceptedMoveCount(),
-                            stepScope.getSelectedMoveCount(),
-                            stepScope.getStepString()});
+                    stepScope.getStepIndex(), timeMillisSpend,
+                    stepScope.getScore(),
+                    (stepScope.getBestScoreImproved() ? "new" : "   "),
+                    localSearchSolverPhaseScope.getBestScore(),
+                    stepScope.getAcceptedMoveCount(),
+                    stepScope.getSelectedMoveCount(),
+                    stepScope.getStepString());
         }
     }
 
@@ -150,9 +150,9 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         super.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
         logger.info("Phase localSearch ended: step total ({}), time spend ({}), best score ({}).",
-                new Object[]{phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
-                        phaseScope.calculateSolverTimeMillisSpend(),
-                        phaseScope.getBestScore()});
+                phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                phaseScope.calculateSolverTimeMillisSpend(),
+                phaseScope.getBestScore());
     }
 
     @Override

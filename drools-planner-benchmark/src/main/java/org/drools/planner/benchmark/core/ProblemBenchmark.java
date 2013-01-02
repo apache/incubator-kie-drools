@@ -288,7 +288,7 @@ public class ProblemBenchmark {
             problemScale = registeringProblemScale;
         } else if (problemScale.longValue() != registeringProblemScale) {
             logger.warn("The problemBenchmark ({}) has different problemScale values ([{},{}]).",
-                    new Object[]{getName(), problemScale, registeringProblemScale});
+                    getName(), problemScale, registeringProblemScale);
             // The problemScale is not unknown (null), but known to be ambiguous
             problemScale = -1L;
         }

@@ -129,7 +129,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
             }
         }
         logger.trace("        Move index ({}), score ({}) for move ({}).",
-                new Object[]{moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove()});
+                moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove());
     }
 
     private void processMove(GreedyMoveScope moveScope) {

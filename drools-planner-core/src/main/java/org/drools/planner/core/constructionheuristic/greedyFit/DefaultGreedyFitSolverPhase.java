@@ -126,8 +126,8 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = greedyFitStepScope.getPhaseScope().calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), initialized planning entity ({}).",
-                    new Object[]{greedyFitStepScope.getStepIndex(), timeMillisSpend,
-                            greedyFitStepScope.getScore(), greedyFitStepScope.getPlanningEntity()});
+                    greedyFitStepScope.getStepIndex(), timeMillisSpend,
+                    greedyFitStepScope.getScore(), greedyFitStepScope.getPlanningEntity());
         }
     }
 
@@ -136,9 +136,9 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         greedyPlanningEntitySelector.phaseEnded(greedyFitSolverPhaseScope);
         greedyDecider.phaseEnded(greedyFitSolverPhaseScope);
         logger.info("Phase constructionHeuristic ended: step total ({}), time spend ({}), best score ({}).",
-                new Object[]{greedyFitSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                greedyFitSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
                 greedyFitSolverPhaseScope.calculateSolverTimeMillisSpend(),
-                greedyFitSolverPhaseScope.getBestScore()});
+                greedyFitSolverPhaseScope.getBestScore());
     }
 
     @Override

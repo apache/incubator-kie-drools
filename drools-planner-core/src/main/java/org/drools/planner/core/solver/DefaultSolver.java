@@ -179,8 +179,8 @@ public class DefaultSolver implements Solver {
             solverPhase.solvingStarted(solverScope);
         }
         logger.info("Solving started: time spend ({}), score ({}), new best score ({}), random seed ({}).",
-                new Object[]{solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
-                        solverScope.getBestScore(), (randomSeed != null ? randomSeed : "not fixed")});
+                solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
+                solverScope.getBestScore(), (randomSeed != null ? randomSeed : "not fixed"));
     }
 
     protected void runSolverPhases() {
@@ -207,9 +207,9 @@ public class DefaultSolver implements Solver {
         }
         long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L / timeMillisSpend;
         logger.info("Solving ended: time spend ({}), best score ({}), average calculate count per second ({}).",
-                new Object[]{timeMillisSpend,
+                timeMillisSpend,
                 solverScope.getBestScore(),
-                averageCalculateCountPerSecond});
+                averageCalculateCountPerSecond);
     }
 
     private void checkProblemFactChanges() {

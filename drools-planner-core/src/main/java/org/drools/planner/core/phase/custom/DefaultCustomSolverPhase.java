@@ -96,19 +96,19 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = customSolverPhaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",
-                    new Object[]{stepScope.getStepIndex(), timeMillisSpend,
-                            stepScope.getScore(),
-                            bestScoreImproved ? "new" : (forceUpdateBestSolution ? "forced" : "   "),
-                            customSolverPhaseScope.getBestScore()});
+                    stepScope.getStepIndex(), timeMillisSpend,
+                    stepScope.getScore(),
+                    bestScoreImproved ? "new" : (forceUpdateBestSolution ? "forced" : "   "),
+                    customSolverPhaseScope.getBestScore());
         }
     }
 
     public void phaseEnded(CustomSolverPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         logger.info("Phase custom ended: step total ({}), time spend ({}), best score ({}).",
-                new Object[]{phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
-                        phaseScope.calculateSolverTimeMillisSpend(),
-                        phaseScope.getBestScore()});
+                phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                phaseScope.calculateSolverTimeMillisSpend(),
+                phaseScope.getBestScore());
     }
 
 }

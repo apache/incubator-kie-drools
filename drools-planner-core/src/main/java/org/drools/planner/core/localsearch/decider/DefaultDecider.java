@@ -149,8 +149,8 @@ public class DefaultDecider implements Decider {
             phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}), accepted ({}) for move ({}).",
-                new Object[]{moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getAccepted(),
-                        moveScope.getMove()});
+                moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getAccepted(),
+                moveScope.getMove());
     }
 
     private void processMove(LocalSearchMoveScope moveScope) {

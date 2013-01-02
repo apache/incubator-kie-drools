@@ -93,9 +93,9 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = bruteForceSolverPhaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",
-                    new Object[]{stepScope.getStepIndex(), timeMillisSpend,
-                            stepScope.getScore(), (stepScope.getBestScoreImproved() ? "new" : "   "),
-                            bruteForceSolverPhaseScope.getBestScore()});
+                    stepScope.getStepIndex(), timeMillisSpend,
+                    stepScope.getScore(), (stepScope.getBestScoreImproved() ? "new" : "   "),
+                    bruteForceSolverPhaseScope.getBestScore());
         }
     }
 
@@ -103,9 +103,9 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
         super.phaseEnded(phaseScope);
         bruteForceEntityWalker.phaseEnded(phaseScope);
         logger.info("Phase bruteForce ended: step total ({}), time spend ({}), best score ({}).",
-                new Object[]{phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
-                        phaseScope.calculateSolverTimeMillisSpend(),
-                        phaseScope.getBestScore()});
+                phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                phaseScope.calculateSolverTimeMillisSpend(),
+                phaseScope.getBestScore());
     }
 
     @Override

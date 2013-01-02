@@ -128,8 +128,8 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}) for constructing step ({}).",
-                    new Object[]{stepScope.getStepIndex(), timeMillisSpend,
-                            stepScope.getScore(), stepScope.getStep()});
+                    stepScope.getStepIndex(), timeMillisSpend,
+                    stepScope.getScore(), stepScope.getStep());
         }
     }
 
@@ -139,9 +139,9 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
             entityPlacer.phaseEnded(phaseScope);
         }
         logger.info("Phase constructionHeuristic ended: step total ({}), time spend ({}), best score ({}).",
-                new Object[]{phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
-                        phaseScope.calculateSolverTimeMillisSpend(),
-                        phaseScope.getBestScore()});
+                phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                phaseScope.calculateSolverTimeMillisSpend(),
+                phaseScope.getBestScore());
     }
 
     @Override

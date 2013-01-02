@@ -285,12 +285,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         benchmarkReport.writeReport();
         if (failureCount == 0) {
             logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
-                    new Object[]{benchmarkTimeMillisSpend, favoriteSolverBenchmark.getName(),
-                            benchmarkReport.getHtmlOverviewFile().getAbsolutePath()});
+                    benchmarkTimeMillisSpend, favoriteSolverBenchmark.getName(),
+                    benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
         } else {
             logger.info("Benchmarking failed: time spend ({}), failureCount ({}), statistic html overview ({}).",
-                    new Object[]{benchmarkTimeMillisSpend, failureCount,
-                            benchmarkReport.getHtmlOverviewFile().getAbsolutePath()});
+                    benchmarkTimeMillisSpend, failureCount,
+                    benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
             throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ")." +
                     " The exception of the firstFailureSingleBenchmark (" + firstFailureSingleBenchmark.getName()
                     + ") is chained.",
