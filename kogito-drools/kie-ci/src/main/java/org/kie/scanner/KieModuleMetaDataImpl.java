@@ -1,4 +1,4 @@
-package org.drools.scanner;
+package org.kie.scanner;
 
 import org.drools.core.util.ClassUtils;
 import org.drools.kproject.ReleaseIdImpl;
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.drools.scanner.ArtifactResolver.getResolverFor;
+import static org.kie.scanner.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
 

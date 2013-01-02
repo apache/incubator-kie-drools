@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.scanner.embedder;
+package org.kie.scanner.embedder;
 
 import org.apache.maven.DefaultMaven;
 import org.apache.maven.Maven;

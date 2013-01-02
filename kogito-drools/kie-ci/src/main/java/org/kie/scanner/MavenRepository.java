@@ -1,4 +1,4 @@
-package org.drools.scanner;
+package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
 import org.kie.builder.ReleaseId;

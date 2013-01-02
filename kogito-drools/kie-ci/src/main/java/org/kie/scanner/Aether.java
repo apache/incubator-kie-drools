@@ -1,4 +1,4 @@
-package org.drools.scanner;
+package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.DefaultServiceLocator;
@@ -20,7 +20,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drools.scanner.embedder.MavenProjectLoader.loadMavenProject;
+import static org.kie.scanner.embedder.MavenProjectLoader.loadMavenProject;
 
 class Aether {
 

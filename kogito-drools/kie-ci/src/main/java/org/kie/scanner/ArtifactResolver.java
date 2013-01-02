@@ -1,7 +1,7 @@
-package org.drools.scanner;
+package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
-import org.drools.scanner.embedder.EmbeddedPomParser;
+import org.kie.scanner.embedder.EmbeddedPomParser;
 import org.kie.builder.ReleaseId;
 import org.sonatype.aether.artifact.Artifact;
 
@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.drools.scanner.embedder.MavenProjectLoader.parseMavenPom;
+import static org.kie.scanner.embedder.MavenProjectLoader.parseMavenPom;
 
 class ArtifactResolver {
 
