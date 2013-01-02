@@ -143,7 +143,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                     List<Object> trailingEntities = valueToTrailingEntityMap.get(value);
                     boolean removeSucceeded = trailingEntities.remove(entity);
                     if (!removeSucceeded) {
-                        throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is corrupted.");
+                        throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is corrupted,"
+                                + " because the entity (" + entity + ") for chained planningVariable ("
+                                + variableDescriptor.getVariableName() + ") was never inserted.");
                     }
                     if (trailingEntities.isEmpty()) {
                         valueToTrailingEntityMap.put(value, null);
