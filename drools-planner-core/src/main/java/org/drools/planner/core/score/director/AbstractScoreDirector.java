@@ -125,6 +125,13 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                     if (trailingEntities == null) {
                         trailingEntities = new ArrayList<Object>();
                         valueToTrailingEntityMap.put(value, trailingEntities);
+                    } else {
+                        if (trailingEntities.contains(entity)) {
+                            Object containedEntity = trailingEntities.get(trailingEntities.indexOf(entity));
+                            throw new IllegalStateException("The entity (" + entity
+                                    + ") for chained planningVariable (" + variableDescriptor.getVariableName()
+                                    + ") was already inserted as containedEntity (" + containedEntity + ").");
+                        }
                     }
                     trailingEntities.add(entity);
                 }
