@@ -46,6 +46,8 @@ public class ValuePlacer extends AbstractPlacer {
     }
 
     public void doPlacement(ConstructionHeuristicStepScope stepScope) {
+        // TODO ignore if initialized
+
         // TODO extract to PlacerForager
         Score maxScore = stepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
         ConstructionHeuristicMoveScope maxMoveScope = null;
