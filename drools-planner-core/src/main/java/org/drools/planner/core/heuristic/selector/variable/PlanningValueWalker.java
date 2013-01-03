@@ -97,7 +97,9 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
                     + planningVariableDescriptor.getVariableName() + ") which has no planning values.");
         }
         Object value = planningValueIterator.next();
+        scoreDirector.beforeVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
         planningVariableDescriptor.setValue(planningEntity, value);
+        scoreDirector.afterVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
         isFirstValue = true;
         workingValue = value;
     }

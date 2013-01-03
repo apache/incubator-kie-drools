@@ -224,6 +224,7 @@ public class PlanningVariableDescriptor {
         return variable != null;
     }
 
+    @Deprecated
     public void uninitialize(Object planningEntity) {
         // TODO extract to VariableInitialized interface
         DescriptorUtils.executeSetter(variablePropertyDescriptor, planningEntity, null);

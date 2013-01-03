@@ -106,7 +106,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 entry.setValue(new HashMap<Object, List<Object>>(entityList.size()));
             }
-            // TODO Remove when uninitialized entities get added automatically too (and call afterEntityAdded)
+            // TODO Remove when all starting entities call afterEntityAdded too
             for (Object entity : entityList) {
                 insertInTrailingEntityMap(entity);
             }
@@ -126,6 +126,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                         trailingEntities = new ArrayList<Object>();
                         valueToTrailingEntityMap.put(value, trailingEntities);
                     } else {
+                        // TODO FIXME contains is big scalability leak
                         if (trailingEntities.contains(entity)) {
                             Object containedEntity = trailingEntities.get(trailingEntities.indexOf(entity));
                             throw new IllegalStateException("The entity (" + entity
@@ -148,7 +149,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                     Object value = variableDescriptor.getValue(entity);
                     Map<Object, List<Object>> valueToTrailingEntityMap = entry.getValue();
                     List<Object> trailingEntities = valueToTrailingEntityMap.get(value);
-                    boolean removeSucceeded = trailingEntities.remove(entity);
+                    // TODO FIXME remove is big scalability leak
+                    boolean removeSucceeded = trailingEntities != null && trailingEntities.remove(entity);
                     if (!removeSucceeded) {
                         throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is corrupted,"
                                 + " because the entity (" + entity + ") for chained planningVariable ("

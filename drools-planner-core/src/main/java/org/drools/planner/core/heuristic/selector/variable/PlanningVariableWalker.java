@@ -96,15 +96,9 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
 
     public void initWalk(Object planningEntity) {
         this.planningEntity = planningEntity;
-        scoreDirector.beforeEntityAdded(planningEntity);
         for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
             planningValueWalker.initWalk(planningEntity);
         }
-        // TODO delete dead code in Walker's so this WorkingMemory specific stuff is gone
-        // Insert must happen after every planningValueWalker.initWalk() to avoid a NullPointerException, for example:
-        // Rules use Lecture.getDay(), which is implemented as "return period.getDay();"
-        // so the planning variable period cannot be null when the planning entity is inserted.
-        scoreDirector.afterEntityAdded(planningEntity);
     }
 
     public boolean hasWalk() {
@@ -140,9 +134,6 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
 
     // TODO refactor variableWalker to this
     public Iterator<Move> moveIterator(final Object planningEntity) {
-        scoreDirector.beforeEntityAdded(planningEntity);
-        // TODO add uninitialized entities immediately again
-        scoreDirector.afterEntityAdded(planningEntity);
         if (planningValueWalkerList.size() == 1) {
             PlanningValueWalker planningValueWalker = planningValueWalkerList.iterator().next();
             return planningValueWalker.moveIterator(planningEntity);

@@ -225,9 +225,7 @@ public class SolutionDescriptor {
             Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
             if (entity != null) {
                 PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
-                if (planningEntityDescriptor.isInitialized(entity)) {
-                    facts.add(entity);
-                }
+                facts.add(entity);
             }
         }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
@@ -235,9 +233,7 @@ public class SolutionDescriptor {
                     entityCollectionPropertyDescriptor, solution);
             for (Object entity : entityCollection) {
                 PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
-                if (planningEntityDescriptor.isInitialized(entity)) {
-                    facts.add(entity);
-                }
+                facts.add(entity);
             }
         }
         return facts;

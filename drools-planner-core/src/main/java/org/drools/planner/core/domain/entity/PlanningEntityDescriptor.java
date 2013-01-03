@@ -211,6 +211,7 @@ public class PlanningEntityDescriptor {
         return true;
     }
 
+    @Deprecated
     public void uninitialize(Object planningEntity) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptorMap.values()) {
             planningVariableDescriptor.uninitialize(planningEntity);

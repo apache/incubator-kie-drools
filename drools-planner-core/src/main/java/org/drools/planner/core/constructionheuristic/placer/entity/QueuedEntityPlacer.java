@@ -36,14 +36,16 @@ public class QueuedEntityPlacer extends AbstractPlacer implements EntityPlacer {
 
     public void doPlacement(ConstructionHeuristicStepScope stepScope) {
         Object entity = entityIterator.next();
+        // start HACK
+        // TODO isInitialized check must be inside ValuePlacer and variable specific
+        while (entitySelector.getEntityDescriptor().isInitialized(entity)) {
+            if (!entityIterator.hasNext()) {
+                return;
+            }
+            entity = entityIterator.next();
+        }
+        // end HACK
         stepScope.setEntity(entity);
-
-        // TODO add uninitialized entities immediately and remove logic in SolutionDescriptor.getAllFacts()
-        ScoreDirector scoreDirector = stepScope.getScoreDirector();
-        // TODO FIXME entity has already been added if another variable is already initialized
-        scoreDirector.beforeEntityAdded(entity);
-        scoreDirector.afterEntityAdded(entity);
-
         valuePlacer.doPlacement(stepScope);
     }
 

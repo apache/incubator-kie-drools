@@ -2443,3 +2443,13 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
         <scoreDefinitionClass>...</scoreDefinitionClass>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
         <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
+
+[MAJOR] The construction heuristics now immediately adds all uninitialized entities
+into the ScoreDirector (so into the WorkingMemory), instead of adding each entity just before initializing it.
+This change improves consistency and compatibility of construction heuristics with multiple variables or entity classes.
+Normally, this has little impact on your code (as your DRL code already needed to be planning variable null-safe).
+However, if such uninitialized entities cause extra negative constraint occurrences,
+then it might disrupt the pickEarly mechanism, in which case you'll want to disable it (or adjust your score rules).
+Before in *SolverConfig.xml and *BenchmarkConfig.xml (optional):
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+Use the benchmarker to validate if it's better to keep or to delete that configuration line.
