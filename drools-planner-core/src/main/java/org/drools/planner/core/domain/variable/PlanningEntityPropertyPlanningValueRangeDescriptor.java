@@ -16,19 +16,18 @@
 
 package org.drools.planner.core.domain.variable;
 
-import java.beans.PropertyDescriptor;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.drools.planner.api.domain.variable.ValueRange;
-import org.drools.planner.core.domain.common.DescriptorUtils;
+import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.solution.Solution;
 
 public class PlanningEntityPropertyPlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
 
-    private PropertyDescriptor rangePropertyDescriptor;
+    private PropertyAccessor rangePropertyAccessor;
 
     public PlanningEntityPropertyPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
             ValueRange valueRangeAnnotation) {
@@ -62,8 +61,8 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
     private void processPlanningEntityProperty(ValueRange valueRangeAnnotation) {
         String planningEntityProperty = valueRangeAnnotation.planningEntityProperty();
         PlanningEntityDescriptor planningEntityDescriptor = variableDescriptor.getPlanningEntityDescriptor();
-        rangePropertyDescriptor = planningEntityDescriptor.getPropertyDescriptor(planningEntityProperty);
-        if (rangePropertyDescriptor == null) {
+        rangePropertyAccessor = planningEntityDescriptor.getPropertyAccessor(planningEntityProperty);
+        if (rangePropertyAccessor == null) {
             String exceptionMessage = "The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
@@ -78,7 +77,7 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
             }
             throw new IllegalArgumentException(exceptionMessage);
         }
-        if (!Collection.class.isAssignableFrom(rangePropertyDescriptor.getPropertyType())) {
+        if (!Collection.class.isAssignableFrom(rangePropertyAccessor.getPropertyType())) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
@@ -101,7 +100,7 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
     }
 
     private Collection<?> extractValuesWithoutFiltering(Object planningEntity) {
-        return (Collection<?>) DescriptorUtils.executeGetter(rangePropertyDescriptor, planningEntity);
+        return (Collection<?>) rangePropertyAccessor.executeGetter(planningEntity);
     }
 
     public long getProblemScale(Solution solution, Object planningEntity) {

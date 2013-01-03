@@ -137,10 +137,10 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             if (declaringClass == ((Class) solutionDescriptor.getSolutionClass())) {
                 String fieldName = field.getName();
                 // This presumes we're dealing with a simple getter/setter. Dangerous?
-                if (solutionDescriptor.getEntityPropertyDescriptorMap().get(fieldName) != null) {
+                if (solutionDescriptor.getEntityPropertyAccessorMap().get(fieldName) != null) {
                     return true;
                 }
-                if (solutionDescriptor.getEntityCollectionPropertyDescriptorMap().get(fieldName) != null) {
+                if (solutionDescriptor.getEntityCollectionPropertyAccessorMap().get(fieldName) != null) {
                     return true;
                 }
             }

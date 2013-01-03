@@ -34,7 +34,7 @@ import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.common.DescriptorUtils;
+import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.drools.planner.core.domain.solution.cloner.PlanningCloneableSolutionCloner;
@@ -47,9 +47,9 @@ public class SolutionDescriptor {
     private final BeanInfo solutionBeanInfo;
     private SolutionCloner solutionCloner;
     
-    private final Map<String, PropertyDescriptor> propertyDescriptorMap;
-    private final Map<String, PropertyDescriptor> entityPropertyDescriptorMap;
-    private final Map<String, PropertyDescriptor> entityCollectionPropertyDescriptorMap;
+    private final Map<String, PropertyAccessor> propertyAccessorMap;
+    private final Map<String, PropertyAccessor> entityPropertyAccessorMap;
+    private final Map<String, PropertyAccessor> entityCollectionPropertyAccessorMap;
 
     private final Map<Class<?>, PlanningEntityDescriptor> planningEntityDescriptorMap;
 
@@ -61,9 +61,9 @@ public class SolutionDescriptor {
             throw new IllegalStateException("The solutionClass (" + solutionClass + ") is not a valid java bean.", e);
         }
         int mapSize = solutionBeanInfo.getPropertyDescriptors().length;
-        propertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
-        entityPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
-        entityCollectionPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
+        propertyAccessorMap = new HashMap<String, PropertyAccessor>(mapSize);
+        entityPropertyAccessorMap = new HashMap<String, PropertyAccessor>(mapSize);
+        entityCollectionPropertyAccessorMap = new HashMap<String, PropertyAccessor>(mapSize);
         planningEntityDescriptorMap = new HashMap<Class<?>, PlanningEntityDescriptor>(mapSize);
     }
 
@@ -101,20 +101,21 @@ public class SolutionDescriptor {
     private void processPropertyAnnotations() {
         boolean noPlanningEntityPropertyAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
-            propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
-            Method propertyGetter = propertyDescriptor.getReadMethod();
+            PropertyAccessor propertyAccessor = new PropertyAccessor(propertyDescriptor);
+            propertyAccessorMap.put(propertyAccessor.getName(), propertyAccessor);
+            Method propertyGetter = propertyAccessor.getReadMethod();
             if (propertyGetter != null) {
                 if (propertyGetter.isAnnotationPresent(PlanningEntityProperty.class)) {
                     noPlanningEntityPropertyAnnotation = false;
-                    entityPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
+                    entityPropertyAccessorMap.put(propertyAccessor.getName(), propertyAccessor);
                 } else if (propertyGetter.isAnnotationPresent(PlanningEntityCollectionProperty.class)) {
                     noPlanningEntityPropertyAnnotation = false;
-                    if (!Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
+                    if (!Collection.class.isAssignableFrom(propertyAccessor.getPropertyType())) {
                         throw new IllegalStateException("The solutionClass (" + solutionClass
                                 + ") has a PlanningEntityCollection annotated property ("
-                                + propertyDescriptor.getName() + ") that does not return a Collection.");
+                                + propertyAccessor.getName() + ") that does not return a Collection.");
                     }
-                    entityCollectionPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
+                    entityCollectionPropertyAccessorMap.put(propertyAccessor.getName(), propertyAccessor);
                 }
             }
         }
@@ -137,20 +138,20 @@ public class SolutionDescriptor {
         return solutionCloner;
     }
 
-    public Map<String, PropertyDescriptor> getEntityPropertyDescriptorMap() {
-        return entityPropertyDescriptorMap;
+    public Map<String, PropertyAccessor> getEntityPropertyAccessorMap() {
+        return entityPropertyAccessorMap;
     }
 
-    public Map<String, PropertyDescriptor> getEntityCollectionPropertyDescriptorMap() {
-        return entityCollectionPropertyDescriptorMap;
+    public Map<String, PropertyAccessor> getEntityCollectionPropertyAccessorMap() {
+        return entityCollectionPropertyAccessorMap;
     }
 
     // ************************************************************************
     // Model methods
     // ************************************************************************
 
-    public PropertyDescriptor getPropertyDescriptor(String propertyName) {
-        return propertyDescriptorMap.get(propertyName);
+    public PropertyAccessor getPropertyAccessor(String propertyName) {
+        return propertyAccessorMap.get(propertyName);
     }
 
     public Set<Class<?>> getPlanningEntityClassSet() {
@@ -221,18 +222,16 @@ public class SolutionDescriptor {
     public Collection<Object> getAllFacts(Solution solution) {
         Collection<Object> facts = new ArrayList<Object>();
         facts.addAll(solution.getProblemFacts());
-        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
-            Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
+        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
+            Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
             if (entity != null) {
-                PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 facts.add(entity);
             }
         }
-        for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
+        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
             Collection<?> entityCollection = extractPlanningEntityCollection(
-                    entityCollectionPropertyDescriptor, solution);
+                    entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
-                PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 facts.add(entity);
             }
         }
@@ -241,15 +240,15 @@ public class SolutionDescriptor {
 
     public List<Object> getPlanningEntityList(Solution solution) {
         List<Object> planningEntityList = new ArrayList<Object>();
-        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
-            Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
+        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
+            Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
             if (entity != null) {
                 planningEntityList.add(entity);
             }
         }
-        for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
+        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
             Collection<?> entityCollection = extractPlanningEntityCollection(
-                    entityCollectionPropertyDescriptor, solution);
+                    entityCollectionPropertyAccessor, solution);
             planningEntityList.addAll(entityCollection);
         }
         return planningEntityList;
@@ -257,18 +256,18 @@ public class SolutionDescriptor {
 
     public List<Object> getPlanningEntityListByPlanningEntityClass(Solution solution, Class<?> planningEntityClass) {
         List<Object> planningEntityList = new ArrayList<Object>();
-        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
-            if (entityPropertyDescriptor.getPropertyType().isAssignableFrom(planningEntityClass)) {
-                Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
+        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
+            if (entityPropertyAccessor.getPropertyType().isAssignableFrom(planningEntityClass)) {
+                Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
                 if (entity != null && planningEntityClass.isInstance(entity)) {
                     planningEntityList.add(entity);
                 }
             }
         }
-        for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
-            // TODO if (entityCollectionPropertyDescriptor.getPropertyType().getElementType().isAssignableFrom(planningEntityClass)) {
+        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
+            // TODO if (entityCollectionPropertyAccessor.getPropertyType().getElementType().isAssignableFrom(planningEntityClass)) {
             Collection<?> entityCollection = extractPlanningEntityCollection(
-                    entityCollectionPropertyDescriptor, solution);
+                    entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
                 if (planningEntityClass.isInstance(entity)) {
                     planningEntityList.add(entity);
@@ -294,16 +293,16 @@ public class SolutionDescriptor {
      */
     public long getProblemScale(Solution solution) {
         long problemScale = 0L;
-        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
-            Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
+        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
+            Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
             if (entity != null) {
                 PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 problemScale += planningEntityDescriptor.getProblemScale(solution, entity);
             }
         }
-        for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
+        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
             Collection<?> entityCollection = extractPlanningEntityCollection(
-                    entityCollectionPropertyDescriptor, solution);
+                    entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
                 PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 problemScale += planningEntityDescriptor.getProblemScale(solution, entity);
@@ -317,8 +316,8 @@ public class SolutionDescriptor {
      * @return true if all the planning entities are initialized
      */
     public boolean isInitialized(Solution solution) {
-        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
-            Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
+        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
+            Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
             if (entity != null) {
                 PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 if (!planningEntityDescriptor.isInitialized(entity)) {
@@ -326,9 +325,9 @@ public class SolutionDescriptor {
                 }
             }
         }
-        for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
+        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
             Collection<?> entityCollection = extractPlanningEntityCollection(
-                    entityCollectionPropertyDescriptor, solution);
+                    entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
                 PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 if (!planningEntityDescriptor.isInitialized(entity)) {
@@ -339,18 +338,17 @@ public class SolutionDescriptor {
         return true;
     }
 
-    private Object extractPlanningEntity(PropertyDescriptor entityPropertyDescriptor, Solution solution) {
-        return DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
+    private Object extractPlanningEntity(PropertyAccessor entityPropertyAccessor, Solution solution) {
+        return entityPropertyAccessor.executeGetter(solution);
     }
 
     private Collection<?> extractPlanningEntityCollection(
-            PropertyDescriptor entityCollectionPropertyDescriptor, Solution solution) {
-        Collection<?> entityCollection = (Collection<?>)
-                DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
+            PropertyAccessor entityCollectionPropertyAccessor, Solution solution) {
+        Collection<?> entityCollection = (Collection<?>) entityCollectionPropertyAccessor.executeGetter(solution);
         if (entityCollection == null) {
             throw new IllegalArgumentException("The solutionClass (" + solutionClass
                     + ")'s entityCollectionProperty ("
-                    + entityCollectionPropertyDescriptor.getName() + ") should never return null.");
+                    + entityCollectionPropertyAccessor.getName() + ") should never return null.");
         }
         return entityCollection;
     }

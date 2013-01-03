@@ -16,21 +16,18 @@
 
 package org.drools.planner.core.domain.variable;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRanges;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.common.DescriptorUtils;
+import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.entity.decorator.NullValueUninitializedEntityFilter;
@@ -40,7 +37,7 @@ public class PlanningVariableDescriptor {
 
     private final PlanningEntityDescriptor planningEntityDescriptor;
 
-    private final PropertyDescriptor variablePropertyDescriptor;
+    private final PropertyAccessor variablePropertyAccessor;
     private boolean chained;
 
     private PlanningValueRangeDescriptor valueRangeDescriptor;
@@ -49,9 +46,9 @@ public class PlanningVariableDescriptor {
     private PlanningValueSorter valueSorter;
 
     public PlanningVariableDescriptor(PlanningEntityDescriptor planningEntityDescriptor,
-            PropertyDescriptor variablePropertyDescriptor) {
+            PropertyAccessor variablePropertyAccessor) {
         this.planningEntityDescriptor = planningEntityDescriptor;
-        this.variablePropertyDescriptor = variablePropertyDescriptor;
+        this.variablePropertyAccessor = variablePropertyAccessor;
     }
 
     public void processAnnotations() {
@@ -59,7 +56,7 @@ public class PlanningVariableDescriptor {
     }
 
     private void processPropertyAnnotations() {
-        PlanningVariable planningVariableAnnotation = variablePropertyDescriptor.getReadMethod()
+        PlanningVariable planningVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(PlanningVariable.class);
         valueSorter = new PlanningValueSorter();
         processNullable(planningVariableAnnotation);
@@ -70,12 +67,12 @@ public class PlanningVariableDescriptor {
 
     private void processNullable(PlanningVariable planningVariableAnnotation) {
         nullable = planningVariableAnnotation.nullable();
-        if (nullable && variablePropertyDescriptor.getPropertyType().isPrimitive()) {
+        if (nullable && variablePropertyAccessor.getPropertyType().isPrimitive()) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                    + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
-                    + variablePropertyDescriptor.getPropertyType() + ").");
+                    + variablePropertyAccessor.getPropertyType() + ").");
         }
         Class<? extends SelectionFilter> uninitializedEntityFilterClass
                 = planningVariableAnnotation.uninitializedEntityFilter();
@@ -103,7 +100,7 @@ public class PlanningVariableDescriptor {
         if (strengthComparatorClass != null && strengthWeightFactoryClass != null) {
             throw new IllegalStateException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()  + ") property ("
-                    + variablePropertyDescriptor.getName() + ") cannot have a strengthComparatorClass ("
+                    + variablePropertyAccessor.getName() + ") cannot have a strengthComparatorClass ("
                     + strengthComparatorClass.getName()
                     + ") and a strengthWeightFactoryClass (" + strengthWeightFactoryClass.getName()
                     + ") at the same time.");
@@ -122,32 +119,32 @@ public class PlanningVariableDescriptor {
 
     private void processChained(PlanningVariable planningVariableAnnotation) {
         chained = planningVariableAnnotation.chained();
-        if (chained && !variablePropertyDescriptor.getPropertyType().isAssignableFrom(
+        if (chained && !variablePropertyAccessor.getPropertyType().isAssignableFrom(
                 planningEntityDescriptor.getPlanningEntityClass())) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
-                    + ") with chained (" + chained + ") and propertyType (" + variablePropertyDescriptor.getPropertyType()
+                    + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
+                    + ") with chained (" + chained + ") and propertyType (" + variablePropertyAccessor.getPropertyType()
                     + ") which is not a superclass/interface of or the same as the planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass() + ").");
         }
         if (chained && nullable) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                    + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
         }
     }
 
     private void processValueRangeAnnotation() {
-        Method propertyGetter = variablePropertyDescriptor.getReadMethod();
+        Method propertyGetter = variablePropertyAccessor.getReadMethod();
         ValueRange valueRangeAnnotation = propertyGetter.getAnnotation(ValueRange.class);
         ValueRanges valueRangesAnnotation = propertyGetter.getAnnotation(ValueRanges.class);
         if (valueRangeAnnotation != null) {
             if (valueRangesAnnotation != null) {
                 throw new IllegalArgumentException("The planningEntityClass ("
                         + planningEntityDescriptor.getPlanningEntityClass()
-                        + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                        + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                         + ") that has a @ValueRange and @ValueRanges annotation: fold them into 1 @ValueRanges.");
             }
             valueRangeDescriptor = buildValueRangeDescriptor(valueRangeAnnotation);
@@ -155,7 +152,7 @@ public class PlanningVariableDescriptor {
             if (valueRangesAnnotation == null) {
                 throw new IllegalArgumentException("The planningEntityClass ("
                         + planningEntityDescriptor.getPlanningEntityClass()
-                        + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                        + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                         + ") that has no @ValueRange or @ValueRanges annotation.");
             }
             List<PlanningValueRangeDescriptor> valueRangeDescriptorList
@@ -191,11 +188,11 @@ public class PlanningVariableDescriptor {
     }
 
     public String getVariableName() {
-        return variablePropertyDescriptor.getName();
+        return variablePropertyAccessor.getName();
     }
 
     public Class<?> getVariablePropertyType() {
-        return variablePropertyDescriptor.getPropertyType();
+        return variablePropertyAccessor.getPropertyType();
     }
 
     /**
@@ -220,22 +217,22 @@ public class PlanningVariableDescriptor {
         if (nullable) {
             return true;
         }
-        Object variable = DescriptorUtils.executeGetter(variablePropertyDescriptor, planningEntity);
+        Object variable = getValue(planningEntity);
         return variable != null;
     }
 
     @Deprecated
     public void uninitialize(Object planningEntity) {
         // TODO extract to VariableInitialized interface
-        DescriptorUtils.executeSetter(variablePropertyDescriptor, planningEntity, null);
+        setValue(planningEntity, null);
     }
 
     public Object getValue(Object planningEntity) {
-        return DescriptorUtils.executeGetter(variablePropertyDescriptor, planningEntity);
+        return variablePropertyAccessor.executeGetter(planningEntity);
     }
 
     public void setValue(Object planningEntity, Object value) {
-        DescriptorUtils.executeSetter(variablePropertyDescriptor, planningEntity, value);
+        variablePropertyAccessor.executeSetter(planningEntity, value);
     }
 
     public Collection<?> extractAllPlanningValues(Solution solution) {
@@ -264,7 +261,7 @@ public class PlanningVariableDescriptor {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + variablePropertyDescriptor.getName()
+        return getClass().getSimpleName() + "(" + variablePropertyAccessor.getName()
                 + " of " + planningEntityDescriptor.getPlanningEntityClass().getName() + ")";
     }
 

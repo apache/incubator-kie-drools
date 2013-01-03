@@ -18,12 +18,48 @@ package org.drools.planner.core.domain.common;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-public class DescriptorUtils {
+/**
+ * Wraps {@link PropertyDescriptor} for faster and easier access.
+ */
+public final class PropertyAccessor {
 
-    public static Object executeGetter(PropertyDescriptor propertyDescriptor, Object bean) {
+    private final PropertyDescriptor propertyDescriptor;
+    private final Method readMethod;
+    private final Method writeMethod;
+
+    public PropertyAccessor(PropertyDescriptor propertyDescriptor) {
+        this.propertyDescriptor = propertyDescriptor;
+        readMethod = propertyDescriptor.getReadMethod();
+        if (readMethod != null) {
+            readMethod.setAccessible(true); // Performance hack by avoiding security checks
+        }
+        writeMethod = propertyDescriptor.getWriteMethod();
+        if (writeMethod != null) {
+            writeMethod.setAccessible(true); // Performance hack by avoiding security checks
+        }
+    }
+
+    public Method getReadMethod() {
+        return readMethod;
+    }
+
+    public Method getWriteMethod() {
+        return writeMethod;
+    }
+
+    public String getName() {
+        return propertyDescriptor.getName();
+    }
+
+    public Class<?> getPropertyType() {
+        return propertyDescriptor.getPropertyType();
+    }
+
+    public Object executeGetter(Object bean) {
         try {
-            return propertyDescriptor.getReadMethod().invoke(bean);
+            return readMethod.invoke(bean);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Cannot call property (" + propertyDescriptor.getName()
                     + ") getter on bean of class (" + bean.getClass() + ").", e);
@@ -34,9 +70,9 @@ public class DescriptorUtils {
         }
     }
 
-    public static void executeSetter(PropertyDescriptor propertyDescriptor, Object bean, Object value) {
+    public void executeSetter(Object bean, Object value) {
         try {
-            propertyDescriptor.getWriteMethod().invoke(bean, value);
+            writeMethod.invoke(bean, value);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Cannot call property (" + propertyDescriptor.getName()
                     + ") setter on bean of class (" + bean.getClass() + ").", e);
@@ -45,9 +81,6 @@ public class DescriptorUtils {
                     + ") setter on bean of class (" + bean.getClass() + ") throws an exception.",
                     e.getCause());
         }
-    }
-
-    private DescriptorUtils() {
     }
 
 }

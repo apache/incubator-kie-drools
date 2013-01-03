@@ -32,6 +32,7 @@ import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactor
 import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.config.util.ConfigUtils;
+import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
@@ -120,17 +121,18 @@ public class PlanningEntityDescriptor {
         planningVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(propertyDescriptors.length);
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-            Method propertyGetter = propertyDescriptor.getReadMethod();
+            PropertyAccessor propertyAccessor = new PropertyAccessor(propertyDescriptor);
+            Method propertyGetter = propertyAccessor.getReadMethod();
             if (propertyGetter != null && propertyGetter.isAnnotationPresent(PlanningVariable.class)) {
                 noPlanningVariableAnnotation = false;
-                if (propertyDescriptor.getWriteMethod() == null) {
+                if (propertyAccessor.getWriteMethod() == null) {
                     throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
-                            + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
+                            + ") has a PlanningVariable annotated property (" + propertyAccessor.getName()
                             + ") that should have a setter.");
                 }
                 PlanningVariableDescriptor planningVariableDescriptor = new PlanningVariableDescriptor(
-                        this, propertyDescriptor);
-                planningVariableDescriptorMap.put(propertyDescriptor.getName(), planningVariableDescriptor);
+                        this, propertyAccessor);
+                planningVariableDescriptorMap.put(propertyAccessor.getName(), planningVariableDescriptor);
                 planningVariableDescriptor.processAnnotations();
             }
         }
@@ -168,10 +170,10 @@ public class PlanningEntityDescriptor {
         return planningEntitySorter;
     }
 
-    public PropertyDescriptor getPropertyDescriptor(String propertyName) {
+    public PropertyAccessor getPropertyAccessor(String propertyName) {
         for (PropertyDescriptor propertyDescriptor : planningEntityBeanInfo.getPropertyDescriptors()) {
             if (propertyDescriptor.getName().equals(propertyName)) {
-                return propertyDescriptor;
+                return new PropertyAccessor(propertyDescriptor);
             }
         }
         return null;
