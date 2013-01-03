@@ -518,9 +518,9 @@
     <literal>Solver</literal> can be terminated synchronously by up-front configuration or asynchronously from another
     thread.</para>
 
-    <para>Especially metaheuristics phases will need to be told when to stop solving. This can be because of a number of
+    <para>Especially metaheuristic phases will need to be told when to stop solving. This can be because of a number of
     reasons: the time is up, the perfect score has been reached, ... The only thing you can't depend on, is on finding
-    the optimal solution (unless you know the optimal score), because a metaheuristics algorithm generally doesn't know
+    the optimal solution (unless you know the optimal score), because a metaheuristic algorithm generally doesn't know
     it when it finds the optimal solution. For real-life problems this doesn't turn out to be much of a problem, because
     finding the optimal solution could take billions of years, so you 'll want to terminate sooner anyway. The only
     thing that matters is finding the best solution in the available time.</para>
