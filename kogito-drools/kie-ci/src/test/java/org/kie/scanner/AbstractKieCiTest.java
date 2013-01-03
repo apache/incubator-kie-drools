@@ -1,11 +1,11 @@
 package org.kie.scanner;
 
 import org.kie.KieServices;
-import org.kie.builder.KieBaseModel;
+import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieSessionModel;
+import org.kie.builder.model.KieModuleModel;
+import org.kie.builder.model.KieSessionModel;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.conf.EqualityBehaviorOption;

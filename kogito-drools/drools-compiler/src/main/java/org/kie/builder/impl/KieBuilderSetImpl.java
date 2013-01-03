@@ -6,7 +6,7 @@ import org.drools.io.impl.BaseResource;
 import org.kie.KieServices;
 import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.IncrementalResults;
-import org.kie.builder.KieBaseModel;
+import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.KieBuilderSet;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;

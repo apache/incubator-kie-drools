@@ -3,7 +3,7 @@ package org.kie.builder.impl;
 import org.drools.core.util.IoUtils;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.KieModuleModel;
+import org.kie.builder.model.KieModuleModel;
 
 import java.io.File;
 import java.io.IOException;

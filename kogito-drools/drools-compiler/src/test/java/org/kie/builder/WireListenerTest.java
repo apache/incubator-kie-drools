@@ -2,6 +2,9 @@ package org.kie.builder;
 
 import org.junit.Test;
 import org.kie.KieServices;
+import org.kie.builder.model.KieModuleModel;
+import org.kie.builder.model.KieSessionModel;
+import org.kie.builder.model.ListenerModel;
 import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;

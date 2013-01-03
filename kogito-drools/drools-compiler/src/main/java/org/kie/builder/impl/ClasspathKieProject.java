@@ -7,7 +7,7 @@ import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
 import org.kie.KieServices;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.KieModuleModel;
+import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
