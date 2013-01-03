@@ -8,10 +8,10 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.kie.builder.KieSessionModel;
-import org.kie.builder.ListenerModel;
-import org.kie.builder.QualifierModel;
-import org.kie.builder.WorkItemHandlerModel;
+import org.kie.builder.model.KieSessionModel;
+import org.kie.builder.model.ListenerModel;
+import org.kie.builder.model.QualifierModel;
+import org.kie.builder.model.WorkItemHandlerModel;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;

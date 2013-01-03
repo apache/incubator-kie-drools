@@ -1,8 +1,8 @@
 package org.kie.builder.impl;
 
 import org.kie.builder.ReleaseId;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieSessionModel;
+import org.kie.builder.model.KieBaseModel;
+import org.kie.builder.model.KieSessionModel;
 import org.kie.internal.utils.CompositeClassLoader;
 
 public interface KieProject {

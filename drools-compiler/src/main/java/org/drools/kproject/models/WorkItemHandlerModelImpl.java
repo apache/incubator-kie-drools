@@ -1,8 +1,8 @@
 package org.drools.kproject.models;
 
 import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.builder.QualifierModel;
-import org.kie.builder.WorkItemHandlerModel;
+import org.kie.builder.model.QualifierModel;
+import org.kie.builder.model.WorkItemHandlerModel;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;

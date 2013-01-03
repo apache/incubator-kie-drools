@@ -3,9 +3,9 @@ package org.kie.builder.impl;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.KieBaseModel;
-import org.kie.builder.KieModuleModel;
-import org.kie.builder.KieSessionModel;
+import org.kie.builder.model.KieBaseModel;
+import org.kie.builder.model.KieModuleModel;
+import org.kie.builder.model.KieSessionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,8 +1,8 @@
 package org.drools.kproject.models;
 
 import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.builder.ListenerModel;
-import org.kie.builder.QualifierModel;
+import org.kie.builder.model.ListenerModel;
+import org.kie.builder.model.QualifierModel;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;

@@ -11,7 +11,7 @@ import org.kie.KieServices;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieModuleModel;
+import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.KieRepository;
 import org.kie.builder.KieScanner;
 import org.kie.command.KieCommands;

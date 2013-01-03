@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.kie.KieBase;
 import org.kie.KieServices;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.KieModuleModel;
+import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.impl.FileKieModule;
 import org.kie.builder.impl.KieContainerImpl;
 import org.kie.builder.impl.KieModuleKieProject;

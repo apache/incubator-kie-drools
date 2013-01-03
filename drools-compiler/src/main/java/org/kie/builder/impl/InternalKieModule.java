@@ -3,7 +3,7 @@ package org.kie.builder.impl;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModule;
-import org.kie.builder.KieModuleModel;
+import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.Results;
 import org.kie.definition.KnowledgePackage;
 

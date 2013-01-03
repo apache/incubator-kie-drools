@@ -4,7 +4,7 @@ import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.KieModuleModel;
+import org.kie.builder.model.KieModuleModel;
 
 import java.io.File;
 import java.util.Collection;
