@@ -216,7 +216,7 @@ public class PlanningVariableDescriptor {
 
     @Deprecated
     public boolean isInitialized(Object planningEntity) {
-        // TODO extract to VariableInitialized interface
+        // TODO use uninitializedEntityFilter to determine isInitialized
         if (nullable) {
             return true;
         }
