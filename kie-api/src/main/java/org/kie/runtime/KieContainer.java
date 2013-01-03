@@ -28,7 +28,7 @@ public interface KieContainer {
     /**
      * Returns the defualt KieBase in this KieContainer.
      * @throws a RuntimeException if this KieContainer doesn't have any defualt KieBase
-     * @see org.kie.builder.KieBaseModel#setDefault(boolean)
+     * @see org.kie.builder.model.KieBaseModel#setDefault(boolean)
      */
     KieBase getKieBase();
 
@@ -41,14 +41,14 @@ public interface KieContainer {
     /**
      * Creates the defualt KieSession for this KieContainer
      * @throws a RuntimeException if this KieContainer doesn't have any defualt KieSession
-     * @see org.kie.builder.KieSessionModel#setDefault(boolean)
+     * @see org.kie.builder.model.KieSessionModel#setDefault(boolean)
      */
     KieSession newKieSession();
 
     /**
      * Creates the defualt KieSession for this KieContainer using the given Environment
      * @throws a RuntimeException if this KieContainer doesn't have any defualt KieSession
-     * @see org.kie.builder.KieSessionModel#setDefault(boolean)
+     * @see org.kie.builder.model.KieSessionModel#setDefault(boolean)
      */
     KieSession newKieSession(Environment environment);
 
@@ -67,7 +67,7 @@ public interface KieContainer {
     /**
      * Creates the defualt StatelessKieSession for this KieContainer using the given Environment
      * @throws a RuntimeException if this KieContainer doesn't have any defualt StatelessKieSession
-     * @see org.kie.builder.KieSessionModel#setDefault(boolean)
+     * @see org.kie.builder.model.KieSessionModel#setDefault(boolean)
      */
     StatelessKieSession newStatelessKieSession();
 

@@ -1,4 +1,4 @@
-package org.kie.builder;
+package org.kie.builder.model;
 
 import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
