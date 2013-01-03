@@ -18,9 +18,12 @@ package org.drools.planner.core.score.director;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -50,7 +53,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     protected boolean hasChainedVariables;
     // TODO it's unproven that this caching system is actually faster:
     // it happens for every step for every move, but is only needed for every step (with correction for composite moves)
-    protected Map<PlanningVariableDescriptor, Map<Object, List<Object>>> chainedVariableToTrailingEntitiesMap;
+    protected Map<PlanningVariableDescriptor, Map<Object, Set<Object>>> chainedVariableToTrailingEntitiesMap;
 
     protected long calculateCount = 0L;
 
@@ -59,7 +62,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         Collection<PlanningVariableDescriptor> chainedVariableDescriptors = getSolutionDescriptor()
                 .getChainedVariableDescriptors();
         hasChainedVariables = !chainedVariableDescriptors.isEmpty();
-        chainedVariableToTrailingEntitiesMap = new HashMap<PlanningVariableDescriptor, Map<Object, List<Object>>>(
+        chainedVariableToTrailingEntitiesMap = new HashMap<PlanningVariableDescriptor, Map<Object, Set<Object>>>(
                 chainedVariableDescriptors.size());
         for (PlanningVariableDescriptor chainedVariableDescriptor : chainedVariableDescriptors) {
             chainedVariableToTrailingEntitiesMap.put(chainedVariableDescriptor, null);
@@ -102,9 +105,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     private void resetTrailingEntityMap() {
         if (hasChainedVariables) {
             List<Object> entityList = getSolutionDescriptor().getPlanningEntityList(workingSolution);
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, List<Object>>> entry
+            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
-                entry.setValue(new HashMap<Object, List<Object>>(entityList.size()));
+                entry.setValue(new HashMap<Object, Set<Object>>(entityList.size()));
             }
             // TODO Remove when all starting entities call afterEntityAdded too
             for (Object entity : entityList) {
@@ -115,26 +118,24 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     private void insertInTrailingEntityMap(Object entity) {
         if (hasChainedVariables) {
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, List<Object>>> entry
+            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
                 if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
-                    Map<Object, List<Object>> valueToTrailingEntityMap = entry.getValue();
-                    List<Object> trailingEntities = valueToTrailingEntityMap.get(value);
+                    Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
+                    Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);
                     if (trailingEntities == null) {
-                        trailingEntities = new ArrayList<Object>();
+                        trailingEntities = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
                         valueToTrailingEntityMap.put(value, trailingEntities);
-                    } else {
-                        // TODO FIXME contains is big scalability leak
-                        if (trailingEntities.contains(entity)) {
-                            Object containedEntity = trailingEntities.get(trailingEntities.indexOf(entity));
-                            throw new IllegalStateException("The entity (" + entity
-                                    + ") for chained planningVariable (" + variableDescriptor.getVariableName()
-                                    + ") was already inserted as containedEntity (" + containedEntity + ").");
-                        }
                     }
-                    trailingEntities.add(entity);
+                    boolean addSucceeded = trailingEntities.add(entity);
+                    if (!addSucceeded) {
+                        throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is corrupted,"
+                                + " because the entity (" + entity + ") for chained planningVariable ("
+                                + variableDescriptor.getVariableName()
+                                + ") cannot be inserted: it was already inserted.");
+                    }
                 }
             }
         }
@@ -142,19 +143,19 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     private void retractFromTrailingEntityMap(Object entity) {
         if (hasChainedVariables) {
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, List<Object>>> entry
+            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
                 if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
-                    Map<Object, List<Object>> valueToTrailingEntityMap = entry.getValue();
-                    List<Object> trailingEntities = valueToTrailingEntityMap.get(value);
-                    // TODO FIXME remove is big scalability leak
+                    Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
+                    Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);
                     boolean removeSucceeded = trailingEntities != null && trailingEntities.remove(entity);
                     if (!removeSucceeded) {
                         throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is corrupted,"
                                 + " because the entity (" + entity + ") for chained planningVariable ("
-                                + variableDescriptor.getVariableName() + ") was never inserted.");
+                                + variableDescriptor.getVariableName()
+                                + ") cannot be retracted: it was never inserted.");
                     }
                     if (trailingEntities.isEmpty()) {
                         valueToTrailingEntityMap.put(value, null);
@@ -242,7 +243,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue) {
-        List<Object> trailingEntities = chainedVariableToTrailingEntitiesMap.get(chainedVariableDescriptor)
+        Set<Object> trailingEntities = chainedVariableToTrailingEntitiesMap.get(chainedVariableDescriptor)
                 .get(planningValue);
         if (trailingEntities == null) {
             return null;
@@ -254,7 +255,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                     + ") pointing to it for chained planningVariable ("
                     + chainedVariableDescriptor.getVariableName() + ").");
         }
-        return trailingEntities.get(0);
+        return trailingEntities.iterator().next();
     }
 
     public void assertExpectedWorkingScore(Score expectedWorkingScore) {
