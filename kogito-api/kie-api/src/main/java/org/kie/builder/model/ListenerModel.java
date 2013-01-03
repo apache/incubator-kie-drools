@@ -1,4 +1,4 @@
-package org.kie.builder;
+package org.kie.builder.model;
 
 import static java.util.EnumSet.allOf;
 
