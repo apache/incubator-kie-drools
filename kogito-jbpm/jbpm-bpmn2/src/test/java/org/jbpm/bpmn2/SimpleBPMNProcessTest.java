@@ -873,18 +873,16 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
        params.put("x", 15);
        ProcessInstance processInstance = ksession.startProcess(
                "com.sample.test", params);
-       ksession.fireAllRules();
+       
        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
        
        assertEquals(1, activeWorkItems.size());
        ksession.getWorkItemManager().completeWorkItem(activeWorkItems.get(0).getId(), null);
-       ksession.fireAllRules();
        Thread.sleep(2000);
        assertProcessInstanceActive(processInstance.getId(), ksession);
        
        activeWorkItems = workItemHandler.getWorkItems();
        assertEquals(2, activeWorkItems.size());
-       ksession.fireAllRules();
        ksession.getWorkItemManager().completeWorkItem(activeWorkItems.get(0).getId(), null);
        assertProcessInstanceActive(processInstance.getId(), ksession);
 

@@ -32,6 +32,7 @@ import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
 import org.jbpm.task.identity.UserGroupCallbackManager;
+import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.utils.OnErrorAction;
@@ -164,7 +165,12 @@ public class SerializedTimerRollbackTest {
             
             for (TimerInstance timerInstance : timers) {
                 assertTrue(committedProcessInstanceIds.contains(timerInstance.getProcessInstanceId()));
+                sesion.abortProcessInstance(timerInstance.getProcessInstanceId());
             }
+            LocalTaskService lts = new LocalTaskService(taskService);
+            List<TaskSummary> tasks = lts.getTasksAssignedAsPotentialOwner("john", "en-UK");
+            lts.dispose();
+            assertEquals(0, tasks.size());
         } catch (Exception e){
             e.printStackTrace();
             fail("Exception thrown");
@@ -249,7 +255,12 @@ public class SerializedTimerRollbackTest {
             
             for (TimerInstance timerInstance : timers) {
                 assertTrue(committedProcessInstanceIds.contains(timerInstance.getProcessInstanceId()));
+                sesion.abortProcessInstance(timerInstance.getProcessInstanceId());
             }
+            LocalTaskService lts = new LocalTaskService(taskService);
+            List<TaskSummary> tasks = lts.getTasksAssignedAsPotentialOwner("john", "en-UK");
+            lts.dispose();
+            assertEquals(0, tasks.size());
         } catch (Exception e){
             e.printStackTrace();
             fail("Exception thrown");
