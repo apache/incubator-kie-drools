@@ -42,22 +42,4 @@ public class DefaultHardAndSoftScoreTest {
         assertEquals(true, new DefaultHardAndSoftScore(2, -300).isFeasible());
     }
 
-    @Test
-    public void calculateTimeGradient() {
-        HardAndSoftScoreDefinition definition = new HardAndSoftScoreDefinition();
-        assertEquals(0.0, definition.calculateTimeGradient(
-                new DefaultHardAndSoftScore(-1004, -1004), new DefaultHardAndSoftScore(-4, -4),
-                new DefaultHardAndSoftScore(-1004, -1004)),
-                0.0);
-        assertEquals(1.0, definition.calculateTimeGradient(
-                new DefaultHardAndSoftScore(-1004, -1004), new DefaultHardAndSoftScore(-4, -4),
-                new DefaultHardAndSoftScore(-4, -4)),
-                0.0);
-        assertEquals(0.4375, definition.calculateTimeGradient(
-                new DefaultHardAndSoftScore(-1004, -1004), new DefaultHardAndSoftScore(-4, -4),
-                new DefaultHardAndSoftScore(-504, -754)),
-                0.0);
-
-    }
-
 }
