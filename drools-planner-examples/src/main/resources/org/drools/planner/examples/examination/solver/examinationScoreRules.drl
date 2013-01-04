@@ -114,10 +114,8 @@ rule "periodPenaltyAfter"
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         )
-        $leftExam : Exam(topic == $leftSideTopic, $afterSidePeriod : period)
-        $rightExam : Exam(topic == $rightSideTopic, eval($afterSidePeriod.getPeriodIndex() <= period.getPeriodIndex()),
-            $beforeSidePeriod : period
-        )
+        $leftExam : Exam(topic == $leftSideTopic, $leftPeriodIndex : periodIndex)
+        $rightExam : Exam(topic == $rightSideTopic, $leftPeriodIndex <= periodIndex)
     then
         insertLogical(new IntConstraintOccurrence("periodPenaltyAfter", ConstraintType.HARD,
                 - ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
@@ -148,26 +146,24 @@ rule "twoExamsInARow"
     when
         $institutionParametrization : InstitutionParametrization(twoInARowPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
-        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period)
-        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period)
-        eval($leftPeriod.getDayIndex() == $rightPeriod.getDayIndex())
-        eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex()) == 1)
+        $leftExam : Exam(topic == $leftTopic, $leftDayIndex : dayIndex, $leftPeriodIndex : periodIndex)
+        $rightExam : Exam(topic == $rightTopic, dayIndex == $leftDayIndex,
+            Math.abs($leftPeriodIndex - periodIndex) == 1)
     then
         insertLogical(new IntConstraintOccurrence("twoExamsInARow", ConstraintType.SOFT,
                 $topicConflict.getStudentSize() * (- $institutionParametrization.getTwoInARowPenalty()),
                 $leftExam, $rightExam));
 end
 
-// TODO check if merging twoExamsInARow and twoExamsInADay can be a noticable performance boost
+// TODO check if merging twoExamsInARow and twoExamsInADay can be a noticeable performance boost
 // Two exams in a day which share students
 rule "twoExamsInADay"
     when
         $institutionParametrization : InstitutionParametrization(twoInADayPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
-        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period)
-        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period)
-        eval($leftPeriod.getDayIndex() == $rightPeriod.getDayIndex())
-        eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex()) > 1)
+        $leftExam : Exam(topic == $leftTopic, $leftDayIndex : dayIndex, $leftPeriodIndex : periodIndex)
+        $rightExam : Exam(topic == $rightTopic, dayIndex == $leftDayIndex,
+            Math.abs($leftPeriodIndex - periodIndex) > 1)
     then
         insertLogical(new IntConstraintOccurrence("twoExamsInADay", ConstraintType.SOFT,
                 $topicConflict.getStudentSize() * (- $institutionParametrization.getTwoInADayPenalty()),
@@ -179,10 +175,9 @@ rule "periodSpread"
     when
         $institutionParametrization : InstitutionParametrization(periodSpreadPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
-        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period)
-        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period)
-        eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex())
-            < ($institutionParametrization.getPeriodSpreadLength() + 1))
+        $leftExam : Exam(topic == $leftTopic, $leftPeriodIndex : periodIndex)
+        $rightExam : Exam(topic == $rightTopic,
+            Math.abs($leftPeriodIndex - periodIndex) < ($institutionParametrization.getPeriodSpreadLength() + 1))
     then
         insertLogical(new IntConstraintOccurrence("periodSpread", ConstraintType.SOFT,
                 $topicConflict.getStudentSize() * (- $institutionParametrization.getPeriodSpreadPenalty()),
@@ -193,18 +188,19 @@ end
 rule "mixedDurations"
     when
         $institutionParametrization : InstitutionParametrization(mixedDurationPenalty != 0)
-        $leftExam : Exam($leftId : id, $period : period, room != null, $room : room, $leftTopic : topic)
+        $leftExam : Exam($leftId : id, $period : period, room != null, $room : room,
+            $leftTopicDuration : topicDuration)
         // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalty's (for 100&150 and 100&200)
         // leftExam has lowest id of the period+room combo
         not Exam(period == $period, room == $room, id < $leftId)
         // rightExam has a different duration
         $rightExam : Exam(period == $period, room == $room, id > $leftId,
-            eval(topic.getDuration() != $leftTopic.getDuration()),
-            $rightId : id, $rightTopic : topic
+            topicDuration != $leftTopicDuration,
+            $rightId : id, $rightTopicDuration : topicDuration
         )
         // rightExam has the lowest id of the period+room+rightDuration combo
         not Exam(period == $period, room == $room, id < $rightId,
-            eval(topic.getDuration() == $rightTopic.getDuration())
+            topicDuration == $rightTopicDuration
         )
     then
         insertLogical(new IntConstraintOccurrence("mixedDurations", ConstraintType.SOFT,

@@ -103,6 +103,20 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
         return getTopic().getStudentSize();
     }
 
+    public int getDayIndex() {
+        if (period == null) {
+            return Integer.MIN_VALUE;
+        }
+        return period.getDayIndex();
+    }
+
+    public int getPeriodIndex() {
+        if (period == null) {
+            return Integer.MIN_VALUE;
+        }
+        return period.getPeriodIndex();
+    }
+
     public int getPeriodDuration() {
         if (period == null) {
             return Integer.MIN_VALUE;
