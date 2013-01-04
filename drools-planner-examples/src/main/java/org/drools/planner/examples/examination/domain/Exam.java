@@ -124,6 +124,17 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
         return period.getDuration();
     }
 
+    public boolean isTopicFrontLoadLarge() {
+        return topic.isFrontLoadLarge();
+    }
+
+    public boolean isPeriodFrontLoadLast() {
+        if (period == null) {
+            return false;
+        }
+        return period.isFrontLoadLast();
+    }
+
     public Exam planningClone() {
         Exam clone = new Exam();
         clone.id = id;

@@ -212,9 +212,7 @@ end
 rule "frontLoad"
     when
         $institutionParametrization : InstitutionParametrization(frontLoadPenalty != 0)
-        $topic : Topic(frontLoadLarge == true)
-        $period : Period(frontLoadLast == true)
-        $exam : Exam(topic == $topic, period == $period)
+        $exam : Exam(topicFrontLoadLarge == true, periodFrontLoadLast == true)
     then
         insertLogical(new IntConstraintOccurrence("frontLoad", ConstraintType.SOFT,
                 - $institutionParametrization.getFrontLoadPenalty(),
