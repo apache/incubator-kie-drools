@@ -63,7 +63,7 @@ public class HardAndSoftScoreDefinitionTest {
                 DefaultHardAndSoftScore.valueOf(-10, -300)), 0.0);
 
         // Hard total delta is 0
-        assertEquals(0.9, scoreDefinition.calculateTimeGradient(
+        assertEquals(0.75 + (0.6 * 0.25), scoreDefinition.calculateTimeGradient(
                 DefaultHardAndSoftScore.valueOf(-10, -400), DefaultHardAndSoftScore.valueOf(-10, -300),
                 DefaultHardAndSoftScore.valueOf(-10, -340)), 0.0);
         assertEquals(0.0, scoreDefinition.calculateTimeGradient(
