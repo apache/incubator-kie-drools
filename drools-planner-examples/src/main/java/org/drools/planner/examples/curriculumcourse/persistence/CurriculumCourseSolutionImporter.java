@@ -97,12 +97,13 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneLectureSize).pow(
                     schedule.getLectureList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("CurriculumCourseSchedule {} has {} teachers, {} curricula, {} courses, {} periods, {} rooms" +
-                    " and {} unavailable period constraints with a search space of {}.",
+            logger.info("CurriculumCourseSchedule {} has {} teachers, {} curricula, {} courses, {} lectures," +
+                    " {} periods, {} rooms and {} unavailable period constraints with a search space of {}.",
                     getInputId(),
                     schedule.getTeacherList().size(),
                     schedule.getCurriculumList().size(),
                     schedule.getCourseList().size(),
+                    schedule.getLectureList().size(),
                     schedule.getPeriodList().size(),
                     schedule.getRoomList().size(),
                     schedule.getUnavailablePeriodPenaltyList().size(),
