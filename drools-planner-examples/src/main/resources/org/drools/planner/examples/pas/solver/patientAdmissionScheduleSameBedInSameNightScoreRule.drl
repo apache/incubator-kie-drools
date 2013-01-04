@@ -46,7 +46,7 @@ rule "sameBedInSameNight"
     when
         $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
                 $rightAdmissionPart : rightAdmissionPart)
-        $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed)
+        $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed, bed != null)
         $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed)
     then
         insertLogical(new IntConstraintOccurrence("sameBedInSameNight", ConstraintType.HARD,

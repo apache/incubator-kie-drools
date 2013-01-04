@@ -2444,12 +2444,48 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
         <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
 
-[MAJOR] The construction heuristics now immediately adds all uninitialized entities
+[MAJOR] The construction heuristics now immediately add all uninitialized entities
 into the ScoreDirector (so into the WorkingMemory), instead of adding each entity just before initializing it.
-This change improves consistency and compatibility of construction heuristics with multiple variables or entity classes.
-Normally, this has little impact on your code (as your DRL code already needed to be planning variable null-safe).
-However, if such uninitialized entities cause extra negative constraint occurrences,
-then it might disrupt the pickEarly mechanism, in which case you'll want to disable it (or adjust your score rules).
-Before in *SolverConfig.xml and *BenchmarkConfig.xml (optional):
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-Use the benchmarker to validate if it's better to keep or to delete that configuration line.
+This change improves consistency and compatibility of construction heuristics with multiple variables,
+because they can now initialize 1 variable at a time instead of all variables.
+Also, this change improves support for nullable variables.
+Unfortunately, this means that in your score rules you might need to add a few or a lot of null checks,
+which can be annoying if you have a lot of score rules.
+If you don't use the constructions heuristics, no changes are required, but they are still highly recommended.
+Note: even though your DRL code already needed to be planning variable null-safe (since 5.5),
+these changes are different and still needed.
+No changes needed in *ScoreRules.drl:
+    when
+        $computer : CloudComputer(...) // $computer is never null
+        ... : Number(...) from accumulate(
+            CloudProcess(computer == $computer, ...), // no null check needed on computer
+            sum(...)
+        )
+    then
+No changes needed in *ScoreRules.drl:
+    when
+        $room : Room(...) // $room is never null
+        $lecture : Lecture(room == $room, ...) // no null check needed on room + period is not (in)directly used
+    then
+Before in *ScoreRules.drl:
+    when
+        ...
+        $bedDesignation : BedDesignation(..., $room : room) // room uses bed indirectly: room is null if bed is null
+        ...
+    then
+After in *ScoreRules.drl:
+    when
+        ...
+        $bedDesignation : BedDesignation(..., $room : room, bed != null)
+        ...
+    then
+Before in *ScoreRules.drl:
+    when
+        $leftLecture : Lecture(..., $period : period, $room : room) // null check needed on period and room
+        $rightLecture : Lecture(period == $period, room == $room, ...)
+    then
+After in *ScoreRules.drl:
+    when
+        $leftLecture : Lecture(..., period != null, $period : period, room != null, $room : room)
+        $rightLecture : Lecture(period == $period, room == $room, ...) // no null check needed on period and room
+    then

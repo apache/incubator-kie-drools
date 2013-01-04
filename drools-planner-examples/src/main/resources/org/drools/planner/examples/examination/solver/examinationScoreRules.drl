@@ -44,7 +44,7 @@ global HardAndSoftScoreHolder scoreHolder;
 rule "conflictingExamsInSamePeriod"
     when
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
-        $leftExam : Exam(topic == $leftTopic, $period : period)
+        $leftExam : Exam(topic == $leftTopic, $period : period, period != null)
         $rightExam : Exam(topic == $rightTopic, period == $period)
     then
         insertLogical(new IntConstraintOccurrence("conflictingExamsInSamePeriod", ConstraintType.HARD,
@@ -55,7 +55,7 @@ end
 // More time required during a period than available in that period.
 rule "periodDurationTooShort"
     when
-        $exam : Exam(topicDuration > periodDuration)
+        $exam : Exam(topicDuration > periodDuration, period != null)
     then
         insertLogical(new IntConstraintOccurrence("periodDurationTooShort", ConstraintType.HARD,
                 - $exam.getTopicStudentSize(),
@@ -85,8 +85,8 @@ rule "periodPenaltyExamCoincidence"
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         )
-        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period)
-        $rightExam : Exam(topic == $rightSideTopic, period != $leftSidePeriod)
+        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period, period != null)
+        $rightExam : Exam(topic == $rightSideTopic, period != $leftSidePeriod, period != null)
         // LeftSide and rightSide don't share a student because those are filtered out in the InputConvertor
     then
         insertLogical(new IntConstraintOccurrence("periodPenaltyExamCoincidence", ConstraintType.HARD,
@@ -100,7 +100,7 @@ rule "periodPenaltyExclusion"
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         )
-        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period)
+        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period, period != null)
         $rightExam : Exam(topic == $rightSideTopic, period == $leftSidePeriod)
     then
         insertLogical(new IntConstraintOccurrence("periodPenaltyExclusion", ConstraintType.HARD,
@@ -114,8 +114,8 @@ rule "periodPenaltyAfter"
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         )
-        $leftExam : Exam(topic == $leftSideTopic, $leftPeriodIndex : periodIndex)
-        $rightExam : Exam(topic == $rightSideTopic, $leftPeriodIndex <= periodIndex)
+        $leftExam : Exam(topic == $leftSideTopic, $leftPeriodIndex : periodIndex, period != null)
+        $rightExam : Exam(topic == $rightSideTopic, $leftPeriodIndex <= periodIndex, period != null)
     then
         insertLogical(new IntConstraintOccurrence("periodPenaltyAfter", ConstraintType.HARD,
                 - ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
@@ -129,7 +129,7 @@ rule "roomPenaltyExclusive"
             roomPenaltyType == RoomPenaltyType.ROOM_EXCLUSIVE,
             $topic : topic
         )
-        $leftExam : Exam(topic == $topic, $room : room)
+        $leftExam : Exam(topic == $topic, $room : room, room != null)
         $rightExam : Exam(room == $room, topic != $topic, $otherTopic : topic)
     then
         insertLogical(new IntConstraintOccurrence("roomPenaltyExclusive", ConstraintType.HARD,
@@ -146,7 +146,7 @@ rule "twoExamsInARow"
     when
         $institutionParametrization : InstitutionParametrization(twoInARowPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
-        $leftExam : Exam(topic == $leftTopic, $leftDayIndex : dayIndex, $leftPeriodIndex : periodIndex)
+        $leftExam : Exam(topic == $leftTopic, $leftDayIndex : dayIndex, $leftPeriodIndex : periodIndex, period != null)
         $rightExam : Exam(topic == $rightTopic, dayIndex == $leftDayIndex,
             Math.abs($leftPeriodIndex - periodIndex) == 1)
     then
@@ -161,7 +161,7 @@ rule "twoExamsInADay"
     when
         $institutionParametrization : InstitutionParametrization(twoInADayPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
-        $leftExam : Exam(topic == $leftTopic, $leftDayIndex : dayIndex, $leftPeriodIndex : periodIndex)
+        $leftExam : Exam(topic == $leftTopic, $leftDayIndex : dayIndex, $leftPeriodIndex : periodIndex, period != null)
         $rightExam : Exam(topic == $rightTopic, dayIndex == $leftDayIndex,
             Math.abs($leftPeriodIndex - periodIndex) > 1)
     then
@@ -175,7 +175,7 @@ rule "periodSpread"
     when
         $institutionParametrization : InstitutionParametrization(periodSpreadPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
-        $leftExam : Exam(topic == $leftTopic, $leftPeriodIndex : periodIndex)
+        $leftExam : Exam(topic == $leftTopic, $leftPeriodIndex : periodIndex, period != null)
         $rightExam : Exam(topic == $rightTopic,
             Math.abs($leftPeriodIndex - periodIndex) < ($institutionParametrization.getPeriodSpreadLength() + 1))
     then
@@ -188,7 +188,7 @@ end
 rule "mixedDurations"
     when
         $institutionParametrization : InstitutionParametrization(mixedDurationPenalty != 0)
-        $leftExam : Exam($leftId : id, $period : period, room != null, $room : room,
+        $leftExam : Exam($leftId : id, period != null, $period : period, room != null, $room : room,
             $leftTopicDuration : topicDuration)
         // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalty's (for 100&150 and 100&200)
         // leftExam has lowest id of the period+room combo

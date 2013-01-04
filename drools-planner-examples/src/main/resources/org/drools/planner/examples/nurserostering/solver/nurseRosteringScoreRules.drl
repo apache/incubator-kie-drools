@@ -82,7 +82,7 @@ global HardAndSoftScoreHolder scoreHolder;
 // a nurse can only work one shift per day, i.e. no two shift can be assigned to the same nurse on a day.
 rule "oneShiftPerDay"
     when
-        $leftAssignment : ShiftAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate)
+        $leftAssignment : ShiftAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate, employee != null)
         $rightAssignment : ShiftAssignment(employee == $employee, shiftDate == $shiftDate, id > $leftId)
     then
         insertLogical(new IntConstraintOccurrence("oneShiftPerDay", ConstraintType.HARD,
@@ -143,7 +143,7 @@ rule "insertEmployeeConsecutiveAssignmentStart"
         salience 2 // Do these rules first (optional, for performance)
     when
         ShiftAssignment(
-            $employee : employee,
+            $employee : employee, employee != null,
             $dayIndex : shiftDateDayIndex,
             $shiftDate : shiftDate
         )
@@ -156,7 +156,7 @@ rule "insertEmployeeConsecutiveAssignmentEnd"
         salience 2 // Do these rules first (optional, for performance)
     when
         ShiftAssignment(
-            $employee : employee,
+            $employee : employee, employee != null,
             $dayIndex : shiftDateDayIndex,
             $shiftDate : shiftDate
         )
@@ -345,7 +345,7 @@ rule "insertEmployeeConsecutiveWeekendAssignmentStart"
     when
         ShiftAssignment(
             weekend == true,
-            $employee : employee,
+            $employee : employee, employee != null,
             $weekendSundayIndex : weekendSundayIndex
         )
         // The first working weekend has no working weekend before it
@@ -362,7 +362,7 @@ rule "insertEmployeeConsecutiveWeekendAssignmentEnd"
     when
         ShiftAssignment(
             weekend == true,
-            $employee : employee,
+            $employee : employee, employee != null,
             $weekendSundayIndex : weekendSundayIndex
         )
         // The last working weekend has no working weekend after it

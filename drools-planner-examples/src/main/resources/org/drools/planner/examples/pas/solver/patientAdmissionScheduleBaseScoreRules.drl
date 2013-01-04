@@ -119,44 +119,46 @@ end
 rule "preferredMaximumRoomCapacity"
     when
         $bedDesignation : BedDesignation(patientPreferredMaximumRoomCapacity != null,
-                patientPreferredMaximumRoomCapacity < roomCapacity)
+                patientPreferredMaximumRoomCapacity < roomCapacity, bed != null)
     then
         insertLogical(new IntConstraintOccurrence("preferredMaximumRoomCapacity", ConstraintType.SOFT,
                 // TODO this would be better for the problem, though the official spec does not do it
                 // 8 * ($bedDesignation.getPatientPreferredMaximumRoomCapacity() - $bedDesignation.getRoomCapacity())
-                // * $bedDesignation.getAdmissionPart().getNightCount(),
-                - 8 * $bedDesignation.getAdmissionPart().getNightCount(),
+                // * $bedDesignation.getAdmissionPartNightCount(),
+                - 8 * $bedDesignation.getAdmissionPartNightCount(),
                 $bedDesignation));
 end
 
 // DepartmentSpecialism constraint
 rule "departmentSpecialism"
     when
-        $bedDesignation : BedDesignation($specialism : admissionPartSpecialism, $department : department)
+        $bedDesignation : BedDesignation($specialism : admissionPartSpecialism, $department : department, bed != null)
         not DepartmentSpecialism(department == $department, specialism == $specialism)
     then
         insertLogical(new IntConstraintOccurrence("departmentSpecialism", ConstraintType.SOFT,
-                - 10 * $bedDesignation.getAdmissionPart().getNightCount(),
+                - 10 * $bedDesignation.getAdmissionPartNightCount(),
                 $bedDesignation));
 end
 
 // RoomSpecialism constraint
 rule "roomSpecialismNotExists"
     when
-        $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism, $room : room)
+        $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism,
+            $room : room, bed != null)
         not RoomSpecialism(room == $room, specialism == $specialism)
     then
         insertLogical(new IntConstraintOccurrence("roomSpecialismNotExists", ConstraintType.SOFT,
-                - 20 * $bedDesignation.getAdmissionPart().getNightCount(),
+                - 20 * $bedDesignation.getAdmissionPartNightCount(),
                 $bedDesignation));
 end
 rule "roomSpecialismNotFirstPriority"
     when
-        $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism, $room : room)
+        $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism,
+            $room : room, bed != null)
         RoomSpecialism(priority > 1, room == $room, specialism == $specialism, $priority : priority)
     then
         insertLogical(new IntConstraintOccurrence("roomSpecialismNotFirstPriority", ConstraintType.SOFT,
-                - 10 * ($priority - 1) * $bedDesignation.getAdmissionPart().getNightCount(),
+                - 10 * ($priority - 1) * $bedDesignation.getAdmissionPartNightCount(),
                 $bedDesignation));
 end
 
@@ -164,11 +166,11 @@ end
 rule "requiredPatientEquipment"
     when
         $requiredPatientEquipment : RequiredPatientEquipment($patient : patient, $equipment : equipment)
-        $bedDesignation : BedDesignation(patient == $patient, $room : room)
+        $bedDesignation : BedDesignation(patient == $patient, $room : room, bed != null)
         not RoomEquipment(room == $room, equipment == $equipment)
     then
         insertLogical(new IntConstraintOccurrence("requiredPatientEquipment", ConstraintType.SOFT,
-                - 50 * $bedDesignation.getAdmissionPart().getNightCount(),
+                - 50 * $bedDesignation.getAdmissionPartNightCount(),
                 $bedDesignation, $requiredPatientEquipment));
 end
 
@@ -176,11 +178,11 @@ end
 rule "preferredPatientEquipment"
     when
         $preferredPatientEquipment : PreferredPatientEquipment($patient : patient, $equipment : equipment)
-        $bedDesignation : BedDesignation(patient == $patient, $room : room)
+        $bedDesignation : BedDesignation(patient == $patient, $room : room, bed != null)
         not RoomEquipment(room == $room, equipment == $equipment)
     then
         insertLogical(new IntConstraintOccurrence("preferredPatientEquipment", ConstraintType.SOFT,
-                - 20 * $bedDesignation.getAdmissionPart().getNightCount(),
+                - 20 * $bedDesignation.getAdmissionPartNightCount(),
                 $bedDesignation, $preferredPatientEquipment));
 end
 

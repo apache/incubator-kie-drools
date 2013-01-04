@@ -51,7 +51,7 @@ rule "conflictingLecturesInSamePeriod"
         eval($leftTeacher == $rightTeacher)
             or exists Curriculum(this memberOf $leftCurriculumList, this memberOf $rightCurriculumList)
 
-        $leftLecture : Lecture(course == $leftCourse, $period : period)
+        $leftLecture : Lecture(course == $leftCourse, $period : period, period != null)
         $rightLecture : Lecture(course == $rightCourse, period == $period, this != $leftLecture)
     then
         insertLogical(new IntConstraintOccurrence("conflictingLecturesInSamePeriod", ConstraintType.HARD,
@@ -63,7 +63,7 @@ end
 // Any extra lecture in the same period and room counts as one more violation.
 rule "roomOccupancy"
     when
-        $leftLecture : Lecture($leftId : id, $period : period, room != null, $room : room)
+        $leftLecture : Lecture($leftId : id, period != null, $period : period, room != null, $room : room)
         // $leftLecture has lowest id of the period+room combo
         not Lecture(period == $period, room == $room, id < $leftId)
         // rightLecture has the same period
@@ -89,7 +89,6 @@ end
 // Soft constraints
 // ############################################################################
 
-
 // RoomCapacity: For each lecture, the number of students that attend the course should be less or equal
 // than the number of seats of all the rooms that host its lectures.
 // Each student above the capacity counts as 1 point of penalty.
@@ -114,7 +113,7 @@ rule "minimumWorkingDays"
             count($day)
         )
         // An uninitialized schedule should have no constraints broken
-        exists Lecture(course == $course)
+        exists Lecture(course == $course, period != null)
     then
         insertLogical(new IntConstraintOccurrence("minimumWorkingDays", ConstraintType.SOFT,
                 (($dayCount.intValue() - $minWorkingDaySize) * 5),
@@ -131,7 +130,7 @@ rule "curriculumCompactness"
         $curriculum : Curriculum()
 
         $lecture : Lecture(curriculumList contains $curriculum,
-            $day : day, $timeslotIndex : timeslotIndex
+            $day : day, $timeslotIndex : timeslotIndex, period != null
         )
         not Lecture(curriculumList contains $curriculum,
             day == $day, timeslotIndex == ($timeslotIndex - 1)
