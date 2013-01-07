@@ -35,6 +35,10 @@ public final class DefaultSimpleScore extends AbstractScore<SimpleScore>
         return new DefaultSimpleScore(score);
     }
 
+    // ************************************************************************
+    // Fields
+    // ************************************************************************
+
     private final int score;
 
     public DefaultSimpleScore(int score) {

@@ -59,6 +59,10 @@ public final class DefaultHardMediumSoftScore extends AbstractScore<HardMediumSo
         return new DefaultHardMediumSoftScore(hardScore, mediumScore, softScore);
     }
 
+    // ************************************************************************
+    // Fields
+    // ************************************************************************
+
     private final int hardScore;
     private final int mediumScore;
     private final int softScore;

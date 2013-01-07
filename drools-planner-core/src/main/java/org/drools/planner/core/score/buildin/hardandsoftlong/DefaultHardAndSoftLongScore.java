@@ -49,6 +49,10 @@ public final class DefaultHardAndSoftLongScore extends AbstractScore<HardAndSoft
         return new DefaultHardAndSoftLongScore(hardScore, softScore);
     }
 
+    // ************************************************************************
+    // Fields
+    // ************************************************************************
+
     private final long hardScore;
     private final long softScore;
 

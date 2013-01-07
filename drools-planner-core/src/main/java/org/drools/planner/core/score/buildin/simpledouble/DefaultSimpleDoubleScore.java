@@ -35,6 +35,10 @@ public final class DefaultSimpleDoubleScore extends AbstractScore<SimpleDoubleSc
         return new DefaultSimpleDoubleScore(score);
     }
 
+    // ************************************************************************
+    // Fields
+    // ************************************************************************
+
     private final double score;
 
     public DefaultSimpleDoubleScore(double score) {
