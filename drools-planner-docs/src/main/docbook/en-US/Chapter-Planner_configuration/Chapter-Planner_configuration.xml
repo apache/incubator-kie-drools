@@ -488,6 +488,11 @@ public class Queen {
           add <literal>null</literal> in a collection used by a <literal>ValueRange</literal>.</para>
         </important>
 
+        <note>
+          <para>Using a nullable planning variable implies that your score calculation is responsible for punishing
+          (or even rewarding) variables with a null value.</para>
+        </note>
+
         <para><link linkend="repeatedPlanning">Repeated planning</link> (especially <link
         linkend="realTimePlanning">real-time planning</link>) does not mix well with a nullable planning variable: every
         time the Solver starts or a problem fact change is made, the construction heuristics will try to initialize all
