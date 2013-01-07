@@ -26,9 +26,9 @@ public class DefaultHardAndSoftScoreTest {
 
     @Test
     public void compareTo() {
-        Score a = new DefaultHardAndSoftScore(-1, -300);
-        Score b = new DefaultHardAndSoftScore(-20, -20);
-        Score c = new DefaultHardAndSoftScore(-20);
+        Score a = DefaultHardAndSoftScore.valueOf(-1, -300);
+        Score b = DefaultHardAndSoftScore.valueOf(-20, -20);
+        Score c = DefaultHardAndSoftScore.valueOf(-20, Integer.MIN_VALUE);
         assertTrue(a.compareTo(b) > 0);
         assertTrue(b.compareTo(a) < 0);
         assertTrue(b.compareTo(c) > 0);
@@ -37,9 +37,9 @@ public class DefaultHardAndSoftScoreTest {
 
     @Test
     public void feasible() {
-        assertEquals(true, new DefaultHardAndSoftScore(0, -300).isFeasible());
-        assertEquals(false, new DefaultHardAndSoftScore(-5, -300).isFeasible());
-        assertEquals(true, new DefaultHardAndSoftScore(2, -300).isFeasible());
+        assertEquals(true, DefaultHardAndSoftScore.valueOf(0, -300).isFeasible());
+        assertEquals(false, DefaultHardAndSoftScore.valueOf(-5, -300).isFeasible());
+        assertEquals(true, DefaultHardAndSoftScore.valueOf(2, -300).isFeasible());
     }
 
 }

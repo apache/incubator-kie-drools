@@ -65,7 +65,7 @@ public class PatientAdmissionScheduleSolutionInitializer implements CustomSolver
             int firstNightIndex = bedDesignation.getAdmissionPart().getFirstNight().getIndex();
             int lastNightIndex = bedDesignation.getAdmissionPart().getLastNight().getIndex();
             boolean perfectMatch = false;
-            Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE);
+            Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
             Bed bestBed = null;
 
             boolean added = false;

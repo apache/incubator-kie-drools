@@ -47,14 +47,6 @@ public final class DefaultHardMediumSoftScore extends AbstractScore<HardMediumSo
         return valueOf(hardScore, mediumScore, softScore);
     }
 
-    public static DefaultHardMediumSoftScore valueOf(int hardScore) {
-        return new DefaultHardMediumSoftScore(hardScore);
-    }
-
-    public static DefaultHardMediumSoftScore valueOf(int hardScore, int mediumScore) {
-        return new DefaultHardMediumSoftScore(hardScore, mediumScore);
-    }
-
     public static DefaultHardMediumSoftScore valueOf(int hardScore, int mediumScore, int softScore) {
         return new DefaultHardMediumSoftScore(hardScore, mediumScore, softScore);
     }
@@ -67,17 +59,7 @@ public final class DefaultHardMediumSoftScore extends AbstractScore<HardMediumSo
     private final int mediumScore;
     private final int softScore;
 
-    public DefaultHardMediumSoftScore(int hardScore) {
-        // Any other mediumScore and/or softScore is better
-        this(hardScore, Integer.MIN_VALUE, Integer.MIN_VALUE);
-    }
-
-    public DefaultHardMediumSoftScore(int hardScore, int mediumScore) {
-        // Any other softScore is better
-        this(hardScore, mediumScore, Integer.MIN_VALUE);
-    }
-
-    public DefaultHardMediumSoftScore(int hardScore, int mediumScore, int softScore) {
+    protected DefaultHardMediumSoftScore(int hardScore, int mediumScore, int softScore) {
         this.hardScore = hardScore;
         this.mediumScore = mediumScore;
         this.softScore = softScore;

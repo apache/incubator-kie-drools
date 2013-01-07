@@ -32,7 +32,7 @@ public class PlanningValueTabuAcceptorTest {
         TestdataValue v4 = new TestdataValue("v4");
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(new DefaultSimpleScore(0));
+        solverScope.setBestScore(DefaultSimpleScore.valueOf(0));
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -112,7 +112,7 @@ public class PlanningValueTabuAcceptorTest {
         TestdataValue v4 = new TestdataValue("v4");
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(new DefaultSimpleScore(0));
+        solverScope.setBestScore(DefaultSimpleScore.valueOf(0));
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -209,7 +209,7 @@ public class PlanningValueTabuAcceptorTest {
         TestdataValue v1 = new TestdataValue("v1");
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(new DefaultSimpleScore(-100));
+        solverScope.setBestScore(DefaultSimpleScore.valueOf(-100));
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -241,7 +241,7 @@ public class PlanningValueTabuAcceptorTest {
         Move move = mock(Move.class);
         when(move.getPlanningValues()).thenReturn((Collection) Arrays.asList(values));
         moveScope.setMove(move);
-        moveScope.setScore(new DefaultSimpleScore(score));
+        moveScope.setScore(DefaultSimpleScore.valueOf(score));
         return moveScope;
     }
 

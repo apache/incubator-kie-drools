@@ -35,7 +35,7 @@ public class LateAcceptanceAcceptorTest {
         acceptor.setLateAcceptanceSize(3);
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(new DefaultSimpleScore(-1000));
+        solverScope.setBestScore(DefaultSimpleScore.valueOf(-1000));
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -136,7 +136,7 @@ public class LateAcceptanceAcceptorTest {
         LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
         Move move = mock(Move.class);
         moveScope.setMove(move);
-        moveScope.setScore(new DefaultSimpleScore(score));
+        moveScope.setScore(DefaultSimpleScore.valueOf(score));
         return moveScope;
     }
 

@@ -458,14 +458,6 @@ public class Queen {
 }</programlisting>
       </section>
 
-      <section>
-        <title>When is a planning entity considered initialized?</title>
-
-        <para>A planning entity is considered initialized if all of its planning variables are initialized.</para>
-        <para>A planning variable is considered initialized if its value is not <literal>null</literal>
-          or if the variable is <literal>nullable</literal>.</para>
-      </section>
-
       <section xml:id="nullablePlanningVariable">
         <title>Nullable planning variable</title>
 
@@ -504,6 +496,18 @@ public class Queen {
     public Worker getWorker() {
         return worker;
     }</programlisting>
+      </section>
+
+      <section>
+        <title>When is a planning variable considered initialized?</title>
+
+        <para>A planning variable is considered initialized if its value is not <literal>null</literal>
+        or if the variable is <literal>nullable</literal>. So a nullable variable is always considered initialized,
+        even when a custom <literal>reinitializeVariableEntityFilter</literal> triggers a reinitialization.</para>
+
+        <para>A planning entity is initialized if all of its planning variables are initialized.</para>
+
+        <para>A <literal>Solution</literal> is initialized if all of its planning entities are initialized.</para>
       </section>
     </section>
 

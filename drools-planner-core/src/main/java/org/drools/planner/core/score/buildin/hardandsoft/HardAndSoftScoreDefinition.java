@@ -24,8 +24,9 @@ public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndS
 
     private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
 
-    private HardAndSoftScore perfectMaximumScore = new DefaultHardAndSoftScore(0, 0);
-    private HardAndSoftScore perfectMinimumScore = new DefaultHardAndSoftScore(Integer.MIN_VALUE, Integer.MIN_VALUE);
+    private HardAndSoftScore perfectMaximumScore = DefaultHardAndSoftScore.valueOf(0, 0);
+    private HardAndSoftScore perfectMinimumScore = DefaultHardAndSoftScore.valueOf(
+            Integer.MIN_VALUE, Integer.MIN_VALUE);
 
     /**
      * It's recommended to use a number which can be exactly represented as a double,

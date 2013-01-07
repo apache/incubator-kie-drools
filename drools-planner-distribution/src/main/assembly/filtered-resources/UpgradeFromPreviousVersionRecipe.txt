@@ -2495,3 +2495,14 @@ Before in *.java:
     @PlanningVariable(uninitializedEntityFilter = ...)
 After in *.java:
     @PlanningVariable(reinitializeVariableEntityFilter = ...)
+
+[MINOR] The Default*Score class have become more encapsulated.
+In the unlikely case that you've used any of them directly, do these changes:
+Before in *.java:
+    ... = DefaultHardAndSoftScore.valueOf(-100);
+After in *.java:
+    ... = DefaultHardAndSoftScore.valueOf(-100, Integer.MIN_VALUE);
+Before in *.java:
+    ... = new DefaultHardAndSoftScore(-100, -20);
+After in *.java:
+    ... = DefaultHardAndSoftScore.valueOf(-100, -20);

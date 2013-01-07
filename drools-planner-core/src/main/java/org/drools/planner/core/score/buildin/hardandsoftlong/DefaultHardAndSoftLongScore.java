@@ -41,10 +41,6 @@ public final class DefaultHardAndSoftLongScore extends AbstractScore<HardAndSoft
         return valueOf(hardScore, softScore);
     }
 
-    public static DefaultHardAndSoftLongScore valueOf(long hardScore) {
-        return new DefaultHardAndSoftLongScore(hardScore);
-    }
-
     public static DefaultHardAndSoftLongScore valueOf(long hardScore, long softScore) {
         return new DefaultHardAndSoftLongScore(hardScore, softScore);
     }
@@ -56,12 +52,7 @@ public final class DefaultHardAndSoftLongScore extends AbstractScore<HardAndSoft
     private final long hardScore;
     private final long softScore;
 
-    public DefaultHardAndSoftLongScore(long hardScore) {
-        // Any other softScore is better
-        this(hardScore, Long.MIN_VALUE);
-    }
-
-    public DefaultHardAndSoftLongScore(long hardScore, long softScore) {
+    protected DefaultHardAndSoftLongScore(long hardScore, long softScore) {
         this.hardScore = hardScore;
         this.softScore = softScore;
     }

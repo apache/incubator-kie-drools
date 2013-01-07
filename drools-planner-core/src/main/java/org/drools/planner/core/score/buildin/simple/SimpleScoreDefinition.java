@@ -22,8 +22,8 @@ import org.drools.planner.core.score.definition.AbstractScoreDefinition;
 
 public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> {
 
-    private SimpleScore perfectMaximumScore = new DefaultSimpleScore(0);
-    private SimpleScore perfectMinimumScore = new DefaultSimpleScore(Integer.MIN_VALUE);
+    private SimpleScore perfectMaximumScore = DefaultSimpleScore.valueOf(0);
+    private SimpleScore perfectMinimumScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
 
     public void setPerfectMaximumScore(SimpleScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;

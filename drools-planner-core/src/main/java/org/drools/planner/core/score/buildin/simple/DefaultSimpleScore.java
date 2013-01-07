@@ -41,7 +41,7 @@ public final class DefaultSimpleScore extends AbstractScore<SimpleScore>
 
     private final int score;
 
-    public DefaultSimpleScore(int score) {
+    protected DefaultSimpleScore(int score) {
         this.score = score;
     }
 

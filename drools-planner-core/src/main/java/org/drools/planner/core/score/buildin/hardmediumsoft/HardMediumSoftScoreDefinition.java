@@ -26,8 +26,8 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
     private double hardScoreTimeGradientWeight = 0.50; // TODO this is a guess
     private double mediumScoreTimeGradientWeight = 0.30; // TODO this is a guess
 
-    private HardMediumSoftScore perfectMaximumScore = new DefaultHardMediumSoftScore(0, 0, 0);
-    private HardMediumSoftScore perfectMinimumScore = new DefaultHardMediumSoftScore(
+    private HardMediumSoftScore perfectMaximumScore = DefaultHardMediumSoftScore.valueOf(0, 0, 0);
+    private HardMediumSoftScore perfectMinimumScore = DefaultHardMediumSoftScore.valueOf(
             Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
 
     /**

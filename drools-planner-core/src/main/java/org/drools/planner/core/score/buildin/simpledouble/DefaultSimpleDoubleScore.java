@@ -41,7 +41,7 @@ public final class DefaultSimpleDoubleScore extends AbstractScore<SimpleDoubleSc
 
     private final double score;
 
-    public DefaultSimpleDoubleScore(double score) {
+    protected DefaultSimpleDoubleScore(double score) {
         this.score = score;
     }
 
