@@ -146,7 +146,6 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         PlanningEntitySelector planningEntitySelector = new PlanningEntitySelector(
                 solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass));
         planningEntitySelector.setSelectionOrder(determinePlanningEntitySelectionOrder());
-        planningEntitySelector.setResetInitializedPlanningEntities(false);
         planningEntitySelectorList.add(planningEntitySelector);
         greedyPlanningEntitySelector.setPlanningEntitySelectorList(planningEntitySelectorList);
         return greedyPlanningEntitySelector;

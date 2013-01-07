@@ -34,7 +34,6 @@ public class GreedyFitPlanningEntityConfig {
     protected Class<?> planningEntityClass = null;
 
     protected PlanningEntitySelectionOrder selectionOrder = null;
-    protected Boolean resetInitializedPlanningEntities = null;
 
     public PlanningEntitySelectionOrder getSelectionOrder() {
         return selectionOrder;
@@ -42,14 +41,6 @@ public class GreedyFitPlanningEntityConfig {
 
     public void setSelectionOrder(PlanningEntitySelectionOrder selectionOrder) {
         this.selectionOrder = selectionOrder;
-    }
-
-    public Boolean getResetInitializedPlanningEntities() {
-        return resetInitializedPlanningEntities;
-    }
-
-    public void setResetInitializedPlanningEntities(Boolean resetInitializedPlanningEntities) {
-        this.resetInitializedPlanningEntities = resetInitializedPlanningEntities;
     }
 
     // ************************************************************************
@@ -79,17 +70,12 @@ public class GreedyFitPlanningEntityConfig {
         PlanningEntitySelector planningEntitySelector = new PlanningEntitySelector(planningEntityDescriptor);
         planningEntitySelector.setSelectionOrder(selectionOrder != null ? selectionOrder
                 : PlanningEntitySelectionOrder.ORIGINAL);
-        planningEntitySelector.setResetInitializedPlanningEntities(resetInitializedPlanningEntities != null ?
-                resetInitializedPlanningEntities.booleanValue() : false);
         return planningEntitySelector;
     }
 
     public void inherit(GreedyFitPlanningEntityConfig inheritedConfig) {
         if (selectionOrder == null) {
             selectionOrder = inheritedConfig.getSelectionOrder();
-        }
-        if (resetInitializedPlanningEntities == null) {
-            resetInitializedPlanningEntities = inheritedConfig.getResetInitializedPlanningEntities();
         }
     }
 

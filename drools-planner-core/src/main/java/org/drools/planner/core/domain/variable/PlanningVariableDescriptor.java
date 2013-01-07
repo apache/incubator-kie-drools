@@ -213,18 +213,11 @@ public class PlanningVariableDescriptor {
 
     @Deprecated
     public boolean isInitialized(Object planningEntity) {
-        // TODO use reinitializeVariableEntityFilter to determine isInitialized
         if (nullable) {
             return true;
         }
         Object variable = getValue(planningEntity);
         return variable != null;
-    }
-
-    @Deprecated
-    public void uninitialize(Object planningEntity) {
-        // TODO extract to VariableInitialized interface
-        setValue(planningEntity, null);
     }
 
     public Object getValue(Object planningEntity) {

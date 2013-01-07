@@ -20,7 +20,6 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
     private PlanningEntityDescriptor planningEntityDescriptor;
 
     private PlanningEntitySelectionOrder selectionOrder = PlanningEntitySelectionOrder.ORIGINAL;
-    private boolean resetInitializedPlanningEntities = false;
 
     private List<Object> selectedPlanningEntityList = null;
 
@@ -30,10 +29,6 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
 
     public void setSelectionOrder(PlanningEntitySelectionOrder selectionOrder) {
         this.selectionOrder = selectionOrder;
-    }
-
-    public void setResetInitializedPlanningEntities(boolean resetInitializedPlanningEntities) {
-        this.resetInitializedPlanningEntities = resetInitializedPlanningEntities;
     }
 
     // ************************************************************************
@@ -65,15 +60,8 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
             if (!planningEntityDescriptor.getPlanningEntityClass().isInstance(planningEntity)) {
                 it.remove();
             } else if (planningEntityDescriptor.isInitialized(planningEntity)) {
-                if (resetInitializedPlanningEntities) { // TODO this should be extracted to a custom solver phase before this phase
-                    ScoreDirector scoreDirector = phaseScope.getScoreDirector();
-                    scoreDirector.beforeEntityRemoved(planningEntity);
-                    planningEntityDescriptor.uninitialize(planningEntity);
-                    scoreDirector.afterEntityRemoved(planningEntity);
-                } else {
-                    // Do not plan the initialized planning entity
-                    it.remove();
-                }
+                // Do not plan the initialized planning entity
+                it.remove();
             }
         }
         switch (selectionOrder) {
