@@ -484,11 +484,11 @@ public class Queen {
         linkend="realTimePlanning">real-time planning</link>) does not mix well with a nullable planning variable: every
         time the Solver starts or a problem fact change is made, the construction heuristics will try to initialize all
         the null variables again, which can be a huge waste of time. One way to deal with this, is to change when a
-        planning entity is initialized.</para>
+        planning entity is considered initialized.</para>
       </section>
 
       <section>
-        <title>When is a planning entity initialized?</title>
+        <title>When is a planning entity considered initialized?</title>
 
         <para>A planning entity is considered initialized if all of its planning variables are initialized.</para>
 
