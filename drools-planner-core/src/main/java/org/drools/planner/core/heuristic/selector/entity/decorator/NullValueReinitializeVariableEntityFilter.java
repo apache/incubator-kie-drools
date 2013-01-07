@@ -4,16 +4,16 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.score.director.ScoreDirector;
 
-public class NullValueUninitializedEntityFilter implements SelectionFilter<Object> {
+public class NullValueReinitializeVariableEntityFilter implements SelectionFilter<Object> {
 
-    private final PlanningVariableDescriptor planningVariableDescriptor;
+    private final PlanningVariableDescriptor variableDescriptor;
 
-    public NullValueUninitializedEntityFilter(PlanningVariableDescriptor planningVariableDescriptor) {
-        this.planningVariableDescriptor = planningVariableDescriptor;
+    public NullValueReinitializeVariableEntityFilter(PlanningVariableDescriptor variableDescriptor) {
+        this.variableDescriptor = variableDescriptor;
     }
 
     public boolean accept(ScoreDirector scoreDirector, Object selection) {
-        Object value = planningVariableDescriptor.getValue(selection);
+        Object value = variableDescriptor.getValue(selection);
         return value == null;
     }
 

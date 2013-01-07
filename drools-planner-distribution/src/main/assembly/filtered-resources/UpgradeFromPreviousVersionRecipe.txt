@@ -2489,3 +2489,9 @@ After in *ScoreRules.drl:
         $leftLecture : Lecture(..., period != null, $period : period, room != null, $room : room)
         $rightLecture : Lecture(period == $period, room == $room, ...) // no null check needed on period and room
     then
+
+[MINOR] @PlanningVariable's property uninitializedEntityFilter has been renamed to reinitializeVariableEntityFilter
+Before in *.java:
+    @PlanningVariable(uninitializedEntityFilter = ...)
+After in *.java:
+    @PlanningVariable(reinitializeVariableEntityFilter = ...)

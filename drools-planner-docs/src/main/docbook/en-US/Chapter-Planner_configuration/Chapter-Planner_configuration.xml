@@ -458,6 +458,14 @@ public class Queen {
 }</programlisting>
       </section>
 
+      <section>
+        <title>When is a planning entity considered initialized?</title>
+
+        <para>A planning entity is considered initialized if all of its planning variables are initialized.</para>
+        <para>A planning variable is considered initialized if its value is not <literal>null</literal>
+          or if the variable is <literal>nullable</literal>.</para>
+      </section>
+
       <section xml:id="nullablePlanningVariable">
         <title>Nullable planning variable</title>
 
@@ -484,19 +492,9 @@ public class Queen {
         linkend="realTimePlanning">real-time planning</link>) does not mix well with a nullable planning variable: every
         time the Solver starts or a problem fact change is made, the construction heuristics will try to initialize all
         the null variables again, which can be a huge waste of time. One way to deal with this, is to change when a
-        planning entity is considered initialized.</para>
-      </section>
+        planning entity should be reinitialized with an <literal>reinitializeVariableEntityFilter</literal>:</para>
 
-      <section>
-        <title>When is a planning entity considered initialized?</title>
-
-        <para>A planning entity is considered initialized if all of its planning variables are initialized.</para>
-
-        <para>By default, a planning variable is considered initialized if its value is not <literal>null</literal>, but
-        for nullable planning variables you can overwrite this with an
-        <literal>uninitializedEntityFilter</literal>:</para>
-
-        <programlisting language="java">    @PlanningVariable(nullable = true, uninitializedEntityFilter = UninitializedTaskFilter.class)
+        <programlisting language="java">    @PlanningVariable(nullable = true, reinitializeVariableEntityFilter = ReinitializeTaskFilter.class)
     @ValueRange(...)
     public Worker getWorker() {
         return worker;

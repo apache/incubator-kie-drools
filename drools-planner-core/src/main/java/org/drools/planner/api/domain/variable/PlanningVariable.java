@@ -39,7 +39,7 @@ public @interface PlanningVariable {
     /**
      * A nullable planning variable will automatically add the planning value null to the {@link ValueRange}.
      * <p/>
-     * In repeated planning use cases, it's recommended to specify a {@link #uninitializedEntityFilter()}
+     * In repeated planning use cases, it's recommended to specify a {@link #reinitializeVariableEntityFilter()}
      * for every nullable planning variable too.
      * <p/>
      * {@link #nullable()} true is not compatible with {#link #chained} true.
@@ -49,23 +49,24 @@ public @interface PlanningVariable {
     boolean nullable() default false;
 
     /**
-     * Construction heuristics only change (effectively reset) uninitialized planning variables.
-     * An initialized planning variable is ignored by construction heuristics.
+     * Construction heuristics only change reinitializable planning variables.
+     * Non reinitializable planning variable is ignored by construction heuristics.
      * This is especially useful in repeated planning use cases,
      * in which starting from scratch would waste previous results and time.
      * <p/>
-     * If no {@link #uninitializedEntityFilter} is specified,
-     * the default considers an entity uninitialized for a variable if its value is null.
+     * If no {@link #reinitializeVariableEntityFilter} is specified,
+     * the default considers an entity uninitialized for a variable if its value is null
+     * (even if {@link #nullable()} is true).
      * <p/>
      * The method {@link SelectionFilter#accept(ScoreDirector, Object)}
-     * returns false if the selection entity is initialized for this variable
-     * and it returns true if the selection entity is uninitialized for this variable
-     * @return {@link NullUninitializedEntityFilter} when it is null (workaround for annotation limitation)
+     * returns false if the selection entity should be reinitialized for this variable
+     * and it returns true if the selection entity should not be reinitialized for this variable
+     * @return {@link NullReinitializeVariableEntityFilter} when it is null (workaround for annotation limitation)
      */
-    Class<? extends SelectionFilter> uninitializedEntityFilter()
-            default NullUninitializedEntityFilter.class;
+    Class<? extends SelectionFilter> reinitializeVariableEntityFilter()
+            default NullReinitializeVariableEntityFilter.class;
 
-    interface NullUninitializedEntityFilter extends SelectionFilter {}
+    interface NullReinitializeVariableEntityFilter extends SelectionFilter {}
 
     /**
      * Allows a collection of planning values for this variable to be sorted by strength.

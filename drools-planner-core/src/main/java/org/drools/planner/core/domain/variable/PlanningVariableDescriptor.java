@@ -30,7 +30,7 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.drools.planner.core.heuristic.selector.entity.decorator.NullValueUninitializedEntityFilter;
+import org.drools.planner.core.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.drools.planner.core.solution.Solution;
 
 public class PlanningVariableDescriptor {
@@ -42,7 +42,7 @@ public class PlanningVariableDescriptor {
 
     private PlanningValueRangeDescriptor valueRangeDescriptor;
     private boolean nullable;
-    private SelectionFilter uninitializedEntityFilter;
+    private SelectionFilter reinitializeVariableEntityFilter;
     private PlanningValueSorter valueSorter;
 
     public PlanningVariableDescriptor(PlanningEntityDescriptor planningEntityDescriptor,
@@ -74,16 +74,16 @@ public class PlanningVariableDescriptor {
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
                     + variablePropertyAccessor.getPropertyType() + ").");
         }
-        Class<? extends SelectionFilter> uninitializedEntityFilterClass
-                = planningVariableAnnotation.uninitializedEntityFilter();
-        if (uninitializedEntityFilterClass == PlanningVariable.NullUninitializedEntityFilter.class) {
-            uninitializedEntityFilterClass = null;
+        Class<? extends SelectionFilter> reinitializeVariableEntityFilterClass
+                = planningVariableAnnotation.reinitializeVariableEntityFilter();
+        if (reinitializeVariableEntityFilterClass == PlanningVariable.NullReinitializeVariableEntityFilter.class) {
+            reinitializeVariableEntityFilterClass = null;
         }
-        if (uninitializedEntityFilterClass != null) {
-            uninitializedEntityFilter = ConfigUtils.newInstance(this,
-                    "uninitializedEntityFilterClass", uninitializedEntityFilterClass);
+        if (reinitializeVariableEntityFilterClass != null) {
+            reinitializeVariableEntityFilter = ConfigUtils.newInstance(this,
+                    "reinitializeVariableEntityFilterClass", reinitializeVariableEntityFilterClass);
         } else {
-            uninitializedEntityFilter = new NullValueUninitializedEntityFilter(this);
+            reinitializeVariableEntityFilter = new NullValueReinitializeVariableEntityFilter(this);
         }
     }
 
@@ -213,7 +213,7 @@ public class PlanningVariableDescriptor {
 
     @Deprecated
     public boolean isInitialized(Object planningEntity) {
-        // TODO use uninitializedEntityFilter to determine isInitialized
+        // TODO use reinitializeVariableEntityFilter to determine isInitialized
         if (nullable) {
             return true;
         }
