@@ -376,7 +376,7 @@
         </imageobject>
       </mediaobject>
 
-      <para>Filtering us the interface <literal>SelectionFilter</literal>:</para>
+      <para>Filtering uses the interface <literal>SelectionFilter</literal>:</para>
 
       <programlisting language="java">public interface SelectionFilter&lt;T&gt; {
 
@@ -424,7 +424,7 @@
     <section>
       <title>Sorted selection</title>
 
-      <para>TODO Not yet implemented.</para>
+      <para>TODO</para>
     </section>
 
     <section>

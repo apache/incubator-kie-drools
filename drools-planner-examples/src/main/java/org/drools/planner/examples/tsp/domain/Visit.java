@@ -25,8 +25,9 @@ import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.api.domain.variable.ValueRanges;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator;
 
-@PlanningEntity
+@PlanningEntity(difficultyComparatorClass = LatitudeVisitDifficultyComparator.class)
 @XStreamAlias("Visit")
 public class Visit extends AbstractPersistable implements Appearance {
 
