@@ -23,6 +23,7 @@ import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.custom.scope.CustomSolverPhaseScope;
 import org.drools.planner.core.phase.custom.scope.CustomStepScope;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
@@ -73,7 +74,6 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         phaseScope.setLastCompletedStepScope(completedStepScope);
         CustomStepScope stepScope = new CustomStepScope(phaseScope);
         stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
-        stepScope.setSolutionInitialized(true);
         return stepScope;
     }
 
@@ -89,8 +89,10 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         super.stepEnded(stepScope);
         boolean bestScoreImproved = stepScope.getBestScoreImproved();
         if (forceUpdateBestSolution && !bestScoreImproved) {
-            bestSolutionRecaller.updateBestSolution(stepScope.getPhaseScope().getSolverScope(),
-                    stepScope.createOrGetClonedSolution());
+            DefaultSolverScope solverScope = stepScope.getPhaseScope().getSolverScope();
+            Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
+            boolean newBestSolutionInitialized = solverScope.isWorkingSolutionInitialized();
+            bestSolutionRecaller.updateBestSolution(solverScope, newBestSolution, newBestSolutionInitialized);
         }
         CustomSolverPhaseScope customSolverPhaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {

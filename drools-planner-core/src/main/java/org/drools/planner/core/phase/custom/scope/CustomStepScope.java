@@ -31,6 +31,11 @@ public class CustomStepScope extends AbstractStepScope {
         return phaseScope;
     }
 
+    @Override
+    public boolean isBestSolutionCloningDelayed() {
+        return false;
+    }
+
     // ************************************************************************
     // Calculated methods
     // ************************************************************************

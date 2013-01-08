@@ -65,7 +65,6 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
         phaseScope.setLastCompletedStepScope(completedStepScope);
         BruteForceStepScope stepScope = new BruteForceStepScope(phaseScope);
         stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
-        stepScope.setSolutionInitialized(true);
         return stepScope;
     }
 

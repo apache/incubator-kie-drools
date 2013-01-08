@@ -23,6 +23,7 @@ import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristic
 import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhase;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
@@ -74,10 +75,6 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
                 phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
                 phaseScope.assertExpectedWorkingScore(stepScope.getScore());
             }
-            // TODO FIXME broken if a construction heuristic only initializes 1 variable
-            if (!hackEntityPlacer.hasPlacement()) {
-                stepScope.setSolutionInitialized(true);
-            }
             stepEnded(stepScope);
             stepScope = createNextStepScope(phaseScope, stepScope);
         }
@@ -94,7 +91,6 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         phaseScope.setLastCompletedStepScope(completedStepScope);
         ConstructionHeuristicStepScope stepScope = new ConstructionHeuristicStepScope(phaseScope);
         stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
-        stepScope.setSolutionInitialized(false);
         return stepScope;
     }
 
@@ -138,6 +134,10 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
 
     public void phaseEnded(ConstructionHeuristicSolverPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
+        Solution newBestSolution = phaseScope.getScoreDirector().cloneWorkingSolution();
+        boolean newBestSolutionInitialized = phaseScope.isWorkingSolutionInitialized();
+        bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope(),
+                newBestSolution, newBestSolutionInitialized);
         for (EntityPlacer entityPlacer : entityPlacerList) {
             entityPlacer.phaseEnded(phaseScope);
         }

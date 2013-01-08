@@ -27,7 +27,6 @@ public abstract class AbstractStepScope {
 
     protected int stepIndex = -1;
 
-    protected boolean solutionInitialized = false;
     protected Score score = null;
     protected Boolean bestScoreImproved;
     // Stays null if there is no need to clone it
@@ -43,13 +42,7 @@ public abstract class AbstractStepScope {
         this.stepIndex = stepIndex;
     }
 
-    public boolean isSolutionInitialized() {
-        return solutionInitialized;
-    }
-
-    public void setSolutionInitialized(boolean solutionInitialized) {
-        this.solutionInitialized = solutionInitialized;
-    }
+    public abstract boolean isBestSolutionCloningDelayed();
 
     public Score getScore() {
         return score;

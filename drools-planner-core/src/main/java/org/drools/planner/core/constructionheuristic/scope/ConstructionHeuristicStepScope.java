@@ -39,6 +39,11 @@ public class ConstructionHeuristicStepScope extends AbstractStepScope {
         return phaseScope;
     }
 
+    @Override
+    public boolean isBestSolutionCloningDelayed() {
+        return true;
+    }
+
     public Object getEntity() {
         return entity;
     }

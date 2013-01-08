@@ -24,6 +24,7 @@ import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitSt
 import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhase;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
@@ -77,9 +78,6 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
                 phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
                 phaseScope.assertExpectedWorkingScore(stepScope.getScore());
             }
-            if (!it.hasNext()) {
-                stepScope.setSolutionInitialized(true);
-            }
             stepEnded(stepScope);
             stepScope = createNextStepScope(phaseScope, stepScope);
         }
@@ -95,7 +93,6 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         greedyFitSolverPhaseScope.setLastCompletedStepScope(completedGreedyFitStepScope);
         GreedyFitStepScope greedyFitStepScope = new GreedyFitStepScope(greedyFitSolverPhaseScope);
         greedyFitStepScope.setStepIndex(completedGreedyFitStepScope.getStepIndex() + 1);
-        greedyFitStepScope.setSolutionInitialized(false);
         return greedyFitStepScope;
     }
 
@@ -107,38 +104,42 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
 //        greedyDecider.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
-        super.phaseStarted(greedyFitSolverPhaseScope);
-        greedyPlanningEntitySelector.phaseStarted(greedyFitSolverPhaseScope);
-        greedyDecider.phaseStarted(greedyFitSolverPhaseScope);
+    public void phaseStarted(GreedyFitSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        greedyPlanningEntitySelector.phaseStarted(phaseScope);
+        greedyDecider.phaseStarted(phaseScope);
     }
 
-    public void stepStarted(GreedyFitStepScope greedyFitStepScope) {
-        super.stepStarted(greedyFitStepScope);
-        greedyPlanningEntitySelector.stepStarted(greedyFitStepScope);
-        greedyDecider.stepStarted(greedyFitStepScope);
+    public void stepStarted(GreedyFitStepScope stepScope) {
+        super.stepStarted(stepScope);
+        greedyPlanningEntitySelector.stepStarted(stepScope);
+        greedyDecider.stepStarted(stepScope);
     }
 
-    public void stepEnded(GreedyFitStepScope greedyFitStepScope) {
-        super.stepEnded(greedyFitStepScope);
-        greedyPlanningEntitySelector.stepEnded(greedyFitStepScope);
-        greedyDecider.stepEnded(greedyFitStepScope);
+    public void stepEnded(GreedyFitStepScope stepScope) {
+        super.stepEnded(stepScope);
+        greedyPlanningEntitySelector.stepEnded(stepScope);
+        greedyDecider.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
-            long timeMillisSpend = greedyFitStepScope.getPhaseScope().calculateSolverTimeMillisSpend();
+            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), initialized planning entity ({}).",
-                    greedyFitStepScope.getStepIndex(), timeMillisSpend,
-                    greedyFitStepScope.getScore(), greedyFitStepScope.getPlanningEntity());
+                    stepScope.getStepIndex(), timeMillisSpend,
+                    stepScope.getScore(), stepScope.getPlanningEntity());
         }
     }
 
-    public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
-        super.phaseEnded(greedyFitSolverPhaseScope);
-        greedyPlanningEntitySelector.phaseEnded(greedyFitSolverPhaseScope);
-        greedyDecider.phaseEnded(greedyFitSolverPhaseScope);
+    public void phaseEnded(GreedyFitSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
+        Solution newBestSolution = phaseScope.getScoreDirector().cloneWorkingSolution();
+        boolean newBestSolutionInitialized = phaseScope.isWorkingSolutionInitialized();
+        bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope(),
+                newBestSolution, newBestSolutionInitialized);
+        greedyPlanningEntitySelector.phaseEnded(phaseScope);
+        greedyDecider.phaseEnded(phaseScope);
         logger.info("Phase constructionHeuristic ended: step total ({}), time spend ({}), best score ({}).",
-                greedyFitSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
-                greedyFitSolverPhaseScope.calculateSolverTimeMillisSpend(),
-                greedyFitSolverPhaseScope.getBestScore());
+                phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                phaseScope.calculateSolverTimeMillisSpend(),
+                phaseScope.getBestScore());
     }
 
     @Override

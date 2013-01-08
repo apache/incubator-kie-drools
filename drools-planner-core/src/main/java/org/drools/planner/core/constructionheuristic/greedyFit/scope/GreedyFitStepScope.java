@@ -38,6 +38,11 @@ public class GreedyFitStepScope extends AbstractStepScope {
         return phaseScope;
     }
 
+    @Override
+    public boolean isBestSolutionCloningDelayed() {
+        return true;
+    }
+
     public Object getPlanningEntity() {
         return planningEntity;
     }

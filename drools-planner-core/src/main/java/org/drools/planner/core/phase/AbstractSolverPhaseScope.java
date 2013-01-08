@@ -149,6 +149,10 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getWorkingRandom();
     }
 
+    public boolean isBestSolutionInitialized() {
+        return solverScope.isBestSolutionInitialized();
+    }
+
     public Score getBestScore() {
         return solverScope.getBestScore();
     }

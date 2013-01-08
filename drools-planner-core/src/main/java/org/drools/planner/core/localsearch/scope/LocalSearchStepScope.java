@@ -39,6 +39,11 @@ public class LocalSearchStepScope extends AbstractStepScope {
         return phaseScope;
     }
 
+    @Override
+    public boolean isBestSolutionCloningDelayed() {
+        return false;
+    }
+
     public double getTimeGradient() {
         return timeGradient;
     }

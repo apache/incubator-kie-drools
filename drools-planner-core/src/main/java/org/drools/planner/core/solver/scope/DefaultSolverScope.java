@@ -42,7 +42,8 @@ public class DefaultSolverScope {
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with setPlanningProblem
 
     protected Solution bestSolution;
-    protected Score bestScore; // TODO remove me
+    protected boolean bestSolutionInitialized; // TODO remove me by folding me into bestSolution.getScore()
+    protected Score bestScore; // TODO remove me by folding me into bestSolution.getScore()
 
     public boolean isRestartSolver() {
         return restartSolver;
@@ -140,6 +141,14 @@ public class DefaultSolverScope {
         this.bestSolution = bestSolution;
     }
 
+    public boolean isBestSolutionInitialized() {
+        return bestSolutionInitialized;
+    }
+
+    public void setBestSolutionInitialized(boolean bestSolutionInitialized) {
+        this.bestSolutionInitialized = bestSolutionInitialized;
+    }
+
     public Score getBestScore() {
         return bestScore;
     }
@@ -161,6 +170,10 @@ public class DefaultSolverScope {
         // The workingSolution must never be the same instance as the bestSolution.
         SolutionCloner cloner = scoreDirector.getSolutionDescriptor().getSolutionCloner();
         scoreDirector.setWorkingSolution(cloner.cloneSolution(getBestSolution()));
+    }
+
+    public String getBestScoreWithUninitializedPrefix() {
+        return bestSolutionInitialized ? bestScore.toString() : "uninitialized/" + bestScore;
     }
 
 }

@@ -208,7 +208,7 @@ public class DefaultSolver implements Solver {
         long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L / timeMillisSpend;
         logger.info("Solving ended: time spend ({}), best score ({}), average calculate count per second ({}).",
                 timeMillisSpend,
-                solverScope.getBestScore(),
+                solverScope.getBestScoreWithUninitializedPrefix(),
                 averageCalculateCountPerSecond);
     }
 
@@ -226,7 +226,10 @@ public class DefaultSolver implements Solver {
                 count++;
                 problemFactChange = problemFactChangeQueue.poll();
             }
-            bestSolutionRecaller.updateBestSolution(solverScope, solverScope.getScoreDirector().cloneWorkingSolution());
+            Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
+            // TODO BestSolutionRecaller.solverStarted() already calls isWorkingSolutionInitialized()
+            boolean newBestSolutionInitialized = solverScope.isWorkingSolutionInitialized();
+            bestSolutionRecaller.updateBestSolution(solverScope, newBestSolution, newBestSolutionInitialized);
             logger.info("Done {} ProblemFactChange(s): new score ({}) possibly uninitialized. Restarting solver.",
                     count, score);
         }

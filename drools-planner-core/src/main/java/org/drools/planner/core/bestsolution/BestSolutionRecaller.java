@@ -53,46 +53,49 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         // Starting bestSolution is already set by Solver.setPlanningProblem()
-        boolean workingSolutionInitialized = solverScope.isWorkingSolutionInitialized();
-        Score startingInitializedScore;
-        if (workingSolutionInitialized) {
-            startingInitializedScore = solverScope.calculateScore();
-        } else {
-            startingInitializedScore = null;
-        }
-        solverScope.setStartingInitializedScore(startingInitializedScore);
-        solverScope.setBestScore(startingInitializedScore);
+        boolean solutionInitialized = solverScope.isWorkingSolutionInitialized();
+        solverScope.setBestSolutionInitialized(solutionInitialized);
+        Score score = solverScope.calculateScore();
+        solverScope.setBestScore(score);
         // The original bestSolution might be the final bestSolution and should have an accurate Score
-        solverScope.getBestSolution().setScore(startingInitializedScore);
+        solverScope.getBestSolution().setScore(score);
+        if (solutionInitialized) {
+            solverScope.setStartingInitializedScore(score);
+        }
     }
 
     @Override
     public void stepEnded(AbstractStepScope stepScope) {
-        if (!stepScope.isSolutionInitialized()) {
+        if (stepScope.isBestSolutionCloningDelayed()) {
             return;
         }
         AbstractSolverPhaseScope phaseScope = stepScope.getPhaseScope();
         DefaultSolverScope solverScope = phaseScope.getSolverScope();
         Score newScore = stepScope.getScore();
         Score bestScore = solverScope.getBestScore();
-        boolean bestScoreImproved;
-        if (bestScore == null) {
-            bestScoreImproved = true;
-            solverScope.setStartingInitializedScore(newScore);
-        } else {
-            bestScoreImproved = newScore.compareTo(bestScore) > 0;
-        }
+        boolean bestScoreImproved = newScore.compareTo(bestScore) > 0;
         stepScope.setBestScoreImproved(bestScoreImproved);
         if (bestScoreImproved) {
             phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
             Solution newBestSolution = stepScope.createOrGetClonedSolution();
-            updateBestSolution(solverScope, newBestSolution);
+            solverScope.setBestSolution(newBestSolution);
+            solverScope.setBestScore(newBestSolution.getScore());
+            solverEventSupport.fireBestSolutionChanged(newBestSolution);
         } else if (assertBestScoreIsUnmodified) {
             solverScope.assertScore(solverScope.getBestSolution());
         }
     }
 
-    public void updateBestSolution(DefaultSolverScope solverScope, Solution newBestSolution) {
+    public void updateBestSolution(DefaultSolverScope solverScope, Solution newBestSolution,
+            boolean newBestSolutionInitialized) {
+        if (newBestSolutionInitialized) {
+            if (!solverScope.isBestSolutionInitialized()) {
+                solverScope.setStartingInitializedScore(newBestSolution.getScore());
+            }
+        } else {
+            solverScope.setStartingInitializedScore(null);
+        }
+        solverScope.setBestSolutionInitialized(newBestSolutionInitialized);
         solverScope.setBestSolution(newBestSolution);
         solverScope.setBestScore(newBestSolution.getScore());
         solverEventSupport.fireBestSolutionChanged(newBestSolution);
