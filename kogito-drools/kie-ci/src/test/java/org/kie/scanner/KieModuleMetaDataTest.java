@@ -45,6 +45,10 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         assertEquals("Bean", testClasses.iterator().next());
         Class<?> beanClass = kieModuleMetaData.getClass("org.kie.test", "Bean");
         assertNotNull(beanClass.getMethod("getValue"));
+
+        if (useTypeDeclaration) {
+            assertTrue(kieModuleMetaData.getTypeMetaInfo(beanClass).isEvent());
+        }
     }
 
     private void checkDroolsCoreDep(KieModuleMetaData kieModuleMetaData) {

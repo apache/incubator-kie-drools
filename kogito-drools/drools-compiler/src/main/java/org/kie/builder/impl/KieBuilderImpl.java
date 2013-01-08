@@ -10,25 +10,28 @@ import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.PackageRegistry;
 import org.drools.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
+import org.drools.factmodel.ClassDefinition;
 import org.drools.kproject.ReleaseIdImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.rule.TypeDeclaration;
+import org.drools.rule.TypeMetaInfo;
 import org.drools.xml.MinimalPomParser;
 import org.drools.xml.PomModel;
 import org.kie.KieBaseConfiguration;
 import org.kie.KieServices;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.InternalKieBuilder;
-import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieBuilderSet;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
-import org.kie.builder.model.KieModuleModel;
-import org.kie.builder.model.KieSessionModel;
 import org.kie.builder.Message.Level;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.Results;
+import org.kie.builder.model.KieBaseModel;
+import org.kie.builder.model.KieModuleModel;
+import org.kie.builder.model.KieSessionModel;
 import org.kie.definition.KiePackage;
 import org.kie.definition.type.FactType;
 import org.kie.io.Resource;
@@ -40,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -136,13 +140,15 @@ public class KieBuilderImpl
             }
 
             if ( buildKieModule(kModule, results) ) {
-                addTypeDeclarationClassesToTrg();
+                Map<String, TypeDeclaration> typeDeclarations = addTypeDeclarationClassesToTrg();
+                writeTypeMetaInfosToTrg(typeDeclarations);
             }
         }
         return this;
     }
 
-    private void addTypeDeclarationClassesToTrg() {
+    private Map<String, TypeDeclaration> addTypeDeclarationClassesToTrg() {
+        Map<String, TypeDeclaration> typeDeclarations = new HashMap<String, TypeDeclaration>();
         KieModuleModel kieModuleModel = kModule.getKieModuleModel();
         for (String kieBaseNames : kieModuleModel.getKieBaseModels().keySet()) {
             KnowledgeBuilderImpl kBuilder = (KnowledgeBuilderImpl)kModule.getKnowledgeBuilderForKieBase(kieBaseNames);
@@ -153,12 +159,27 @@ public class KieBuilderImpl
                 JavaDialectRuntimeData runtimeData = (JavaDialectRuntimeData)pkgRegistry.getDialectRuntimeRegistry().getDialectData("java");
 
                 for (FactType factType : kPkg.getFactTypes()) {
+                    Class<?> typeClass = ((ClassDefinition) factType).getDefinedClass();
+                    TypeDeclaration typeDeclaration = pkgRegistry.getPackage().getTypeDeclaration(typeClass);
+                    if (typeDeclaration != null) {
+                        typeDeclarations.put(typeClass.getName(), typeDeclaration);
+                    }
+
                     String className = factType.getName();
                     String internalName = className.replace('.', '/') + ".class";
                     byte[] bytes = runtimeData.getStore().get(internalName);
                     trgMfs.write( internalName, bytes, true );
                 }
             }
+        }
+        return typeDeclarations;
+    }
+
+    private void writeTypeMetaInfosToTrg(Map<String, TypeDeclaration> typeDeclarations) {
+        if (!typeDeclarations.isEmpty()) {
+            trgMfs.write( KieModuleModelImpl.KMODULE_INFO_JAR_PATH,
+                          TypeMetaInfo.marshallMetaInfos(typeDeclarations).getBytes(),
+                          true );
         }
     }
 

@@ -1,5 +1,6 @@
 package org.kie.scanner;
 
+import org.drools.rule.TypeMetaInfo;
 import org.kie.builder.KieModule;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.impl.InternalKieModule;
@@ -14,6 +15,8 @@ public interface KieModuleMetaData {
     Collection<String> getClasses(String packageName);
 
     Class<?> getClass(String pkgName, String className);
+
+    TypeMetaInfo getTypeMetaInfo(Class<?> clazz);
 
     public static class Factory {
         public static KieModuleMetaData newKieModuleMetaData(KieModule kieModule) {
