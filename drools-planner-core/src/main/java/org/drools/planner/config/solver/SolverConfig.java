@@ -152,11 +152,13 @@ public class SolverConfig {
                     "Configure at least 1 phase (for example <localSearch>) in the solver configuration.");
         }
         List<SolverPhase> solverPhaseList = new ArrayList<SolverPhase>(solverPhaseConfigList.size());
+        int phaseIndex = 0;
         for (SolverPhaseConfig solverPhaseConfig : solverPhaseConfigList) {
-            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(environmentMode,
+            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(phaseIndex, environmentMode,
                     solutionDescriptor, scoreDefinition, termination);
             ((AbstractSolverPhase) solverPhase).setBestSolutionRecaller(bestSolutionRecaller);
             solverPhaseList.add(solverPhase);
+            phaseIndex++;
         }
         solver.setSolverPhaseList(solverPhaseList);
         return solver;

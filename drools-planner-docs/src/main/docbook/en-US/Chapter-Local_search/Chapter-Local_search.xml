@@ -205,7 +205,7 @@
 DEBUG     Step index (0), time spend (20), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
 DEBUG     Step index (1), time spend (31), score (-1), new best score (-1), accepted/selected move count (12/12) for picked step (col0@row0 =&gt; row1).
 DEBUG     Step index (2), time spend (40), score (0), new best score (0), accepted/selected move count (12/12) for picked step (col3@row0 =&gt; row2).
-INFO  Phase localSearch ended: step total (3), time spend (41), best score (0).
+INFO  Phase (0) localSearch ended: step total (3), time spend (41), best score (0).
 INFO  Solving ended: time spend (41), best score (0), average calculate count per second (1780).</programlisting>
 
       <para>Notice that the logging uses the <literal>toString()</literal> method of our <literal>Move</literal>

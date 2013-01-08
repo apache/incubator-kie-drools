@@ -85,10 +85,10 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public LocalSearchSolverPhase buildSolverPhase(EnvironmentMode environmentMode,
+    public LocalSearchSolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultLocalSearchSolverPhase localSearchSolverPhase = new DefaultLocalSearchSolverPhase();
-        configureSolverPhase(localSearchSolverPhase, environmentMode, scoreDefinition, solverTermination);
+        configureSolverPhase(localSearchSolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
         localSearchSolverPhase.setDecider(buildDecider(environmentMode, solutionDescriptor, scoreDefinition,
                 localSearchSolverPhase.getTermination()));
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {

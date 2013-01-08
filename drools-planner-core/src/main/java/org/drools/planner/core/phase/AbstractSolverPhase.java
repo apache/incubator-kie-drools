@@ -33,14 +33,23 @@ public abstract class AbstractSolverPhase implements SolverPhase {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected Termination termination;
+    protected int phaseIndex = -1;
 
+    protected Termination termination;
     protected BestSolutionRecaller bestSolutionRecaller;
 
     protected SolverPhaseLifecycleSupport solverPhaseLifecycleSupport = new SolverPhaseLifecycleSupport();
 
     public Termination getTermination() {
         return termination;
+    }
+
+    public int getPhaseIndex() {
+        return phaseIndex;
+    }
+
+    public void setPhaseIndex(int phaseIndex) {
+        this.phaseIndex = phaseIndex;
     }
 
     public void setTermination(Termination termination) {

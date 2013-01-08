@@ -92,12 +92,12 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
 
 
     // TODO downcast return type SolverPhase
-    public SolverPhase buildSolverPhase(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            ScoreDefinition scoreDefinition, Termination solverTermination) {
+    public SolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
+            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         if (constructionHeuristicType != null) {
             // TODO delete GreedyFitSolverPhase
             DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
-            configureSolverPhase(greedySolverPhase, environmentMode, scoreDefinition, solverTermination);
+            configureSolverPhase(greedySolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
             greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
             greedySolverPhase.setGreedyDecider(buildGreedyDecider(solutionDescriptor, environmentMode));
             if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
@@ -112,7 +112,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
 
 
             DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
-            configureSolverPhase(phase, environmentMode, scoreDefinition, solverTermination);
+            configureSolverPhase(phase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
 
             List<EntityPlacer> entityPlacerList = new ArrayList<EntityPlacer>(entityPlacerConfigList.size());
             for (EntityPlacerConfig entityPlacerConfig : entityPlacerConfigList) {

@@ -36,10 +36,10 @@ public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public BruteForceSolverPhase buildSolverPhase(EnvironmentMode environmentMode,
+    public BruteForceSolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultBruteForceSolverPhase bruteForceSolverPhase = new DefaultBruteForceSolverPhase();
-        configureSolverPhase(bruteForceSolverPhase, environmentMode, scoreDefinition, solverTermination);
+        configureSolverPhase(bruteForceSolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
         bruteForceSolverPhase.setBruteForceEntityWalker(new BruteForceEntityWalker(solutionDescriptor));
         return bruteForceSolverPhase;
     }

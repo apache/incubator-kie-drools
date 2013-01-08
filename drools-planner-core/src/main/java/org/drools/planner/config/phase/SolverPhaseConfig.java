@@ -57,11 +57,13 @@ public abstract class SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public abstract SolverPhase buildSolverPhase(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+    public abstract SolverPhase buildSolverPhase(int phaseIndex,
+            EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             ScoreDefinition scoreDefinition, Termination solverTermination);
 
-    protected void configureSolverPhase(AbstractSolverPhase solverPhase,
+    protected void configureSolverPhase(AbstractSolverPhase solverPhase, int phaseIndex,
             EnvironmentMode environmentMode, ScoreDefinition scoreDefinition, Termination solverTermination) {
+        solverPhase.setPhaseIndex(phaseIndex);
         solverPhase.setTermination(terminationConfig.buildTermination(scoreDefinition,
                 new PhaseToSolverTerminationBridge(solverTermination)));
     }

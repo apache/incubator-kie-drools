@@ -141,7 +141,8 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         for (EntityPlacer entityPlacer : entityPlacerList) {
             entityPlacer.phaseEnded(phaseScope);
         }
-        logger.info("Phase constructionHeuristic ended: step total ({}), time spend ({}), best score ({}).",
+        logger.info("Phase ({}) constructionHeuristic ended: step total ({}), time spend ({}), best score ({}).",
+                phaseIndex,
                 phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
                 phaseScope.calculateSolverTimeMillisSpend(),
                 phaseScope.getBestScore());

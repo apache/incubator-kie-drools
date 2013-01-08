@@ -63,10 +63,10 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public CustomSolverPhase buildSolverPhase(EnvironmentMode environmentMode,
+    public CustomSolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultCustomSolverPhase customSolverPhase = new DefaultCustomSolverPhase();
-        configureSolverPhase(customSolverPhase, environmentMode, scoreDefinition, solverTermination);
+        configureSolverPhase(customSolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
         if (CollectionUtils.isEmpty(customSolverPhaseCommandClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customSolverPhaseCommandClass> in the <customSolverPhase> configuration.");

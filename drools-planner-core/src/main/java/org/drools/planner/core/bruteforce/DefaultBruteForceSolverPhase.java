@@ -101,7 +101,8 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
     public void phaseEnded(BruteForceSolverPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         bruteForceEntityWalker.phaseEnded(phaseScope);
-        logger.info("Phase bruteForce ended: step total ({}), time spend ({}), best score ({}).",
+        logger.info("Phase ({}) bruteForce ended: step total ({}), time spend ({}), best score ({}).",
+                phaseIndex,
                 phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
                 phaseScope.calculateSolverTimeMillisSpend(),
                 phaseScope.getBestScore());
