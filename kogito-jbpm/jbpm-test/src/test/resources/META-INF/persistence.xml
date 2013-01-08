@@ -29,8 +29,9 @@
         </properties>        
     </persistence-unit>
      
-    <persistence-unit name="org.jbpm.task">
+    <persistence-unit name="org.jbpm.task" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>jdbc/testDS1</jta-data-source>  
         <mapping-file>META-INF/Taskorm.xml</mapping-file>
 
         <class>org.jbpm.task.Attachment</class>
@@ -66,18 +67,13 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
 
             <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
-            <property name="hibernate.id.new_generator_mappings" value="false" />            
-            
-            <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
-            <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
-            <property name="hibernate.connection.username" value="sa" />
-            <property name="hibernate.connection.password" value="sasa" />
+            <property name="hibernate.id.new_generator_mappings" value="false" />  
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />          
         </properties>
     </persistence-unit>
     
     <persistence-unit name="org.jbpm.persistence.patient.example">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        
         <class>org.jbpm.persistence.objects.Patient</class>
         <class>org.jbpm.persistence.objects.MedicalRecord</class>
         <class>org.jbpm.persistence.objects.RecordRow</class>
@@ -90,7 +86,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
             
             <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
-            <property name="hibernate.id.new_generator_mappings" value="false" />            
+            <property name="hibernate.id.new_generator_mappings" value="false" />                    
             
             <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
             <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
