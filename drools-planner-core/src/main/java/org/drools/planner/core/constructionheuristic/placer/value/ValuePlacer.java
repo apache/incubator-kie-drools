@@ -37,6 +37,10 @@ public class ValuePlacer extends AbstractPlacer {
         }
     }
 
+    public PlanningVariableDescriptor getVariableDescriptor() {
+        return variableDescriptor;
+    }
+
     public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {
         this.assertMoveScoreIsUncorrupted = assertMoveScoreIsUncorrupted;
     }

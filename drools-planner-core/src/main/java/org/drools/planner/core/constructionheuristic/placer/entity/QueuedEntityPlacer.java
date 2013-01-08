@@ -37,8 +37,8 @@ public class QueuedEntityPlacer extends AbstractPlacer implements EntityPlacer {
     public void doPlacement(ConstructionHeuristicStepScope stepScope) {
         Object entity = entityIterator.next();
         // start HACK
-        // TODO isInitialized check must be inside ValuePlacer and variable specific
-        while (entitySelector.getEntityDescriptor().isInitialized(entity)) {
+        // TODO isInitialized check must be inside ValuePlacer
+        while (valuePlacer.getVariableDescriptor().isInitialized(entity)) {
             if (!entityIterator.hasNext()) {
                 return;
             }

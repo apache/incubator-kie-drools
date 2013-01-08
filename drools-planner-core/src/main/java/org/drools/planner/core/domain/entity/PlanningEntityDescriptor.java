@@ -203,7 +203,6 @@ public class PlanningEntityDescriptor {
         return problemScale;
     }
 
-    @Deprecated
     public boolean isInitialized(Object planningEntity) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptorMap.values()) {
             if (!planningVariableDescriptor.isInitialized(planningEntity)) {

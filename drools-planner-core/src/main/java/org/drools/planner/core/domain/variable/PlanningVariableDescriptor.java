@@ -211,7 +211,12 @@ public class PlanningVariableDescriptor {
         return nullable;
     }
 
-    @Deprecated
+    /**
+     * A {@link PlanningVariable#nullable()} value is always considered initialized, but it can still be reinitialized
+     * with {@link PlanningVariable#reinitializeVariableEntityFilter()}.
+     * @param planningEntity never null
+     * @return true if the variable on that planningEntity is initialized
+     */
     public boolean isInitialized(Object planningEntity) {
         if (nullable) {
             return true;
