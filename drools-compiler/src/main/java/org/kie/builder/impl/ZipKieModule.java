@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
+
 public class ZipKieModule extends AbstractKieModule implements InternalKieModule {
     private final File             file;    
     private Map<String, ZipEntry> zipEntries;
@@ -57,28 +59,11 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
 
     @Override
     public byte[] getBytes(String name) {
-        ZipEntry entry = this.zipEntries.get( name );
-        if ( entry == null ) {
-            return null;
-        }
-        
-        ZipFile zipFile = null;
-        byte[] bytes = null;
         try {
-            zipFile = new ZipFile( file );
-            bytes = IoUtils.readBytesFromInputStream(  zipFile.getInputStream( entry ) );
-        } catch ( IOException e ) {
+            return readBytesFromZipEntry(file, zipEntries.get(name));
+        } catch (IOException e) {
             throw new RuntimeException( "Unable to get ZipFile bytes for :  " + name + " : " + file, e );
-        } finally {
-            if ( zipFile != null ) {
-                try {
-                    zipFile.close();
-                } catch ( IOException e ) {
-                    throw new RuntimeException( "Unable to close ZipFile when getting bytes for :  " + name + " : " + file, e );
-                }
-            }
         }
-        return bytes;
     }
 
     @Override

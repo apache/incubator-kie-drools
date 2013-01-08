@@ -19,24 +19,13 @@ import static org.junit.Assert.assertTrue;
 public class AbstractKieCiTest {
 
     protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, String... rules) throws IOException {
-        KieFileSystem kfs = ks.newKieFileSystem();
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks);
+        kfs.writePomXML( getPom(releaseId) );
+
         for (String rule : rules) {
             String file = "org/test/" + rule + ".drl";
             kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
         }
-
-        KieModuleModel kproj = ks.newKieModuleModel();
-
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
-                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
-                .setEventProcessingMode( EventProcessingOption.STREAM );
-
-        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
-                .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType( ClockTypeOption.get("realtime") );
-
-        kfs.writeKModuleXML(kproj.toXML());
-        kfs.writePomXML( getPom(releaseId) );
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
@@ -44,6 +33,22 @@ public class AbstractKieCiTest {
     }
 
     protected InternalKieModule createKieJarWithClass(KieServices ks, ReleaseId releaseId, boolean useTypeDeclaration, int value, int factor, ReleaseId... dependencies) throws IOException {
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks);
+        kfs.writePomXML(getPom(releaseId, dependencies));
+
+        if (useTypeDeclaration) {
+            kfs.write("src/main/resources/KBase1/rule1.drl", createDRLWithTypeDeclaration(value, factor));
+        } else {
+            kfs.write("src/main/resources/KBase1/rule1.drl", createDRLForJavaSource(value))
+                    .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
+        }
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        return ( InternalKieModule ) kieBuilder.getKieModule();
+    }
+
+    protected KieFileSystem createKieFileSystemWithKProject(KieServices ks) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
@@ -54,23 +59,9 @@ public class AbstractKieCiTest {
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
                 .setClockType( ClockTypeOption.get("realtime") );
 
-        KieFileSystem kieFileSystem = ks.newKieFileSystem();
-        kieFileSystem
-                .writeKModuleXML(kproj.toXML())
-                .writePomXML(getPom(releaseId, dependencies));
-
-        if (useTypeDeclaration) {
-            kieFileSystem
-                    .write("src/main/resources/" + kieBaseModel1.getName() + "/rule1.drl", createDRLWithTypeDeclaration(value, factor));
-        } else {
-            kieFileSystem
-                    .write("src/main/resources/" + kieBaseModel1.getName() + "/rule1.drl", createDRLForJavaSource(value))
-                    .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
-        }
-
-        KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
-        return ( InternalKieModule ) kieBuilder.getKieModule();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.writeKModuleXML(kproj.toXML());
+        return kfs;
     }
 
     protected String getPom(ReleaseId releaseId, ReleaseId... dependencies) {
@@ -138,13 +129,21 @@ public class AbstractKieCiTest {
                 "end\n";
     }
 
-    private String createDRLWithTypeDeclaration(int value, int factor) {
+    protected String createDRLWithTypeDeclaration(int value, int factor) {
         return "package org.kie.test\n" +
-                "global java.util.List list\n" +
-                "declare Bean\n" +
+                getDRLWithGlobalAndType() +
+                getDRLWithRules(value, factor);
+    }
+
+    protected String getDRLWithGlobalAndType() {
+        return "global java.util.List list\n" +
+                "declare Bean @role(event)\n" +
                 "   value : int\n" +
-                "end\n" +
-                "rule Init salience 100\n" +
+                "end\n";
+    }
+
+    protected String getDRLWithRules(int value, int factor) {
+        return "rule Init salience 100\n" +
                 "when\n" +
                 "then\n" +
                 "insert( new Bean(" + value + ") );\n" +

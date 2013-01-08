@@ -2,6 +2,8 @@ package org.kie.scanner;
 
 import org.drools.core.util.ClassUtils;
 import org.drools.kproject.ReleaseIdImpl;
+import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.rule.TypeMetaInfo;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.impl.InternalKieModule;
 import org.kie.internal.utils.CompositeClassLoader;
@@ -24,6 +26,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
+import static org.drools.rule.TypeMetaInfo.unmarshallMetaInfos;
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
@@ -33,6 +37,8 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     private final Map<String, Collection<String>> classes = new HashMap<String, Collection<String>>();
 
     private final Map<URI, File> jars = new HashMap<URI, File>();
+
+    private final Map<String, TypeMetaInfo> typeMetaInfos = new HashMap<String, TypeMetaInfo>();
 
     private CompositeClassLoader classLoader;
 
@@ -57,7 +63,11 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         this.artifactResolver = getResolverFor(pomStream);
         this.kieModule = kieModule;
         for (String file : kieModule.getFileNames()) {
-            indexClass(file);
+            if (!indexClass(file)) {
+                if (file.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
+                    indexMetaInfo(kieModule.getBytes(file));
+                }
+            }
         }
         init();
     }
@@ -77,6 +87,10 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         } catch (ClassNotFoundException e) {
             return null;
         }
+    }
+
+    public TypeMetaInfo getTypeMetaInfo(Class<?> clazz) {
+        return typeMetaInfos.get(clazz.getName());
     }
 
     private ClassLoader getClassLoader() {
@@ -134,7 +148,12 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             Enumeration< ? extends ZipEntry> entries = zipFile.entries();
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
-                indexClass(entry.getName());
+                String pathName = entry.getName();
+                if (!indexClass(pathName)) {
+                    if (pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
+                        indexMetaInfo(readBytesFromZipEntry(jarFile, entry));
+                    }
+                }
             }
         } catch ( IOException e ) {
             throw new RuntimeException( e );
@@ -149,9 +168,9 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         }
     }
 
-    private void indexClass(String pathName) {
+    private boolean indexClass(String pathName) {
         if (!pathName.endsWith(".class")) {
-            return;
+            return false;
         }
 
         int separator = pathName.lastIndexOf( '/' );
@@ -164,5 +183,11 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             classes.put(packageName, pkg);
         }
         pkg.add(className);
+        return true;
     }
+
+    private void indexMetaInfo(byte[] bytes) {
+        typeMetaInfos.putAll(unmarshallMetaInfos(new String(bytes)));
+    }
+
 }

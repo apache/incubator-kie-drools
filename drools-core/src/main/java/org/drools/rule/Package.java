@@ -274,6 +274,23 @@ public class Package
         return this.typeDeclarations;
     }
 
+    public TypeDeclaration getTypeDeclaration( Class<?> clazz ) {
+        if (clazz == null) {
+            return null;
+        }
+        TypeDeclaration typeDeclaration = getTypeDeclaration(clazz.getSimpleName());
+        if (typeDeclaration == null) {
+            // check if clazz is resolved by any of the type declarations
+            for ( TypeDeclaration type : this.typeDeclarations.values() ) {
+                if ( type.matches( clazz ) ) {
+                    typeDeclaration = type;
+                    break;
+                }
+            }
+        }
+        return typeDeclaration;
+    }
+
     public TypeDeclaration getTypeDeclaration( String type ) {
         return this.typeDeclarations.get( type );
     }
@@ -480,18 +497,8 @@ public class Package
      * @return true if clazz is imported as an Event class in this package
      */
     public boolean isEvent( Class clazz ) {
-        if (clazz == null) {
-            return false;
-        }
-
-        // check if clazz is resolved by any of the type declarations
-        for ( TypeDeclaration type : this.typeDeclarations.values() ) {
-            if ( type.matches( clazz ) && type.getRole() == TypeDeclaration.Role.EVENT) {
-                return true;
-            }
-        }
-
-        return false;
+        TypeDeclaration typeDeclaration = getTypeDeclaration(clazz);
+        return typeDeclaration != null && typeDeclaration.getRole() == TypeDeclaration.Role.EVENT;
     }
 
     public void clear() {

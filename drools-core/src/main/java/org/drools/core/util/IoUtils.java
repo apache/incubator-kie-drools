@@ -172,4 +172,23 @@ public class IoUtils {
         }
         return resultBuff;
     }
+
+    public static byte[] readBytesFromZipEntry(File file, ZipEntry entry) throws IOException {
+        if ( entry == null ) {
+            return null;
+        }
+
+        ZipFile zipFile = null;
+        byte[] bytes = null;
+        try {
+            zipFile = new ZipFile( file );
+            bytes = IoUtils.readBytesFromInputStream(  zipFile.getInputStream( entry ) );
+        } finally {
+            if ( zipFile != null ) {
+                zipFile.close();
+            }
+        }
+        return bytes;
+
+    }
 }

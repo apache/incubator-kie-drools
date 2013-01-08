@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.kie.scanner.MavenRepository.getMavenRepository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
@@ -205,4 +205,45 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
             fail("Creating a KieScanner from a KieClasspathContainer must fail");
         } catch (RuntimeException e) { }
     }
+/*
+    @Test @Ignore
+    public void testGlobalAndRuleInDifferentKieModules() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId depId = ks.newReleaseId("org.kie", "test-globals", "1.0");
+        InternalKieModule kJar1 = createKieJarWithGlobal(ks, depId);
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(depId, kJar1, kPom);
+
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "test-rules", "1.0");
+        InternalKieModule kieModule = createKieJarWithRules(ks, releaseId, depId);
+
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, 15);
+    }
+
+    private InternalKieModule createKieJarWithGlobal(KieServices ks, ReleaseId releaseId) throws IOException {
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks);
+        kfs.write("src/main/resources/KBase1/r1.drl", "package org.kie.test\n" + getDRLWithGlobalAndType());
+
+        kfs.writePomXML( getPom(releaseId) );
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        return ( InternalKieModule ) kieBuilder.getKieModule();
+    }
+
+    private InternalKieModule createKieJarWithRules(KieServices ks, ReleaseId releaseId, ReleaseId depId) throws IOException {
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks);
+        kfs.write("src/main/resources/KBase1/r1.drl", "package org.kie.test\n" + getDRLWithRules(3, 5));
+
+        kfs.writePomXML( getPom(releaseId, depId) );
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        kieBuilder.buildAll();
+        assertTrue(kieBuilder.getResults().getMessages().isEmpty());
+        return ( InternalKieModule ) kieBuilder.getKieModule();
+    }
+*/
 }
