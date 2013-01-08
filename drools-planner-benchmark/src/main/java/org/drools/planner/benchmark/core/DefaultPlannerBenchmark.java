@@ -202,7 +202,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private void warmUp() {
         if (warmUpTimeMillisSpend > 0L) {
             logger.info("================================================================================");
-            logger.info("Warming up");
+            logger.info("Warming up started");
             logger.info("================================================================================");
             long startingTimeMillis = System.currentTimeMillis();
             long timeLeft = warmUpTimeMillisSpend;
@@ -215,7 +215,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 timeLeft = problemBenchmark.warmUp(startingTimeMillis, warmUpTimeMillisSpend, timeLeft);
             }
             logger.info("================================================================================");
-            logger.info("Finished warmUp");
+            logger.info("Warming up ended");
             logger.info("================================================================================");
         }
     }
