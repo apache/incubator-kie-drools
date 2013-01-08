@@ -29,6 +29,7 @@ import org.drools.planner.core.solution.Solution;
  * Helper class for {@link PlanningEntityDifficultyWeightFactory}.
  * @see PlanningEntityDifficultyWeightFactory
  */
+@Deprecated
 public class PlanningEntitySorter {
 
     // TODO also keep PlanningEntityDescriptor?
