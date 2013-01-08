@@ -34,7 +34,6 @@ public interface SelectionFilter<T> {
      * @param scoreDirector never null, the {@link ScoreDirector}
      * which has the {@link ScoreDirector#getWorkingSolution()} to which the selection belongs or applies to
      * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
-     * to create the probabilityWeight for
      * @return true if the selection is accepted, false if the selection should be discarded
      */
     boolean accept(ScoreDirector scoreDirector, T selection);
