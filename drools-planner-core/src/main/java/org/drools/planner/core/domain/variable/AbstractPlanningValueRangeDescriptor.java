@@ -27,6 +27,7 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {
 
     protected PlanningVariableDescriptor variableDescriptor;
+    // TODO rename excludeUninitializedPlanningEntity: only applies to the uninitializedVariable
     protected boolean excludeUninitializedPlanningEntity; // TODO make this compatible with PlanningVariable.reinitializeVariableEntityFilter and use a SelectionFilter
 
     public AbstractPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor) {
@@ -75,7 +76,7 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
                             + " but a planning value class (" + value.getClass()
                             + ") annotated with PlanningEntity is a non configured as a planning entity.");
                 }
-                if (entityDescriptor.isInitialized(value)) {
+                if (variableDescriptor.isInitialized(value)) {
                     filteredValues.add(value);
                 }
             }
