@@ -46,10 +46,14 @@ public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
     }
 
     public ListIterator<Object> listIterator() {
+        Collections.shuffle(cachedEntityList, workingRandom);
+        logger.trace("    Shuffled cachedEntityList with size ({}) in entitySelector({}).",
+                cachedEntityList.size(), this);
         return cachedEntityList.listIterator();
     }
 
     public ListIterator<Object> listIterator(int index) {
+        // Presumes that listIterator() has already been called and shuffling would be bad
         return cachedEntityList.listIterator(index);
     }
 
