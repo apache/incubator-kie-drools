@@ -120,7 +120,7 @@ public class LocalTaskService implements TaskService {
     }
 
     public void disconnect() throws Exception {
-        // do nothing 
+        dispose();
     }
 
     public void dispose() {
