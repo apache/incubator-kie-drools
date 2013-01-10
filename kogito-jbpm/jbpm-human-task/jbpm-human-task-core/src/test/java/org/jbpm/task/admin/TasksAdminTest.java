@@ -163,6 +163,8 @@ public class TasksAdminTest {
         System.out.println(">>> Archived? "+localTaskService.getTask(archivedTasks.get(0).getId()).isArchived());
         EntityManager em = emf.createEntityManager();
         System.out.println(">>> Archived? "+em.find(Task.class, archivedTasks.get(0).getId()).isArchived());
+        em.close();
+        System.out.println("Closed");
     }
     
     @Test
@@ -197,6 +199,8 @@ public class TasksAdminTest {
         
         EntityManager em = emf.createEntityManager();
         assertNull(em.find(Task.class, activeTask.getId()));
+        em.close();
+        System.out.println("Closed");
     }
     
     public static void addUsersAndGroups(TaskServiceSession taskSession, Map<String, User> users, Map<String, Group> groups) {
