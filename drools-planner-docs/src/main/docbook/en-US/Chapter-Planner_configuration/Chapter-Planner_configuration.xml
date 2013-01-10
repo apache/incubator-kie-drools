@@ -366,64 +366,28 @@ public class CloudProcess {
 
 }</programlisting>
 
-        <note>
-          <para>If you have multiple planning entity classes, the <literal>difficultyComparatorClass</literal> needs to
-          implement a <literal>Comparator</literal> of a common superclass (for example
-          <literal>Comparator&lt;Object&gt;</literal>) and be able to handle comparing instances of those different
-          classes.</para>
-        </note>
-
         <para>Alternatively, you can also set a <literal>difficultyWeightFactoryClass</literal> to the
         <literal>@PlanningEntity</literal> annotation, so you have access to the rest of the problem facts from the
-        solution too:</para>
+        <literal>Solution</literal> too:</para>
 
         <programlisting language="java">@PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
 public class Queen {
     // ...
 }</programlisting>
 
-        <programlisting language="java">public interface PlanningEntityDifficultyWeightFactory {
+        <para>See <link linkend="sortedSelection">Sorted Selection</link> for more information.</para>
 
-    Comparable createDifficultyWeight(Solution solution, Object planningEntity);
+        <important>
+          <para>Difficulty should be implemented ascending: easy entities are lower, difficult entities are higher. For
+          example in bin packing: small item &lt; medium item &lt; big item.</para>
 
-}</programlisting>
+          <para>Even though some algorithms start with the more difficult entities first, they just reverse the
+          ordering.</para>
+        </important>
 
-        <programlisting language="java">public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
-
-    public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
-        NQueens nQueens = (NQueens) solution;
-        Queen queen = (Queen) planningEntity;
-        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
-        return new QueenDifficultyWeight(queen, distanceFromMiddle);
-    }
-
-    // ...
-
-    public static class QueenDifficultyWeight implements Comparable&lt;QueenDifficultyWeight&gt; {
-
-        private final Queen queen;
-        private final int distanceFromMiddle;
-
-        public QueenDifficultyWeight(Queen queen, int distanceFromMiddle) {
-            this.queen = queen;
-            this.distanceFromMiddle = distanceFromMiddle;
-        }
-
-        public int compareTo(QueenDifficultyWeight other) {
-            return new CompareToBuilder()
-                    // The more difficult queens have a lower distance to the middle
-                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing
-                    .append(queen.getColumnIndex(), other.queen.getColumnIndex())
-                    .toComparison();
-        }
-
-    }
-
-}</programlisting>
-
-        <para><emphasis>None of the current planning variable state may be used to compare planning entities.</emphasis>
-        They are likely to be <literal>null</literal> anyway. For example, a <literal>Queen</literal>'s
-        <literal>row</literal> variable may not be used.</para>
+        <para><emphasis>None of the current planning variable state should be used to compare planning entity
+        difficult.</emphasis> During construction heuristics, those variables are likely to be <literal>null</literal>
+        anyway. For example, a <literal>Queen</literal>'s <literal>row</literal> variable should not be used.</para>
       </section>
 
       <section>
@@ -481,8 +445,8 @@ public class Queen {
         </important>
 
         <note>
-          <para>Using a nullable planning variable implies that your score calculation is responsible for punishing
-          (or even rewarding) variables with a null value.</para>
+          <para>Using a nullable planning variable implies that your score calculation is responsible for punishing (or
+          even rewarding) variables with a null value.</para>
         </note>
 
         <para><link linkend="repeatedPlanning">Repeated planning</link> (especially <link
@@ -501,9 +465,9 @@ public class Queen {
       <section>
         <title>When is a planning variable considered initialized?</title>
 
-        <para>A planning variable is considered initialized if its value is not <literal>null</literal>
-        or if the variable is <literal>nullable</literal>. So a nullable variable is always considered initialized,
-        even when a custom <literal>reinitializeVariableEntityFilter</literal> triggers a reinitialization.</para>
+        <para>A planning variable is considered initialized if its value is not <literal>null</literal> or if the
+        variable is <literal>nullable</literal>. So a nullable variable is always considered initialized, even when a
+        custom <literal>reinitializeVariableEntityFilter</literal> triggers a reinitialization.</para>
 
         <para>A planning entity is initialized if all of its planning variables are initialized.</para>
 

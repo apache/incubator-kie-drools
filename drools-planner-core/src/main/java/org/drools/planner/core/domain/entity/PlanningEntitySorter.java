@@ -22,20 +22,16 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * Helper class for {@link PlanningEntityDifficultyWeightFactory}.
- * @see PlanningEntityDifficultyWeightFactory
- */
 @Deprecated
 public class PlanningEntitySorter {
 
     // TODO also keep PlanningEntityDescriptor?
 
     private Comparator<Object> difficultyComparator = null;
-    private PlanningEntityDifficultyWeightFactory difficultyWeightFactory = null;
+    private SelectionSorterWeightFactory difficultyWeightFactory = null;
 
     public PlanningEntitySorter() {
     }
@@ -44,7 +40,7 @@ public class PlanningEntitySorter {
         this.difficultyComparator = difficultyComparator;
     }
 
-    public void setDifficultyWeightFactory(PlanningEntityDifficultyWeightFactory difficultyWeightFactory) {
+    public void setDifficultyWeightFactory(SelectionSorterWeightFactory difficultyWeightFactory) {
         this.difficultyWeightFactory = difficultyWeightFactory;
     }
 
@@ -58,7 +54,7 @@ public class PlanningEntitySorter {
         } else if (difficultyWeightFactory != null) {
             SortedMap<Comparable, Object> planningEntityMap = new TreeMap<Comparable, Object>();
             for (Object planningEntity : planningEntityList) {
-                Comparable difficultyWeight = difficultyWeightFactory.createDifficultyWeight(solution, planningEntity);
+                Comparable difficultyWeight = difficultyWeightFactory.createSorterWeight(solution, planningEntity);
                 Object previous = planningEntityMap.put(difficultyWeight, planningEntity);
                 if (previous != null) {
                     throw new IllegalStateException("The planningEntityList contains 2 times the same planningEntity ("

@@ -17,17 +17,16 @@
 package org.drools.planner.examples.pas.domain.solver;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.domain.Room;
 
-public class BedDesignationDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
+public class BedDesignationDifficultyWeightFactory
+        implements SelectionSorterWeightFactory<PatientAdmissionSchedule, BedDesignation> {
 
-    public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
-        PatientAdmissionSchedule schedule = (PatientAdmissionSchedule) solution;
-        BedDesignation bedDesignation = (BedDesignation) planningEntity;
+    public Comparable createSorterWeight(PatientAdmissionSchedule schedule, BedDesignation bedDesignation) {
         int disallowedCount = 0;
         for (Room room : schedule.getRoomList()) {
             disallowedCount += (room.countDisallowedAdmissionPart(bedDesignation.getAdmissionPart())

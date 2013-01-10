@@ -368,7 +368,8 @@
       </itemizedlist>
 
       <para>Filtered selection can happen on any Selector in the selector tree, including any
-      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>:</para>
+      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It works
+      with any kind of <literal>cacheType</literal> and <literal>selectionOrder</literal>.</para>
 
       <mediaobject>
         <imageobject>
@@ -416,18 +417,115 @@
       &lt;/entitySelector&gt;
     &lt;/changeMoveSelector&gt;</programlisting>
 
-      <para>Filtered selection works with any kind of <literal>cacheType</literal> and
-      <literal>selectionOrder</literal>. You can configure multiple <literal>*FilterClass</literal> elements on a single
-      selector.</para>
+      <para>You can configure multiple <literal>*FilterClass</literal> elements on a single selector.</para>
     </section>
 
-    <section>
+    <section xml:id="sortedSelection">
       <title>Sorted selection</title>
 
-      <para>TODO</para>
+      <para>Sorted selection can happen on any Selector in the selector tree, including any
+      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
+      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and <literal>it only works with
+      selectionOrder</literal> <literal>SORTED</literal>.</para>
+
+      <para>It's mostly used in construction heuristics.</para>
+
+      <section xml:id="sortedSelection">
+        <title>Sorted selection by <literal>Comparator</literal></title>
+
+        <para>The easiest way to sort a <literal>Selector</literal> is using a plain old
+        <literal>Comparator</literal>:</para>
+
+        <programlisting language="java">public class CloudProcessDifficultyComparator implements Comparator&lt;CloudProcess&gt; {
+
+    public int compare(CloudProcess a, CloudProcess b) {
+        return new CompareToBuilder()
+                .append(a.getRequiredMultiplicand(), b.getRequiredMultiplicand())
+                .append(a.getId(), b.getId())
+                .toComparison();
+    }
+
+}</programlisting>
+
+        <para>Unless it's configured with automatically enabled annotation, you also need configure it:</para>
+
+        <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;entityComparatorClass&gt;...CloudProcessDifficultyComparator&lt;/entityComparatorClass&gt;
+      &lt;entitySorterOrder&gt;DESCENDING&lt;/entitySorterOrder&gt;
+    &lt;/entitySelector&gt;</programlisting>
+      </section>
+
+      <section xml:id="sortedSelection">
+        <title>Sorted selection by <literal>SelectionSorterWeightFactory</literal></title>
+
+        <para>The easiest way to sort a <literal>Selector</literal> is using a plain old
+        <literal>SelectionSorterWeightFactory</literal>:</para>
+
+        <programlisting language="java">public interface SelectionSorterWeightFactory&lt;Sol extends Solution, T&gt; {
+
+    Comparable createSorterWeight(Sol solution, T selection);
+
+}</programlisting>
+
+        <programlisting language="java">public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
+
+    public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
+        NQueens nQueens = (NQueens) solution;
+        Queen queen = (Queen) planningEntity;
+        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
+        return new QueenDifficultyWeight(queen, distanceFromMiddle);
+    }
+
+    // ...
+
+    public static class QueenDifficultyWeight implements Comparable&lt;QueenDifficultyWeight&gt; {
+
+        private final Queen queen;
+        private final int distanceFromMiddle;
+
+        public QueenDifficultyWeight(Queen queen, int distanceFromMiddle) {
+            this.queen = queen;
+            this.distanceFromMiddle = distanceFromMiddle;
+        }
+
+        public int compareTo(QueenDifficultyWeight other) {
+            return new CompareToBuilder()
+                    // The more difficult queens have a lower distance to the middle
+                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing
+                    .append(queen.getColumnIndex(), other.queen.getColumnIndex())
+                    .toComparison();
+        }
+
+    }
+
+}</programlisting>
+
+        <para>Unless it's configured with automatically enabled annotation, you also need configure it:</para>
+
+        <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;entitySorterWeightFactoryClass&gt;...QueenDifficultyWeightFactory&lt;/entitySorterWeightFactoryClass&gt;
+      &lt;entitySorterOrder&gt;DESCENDING&lt;/entitySorterOrder&gt;
+    &lt;/entitySelector&gt;</programlisting>
+      </section>
+
+      <section xml:id="sortedSelection">
+        <title>Sorted selection by <literal>SelectionFilter</literal></title>
+
+        <para>Alternatively, you can also use the interface <literal>SelectionFilter</literal> directly:</para>
+
+        <programlisting language="java">public interface SelectionSorter&lt;T&gt; {
+
+    void sort(ScoreDirector scoreDirector, List&lt;T&gt; selectionList);
+
+}</programlisting>
+
+        <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;entitySorterClass&gt;...EntitySorter&lt;/entitySorterClass&gt;
+    &lt;/entitySelector&gt;</programlisting>
+      </section>
     </section>
 
-    <section>
+    <section xml:id="probabilitySelection">
       <title>Probability selection</title>
 
       <para>TODO</para>

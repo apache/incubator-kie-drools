@@ -17,16 +17,14 @@
 package org.drools.planner.examples.nqueens.domain.solution;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
 
-public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
+public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactory<NQueens, Queen> {
 
-    public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
-        NQueens nQueens = (NQueens) solution;
-        Queen queen = (Queen) planningEntity;
+    public Comparable createSorterWeight(NQueens nQueens, Queen queen) {
         int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
         return new QueenDifficultyWeight(queen, distanceFromMiddle);
     }

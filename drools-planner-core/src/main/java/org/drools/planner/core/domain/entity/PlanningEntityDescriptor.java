@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
-import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.config.util.ConfigUtils;
@@ -36,6 +35,7 @@ import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.solution.Solution;
 
 public class PlanningEntityDescriptor {
@@ -93,7 +93,7 @@ public class PlanningEntityDescriptor {
         if (difficultyComparatorClass == PlanningEntity.NullDifficultyComparator.class) {
             difficultyComparatorClass = null;
         }
-        Class<? extends PlanningEntityDifficultyWeightFactory> difficultyWeightFactoryClass
+        Class<? extends SelectionSorterWeightFactory> difficultyWeightFactoryClass
                 = entityAnnotation.difficultyWeightFactoryClass();
         if (difficultyWeightFactoryClass == PlanningEntity.NullDifficultyWeightFactory.class) {
             difficultyWeightFactoryClass = null;
@@ -110,7 +110,7 @@ public class PlanningEntityDescriptor {
             planningEntitySorter.setDifficultyComparator(difficultyComparator);
         }
         if (difficultyWeightFactoryClass != null) {
-            PlanningEntityDifficultyWeightFactory difficultyWeightFactory = ConfigUtils.newInstance(this,
+            SelectionSorterWeightFactory difficultyWeightFactory = ConfigUtils.newInstance(this,
                     "difficultyWeightFactoryClass", difficultyWeightFactoryClass);
             planningEntitySorter.setDifficultyWeightFactory(difficultyWeightFactory);
         }

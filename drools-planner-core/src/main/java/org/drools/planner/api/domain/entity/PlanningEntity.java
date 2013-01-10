@@ -22,6 +22,7 @@ import java.util.Comparator;
 
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.score.director.ScoreDirector;
 
 import static java.lang.annotation.ElementType.*;
@@ -55,22 +56,30 @@ public @interface PlanningEntity {
 
     /**
      * Allows a collection of planning entities to be sorted by difficulty.
+     * A difficultyWeight estimates how hard is to plan a certain PlanningEntity.
+     * Some algorithms benefit from planning on more difficult planning entities first/last or from focusing on them.
+     * <p/>
+     * The {@link Comparator} should sort in ascending difficulty
+     * (even though many optimization algorithms will reverse it).
+     * For example: sorting 3 processes on difficultly based on their RAM usage requirement:
+     * Process B (1GB RAM), Process A (2GB RAM), Process C (7GB RAM),
      * <p/>
      * Do not use together with {@link #difficultyWeightFactoryClass()}.
      * @return {@link NullDifficultyComparator} when it is null (workaround for annotation limitation)
+     * @see #difficultyWeightFactoryClass()
      */
     public Class<? extends Comparator> difficultyComparatorClass() default NullDifficultyComparator.class;
     interface NullDifficultyComparator extends Comparator {}
 
     /**
-     * Allows a collection of planning entities to be sorted by difficulty.
+     * The {@link SelectionSorterWeightFactory} alternative for {@link #difficultyComparatorClass()}.
      * <p/>
      * Do not use together with {@link #difficultyComparatorClass()}.
      * @return {@link NullDifficultyWeightFactory} when it is null (workaround for annotation limitation)
-     * @see PlanningEntityDifficultyWeightFactory
+     * @see #difficultyComparatorClass()
      */
-    public Class<? extends PlanningEntityDifficultyWeightFactory> difficultyWeightFactoryClass()
+    public Class<? extends SelectionSorterWeightFactory> difficultyWeightFactoryClass()
             default NullDifficultyWeightFactory.class;
-    interface NullDifficultyWeightFactory extends PlanningEntityDifficultyWeightFactory {}
+    interface NullDifficultyWeightFactory extends SelectionSorterWeightFactory {}
 
 }

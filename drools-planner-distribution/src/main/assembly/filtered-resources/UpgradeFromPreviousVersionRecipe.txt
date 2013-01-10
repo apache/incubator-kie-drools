@@ -2506,3 +2506,29 @@ Before in *.java:
     ... = new DefaultHardAndSoftScore(-100, -20);
 After in *.java:
     ... = DefaultHardAndSoftScore.valueOf(-100, -20);
+
+[MAJOR] The interface PlanningEntityDifficultyWeightFactory has been replaced by SelectionSorterWeightFactory.
+The method createDifficultyWeight has been replaced by the method createSorterWeight.
+Sorting direction (difficulty ascending) has not changed.
+Before in *.java:
+    public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
+
+        public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
+            NQueens nQueens = (NQueens) solution;
+            Queen queen = (Queen) planningEntity;
+            ...
+            return ...;
+        }
+
+        ...
+    }
+After in *.java:
+    public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactory<NQueens, Queen> {
+
+        public Comparable createSorterWeight(NQueens nQueens, Queen queen) {
+            ...
+            return ...;
+        }
+
+        ...
+    }
