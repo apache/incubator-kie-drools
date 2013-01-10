@@ -22,12 +22,12 @@ import java.util.List;
 
 import static org.kie.scanner.embedder.MavenProjectLoader.loadMavenProject;
 
-class Aether {
+public class Aether {
 
     private static final String M2_REPO = System.getProperty( "user.home" ) + "/.m2/repository";
     private String localRepoDir = M2_REPO;
 
-    static final Aether DEFUALT_AETHER = new Aether();
+    public static final Aether DEFUALT_AETHER = new Aether();
 
     private final RepositorySystem system;
     private final RepositorySystemSession session;
