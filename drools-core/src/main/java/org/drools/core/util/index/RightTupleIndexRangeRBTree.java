@@ -138,7 +138,9 @@ public class RightTupleIndexRangeRBTree implements RightTupleMemory, Externaliza
     }
 
     public Iterator iterator() {
-        return new FastIterator.IteratorAdapter(fastIterator());
+        RightTupleList list = tree.first().value;
+        RightTuple firstTuple = list != null ? list.first : null;
+        return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 
     public boolean contains(RightTuple tuple) {
@@ -208,6 +210,9 @@ public class RightTupleIndexRangeRBTree implements RightTupleMemory, Externaliza
         }
 
         public Entry next(Entry object) {
+            if (object == null) {
+                return null;
+            }
             RightTuple rightTuple = (RightTuple) object;
             RightTuple next = (RightTuple) rightTuple.getNext();
             if (next != null) {
