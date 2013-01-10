@@ -39,6 +39,8 @@ import org.drools.planner.core.util.RandomUtils;
 public class DefaultSubChainSelector extends AbstractSelector
         implements SubChainSelector, SelectionCacheLifecycleListener {
 
+    protected static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
+
     protected final ValueSelector valueSelector;
     protected final boolean randomSelection;
 
@@ -62,7 +64,7 @@ public class DefaultSubChainSelector extends AbstractSelector
                     + ") with neverEnding (" + valueSelector.isNeverEnding() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(valueSelector);
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(SelectionCacheType.STEP, this));
+        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
         if (minimumSubChainSize < 1) {
             throw new IllegalStateException("The selector (" + this
                     + ")'s minimumSubChainSize (" + minimumSubChainSize
@@ -76,6 +78,11 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public PlanningVariableDescriptor getVariableDescriptor() {
         return valueSelector.getVariableDescriptor();
+    }
+
+    @Override
+    public SelectionCacheType getCacheType() {
+        return CACHE_TYPE;
     }
 
     // ************************************************************************

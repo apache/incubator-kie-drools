@@ -56,6 +56,11 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector imp
         return variableDescriptor;
     }
 
+    @Override
+    public SelectionCacheType getCacheType() {
+        return cacheType;
+    }
+
     // ************************************************************************
     // Cache lifecycle methods
     // ************************************************************************

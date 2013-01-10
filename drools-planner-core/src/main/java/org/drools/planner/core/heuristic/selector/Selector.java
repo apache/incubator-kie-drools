@@ -18,6 +18,7 @@ package org.drools.planner.core.heuristic.selector;
 
 import java.util.Iterator;
 
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
@@ -45,6 +46,13 @@ public interface Selector extends SolverPhaseLifecycleListener {
      * never returns false.
      */
     boolean isNeverEnding();
+
+    /**
+     * Unless this selector itself caches, this returns {@link SelectionCacheType#JUST_IN_TIME},
+     * even if a selector child caches.
+     * @return never null
+     */
+    SelectionCacheType getCacheType();
 
     /**
      * A random JIT {@link Selector} with {@link #isNeverEnding()} true should return a size

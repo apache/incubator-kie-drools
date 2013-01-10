@@ -24,6 +24,7 @@ import java.util.ListIterator;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.value.iterator.IteratorToValueIteratorBridge;
@@ -136,6 +137,7 @@ public class SelectorTestUtils {
         });
         when(moveSelector.isContinuous()).thenReturn(false);
         when(moveSelector.isNeverEnding()).thenReturn(false);
+        when(moveSelector.getCacheType()).thenReturn(SelectionCacheType.JUST_IN_TIME);
         when(moveSelector.getSize()).thenReturn((long) moveList.size());
         return moveSelector;
     }

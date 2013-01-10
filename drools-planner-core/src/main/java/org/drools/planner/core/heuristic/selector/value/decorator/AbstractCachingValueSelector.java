@@ -39,6 +39,11 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
         return childValueSelector;
     }
 
+    @Override
+    public SelectionCacheType getCacheType() {
+        return cacheType;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

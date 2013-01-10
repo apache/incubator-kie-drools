@@ -60,6 +60,11 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements S
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
+    @Override
+    public SelectionCacheType getCacheType() {
+        return cacheType;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

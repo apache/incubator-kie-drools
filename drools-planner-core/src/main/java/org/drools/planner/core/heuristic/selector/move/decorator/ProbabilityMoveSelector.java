@@ -59,6 +59,11 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
+    @Override
+    public SelectionCacheType getCacheType() {
+        return cacheType;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

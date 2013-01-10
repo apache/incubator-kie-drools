@@ -18,6 +18,7 @@ package org.drools.planner.core.heuristic.selector;
 
 import java.util.Random;
 
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -61,6 +62,10 @@ public abstract class AbstractSelector implements Selector {
     public void solvingEnded(DefaultSolverScope solverScope) {
         solverPhaseLifecycleSupport.fireSolvingEnded(solverScope);
         workingRandom = null;
+    }
+
+    public SelectionCacheType getCacheType() {
+        return SelectionCacheType.JUST_IN_TIME;
     }
 
 }

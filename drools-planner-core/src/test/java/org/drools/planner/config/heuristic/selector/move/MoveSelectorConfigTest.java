@@ -28,6 +28,7 @@ import org.drools.planner.core.move.DummyMove;
 import org.junit.Test;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.assertEquals;
 
 public class MoveSelectorConfigTest {
 
@@ -52,6 +53,7 @@ public class MoveSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(CachingMoveSelector.class, moveSelector);
         assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertEquals(SelectionCacheType.PHASE, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -76,6 +78,7 @@ public class MoveSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(CachingMoveSelector.class, moveSelector);
         assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertEquals(SelectionCacheType.STEP, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -99,6 +102,7 @@ public class MoveSelectorConfigTest {
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertSame(baseMoveSelector, moveSelector);
+        assertEquals(SelectionCacheType.JUST_IN_TIME, moveSelector.getCacheType());
     }
 
     @Test
@@ -122,6 +126,7 @@ public class MoveSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(CachingMoveSelector.class, moveSelector);
         assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertEquals(SelectionCacheType.PHASE, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -146,6 +151,7 @@ public class MoveSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(CachingMoveSelector.class, moveSelector);
         assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertEquals(SelectionCacheType.STEP, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -169,6 +175,7 @@ public class MoveSelectorConfigTest {
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertSame(baseMoveSelector, moveSelector);
+        assertEquals(SelectionCacheType.JUST_IN_TIME, moveSelector.getCacheType());
     }
 
     @Test
@@ -191,6 +198,7 @@ public class MoveSelectorConfigTest {
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertEquals(SelectionCacheType.PHASE, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((ShufflingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
@@ -214,6 +222,7 @@ public class MoveSelectorConfigTest {
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertEquals(SelectionCacheType.STEP, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((ShufflingMoveSelector) moveSelector).getChildMoveSelector());
     }
 

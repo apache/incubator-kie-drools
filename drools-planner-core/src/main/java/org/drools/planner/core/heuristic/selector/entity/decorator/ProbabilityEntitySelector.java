@@ -60,6 +60,11 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
         solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
+    @Override
+    public SelectionCacheType getCacheType() {
+        return cacheType;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

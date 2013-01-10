@@ -40,6 +40,8 @@ import org.drools.planner.core.solver.scope.DefaultSolverScope;
 public class SameValuePillarSelector extends AbstractSelector
         implements PillarSelector, SelectionCacheLifecycleListener {
 
+    protected static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
+
     protected final EntitySelector entitySelector;
     protected final Collection<PlanningVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
@@ -80,11 +82,16 @@ public class SameValuePillarSelector extends AbstractSelector
                     + ") with neverEnding (" + entitySelector.isNeverEnding() + ").");
         }
         solverPhaseLifecycleSupport.addEventListener(entitySelector);
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(SelectionCacheType.STEP, this));
+        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
     }
 
     public PlanningEntityDescriptor getEntityDescriptor() {
         return entitySelector.getEntityDescriptor();
+    }
+
+    @Override
+    public SelectionCacheType getCacheType() {
+        return CACHE_TYPE;
     }
 
     // ************************************************************************

@@ -31,6 +31,7 @@ import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.junit.Test;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ValueSelectorConfigTest {
 
@@ -44,10 +45,9 @@ public class ValueSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingValueSelector.class, valueSelector);
+        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class,
-                ((CachingValueSelector) valueSelector).getChildValueSelector());
+        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
     }
 
     @Test
@@ -60,10 +60,9 @@ public class ValueSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingValueSelector.class, valueSelector);
+        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class,
-                ((CachingValueSelector) valueSelector).getChildValueSelector());
+        assertEquals(SelectionCacheType.STEP, valueSelector.getCacheType());
     }
 
     @Test
@@ -77,6 +76,8 @@ public class ValueSelectorConfigTest {
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
+        // cacheType gets upgraded to STEP
+        // assertEquals(SelectionCacheType.JUST_IN_TIME, valueSelector.getCacheType());
     }
 
     @Test
@@ -89,10 +90,9 @@ public class ValueSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingValueSelector.class, valueSelector);
+        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class,
-                ((CachingValueSelector) valueSelector).getChildValueSelector());
+        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
     }
 
     @Test
@@ -105,10 +105,9 @@ public class ValueSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingValueSelector.class, valueSelector);
+        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class,
-                ((CachingValueSelector) valueSelector).getChildValueSelector());
+        assertEquals(SelectionCacheType.STEP, valueSelector.getCacheType());
     }
 
     @Test
@@ -122,6 +121,8 @@ public class ValueSelectorConfigTest {
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
+        // cacheType gets upgraded to STEP
+        // assertEquals(SelectionCacheType.JUST_IN_TIME, valueSelector.getCacheType());
     }
 
     @Test
@@ -137,6 +138,7 @@ public class ValueSelectorConfigTest {
         assertInstanceOf(ShufflingValueSelector.class, valueSelector);
         assertInstanceOf(FromSolutionPropertyValueSelector.class,
                 ((ShufflingValueSelector) valueSelector).getChildValueSelector());
+        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
     }
 
     @Test
@@ -152,6 +154,7 @@ public class ValueSelectorConfigTest {
         assertInstanceOf(ShufflingValueSelector.class, valueSelector);
         assertInstanceOf(FromSolutionPropertyValueSelector.class,
                 ((ShufflingValueSelector) valueSelector).getChildValueSelector());
+        assertEquals(SelectionCacheType.STEP, valueSelector.getCacheType());
     }
 
     @Test(expected = IllegalArgumentException.class)

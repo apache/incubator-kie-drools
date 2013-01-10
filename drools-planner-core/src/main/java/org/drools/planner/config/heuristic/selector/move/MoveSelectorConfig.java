@@ -129,14 +129,12 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
                 minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
-        boolean alreadyCached = false;
         if (!CollectionUtils.isEmpty(moveFilterClassList)) {
             List<SelectionFilter> moveFilterList = new ArrayList<SelectionFilter>(moveFilterClassList.size());
             for (Class<? extends SelectionFilter> moveFilterClass : moveFilterClassList) {
                 moveFilterList.add(ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass));
             }
             moveSelector = new FilteringMoveSelector(moveSelector, moveFilterList);
-            alreadyCached = false;
         }
         // TODO moveSorterClass
         if (moveProbabilityWeightFactoryClass != null) {
@@ -150,7 +148,6 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                     "moveProbabilityWeightFactoryClass", moveProbabilityWeightFactoryClass);
             moveSelector = new ProbabilityMoveSelector(moveSelector,
                     resolvedCacheType, entityProbabilityWeightFactory);
-            alreadyCached = true;
         }
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
             if (resolvedCacheType.isNotCached()) {
@@ -159,10 +156,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                         + ") has a resolvedCacheType (" + resolvedCacheType + ") that is not cached.");
             }
             moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
-            alreadyCached = true;
         }
-        if (resolvedCacheType.isCached() && !alreadyCached) {
-            // TODO this might be pretty pointless for MoveListFactoryConfig, because MoveListFactory caches
+        if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(moveSelector.getCacheType()) > 0) {
             moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType,
                     resolvedSelectionOrder == SelectionOrder.RANDOM);
         }

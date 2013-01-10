@@ -39,6 +39,11 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
         return childMoveSelector;
     }
 
+    @Override
+    public SelectionCacheType getCacheType() {
+        return cacheType;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

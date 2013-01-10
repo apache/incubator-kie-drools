@@ -44,10 +44,9 @@ public class EntitySelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingEntitySelector.class, entitySelector);
+        assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         assertNotInstanceOf(ShufflingEntitySelector.class, entitySelector);
-        assertInstanceOf(FromSolutionEntitySelector.class,
-                ((CachingEntitySelector) entitySelector).getChildEntitySelector());
+        assertEquals(SelectionCacheType.PHASE, entitySelector.getCacheType());
     }
 
     @Test
@@ -59,10 +58,9 @@ public class EntitySelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingEntitySelector.class, entitySelector);
+        assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         assertNotInstanceOf(ShufflingEntitySelector.class, entitySelector);
-        assertInstanceOf(FromSolutionEntitySelector.class,
-                ((CachingEntitySelector) entitySelector).getChildEntitySelector());
+        assertEquals(SelectionCacheType.STEP, entitySelector.getCacheType());
     }
 
     @Test
@@ -75,6 +73,8 @@ public class EntitySelectorConfigTest {
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
+        // cacheType gets upgraded to STEP
+        // assertEquals(SelectionCacheType.JUST_IN_TIME, entitySelector.getCacheType());
     }
 
     @Test
@@ -86,10 +86,9 @@ public class EntitySelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingEntitySelector.class, entitySelector);
+        assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         assertNotInstanceOf(ShufflingEntitySelector.class, entitySelector);
-        assertInstanceOf(FromSolutionEntitySelector.class,
-                ((CachingEntitySelector) entitySelector).getChildEntitySelector());
+        assertEquals(SelectionCacheType.PHASE, entitySelector.getCacheType());
     }
 
     @Test
@@ -101,10 +100,9 @@ public class EntitySelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingEntitySelector.class, entitySelector);
+        assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         assertNotInstanceOf(ShufflingEntitySelector.class, entitySelector);
-        assertInstanceOf(FromSolutionEntitySelector.class,
-                ((CachingEntitySelector) entitySelector).getChildEntitySelector());
+        assertEquals(SelectionCacheType.STEP, entitySelector.getCacheType());
     }
 
     @Test
@@ -117,6 +115,8 @@ public class EntitySelectorConfigTest {
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
+        // cacheType gets upgraded to STEP
+        // assertEquals(SelectionCacheType.JUST_IN_TIME, entitySelector.getCacheType());
     }
 
     @Test
@@ -131,6 +131,7 @@ public class EntitySelectorConfigTest {
         assertInstanceOf(ShufflingEntitySelector.class, entitySelector);
         assertInstanceOf(FromSolutionEntitySelector.class,
                 ((ShufflingEntitySelector) entitySelector).getChildEntitySelector());
+        assertEquals(SelectionCacheType.PHASE, entitySelector.getCacheType());
     }
 
     @Test
@@ -145,6 +146,7 @@ public class EntitySelectorConfigTest {
         assertInstanceOf(ShufflingEntitySelector.class, entitySelector);
         assertInstanceOf(FromSolutionEntitySelector.class,
                 ((ShufflingEntitySelector) entitySelector).getChildEntitySelector());
+        assertEquals(SelectionCacheType.STEP, entitySelector.getCacheType());
     }
 
     @Test(expected = IllegalArgumentException.class)

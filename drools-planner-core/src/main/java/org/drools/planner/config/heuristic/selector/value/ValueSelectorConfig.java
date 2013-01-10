@@ -107,7 +107,6 @@ public class ValueSelectorConfig extends SelectorConfig {
         ValueSelector valueSelector = buildBaseValueSelector(environmentMode, variableDescriptor,
                 minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
-        boolean alreadyCached = false;
         // TODO filterclass
 
         if (valueProbabilityWeightFactoryClass != null) {
@@ -121,14 +120,11 @@ public class ValueSelectorConfig extends SelectorConfig {
                     "valueProbabilityWeightFactoryClass", valueProbabilityWeightFactoryClass);
             valueSelector = new ProbabilityValueSelector(valueSelector,
                     resolvedCacheType, valueProbabilityWeightFactory);
-            alreadyCached = true;
         }
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
             valueSelector = new ShufflingValueSelector(valueSelector, resolvedCacheType);
-            alreadyCached = true;
         }
-        if (resolvedCacheType.isCached() && !alreadyCached) {
-            // TODO this might be pretty pointless, because FromSolutionPropertyValueSelector caches
+        if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(valueSelector.getCacheType()) > 0) {
             valueSelector = new CachingValueSelector(valueSelector, resolvedCacheType,
                     resolvedSelectionOrder == SelectionOrder.RANDOM);
         }

@@ -39,6 +39,11 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
         return childEntitySelector;
     }
 
+    @Override
+    public SelectionCacheType getCacheType() {
+        return cacheType;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

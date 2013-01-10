@@ -54,6 +54,11 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
         return entityDescriptor;
     }
 
+    @Override
+    public SelectionCacheType getCacheType() {
+        return cacheType;
+    }
+
     // ************************************************************************
     // Cache lifecycle methods
     // ************************************************************************
