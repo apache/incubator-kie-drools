@@ -5,10 +5,9 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.LeftTupleRBTree;
+import org.drools.core.util.RightTupleRBTree;
 import org.drools.core.util.RightTupleRBTree.Boundary;
 import org.drools.core.util.RightTupleRBTree.Node;
-import org.drools.core.util.RightTupleRBTree;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
@@ -110,7 +109,9 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
     }
 
     public Iterator iterator() {
-        return new FastIterator.IteratorAdapter(fastIterator());
+        RightTupleList list = tree.first();
+        RightTuple firstTuple = list != null ? list.first : null;
+        return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 
     public boolean contains(RightTuple tuple) {
@@ -168,6 +169,9 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
 
     public class RightTupleFastIterator implements FastIterator {
         public Entry next(Entry object) {
+            if (object == null) {
+                return null;
+            }
             RightTuple rightTuple = (RightTuple) object;
             RightTuple next = (RightTuple) rightTuple.getNext();
             if (next != null) {
