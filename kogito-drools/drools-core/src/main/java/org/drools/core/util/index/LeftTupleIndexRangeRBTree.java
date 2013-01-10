@@ -149,7 +149,9 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
     }
 
     public Iterator iterator() {
-        return new FastIterator.IteratorAdapter(fastIterator());
+        LeftTupleList list = tree.first().value.first().value;
+        LeftTuple firstTuple = list != null ? list.first : null;
+        return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 
     public boolean contains(LeftTuple leftTuple) {
@@ -276,7 +278,7 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
 
     public class LeftTupleFastIterator implements FastIterator {
         public Entry next(Entry object) {
-            return getNext((LeftTuple) object);
+            return object == null ? null : getNext((LeftTuple) object);
         }
 
         public boolean isFullIterator() {
