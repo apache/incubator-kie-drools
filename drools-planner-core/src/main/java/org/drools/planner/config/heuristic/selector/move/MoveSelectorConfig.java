@@ -129,6 +129,15 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
                 minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
+        moveSelector = applyFiltering(moveSelector);
+        // TODO applySorting
+        moveSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, moveSelector);
+        moveSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, moveSelector);
+        moveSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, moveSelector);
+        return moveSelector;
+    }
+
+    private MoveSelector applyFiltering(MoveSelector moveSelector) {
         if (!CollectionUtils.isEmpty(moveFilterClassList)) {
             List<SelectionFilter> moveFilterList = new ArrayList<SelectionFilter>(moveFilterClassList.size());
             for (Class<? extends SelectionFilter> moveFilterClass : moveFilterClassList) {
@@ -136,7 +145,11 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             }
             moveSelector = new FilteringMoveSelector(moveSelector, moveFilterList);
         }
-        // TODO moveSorterClass
+        return moveSelector;
+    }
+
+    private MoveSelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            MoveSelector moveSelector) {
         if (moveProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
                 throw new IllegalArgumentException("The moveSelectorConfig (" + this
@@ -149,6 +162,11 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             moveSelector = new ProbabilityMoveSelector(moveSelector,
                     resolvedCacheType, entityProbabilityWeightFactory);
         }
+        return moveSelector;
+    }
+
+    private MoveSelector applyShuffling(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            MoveSelector moveSelector) {
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
             if (resolvedCacheType.isNotCached()) {
                 throw new IllegalArgumentException("The moveSelectorConfig (" + this
@@ -157,6 +175,11 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
             }
             moveSelector = new ShufflingMoveSelector(moveSelector, resolvedCacheType);
         }
+        return moveSelector;
+    }
+
+    private MoveSelector applyCaching(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            MoveSelector moveSelector) {
         if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(moveSelector.getCacheType()) > 0) {
             moveSelector = new CachingMoveSelector(moveSelector, resolvedCacheType,
                     resolvedSelectionOrder == SelectionOrder.RANDOM);

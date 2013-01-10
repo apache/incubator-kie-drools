@@ -161,6 +161,17 @@ public class EntitySelectorConfig extends SelectorConfig {
         EntitySelector entitySelector = buildBaseEntitySelector(environmentMode, entityDescriptor,
                 minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
+        entitySelector = applyFiltering(entityDescriptor, resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        // TODO applyProbability
+        entitySelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        entitySelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        return entitySelector;
+    }
+
+    private EntitySelector applyFiltering(PlanningEntityDescriptor entityDescriptor,
+            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            EntitySelector entitySelector) {
         if (!CollectionUtils.isEmpty(entityFilterClassList)
                 || entityDescriptor.hasMovableEntitySelectionFilter()) {
             List<SelectionFilter> entityFilterList = new ArrayList<SelectionFilter>(
@@ -189,6 +200,11 @@ public class EntitySelectorConfig extends SelectorConfig {
                     SelectionSorterOrder.resolve(entitySorterOrder));
             entitySelector = new SortingEntitySelector(entitySelector, resolvedCacheType, entitySorter);
         }
+        return entitySelector;
+    }
+
+    private EntitySelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            EntitySelector entitySelector) {
         if (entitySorterWeightFactoryClass != null) {
             if (entityComparatorClass != null) {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
@@ -248,10 +264,19 @@ public class EntitySelectorConfig extends SelectorConfig {
             entitySelector = new ProbabilityEntitySelector(entitySelector,
                     resolvedCacheType, entityProbabilityWeightFactory);
         }
+        return entitySelector;
+    }
 
+    private EntitySelector applyShuffling(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            EntitySelector entitySelector) {
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
             entitySelector = new ShufflingEntitySelector(entitySelector, resolvedCacheType);
         }
+        return entitySelector;
+    }
+
+    private EntitySelector applyCaching(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            EntitySelector entitySelector) {
         if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(entitySelector.getCacheType()) > 0) {
             entitySelector = new CachingEntitySelector(entitySelector, resolvedCacheType,
                     resolvedSelectionOrder == SelectionOrder.RANDOM);

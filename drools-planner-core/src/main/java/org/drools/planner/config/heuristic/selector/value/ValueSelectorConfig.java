@@ -107,8 +107,16 @@ public class ValueSelectorConfig extends SelectorConfig {
         ValueSelector valueSelector = buildBaseValueSelector(environmentMode, variableDescriptor,
                 minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
-        // TODO filterclass
+        // TODO applyFiltering
+        // TODO applySorting
+        valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        return valueSelector;
+    }
 
+    private ValueSelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            ValueSelector valueSelector) {
         if (valueProbabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
@@ -121,9 +129,19 @@ public class ValueSelectorConfig extends SelectorConfig {
             valueSelector = new ProbabilityValueSelector(valueSelector,
                     resolvedCacheType, valueProbabilityWeightFactory);
         }
+        return valueSelector;
+    }
+
+    private ValueSelector applyShuffling(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            ValueSelector valueSelector) {
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
             valueSelector = new ShufflingValueSelector(valueSelector, resolvedCacheType);
         }
+        return valueSelector;
+    }
+
+    private ValueSelector applyCaching(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            ValueSelector valueSelector) {
         if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(valueSelector.getCacheType()) > 0) {
             valueSelector = new CachingValueSelector(valueSelector, resolvedCacheType,
                     resolvedSelectionOrder == SelectionOrder.RANDOM);
