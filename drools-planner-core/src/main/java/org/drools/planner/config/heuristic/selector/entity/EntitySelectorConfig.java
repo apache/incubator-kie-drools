@@ -35,6 +35,7 @@ import org.drools.planner.core.heuristic.selector.common.decorator.ComparatorSel
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorter;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
@@ -58,8 +59,8 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     protected Class<? extends Comparator> entityComparatorClass = null;
     protected Class<? extends SelectionSorterWeightFactory> entitySorterWeightFactoryClass = null;
+    protected SelectionSorterOrder entitySorterOrder = null;
     protected Class<? extends SelectionSorter> entitySorterClass = null;
-    // TODO sort ascending or descending
 
     protected Class<? extends SelectionProbabilityWeightFactory> entityProbabilityWeightFactoryClass = null;
 
@@ -109,6 +110,14 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     public void setEntitySorterWeightFactoryClass(Class<? extends SelectionSorterWeightFactory> entitySorterWeightFactoryClass) {
         this.entitySorterWeightFactoryClass = entitySorterWeightFactoryClass;
+    }
+
+    public SelectionSorterOrder getEntitySorterOrder() {
+        return entitySorterOrder;
+    }
+
+    public void setEntitySorterOrder(SelectionSorterOrder entitySorterOrder) {
+        this.entitySorterOrder = entitySorterOrder;
     }
 
     public Class<? extends SelectionSorter> getEntitySorterClass() {
@@ -178,8 +187,9 @@ public class EntitySelectorConfig extends SelectorConfig {
             }
             Comparator<Object> entityComparator = ConfigUtils.newInstance(this,
                     "entityComparatorClass", entityComparatorClass);
-            entitySelector = new SortingEntitySelector(entitySelector,
-                    resolvedCacheType, new ComparatorSelectionSorter(entityComparator));
+            SelectionSorter entitySorter = new ComparatorSelectionSorter(entityComparator,
+                    SelectionSorterOrder.resolve(entitySorterOrder));
+            entitySelector = new SortingEntitySelector(entitySelector, resolvedCacheType, entitySorter);
             alreadyCached = true;
         }
         if (entitySorterWeightFactoryClass != null) {
@@ -196,8 +206,10 @@ public class EntitySelectorConfig extends SelectorConfig {
             }
             SelectionSorterWeightFactory entitySorterWeightFactory = ConfigUtils.newInstance(this,
                     "entitySorterWeightFactoryClass", entitySorterWeightFactoryClass);
+            SelectionSorter entitySorter = new WeightFactorySelectionSorter(entitySorterWeightFactory,
+                    SelectionSorterOrder.resolve(entitySorterOrder));
             entitySelector = new SortingEntitySelector(entitySelector,
-                    resolvedCacheType, new WeightFactorySelectionSorter(entitySorterWeightFactory));
+                    resolvedCacheType, entitySorter);
             alreadyCached = true;
         }
         if (entitySorterClass != null) {
@@ -210,6 +222,11 @@ public class EntitySelectorConfig extends SelectorConfig {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
                         + ") has both an entitySorterWeightFactoryClass (" + entitySorterWeightFactoryClass
                         + ") and a entitySorterClass (" + entitySorterClass + ").");
+            }
+            if (entitySorterOrder != null) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") has both an entitySorterClass (" + entitySorterClass
+                        + ") but the entitySorterOrder (" + entitySorterOrder + ") should be null.");
             }
             if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
@@ -309,6 +326,8 @@ public class EntitySelectorConfig extends SelectorConfig {
                 entityComparatorClass, inheritedConfig.getEntityComparatorClass());
         entitySorterWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 entitySorterWeightFactoryClass, inheritedConfig.getEntitySorterWeightFactoryClass());
+        entitySorterOrder = ConfigUtils.inheritOverwritableProperty(
+                entitySorterOrder, inheritedConfig.getEntitySorterOrder());
         entitySorterClass = ConfigUtils.inheritOverwritableProperty(
                 entitySorterClass, inheritedConfig.getEntitySorterClass());
         entityProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(

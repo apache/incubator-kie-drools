@@ -1,24 +1,39 @@
 package org.drools.planner.core.heuristic.selector.common.decorator;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.collections.comparators.ComparableComparator;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
 public class WeightFactorySelectionSorter implements SelectionSorter<Object> {
 
     private final SelectionSorterWeightFactory<Solution, Object> selectionSorterWeightFactory;
+    private final Comparator<Object> appliedWeightComparator;
 
-    public WeightFactorySelectionSorter(SelectionSorterWeightFactory<Solution, Object> selectionSorterWeightFactory) {
+    public WeightFactorySelectionSorter(SelectionSorterWeightFactory<Solution, Object> selectionSorterWeightFactory,
+            SelectionSorterOrder selectionSorterOrder) {
         this.selectionSorterWeightFactory = selectionSorterWeightFactory;
+        switch (selectionSorterOrder) {
+            case ASCENDING:
+                this.appliedWeightComparator = new ComparableComparator();
+                break;
+            case DESCENDING:
+                this.appliedWeightComparator = Collections.reverseOrder();
+                break;
+            default:
+                throw new IllegalStateException("The selectionSorterOrder (" + selectionSorterOrder
+                        + ") is not implemented");
+        }
     }
 
     public void sort(ScoreDirector scoreDirector, List<Object> selectionList) {
         Solution solution = scoreDirector.getWorkingSolution();
-        SortedMap<Comparable, Object> selectionMap = new TreeMap<Comparable, Object>();
+        SortedMap<Comparable, Object> selectionMap = new TreeMap<Comparable, Object>(appliedWeightComparator);
         for (Object selection : selectionList) {
             Comparable difficultyWeight = selectionSorterWeightFactory.createSorterWeight(solution, selection);
             Object previous = selectionMap.put(difficultyWeight, selection);
