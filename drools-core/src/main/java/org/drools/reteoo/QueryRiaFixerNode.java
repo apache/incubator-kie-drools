@@ -208,12 +208,14 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        this.leftInput.remove( context,
-                                 builder,
-                                 this,
-                                 workingMemories );
+        if (!isInUse()) {
+            getLeftTupleSource().removeTupleSink(this);
+        }
+    }
+
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
     }
 
     public boolean isLeftTupleMemoryEnabled() {

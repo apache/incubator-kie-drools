@@ -16,17 +16,10 @@
 
 package org.drools.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.base.InternalViewChangedEventListener;
 import org.drools.base.extractors.ArrayElementReader;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
@@ -53,6 +46,12 @@ import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 import org.kie.runtime.rule.Variable;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+import java.util.Map;
 
 public class QueryElementNode extends LeftTupleSource
     implements
@@ -126,16 +125,14 @@ public class QueryElementNode extends LeftTupleSource
 
     protected void doRemove(RuleRemovalContext context,
                             ReteooBuilder builder,
-                            BaseNode node,
                             InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeTupleSink( (LeftTupleSink) node );
+        if (!isInUse()) {
+            getLeftTupleSource().removeTupleSink(this);
         }
+    }
 
-        this.leftInput.remove( context,
-                                 builder,
-                                 this,
-                                 workingMemories );
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
     }
 
     public void attach( BuildContext context ) {

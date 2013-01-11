@@ -34,7 +34,6 @@ import java.util.Map;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.common.AgendaItem;
-import org.drools.common.BaseNode;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
@@ -385,18 +384,12 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        CleanupAdapter adapter = context.getCleanupAdapter();
-        context.setCleanupAdapter( new RTNCleanupAdapter( this ) );
-        getLeftTupleSource().remove( context,
-                                     builder,
-                                     this,
-                                     workingMemories );
-        for ( InternalWorkingMemory workingMemory : workingMemories ) {
-            workingMemory.executeQueuedActions();
-        }
-        context.setCleanupAdapter(adapter);
+        getLeftTupleSource().removeTupleSink(this);
+    }
+
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
     }
 
     public boolean isInUse() {

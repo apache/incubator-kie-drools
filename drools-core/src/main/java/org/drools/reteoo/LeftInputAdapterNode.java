@@ -24,7 +24,6 @@ import java.util.Map;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
@@ -305,18 +304,15 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeTupleSink( (LeftTupleSink) node );
+        if (!isInUse()) {
+            objectSource.removeObjectSink(this);
         }
-        
         handleUnlinking(context);
-        
-        this.objectSource.remove( context,
-                                  builder,
-                                  this,
-                                  workingMemories );
+    }
+
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        this.objectSource.collectAncestors(nodeSet);
     }
     
 
