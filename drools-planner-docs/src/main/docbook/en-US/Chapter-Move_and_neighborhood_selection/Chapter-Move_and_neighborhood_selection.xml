@@ -430,7 +430,7 @@
 
       <para>It's mostly used in construction heuristics.</para>
 
-      <section xml:id="sortedSelection">
+      <section xml:id="sortedSelectionByComparator">
         <title>Sorted selection by <literal>Comparator</literal></title>
 
         <para>The easiest way to sort a <literal>Selector</literal> is using a plain old
@@ -455,7 +455,7 @@
     &lt;/entitySelector&gt;</programlisting>
       </section>
 
-      <section xml:id="sortedSelection">
+      <section xml:id="sortedSelectionBySelectionSorterWeightFactory">
         <title>Sorted selection by <literal>SelectionSorterWeightFactory</literal></title>
 
         <para>The easiest way to sort a <literal>Selector</literal> is using a plain old
@@ -508,7 +508,7 @@
     &lt;/entitySelector&gt;</programlisting>
       </section>
 
-      <section xml:id="sortedSelection">
+      <section xml:id="sortedSelectionBySelectionFilter">
         <title>Sorted selection by <literal>SelectionFilter</literal></title>
 
         <para>Alternatively, you can also use the interface <literal>SelectionFilter</literal> directly:</para>
