@@ -107,7 +107,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             List<Object> entityList = getSolutionDescriptor().getPlanningEntityList(workingSolution);
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
-                entry.setValue(new HashMap<Object, Set<Object>>(entityList.size()));
+                entry.setValue(new IdentityHashMap<Object, Set<Object>>(entityList.size()));
             }
             // TODO Remove when all starting entities call afterEntityAdded too
             for (Object entity : entityList) {
