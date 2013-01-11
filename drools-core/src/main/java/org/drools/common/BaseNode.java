@@ -16,19 +16,19 @@
 
 package org.drools.common;
 
+import org.drools.definition.rule.Rule;
+import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.NodeSet;
+import org.drools.reteoo.ReteooBuilder;
+import org.drools.reteoo.RuleRemovalContext;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.spi.RuleComponent;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.drools.definition.rule.Rule;
-import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.ReteooBuilder;
-import org.drools.reteoo.RuleRemovalContext;
-import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.RuleComponent;
 
 /**
  * The base class for all Rete nodes.
@@ -103,36 +103,24 @@ public abstract class BaseNode
 
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,
-                       BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
-
-        if (!context.addRemovedNode(this) && !(this instanceof LeftTupleSource) ) {
-            node.internalCleanUp(builder, workingMemories);
-            return;
-        }
-
+        context.addRemovedNode(this);
         this.removeAssociation( context.getRule() );
         doRemove( context,
                   builder,
-                  node,
                   workingMemories );
         if ( !this.isInUse() && !(this instanceof EntryPointNode) ) {
             builder.getIdGenerator().releaseId( this.getId() );
         }
     }
 
-    private void internalCleanUp(ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
-        if ( !this.isInUse() && this instanceof NodeMemory ) {
-            if (this instanceof NodeMemory) {
-                for( InternalWorkingMemory workingMemory : workingMemories ) {
-                    workingMemory.clearNodeMemory( (NodeMemory) this );
-                }
-            }
-            if ( !(this instanceof EntryPointNode) ) {
-                builder.getIdGenerator().releaseId( this.getId() );
-            }
+    public void collectAncestors(NodeSet nodeSet) {
+        if (nodeSet.add(this)) {
+            doCollectAncestors(nodeSet);
         }
     }
+
+    protected abstract void doCollectAncestors(NodeSet nodeSet);
 
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
@@ -140,7 +128,6 @@ public abstract class BaseNode
      */
     protected abstract void doRemove(RuleRemovalContext context,
                                      ReteooBuilder builder,
-                                     BaseNode node,
                                      InternalWorkingMemory[] workingMemories);
 
     /**

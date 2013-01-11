@@ -16,24 +16,19 @@
 
 package org.drools.reteoo;
 
-import static org.mockito.Mockito.mock;
-
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.definition.rule.Rule;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class EvalConditionNodeTest extends DroolsTestCase {
     private PropagationContext  context;
@@ -297,14 +292,5 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // make sure assertions were propagated
         assertEquals( 1,
                       sink.getAsserted().size() );
-
-        RuleRemovalContext removalContext = new RuleRemovalContext( mock( Rule.class ));
-        InternalWorkingMemory[] workingMemories = new InternalWorkingMemory[]{this.workingMemory};
-
-        // This use to throw ClassCastException JBRULES-1719
-        node.remove( removalContext,
-                     this.ruleBase.getReteooBuilder(),
-                     sink,
-                     workingMemories );
     }
 }

@@ -16,23 +16,6 @@
 
 package org.drools.reteoo;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
 import org.drools.RuleIntegrationException;
 import org.drools.base.SalienceInteger;
 import org.drools.common.BaseNode;
@@ -44,6 +27,21 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
 import org.drools.spi.Salience;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -245,17 +243,51 @@ public class ReteooBuilder
         // reset working memories for potential propagation
         InternalWorkingMemory[] workingMemories = this.ruleBase.getWorkingMemories();
 
-        final Object object = this.rules.remove( rule );
-
-        final BaseNode[] nodes = (BaseNode[]) object;
         final RuleRemovalContext context = new RuleRemovalContext( rule );
-        for (final BaseNode node : nodes) {
-            node.remove( context,
-                         this,
-                         null,
-                         workingMemories );
+        final BaseNode[] nodes = this.rules.remove( rule );
+
+        for (BaseNode node : nodes) {
+            NodeSet nodeSet = new NodeSet();
+            node.collectAncestors(nodeSet);
+
+            List<BaseNode> removingNodes = nodeSet.getNodes();
+            Collections.sort(removingNodes, new Comparator<BaseNode>() {
+                private Map<Integer, NodeSet> ancestorsMap = new HashMap<Integer, NodeSet>();
+
+                public int compare(BaseNode o1, BaseNode o2) {
+                    return o2.getId() > o1.getId() ?
+                            ( getAncestors(o1).contains(o2) ? -1 : 1 ) :
+                            ( getAncestors(o2).contains(o1) ? 1 : -1 );
+                }
+
+                private NodeSet getAncestors(BaseNode o2) {
+                    NodeSet ancestors = ancestorsMap.get(o2.getId());
+                    if (ancestors == null) {
+                        ancestors = new NodeSet();
+                        o2.collectAncestors(ancestors);
+                        ancestorsMap.put(o2.getId(), ancestors);
+                    }
+                    return ancestors;
+                }
+            });
+
+            RuleRemovalContext.CleanupAdapter adapter = null;
+            if (node instanceof RuleTerminalNode) {
+                adapter = context.getCleanupAdapter();
+                context.setCleanupAdapter( new RuleTerminalNode.RTNCleanupAdapter( (RuleTerminalNode) node ) );
+            }
+
+            for (BaseNode removingNode : removingNodes) {
+                removingNode.remove(context, this, workingMemories);
+            }
+
+            if (node instanceof RuleTerminalNode) {
+                for ( InternalWorkingMemory workingMemory : workingMemories ) {
+                    workingMemory.executeQueuedActions();
+                }
+                context.setCleanupAdapter(adapter);
+            }
         }
-        
         resetMasks(context);
     }
     

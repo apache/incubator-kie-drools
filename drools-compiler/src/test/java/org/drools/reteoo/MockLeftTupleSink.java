@@ -16,14 +16,8 @@
 
 package org.drools.reteoo;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
@@ -32,6 +26,10 @@ import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MockLeftTupleSink extends LeftTupleSource
     implements
@@ -95,9 +93,10 @@ public class MockLeftTupleSink extends LeftTupleSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
     }
+
+    protected void doCollectAncestors(NodeSet nodeSet) { }
 
     public void attach(BuildContext buildContext) {
         // TODO Auto-generated method stub

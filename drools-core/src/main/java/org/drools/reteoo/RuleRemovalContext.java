@@ -16,18 +16,15 @@
 
 package org.drools.reteoo;
 
+import org.drools.common.BaseNode;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.definition.rule.Rule;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.drools.common.BaseNode;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.definition.rule.Rule;
 
 /**
  * This context class is used during rule removal to ensure

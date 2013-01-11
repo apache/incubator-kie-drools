@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -395,7 +394,13 @@ public class JoinNode extends BetaNode {
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory ) {
 
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        Memory m = workingMemory.getNodeMemory( this );
+        BetaMemory memory = null;
+        if (m instanceof BetaMemory) {
+            memory = (BetaMemory) m;
+        } else {
+            workingMemory.getNodeMemory( this );
+        }
 
         FastIterator it = memory.getLeftTupleMemory().fastIterator();
 
