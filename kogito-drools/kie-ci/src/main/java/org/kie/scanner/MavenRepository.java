@@ -86,7 +86,7 @@ class MavenRepository {
     }
 
     public void deployArtifact(ReleaseId releaseId, InternalKieModule kieModule, File pomfile) {
-        File jarFile = new File( System.getProperty( "java.io.tmpdir" ), releaseId + ".jar");
+        File jarFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName(releaseId, null) + ".jar");
         try {
             FileOutputStream fos = new FileOutputStream(jarFile);
             fos.write(kieModule.getBytes());
@@ -150,5 +150,13 @@ class MavenRepository {
         public List<DependencyNode> getDependencies() {
             return dependencies;
         }
+    }
+    
+    public static String toFileName(ReleaseId releaseId, String classifier) {
+        if (classifier != null) {
+            return releaseId.getArtifactId() + "-" + releaseId.getVersion() + "-" + classifier;
+        }
+
+        return releaseId.getArtifactId() + "-" + releaseId.getVersion();
     }
 }

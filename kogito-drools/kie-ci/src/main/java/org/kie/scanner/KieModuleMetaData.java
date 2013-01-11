@@ -27,7 +27,7 @@ public interface KieModuleMetaData {
             return new KieModuleMetaDataImpl(releaseId);
         }
 
-        public KieModuleMetaData newKieModuleMetaDataImpl(File pomFile) {
+        public static KieModuleMetaData newKieModuleMetaData(File pomFile) {
             return new KieModuleMetaDataImpl(pomFile);
         }
     }
