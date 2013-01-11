@@ -19,6 +19,7 @@ package org.drools.planner.core.phase;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -139,7 +140,8 @@ public abstract class AbstractSolverPhaseScope {
                             + ") probably has a corrupted undoMove (" + undoMove + ")." +
                             " Or maybe there are corrupted score rules.\n"
                             + "Check the Move.createUndoMove(...) method of that Move class" +
-                            " and enable EnvironmentMode TRACE to fail-faster on corrupted score rules.\n"
+                            " and enable EnvironmentMode " + EnvironmentMode.TRACE
+                            + " to fail-faster on corrupted score rules.\n"
                             + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
                             + ") is not the undoScore (" + undoScore + ").");
         }

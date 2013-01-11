@@ -18,6 +18,7 @@ package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
 import java.util.Iterator;
 
+import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalker;
 import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
@@ -123,7 +124,8 @@ public class DefaultGreedyDecider implements GreedyDecider {
                                 + ") probably has a corrupted undoMove (" + undoMove + ")." +
                                 " Or maybe there are corrupted score rules.\n"
                                 + "Check the Move.createUndoMove(...) method of that Move class" +
-                                " and enable EnvironmentMode TRACE to fail-faster on corrupted score rules.\n"
+                                " and enable EnvironmentMode " + EnvironmentMode.TRACE
+                                + " to fail-faster on corrupted score rules.\n"
                                 + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
                                 + ") is not the undoScore (" + undoScore + ").");
             }
