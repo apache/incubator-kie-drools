@@ -16,17 +16,8 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
@@ -39,6 +30,14 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A node that is an entry point into the Rete network.
@@ -402,11 +401,10 @@ public class EntryPointNode extends ObjectSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        final ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;
-        removeObjectSink( objectTypeNode );
     }
+
+    protected void doCollectAncestors(NodeSet nodeSet) { }
 
     public Map<ObjectType, ObjectTypeNode> getObjectTypeNodes() {
         return this.objectTypeNodes;

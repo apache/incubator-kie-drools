@@ -27,4 +27,8 @@ public class NodeSet implements Iterable<BaseNode> {
     public Iterator<BaseNode> iterator() {
         return nodes.iterator();
     }
+
+    public boolean contains(BaseNode node) {
+        return nodeIds.contains(node.getId());
+    }
 }

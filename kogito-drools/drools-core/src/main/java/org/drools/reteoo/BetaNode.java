@@ -16,19 +16,6 @@
 
 package org.drools.reteoo;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
-import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
@@ -62,6 +49,19 @@ import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.kie.builder.conf.LRUnlinkingOption;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.core.util.ClassUtils.areNullSafeEquals;
+import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
@@ -550,11 +550,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeTupleSink( (LeftTupleSink) node );
-        }
         if ( !this.isInUse() || context.getCleanupAdapter() != null ) {
             for (InternalWorkingMemory workingMemory : workingMemories) {
                 BetaMemory memory;
@@ -624,15 +620,10 @@ public abstract class BetaNode extends LeftTupleSource
 
         handleUnlinking(context);
 
-        this.rightInput.remove( context,
-                                builder,
-                                this,
-                                workingMemories );
-
-this.leftInput.remove( context,
-                       builder,
-                       this,
-                       workingMemories );
+        if ( !isInUse() ) {
+            leftInput.removeTupleSink( this );
+            rightInput.removeObjectSink( this );
+        }
     }
     
     public void handleUnlinking(final RuleRemovalContext context) {
@@ -647,7 +638,11 @@ this.leftInput.remove( context,
                 unlinkingEnabled = true;
             }
         }
+    }
         
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        this.leftInput.collectAncestors(nodeSet);
+        this.rightInput.collectAncestors(nodeSet);
     }
 
     public void modifyObject(InternalFactHandle factHandle,

@@ -16,13 +16,7 @@
 
 package org.drools.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
-
 import org.drools.base.DroolsQuery;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
@@ -33,6 +27,11 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Map;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -215,12 +214,12 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        getLeftTupleSource().remove( context,
-                                     builder,
-                                     this,
-                                     workingMemories );
+        getLeftTupleSource().removeTupleSink(this);
+    }
+
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
     }
 
     public boolean isInUse() {

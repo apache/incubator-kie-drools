@@ -16,14 +16,7 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map.Entry;
-
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
@@ -37,6 +30,12 @@ import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleComponent;
 import org.kie.definition.rule.Rule;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Map.Entry;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -286,27 +285,22 @@ public class EvalConditionNode extends LeftTupleSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeTupleSink( (LeftTupleSink) node );
-        }
-
         if ( !this.isInUse() ) {
             for( InternalWorkingMemory workingMemory : workingMemories ) {
                 workingMemory.clearNodeMemory( this );
             }
+            getLeftTupleSource().removeTupleSink( this );
         } else {
             // need to re-wire eval expression to the same one from another rule 
             // that is sharing this node
             Entry<Rule, RuleComponent> next = this.getAssociations().entrySet().iterator().next();
             this.condition = (EvalCondition) next.getValue();
         }
+    }
 
-        this.leftInput.remove( context,
-                                 builder,
-                                 this,
-                                 workingMemories );
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
     }
 
     public boolean isLeftTupleMemoryEnabled() {

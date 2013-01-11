@@ -17,6 +17,7 @@
 package org.drools.common;
 
 import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.NodeSet;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleRemovalContext;
 import org.drools.reteoo.builder.BuildContext;
@@ -107,27 +108,30 @@ public abstract class BaseNode
 
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,
-                       BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
-
         context.addRemovedNode(this);
         this.removeAssociation( context.getRule() );
         doRemove( context,
                   builder,
-                  node,
                   workingMemories );
         if ( !this.isInUse() && !(this instanceof EntryPointNode) ) {
             builder.getIdGenerator().releaseId( this.getId() );
         }
     }
 
+    public void collectAncestors(NodeSet nodeSet) {
+        if (nodeSet.add(this)) {
+            doCollectAncestors(nodeSet);
+        }
+    }
+
+    protected abstract void doCollectAncestors(NodeSet nodeSet);
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      * @param builder 
      */
     protected abstract void doRemove(RuleRemovalContext context,
                                      ReteooBuilder builder,
-                                     BaseNode node,
                                      InternalWorkingMemory[] workingMemories);
 
     /**

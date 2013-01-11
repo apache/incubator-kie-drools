@@ -1,7 +1,6 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
@@ -282,24 +281,19 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeTupleSink( (LeftTupleSink) node );
-        }
-
         if ( !this.isInUse() ) {
             for( InternalWorkingMemory workingMemory : workingMemories ) {
                 workingMemory.clearNodeMemory( this );
             }
+            tupleSource.removeTupleSink( this );
         } else {
             throw new RuntimeException("ConditionalBranchNode cannot be shared");
         }
+    }
 
-        this.tupleSource.remove( context,
-                                 builder,
-                                 this,
-                                 workingMemories );
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        this.tupleSource.collectAncestors(nodeSet);
     }
 
     public boolean isLeftTupleMemoryEnabled() {

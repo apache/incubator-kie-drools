@@ -16,19 +16,9 @@
 
 package org.drools.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -40,8 +30,8 @@ import org.drools.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.index.LeftTupleList;
 import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.marshalling.impl.ProtobufInputMarshaller;
 import org.drools.marshalling.impl.ProtobufInputMarshaller.TupleKey;
@@ -53,7 +43,15 @@ import org.drools.rule.From;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
-import org.w3c.dom.views.AbstractView;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FromNode extends LeftTupleSource
     implements
@@ -130,7 +128,7 @@ public class FromNode extends LeftTupleSource
         boolean useLeftMemory = true;       
         if ( !this.tupleMemoryEnabled ) {
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            Object object = leftTuple.get( 0 ).getObject();
             if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
                 useLeftMemory = false;
             }
@@ -180,7 +178,7 @@ public class FromNode extends LeftTupleSource
                                            final PropagationContext context,
                                            final InternalWorkingMemory workingMemory,
                                            final Object object ) {
-        InternalFactHandle handle = null;
+        InternalFactHandle handle;
         ProtobufMessages.FactHandle _handle = null;
         if( context.getReaderContext() != null ) {
             Map<ProtobufInputMarshaller.TupleKey, List<ProtobufMessages.FactHandle>> map = (Map<ProtobufInputMarshaller.TupleKey, List<ProtobufMessages.FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );
@@ -420,12 +418,7 @@ public class FromNode extends LeftTupleSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-
-        if ( !node.isInUse() ) {
-            removeTupleSink( (LeftTupleSink) node );
-        }
 
         if ( !this.isInUse() ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
@@ -440,12 +433,12 @@ public class FromNode extends LeftTupleSource
                 }
                 workingMemory.clearNodeMemory( this );
             }
+            getLeftTupleSource().removeTupleSink( this );
         }
+    }
 
-        this.leftInput.remove( context,
-                                 builder,
-                                 this,
-                                 workingMemories );
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
     }
 
     @SuppressWarnings("unchecked")
