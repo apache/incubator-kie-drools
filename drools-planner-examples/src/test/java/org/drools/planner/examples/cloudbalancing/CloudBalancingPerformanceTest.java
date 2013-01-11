@@ -22,7 +22,6 @@ import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.examples.cloudbalancing.persistence.CloudBalancingDaoImpl;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentDaoImpl;
 import org.junit.Test;
 
 public class CloudBalancingPerformanceTest extends SolverPerformanceTest {
@@ -48,9 +47,9 @@ public class CloudBalancingPerformanceTest extends SolverPerformanceTest {
     }
 
     @Test(timeout = 600000)
-    public void solveModel_a2_1Debug() {
+    public void solveModel_a2_1FastAssert() {
         File unsolvedDataFile = new File("data/cloudbalancing/unsolved/cb-0200comp-0600proc.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-223260soft", EnvironmentMode.DEBUG);
+        runSpeedTest(unsolvedDataFile, "0hard/-223260soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

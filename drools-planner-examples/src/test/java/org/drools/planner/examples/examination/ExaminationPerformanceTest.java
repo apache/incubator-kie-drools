@@ -47,9 +47,9 @@ public class ExaminationPerformanceTest extends SolverPerformanceTest {
     }
 
     @Test(timeout = 600000)
-    public void solveComp_set5Debug() {
+    public void solveComp_set5FastAssert() {
         File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set5.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-4407soft", EnvironmentMode.DEBUG);
+        runSpeedTest(unsolvedDataFile, "0hard/-4407soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

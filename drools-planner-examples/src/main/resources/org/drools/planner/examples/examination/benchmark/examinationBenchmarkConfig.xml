@@ -19,7 +19,7 @@
     </problemBenchmarks>
 
     <solver>
-      <!--<environmentMode>DEBUG</environmentMode>-->
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
       <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
       <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
       <scoreDirectorFactory>

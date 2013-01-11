@@ -65,10 +65,10 @@ public class ValuePlacerConfig extends PlacerConfig {
                 selectedCountLimit == null ? SelectionOrder.ORIGINAL : SelectionOrder.RANDOM);
         ValuePlacer valuePlacer = new ValuePlacer(phaseTermination, valueSelector,
                 selectedCountLimit == null ? Integer.MAX_VALUE : selectedCountLimit);
-        if (environmentMode == EnvironmentMode.TRACE) {
+        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
             valuePlacer.setAssertMoveScoreIsUncorrupted(true);
         }
-        if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
             valuePlacer.setAssertUndoMoveIsUncorrupted(true);
         }
         return valuePlacer;

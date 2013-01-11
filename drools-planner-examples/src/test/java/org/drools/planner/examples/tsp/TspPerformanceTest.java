@@ -19,7 +19,6 @@ package org.drools.planner.examples.tsp;
 import java.io.File;
 
 import org.drools.planner.config.EnvironmentMode;
-import org.drools.planner.examples.cloudbalancing.persistence.CloudBalancingDaoImpl;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.tsp.persistence.TspDaoImpl;
@@ -48,9 +47,9 @@ public class TspPerformanceTest extends SolverPerformanceTest {
     }
 
     @Test(timeout = 600000)
-    public void solveModel_a2_1Debug() {
+    public void solveModel_a2_1FastAssert() {
         File unsolvedDataFile = new File("data/tsp/unsolved/europe40.xml");
-        runSpeedTest(unsolvedDataFile, "-219798", EnvironmentMode.DEBUG);
+        runSpeedTest(unsolvedDataFile, "-219798", EnvironmentMode.FAST_ASSERT);
     }
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>TRACE</environmentMode>-->
+  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
   <solutionClass>org.drools.planner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
   <planningEntityClass>org.drools.planner.examples.tsp.domain.Visit</planningEntityClass>
 

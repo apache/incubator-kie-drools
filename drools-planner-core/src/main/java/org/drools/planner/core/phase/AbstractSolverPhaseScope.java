@@ -140,7 +140,7 @@ public abstract class AbstractSolverPhaseScope {
                             + ") probably has a corrupted undoMove (" + undoMove + ")." +
                             " Or maybe there are corrupted score rules.\n"
                             + "Check the Move.createUndoMove(...) method of that Move class" +
-                            " and enable EnvironmentMode " + EnvironmentMode.TRACE
+                            " and enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
                             + " to fail-faster on corrupted score rules.\n"
                             + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
                             + ") is not the undoScore (" + undoScore + ").");

@@ -47,9 +47,9 @@ public class MachineReassignmentPerformanceTest extends SolverPerformanceTest {
     }
 
     @Test(timeout = 600000)
-    public void solveModel_a2_1Debug() {
+    public void solveModel_a2_1FastAssert() {
         File unsolvedDataFile = new File("data/machinereassignment/unsolved/model_a2_1.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-272621414soft", EnvironmentMode.DEBUG);
+        runSpeedTest(unsolvedDataFile, "0hard/-272621414soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

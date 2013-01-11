@@ -2532,3 +2532,14 @@ After in *.java:
 
         ...
     }
+
+[MAJOR] The EnvironmentMode DEBUG and TRACE have been renamed to FAST_ASSERT and FULL_ASSERT
+to avoid confusion with the logging levels debug and trace.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <environmentMode>DEBUG</environmentMode>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <environmentMode>FAST_ASSERT</environmentMode>
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <environmentMode>TRACE</environmentMode>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <environmentMode>FULL_ASSERT</environmentMode>

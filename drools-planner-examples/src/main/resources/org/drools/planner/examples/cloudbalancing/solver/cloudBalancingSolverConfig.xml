@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>DEBUG</environmentMode>-->
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
 
   <!-- Domain model configuration -->
   <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>

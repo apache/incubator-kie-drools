@@ -177,10 +177,10 @@ public class ScoreDirectorFactoryConfig {
                         + assertionScoreDirectorFactory + ") must reuse the scoreDefinition of its parent." +
                         " It cannot have a non-null scoreDefinition* property.");
             }
-            if (environmentMode.compareTo(EnvironmentMode.DEBUG) > 0) {
+            if (environmentMode.compareTo(EnvironmentMode.FAST_ASSERT) > 0) {
                 throw new IllegalArgumentException("A non-null assertionScoreDirectorFactory ("
                         + assertionScoreDirectorFactory + ") requires an environmentMode ("
-                        + environmentMode + ") of " + EnvironmentMode.DEBUG + " or lower.");
+                        + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
             }
             scoreDirectorFactory.setAssertionScoreDirectorFactory(
                     assertionScoreDirectorFactory.buildScoreDirectorFactory(

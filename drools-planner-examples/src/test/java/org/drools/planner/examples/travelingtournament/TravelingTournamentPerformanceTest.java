@@ -47,9 +47,9 @@ public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
     }
 
     @Test(timeout = 600000)
-    public void solveTestdata01_initializedDebug() {
+    public void solveTestdata01_initializedFastAssert() {
         File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-77619soft", EnvironmentMode.DEBUG);
+        runSpeedTest(unsolvedDataFile, "0hard/-77619soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

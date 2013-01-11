@@ -794,8 +794,8 @@
 
       <para>A custom <literal>Move</literal> is also slightly faster than a generic <literal>Move</literal>. However,
       it's far more work to implement and much harder to avoid bugs. After implementing a custom
-      <literal>Move</literal>, make sure to turn on <literal>environmentMode</literal> <literal>TRACE</literal> to check
-      for score corruptions.</para>
+      <literal>Move</literal>, make sure to turn on <literal>environmentMode</literal> <literal>FULL_ASSERT</literal>
+      to check for score corruptions.</para>
     </section>
 
     <section>

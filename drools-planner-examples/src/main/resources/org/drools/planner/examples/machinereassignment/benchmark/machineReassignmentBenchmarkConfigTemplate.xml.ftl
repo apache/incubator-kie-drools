@@ -33,7 +33,7 @@
     </problemBenchmarks>
 
     <solver>
-      <!--<environmentMode>DEBUG</environmentMode>-->
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
       <solutionClass>org.drools.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
       <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
 

@@ -166,7 +166,7 @@ public class SolverConfig {
 
     protected BestSolutionRecaller buildBestSolutionRecaller(EnvironmentMode environmentMode) {
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
-        if (environmentMode == EnvironmentMode.TRACE) {
+        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
             bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);
         }
         return bestSolutionRecaller;

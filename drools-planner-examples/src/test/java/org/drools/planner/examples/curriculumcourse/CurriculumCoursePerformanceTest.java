@@ -47,9 +47,9 @@ public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
     }
 
     @Test(timeout = 600000)
-    public void solveComp01_initializedDebug() {
+    public void solveComp01_initializedFastAssert() {
         File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-140soft", EnvironmentMode.DEBUG);
+        runSpeedTest(unsolvedDataFile, "0hard/-140soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

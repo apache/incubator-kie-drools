@@ -29,7 +29,6 @@ import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.constructionheuristic.DefaultConstructionHeuristicSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
@@ -45,7 +44,6 @@ import org.drools.planner.core.heuristic.selector.variable.PlanningValueSelectio
 import org.drools.planner.core.heuristic.selector.variable.PlanningValueSelector;
 import org.drools.planner.core.heuristic.selector.variable.PlanningValueWalker;
 import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalker;
-import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
@@ -100,7 +98,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
             configureSolverPhase(greedySolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
             greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
             greedySolverPhase.setGreedyDecider(buildGreedyDecider(solutionDescriptor, environmentMode));
-            if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+            if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
                 greedySolverPhase.setAssertStepScoreIsUncorrupted(true);
             }
             return greedySolverPhase;
@@ -121,7 +119,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                 entityPlacerList.add(entityPlacer);
             }
             phase.setEntityPlacerList(entityPlacerList);
-            if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+            if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
                 phase.setAssertStepScoreIsUncorrupted(true);
             }
             return phase;
@@ -177,10 +175,10 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         greedyDecider.setPlanningVariableWalker(planningVariableWalker);
         
         greedyDecider.setForager(buildGreedyForager());
-        if (environmentMode == EnvironmentMode.TRACE) {
+        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
             greedyDecider.setAssertMoveScoreIsUncorrupted(true);
         }
-        if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
             greedyDecider.setAssertUndoMoveIsUncorrupted(true);
         }
         return greedyDecider;

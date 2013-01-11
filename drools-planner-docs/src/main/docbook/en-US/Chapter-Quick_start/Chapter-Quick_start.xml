@@ -209,7 +209,7 @@
 
         <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solver&gt;
-  &lt;!--&lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;--&gt;
+  &lt;!--&lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;--&gt;
 
   &lt;!-- Domain model configuration --&gt;
   &lt;solutionClass&gt;org.drools.planner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;

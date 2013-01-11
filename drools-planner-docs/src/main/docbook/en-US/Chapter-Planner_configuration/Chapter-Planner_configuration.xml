@@ -1254,7 +1254,7 @@ public class Visit ... implements Appearance {
       <para>You can set the environment mode in the solver configuration XML file:</para>
 
       <programlisting language="xml">&lt;solver&gt;
-  &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
+  &lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;
   ...
 &lt;/solver&gt;</programlisting>
 
@@ -1266,25 +1266,25 @@ public class Visit ... implements Appearance {
       <para>There are 4 environment modes:</para>
 
       <section>
-        <title>TRACE</title>
+        <title>FULL_ASSERT</title>
 
-        <para>The trace mode is reproducible (see the reproducible mode) and also turns on all assertions (such as
+        <para>The FULL_ASSERT mode is reproducible (see the reproducible mode) and also turns on all assertions (such as
         assert that the incremental score calculation is uncorrupted) to fail-fast on rule engine bugs.</para>
 
-        <para>The trace mode is very slow (because it doesn't rely on delta based score calculation).</para>
+        <para>The FULL_ASSERT mode is very slow (because it doesn't rely on delta based score calculation).</para>
       </section>
 
       <section>
-        <title>DEBUG</title>
+        <title>FAST_ASSERT</title>
 
-        <para>The debug mode is reproducible (see the reproducible mode) and also turns on most assertions (such as
-        assert that an undo Move's score is the same as before the Move) to fail-fast on a bug in your Move
+        <para>The FAST_ASSERT mode is reproducible (see the reproducible mode) and also turns on most assertions
+        (such as assert that an undo Move's score is the same as before the Move) to fail-fast on a bug in your Move
         implementation, your score rule, ...</para>
 
-        <para>The debug mode is slow.</para>
+        <para>The FAST_ASSERT mode is slow.</para>
 
-        <para>It's recommended to write a test case which does a short run of your planning problem with debug mode
-        on.</para>
+        <para>It's recommended to write a test case which does a short run of your planning problem with the FAST_ASSERT
+        mode on.</para>
       </section>
 
       <section>
@@ -1325,7 +1325,7 @@ public class Visit ... implements Appearance {
 
       <itemizedlist>
         <listitem>
-          <para><emphasis role="bold">ERROR</emphasis>: Log errors, except those that are thrown to the calling code as
+          <para><emphasis role="bold">error</emphasis>: Log errors, except those that are thrown to the calling code as
           a <literal>RuntimeException</literal>.</para>
 
           <note>
@@ -1339,31 +1339,31 @@ public class Visit ... implements Appearance {
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">WARN</emphasis>: Log suspicious circumstances.</para>
+          <para><emphasis role="bold">warn</emphasis>: Log suspicious circumstances.</para>
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">INFO</emphasis>: Log every phase and the solver itself. See <link
+          <para><emphasis role="bold">info</emphasis>: Log every phase and the solver itself. See <link
           linkend="scopeOverview">scope overview</link>.</para>
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">DEBUG</emphasis>: Log every step of every phase. See <link
+          <para><emphasis role="bold">debug</emphasis>: Log every step of every phase. See <link
           linkend="scopeOverview">scope overview</link>.</para>
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">TRACE</emphasis>: Log every move of every step of every phase. See <link
+          <para><emphasis role="bold">trace</emphasis>: Log every move of every step of every phase. See <link
           linkend="scopeOverview">scope overview</link>.</para>
 
           <note>
-            <para>Turning on <literal>TRACE</literal> logging, will slow down performance considerably: it's often 4
+            <para>Turning on <literal>trace</literal> logging, will slow down performance considerably: it's often 4
             times slower. However, it's invaluable during development to discover a bottleneck.</para>
           </note>
         </listitem>
       </itemizedlist>
 
-      <para>For example, set it to <literal>DEBUG</literal> logging, to see when the phases end and how fast steps are
+      <para>For example, set it to <literal>debug</literal> logging, to see when the phases end and how fast steps are
       taken:</para>
 
       <programlisting>INFO  Solving started: time spend (0), score (null), new best score (null), random seed (0).

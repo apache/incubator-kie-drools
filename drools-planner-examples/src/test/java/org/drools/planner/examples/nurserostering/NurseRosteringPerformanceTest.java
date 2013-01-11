@@ -47,9 +47,9 @@ public class NurseRosteringPerformanceTest extends SolverPerformanceTest {
     }
 
     @Test(timeout = 600000)
-    public void solveMedium_late01_initializedDebug() {
+    public void solveMedium_late01_initializedFastAssert() {
         File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "-57hard/-3387soft", EnvironmentMode.DEBUG);
+        runSpeedTest(unsolvedDataFile, "-57hard/-3387soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

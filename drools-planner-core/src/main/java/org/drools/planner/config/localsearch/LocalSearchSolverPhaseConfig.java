@@ -91,7 +91,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         configureSolverPhase(localSearchSolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
         localSearchSolverPhase.setDecider(buildDecider(environmentMode, solutionDescriptor, scoreDefinition,
                 localSearchSolverPhase.getTermination()));
-        if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
             localSearchSolverPhase.setAssertStepScoreIsUncorrupted(true);
         }
         return localSearchSolverPhase;
@@ -113,10 +113,10 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
                     + ") does not support it."
                     + " Configure the <forager> with <minimalAcceptedSelection>.");
         }
-        if (environmentMode == EnvironmentMode.TRACE) {
+        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
             decider.setAssertMoveScoreIsUncorrupted(true);
         }
-        if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
             decider.setAssertUndoMoveIsUncorrupted(true);
         }
         return decider;

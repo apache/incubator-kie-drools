@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>DEBUG</environmentMode>-->
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
   <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
 

@@ -29,23 +29,23 @@ import org.drools.planner.core.move.Move;
  */
 public enum EnvironmentMode {
     /**
-     * The trace mode does a few more assertions (such as {@link DefaultDecider#assertMoveScoreIsUncorrupted})
-     * than the {@link #DEBUG} mode at a horrible performance cost.
+     * This mode does a few more assertions (such as {@link DefaultDecider#assertMoveScoreIsUncorrupted})
+     * than the {@link #FAST_ASSERT} mode at a horrible performance cost.
      * <p/>
-     * The trace mode is reproducible (see {@link #REPRODUCIBLE} mode).
+     * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
      * <p/>
-     * The trace mode is horribly slow.
+     * This mode is horribly slow.
      */
-    TRACE,
+    FULL_ASSERT,
     /**
-     * The debug mode turns on most assertions (such as {@link DefaultDecider#assertUndoMoveIsUncorrupted})
+     * This mode turns on most assertions (such as {@link DefaultDecider#assertUndoMoveIsUncorrupted})
      * to fail-fast on a bug in a {@link Move} implementation, in a score rule or something else.
      * <p/>
-     * The debug mode is reproducible (see {@link #REPRODUCIBLE} mode).
+     * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
      * <p/>
-     * The debug mode is slow.
+     * This mode is slow.
      */
-    DEBUG,
+    FAST_ASSERT,
     /**
      * The reproducible mode is the default mode because it is recommended during development.
      * In this mode, 2 runs on the same computer will execute the same code in the same order.

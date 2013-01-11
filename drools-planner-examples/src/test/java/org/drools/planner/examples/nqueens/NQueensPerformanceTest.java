@@ -41,13 +41,13 @@ public class NQueensPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solve4QueensDebug() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0", EnvironmentMode.DEBUG);
+    public void solve4QueensFastAssert() {
+        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0", EnvironmentMode.FAST_ASSERT);
     }
 
     @Test(timeout = 600000)
-    public void solve8QueensDebug() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"), "0", EnvironmentMode.DEBUG);
+    public void solve8QueensFastAssert() {
+        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"), "0", EnvironmentMode.FAST_ASSERT);
     }
 
 }

@@ -576,8 +576,8 @@
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
       <para>Optionally, to get better output when the <literal>IncrementalScoreCalculator</literal> is corrupted in
-      <literal>environmentMode</literal> <literal>DEBUG</literal> or <literal>TRACE</literal>, you can overwrite the
-      method <literal>buildScoreCorruptionAnalysis</literal> from
+      <literal>environmentMode</literal> <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT</literal>,
+      you can overwrite the method <literal>buildScoreCorruptionAnalysis</literal> from
       <literal>AbstractIncrementalScoreCalculator</literal>.</para>
     </section>
 
@@ -842,9 +842,9 @@ end</programlisting>
     <section>
       <title>Detecting invalid scores</title>
 
-      <para>Put the <literal>environmentMode</literal> in <literal>TRACE</literal> (or <literal>DEBUG</literal>) to
-      detect corruption in the <link linkend="incrementalScoreCalculation">incremental score calculation</link>. On the
-      difference between <literal>TRACE</literal> and <literal>DEBUG</literal>, <link linkend="environmentMode">see the
+      <para>Put the <literal>environmentMode</literal> in <literal>FULL_ASSERT</literal> (or <literal>FAST_ASSERT</literal>) to
+      detect corruption in the <link linkend="incrementalScoreCalculation">incremental score calculation</link>. For the
+      difference between both modes, <link linkend="environmentMode">see the
       section about <literal>environmentMode</literal></link>. However, that will not detect if your score calculator
       implements your score constraints as your business actually desires.</para>
 
@@ -853,7 +853,7 @@ end</programlisting>
       assertions triggered by the <literal>environmentMode</literal>. Just configure it as
       <literal>assertionScoreDirectorFactory</literal>:</para>
 
-      <programlisting language="xml">  &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
+      <programlisting language="xml">  &lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;
   ...
   &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
