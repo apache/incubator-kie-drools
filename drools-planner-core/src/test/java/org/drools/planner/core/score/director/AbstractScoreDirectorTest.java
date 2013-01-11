@@ -31,6 +31,7 @@ import org.drools.planner.core.testdata.domain.TestdataObject;
 import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.junit.Test;
 
+import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -82,9 +83,13 @@ public class AbstractScoreDirectorTest {
         assertEquals(a3, scoreDirector.getTrailingEntity(variableDescriptor, b1));
 
         scoreDirector.setWorkingSolution(clonedStartingSolution);
+        TestdataChainedEntity a1Clone = clonedStartingSolution.getChainedEntityList().get(0);
+        assertCode("a1", a1Clone);
+        TestdataChainedEntity a2Clone = clonedStartingSolution.getChainedEntityList().get(1);
+        assertCode("a2", a2Clone);
         assertEquals("a1", ((TestdataObject) scoreDirector.getTrailingEntity(variableDescriptor, a0)).getCode());
-        assertEquals("a2", ((TestdataObject) scoreDirector.getTrailingEntity(variableDescriptor, a1)).getCode());
-        assertEquals("a3", ((TestdataObject) scoreDirector.getTrailingEntity(variableDescriptor, a2)).getCode());
+        assertEquals("a2", ((TestdataObject) scoreDirector.getTrailingEntity(variableDescriptor, a1Clone)).getCode());
+        assertEquals("a3", ((TestdataObject) scoreDirector.getTrailingEntity(variableDescriptor, a2Clone)).getCode());
         assertEquals("b1", ((TestdataObject) scoreDirector.getTrailingEntity(variableDescriptor, b0)).getCode());
     }
 
