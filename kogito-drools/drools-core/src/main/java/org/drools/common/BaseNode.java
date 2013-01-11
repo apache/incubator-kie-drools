@@ -16,19 +16,18 @@
 
 package org.drools.common;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleRemovalContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.RuleComponent;
 import org.kie.definition.rule.Rule;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The base class for all Rete nodes.
@@ -111,11 +110,7 @@ public abstract class BaseNode
                        BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
 
-        if (!context.addRemovedNode(this) && !(this instanceof LeftTupleSource) ) {
-            node.internalCleanUp(builder, workingMemories);
-            return;
-        }
-
+        context.addRemovedNode(this);
         this.removeAssociation( context.getRule() );
         doRemove( context,
                   builder,
@@ -123,19 +118,6 @@ public abstract class BaseNode
                   workingMemories );
         if ( !this.isInUse() && !(this instanceof EntryPointNode) ) {
             builder.getIdGenerator().releaseId( this.getId() );
-        }
-    }
-
-    private void internalCleanUp(ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
-        if ( !this.isInUse() && this instanceof MemoryFactory ) {
-            if (this instanceof MemoryFactory) {
-                for( InternalWorkingMemory workingMemory : workingMemories ) {
-                    workingMemory.clearNodeMemory( (MemoryFactory) this );
-                }
-            }
-            if ( !(this instanceof EntryPointNode) ) {
-                builder.getIdGenerator().releaseId( this.getId() );
-            }
         }
     }
 
