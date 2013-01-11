@@ -31,13 +31,9 @@ public final class DefaultHardAndSoftLongScore extends AbstractScore<HardAndSoft
     private static final String SOFT_LABEL = "soft";
 
     public static DefaultHardAndSoftLongScore parseScore(String scoreString) {
-        String[] scoreTokens = scoreString.split(HARD_LABEL + "\\/");
-        if (scoreTokens.length != 2 || !scoreTokens[1].endsWith(SOFT_LABEL)) {
-            throw new IllegalArgumentException("The scoreString (" + scoreString
-                    + ") doesn't follow the 999hard/999soft pattern.");
-        }
-        long hardScore = Long.parseLong(scoreTokens[0]);
-        long softScore = Long.parseLong(scoreTokens[1].substring(0, scoreTokens[1].length() - SOFT_LABEL.length()));
+        String[] levelStrings = parseLevelStrings(scoreString, HARD_LABEL, SOFT_LABEL);
+        long hardScore = Long.parseLong(levelStrings[0]);
+        long softScore = Long.parseLong(levelStrings[1]);
         return valueOf(hardScore, softScore);
     }
 

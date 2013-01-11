@@ -33,17 +33,10 @@ public final class DefaultHardMediumSoftScore extends AbstractScore<HardMediumSo
     private static final String SOFT_LABEL = "soft";
 
     public static DefaultHardMediumSoftScore parseScore(String scoreString) {
-        String[] scoreTokens = scoreString.split("\\/");
-        if (scoreTokens.length != 3
-                || !scoreTokens[0].endsWith(HARD_LABEL)
-                || !scoreTokens[1].endsWith(MEDIUM_LABEL)
-                || !scoreTokens[2].endsWith(SOFT_LABEL)) {
-            throw new IllegalArgumentException("The scoreString (" + scoreString
-                    + ") doesn't follow the 999hard/999medium/999soft pattern.");
-        }
-        int hardScore = Integer.parseInt(scoreTokens[0].substring(0, scoreTokens[0].length() - HARD_LABEL.length()));
-        int mediumScore = Integer.parseInt(scoreTokens[1].substring(0, scoreTokens[1].length() - MEDIUM_LABEL.length()));
-        int softScore = Integer.parseInt(scoreTokens[2].substring(0, scoreTokens[2].length() - SOFT_LABEL.length()));
+        String[] levelStrings = parseLevelStrings(scoreString, HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
+        int hardScore = Integer.parseInt(levelStrings[0]);
+        int mediumScore = Integer.parseInt(levelStrings[1]);
+        int softScore = Integer.parseInt(levelStrings[2]);
         return valueOf(hardScore, mediumScore, softScore);
     }
 

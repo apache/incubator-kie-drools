@@ -30,4 +30,40 @@ import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore
 public abstract class AbstractScore<S extends Score>
         implements Score<S>, Serializable {
 
+    protected static String[] parseLevelStrings(String scoreString, String... levelSuffixes) {
+        String[] scoreTokens = scoreString.split("\\/");
+        if (scoreTokens.length != levelSuffixes.length) {
+            throw new IllegalArgumentException("The scoreString (" + scoreString
+                    + ") doesn't follow the correct pattern (" + buildScorePattern() + "):"
+                    + " the scoreTokens length (" + scoreTokens.length
+                    + ") differs from the levelSuffixes length (" + levelSuffixes.length + ")." );
+        }
+        String[] levelStrings = new String[levelSuffixes.length];
+        for (int i = 0; i < levelSuffixes.length; i++) {
+            if (!scoreTokens[i].endsWith(levelSuffixes[i])) {
+                throw new IllegalArgumentException("The scoreString (" + scoreString
+                        + ") doesn't follow the correct pattern (" + buildScorePattern() + "):"
+                        + " the scoreToken (" + scoreTokens[i]
+                        + ") does not end with levelSuffix (" + levelSuffixes[i] + ")." );
+            }
+            levelStrings[i] = scoreTokens[i].substring(0, scoreTokens[i].length() - levelSuffixes[i].length());
+        }
+        return levelStrings;
+    }
+
+    private static String buildScorePattern(String... levelSuffixes) {
+        StringBuilder scorePattern = new StringBuilder(levelSuffixes.length * 10);
+        boolean first = true;
+        for (String levelSuffix : levelSuffixes) {
+            if (first) {
+                first = false;
+            } else {
+                scorePattern.append("/");
+            }
+            scorePattern.append("999");
+            scorePattern.append(levelSuffix);
+        }
+        return scorePattern.toString();
+    }
+
 }
