@@ -26,7 +26,6 @@ import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilt
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.entity.AbstractEntitySelector;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 
@@ -36,15 +35,14 @@ import org.drools.planner.core.score.director.ScoreDirector;
 public class FilteringEntitySelector extends AbstractEntitySelector {
 
     protected final EntitySelector childEntitySelector;
-    protected final List<SelectionFilter> entityFilterList;
+    protected final List<SelectionFilter> filterList;
     protected final boolean bailOutEnabled;
 
     protected ScoreDirector scoreDirector = null;
 
-    public FilteringEntitySelector(EntitySelector childEntitySelector,
-            List<SelectionFilter> entityFilterList) {
+    public FilteringEntitySelector(EntitySelector childEntitySelector, List<SelectionFilter> filterList) {
         this.childEntitySelector = childEntitySelector;
-        this.entityFilterList = entityFilterList;
+        this.filterList = filterList;
         bailOutEnabled = childEntitySelector.isNeverEnding();
         solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
     }
@@ -125,18 +123,18 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
     }
 
     public ListIterator<Object> listIterator() {
-        // TODO Not yet implemented because this class isn't used
+        // TODO Not yet implemented
         throw new UnsupportedOperationException();
     }
 
     public ListIterator<Object> listIterator(int index) {
-        // TODO Not yet implemented because this class isn't used
+        // TODO Not yet implemented
         throw new UnsupportedOperationException();
     }
 
     private boolean accept(ScoreDirector scoreDirector, Object entity) {
-        for (SelectionFilter entityFilter : entityFilterList) {
-            if (!entityFilter.accept(scoreDirector, entity)) {
+        for (SelectionFilter filter : filterList) {
+            if (!filter.accept(scoreDirector, entity)) {
                 return false;
             }
         }

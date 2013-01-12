@@ -60,13 +60,13 @@ public class FilteringEntitySelectorTest {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
 
-        SelectionFilter<TestdataEntity> entityFilter = new SelectionFilter<TestdataEntity>() {
+        SelectionFilter<TestdataEntity> filter = new SelectionFilter<TestdataEntity>() {
             public boolean accept(ScoreDirector scoreDirector, TestdataEntity entity) {
                 return !entity.getCode().equals("e3");
             }
         };
-        List<SelectionFilter> entityFilterList = Arrays.<SelectionFilter>asList(entityFilter);
-        EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, entityFilterList);
+        List<SelectionFilter> filterList = Arrays.<SelectionFilter>asList(filter);
+        EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, filterList);
         if (cacheType.isCached()) {
             entitySelector = new CachingEntitySelector(entitySelector, cacheType, false);
         }

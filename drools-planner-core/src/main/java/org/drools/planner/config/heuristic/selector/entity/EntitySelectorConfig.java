@@ -54,8 +54,8 @@ public class EntitySelectorConfig extends SelectorConfig {
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
 
-    @XStreamImplicit(itemFieldName = "entityFilterClass")
-    protected List<Class<? extends SelectionFilter>> entityFilterClassList = null;
+    @XStreamImplicit(itemFieldName = "filterClass")
+    protected List<Class<? extends SelectionFilter>> filterClassList = null;
 
     protected Class<? extends Comparator> entityComparatorClass = null;
     protected Class<? extends SelectionSorterWeightFactory> entitySorterWeightFactoryClass = null;
@@ -88,12 +88,12 @@ public class EntitySelectorConfig extends SelectorConfig {
         this.selectionOrder = selectionOrder;
     }
 
-    public List<Class<? extends SelectionFilter>> getEntityFilterClassList() {
-        return entityFilterClassList;
+    public List<Class<? extends SelectionFilter>> getFilterClassList() {
+        return filterClassList;
     }
 
-    public void setEntityFilterClassList(List<Class<? extends SelectionFilter>> entityFilterClassList) {
-        this.entityFilterClassList = entityFilterClassList;
+    public void setFilterClassList(List<Class<? extends SelectionFilter>> filterClassList) {
+        this.filterClassList = filterClassList;
     }
 
     public Class<? extends Comparator> getEntityComparatorClass() {
@@ -172,19 +172,19 @@ public class EntitySelectorConfig extends SelectorConfig {
     private EntitySelector applyFiltering(PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             EntitySelector entitySelector) {
-        if (!CollectionUtils.isEmpty(entityFilterClassList)
+        if (!CollectionUtils.isEmpty(filterClassList)
                 || entityDescriptor.hasMovableEntitySelectionFilter()) {
-            List<SelectionFilter> entityFilterList = new ArrayList<SelectionFilter>(
-                    entityFilterClassList == null ? 1 : entityFilterClassList.size() + 1);
-            if (entityFilterClassList != null) {
-                for (Class<? extends SelectionFilter> entityFilterClass : entityFilterClassList) {
-                    entityFilterList.add(ConfigUtils.newInstance(this, "entityFilterClass", entityFilterClass));
+            List<SelectionFilter> filterList = new ArrayList<SelectionFilter>(
+                    filterClassList == null ? 1 : filterClassList.size() + 1);
+            if (filterClassList != null) {
+                for (Class<? extends SelectionFilter> filterClass : filterClassList) {
+                    filterList.add(ConfigUtils.newInstance(this, "filterClass", filterClass));
                 }
             }
             if (entityDescriptor.hasMovableEntitySelectionFilter()) {
-                entityFilterList.add(entityDescriptor.getMovableEntitySelectionFilter());
+                filterList.add(entityDescriptor.getMovableEntitySelectionFilter());
             }
-            entitySelector = new FilteringEntitySelector(entitySelector, entityFilterList);
+            entitySelector = new FilteringEntitySelector(entitySelector, filterList);
         }
 
         if (entityComparatorClass != null) {
@@ -337,8 +337,8 @@ public class EntitySelectorConfig extends SelectorConfig {
                 inheritedConfig.getPlanningEntityClass());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
-        entityFilterClassList = ConfigUtils.inheritOverwritableProperty
-                (entityFilterClassList, inheritedConfig.getEntityFilterClassList());
+        filterClassList = ConfigUtils.inheritOverwritableProperty
+                (filterClassList, inheritedConfig.getFilterClassList());
         entityComparatorClass = ConfigUtils.inheritOverwritableProperty(
                 entityComparatorClass, inheritedConfig.getEntityComparatorClass());
         entitySorterWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(

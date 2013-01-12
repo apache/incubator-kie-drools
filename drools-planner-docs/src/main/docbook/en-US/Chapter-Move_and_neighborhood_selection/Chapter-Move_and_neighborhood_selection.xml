@@ -407,17 +407,17 @@
       &lt;moveFilterClass&gt;org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter&lt;/moveFilterClass&gt;
     &lt;/swapMoveSelector&gt;</programlisting>
 
-      <para>But if possible apply it on a lower levels, such as an <literal>entityFilterClass</literal> on the
+      <para>But if possible apply it on a lower levels, such as an <literal>filterClass</literal> on the
       <literal>entitySelector</literal> or a <literal>valueFilterClass</literal> on the
       <literal>valueSelector</literal>:</para>
 
       <programlisting language="xml">    &lt;changeMoveSelector&gt;
       &lt;entitySelector&gt;
-        &lt;entityFilterClass&gt;...EntityFilter&lt;/entityFilterClass&gt;
+        &lt;filterClass&gt;...EntityFilter&lt;/filterClass&gt;
       &lt;/entitySelector&gt;
     &lt;/changeMoveSelector&gt;</programlisting>
 
-      <para>You can configure multiple <literal>*FilterClass</literal> elements on a single selector.</para>
+      <para>You can configure multiple <literal>filterClass</literal> elements on a single selector.</para>
     </section>
 
     <section xml:id="sortedSelection">

@@ -2543,3 +2543,9 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <environmentMode>TRACE</environmentMode>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <environmentMode>FULL_ASSERT</environmentMode>
+
+[MAJOR] Configuration property entityFilterClass has been renamed to filterClass.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <entityFilterClass>...</entityFilterClass>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <filterClass>...</filterClass>
