@@ -37,6 +37,10 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
         this.incrementalScoreCalculator = incrementalScoreCalculator;
     }
 
+    public IncrementalScoreCalculator getIncrementalScoreCalculator() {
+        return incrementalScoreCalculator;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
