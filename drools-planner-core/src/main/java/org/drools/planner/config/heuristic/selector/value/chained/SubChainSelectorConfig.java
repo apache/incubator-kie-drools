@@ -36,11 +36,13 @@ import org.drools.planner.core.heuristic.selector.value.chained.SubChainSelector
 public class SubChainSelectorConfig extends SelectorConfig {
 
     private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 2;
+    private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
     @XStreamAlias("valueSelector")
     protected ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
 
     protected Integer minimumSubChainSize = null;
+    protected Integer maximumSubChainSize = null;
 
     public ValueSelectorConfig getValueSelectorConfig() {
         return valueSelectorConfig;
@@ -61,6 +63,14 @@ public class SubChainSelectorConfig extends SelectorConfig {
 
     public void setMinimumSubChainSize(Integer minimumSubChainSize) {
         this.minimumSubChainSize = minimumSubChainSize;
+    }
+
+    public Integer getMaximumSubChainSize() {
+        return maximumSubChainSize;
+    }
+
+    public void setMaximumSubChainSize(Integer maximumSubChainSize) {
+        this.maximumSubChainSize = maximumSubChainSize;
     }
 
     // ************************************************************************
@@ -92,7 +102,8 @@ public class SubChainSelectorConfig extends SelectorConfig {
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.ORIGINAL);
         return new DefaultSubChainSelector(valueSelector, inheritedSelectionOrder == SelectionOrder.RANDOM,
-                minimumSubChainSize == null ? DEFAULT_MINIMUM_SUB_CHAIN_SIZE : minimumSubChainSize);
+                minimumSubChainSize == null ? DEFAULT_MINIMUM_SUB_CHAIN_SIZE : minimumSubChainSize,
+                maximumSubChainSize == null ? DEFAULT_MAXIMUM_SUB_CHAIN_SIZE : maximumSubChainSize);
     }
 
     public void inherit(SubChainSelectorConfig inheritedConfig) {
@@ -104,6 +115,8 @@ public class SubChainSelectorConfig extends SelectorConfig {
         }
         minimumSubChainSize = ConfigUtils.inheritOverwritableProperty(minimumSubChainSize,
                 inheritedConfig.getMinimumSubChainSize());
+        maximumSubChainSize = ConfigUtils.inheritOverwritableProperty(maximumSubChainSize,
+                inheritedConfig.getMaximumSubChainSize());
     }
 
     @Override

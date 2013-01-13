@@ -59,7 +59,8 @@ public class DefaultSubChainSelectorTest {
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 a0, a1, a2, a3, a4, b0, b1, b2);
 
-        DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(valueSelector, false, 1);
+        DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
+                valueSelector, false, 1, Integer.MAX_VALUE);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
@@ -163,7 +164,8 @@ public class DefaultSubChainSelectorTest {
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 a0, b0);
 
-        DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(valueSelector, false, 1);
+        DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
+                valueSelector, false, 1, Integer.MAX_VALUE);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
