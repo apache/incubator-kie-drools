@@ -17,6 +17,9 @@ import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -82,15 +85,15 @@ public class TypeDeclarationTest {
 
         //Get the Fact Type for org.kie.EventA
         FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.drools.EventA");
-        Assert.assertNotNull(factType);
+        assertNotNull( factType );
 
         //'name' field must still be there
         FactField field = factType.getField("name");
-        Assert.assertNotNull(field);
+        assertNotNull( field );
 
         //'duration' field must still be there
         field = factType.getField("duration");
-        Assert.assertNotNull(field);
+        assertNotNull( field );
 
         //New Annotations must be there too
         TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("org.drools.EventA");
@@ -137,15 +140,15 @@ public class TypeDeclarationTest {
 
         //Get the Fact Type for org.drools.EventA
         FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.drools.EventA");
-        Assert.assertNotNull(factType);
+        assertNotNull( factType );
 
         //'name' field must still be there
         FactField field = factType.getField("name");
-        Assert.assertNotNull(field);
+        assertNotNull( field );
 
         //'duration' field must still be there
         field = factType.getField("duration");
-        Assert.assertNotNull(field);
+        assertNotNull( field );
 
         //@Role annotations shouldn't have any effect
         TypeDeclaration typeDeclaration = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getTypeDeclaration("org.drools.EventA");

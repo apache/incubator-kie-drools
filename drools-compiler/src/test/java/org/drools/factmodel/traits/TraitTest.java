@@ -2333,7 +2333,7 @@ public class TraitTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ksession.getKieBase() );
         List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal("list",

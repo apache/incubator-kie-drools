@@ -309,7 +309,7 @@ public class JpaPersistenceTraitTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        TraitFactory.setMode( mode, ksession.getKieBase() );
         List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal("list",
