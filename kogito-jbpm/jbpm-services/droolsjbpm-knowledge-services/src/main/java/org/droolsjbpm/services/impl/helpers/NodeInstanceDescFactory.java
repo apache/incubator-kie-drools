@@ -28,6 +28,7 @@ public class NodeInstanceDescFactory {
         return new NodeInstanceDesc(nodeInstance.getId(),
                                     nodeInstance.getNodeId(),
                                     nodeInstance.getNode().getName(), 
+                                    nodeInstance.getNode().getMetaData().get("UniqueId").toString(),
                                     nodeInstance.getNode().getClass().getSimpleName(),
                                     domainName, sessionId, processInstanceId, completed);
     }

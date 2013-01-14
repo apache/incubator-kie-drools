@@ -34,6 +34,7 @@ public class NodeInstanceDesc implements Serializable{
     
     private long id;
     private long nodeId;
+    private String nodeUniqueId;
     private String name;
     private String domainName;
     private int sessionId;
@@ -49,17 +50,18 @@ public class NodeInstanceDesc implements Serializable{
         this.dataTimeStamp = new Date();
     }
 
-    public NodeInstanceDesc(long id, long nodeId, String name, String type, 
+    public NodeInstanceDesc(long id, long nodeId, String name, String uniqueId, String type, 
                             String domainName, int sessionId, long processInstanceId){
-        this(id, nodeId, name, type, domainName, sessionId, processInstanceId, false);
+        this(id, nodeId, name, uniqueId,  type, domainName, sessionId, processInstanceId, false);
         
     } 
-    public NodeInstanceDesc(long id, long nodeId, String name, String type,
+    public NodeInstanceDesc(long id, long nodeId, String name, String uniqueId, String type,
                             String domainName, int sessionId, long processInstanceId, 
                             boolean completed) {
         this.id = id;
         this.nodeId = nodeId;
         this.name = name;
+        this.nodeUniqueId = uniqueId;
         this.type = type;
         this.sessionId = sessionId;
         this.processInstanceId = processInstanceId;
@@ -100,10 +102,27 @@ public class NodeInstanceDesc implements Serializable{
         return type;
     }
 
+    public String getNodeUniqueId() {
+        return nodeUniqueId;
+    }
+
+    public void setNodeUniqueId(String nodeUniqueId) {
+        this.nodeUniqueId = nodeUniqueId;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+    
     @Override
     public String toString() {
-        return "NodeInstanceDesc["+dataTimeStamp.toString()+"]{" + "pk=" + pk + ", id=" + id + ", nodeId=" + nodeId + ", name=" + name + ", domainName=" + domainName + ", sessionId=" + sessionId + ", processInstanceId=" + processInstanceId + ", type=" + type + '}';
+        return "NodeInstanceDesc{" + "pk=" + pk + ", id=" + id + ", nodeId=" + nodeId + ", nodeUniqueId=" + nodeUniqueId + ", name=" + name + ", domainName=" + domainName + ", sessionId=" + sessionId + ", processInstanceId=" + processInstanceId + ", type=" + type + ", completed=" + completed + ", dataTimeStamp=" + dataTimeStamp + '}';
     }
+
     
     
 
