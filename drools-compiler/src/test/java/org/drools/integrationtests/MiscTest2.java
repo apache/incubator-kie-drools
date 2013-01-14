@@ -16,15 +16,6 @@
 
 package org.drools.integrationtests;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.Address;
 import org.drools.CommonTestMethodBase;
 import org.drools.Person;
@@ -47,6 +38,15 @@ import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -350,5 +350,25 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testMVELForLoop() throws Exception {
+        String str = "rule demo\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "   for ( int i = 1; i <= 3; i++ ) {\n" +
+                "       insert( \"foo\" + i );\n" +
+                "   }\n" +
+                "end";
+
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL);
+
+        if ( builder.hasErrors() ) {
+            throw new RuntimeException(builder.getErrors().toString());
+        }
     }
 }
