@@ -1,12 +1,5 @@
 package org.drools.integrationtests;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.Person;
@@ -22,6 +15,14 @@ import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class DslTest extends CommonTestMethodBase {
    
@@ -41,25 +42,42 @@ public class DslTest extends CommonTestMethodBase {
 
         kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
                               ResourceType.DSL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "rule_with_expander_dsl.dslr", getClass() ) ,
-                              ResourceType.DSLR );
+        kbuilder.add(ResourceFactory.newClassPathResource("rule_with_expander_dsl.dslr", getClass()),
+                ResourceType.DSLR);
 
+        checkDSLExpanderTest(kbuilder);
+    }
+
+    @Test
+    public void testWithExpanderDSLUsingCompositeBuiler() throws Exception {
+        //final PackageBuilder builder = new PackageBuilder();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.batch()
+                .add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
+                        ResourceType.DSL )
+                .add( ResourceFactory.newClassPathResource( "rule_with_expander_dsl.dslr", getClass() ) ,
+                        ResourceType.DSLR )
+                .build();
+
+        checkDSLExpanderTest(kbuilder);
+    }
+
+    private void checkDSLExpanderTest(KnowledgeBuilder kbuilder) throws IOException, ClassNotFoundException {
         assertFalse( kbuilder.hasErrors() );
-
-        // Check errors
         final String err = kbuilder.getErrors().toString();
         assertEquals( "",
                       err );
         assertEquals( 0,
                       kbuilder.getErrors().size() );
-        
+
         // the compiled package
         final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
         assertEquals( 1, pkgs.size() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
-        kbase    = SerializationHelper.serializeObject( kbase );
+        kbase    = SerializationHelper.serializeObject(kbase);
 
         StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         session.insert( new Person( "Bob",
@@ -70,13 +88,9 @@ public class DslTest extends CommonTestMethodBase {
         final List messages = new ArrayList();
         session.setGlobal( "messages",
                       messages );
-//        wm  = SerializationHelper.serializeObject(wm);
         session.fireAllRules();
 
-        // should have fired
-        assertEquals( 1,
-                      messages.size() );
-
+        assertEquals( 1, messages.size() );
     }
 
     @Test

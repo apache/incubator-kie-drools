@@ -1,14 +1,14 @@
 package org.kie.builder;
 
-import java.util.List;
-
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieServices;
 import org.kie.builder.model.KieModuleModel;
 
-import static org.junit.Assert.*;
-import static org.kie.builder.impl.KieBuilderImpl.*;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.kie.builder.impl.KieBuilderImpl.generatePomXml;
 
 /**
  * Test for DSL expansion with KieBuilder
@@ -16,7 +16,6 @@ import static org.kie.builder.impl.KieBuilderImpl.*;
 public class DslExpansionTest {
 
     @Test
-    @Ignore("This should expand the DSL in the DSLR file")
     public void testDSLExpansion_MessageImplNPE() throws Exception {
         final KieServices ks = KieServices.Factory.get();
         final ReleaseId releaseId = ks.newReleaseId( "org.kie", "dsl-test", "1.0-SNAPSHOT" );
@@ -39,8 +38,6 @@ public class DslExpansionTest {
     }
 
     @Test
-    @Ignore("This should not expand the DSL in the DRL file")
-    //This test is probably not required, as a DRL file will not be expanded (only a DSLR) but it demonstrates neither approach works (in case I am mistaken that this should work)
     public void testDSLExpansion_NoExpansion() throws Exception {
         final KieServices ks = KieServices.Factory.get();
         final ReleaseId releaseId = ks.newReleaseId( "org.kie", "dsl-test", "1.0-SNAPSHOT" );

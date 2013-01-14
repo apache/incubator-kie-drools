@@ -1,11 +1,5 @@
 package org.drools.compiler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.io.impl.BaseResource;
 import org.drools.lang.descr.CompositePackageDescr;
@@ -16,6 +10,12 @@ import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceType;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
@@ -72,6 +72,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     public void build() {
         buildException = null;
         pkgBuilder.registerBuildResources(getResources());
+        registerDSL();
         buildPackages();
         buildResources();
         buildOthers();
@@ -87,7 +88,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildRules(packages);
     }
 
-    private void buildResources() {
+    private void registerDSL() {
         List<ResourceDescr> resourcesByType = this.resourcesByType.remove(ResourceType.DSL);
         if (resourcesByType != null) {
             for (ResourceDescr resourceDescr : resourcesByType) {
@@ -104,8 +105,10 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
                 }
             }
         }
+    }
 
-        resourcesByType = this.resourcesByType.remove(ResourceType.DRF);
+    private void buildResources() {
+        List<ResourceDescr> resourcesByType = this.resourcesByType.remove(ResourceType.DRF);
         if (resourcesByType != null) {
             for (ResourceDescr resourceDescr : resourcesByType) {
                 try {
