@@ -400,15 +400,15 @@
 }</programlisting>
 
       <para>Apply the filter on the lowest level possible. In most cases, you 'll need to know both the entity and the
-      value involved and you'll have to apply a <literal>moveFilterClass</literal> on the
+      value involved and you'll have to apply a <literal>filterClass</literal> on the
       <literal>moveSelector</literal>:</para>
 
       <programlisting language="xml">    &lt;swapMoveSelector&gt;
-      &lt;moveFilterClass&gt;org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter&lt;/moveFilterClass&gt;
+      &lt;filterClass&gt;org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter&lt;/filterClass&gt;
     &lt;/swapMoveSelector&gt;</programlisting>
 
-      <para>But if possible apply it on a lower levels, such as an <literal>filterClass</literal> on the
-      <literal>entitySelector</literal> or a <literal>valueFilterClass</literal> on the
+      <para>But if possible, apply it on a lower levels, such as an <literal>filterClass</literal> on the
+      <literal>entitySelector</literal> or a <literal>filterClass</literal> on the
       <literal>valueSelector</literal>:</para>
 
       <programlisting language="xml">    &lt;changeMoveSelector&gt;

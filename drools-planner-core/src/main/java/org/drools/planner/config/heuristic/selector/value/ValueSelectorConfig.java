@@ -44,7 +44,7 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     // TODO filterClass
 
-    // TODO sorterClass, increasingStrength
+    // TODO sorterClass, ...
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 

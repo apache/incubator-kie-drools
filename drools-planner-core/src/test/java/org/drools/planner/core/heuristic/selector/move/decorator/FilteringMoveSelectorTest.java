@@ -63,13 +63,13 @@ public class FilteringMoveSelectorTest {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("e1"), new DummyMove("e2"), new DummyMove("e3"), new DummyMove("e4"));
 
-        SelectionFilter<DummyMove> moveFilter = new SelectionFilter<DummyMove>() {
+        SelectionFilter<DummyMove> filter = new SelectionFilter<DummyMove>() {
             public boolean accept(ScoreDirector scoreDirector, DummyMove move) {
                 return !move.getCode().equals("e3");
             }
         };
-        List<SelectionFilter> moveFilterList = Arrays.<SelectionFilter>asList(moveFilter);
-        MoveSelector moveSelector = new FilteringMoveSelector(childMoveSelector, moveFilterList);
+        List<SelectionFilter> filterList = Arrays.<SelectionFilter>asList(filter);
+        MoveSelector moveSelector = new FilteringMoveSelector(childMoveSelector, filterList);
         if (cacheType.isCached()) {
             moveSelector = new CachingMoveSelector(moveSelector, cacheType, false);
         }

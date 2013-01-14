@@ -59,10 +59,10 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
 
-    @XStreamImplicit(itemFieldName = "moveFilterClass")
-    protected List<Class<? extends SelectionFilter>> moveFilterClassList = null;
+    @XStreamImplicit(itemFieldName = "filterClass")
+    protected List<Class<? extends SelectionFilter>> filterClassList = null;
 
-    // TODO moveSorterClass
+    // TODO sorterClass, ...
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 
@@ -84,12 +84,12 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         this.selectionOrder = selectionOrder;
     }
 
-    public List<Class<? extends SelectionFilter>> getMoveFilterClassList() {
-        return moveFilterClassList;
+    public List<Class<? extends SelectionFilter>> getFilterClassList() {
+        return filterClassList;
     }
 
-    public void setMoveFilterClassList(List<Class<? extends SelectionFilter>> moveFilterClassList) {
-        this.moveFilterClassList = moveFilterClassList;
+    public void setFilterClassList(List<Class<? extends SelectionFilter>> filterClassList) {
+        this.filterClassList = filterClassList;
     }
 
     public Class<? extends SelectionProbabilityWeightFactory> getProbabilityWeightFactoryClass() {
@@ -141,12 +141,12 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     }
 
     private MoveSelector applyFiltering(MoveSelector moveSelector) {
-        if (!CollectionUtils.isEmpty(moveFilterClassList)) {
-            List<SelectionFilter> moveFilterList = new ArrayList<SelectionFilter>(moveFilterClassList.size());
-            for (Class<? extends SelectionFilter> moveFilterClass : moveFilterClassList) {
-                moveFilterList.add(ConfigUtils.newInstance(this, "moveFilterClass", moveFilterClass));
+        if (!CollectionUtils.isEmpty(filterClassList)) {
+            List<SelectionFilter> filterList = new ArrayList<SelectionFilter>(filterClassList.size());
+            for (Class<? extends SelectionFilter> filterClass : filterClassList) {
+                filterList.add(ConfigUtils.newInstance(this, "filterClass", filterClass));
             }
-            moveSelector = new FilteringMoveSelector(moveSelector, moveFilterList);
+            moveSelector = new FilteringMoveSelector(moveSelector, filterList);
         }
         return moveSelector;
     }
@@ -208,8 +208,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         super.inherit(inheritedConfig);
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
-        moveFilterClassList = ConfigUtils.inheritOverwritableProperty(
-                moveFilterClassList, inheritedConfig.getMoveFilterClassList());
+        filterClassList = ConfigUtils.inheritOverwritableProperty(
+                filterClassList, inheritedConfig.getFilterClassList());
         probabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
 

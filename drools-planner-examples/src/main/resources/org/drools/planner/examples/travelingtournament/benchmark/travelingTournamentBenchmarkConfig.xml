@@ -32,7 +32,7 @@
           <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>
+            <filterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
           </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
@@ -57,7 +57,7 @@
           <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>
+            <filterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
           </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
@@ -84,7 +84,7 @@
           <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>
+            <filterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
           </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
@@ -111,7 +111,7 @@
           <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
-            <moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>
+            <filterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
           </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
@@ -138,7 +138,7 @@
           <!--<swapMoveSelector>-->
             <!--<cacheType>PHASE</cacheType>-->
             <!--<selectionOrder>SHUFFLED</selectionOrder>-->
-            <!--<moveFilterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</moveFilterClass>-->
+            <!--<filterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>-->
           <!--</swapMoveSelector>-->
           <!--<moveListFactory>-->
             <!--<cacheType>STEP</cacheType>-->

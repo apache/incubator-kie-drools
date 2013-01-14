@@ -91,7 +91,7 @@
             </valueSelector>
           </changeMoveSelector>
           <swapMoveSelector>
-            <moveFilterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</moveFilterClass>
+            <filterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
           </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
@@ -122,7 +122,7 @@
           </changeMoveSelector>
           <swapMoveSelector>
             <cacheType>PHASE</cacheType>
-            <moveFilterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</moveFilterClass>
+            <filterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
           </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
@@ -151,7 +151,7 @@
             <!--</valueSelector>-->
           <!--</changeMoveSelector>-->
           <!--<swapMoveSelector>-->
-            <!--<moveFilterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</moveFilterClass>-->
+            <!--<filterClass>org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>-->
           <!--</swapMoveSelector>-->
         <!--</unionMoveSelector>-->
         <!--<acceptor>-->

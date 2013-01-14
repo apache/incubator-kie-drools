@@ -30,14 +30,14 @@ import org.drools.planner.core.score.director.ScoreDirector;
 public class FilteringMoveSelector extends AbstractMoveSelector {
 
     protected final MoveSelector childMoveSelector;
-    protected final List<SelectionFilter> moveFilterList;
+    protected final List<SelectionFilter> filterList;
     protected final boolean bailOutEnabled;
 
     protected ScoreDirector scoreDirector = null;
 
-    public FilteringMoveSelector(MoveSelector childMoveSelector, List<SelectionFilter> moveFilterList) {
+    public FilteringMoveSelector(MoveSelector childMoveSelector, List<SelectionFilter> filterList) {
         this.childMoveSelector = childMoveSelector;
-        this.moveFilterList = moveFilterList;
+        this.filterList = filterList;
         bailOutEnabled = childMoveSelector.isNeverEnding();
         solverPhaseLifecycleSupport.addEventListener(childMoveSelector);
     }
@@ -114,8 +114,8 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
     }
 
     private boolean accept(ScoreDirector scoreDirector, Move move) {
-        for (SelectionFilter moveFilter : moveFilterList) {
-            if (!moveFilter.accept(scoreDirector, move)) {
+        for (SelectionFilter filter : filterList) {
+            if (!filter.accept(scoreDirector, move)) {
                 return false;
             }
         }
