@@ -34,6 +34,7 @@ import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceType;
@@ -163,7 +164,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
     @Override
-    public String findProcessId(String bpmn2Content) {
+    public String findProcessId(final String bpmn2Content) {
         if (bpmn2Content == null || "".equals(bpmn2Content)) {
             throw new IllegalStateException("The Process Content cannot be Empty!");
         }
@@ -176,7 +177,10 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
        
         kbuilder.add(new ByteArrayResource(bpmn2Content.getBytes()), ResourceType.BPMN2);
         if (kbuilder.hasErrors()) {
-            throw new IllegalStateException("Process Cannot be Parsed!");
+            for(KnowledgeBuilderError error: kbuilder.getErrors()){
+                System.out.println("Error: "+error.getMessage());
+            }
+            throw new IllegalStateException("Process Cannot be Parsed! \n"+bpmn2Content);
         }
         
         BPMN2ProcessFactory.setBPMN2ProcessProvider(originalProvider);

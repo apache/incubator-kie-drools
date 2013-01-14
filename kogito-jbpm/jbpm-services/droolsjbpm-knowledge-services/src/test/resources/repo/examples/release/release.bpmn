@@ -46,7 +46,7 @@
   <bpmn2:itemDefinition id="__2CAA05BA-0434-4B55-B8EF-DF31B44F6191_out_errrorsOutputItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__F01F5224-06D4-4DA5-BFAB-B85903B1A807_in_filesInputItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__F01F5224-06D4-4DA5-BFAB-B85903B1A807_in_test_reportInputItem" structureRef="String"/>
-  <bpmn2:process id="org.jbpm.release.process" name="Release Process" isExecutable="true">
+  <bpmn2:process id="org.jbpm.release.process" name="Release Process" drools:package="default" drools:version="1" isExecutable="true">
     <bpmn2:property id="release_name" itemSubjectRef="_release_nameItem"/>
     <bpmn2:property id="test_execution_successfully" itemSubjectRef="_test_execution_successfullyItem"/>
     <bpmn2:property id="files" itemSubjectRef="_filesItem"/>
