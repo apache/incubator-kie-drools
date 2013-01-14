@@ -16,6 +16,8 @@
 
 package org.jbpm.process.workitem.email;
 
+import java.util.Arrays;
+
 import org.drools.process.instance.WorkItemHandler;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemManager;
@@ -124,6 +126,13 @@ public class EmailWorkItemHandler implements WorkItemHandler {
         message.setRecipients(recipients);
         message.setSubject((String) workItem.getParameter("Subject"));
         message.setBody((String) workItem.getParameter("Body"));
+        
+        // fill attachments
+        String attachmentList = (String) workItem.getParameter("Attachments");
+        if (attachmentList != null) {
+            String[] attachments = attachmentList.split(",");
+            message.setAttachments(Arrays.asList(attachments));
+        }
         
         // setup email
         email.setMessage(message);

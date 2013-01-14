@@ -16,6 +16,9 @@
 
 package org.jbpm.process.workitem.email;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Message {
 	
     private Recipients recipients;
@@ -24,9 +27,11 @@ public class Message {
     private String     subject;
     private String     body;
     private String     documentFormat = "html";
+    private List<String> attachments;
 
     public Message() {
         this.recipients = new Recipients();
+        this.setAttachments(new ArrayList<String>());
     }
 
     public Recipients getRecipients() {
@@ -76,6 +81,18 @@ public class Message {
     public void setBody(String body) {
         this.body = body;
     }
+    
+    public List<String> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<String> attachments) {
+        this.attachments = attachments;
+    }
+    
+    public boolean hasAttachment() {
+        return !this.attachments.isEmpty();
+    }
 
     public int hashCode() {
         final int prime = 31;
@@ -86,6 +103,7 @@ public class Message {
         result = prime * result + ((recipients == null) ? 0 : recipients.hashCode());
         result = prime * result + ((replyTo == null) ? 0 : replyTo.hashCode());
         result = prime * result + ((subject == null) ? 0 : subject.hashCode());
+        result = prime * result + ((attachments == null) ? 0 : attachments.hashCode());
         return result;
     }
 
@@ -142,7 +160,15 @@ public class Message {
 		} else if (!subject.equals(other.subject)) {
 			return false;
 		}
+		if (attachments == null) {
+            if (other.attachments != null) {
+                return false;
+            }
+        } else if (!attachments.equals(other.attachments)) {
+            return false;
+        }
 		return true;
     }
+
 
 }

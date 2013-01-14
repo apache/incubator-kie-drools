@@ -16,19 +16,27 @@
 
 package org.jbpm.process.workitem.email;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
+import javax.activation.MimetypesFileTypeMap;
 import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 public class SendHtml {
@@ -104,8 +112,35 @@ public class SendHtml {
 
                 msg.addRecipients( type, InternetAddress.parse( recipient.getEmail(), false ) );
             }
+            
+            if (message.hasAttachment()) {
+                Multipart multipart = new MimeMultipart();
+                // prepare body as first mime body part
+                MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+                messageBodyPart.setDataHandler( new DataHandler( new ByteArrayDataSource( message.getBody(), "text/html" ) ) );         
+                multipart.addBodyPart(messageBodyPart);
+                
+                List<String> attachments = message.getAttachments();
+                for (String attachment : attachments) {
+                    MimeBodyPart attachementBodyPart = new MimeBodyPart();
+                    URL attachmentUrl = getAttachemntURL(attachment);
+                    String contentType = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(attachmentUrl.getFile());
+                    attachementBodyPart.setDataHandler(new DataHandler(new ByteArrayDataSource( attachmentUrl.openStream(), contentType ) ));
+                    String fileName = new File(attachmentUrl.getFile()).getName();
+                    attachementBodyPart.setFileName(fileName);
+                    attachementBodyPart.setContentID("<"+fileName+">");
+
+                    multipart.addBodyPart(attachementBodyPart);
+                }
+                // Put parts in message
+                msg.setContent(multipart);
+            } else {
+                msg.setDataHandler( new DataHandler( new ByteArrayDataSource( message.getBody(), "text/html" ) ) );
+            }
+            
             msg.setSubject( subject );
-            collect( message.getBody(), msg );
+            
             msg.setHeader( "X-Mailer", mailer );
             msg.setSentDate( new Date() );
         } catch ( Exception e ) {
@@ -129,7 +164,7 @@ public class SendHtml {
         sb.append( body );
 //        sb.append( "</BODY>\n" );
 //        sb.append( "</HTML>\n" );
-        msg.setDataHandler( new DataHandler( new ByteArrayDataSource( sb.toString(), "text/html" ) ) );
+        
     }
     
     
@@ -162,6 +197,17 @@ public class SendHtml {
         }
        
         return session;
+    }
+    
+    protected static URL getAttachemntURL(String attachment) throws MalformedURLException {
+        if (attachment.startsWith("classpath:")) {
+            String location = attachment.replaceFirst("classpath:", "");
+            return SendHtml.class.getResource(location);
+        } else {
+            URL attachmentUrl = new URL(attachment);
+            
+            return attachmentUrl;
+        }
     }
 
     private static class Authenticator extends javax.mail.Authenticator {
