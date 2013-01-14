@@ -450,8 +450,8 @@
         <para>Unless it's configured with automatically enabled annotation, you also need configure it:</para>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
-      &lt;entityComparatorClass&gt;...CloudProcessDifficultyComparator&lt;/entityComparatorClass&gt;
-      &lt;entitySorterOrder&gt;DESCENDING&lt;/entitySorterOrder&gt;
+      &lt;sorterComparatorClass&gt;...CloudProcessDifficultyComparator&lt;/sorterComparatorClass&gt;
+      &lt;sorterOrder&gt;DESCENDING&lt;/sorterOrder&gt;
     &lt;/entitySelector&gt;</programlisting>
       </section>
 
@@ -503,8 +503,8 @@
         <para>Unless it's configured with automatically enabled annotation, you also need configure it:</para>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
-      &lt;entitySorterWeightFactoryClass&gt;...QueenDifficultyWeightFactory&lt;/entitySorterWeightFactoryClass&gt;
-      &lt;entitySorterOrder&gt;DESCENDING&lt;/entitySorterOrder&gt;
+      &lt;sorterWeightFactoryClass&gt;...QueenDifficultyWeightFactory&lt;/sorterWeightFactoryClass&gt;
+      &lt;sorterOrder&gt;DESCENDING&lt;/sorterOrder&gt;
     &lt;/entitySelector&gt;</programlisting>
       </section>
 
@@ -520,7 +520,7 @@
 }</programlisting>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
-      &lt;entitySorterClass&gt;...EntitySorter&lt;/entitySorterClass&gt;
+      &lt;sorterClass&gt;...EntitySorter&lt;/sorterClass&gt;
     &lt;/entitySelector&gt;</programlisting>
       </section>
     </section>

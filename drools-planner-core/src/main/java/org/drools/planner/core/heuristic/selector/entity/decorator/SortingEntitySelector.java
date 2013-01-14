@@ -26,12 +26,12 @@ import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public class SortingEntitySelector extends AbstractCachingEntitySelector {
 
-    protected final SelectionSorter entitySorter;
+    protected final SelectionSorter sorter;
 
     public SortingEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
-            SelectionSorter entitySorter) {
+            SelectionSorter sorter) {
         super(childEntitySelector, cacheType);
-        this.entitySorter = entitySorter;
+        this.sorter = sorter;
     }
 
     // ************************************************************************
@@ -41,7 +41,7 @@ public class SortingEntitySelector extends AbstractCachingEntitySelector {
     @Override
     public void constructCache(DefaultSolverScope solverScope) {
         super.constructCache(solverScope);
-        entitySorter.sort(solverScope.getScoreDirector(), cachedEntityList);
+        sorter.sort(solverScope.getScoreDirector(), cachedEntityList);
         logger.trace("    Sorted cachedEntityList with size ({}) in entitySelector({}).",
                 cachedEntityList.size(), this);
     }
