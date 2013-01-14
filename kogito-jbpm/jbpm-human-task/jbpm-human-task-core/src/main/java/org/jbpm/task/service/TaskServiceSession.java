@@ -28,8 +28,6 @@ import java.util.Map;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
 import org.drools.core.util.StringUtils;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
@@ -53,6 +51,10 @@ import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService.ScheduledTaskDeadline;
 import org.jbpm.task.service.persistence.TaskPersistenceManager;
+import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.KieBase;
+import org.kie.KnowledgeBase;
+import org.kie.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +63,7 @@ public class TaskServiceSession {
     private final TaskPersistenceManager tpm;
     private final TaskService service;
     
-    private Map<String, RuleBase> ruleBases;
+    private Map<String, KnowledgeBase> ruleBases;
     private Map<String, Map<String, Object>> globals;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
     
@@ -70,6 +72,8 @@ public class TaskServiceSession {
     public TaskServiceSession(final TaskService service, final TaskPersistenceManager tpm) {
         this.service = service;
         this.tpm = tpm;
+        this.ruleBases = service.getKieBases();
+        this.globals = service.getGlobals();
     }
     
     public void dispose() {
@@ -96,9 +100,9 @@ public class TaskServiceSession {
         return service;
     }
     
-    public void setRuleBase(final String type, final RuleBase ruleBase) {
+    public void setRuleBase(final String type, final KnowledgeBase ruleBase) {
         if (ruleBases == null) {
-            ruleBases = new HashMap<String, RuleBase>();
+            ruleBases = new HashMap<String, KnowledgeBase>();
         }
         ruleBases.put(type, ruleBase);
     }
@@ -137,20 +141,25 @@ public class TaskServiceSession {
     private void executeTaskAddRules(final Task task, final ContentData contentData)
         throws CannotAddTaskException
     {
-        RuleBase ruleBase = ruleBases.get("addTask");
+        KnowledgeBase ruleBase = ruleBases.get("addTask");
         if (ruleBase != null) {
-            StatefulSession session = ruleBase.newStatefulSession();
-            Map<String, Object> globals = this.globals.get("addTask");
-            if (globals != null) {
-                for (Map.Entry<String, Object> entry : globals.entrySet()) {
-                    session.setGlobal(entry.getKey(), entry.getValue());
+            KieSession session = ruleBase.newKieSession();
+            if (this.globals != null) {
+                Map<String, Object> globals = this.globals.get("addTask");
+                if (globals != null) {
+                    for (Map.Entry<String, Object> entry : globals.entrySet()) {
+                        session.setGlobal(entry.getKey(), entry.getValue());
+                    }
                 }
             }
             TaskServiceRequest request = new TaskServiceRequest("addTask", null, null);
             session.setGlobal("request", request);
             session.insert(task);
-            session.insert(contentData);
+            if (contentData != null) {
+                session.insert(ContentMarshallerHelper.unmarshall(contentData.getContent(), session.getEnvironment()));
+            }
             session.fireAllRules();
+            session.dispose();
 
             if (!request.isAllowed()) {
                 StringBuilder error = new StringBuilder("Cannot add Task:\n");
@@ -176,15 +185,15 @@ public class TaskServiceSession {
         // initialize the task data
         Status currentStatus = taskData.initialize();
 
-        if (ruleBases != null) {
-            executeTaskAddRules(task, contentData);
-        }
-
         // than assign the TaskData an owner and status based on the task assignments
         PeopleAssignments assignments = task.getPeopleAssignments();
         if (assignments != null) {
             List<OrganizationalEntity> potentialOwners = assignments.getPotentialOwners();
             currentStatus = taskData.assignOwnerAndStatus(potentialOwners);
+        }
+        
+        if (ruleBases != null) {
+            executeTaskAddRules(task, contentData);
         }
         
         doOperationInTransaction(new TransactedOperation() {
@@ -204,6 +213,7 @@ public class TaskServiceSession {
         if (task.getDeadlines() != null) {
             scheduleTask(task);
         }
+        currentStatus = task.getTaskData().getStatus();
         if (currentStatus == Status.Ready) {
             // trigger event support
             String actualOwner = "";

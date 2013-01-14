@@ -70,6 +70,8 @@ import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.persistence.TaskSessionFactory;
 import org.jbpm.task.service.persistence.TaskSessionFactoryImpl;
+import org.kie.KieBase;
+import org.kie.KnowledgeBase;
 import org.kie.SystemEventListener;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
@@ -89,6 +91,9 @@ public class TaskService {
 
     private TaskEventSupport eventSupport;
     private EventKeys eventKeys;
+    
+    private Map<String, KnowledgeBase> kieBases;
+    private Map<String, Map<String, Object>> globals;
 
     private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
     
@@ -420,6 +425,22 @@ public class TaskService {
         else { 
             return MVEL.executeExpression(s);
         }
+    }
+
+    public Map<String, KnowledgeBase> getKieBases() {
+        return kieBases;
+    }
+
+    public void setKieBases(Map<String, KnowledgeBase> kieBases) {
+        this.kieBases = kieBases;
+    }
+
+    public Map<String, Map<String, Object>> getGlobals() {
+        return globals;
+    }
+
+    public void setGlobals(Map<String, Map<String, Object>> globals) {
+        this.globals = globals;
     }
 
     public static class ScheduledTaskDeadline
