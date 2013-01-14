@@ -42,6 +42,7 @@ import org.drools.common.TruthMaintenanceSystemHelper;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.traits.CoreWrapper;
+import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.factmodel.traits.TraitableBean;
@@ -509,11 +510,13 @@ public class DefaultKnowledgeHelper
 
 
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
-
-        T thing = applyTrait( core, trait, logical );
-
-        return doInsertTrait( thing, logical );
-
+        try {
+            T thing = applyTrait( core, trait, logical );
+            return doInsertTrait( thing, logical );
+        } catch ( LogicalTypeInconsistencyException ltie ) {
+            ltie.printStackTrace();
+            return null;
+        }
     }
 
     protected <T> T doInsertTrait( T thing, boolean logical ) {
@@ -571,7 +574,7 @@ public class DefaultKnowledgeHelper
         
     }
 
-    protected <T, K> T applyTrait( K core, Class<T> trait, boolean logical ) {
+    protected <T, K> T applyTrait( K core, Class<T> trait, boolean logical ) throws LogicalTypeInconsistencyException {
         AbstractRuleBase arb = (AbstractRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeRuntime().getKieBase() ).getRuleBase();
         TraitFactory builder = arb.getConfiguration().getComponentFactory().getTraitFactory();
 
@@ -604,7 +607,7 @@ public class DefaultKnowledgeHelper
     }
     
     
-    protected <T,K> T processTraits( K core, Class<T> trait, TraitFactory builder, boolean needsUpdate, TraitableBean inner, boolean logical ) {
+    protected <T,K> T processTraits( K core, Class<T> trait, TraitFactory builder, boolean needsUpdate, TraitableBean inner, boolean logical ) throws LogicalTypeInconsistencyException {
 
         T thing;
         if ( inner.hasTrait( trait.getName() ) ) {
@@ -644,6 +647,38 @@ public class DefaultKnowledgeHelper
         retract( core.removeTrait( trait.getName() ) );
         Thing thing = core.getTrait( Thing.class.getName() );
         update( thing );
+        return thing;
+    }
+
+    public <T,K> Thing<K> ward( Thing<K> thing, Class<T> trait ) {
+        try {
+            ((TraitableBean<K>) thing.getCore()).denyTrait( trait );
+            return thing;
+        } catch (LogicalTypeInconsistencyException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public <T,K> Thing<K> ward( K core, Class<T> trait ) {
+        Thing thing = don(core, Thing.class);
+        try {
+            ((TraitableBean<K>) thing.getCore()).denyTrait( trait );
+            return thing;
+        } catch (LogicalTypeInconsistencyException e) {
+//            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public <T,K> Thing<K> grant( Thing<K> thing, Class<T> trait ) {
+        ( (TraitableBean<K>) thing.getCore() ).allowTrait(trait);
+        return thing;
+    }
+
+    public <T,K> Thing<K> grant( K core, Class<T> trait ) {
+        Thing thing = don( core, Thing.class );
+        ( (TraitableBean<K>) thing.getCore() ).allowTrait(trait);
         return thing;
     }
 

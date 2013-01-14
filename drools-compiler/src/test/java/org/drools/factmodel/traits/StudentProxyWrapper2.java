@@ -41,11 +41,15 @@ public class StudentProxyWrapper2 implements Map<String, Object>, MapWrapper {
             this.object = object;
             this.map = map;
 
-            map.put( "age", 0 );
-            map.put( "xcsvf" , 0.0 );
-            map.put( "name" , null );
-            map.put( "csdfsd", 0L );
-            map.put( "school" , null );
+//            System.out.println( map );
+//            System.out.println( object );
+            object.setDynamicProperties( map );
+
+//            map.put( "age", 0 );
+//            map.put( "xcsvf" , 0.0 );
+//            map.put( "name" , null );
+//            map.put( "csdfsd", 0L );
+//            map.put( "school" , null );
 
         }
 
