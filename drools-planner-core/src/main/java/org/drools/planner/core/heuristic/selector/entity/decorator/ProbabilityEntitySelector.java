@@ -37,16 +37,16 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
 
     protected final EntitySelector childEntitySelector;
     protected final SelectionCacheType cacheType;
-    protected final SelectionProbabilityWeightFactory entityProbabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory probabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
     public ProbabilityEntitySelector(EntitySelector childEntitySelector, SelectionCacheType cacheType,
-            SelectionProbabilityWeightFactory entityProbabilityWeightFactory) {
+            SelectionProbabilityWeightFactory probabilityWeightFactory) {
         this.childEntitySelector = childEntitySelector;
         this.cacheType = cacheType;
-        this.entityProbabilityWeightFactory = entityProbabilityWeightFactory;
+        this.probabilityWeightFactory = probabilityWeightFactory;
         if (childEntitySelector.isNeverEnding()) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a childEntitySelector (" + childEntitySelector
@@ -74,7 +74,7 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         for (Object entity : childEntitySelector) {
-            double probabilityWeight = entityProbabilityWeightFactory.createProbabilityWeight(
+            double probabilityWeight = probabilityWeightFactory.createProbabilityWeight(
                     scoreDirector, entity);
             cachedEntityMap.put(probabilityWeightOffset, entity);
             probabilityWeightOffset += probabilityWeight;

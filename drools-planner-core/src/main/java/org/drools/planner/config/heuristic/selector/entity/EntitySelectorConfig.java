@@ -62,7 +62,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     protected SelectionSorterOrder entitySorterOrder = null;
     protected Class<? extends SelectionSorter> entitySorterClass = null;
 
-    protected Class<? extends SelectionProbabilityWeightFactory> entityProbabilityWeightFactoryClass = null;
+    protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 
     public Class<?> getPlanningEntityClass() {
         return planningEntityClass;
@@ -128,12 +128,12 @@ public class EntitySelectorConfig extends SelectorConfig {
         this.entitySorterClass = entitySorterClass;
     }
 
-    public Class<? extends SelectionProbabilityWeightFactory> getEntityProbabilityWeightFactoryClass() {
-        return entityProbabilityWeightFactoryClass;
+    public Class<? extends SelectionProbabilityWeightFactory> getProbabilityWeightFactoryClass() {
+        return probabilityWeightFactoryClass;
     }
 
-    public void setEntityProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> entityProbabilityWeightFactoryClass) {
-        this.entityProbabilityWeightFactoryClass = entityProbabilityWeightFactoryClass;
+    public void setProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
+        this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
     }
 
     // ************************************************************************
@@ -252,17 +252,17 @@ public class EntitySelectorConfig extends SelectorConfig {
                     resolvedCacheType, entitySorter);
         }
 
-        if (entityProbabilityWeightFactoryClass != null) {
+        if (probabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") with entityProbabilityWeightFactoryClass ("
-                        + entityProbabilityWeightFactoryClass + ") has a resolvedSelectionOrder ("
+                        + ") with probabilityWeightFactoryClass ("
+                        + probabilityWeightFactoryClass + ") has a resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ") that is not " + SelectionOrder.RANDOM + ".");
             }
-            SelectionProbabilityWeightFactory entityProbabilityWeightFactory = ConfigUtils.newInstance(this,
-                    "entityProbabilityWeightFactoryClass", entityProbabilityWeightFactoryClass);
+            SelectionProbabilityWeightFactory probabilityWeightFactory = ConfigUtils.newInstance(this,
+                    "probabilityWeightFactoryClass", probabilityWeightFactoryClass);
             entitySelector = new ProbabilityEntitySelector(entitySelector,
-                    resolvedCacheType, entityProbabilityWeightFactory);
+                    resolvedCacheType, probabilityWeightFactory);
         }
         return entitySelector;
     }
@@ -347,8 +347,8 @@ public class EntitySelectorConfig extends SelectorConfig {
                 entitySorterOrder, inheritedConfig.getEntitySorterOrder());
         entitySorterClass = ConfigUtils.inheritOverwritableProperty(
                 entitySorterClass, inheritedConfig.getEntitySorterClass());
-        entityProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
-                entityProbabilityWeightFactoryClass, inheritedConfig.getEntityProbabilityWeightFactoryClass());
+        probabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
     }
 
     @Override

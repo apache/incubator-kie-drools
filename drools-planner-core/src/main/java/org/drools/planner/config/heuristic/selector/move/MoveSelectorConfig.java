@@ -157,10 +157,10 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                         + moveProbabilityWeightFactoryClass + ") has a resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ") that is not " + SelectionOrder.RANDOM + ".");
             }
-            SelectionProbabilityWeightFactory entityProbabilityWeightFactory = ConfigUtils.newInstance(this,
+            SelectionProbabilityWeightFactory probabilityWeightFactory = ConfigUtils.newInstance(this,
                     "moveProbabilityWeightFactoryClass", moveProbabilityWeightFactoryClass);
             moveSelector = new ProbabilityMoveSelector(moveSelector,
-                    resolvedCacheType, entityProbabilityWeightFactory);
+                    resolvedCacheType, probabilityWeightFactory);
         }
         return moveSelector;
     }

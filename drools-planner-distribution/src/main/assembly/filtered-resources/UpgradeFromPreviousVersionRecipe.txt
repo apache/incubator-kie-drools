@@ -2549,3 +2549,9 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <entityFilterClass>...</entityFilterClass>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <filterClass>...</filterClass>
+
+[MINOR] Configuration property entityProbabilityWeightFactoryClass has been renamed to probabilityWeightFactoryClass.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <entityProbabilityWeightFactoryClass>...</entityProbabilityWeightFactoryClass>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <probabilityWeightFactoryClass>...</probabilityWeightFactoryClass>
