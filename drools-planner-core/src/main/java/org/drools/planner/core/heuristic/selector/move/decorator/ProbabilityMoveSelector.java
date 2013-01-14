@@ -36,16 +36,16 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
 
     protected final MoveSelector childMoveSelector;
     protected final SelectionCacheType cacheType;
-    protected final SelectionProbabilityWeightFactory moveProbabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory probabilityWeightFactory;
 
     protected NavigableMap<Double, Move> cachedMoveMap = null;
     protected double probabilityWeightTotal = -1.0;
 
     public ProbabilityMoveSelector(MoveSelector childMoveSelector, SelectionCacheType cacheType,
-            SelectionProbabilityWeightFactory moveProbabilityWeightFactory) {
+            SelectionProbabilityWeightFactory probabilityWeightFactory) {
         this.childMoveSelector = childMoveSelector;
         this.cacheType = cacheType;
-        this.moveProbabilityWeightFactory = moveProbabilityWeightFactory;
+        this.probabilityWeightFactory = probabilityWeightFactory;
         if (childMoveSelector.isNeverEnding()) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a childMoveSelector (" + childMoveSelector
@@ -73,7 +73,7 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         for (Move entity : childMoveSelector) {
-            double probabilityWeight = moveProbabilityWeightFactory.createProbabilityWeight(
+            double probabilityWeight = probabilityWeightFactory.createProbabilityWeight(
                     scoreDirector, entity);
             cachedMoveMap.put(probabilityWeightOffset, entity);
             probabilityWeightOffset += probabilityWeight;

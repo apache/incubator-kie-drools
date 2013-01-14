@@ -58,10 +58,13 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
+
     @XStreamImplicit(itemFieldName = "moveFilterClass")
     protected List<Class<? extends SelectionFilter>> moveFilterClassList = null;
-    protected Class<? extends SelectionProbabilityWeightFactory> moveProbabilityWeightFactoryClass = null;
+
     // TODO moveSorterClass
+
+    protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 
     private Double fixedProbabilityWeight = null;
 
@@ -89,12 +92,12 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         this.moveFilterClassList = moveFilterClassList;
     }
 
-    public Class<? extends SelectionProbabilityWeightFactory> getMoveProbabilityWeightFactoryClass() {
-        return moveProbabilityWeightFactoryClass;
+    public Class<? extends SelectionProbabilityWeightFactory> getProbabilityWeightFactoryClass() {
+        return probabilityWeightFactoryClass;
     }
 
-    public void setMoveProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> moveProbabilityWeightFactoryClass) {
-        this.moveProbabilityWeightFactoryClass = moveProbabilityWeightFactoryClass;
+    public void setProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
+        this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
     }
 
     public Double getFixedProbabilityWeight() {
@@ -150,15 +153,15 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
     private MoveSelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             MoveSelector moveSelector) {
-        if (moveProbabilityWeightFactoryClass != null) {
+        if (probabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
                 throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") with moveProbabilityWeightFactoryClass ("
-                        + moveProbabilityWeightFactoryClass + ") has a resolvedSelectionOrder ("
+                        + ") with probabilityWeightFactoryClass ("
+                        + probabilityWeightFactoryClass + ") has a resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ") that is not " + SelectionOrder.RANDOM + ".");
             }
             SelectionProbabilityWeightFactory probabilityWeightFactory = ConfigUtils.newInstance(this,
-                    "moveProbabilityWeightFactoryClass", moveProbabilityWeightFactoryClass);
+                    "probabilityWeightFactoryClass", probabilityWeightFactoryClass);
             moveSelector = new ProbabilityMoveSelector(moveSelector,
                     resolvedCacheType, probabilityWeightFactory);
         }
@@ -207,8 +210,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         moveFilterClassList = ConfigUtils.inheritOverwritableProperty(
                 moveFilterClassList, inheritedConfig.getMoveFilterClassList());
-        moveProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
-                moveProbabilityWeightFactoryClass, inheritedConfig.getMoveProbabilityWeightFactoryClass());
+        probabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
 
         fixedProbabilityWeight = ConfigUtils.inheritOverwritableProperty(
                 fixedProbabilityWeight, inheritedConfig.getFixedProbabilityWeight());

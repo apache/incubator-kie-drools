@@ -2546,12 +2546,30 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 
 [MAJOR] Configuration property entityFilterClass has been renamed to filterClass.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
-    <entityFilterClass>...</entityFilterClass>
+    <entitySelector>
+      <entityFilterClass>...</entityFilterClass>
+    </entitySelector>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
-    <filterClass>...</filterClass>
+    <entitySelector>
+      <filterClass>...</filterClass>
+    </entitySelector>
 
 [MINOR] Configuration property entityProbabilityWeightFactoryClass has been renamed to probabilityWeightFactoryClass.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
-    <entityProbabilityWeightFactoryClass>...</entityProbabilityWeightFactoryClass>
+    <entitySelector>
+      <entityProbabilityWeightFactoryClass>...</entityProbabilityWeightFactoryClass>
+    </entitySelector>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
-    <probabilityWeightFactoryClass>...</probabilityWeightFactoryClass>
+    <entitySelector>
+      <probabilityWeightFactoryClass>...</probabilityWeightFactoryClass>
+    </entitySelector>
+
+[MINOR] Configuration property moveProbabilityWeightFactoryClass has been renamed to probabilityWeightFactoryClass.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <...MoveSelector>
+      <moveProbabilityWeightFactoryClass>...</moveProbabilityWeightFactoryClass>
+    </...MoveSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <...MoveSelector>
+      <probabilityWeightFactoryClass>...</probabilityWeightFactoryClass>
+    </...MoveSelector>
