@@ -407,9 +407,8 @@
       &lt;filterClass&gt;org.drools.planner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter&lt;/filterClass&gt;
     &lt;/swapMoveSelector&gt;</programlisting>
 
-      <para>But if possible, apply it on a lower levels, such as an <literal>filterClass</literal> on the
-      <literal>entitySelector</literal> or a <literal>filterClass</literal> on the
-      <literal>valueSelector</literal>:</para>
+      <para>But if possible, apply it on a lower levels, such as a <literal>filterClass</literal> on the
+      <literal>entitySelector</literal> or <literal>valueSelector</literal>:</para>
 
       <programlisting language="xml">    &lt;changeMoveSelector&gt;
       &lt;entitySelector&gt;
@@ -433,7 +432,7 @@
       <section xml:id="sortedSelectionByComparator">
         <title>Sorted selection by <literal>Comparator</literal></title>
 
-        <para>The easiest way to sort a <literal>Selector</literal> is using a plain old
+        <para>The easiest way to sort a <literal>Selector</literal> is with a plain old
         <literal>Comparator</literal>:</para>
 
         <programlisting language="java">public class CloudProcessDifficultyComparator implements Comparator&lt;CloudProcess&gt; {
@@ -447,7 +446,7 @@
 
 }</programlisting>
 
-        <para>Unless it's configured with automatically enabled annotation, you also need configure it:</para>
+        <para>You 'll also need to configure it (unless it's annotated applied for this optimization algorithm):</para>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
       &lt;sorterComparatorClass&gt;...CloudProcessDifficultyComparator&lt;/sorterComparatorClass&gt;
@@ -458,8 +457,8 @@
       <section xml:id="sortedSelectionBySelectionSorterWeightFactory">
         <title>Sorted selection by <literal>SelectionSorterWeightFactory</literal></title>
 
-        <para>The easiest way to sort a <literal>Selector</literal> is using a plain old
-        <literal>SelectionSorterWeightFactory</literal>:</para>
+        <para>If you need the entire <literal>Solution</literal> to sort a <literal>Selector</literal>, use a
+        <literal>SelectionSorterWeightFactory</literal> instead:</para>
 
         <programlisting language="java">public interface SelectionSorterWeightFactory&lt;Sol extends Solution, T&gt; {
 
@@ -467,11 +466,9 @@
 
 }</programlisting>
 
-        <programlisting language="java">public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
+        <programlisting language="java">public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactory&lt;NQueens, Queen&gt; {
 
-    public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
-        NQueens nQueens = (NQueens) solution;
-        Queen queen = (Queen) planningEntity;
+    public Comparable createSorterWeight(NQueens nQueens, Queen queen) {
         int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
         return new QueenDifficultyWeight(queen, distanceFromMiddle);
     }
@@ -492,6 +489,7 @@
             return new CompareToBuilder()
                     // The more difficult queens have a lower distance to the middle
                     .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing
+                    // Tie breaker
                     .append(queen.getColumnIndex(), other.queen.getColumnIndex())
                     .toComparison();
         }
@@ -500,7 +498,8 @@
 
 }</programlisting>
 
-        <para>Unless it's configured with automatically enabled annotation, you also need configure it:</para>
+        <para>You 'll also need to configure it (unless it's annotated and automatically applied for this optimization
+        algorithm):</para>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
       &lt;sorterWeightFactoryClass&gt;...QueenDifficultyWeightFactory&lt;/sorterWeightFactoryClass&gt;
@@ -509,9 +508,9 @@
       </section>
 
       <section xml:id="sortedSelectionBySelectionFilter">
-        <title>Sorted selection by <literal>SelectionFilter</literal></title>
+        <title>Sorted selection by <literal>SelectionSorter</literal></title>
 
-        <para>Alternatively, you can also use the interface <literal>SelectionFilter</literal> directly:</para>
+        <para>Alternatively, you can also use the interface <literal>SelectionSorter</literal> directly:</para>
 
         <programlisting language="java">public interface SelectionSorter&lt;T&gt; {
 
@@ -528,7 +527,7 @@
     <section xml:id="probabilitySelection">
       <title>Probability selection</title>
 
-      <para>TODO</para>
+      <para>TODO Already implemented, but experiments needed to prove usefulness.</para>
     </section>
   </section>
 
@@ -794,8 +793,8 @@
 
       <para>A custom <literal>Move</literal> is also slightly faster than a generic <literal>Move</literal>. However,
       it's far more work to implement and much harder to avoid bugs. After implementing a custom
-      <literal>Move</literal>, make sure to turn on <literal>environmentMode</literal> <literal>FULL_ASSERT</literal>
-      to check for score corruptions.</para>
+      <literal>Move</literal>, make sure to turn on <literal>environmentMode</literal> <literal>FULL_ASSERT</literal> to
+      check for score corruptions.</para>
     </section>
 
     <section>
