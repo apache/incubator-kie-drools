@@ -32,6 +32,17 @@ public class DefaultTemplateContainerTest {
         assertTrue(contents.endsWith("then\nend\n"));
     }
 
+    /*
+     * Smoke-test to verify it's possible to load a template containing 
+     * indented keywords without exception
+     */
+    @Test
+    public void testParseTemplateIndentedKeywords() {
+        InputStream is = DefaultTemplateContainerTest.class
+                .getResourceAsStream("/templates/rule_template_indented.drl");
+        new DefaultTemplateContainer(is);
+    }
+    
     @Test
     public void testParseTemplateConditions() {
         InputStream is = DefaultTemplateContainerTest.class

@@ -128,6 +128,16 @@ public class DataProviderCompilerTest {
         assertEqualsIgnoreWhitespace( EXPECTED_RULES.toString(),
                                       drl );
     }
+    
+    @Test
+    public void testCompileIndentedKeywords() throws Exception {
+        TestDataProvider tdp = new TestDataProvider( rows );
+        final DataProviderCompiler converter = new DataProviderCompiler();
+        final String drl = converter.compile( tdp,
+                                              "/templates/rule_template_indented.drl" );
+        assertEqualsIgnoreWhitespace( EXPECTED_RULES.toString(),
+                                      drl );
+    }
 
     @Test
     public void testCompilerMaps() throws Exception {

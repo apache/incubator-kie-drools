@@ -71,18 +71,19 @@ public class DefaultTemplateContainer implements TemplateContainer {
             RuleTemplate template = null;
             StringBuffer contents = new StringBuffer();
             while ((line = templateReader.readLine()) != null) {
-                if (line.trim().length() > 0) {
-                    if (line.startsWith("template header")) {
+                String trimmed = line.trim();
+                if (trimmed.length() > 0) {
+                    if (trimmed.startsWith("template header")) {
                         inHeader = true;
-                    } else if (line.startsWith("template")) {
+                    } else if (trimmed.startsWith("template")) {
                         inTemplate = true;
-                        String quotedName = line.substring(8).trim();
+                        String quotedName = trimmed.substring(8).trim();
                         quotedName = quotedName.substring(1, quotedName
                                 .length() - 1);
                         template = new RuleTemplate(quotedName, this);
                         addTemplate(template);
 
-                    } else if (line.startsWith("package")) {
+                    } else if (trimmed.startsWith("package")) {
                         if (inHeader == false) {
                             throw new DecisionTableParseException(
                                     "Missing header");
@@ -90,13 +91,13 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         inHeader = false;
                         header.append(line).append("\n");
                     } else if (inHeader) {
-                        addColumn(cf.getColumn(line.trim()));
+                        addColumn(cf.getColumn(trimmed));
                     } else if (!inTemplate && !inHeader) {
                         header.append(line).append("\n");
-                    } else if (!inContents && line.startsWith("rule")) {
+                    } else if (!inContents && trimmed.startsWith("rule")) {
                         inContents = true;
                         contents.append(line).append("\n");
-                    } else if (line.equals("end template")) {
+                    } else if (trimmed.equals("end template")) {
                         template.setContents(contents.toString());
                         contents.setLength(0);
                         inTemplate = false;
@@ -104,7 +105,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                     } else if (inContents) {
                         contents.append(line).append("\n");
                     } else if (inTemplate) {
-                        template.addColumn(line.trim());
+                        template.addColumn(trimmed);
                     }
                 }
 
