@@ -2564,6 +2564,16 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <probabilityWeightFactoryClass>...</probabilityWeightFactoryClass>
     </entitySelector>
 
+[MINOR] Configuration property valueProbabilityWeightFactoryClass has been renamed to probabilityWeightFactoryClass.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <valueSelector>
+      <valueProbabilityWeightFactoryClass>...</valueProbabilityWeightFactoryClass>
+    </valueSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <valueSelector>
+      <valueProbabilityWeightFactoryClass>...</valueProbabilityWeightFactoryClass>
+    </valueSelector>
+
 [MINOR] Configuration property moveProbabilityWeightFactoryClass has been renamed to probabilityWeightFactoryClass.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <...MoveSelector>

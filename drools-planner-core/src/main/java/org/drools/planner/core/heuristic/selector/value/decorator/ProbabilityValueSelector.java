@@ -37,16 +37,16 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements S
 
     protected final ValueSelector childValueSelector;
     protected final SelectionCacheType cacheType;
-    protected final SelectionProbabilityWeightFactory valueProbabilityWeightFactory;
+    protected final SelectionProbabilityWeightFactory probabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
     public ProbabilityValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType,
-            SelectionProbabilityWeightFactory valueProbabilityWeightFactory) {
+            SelectionProbabilityWeightFactory probabilityWeightFactory) {
         this.childValueSelector = childValueSelector;
         this.cacheType = cacheType;
-        this.valueProbabilityWeightFactory = valueProbabilityWeightFactory;
+        this.probabilityWeightFactory = probabilityWeightFactory;
         if (childValueSelector.isNeverEnding()) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a childValueSelector (" + childValueSelector
@@ -74,7 +74,7 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements S
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         for (Object value : childValueSelector) {
-            double probabilityWeight = valueProbabilityWeightFactory.createProbabilityWeight(
+            double probabilityWeight = probabilityWeightFactory.createProbabilityWeight(
                     scoreDirector, value);
             cachedEntityMap.put(probabilityWeightOffset, value);
             probabilityWeightOffset += probabilityWeight;

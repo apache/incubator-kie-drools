@@ -28,8 +28,6 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
-import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.decorator.ShufflingEntitySelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
@@ -43,9 +41,12 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
+
     // TODO filterClass
-    protected Class<? extends SelectionProbabilityWeightFactory> valueProbabilityWeightFactoryClass = null;
+
     // TODO sorterClass, increasingStrength
+
+    protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 
     public String getPlanningVariableName() {
         return planningVariableName;
@@ -71,12 +72,12 @@ public class ValueSelectorConfig extends SelectorConfig {
         this.selectionOrder = selectionOrder;
     }
 
-    public Class<? extends SelectionProbabilityWeightFactory> getValueProbabilityWeightFactoryClass() {
-        return valueProbabilityWeightFactoryClass;
+    public Class<? extends SelectionProbabilityWeightFactory> getProbabilityWeightFactoryClass() {
+        return probabilityWeightFactoryClass;
     }
 
-    public void setValueProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> valueProbabilityWeightFactoryClass) {
-        this.valueProbabilityWeightFactoryClass = valueProbabilityWeightFactoryClass;
+    public void setProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
+        this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
     }
 
     // ************************************************************************
@@ -117,17 +118,17 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     private ValueSelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             ValueSelector valueSelector) {
-        if (valueProbabilityWeightFactoryClass != null) {
+        if (probabilityWeightFactoryClass != null) {
             if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                        + ") with valueProbabilityWeightFactoryClass ("
-                        + valueProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
+                        + ") with probabilityWeightFactoryClass ("
+                        + probabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
                         + resolvedSelectionOrder + ").");
             }
-            SelectionProbabilityWeightFactory valueProbabilityWeightFactory = ConfigUtils.newInstance(this,
-                    "valueProbabilityWeightFactoryClass", valueProbabilityWeightFactoryClass);
+            SelectionProbabilityWeightFactory probabilityWeightFactory = ConfigUtils.newInstance(this,
+                    "probabilityWeightFactoryClass", probabilityWeightFactoryClass);
             valueSelector = new ProbabilityValueSelector(valueSelector,
-                    resolvedCacheType, valueProbabilityWeightFactory);
+                    resolvedCacheType, probabilityWeightFactory);
         }
         return valueSelector;
     }
@@ -204,8 +205,8 @@ public class ValueSelectorConfig extends SelectorConfig {
         }
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
-        valueProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
-                valueProbabilityWeightFactoryClass, inheritedConfig.getValueProbabilityWeightFactoryClass());
+        probabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
     }
 
     @Override
