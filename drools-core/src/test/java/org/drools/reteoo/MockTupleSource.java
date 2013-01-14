@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
@@ -55,9 +54,10 @@ public class MockTupleSource extends LeftTupleSource {
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
     }
+
+    protected void doCollectAncestors(NodeSet nodeSet) { }
 
     public void attach( BuildContext context ) {
         // TODO Auto-generated method stub

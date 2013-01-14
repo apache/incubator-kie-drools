@@ -16,19 +16,12 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.ValueType;
 import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.AbstractRuleBase;
-import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -64,6 +57,12 @@ import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
 import org.drools.time.impl.DefaultJobHandle;
 import org.drools.time.impl.PointInTimeTrigger;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
@@ -434,11 +433,9 @@ public class ObjectTypeNode extends ObjectSource
      */
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,
-                       BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
         doRemove( context,
                   builder,
-                  node,
                   workingMemories );
     }
 
@@ -448,7 +445,6 @@ public class ObjectTypeNode extends ObjectSource
      */
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
         if ( context.getCleanupAdapter() != null ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
@@ -465,10 +461,9 @@ public class ObjectTypeNode extends ObjectSource
             }
             context.setCleanupAdapter( null );
         }
-        if ( !node.isInUse() ) {
-            removeObjectSink( (ObjectSink) node );
-        }
     }
+
+    protected void doCollectAncestors(NodeSet nodeSet) { }
 
     /**
      * Creates memory for the node using PrimitiveLongMap as its optimised for storage and reteivals of Longs.

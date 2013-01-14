@@ -16,17 +16,15 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.UpdateContext;
-import org.drools.reteoo.builder.BuildContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.UpdateContext;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class BaseNodeTest {
 
@@ -69,9 +67,10 @@ public class BaseNodeTest {
 
         protected void doRemove(final RuleRemovalContext context,
                                 final ReteooBuilder builder,
-                                final BaseNode node,
                                 final InternalWorkingMemory[] workingMemories) {
         }
+
+        protected void doCollectAncestors(NodeSet nodeSet) { }
 
         public boolean isInUse() {
             return true;

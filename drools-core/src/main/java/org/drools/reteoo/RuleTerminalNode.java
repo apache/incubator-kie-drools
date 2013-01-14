@@ -19,7 +19,6 @@ package org.drools.reteoo;
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.AgendaItem;
-import org.drools.common.BaseNode;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
@@ -353,18 +352,12 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        CleanupAdapter adapter = context.getCleanupAdapter();
-        context.setCleanupAdapter( new RTNCleanupAdapter( this ) );
-        getLeftTupleSource().remove( context,
-                                     builder,
-                                     this,
-                                     workingMemories );
-        for ( InternalWorkingMemory workingMemory : workingMemories ) {
-            workingMemory.executeQueuedActions();
-        }
-        context.setCleanupAdapter(adapter);
+        getLeftTupleSource().removeTupleSink(this);
+    }
+
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
     }
 
     public boolean isInUse() {

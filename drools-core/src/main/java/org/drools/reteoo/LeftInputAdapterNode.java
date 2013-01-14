@@ -16,13 +16,8 @@
 
 package org.drools.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
@@ -30,6 +25,10 @@ import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -195,15 +194,14 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeTupleSink( (LeftTupleSink) node );
+        if (!isInUse()) {
+            objectSource.removeObjectSink(this);
         }
-        this.objectSource.remove( context,
-                                  builder,
-                                  this,
-                                  workingMemories );
+    }
+
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        this.objectSource.collectAncestors(nodeSet);
     }
 
     /**

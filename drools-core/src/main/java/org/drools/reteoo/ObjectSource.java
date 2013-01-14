@@ -16,14 +16,6 @@
 
 package org.drools.reteoo;
 
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-
 import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
@@ -36,6 +28,14 @@ import org.drools.rule.Pattern;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
@@ -254,20 +254,19 @@ public abstract class ObjectSource extends BaseNode
     
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeObjectSink( (ObjectSink) node );
-        }
         if ( !this.isInUse() && this instanceof NodeMemory ) {
             for( InternalWorkingMemory workingMemory : workingMemories ) {
                 workingMemory.clearNodeMemory( (NodeMemory) this );
             }
         }
-        this.source.remove( context,
-                            builder,
-                            this,
-                            workingMemories );
+        if ( !isInUse() && this instanceof ObjectSink ) {
+            this.source.removeObjectSink((ObjectSink) this);
+        }
+    }
+
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        this.source.collectAncestors(nodeSet);
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

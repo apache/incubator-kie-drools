@@ -16,28 +16,18 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map.Entry;
-
-import org.drools.RuleBaseConfiguration;
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
-import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
-import org.drools.definition.rule.Rule;
-import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.EvalCondition;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleComponent;
-
 import org.drools.reteoo.ReteooWorkingMemory.QueryRiaFixerNodeFixer;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.spi.PropagationContext;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -222,12 +212,14 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        this.tupleSource.remove( context,
-                                 builder,
-                                 this,
-                                 workingMemories );
+        if (!isInUse()) {
+            tupleSource.removeTupleSink(this);
+        }
+    }
+
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        this.tupleSource.collectAncestors(nodeSet);
     }
 
     public boolean isLeftTupleMemoryEnabled() {
