@@ -53,6 +53,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -340,6 +341,28 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(1, res.size());
         ksession.retract(fact3);
 
+        ksession.dispose();
+    }
+
+    @Test
+    public void testBigDecimalComparison() throws Exception {
+        // JBRULES-3715
+        String str = "import org.drools.Person;\n" +
+                "rule \"Big Decimal Comparison\"\n" +
+                "    dialect \"mvel\"\n" +
+                "when\n" +
+                "    Person( bigDecimal == 0.0B )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("Mario", 38);
+        p.setBigDecimal(new BigDecimal("0"));
+        ksession.insert(p);
+
+        assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
 }

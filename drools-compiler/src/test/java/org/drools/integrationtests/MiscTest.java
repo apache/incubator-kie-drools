@@ -11675,7 +11675,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
-    @Test(timeout = 10000) @Ignore
+    @Test
     public void testRemoveBigRule() throws Exception {
         // JBRULES-3496
         String str =
