@@ -112,7 +112,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     
 
 
-    public T getProxy( K core, Class<?> trait ) {
+    public T getProxy( K core, Class<?> trait ) throws LogicalTypeInconsistencyException {
         String traitName = trait.getName();
 
         if ( core.hasTrait( traitName ) ) {

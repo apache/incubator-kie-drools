@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 
+import org.kie.definition.type.Annotation;
 import org.kie.definition.type.FactField;
 import org.kie.definition.type.FactType;
 
@@ -46,6 +47,7 @@ public class ClassDefinition
     private transient Class< ? >         definedClass;
     private boolean                      traitable;
     private boolean                      abstrakt       = false;
+    private Map<String, Object>          metaData;
 
     private LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
@@ -91,6 +93,7 @@ public class ClassDefinition
         this.modifiedPropsByMethod = (Map<String, List<String>>) in.readObject();
         this.traitable = in.readBoolean();
         this.abstrakt = in.readBoolean();
+        this.metaData = (HashMap<String,Object>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -102,6 +105,7 @@ public class ClassDefinition
         out.writeObject( this.modifiedPropsByMethod);
         out.writeBoolean( this.traitable );
         out.writeBoolean( this.abstrakt );
+        out.writeObject( this.metaData );
     }
 
     /**
@@ -208,6 +212,14 @@ public class ClassDefinition
         return getClassName();
     }
 
+    public String getSimpleName() {
+        return getClassName().substring( getClassName().lastIndexOf( '.' ) + 1 );
+    }
+
+    public String getPackageName() {
+        return getClassName().substring( 0, getClassName().lastIndexOf( '.' ) );
+    }
+
     public Object newInstance() throws InstantiationException,
                                IllegalAccessException {
         return this.definedClass.newInstance();
@@ -261,6 +273,21 @@ public class ClassDefinition
 
     public List<AnnotationDefinition> getAnnotations() {
         return annotations;
+    }
+
+    public List<Annotation> getClassAnnotations() {
+        return Collections.unmodifiableList( new ArrayList( annotations ) );
+    }
+
+    public Map<String, Object> getMetaData() {
+        return metaData;
+    }
+
+    public void addMetaData( String key, Object value ) {
+        if ( this.metaData == null ) {
+            metaData = new HashMap<String,Object>();
+        }
+        metaData.put( key, value );
     }
 
     public void addModifiedPropsByMethod(Method method, List<String> props) {
