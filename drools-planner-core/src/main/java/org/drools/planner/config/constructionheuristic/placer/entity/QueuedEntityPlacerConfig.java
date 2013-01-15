@@ -16,11 +16,17 @@
 
 package org.drools.planner.config.constructionheuristic.placer.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.constructionheuristic.placer.value.ValuePlacerConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.constructionheuristic.placer.entity.QueuedEntityPlacer;
 import org.drools.planner.core.constructionheuristic.placer.value.ValuePlacer;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -33,8 +39,8 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
 
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-    @XStreamAlias("valuePlacer")
-    protected ValuePlacerConfig valuePlacerConfig = new ValuePlacerConfig();
+    @XStreamImplicit(itemFieldName = "valuePlacer")
+    protected List<ValuePlacerConfig> valuePlacerConfigList = Arrays.asList(new ValuePlacerConfig());
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -44,12 +50,12 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
-    public ValuePlacerConfig getValuePlacerConfig() {
-        return valuePlacerConfig;
+    public List<ValuePlacerConfig> getValuePlacerConfigList() {
+        return valuePlacerConfigList;
     }
 
-    public void setValuePlacerConfig(ValuePlacerConfig valuePlacerConfig) {
-        this.valuePlacerConfig = valuePlacerConfig;
+    public void setValuePlacerConfigList(List<ValuePlacerConfig> valuePlacerConfigList) {
+        this.valuePlacerConfigList = valuePlacerConfigList;
     }
 
     // ************************************************************************
@@ -61,9 +67,12 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         // TODO filter out initialized entities
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode,
                 solutionDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL); // TODO fix selection order
-        ValuePlacer valuePlacer = valuePlacerConfig.buildValuePlacer(environmentMode,
-                solutionDescriptor, phaseTermination, entitySelector.getEntityDescriptor());
-        return new QueuedEntityPlacer(entitySelector, valuePlacer);
+        List<ValuePlacer> valuePlacerList = new ArrayList<ValuePlacer>(valuePlacerConfigList.size());
+        for (ValuePlacerConfig valuePlacerConfig : valuePlacerConfigList) {
+            valuePlacerList.add(valuePlacerConfig.buildValuePlacer(environmentMode,
+                    solutionDescriptor, phaseTermination, entitySelector.getEntityDescriptor()));
+        }
+        return new QueuedEntityPlacer(entitySelector, valuePlacerList);
     }
 
     public void inherit(QueuedEntityPlacerConfig inheritedConfig) {
@@ -73,16 +82,13 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         } else if (inheritedConfig.getEntitySelectorConfig() != null) {
             entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
         }
-        if (valuePlacerConfig == null) {
-            valuePlacerConfig = inheritedConfig.getValuePlacerConfig();
-        } else if (inheritedConfig.getValuePlacerConfig() != null) {
-            valuePlacerConfig.inherit(inheritedConfig.getValuePlacerConfig());
-        }
+        valuePlacerConfigList = ConfigUtils.inheritMergeableListProperty(
+                valuePlacerConfigList, inheritedConfig.getValuePlacerConfigList());
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + entitySelectorConfig + ", " + valuePlacerConfig + ")";
+        return getClass().getSimpleName() + "(" + entitySelectorConfig + ", " + valuePlacerConfigList + ")";
     }
 
 }

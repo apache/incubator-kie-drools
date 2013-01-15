@@ -1,26 +1,34 @@
 package org.drools.planner.core.constructionheuristic.placer.entity;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.planner.core.constructionheuristic.placer.AbstractPlacer;
 import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.drools.planner.core.constructionheuristic.placer.value.ValuePlacer;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 
 public class QueuedEntityPlacer extends AbstractPlacer implements EntityPlacer {
 
     protected final EntitySelector entitySelector;
-    protected final ValuePlacer valuePlacer;
+    protected final List<ValuePlacer> valuePlacerList;
 
     protected Iterator<Object> entityIterator = null;
 
-    public QueuedEntityPlacer(EntitySelector entitySelector, ValuePlacer valuePlacer) {
+    public QueuedEntityPlacer(EntitySelector entitySelector, List<ValuePlacer> valuePlacerList) {
         this.entitySelector = entitySelector;
-        this.valuePlacer = valuePlacer;
+        this.valuePlacerList = valuePlacerList;
+        if (valuePlacerList.isEmpty()) {
+            throw new IllegalArgumentException("The placer (" + this
+                    + ") with valuePlacerList (" + valuePlacerList + ") must have at least 1 valuePlacer.");
+        }
         solverPhaseLifecycleSupport.addEventListener(entitySelector);
-        solverPhaseLifecycleSupport.addEventListener(valuePlacer);
+        for (ValuePlacer valuePlacer : valuePlacerList) {
+            solverPhaseLifecycleSupport.addEventListener(valuePlacer);
+        }
     }
 
     @Override
