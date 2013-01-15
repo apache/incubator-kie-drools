@@ -1,5 +1,7 @@
 package org.drools.phreak;
 
+import static org.drools.core.util.BitMaskUtil.intersect;
+
 import java.util.Map;
 
 import org.drools.WorkingMemory;
@@ -13,6 +15,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
+import org.drools.common.NetworkNode;
 import org.drools.common.StagedLeftTuples;
 import org.drools.common.StagedRightTuples;
 import org.drools.core.util.FastIterator;
@@ -37,6 +40,7 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.RightInputAdapterNode;
+import org.drools.reteoo.ReteooWorkingMemory.EvaluateResultConstraints;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
@@ -46,18 +50,23 @@ import org.drools.reteoo.SegmentMemory;
 import org.drools.rule.Accumulate;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Rule;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
+    private static final Logger    log         = LoggerFactory.getLogger( RuleNetworkEvaluatorActivation.class );
+
     private RuleMemory             rmem;
 
-    private PhreakLianNode         pLiaNode     = new PhreakLianNode();
-    private PhreakJoinNode         pJoinNode    = new PhreakJoinNode();
-    private PhreakNotNode          pNotNode     = new PhreakNotNode();
-    private PhreakExistsNode       pExistsNode  = new PhreakExistsNode();
-    private PhreakAccumulateNode   pAccNode     = new PhreakAccumulateNode();
-    private PhreakRuleTerminalNode pRtnNode     = new PhreakRuleTerminalNode();
+    //    private PhreakLianNode         pLiaNode     = new PhreakLianNode();
+    private PhreakJoinNode         pJoinNode   = new PhreakJoinNode();
+    private PhreakNotNode          pNotNode    = new PhreakNotNode();
+    private PhreakExistsNode       pExistsNode = new PhreakExistsNode();
+    private PhreakAccumulateNode   pAccNode    = new PhreakAccumulateNode();
+    private PhreakRuleTerminalNode pRtnNode    = new PhreakRuleTerminalNode();
 
     public RuleNetworkEvaluatorActivation() {
 
@@ -82,94 +91,145 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
     }
 
     public int evaluateNetwork(InternalWorkingMemory wm) {
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Start Evaluating Rule[name={}]", getRule().getName() );
+        }
         SegmentMemory[] smems = rmem.getSegmentMemories();
 
         int smemIndex = 0;
         SegmentMemory smem = smems[smemIndex]; // 0
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) smem.getRootNode();
 
-        LinkedList<Memory> nodeMemories = smem.getNodeMemories();
+        //LinkedList<Memory> nodeMemories = smem.getNodeMemories();
 
-        LiaNodeMemory liaNodeMemory = (LiaNodeMemory) nodeMemories.getFirst();
+        //LiaNodeMemory liaNodeMemory = (LiaNodeMemory) nodeMemories.getFirst();
 
-        StagedLeftTuples trgTuples = new StagedLeftTuples();
-        StagedLeftTuples srcTuples = smem.getStagedLeftTuples();
-        pLiaNode.doNode( liaNode, liaNodeMemory, wm, srcTuples, trgTuples );
-
-        LeftTupleSource node = null;
-        Memory nodeMem = null;
+        
+        
+        NetworkNode node;
+        Memory nodeMem;
         if ( liaNode == smem.getTipNode() ) {
-            // Segment only contains LiaNode, so need to propagate peers
-            SegmentPropagator.propagate( smem, trgTuples, wm );
-            smem = smems[smemIndex]; // 1
-            nodeMem = smem.getNodeMemories().getFirst();
+            // segment only has liaNode in it
+            // nothing is staged in the liaNode, so skip to next segment           
+            smem = smems[++smemIndex]; // 1
             node = smem.getRootNode();
+            nodeMem = smem.getNodeMemories().getFirst();
         } else {
-            // we know it can only have one child, or two if there is a subnetwork
+            // lia is in shared segment, so point to next node
             LeftTupleSinkPropagator sink = liaNode.getSinkPropagator();
             LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink() ;
             LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode(); 
-            if ( sink.size() == 2 && 
-                    NodeTypeEnums.isBetaNode( secondSink ) && 
-                        ((BetaNode)secondSink).isRightInputIsRiaNode() ) {
-                // must be a subnetwork split, always take the non riaNode path
+            if ( sink.size() == 2 ) {
+                // As we check above for segment splits, if the sink size is 2, it must be a subnetwork.
+                // Always take the non riaNode path
                 node = (LeftTupleSource) secondSink;
             } else {
                 node = (LeftTupleSource) firstSink;
-            }
-            nodeMem = liaNodeMemory.getNext();
+            }   
+            nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
         }
+        
+        StagedLeftTuples srcTuples = smem.getStagedLeftTuples();
+        
+//        pLiaNode.doNode( liaNode, liaNodeMemory, wm, srcTuples, trgTuples );
+//
+//        LeftTupleSource node = null;
+//        Memory nodeMem = null;
+//        if ( liaNode == smem.getTipNode() ) {
+//            // Segment only contains LiaNode, so need to propagate peers
+//            SegmentPropagator.propagateLia( smem, trgTuples, wm );
+//            smem = smems[++smemIndex]; // 1
+//            trgTuples = smem.getStagedLeftTuples();
+//            nodeMem = smem.getNodeMemories().getFirst();
+//            node = smem.getRootNode();
+//        } else {
+//            // we know it can only have one child, or two if there is a subnetwork
+//            LeftTupleSinkPropagator sink = liaNode.getSinkPropagator();
+//            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink() ;
+//            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode(); 
+//            if ( sink.size() == 2 ) {
+//                // As we check above for segment splits, if the sink size is 2, it must be a subnetwork.
+//                // Always take the non riaNode path
+//                node = (LeftTupleSource) secondSink;
+//            } else {
+//                node = (LeftTupleSource) firstSink;
+//            }
+//            
+//            if ( node.getLeftInferredMask() != Long.MAX_VALUE ) {
+//                long mask = node.getLeftInferredMask();
+//                // there is a mask, so all updates and inserts (as a result of an update) must be filtered
+//                for ( LeftTuple leftTuple = trgTuples.getUpdateFirst(); leftTuple != null; ) {
+//                    LeftTuple next = leftTuple.getStagedNext();
+//                    if (  !intersect( leftTuple.getPropagationContext().getModificationMask(), 
+//                                     mask ) ) {
+//                        trgTuples.removeUpdate( leftTuple );
+//                    }
+//                    leftTuple = next;
+//                }
+//                
+//                // remove inserts, that was a result of an update
+//                for ( LeftTuple leftTuple = trgTuples.getInsertFirst(); leftTuple != null; ) {
+//                    LeftTuple next = leftTuple.getStagedNext();
+//                    if (  !intersect( leftTuple.getPropagationContext().getModificationMask(), 
+//                                     mask ) ) {
+//                        trgTuples.removeUpdate( leftTuple );
+//                    }
+//                    leftTuple = next;
+//                }                
+//            }
+//            
+//            nodeMem = liaNodeMemory.getNext();
+//        }
 
-        eval( ( LeftTupleSink ) node, nodeMem, smems, smemIndex, trgTuples, null, wm);
+        eval( ( LeftTupleSink ) node, nodeMem, smems, smemIndex, srcTuples, null, wm);
 
         return 0;
     }
     
-    public StagedLeftTuples eval( LeftTupleSink node, Memory nodeMem, SegmentMemory[] smems, int smemIndex, StagedLeftTuples trgTuples, StagedLeftTuples stagedLeftTuples, InternalWorkingMemory wm) {
-        StagedLeftTuples srcTuples = null;
-        
-        boolean foundSegmentTip = false;
+    public StagedLeftTuples eval( NetworkNode node, Memory nodeMem, SegmentMemory[] smems, int smemIndex, StagedLeftTuples trgTuples, StagedLeftTuples stagedLeftTuples, InternalWorkingMemory wm) {
+        StagedLeftTuples srcTuples;
         
         SegmentMemory smem = smems[smemIndex];
         while ( true ) {
+//            if ( log.isTraceEnabled() ) {
+//                log.trace( "Start Node[offset={}, type={}] Rule[name={}]", getRule().getName() );
+//            }
             srcTuples = trgTuples; // previous target, is now the source
             
             if ( NodeTypeEnums.isTerminalNode( node ) ) {
                 RuleTerminalNode rtn = rmem.getRuleTerminalNode();
                 pRtnNode.doNode( rtn, wm, srcTuples );
-                break; // returns null;
+                return null;
             } else if ( NodeTypeEnums.RightInputAdaterNode == node.getType() ) {
                 return trgTuples;
-            } else if ( nodeMem == null ) {
-                // Reached end of segment, start on new segment.
-                SegmentPropagator.propagate( smem, trgTuples, wm );
-                smem = smems[smemIndex++];
-                node = ( LeftTupleSink ) smem.getRootNode(); 
-                nodeMem = smem.getNodeMemories().getFirst();
-            }
-          
+            }           
             
             if ( node == smem.getTipNode() && smem.getFirst() != null) {
-                // we are about to process the segment tip, so allow it to merge insert/update/delete clashes
-                // can be null if next sink is RTN, or RiaNode
+                // we are about to process the segment tip, allow it to merge insert/update/delete clashes
+                // Can happen if the next segments have not yet been initialized
                 stagedLeftTuples = smem.getFirst().getStagedLeftTuples();
             } else {
                 stagedLeftTuples = null;
             }          
+            
+            LeftTupleSinkNode sink = ((LeftTupleSource)node).getSinkPropagator().getFirstLeftTupleSink();
 
             trgTuples = new StagedLeftTuples();
             
             if ( NodeTypeEnums.isBetaNode( node ) ) {
                 BetaNode betaNode = ( BetaNode )node;
                 
-                BetaMemory bm = (BetaMemory) nodeMem;
-//                if ( NodeTypeEnums.AccumulateNode == node.getType() ) {
-//                    bm = ((AccumulateMemory)
-//                } else {
-//                    bm = (BetaMemory) nodeMem;    
-//                }                
+                BetaMemory bm = null;
+                AccumulateMemory am = null;
+                if ( NodeTypeEnums.AccumulateNode == node.getType() ) {
+                    am = (AccumulateMemory) nodeMem;
+                } else {
+                    bm = (BetaMemory) nodeMem;    
+                }                
                 
                 if ( betaNode.isRightInputIsRiaNode() ) {
+                    // if the subnetwork is nested in this segment, it will create srcTuples containing
+                    // peer LeftTuples, suitable for the node in the main path. 
                     srcTuples = doRiaNode( wm,
                                            srcTuples,
                                            betaNode,
@@ -178,41 +238,44 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 
                 switch( node.getType() ) {
                     case  NodeTypeEnums.JoinNode:                    
-                        pJoinNode.doNode( (JoinNode) node, ((LeftTupleSource)node).getSinkPropagator().getFirstLeftTupleSink(), bm, wm, srcTuples, trgTuples, stagedLeftTuples );
+                        pJoinNode.doNode( (JoinNode) node, sink, 
+                                          bm, wm, srcTuples, trgTuples, stagedLeftTuples );
                         break;
                     case  NodeTypeEnums.NotNode:
-                        pNotNode.doNode( (NotNode) node, ((LeftTupleSource)node).getSinkPropagator().getFirstLeftTupleSink(), bm, wm, srcTuples, trgTuples, stagedLeftTuples );
+                        pNotNode.doNode( (NotNode) node, sink, 
+                                         bm, wm, srcTuples, trgTuples, stagedLeftTuples );
                         break;
                     case  NodeTypeEnums.ExistsNode:
-                        pExistsNode.doNode( (ExistsNode) node, ((LeftTupleSource)node).getSinkPropagator().getFirstLeftTupleSink(), bm, wm, srcTuples, trgTuples, stagedLeftTuples );
+                        pExistsNode.doNode( (ExistsNode) node, sink, 
+                                            bm, wm, srcTuples, trgTuples, stagedLeftTuples );
                         break;
                     case  NodeTypeEnums.AccumulateNode:
-                        //pAccNode.doNode( (AccumulateNode) node, ((LeftTupleSource)node).getSinkPropagator().getFirstLeftTupleSink(), bm, wm, srcTuples, trgTuples, stagedLeftTuples );
+                        pAccNode.doNode( (AccumulateNode) node, sink, 
+                                         am, wm, srcTuples, trgTuples, stagedLeftTuples );
                         break;                           
                 }
             }
             
-            if ( node == smem.getTipNode() ) {
-                nodeMem = null;
-                continue;
+            if ( node != smem.getTipNode() ) {
+                // get next node and node memory in the segment
+                LeftTupleSink nextSink = sink.getNextLeftTupleSinkNode();
+                if ( nextSink == null ) {
+                    node = sink;
+                } else {
+                    // there is a nested subnetwork, take out path
+                    node = nextSink;
+                }
+                
+                nodeMem = nodeMem.getNext();
+            } else {                            
+                // Reached end of segment, start on new segment.
+                SegmentPropagator.propagate( smem, trgTuples, wm );
+                smem = smems[smemIndex++];
+                trgTuples = smem.getStagedLeftTuples();
+                node = ( LeftTupleSink ) smem.getRootNode(); 
+                nodeMem = smem.getNodeMemories().getFirst();
             }
-            
-            
-            LeftTupleSinkPropagator sink = ((LeftTupleSource)node).getSinkPropagator();
-            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink() ;
-            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode(); 
-            if ( sink.size() == 2 && 
-                    NodeTypeEnums.isBetaNode( secondSink ) && 
-                        ((BetaNode)secondSink).isRightInputIsRiaNode() ) {
-                // must be a subnetwork split, always take the non riaNode path
-                node = (LeftTupleSink) secondSink;
-            } else {
-                node = (LeftTupleSink) firstSink;
-            }
-
-            nodeMem = nodeMem.getNext();
-        }        
-        return null;
+        }
     }
 
     private StagedLeftTuples doRiaNode(InternalWorkingMemory wm,
@@ -223,6 +286,8 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
         
         if ( betaNode.getLeftTupleSource().getSinkPropagator().size() == 2 ) {
             // sub network is not part of  share split, so need to handle propagation
+            // this ensures the first LeftTuple is actually the subnetwork node
+            // and the main outer network now receives the peer, notice the swap at the end "srcTuples == peerTuples"
             StagedLeftTuples peerTuples = new StagedLeftTuples();
             SegmentPropagator.processPeers( srcTuples, peerTuples, betaNode );
             // Make sure subnetwork Segment has tuples to process
@@ -288,32 +353,32 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
         return true;
     }
 
-    public static class PhreakLianNode {
-        public void doNode(LeftInputAdapterNode liaNode,
-                           LiaNodeMemory lm,
-                           InternalWorkingMemory wm,
-                           StagedLeftTuples srcLeftTuples,
-                           StagedLeftTuples trgLeftTuples) {
-            int size = srcLeftTuples.insertSize();
-            //            if ( size >= 24 ) {
-            //                LeftTuple leftTuple = srcLeftTuples.getInsertFirst();
-            //                for ( int i = 0; i < 24; i++ ) {
-            //                    leftTuple = leftTuple.getStagedNext();
-            //                }
-            //                srcLeftTuples.splitInsert( leftTuple, 25 );
-            //                trgLeftTuples.setInsert( leftTuple.getStagedPrevious(), 25 );
-            //            } else {
-            trgLeftTuples.setInsert( srcLeftTuples.getInsertFirst(), srcLeftTuples.insertSize() );
-            srcLeftTuples.setInsert( null, 0 );
-            //            }
-
-            trgLeftTuples.setDelete( srcLeftTuples.getDeleteFirst() );
-            trgLeftTuples.setUpdate( srcLeftTuples.getUpdateFirst() );
-
-            srcLeftTuples.setDelete( null );
-            srcLeftTuples.setUpdate( null );
-        }
-    }
+//    public static class PhreakLianNode {
+//        public void doNode(LeftInputAdapterNode liaNode,
+//                           LiaNodeMemory lm,
+//                           InternalWorkingMemory wm,
+//                           StagedLeftTuples srcLeftTuples,
+//                           StagedLeftTuples trgLeftTuples) {
+//            int size = srcLeftTuples.insertSize();
+//            //            if ( size >= 24 ) {
+//            //                LeftTuple leftTuple = srcLeftTuples.getInsertFirst();
+//            //                for ( int i = 0; i < 24; i++ ) {
+//            //                    leftTuple = leftTuple.getStagedNext();
+//            //                }
+//            //                srcLeftTuples.splitInsert( leftTuple, 25 );
+//            //                trgLeftTuples.setInsert( leftTuple.getStagedPrevious(), 25 );
+//            //            } else {
+//            trgLeftTuples.setInsert( srcLeftTuples.getInsertFirst(), srcLeftTuples.insertSize() );
+//            srcLeftTuples.setInsert( null, 0 );
+//            //            }
+//
+//            trgLeftTuples.setDelete( srcLeftTuples.getDeleteFirst() );
+//            trgLeftTuples.setUpdate( srcLeftTuples.getUpdateFirst() );
+//
+//            srcLeftTuples.setDelete( null );
+//            srcLeftTuples.setUpdate( null );
+//        }
+//    }
 
     public static class PhreakJoinNode {
         public void doNode(JoinNode joinNode,
@@ -338,12 +403,11 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 dpUpdatesReorderMemory( bm,
                                         wm,
                                         srcRightTuples,
-                                        srcLeftTuples,
-                                        trgLeftTuples );
+                                        srcLeftTuples );
             }
 
             if ( srcRightTuples.getUpdateFirst() != null ) {
-                doRightUpdates( joinNode, sink, bm, wm, srcRightTuples, srcLeftTuples, trgLeftTuples, stagedLeftTuples   );
+                doRightUpdates( joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples   );
             }
 
             if ( srcLeftTuples.getUpdateFirst() != null ) {
@@ -351,7 +415,7 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
             }
 
             if ( srcRightTuples.getInsertFirst() != null ) {
-                doRightInserts( joinNode, sink, bm, wm, srcRightTuples, srcLeftTuples, trgLeftTuples  );
+                doRightInserts( joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples  );
             }
 
             if ( srcLeftTuples.getInsertFirst() != null ) {
@@ -429,7 +493,6 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                    BetaMemory bm,
                                    InternalWorkingMemory wm,
                                    StagedRightTuples srcRightTuples,
-                                   StagedLeftTuples srcLeftTuples,
                                    StagedLeftTuples trgLeftTuples) {
             boolean tupleMemory = true;
             boolean tupleMemoryEnabled = true;
@@ -552,7 +615,7 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                                                            tupleMemory ) );
                         } else {
                             switch ( childLeftTuple.getStagedType() ) {
-                            // handle clash with already staged entries
+                                // handle clash with already staged entries
                                 case LeftTuple.INSERT :
                                     stagedLeftTuples.removeInsert( childLeftTuple );
                                     break;
@@ -582,7 +645,6 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                    BetaMemory bm,
                                    InternalWorkingMemory wm,
                                    StagedRightTuples srcRightTuples,
-                                   StagedLeftTuples srcLeftTuples,
                                    StagedLeftTuples trgLeftTuples,
                                    StagedLeftTuples stagedLeftTuples) {
             boolean tupleMemory = true;
@@ -698,7 +760,10 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
             for ( LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
-                ltm.remove( leftTuple );
+                if ( leftTuple.getMemory() != null ) {
+                    // it may have been staged and never actually added
+                    ltm.remove( leftTuple );
+                }
 
                 if ( leftTuple.getFirstChild() != null ) {
                     LeftTuple childLeftTuple = leftTuple.getFirstChild();
@@ -723,7 +788,10 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
             for ( RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
-                rtm.remove( rightTuple );
+                if (  rightTuple.getMemory() != null ) {
+                    // it may have been staged and never actually added
+                    rtm.remove( rightTuple );
+                };
 
                 if ( rightTuple.getFirstChild() != null ) {
                     LeftTuple childLeftTuple = rightTuple.getFirstChild();
@@ -761,12 +829,11 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 dpUpdatesReorderMemory( bm,
                                         wm,
                                         srcRightTuples,
-                                        srcLeftTuples,
-                                        trgLeftTuples );
+                                        srcLeftTuples );
             }
 
             if ( srcRightTuples.getUpdateFirst() != null ) {
-                doRightUpdates( notNode, sink, bm, wm, srcRightTuples, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
+                doRightUpdates( notNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples );
             }
 
             if ( srcLeftTuples.getUpdateFirst() != null ) {
@@ -774,7 +841,7 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
             }
 
             if ( srcRightTuples.getInsertFirst() != null ) {
-                doRightInserts( notNode, sink, bm, wm, srcRightTuples, srcLeftTuples, trgLeftTuples );
+                doRightInserts( notNode, sink, bm, wm, srcRightTuples, trgLeftTuples );
             }
 
             if ( srcLeftTuples.getInsertFirst() != null ) {
@@ -856,7 +923,6 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                    BetaMemory bm,
                                    InternalWorkingMemory wm,
                                    StagedRightTuples srcRightTuples,
-                                   StagedLeftTuples srcLeftTuples,
                                    StagedLeftTuples trgLeftTuples) {
             boolean tupleMemory = true;
             boolean tupleMemoryEnabled = true;
@@ -1024,7 +1090,6 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                    BetaMemory bm,
                                    InternalWorkingMemory wm,
                                    StagedRightTuples srcRightTuples,
-                                   StagedLeftTuples srcLeftTuples,
                                    StagedLeftTuples trgLeftTuples,
                                    StagedLeftTuples stagedLeftTuples) {
             boolean tupleMemory = true;
@@ -1163,7 +1228,10 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 LeftTuple next = leftTuple.getStagedNext();
                 RightTuple blocker = leftTuple.getBlocker();
                 if ( blocker == null ) {
-                    ltm.remove( leftTuple );
+                    if ( leftTuple.getMemory() != null ) {
+                        // it may have been staged and never actually added
+                        ltm.remove( leftTuple );
+                    }
 
                     LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
@@ -1198,7 +1266,10 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 // assign now, so we can remove from memory before doing any possible propagations
                 final RightTuple rootBlocker = (RightTuple) it.next( rightTuple );
 
-                rtm.remove( rightTuple );
+                if (  rightTuple.getMemory() != null ) {
+                    // it may have been staged and never actually added
+                    rtm.remove( rightTuple );
+                }
 
                 if ( rightTuple.getBlocked() != null ) {
                     PropagationContext context = rightTuple.getPropagationContext();
@@ -1267,12 +1338,11 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 dpUpdatesReorderMemory( bm,
                                         wm,
                                         srcRightTuples,
-                                        srcLeftTuples,
-                                        trgLeftTuples );
+                                        srcLeftTuples );
             }
 
             if ( srcRightTuples.getUpdateFirst() != null ) {
-                doRightUpdates( existsNode, sink, bm, wm, srcRightTuples, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
+                doRightUpdates( existsNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples );
             }
 
             if ( srcLeftTuples.getUpdateFirst() != null ) {
@@ -1280,7 +1350,7 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
             }
 
             if ( srcRightTuples.getInsertFirst() != null ) {
-                doRightInserts( existsNode, sink, bm, wm, srcRightTuples, srcLeftTuples, trgLeftTuples );
+                doRightInserts( existsNode, sink, bm, wm, srcRightTuples, trgLeftTuples );
             }
 
             if ( srcLeftTuples.getInsertFirst() != null ) {
@@ -1361,7 +1431,6 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                    BetaMemory bm,
                                    InternalWorkingMemory wm,
                                    StagedRightTuples srcRightTuples,
-                                   StagedLeftTuples srcLeftTuples,
                                    StagedLeftTuples trgLeftTuples) {
             boolean tupleMemory = true;
             boolean tupleMemoryEnabled = true;
@@ -1529,7 +1598,6 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                    BetaMemory bm,
                                    InternalWorkingMemory wm,
                                    StagedRightTuples srcRightTuples,
-                                   StagedLeftTuples srcLeftTuples,
                                    StagedLeftTuples trgLeftTuples,
                                    StagedLeftTuples stagedLeftTuples) {
             boolean tupleMemory = true;
@@ -1651,7 +1719,10 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 LeftTuple next = leftTuple.getStagedNext();
                 RightTuple blocker = leftTuple.getBlocker();
                 if ( blocker == null ) {
-                    ltm.remove( leftTuple );                    
+                    if ( leftTuple.getMemory() != null ) {
+                        // it may have been staged and never actually added
+                        ltm.remove( leftTuple );
+                    }                   
                 } else {
                     if ( leftTuple.getFirstChild() != null ) {
                         LeftTuple childLeftTuple = leftTuple.getFirstChild();
@@ -1684,46 +1755,46 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
             for ( RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
-                rtm.remove( rightTuple );
-                rightTuple.setMemory( null );
-                
-                final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
-                       
-                if ( rightTuple.getBlocked() == null ) {
-                    return;
+                if (  rightTuple.getMemory() != null ) {
+                    // it may have been staged and never actually added
+                    rtm.remove( rightTuple );
                 }
-
-                for ( LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; ) {
-                    LeftTuple temp = leftTuple.getBlockedNext();
-
-                    leftTuple.clearBlocker();
-
-                    constraints.updateFromTuple( contextEntry,
-                                                  wm,
-                                                  leftTuple );
-
-                    // we know that older tuples have been checked so continue previously
-                    for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker ) ) {
-                        if ( constraints.isAllowedCachedLeft( contextEntry,
-                                                              newBlocker.getFactHandle() ) ) {
-                            leftTuple.setBlocker( newBlocker );
-                            newBlocker.addBlocked( leftTuple );
-
-                            break;
+                                       
+                if ( rightTuple.getBlocked() != null ) {
+                    final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
+                    
+                    for ( LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; ) {
+                        LeftTuple temp = leftTuple.getBlockedNext();
+    
+                        leftTuple.clearBlocker();
+    
+                        constraints.updateFromTuple( contextEntry,
+                                                      wm,
+                                                      leftTuple );
+    
+                        // we know that older tuples have been checked so continue previously
+                        for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker ) ) {
+                            if ( constraints.isAllowedCachedLeft( contextEntry,
+                                                                  newBlocker.getFactHandle() ) ) {
+                                leftTuple.setBlocker( newBlocker );
+                                newBlocker.addBlocked( leftTuple );
+    
+                                break;
+                            }
                         }
-                    }
-
-                    if ( leftTuple.getBlocker() == null ) {
-                        // was previous blocked and not in memory, so add
-                        ltm.add( leftTuple );
-
-                        LeftTuple childLeftTuple = leftTuple.getFirstChild();
-                        while ( childLeftTuple != null ) {
-                            childLeftTuple = deleteLeftChild( trgLeftTuples, childLeftTuple, stagedLeftTuples );
+    
+                        if ( leftTuple.getBlocker() == null ) {
+                            // was previous blocked and not in memory, so add
+                            ltm.add( leftTuple );
+    
+                            LeftTuple childLeftTuple = leftTuple.getFirstChild();
+                            while ( childLeftTuple != null ) {
+                                childLeftTuple = deleteLeftChild( trgLeftTuples, childLeftTuple, stagedLeftTuples );
+                            }
                         }
+    
+                        leftTuple = temp;
                     }
-
-                    leftTuple = temp;
                 }
                 rightTuple.nullBlocked();
                 rightTuple.clearStaged();
@@ -1741,39 +1812,65 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                            StagedLeftTuples srcLeftTuples,
                            StagedLeftTuples trgLeftTuples,
                            StagedLeftTuples stagedLeftTuples) {
+            boolean useLeftMemory = false;
             StagedRightTuples srcRightTuples = am.getBetaMemory().getStagedRightTuples();
+            
+            // We need to collect which leftTuple where updated, so that we can
+            // add their result tuple to the real target tuples later
+            StagedLeftTuples tempLeftTuples = new StagedLeftTuples();
 
-//            if ( srcRightTuples.getDeleteFirst() != null ) {
-//                doRightDeletes( accNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples );
-//            }
-//
-//            if ( srcLeftTuples.getDeleteFirst() != null ) {
-//                doLeftDeletes( accNode, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
-//            }
-//
-//            if ( srcLeftTuples.getUpdateFirst() != null || srcRightTuples.getUpdateFirst() != null ) {
-//                dpUpdatesReorderMemory( bm,
-//                                        wm,
-//                                        srcRightTuples,
-//                                        srcLeftTuples,
-//                                        trgLeftTuples );
-//            }
-//
-//            if ( srcRightTuples.getUpdateFirst() != null ) {
-//                doRightUpdates( accNode, sink, bm, wm, srcRightTuples, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
-//            }
-//
-//            if ( srcLeftTuples.getUpdateFirst() != null ) {
-//                doLeftUpdates( accNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
-//            }
-//
-//            if ( srcRightTuples.getInsertFirst() != null ) {
-//                doRightInserts( accNode, sink, bm, wm, srcRightTuples, srcLeftTuples, trgLeftTuples );
-//            }
+            if ( srcLeftTuples.getDeleteFirst() != null ) {
+                // use the real target here, as dealing direct with left tuples
+                doLeftDeletes( accNode, am, wm, srcLeftTuples, trgLeftTuples );
+            }
+            
+            if ( srcRightTuples.getDeleteFirst() != null ) {
+                doRightDeletes( accNode, am, wm, srcRightTuples, tempLeftTuples );
+            }            
+
+            if ( srcLeftTuples.getUpdateFirst() != null || srcRightTuples.getUpdateFirst() != null ) {
+                dpUpdatesReorderMemory( am.getBetaMemory(),
+                                        wm,
+                                        srcRightTuples,
+                                        srcLeftTuples );
+            }
+            
+            if ( srcLeftTuples.getUpdateFirst() != null ) {
+                doLeftUpdates( accNode, sink, am, wm, srcLeftTuples, tempLeftTuples );
+            }            
+
+            if ( srcRightTuples.getUpdateFirst() != null ) {
+                doRightUpdates( accNode, sink, am, wm, srcRightTuples, tempLeftTuples );
+            }
+
+            if ( srcRightTuples.getInsertFirst() != null ) {
+                doRightInserts( accNode, sink, am, wm, srcRightTuples, tempLeftTuples );
+            }
 
             if ( srcLeftTuples.getInsertFirst() != null ) {
-                doLeftInserts( accNode, sink, am, wm, srcLeftTuples, trgLeftTuples );
+                doLeftInserts( accNode, sink, am, wm, srcLeftTuples, tempLeftTuples );
             }
+            
+            Accumulate accumulate = accNode.getAccumulate();
+            // we do not need collect retracts. RightTuple retracts end up as updates for lefttuples. 
+            // LeftTuple retracts are already on the trgLeftTuples 
+            for ( LeftTuple leftTuple = tempLeftTuples.getInsertFirst(); leftTuple != null; ) {
+                LeftTuple next = leftTuple.getStagedNext();
+                evaluateResultConstraints( accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(), 
+                                           wm, am, (AccumulateContext) leftTuple.getObject(), useLeftMemory, 
+                                           trgLeftTuples, stagedLeftTuples );
+                leftTuple.clearStaged();
+                leftTuple = next;                
+            }
+            
+            for ( LeftTuple leftTuple = tempLeftTuples.getUpdateFirst(); leftTuple != null; ) {
+                LeftTuple next = leftTuple.getStagedNext();
+                evaluateResultConstraints( accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(), 
+                                           wm, am, (AccumulateContext) leftTuple.getObject(), useLeftMemory, 
+                                           trgLeftTuples, stagedLeftTuples );
+                leftTuple.clearStaged();
+                leftTuple = next;                  
+            }            
             
             srcRightTuples.setInsert( null, 0 );
             srcRightTuples.setDelete( null );
@@ -1793,8 +1890,7 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
             boolean tupleMemory = true;
             boolean tupleMemoryEnabled = true;
 
-            Accumulate accumulate = accNode.getAccumulate();
-            
+            Accumulate accumulate = accNode.getAccumulate();            
             BetaMemory bm = am.getBetaMemory();
             LeftTupleMemory ltm = bm.getLeftTupleMemory();
             RightTupleMemory rtm = bm.getRightTupleMemory();
@@ -1825,9 +1921,9 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 accresult.context = accumulate.createContext();
 
                 accumulate.init( am.workingMemoryContext,
-                                      accresult.context,
-                                      leftTuple,
-                                      wm );
+                                 accresult.context,
+                                 leftTuple,
+                                 wm );
 
                 constraints.updateFromTuple( contextEntry,
                                              wm,
@@ -1842,7 +1938,6 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                     InternalFactHandle handle = rightTuple.getFactHandle();
                     if ( constraints.isAllowedCachedLeft( contextEntry,
                                                           handle ) ) {
-
                         // add a match
                         addMatch( accNode,
                                   accumulate,
@@ -1857,21 +1952,11 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                     }
                 }
 
-                constraints.resetTuple( contextEntry );
-
-                if ( accresult.getAction() == null ) {
-                    evaluateResultConstraints( accNode,
-                                               accumulate,
-                                               ActivitySource.LEFT,
-                                               leftTuple,
-                                               context,
-                                               wm,
-                                               am,
-                                               accresult,
-                                               useLeftMemory );
-                } // else evaluation is already scheduled, so do nothing                
-                
                 leftTuple.clearStaged();
+                trgLeftTuples.addInsert( leftTuple );
+                
+                constraints.resetTuple( contextEntry );              
+                
                 leftTuple = next;
             }
             srcLeftTuples.setInsert( null, 0 );
@@ -1880,14 +1965,17 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
         public void doRightInserts(AccumulateNode accNode,
                                    LeftTupleSink sink,
-                                   BetaMemory bm,
+                                   AccumulateMemory am,
                                    InternalWorkingMemory wm,
                                    StagedRightTuples srcRightTuples,
-                                   StagedLeftTuples srcLeftTuples,
                                    StagedLeftTuples trgLeftTuples) {
             boolean tupleMemory = true;
             boolean tupleMemoryEnabled = true;
 
+
+            Accumulate accumulate = accNode.getAccumulate();            
+
+            BetaMemory bm = am.getBetaMemory();
             LeftTupleMemory ltm = bm.getLeftTupleMemory();
             RightTupleMemory rtm = bm.getRightTupleMemory();
             ContextEntry[] contextEntry = bm.getContext();
@@ -1903,14 +1991,32 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                                   wm,
                                                   rightTuple.getFactHandle() );
 
-                for ( LeftTuple leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, context, it ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
-                    trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple,
-                                                                   rightTuple,
-                                                                   null,
-                                                                   null,
-                                                                   sink,
-                                                                   tupleMemory ) );
+                FastIterator leftIt = accNode.getLeftIterator( ltm );
+                
+                for ( LeftTuple leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, context, leftIt ); leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
+                    if ( constraints.isAllowedCachedRight( contextEntry,
+                                                           leftTuple ) ) {
+                        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+                        addMatch( accNode,
+                                  accumulate,
+                                  leftTuple,
+                                  rightTuple,
+                                  null,
+                                  null,
+                                  wm,
+                                  am,
+                                  accctx,
+                                  tupleMemoryEnabled );
+                        
+                        // right inserts and updates are done first
+                        // so any existing leftTuples we know are updates, but only add if not already added
+                        if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
+                            trgLeftTuples.addUpdate( leftTuple );
+                        }
+                        
+                    }
                 }
+
                 rightTuple.clearStaged();
                 rightTuple = next;
             }
@@ -1920,19 +2026,22 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
         public void doLeftUpdates(AccumulateNode accNode,
                                   LeftTupleSink sink,
-                                  BetaMemory bm,
+                                  AccumulateMemory am,
                                   InternalWorkingMemory wm,
                                   StagedLeftTuples srcLeftTuples,
-                                  StagedLeftTuples trgLeftTuples,
-                                  StagedLeftTuples stagedLeftTuples) {
+                                  StagedLeftTuples trgLeftTuples) {
             boolean tupleMemory = true;
-            RightTupleMemory rtm = bm.getRightTupleMemory();
+            
+            BetaMemory bm = am.getBetaMemory();
+            RightTupleMemory rtm = bm.getRightTupleMemory();            
+            Accumulate accumulate = accNode.getAccumulate();                        
             ContextEntry[] contextEntry = bm.getContext();
             BetaConstraints constraints = accNode.getRawConstraints();
-            FastIterator it = accNode.getRightIterator( rtm );
+            FastIterator rightIt = accNode.getRightIterator( rtm );
 
             for ( LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
+                final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
                 PropagationContext context = leftTuple.getPropagationContext();
 
                 constraints.updateFromTuple( contextEntry,
@@ -1942,108 +2051,150 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 RightTuple rightTuple = accNode.getFirstRightTuple( leftTuple,
                                                                      rtm,
                                                                      context,
-                                                                     it );
+                                                                     rightIt );
 
                 LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
                 // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
-                // if rightTuple is null, we assume there was a bucket change and that bucket is empty        
-                if ( childLeftTuple != null && rtm.isIndexed() && !it.isFullIterator() && (rightTuple == null || (rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory())) ) {
-                    // our index has changed, so delete all the previous propagations
-                    while ( childLeftTuple != null ) {
-                        childLeftTuple = deleteLeftChild( trgLeftTuples, childLeftTuple, stagedLeftTuples );
-                    }
-                    // childLeftTuple is now null, so the next check will attempt matches for new bucket
+                // if rightTuple is null, we assume there was a bucket change and that bucket is empty
+                if ( childLeftTuple != null && rtm.isIndexed() && !rightIt.isFullIterator() &&  (rightTuple == null || (rightTuple.getMemory() !=  childLeftTuple.getRightParent().getMemory())) ) {
+                    // our index has changed, so delete all the previous matchings
+                    removePreviousMatchesForLeftTuple( accNode,
+                                                       accumulate,
+                                                       leftTuple,
+                                                       wm,
+                                                       am,
+                                                       accctx );
+
+                    childLeftTuple = null; // null so the next check will attempt matches for new bucket
                 }
 
                 // we can't do anything if RightTupleMemory is empty
                 if ( rightTuple != null ) {
-                    doLeftUpdatesProcessChildren( childLeftTuple, leftTuple, rightTuple, stagedLeftTuples, tupleMemory, contextEntry, constraints, sink, it, trgLeftTuples );
+                    doLeftUpdatesProcessChildren( accNode,
+                                                  am,
+                                                  wm,
+                                                  bm,
+                                                  accumulate,
+                                                  constraints,
+                                                  rightIt,
+                                                  leftTuple,
+                                                  accctx,
+                                                  rightTuple,
+                                                  childLeftTuple );
                 }
+                
                 leftTuple.clearStaged();
+                trgLeftTuples.addUpdate( leftTuple );             
+                
                 leftTuple = next;
             }
             srcLeftTuples.setUpdate( null );
             constraints.resetTuple( contextEntry );
         }
 
-        public LeftTuple doLeftUpdatesProcessChildren(LeftTuple childLeftTuple,
-                                                      LeftTuple leftTuple,
-                                                      RightTuple rightTuple,
-                                                      StagedLeftTuples stagedLeftTuples,
-                                                      boolean tupleMemory,
-                                                      ContextEntry[] contextEntry,
-                                                      BetaConstraints constraints,
-                                                      LeftTupleSink sink,
-                                                      FastIterator it,
-                                                      StagedLeftTuples trgLeftTuples) {
+        private void doLeftUpdatesProcessChildren(AccumulateNode accNode,
+                                                  AccumulateMemory am,
+                                                  InternalWorkingMemory wm,
+                                                  BetaMemory bm,
+                                                  Accumulate accumulate,
+                                                  BetaConstraints constraints,
+                                                  FastIterator rightIt,
+                                                  LeftTuple leftTuple,
+                                                  final AccumulateContext accctx,
+                                                  RightTuple rightTuple,
+                                                  LeftTuple childLeftTuple) {
             if ( childLeftTuple == null ) {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
-                for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
-                    if ( constraints.isAllowedCachedLeft( contextEntry,
-                                                          rightTuple.getFactHandle() ) ) {
-                        trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple,
-                                                                       rightTuple,
-                                                                       null,
-                                                                       null,
-                                                                       sink,
-                                                                       tupleMemory ) );
+                for ( ; rightTuple != null; rightTuple = (RightTuple) rightIt.next( rightTuple ) ) {
+                    final InternalFactHandle handle = rightTuple.getFactHandle();
+                    if ( constraints.isAllowedCachedLeft( bm.getContext(),
+                                                          handle ) ) {
+                        // add a new match
+                        addMatch( accNode,
+                                  accumulate,
+                                  leftTuple,
+                                  rightTuple,
+                                  null,
+                                  null,
+                                  wm,
+                                  am,
+                                  accctx,
+                                  true );
                     }
                 }
             } else {
+                boolean isDirty = false;
                 // in the same bucket, so iterate and compare
-                for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
-                    if ( constraints.isAllowedCachedLeft( contextEntry,
-                                                          rightTuple.getFactHandle() ) ) {
-                        // insert, childLeftTuple is not updated
+                for ( ; rightTuple != null; rightTuple = (RightTuple) rightIt.next( rightTuple ) ) {
+                    final InternalFactHandle handle = rightTuple.getFactHandle();
+
+                    if ( constraints.isAllowedCachedLeft( bm.getContext(),
+                                                         handle ) ) {
                         if ( childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple ) {
-                            trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple,
-                                                                           rightTuple,
-                                                                           null,
-                                                                           null,
-                                                                           sink,
-                                                                           tupleMemory ) );
+                            // add a new match
+                            addMatch( accNode,
+                                      accumulate,
+                                      leftTuple,
+                                      rightTuple,
+                                      childLeftTuple,
+                                      null,
+                                      wm,
+                                      am,
+                                      accctx,
+                                      true );
                         } else {
-                            switch ( childLeftTuple.getStagedType() ) {
-                            // handle clash with already staged entries
-                                case LeftTuple.INSERT :
-                                    stagedLeftTuples.removeInsert( childLeftTuple );
-                                    break;
-                                case LeftTuple.UPDATE :
-                                    stagedLeftTuples.removeUpdate( childLeftTuple );
-                                    break;
-                            }
-
-                            // update, childLeftTuple is updated
-                            trgLeftTuples.addUpdate( childLeftTuple );
-
+                            // we must re-add this to ensure deterministic iteration
+                            LeftTuple temp = childLeftTuple.getLeftParentNext();
                             childLeftTuple.reAddRight();
-                            childLeftTuple = childLeftTuple.getLeftParentNext();
+                            childLeftTuple = temp;
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
-                        // delete, childLeftTuple is updated
-                        childLeftTuple = deleteLeftChild( trgLeftTuples, childLeftTuple, stagedLeftTuples );
+                        LeftTuple temp = childLeftTuple.getLeftParentNext();
+                        // remove the match
+                        removeMatch( accNode,
+                                     accumulate,
+                                     rightTuple,
+                                     childLeftTuple,
+                                     wm,
+                                     am,
+                                     accctx,
+                                     false );
+                        childLeftTuple = temp;
+                        // the next line means that when a match is removed from the current leftTuple
+                        // and the accumulate does not support the reverse operation, then the whole
+                        // result is dirty (since removeMatch above is not recalculating the total)
+                        // and we need to do this later
+                        isDirty = !accumulate.supportsReverse();
                     }
+                    // else do nothing, was false before and false now.
+                }
+                if ( isDirty ) {
+                    reaccumulateForLeftTuple( accNode,
+                                              accumulate,
+                                              leftTuple,
+                                              wm,
+                                              am,
+                                              accctx );
                 }
             }
-
-            return childLeftTuple;
         }
 
         public void doRightUpdates(AccumulateNode accNode,
                                    LeftTupleSink sink,
-                                   BetaMemory bm,
+                                   AccumulateMemory am,
                                    InternalWorkingMemory wm,
                                    StagedRightTuples srcRightTuples,
-                                   StagedLeftTuples srcLeftTuples,
-                                   StagedLeftTuples trgLeftTuples,
-                                   StagedLeftTuples stagedLeftTuples) {
+                                   StagedLeftTuples trgLeftTuples) {
             boolean tupleMemory = true;
+            
+            BetaMemory bm = am.getBetaMemory();
             LeftTupleMemory ltm = bm.getLeftTupleMemory();
             ContextEntry[] contextEntry = bm.getContext();
             BetaConstraints constraints = accNode.getRawConstraints();
-            FastIterator it = accNode.getLeftIterator( ltm );
+            Accumulate accumulate = accNode.getAccumulate();
+            FastIterator leftIt = accNode.getLeftIterator( ltm );
 
             for ( RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
@@ -2051,26 +2202,44 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
                 LeftTuple childLeftTuple = rightTuple.getFirstChild();
 
-                LeftTuple leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, context, it );
+                LeftTuple leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, context, leftIt );
 
                 constraints.updateFromFactHandle( contextEntry,
                                                   wm,
                                                   rightTuple.getFactHandle() );
 
                 // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
-                // We assume a bucket change if leftTuple == null        
-                if ( childLeftTuple != null && ltm.isIndexed() && !it.isFullIterator() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory())) ) {
-                    // our index has changed, so delete all the previous propagations
-                    while ( childLeftTuple != null ) {
-                        childLeftTuple = deleteRightChild( childLeftTuple, trgLeftTuples, stagedLeftTuples );
-                    }
-                    // childLeftTuple is now null, so the next check will attempt matches for new bucket                    
+                // We assume a bucket change if leftTuple == null
+                if ( childLeftTuple != null && ltm.isIndexed() && !leftIt.isFullIterator() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory())) ) {
+                    // our index has changed, so delete all the previous matches
+                    removePreviousMatchesForRightTuple( accNode,
+                                                        accumulate,
+                                                        rightTuple,
+                                                        context,
+                                                        wm,
+                                                        am,
+                                                        childLeftTuple );
+                    childLeftTuple = null; // null so the next check will attempt matches for new bucket
                 }
 
-                // we can't do anything if LeftTupleMemory is empty
+                // if LeftTupleMemory is empty, there are no matches to modify
                 if ( leftTuple != null ) {
-                    doRightUpdatesProcessChildren( childLeftTuple, leftTuple, rightTuple, stagedLeftTuples, tupleMemory, contextEntry, constraints, sink, it, trgLeftTuples );
+                    if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
+                        trgLeftTuples.addUpdate( leftTuple );
+                    }
+                    
+                    doRightUpdatesProcessChildren( accNode,
+                                                   am,
+                                                   wm,
+                                                   bm,
+                                                   constraints,
+                                                   accumulate,
+                                                   leftIt,
+                                                   rightTuple,
+                                                   childLeftTuple,
+                                                   leftTuple );
                 }
+                
                 rightTuple.clearStaged();
                 rightTuple = next;
             }
@@ -2078,89 +2247,128 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
             constraints.resetFactHandle( contextEntry );
         }
 
-        public LeftTuple doRightUpdatesProcessChildren(LeftTuple childLeftTuple,
-                                                       LeftTuple leftTuple,
-                                                       RightTuple rightTuple,
-                                                       StagedLeftTuples stagedLeftTuples,
-                                                       boolean tupleMemory,
-                                                       ContextEntry[] contextEntry,
-                                                       BetaConstraints constraints,
-                                                       LeftTupleSink sink,
-                                                       FastIterator it,
-                                                       StagedLeftTuples trgLeftTuples) {
+        private void doRightUpdatesProcessChildren(AccumulateNode accNode,
+                                                   AccumulateMemory am,
+                                                   InternalWorkingMemory wm,
+                                                   BetaMemory bm,
+                                                   BetaConstraints constraints,
+                                                   Accumulate accumulate,
+                                                   FastIterator leftIt,
+                                                   RightTuple rightTuple,
+                                                   LeftTuple childLeftTuple,
+                                                   LeftTuple leftTuple) {
             if ( childLeftTuple == null ) {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
-                    if ( constraints.isAllowedCachedRight( contextEntry,
-                                                           leftTuple ) ) {
-                        trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple,
-                                                                       rightTuple,
-                                                                       null,
-                                                                       null,
-                                                                       sink,
-                                                                       tupleMemory ) );
+                for ( ; leftTuple != null; leftTuple = ( LeftTuple ) leftIt.next( leftTuple ) ) {
+                    if (constraints.isAllowedCachedRight( bm.getContext(),
+                                                          leftTuple ) ) {
+                        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+                        // add a new match
+                        addMatch( accNode,
+                                  accumulate,
+                                  leftTuple,
+                                  rightTuple,
+                                  null,
+                                  null,
+                                  wm,
+                                  am,
+                                  accctx,
+                                  true );
                     }
                 }
             } else {
                 // in the same bucket, so iterate and compare
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
-                    if ( constraints.isAllowedCachedRight( contextEntry,
-                                                           leftTuple ) ) {
-                        // insert, childLeftTuple is not updated
-                        if ( childLeftTuple == null || childLeftTuple.getLeftParent() != leftTuple ) {
-                            trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple,
-                                                                           rightTuple,
-                                                                           null,
-                                                                           null,
-                                                                           sink,
-                                                                           tupleMemory ) );
-                        } else {
-                            switch ( childLeftTuple.getStagedType() ) {
-                            // handle clash with already staged entries
-                                case LeftTuple.INSERT :
-                                    stagedLeftTuples.removeInsert( childLeftTuple );
-                                    break;
-                                case LeftTuple.UPDATE :
-                                    stagedLeftTuples.removeUpdate( childLeftTuple );
-                                    break;
-                            }
-
-                            // update, childLeftTuple is updated
-                            trgLeftTuples.addUpdate( childLeftTuple );
-
+                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
+                    if ( constraints.isAllowedCachedRight( bm.getContext(),
+                                                                leftTuple ) ) {
+                        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+                        LeftTuple temp = null;
+                        if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
+                            temp = childLeftTuple.getRightParentNext();
+                            // we must re-add this to ensure deterministic iteration
                             childLeftTuple.reAddLeft();
-                            childLeftTuple = childLeftTuple.getRightParentNext();
+                            removeMatch( accNode,
+                                         accumulate,
+                                         rightTuple,
+                                         childLeftTuple,
+                                         wm,
+                                         am,
+                                         accctx,
+                                         true );
+                            childLeftTuple = temp;
+                        }
+                        // add a new match
+                        addMatch( accNode,
+                                  accumulate,
+                                  leftTuple,
+                                  rightTuple,
+                                  null,
+                                  childLeftTuple,
+                                  wm,
+                                  am,
+                                  accctx,
+                                  true );
+                        if ( temp != null ) {
+                            childLeftTuple = temp;
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
-                        // delete, childLeftTuple is updated
-                        childLeftTuple = deleteRightChild( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+
+                        LeftTuple temp = childLeftTuple.getRightParentNext();
+                        final AccumulateContext accctx = (AccumulateContext)leftTuple.getObject();
+                        // remove the match
+                        removeMatch( accNode,
+                                     accumulate,
+                                     rightTuple,
+                                     childLeftTuple,
+                                     wm,
+                                     am,
+                                     accctx,
+                                     true );
+
+                        childLeftTuple = temp;
                     }
+                    // else do nothing, was false before and false now.
                 }
             }
-
-            return childLeftTuple;
         }
 
-        public void doLeftDeletes(AccumulateNode accNod,
-                                  BetaMemory bm,
+
+        public void doLeftDeletes(AccumulateNode accNode,
+                                  AccumulateMemory am,
                                   InternalWorkingMemory wm,
                                   StagedLeftTuples srcLeftTuples,
-                                  StagedLeftTuples trgLeftTuples,
-                                  StagedLeftTuples stagedLeftTuples) {
+                                  StagedLeftTuples trgLeftTuples) {
+            BetaMemory bm = am.getBetaMemory();
             LeftTupleMemory ltm = bm.getLeftTupleMemory();
-
+            ContextEntry[] contextEntry = bm.getContext();
+            Accumulate accumulate = accNode.getAccumulate();
+            
             for ( LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
-                ltm.remove( leftTuple );
-
-                if ( leftTuple.getFirstChild() != null ) {
-                    LeftTuple childLeftTuple = leftTuple.getFirstChild();
-
-                    while ( childLeftTuple != null ) {
-                        childLeftTuple = deleteLeftChild( trgLeftTuples, childLeftTuple, stagedLeftTuples );
+                if ( leftTuple.getMemory() != null ) {
+                    // it may have been staged and never actually added
+                    ltm.remove( leftTuple );
+    
+                
+                    final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+                    leftTuple.setObject( null );
+    
+                    removePreviousMatchesForLeftTuple( accNode,
+                                                       accumulate,
+                                                       leftTuple,
+                                                       wm,
+                                                       am,
+                                                       accctx );
+    
+                    if ( accctx.propagated ) {
+                        trgLeftTuples.addDelete( accctx.resultLeftTuple );
+                    } else {
+                        // if not propagated, just destroy the result fact handle
+                        // workingMemory.getFactHandleFactory().destroyFactHandle( accctx.result.getFactHandle() );
                     }
                 }
+                
                 leftTuple.clearStaged();
                 leftTuple = next;
             }
@@ -2168,133 +2376,127 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
         }
 
         public void doRightDeletes(AccumulateNode accNod,
-                                   BetaMemory bm,
+                                   AccumulateMemory am,
                                    InternalWorkingMemory wm,
                                    StagedRightTuples srcRightTuples,
-                                   StagedLeftTuples trgLeftTuples,
-                                   StagedLeftTuples stagedLeftTuples) {
-            RightTupleMemory rtm = bm.getRightTupleMemory();
+                                   StagedLeftTuples trgLeftTuples) {
+            RightTupleMemory rtm = am.getBetaMemory().getRightTupleMemory();
 
             for ( RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
-                rtm.remove( rightTuple );
+                if (  rightTuple.getMemory() != null ) {
+                    // it may have been staged and never actually added
+                    rtm.remove( rightTuple );
 
-                if ( rightTuple.getFirstChild() != null ) {
-                    LeftTuple childLeftTuple = rightTuple.getFirstChild();
-
-                    while ( childLeftTuple != null ) {
-                        childLeftTuple = deleteRightChild( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    if ( rightTuple.getFirstChild() != null ) {
+                        LeftTuple childLeftTuple = rightTuple.getFirstChild();
+    
+                        while ( childLeftTuple != null ) {
+                            LeftTuple nextLeft = childLeftTuple.getRightParentNext();;
+                            childLeftTuple.unlinkFromLeftParent();      
+                            
+                            if ( childLeftTuple.getStagedType() == LeftTuple.NONE ) {
+                                trgLeftTuples.addUpdate( childLeftTuple );
+                            }
+                            
+                            childLeftTuple = nextLeft; 
+                        }
+                        
                     }
                 }
                 rightTuple.clearStaged();
                 rightTuple = next;
             }
             srcRightTuples.setDelete( null );
-        }
-        
-        /**
-         * Evaluate result constraints and propagate assert in case they are true
-         * 
-         * @param leftTuple
-         * @param context
-         * @param workingMemory
-         * @param memory
-         * @param accresult
-         * @param handle
-         */
-        public void evaluateResultConstraints( final AccumulateNode accNode,
-                                               final Accumulate accumulate,
-                                               final ActivitySource source,
-                                                final LeftTuple leftTuple,
-                                                final PropagationContext context,
-                                                final InternalWorkingMemory workingMemory,
-                                                final AccumulateMemory memory,
-                                                final AccumulateContext accctx,
-                                                final boolean useLeftMemory ) {
+        }        
 
-//            // get the actual result
-//            final Object[] resultArray = accumulate.getResult( memory.workingMemoryContext,
-//                                                               accctx.context,
-//                                                               leftTuple,
-//                                                               workingMemory );
-//            Object result = accumulate.isMultiFunction() ? resultArray : resultArray[0];
-//            if (result == null) {
-//                return;
-//            }
-//
-//            if ( accctx.result == null ) {
-//                final InternalFactHandle handle = createResultFactHandle( context, 
-//                                                                          workingMemory, 
-//                                                                          leftTuple,
-//                                                                          result );
-//
-//                accctx.result = createRightTuple( handle,
-//                                                  this,
-//                                                  context );
-//            } else {
-//                accctx.result.getFactHandle().setObject( result );
-//            }
-//
-//            // First alpha node filters
-//            AlphaNodeFieldConstraint[] resultConstraints = accNode.getResultConstraints();
-//            BetaConstraints resultBinder = accNode.getResultBinder();
-//            boolean isAllowed = result != null;
-//            for ( int i = 0, length = resultConstraints.length; isAllowed && i < length; i++ ) {
-//                if ( !resultConstraints[i].isAllowed( accctx.result.getFactHandle(),
-//                                                      workingMemory,
-//                                                      memory.alphaContexts[i] ) ) {
-//                    isAllowed = false;
-//                }
-//            }
-//            if ( isAllowed ) {
-//                resultBinder.updateFromTuple( memory.resultsContext,
-//                                              workingMemory,
-//                                              leftTuple );
-//                if ( !resultBinder.isAllowedCachedLeft( memory.resultsContext,
-//                                                        accctx.result.getFactHandle() ) ) {
-//                    isAllowed = false;
-//                }
-//                resultBinder.resetTuple( memory.resultsContext );
-//            }
-//
-//            if ( accctx.propagated == true ) {
-//                if ( isAllowed ) {
-//                    // modify 
-//                    if ( ActivitySource.LEFT.equals( source ) ) {
-//                        this.sink.propagateModifyChildLeftTuple( leftTuple.getFirstChild(),
-//                                                                 leftTuple,
-//                                                                 context,
-//                                                                 workingMemory,
-//                                                                 useLeftMemory );
-//                    } else {
-//                        this.sink.propagateModifyChildLeftTuple( leftTuple.getFirstChild(),
-//                                                                 accctx.result,
-//                                                                 context,
-//                                                                 workingMemory,
-//                                                                 useLeftMemory );
-//                    }
-//                } else {
-//                    // retract
-//                    this.sink.propagateRetractLeftTuple( leftTuple,
-//                                                         context,
-//                                                         workingMemory );
-//                    accctx.propagated = false;
-//                }
-//            } else if ( isAllowed ) {
-//                // assert
-//                this.sink.propagateAssertLeftTuple( leftTuple,
-//                                                    accctx.result,
-//                                                    null,
-//                                                    null,
-//                                                    context,
-//                                                    workingMemory,
-//                                                    useLeftMemory );
-//                accctx.propagated = true;
-//            }
+        public void evaluateResultConstraints( final AccumulateNode accNode,
+                                               final LeftTupleSink sink,
+                                               final Accumulate accumulate,
+                                               final LeftTuple leftTuple,
+                                               final PropagationContext context,
+                                               final InternalWorkingMemory workingMemory,
+                                               final AccumulateMemory memory,
+                                               final AccumulateContext accctx,
+                                               final boolean useLeftMemory,
+                                               final StagedLeftTuples trgLeftTuples, 
+                                               final StagedLeftTuples stagedLeftTuples ) {
+            // get the actual result
+            final Object[] resultArray = accumulate.getResult( memory.workingMemoryContext,
+                                                               accctx.context,
+                                                               leftTuple,
+                                                               workingMemory );
+            Object result = accumulate.isMultiFunction() ? resultArray : resultArray[0];
+            if (result == null) {
+                return;
+            }
+
+            if ( accctx.getResultFactHandle() == null ) {
+                final InternalFactHandle handle = accNode.createResultFactHandle( context, 
+                                                                                  workingMemory, 
+                                                                                  leftTuple,
+                                                                                  result );
+
+                accctx.setResultFactHandle( handle );
+                
+                accctx.setResultLeftTuple( accNode.createLeftTuple( handle, leftTuple, sink )  );
+            } else {
+                accctx.getResultFactHandle().setObject( result );
+            }
+
+            // First alpha node filters
+            AlphaNodeFieldConstraint[] resultConstraints = accNode.getResultConstraints();
+            BetaConstraints resultBinder = accNode.getResultBinder();
+            boolean isAllowed = result != null;
+            for ( int i = 0, length = resultConstraints.length; isAllowed && i < length; i++ ) {
+                if ( !resultConstraints[i].isAllowed( accctx.resultFactHandle,
+                                                      workingMemory,
+                                                      memory.alphaContexts[i] ) ) {
+                    isAllowed = false;
+                }
+            }
+            if ( isAllowed ) {
+                resultBinder.updateFromTuple( memory.resultsContext,
+                                              workingMemory,
+                                              leftTuple );
+                if ( !resultBinder.isAllowedCachedLeft( memory.resultsContext,
+                                                        accctx.getResultFactHandle() ) ) {
+                    isAllowed = false;
+                }
+                resultBinder.resetTuple( memory.resultsContext );
+            }
+
+            
+            LeftTuple childLeftTuple = ( LeftTuple ) accctx.getResultLeftTuple();
+            childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
+            if ( accctx.propagated == true ) {
+                switch ( childLeftTuple.getStagedType() ) {
+                    // handle clash with already staged entries
+                    case LeftTuple.INSERT :
+                        stagedLeftTuples.removeInsert( childLeftTuple );
+                        break;
+                    case LeftTuple.UPDATE :
+                        stagedLeftTuples.removeUpdate( childLeftTuple );
+                        break;
+                }   
+                
+                if ( isAllowed ) {
+                    // modify 
+                    trgLeftTuples.addUpdate( childLeftTuple);
+                } else {
+                    // retract                 
+                    trgLeftTuples.addDelete( childLeftTuple );
+                    accctx.propagated = false;
+                }
+            } else if ( isAllowed ) {
+                // assert
+                trgLeftTuples.addInsert( childLeftTuple );
+                accctx.propagated = true;
+            }
 
         }        
         
-        private static void addMatch( final AccumulateNode accNode,
+        public  static void addMatch( final AccumulateNode accNode,
                                       final Accumulate accumulate,
                                       final LeftTuple leftTuple,
                                       final RightTuple rightTuple,
@@ -2312,10 +2514,10 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 //handle = tuple.getLastHandle();
             }
             accumulate.accumulate( am.workingMemoryContext,
-                                        accresult.context,
-                                        tuple,
-                                        handle,
-                                        wm );
+                                   accresult.context,
+                                   tuple,
+                                   handle,
+                                   wm );
 
             // in sequential mode, we don't need to keep record of matched tuples
             if ( useLeftMemory ) {
@@ -2328,6 +2530,127 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                          true );
             }
         }
+        
+        /**
+         * Removes a match between left and right tuple
+         *
+         * @param rightTuple
+         * @param match
+         * @param result
+         */
+        public static void removeMatch( final AccumulateNode accNode,
+                                         final Accumulate accumulate,
+                                         final RightTuple rightTuple,
+                                         final LeftTuple match,
+                                         final InternalWorkingMemory wm,
+                                         final AccumulateMemory am,
+                                         final AccumulateContext accctx,
+                                         final boolean reaccumulate ) {
+            // save the matching tuple
+            LeftTuple leftTuple = match.getLeftParent();
+
+            // removing link between left and right
+            match.unlinkFromLeftParent();
+            match.unlinkFromRightParent();
+
+            // if there is a subnetwork, we need to unwrap the object from inside the tuple
+            InternalFactHandle handle = rightTuple.getFactHandle();
+            LeftTuple tuple = leftTuple;
+            if ( accNode.isUnwrapRightObject() ) {
+                tuple = (LeftTuple) handle.getObject();
+            }
+
+            if ( accumulate.supportsReverse() ) {
+                // just reverse this single match
+                accumulate.reverse( am.workingMemoryContext,
+                                         accctx.context,
+                                         tuple,
+                                         handle,
+                                         wm );
+            } else {
+                // otherwise need to recalculate all matches for the given leftTuple
+                if ( reaccumulate ) {
+                    reaccumulateForLeftTuple( accNode,
+                                              accumulate,
+                                              leftTuple,
+                                              wm,
+                                              am,
+                                              accctx );
+
+                }
+            }
+        }        
+        
+
+        public static void reaccumulateForLeftTuple( final AccumulateNode accNode,
+                                                     final Accumulate accumulate,
+                                                     final LeftTuple leftTuple,
+                                                     final InternalWorkingMemory wm,
+                                                     final AccumulateMemory am,
+                                                     final AccumulateContext accctx ) {
+            accumulate.init( am.workingMemoryContext,
+                             accctx.context,
+                             leftTuple,
+                             wm );
+            for ( LeftTuple childMatch = leftTuple.getFirstChild(); childMatch != null; childMatch = childMatch.getLeftParentNext() ) {
+                InternalFactHandle childHandle = childMatch.getRightParent().getFactHandle();
+                LeftTuple tuple = leftTuple;
+                if ( accNode.isUnwrapRightObject() ) {
+                    tuple = (LeftTuple) childHandle.getObject();
+                    childHandle = tuple.getLastHandle();
+                }
+                accumulate.accumulate( am.workingMemoryContext,
+                                       accctx.context,
+                                       tuple,
+                                       childHandle,
+                                       wm );
+            }
+        }        
+        
+        public static void removePreviousMatchesForRightTuple( final AccumulateNode accNode,
+                                                               final Accumulate accumulate,
+                                                               final RightTuple rightTuple,
+                                                               final PropagationContext context,
+                                                               final InternalWorkingMemory workingMemory,
+                                                               final AccumulateMemory memory,
+                                                               final LeftTuple firstChild ) {
+           for ( LeftTuple match = firstChild; match != null; ) {
+               final LeftTuple next = match.getRightParentNext();
+               
+               final LeftTuple parent = match.getLeftParent();
+               final AccumulateContext accctx = (AccumulateContext) parent.getObject();
+               removeMatch( accNode,
+                            accumulate,
+                            rightTuple,
+                            match,
+                            workingMemory,
+                            memory,
+                            accctx,
+                            true );    
+               
+               match = next;
+           }
+       }  
+        
+        public static void removePreviousMatchesForLeftTuple( final AccumulateNode accNode,
+                                                              final Accumulate accumulate,
+                                                              final LeftTuple leftTuple,
+                                                              final InternalWorkingMemory workingMemory,
+                                                              final AccumulateMemory memory,
+                                                              final AccumulateContext accctx ) {
+            for ( LeftTuple match = leftTuple.getFirstChild(); match != null;  ) {
+                LeftTuple next = match.getLeftParentNext();
+                match.unlinkFromRightParent();
+                match.unlinkFromLeftParent();
+                match = next;
+            }
+            // since there are no more matches, the following call will just re-initialize the accumulation
+            accumulate.init( memory.workingMemoryContext,
+                             accctx.context,
+                             leftTuple,
+                             workingMemory );
+        }
+        
 
 //        /**
 //         * Removes a match between left and right tuple
@@ -2627,30 +2950,33 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
     public static void dpUpdatesReorderMemory(BetaMemory bm,
                                               InternalWorkingMemory wm,
                                               StagedRightTuples srcRightTuples,
-                                              StagedLeftTuples srcLeftTuples,
-                                              StagedLeftTuples trgLeftTuples) {
+                                              StagedLeftTuples srcLeftTuples) {
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
         RightTupleMemory rtm = bm.getRightTupleMemory();
 
         // sides must first be re-ordered, to ensure iteration integrity
         for ( LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            ltm.removeAdd( leftTuple );
-            for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
-                LeftTuple childNext = childLeftTuple.getLeftParentNext();
-                childLeftTuple.reAddRight();
-                childLeftTuple = childNext;
+            if ( leftTuple.getMemory() != null ) {
+                ltm.removeAdd( leftTuple );
+                for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
+                    LeftTuple childNext = childLeftTuple.getLeftParentNext();
+                    childLeftTuple.reAddRight();
+                    childLeftTuple = childNext;
+                }
             }
             leftTuple = next;
         }
 
         for ( RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
-            rtm.removeAdd( rightTuple );
-            for ( LeftTuple childLeftTuple = rightTuple.getFirstChild(); childLeftTuple != null; ) {
-                LeftTuple childNext = childLeftTuple.getLeftParentNext();
-                childLeftTuple.reAddLeft();
-                childLeftTuple = childNext;
+            if ( rightTuple.getMemory() != null ) {
+                rtm.removeAdd( rightTuple );
+                for ( LeftTuple childLeftTuple = rightTuple.getFirstChild(); childLeftTuple != null; ) {
+                    LeftTuple childNext = childLeftTuple.getLeftParentNext();
+                    childLeftTuple.reAddLeft();
+                    childLeftTuple = childNext;
+                }
             }
             rightTuple = next;
         }

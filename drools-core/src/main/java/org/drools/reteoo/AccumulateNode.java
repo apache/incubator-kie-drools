@@ -324,10 +324,7 @@ public class AccumulateNode extends BetaNode {
                                    final PropagationContext context,
                                    final InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
-        final InternalFactHandle origin = (InternalFactHandle) context.getFactHandleOrigin();
-        if ( context.getType() == PropagationContext.EXPIRATION ) {
-            ((PropagationContextImpl) context).setFactHandle( null );
-        }
+
 
         BetaMemory bm = memory.getBetaMemory();
         
@@ -350,6 +347,11 @@ public class AccumulateNode extends BetaNode {
             return;
         } 
 
+        final InternalFactHandle origin = (InternalFactHandle) context.getFactHandleOrigin();
+        if ( context.getType() == PropagationContext.EXPIRATION ) {
+            ((PropagationContextImpl) context).setFactHandle( null );
+        }
+        
         bm.getRightTupleMemory().remove( rightTuple );
         
         removePreviousMatchesForRightTuple( rightTuple,
@@ -759,10 +761,10 @@ public class AccumulateNode extends BetaNode {
     }
 
     @SuppressWarnings("unchecked")
-    private InternalFactHandle createResultFactHandle(final PropagationContext context,
-                                                      final InternalWorkingMemory workingMemory,
-                                                      final LeftTuple leftTuple,
-                                                      final Object result) {
+    public InternalFactHandle createResultFactHandle(final PropagationContext context,
+                                                     final InternalWorkingMemory workingMemory,
+                                                     final LeftTuple leftTuple,
+                                                     final Object result) {
         InternalFactHandle handle = null;
         ProtobufMessages.FactHandle _handle = null;
         if( context.getReaderContext() != null ) {
@@ -1087,7 +1089,7 @@ public class AccumulateNode extends BetaNode {
      * @param accctx
      * @return
      */
-    private LeftTuple getFirstMatch( final LeftTuple leftTuple,
+    public LeftTuple getFirstMatch( final LeftTuple leftTuple,
                                      final AccumulateContext accctx,
                                      final boolean isUpdatingSink ) {
         // unlink all right matches 
@@ -1130,9 +1132,11 @@ public class AccumulateNode extends BetaNode {
     public static class AccumulateContext
         implements
         Externalizable {
-        public Serializable[] context;
-        public RightTuple     result;
-        public boolean        propagated;
+        public Serializable[]     context;
+        public RightTuple         result;
+        public InternalFactHandle resultFactHandle;
+        public LeftTuple          resultLeftTuple;
+        public boolean            propagated;
         private EvaluateResultConstraints        action; // is transiant
 
         public void readExternal( ObjectInput in ) throws IOException,
@@ -1154,8 +1158,23 @@ public class AccumulateNode extends BetaNode {
 
         public void setAction(EvaluateResultConstraints action) {
             this.action = action;
-        }               
+        }
 
+        public InternalFactHandle getResultFactHandle() {
+            return resultFactHandle;
+        }
+
+        public void setResultFactHandle(InternalFactHandle resultFactHandle) {
+            this.resultFactHandle = resultFactHandle;
+        }
+
+        public LeftTuple getResultLeftTuple() {
+            return resultLeftTuple;
+        }
+
+        public void setResultLeftTuple(LeftTuple resultLeftTuple) {
+            this.resultLeftTuple = resultLeftTuple;
+        }
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
@@ -1163,6 +1182,12 @@ public class AccumulateNode extends BetaNode {
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
     }    
+    
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final LeftTupleSink sink) {
+        return new FromNodeLeftTuple(factHandle,leftTuple, sink );
+    }
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,

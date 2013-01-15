@@ -35,6 +35,12 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
                              boolean leftTupleMemoryEnabled) {
         super( factHandle, sink, leftTupleMemoryEnabled );
     }
+    
+    public FromNodeLeftTuple(final InternalFactHandle factHandle,
+                             final LeftTuple leftTuple,
+                             final LeftTupleSink sink) {
+        super( factHandle, leftTuple, sink );
+    }    
 
     public FromNodeLeftTuple(final LeftTuple leftTuple,
                              final LeftTupleSink sink,

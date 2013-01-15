@@ -343,24 +343,6 @@ public abstract class BetaNode extends LeftTupleSource
     public abstract void assertRightTuple( final RightTuple rightTuple,
                                            final PropagationContext context,
                                            final InternalWorkingMemory workingMemory );    
-
-    public static void flushModifyStagedRightTuples(RightTupleList list, InternalWorkingMemory wm) {        
-        // propagateRightTuples((BetaNode) list.getFirst().getRightTupleSink(), list, list.size(), wm);
-        
-        RightTuple rightTuple = list.getFirst();
-        BetaNode bnode = (BetaNode) list.getFirst().getRightTupleSink();
-        for ( int i = 0, length = list.size(); i < length; i++ ) {  
-            RightTuple next =   ( RightTuple ) rightTuple.getNext();
-            
-            rightTuple.setPrevious( null );
-            rightTuple.setNext( null );
-
-            bnode.modifyRightTuple( rightTuple, rightTuple.getPropagationContext(), wm );
-            //betaNode.assertRightTuple( rightTuple, rightTuple.getPropagationContext(), wm );
-            rightTuple.getPropagationContext().evaluateActionQueue( wm );
-            rightTuple = next;
-        }                
-    }
     
     public static RightTuple propagateAssertRightTuples(BetaNode betaNode, RightTupleList list, int length, InternalWorkingMemory wm) {
         RightTuple rightTuple = list.getFirst();
@@ -657,12 +639,22 @@ public abstract class BetaNode extends LeftTupleSource
         while ( rightTuple != null &&
                 ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < getRightInputOtnId() ) {
             modifyPreviousTuples.removeRightTuple();
-            rightTuple.setPropagationContext( context );
+                        
             // we skipped this node, due to alpha hashing, so retract now
-
-            rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
-                                                              context,
-                                                              wm );
+            rightTuple.setPropagationContext( context );
+            if ( isUnlinkingEnabled() ) {
+                BetaMemory bm = null;
+                if ( getType() == NodeTypeEnums.AccumulateNode ) {
+                    bm = ((AccumulateMemory)wm.getNodeMemory( this )).getBetaMemory();
+                } else {
+                    bm = ((BetaMemory)wm.getNodeMemory( this ));
+                }
+                bm.getStagedRightTuples().addDelete( rightTuple );
+            }  else {
+                rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
+                                                                  context,
+                                                                  wm );
+            }
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
@@ -671,10 +663,21 @@ public abstract class BetaNode extends LeftTupleSource
             rightTuple.reAdd();
             rightTuple.setPropagationContext( context );
             if ( intersect( context.getModificationMask(), rightInferredMask ) ) {
-                // RightTuple previously existed, so continue as modify                
-                modifyRightTuple( rightTuple,
-                                  context,
-                                  wm );     
+                // RightTuple previously existed, so continue as modify     
+                if ( isUnlinkingEnabled() ) {
+                    BetaMemory bm = null;
+                    if ( getType() == NodeTypeEnums.AccumulateNode ) {
+                        bm = ((AccumulateMemory)wm.getNodeMemory( this )).getBetaMemory();
+                    } else {
+                        bm = ((BetaMemory)wm.getNodeMemory( this ));
+                    }
+                    rightTuple.setPropagationContext( context );
+                    bm.getStagedRightTuples().addUpdate( rightTuple );    
+                } else {
+                    modifyRightTuple( rightTuple,
+                                      context,
+                                      wm ); 
+                }
                 
 //                if ( rightTuple.getMemory() != null && rightTuple.getMemory().isStagingMemory() ) { // can be null for if unlinking is off
 //                    // RightTuple is still staged, hasn't propagated yet, just up date PropagationContext

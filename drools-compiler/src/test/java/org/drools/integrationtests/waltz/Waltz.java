@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
@@ -38,7 +39,17 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 
 import org.junit.Test;
+import org.kie.KieBase;
+import org.kie.KieBaseConfiguration;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.conf.LRUnlinkingOption;
 import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
+import org.kie.runtime.KieSession;
 
 import static org.junit.Assert.*;
 
@@ -52,11 +63,10 @@ public abstract class Waltz {
     @Test
     public void testWaltz() {
         try {
-
             //load up the rulebase
-            final RuleBase ruleBase = readRule();
+            final KieBase kBase = readKnowledegBase();
             for ( int i = 0; i < 1; i++ ) {
-                final StatefulSession session = ruleBase.newStatefulSession();
+                KieSession kSession = kBase.newKieSession();
     
     //            workingMemory.setGlobal( "sysout",
     //                                     System.out );
@@ -67,8 +77,8 @@ public abstract class Waltz {
                 //            workingMemory.addEventListener( agendaListener );
     
                 //go !     
-                this.loadLines( session,
-                                "waltz50.dat" );
+                this.loadLines( kSession,
+                                "waltz12.dat" );
     
                 //final Stage stage = new Stage( Stage.START );
                 //workingMemory.assertObject( stage );
@@ -76,9 +86,9 @@ public abstract class Waltz {
                 final long start = System.currentTimeMillis();
     
                 final Stage stage = new Stage( Stage.DUPLICATE );
-                session.insert( stage );
-                session.fireAllRules();
-                session.dispose();
+                kSession.insert( stage );
+                kSession.fireAllRules();
+                kSession.dispose();
                 final long end = System.currentTimeMillis();
                 System.out.println( end - start );
             }
@@ -113,14 +123,30 @@ public abstract class Waltz {
         builder.addPackage( packageDescr );
         final Package pkg = builder.getPackage();
 
-        //add the package to a rulebase
+        //add the package to a rulebase        
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         return ruleBase;
 //        return SerializationHelper.serializeObject(ruleBase);
     }
+    
+    public KieBase readKnowledegBase() {
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kBuilder.add( ResourceFactory.newClassPathResource( "waltz.drl", Waltz.class ), ResourceType.DRL );
+        
+        if ( kBuilder.hasErrors() ) {
+            fail( kBuilder.getErrors().toString() );
+            
+        }
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        //kconf.setOption( LRUnlinkingOption.ENABLED );        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        
+        kbase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        return ( KieBase ) kbase;
+    }
 
-    private void loadLines(final WorkingMemory wm,
+    private void loadLines(final KieSession kSession,
                            final String filename) throws IOException {
         final BufferedReader reader = new BufferedReader( new InputStreamReader( Waltz.class.getResourceAsStream( filename ) ) );
         final Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
@@ -130,7 +156,7 @@ public abstract class Waltz {
             if ( m.matches() ) {
                 final Line l = new Line( Integer.parseInt( m.group( 1 ) ),
                                          Integer.parseInt( m.group( 2 ) ) );
-                wm.insert( l );
+                kSession.insert( l );
             }
             line = reader.readLine();
         }
