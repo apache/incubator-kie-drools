@@ -343,14 +343,11 @@ public class ASMConditionEvaluatorJitter {
                     invokeStatic(EvaluatorHelper.class, "soundslike", boolean.class, String.class, String.class);
                     break;
                 default:
-                    if (operation.isEquality()) {
+                    if (operation.isEquality() && type != BigDecimal.class) {
                         if (type.isInterface()) {
                             invokeInterface(type, "equals", boolean.class, Object.class);
                         } else {
                             invokeVirtual(type, "equals", boolean.class, Object.class);
-                        }
-                        if (operation == BooleanOperator.NE) {
-                            singleCondition.toggleNegation();
                         }
                     } else {
                         if (type.isInterface()) {
@@ -359,7 +356,10 @@ public class ASMConditionEvaluatorJitter {
                             invokeVirtual(type, "compareTo", int.class, type);
                         }
                         mv.visitInsn(ICONST_0);
-                        jitPrimitiveOperation(operation, int.class);
+                        jitPrimitiveOperation(operation == BooleanOperator.NE ? BooleanOperator.EQ : operation, int.class);
+                    }
+                    if (operation == BooleanOperator.NE) {
+                        singleCondition.toggleNegation();
                     }
             }
 
