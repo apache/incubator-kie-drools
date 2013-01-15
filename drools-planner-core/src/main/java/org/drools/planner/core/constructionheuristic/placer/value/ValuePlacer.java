@@ -49,14 +49,18 @@ public class ValuePlacer extends AbstractPlacer {
         this.assertUndoMoveIsUncorrupted = assertUndoMoveIsUncorrupted;
     }
 
-    public void doPlacement(ConstructionHeuristicStepScope stepScope) {
+    public ConstructionHeuristicMoveScope nominateMove(ConstructionHeuristicStepScope stepScope) {
+        Object entity = stepScope.getEntity();
+        if (variableDescriptor.isInitialized(entity)) {
+            return null;
+        }
         // TODO extract to PlacerForager
         Score maxScore = stepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
-        ConstructionHeuristicMoveScope maxMoveScope = null;
+        ConstructionHeuristicMoveScope nominatedMoveScope = null;
 
-        Object entity = stepScope.getEntity();
         int moveIndex = 0;
         for (Object value : valueSelector) {
+            // TODO check terminator
             ConstructionHeuristicMoveScope moveScope = new ConstructionHeuristicMoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
             Move move;
@@ -74,7 +78,7 @@ public class ValuePlacer extends AbstractPlacer {
                 if (moveScope.getScore().compareTo(maxScore) > 0) {
                     maxScore = moveScope.getScore();
                     // TODO for non explicit Best Fit *, default to random picking from a maxMoveScopeList
-                    maxMoveScope = moveScope;
+                    nominatedMoveScope = moveScope;
                 }
                 if (moveIndex >= selectedCountLimit) {
                     break;
@@ -85,15 +89,7 @@ public class ValuePlacer extends AbstractPlacer {
                 break;
             }
         }
-        if (maxMoveScope != null) {
-            Move step = maxMoveScope.getMove();
-            stepScope.setStep(step);
-            if (logger.isDebugEnabled()) {
-                stepScope.setStepString(step.toString());
-            }
-            stepScope.setUndoStep(maxMoveScope.getUndoMove());
-            stepScope.setScore(maxMoveScope.getScore());
-        }
+        return nominatedMoveScope;
     }
 
     private void doMove(ConstructionHeuristicMoveScope moveScope) {

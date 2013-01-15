@@ -19,6 +19,7 @@ package org.drools.planner.core.constructionheuristic;
 import java.util.List;
 
 import org.drools.planner.core.constructionheuristic.placer.entity.EntityPlacer;
+import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.drools.planner.core.move.Move;
@@ -55,26 +56,26 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         if (entityPlacerList.size() != 1) {
             throw new UnsupportedOperationException();
         }
-        EntityPlacer hackEntityPlacer = entityPlacerList.get(0);
+        // TODO HACK
+        EntityPlacer entityPlacer = entityPlacerList.get(0);
 
         ConstructionHeuristicStepScope stepScope = createNextStepScope(phaseScope, null);
-        while (!termination.isPhaseTerminated(phaseScope) && hackEntityPlacer.hasPlacement()) {
+        while (!termination.isPhaseTerminated(phaseScope)) {
             stepStarted(stepScope);
-            hackEntityPlacer.doPlacement(stepScope);
-            Move nextStep = stepScope.getStep();
-            if (nextStep == null) {
-                logger.warn("    Cancelled step index ({}), time spend ({}): there is no doable move. Terminating phase early.",
-                        stepScope.getStepIndex(),
-                        phaseScope.calculateSolverTimeMillisSpend());
+            ConstructionHeuristicMoveScope moveScope =  entityPlacer.nominateMove(stepScope);
+            if (moveScope == null) {
+                // All entities have been placed
                 break;
+            } else {
+                Move step = moveScope.getMove();
+                stepScope.setStep(step);
+                if (logger.isDebugEnabled()) {
+                    stepScope.setStepString(step.toString());
+                }
+                stepScope.setUndoStep(moveScope.getUndoMove());
+                stepScope.setScore(moveScope.getScore());
             }
-            nextStep.doMove(stepScope.getScoreDirector());
-            // there is no need to recalculate the score, but we still need to set it
-            phaseScope.getWorkingSolution().setScore(stepScope.getScore());
-            if (assertStepScoreIsUncorrupted) {
-                phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
-                phaseScope.assertExpectedWorkingScore(stepScope.getScore());
-            }
+            doStep(stepScope);
             stepEnded(stepScope);
             stepScope = createNextStepScope(phaseScope, stepScope);
         }
@@ -92,6 +93,17 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         ConstructionHeuristicStepScope stepScope = new ConstructionHeuristicStepScope(phaseScope);
         stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
         return stepScope;
+    }
+
+    private void doStep(ConstructionHeuristicStepScope stepScope) {
+        ConstructionHeuristicSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+        stepScope.getStep().doMove(stepScope.getScoreDirector());
+        // there is no need to recalculate the score, but we still need to set it
+        phaseScope.getWorkingSolution().setScore(stepScope.getScore());
+        if (assertStepScoreIsUncorrupted) {
+            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
+            phaseScope.assertExpectedWorkingScore(stepScope.getScore());
+        }
     }
 
     @Override
