@@ -16,35 +16,6 @@
 
 package org.drools.integrationtests;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
 import org.drools.Address;
@@ -125,8 +96,8 @@ import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
+import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
@@ -158,6 +129,35 @@ import org.mockito.Mockito;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -10174,11 +10174,8 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
-    @Test(timeout = 10000)
-    @Ignore
-    // TODO: causes a StackOverflow - only way to fix it is make the node removal iterative instead of recursive
-            public void
-            testRemoveBigRule() throws Exception {
+    @Test
+    public void testRemoveBigRule() throws Exception {
         // JBRULES-3496
         String str =
                 "package org.test\n" +
