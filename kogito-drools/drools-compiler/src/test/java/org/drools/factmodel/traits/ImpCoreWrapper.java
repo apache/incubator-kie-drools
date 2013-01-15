@@ -28,19 +28,19 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp> {
 
     public Map<String, Object> getDynamicProperties() {
         if ( __$$dynamic_properties_map$$ == null ) {
-             __$$dynamic_properties_map$$ = new HashMap<String, Object>();
+             __$$dynamic_properties_map$$ = new VetoableTypedMap( new HashMap<String, Thing>() );
         }
         return __$$dynamic_properties_map$$;
     }
 
     public void setDynamicProperties(Map<String, Object> map) {
-        __$$dynamic_properties_map$$ = map;
+        __$$dynamic_properties_map$$ = new VetoableTypedMap( map );
     }
 
 
     public Map<String,Thing> getTraitMap() {
         if ( __$$dynamic_traits_map$$ == null ) {
-            __$$dynamic_traits_map$$ = new HashMap<String, Thing>();
+            __$$dynamic_traits_map$$ = new VetoableTypedMap( new HashMap<String, Thing>() );
         }
         return __$$dynamic_traits_map$$;
     }
@@ -67,6 +67,14 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp> {
 
     public Collection<String> getTraits() {
         return getTraitMap().keySet();
+    }
+
+    public void denyTrait(Class trait) throws LogicalTypeInconsistencyException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void allowTrait(Class trait) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
 //    public Map getTraits() {

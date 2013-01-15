@@ -74,7 +74,7 @@ public class TripleBasedTypes extends TripleBasedStruct {
 
     public Object put( String key, Object value ) {
         store.put( tripleFactory.newTriple( key, TripleStore.PROXY, value ), false );
-        Object ret =  store.add(property(TripleStore.TYPE, key));
+        Object ret =  store.add( property( TripleStore.TYPE, key ) );
         return ret;
     }
 
@@ -119,7 +119,7 @@ public class TripleBasedTypes extends TripleBasedStruct {
             Triple x = getProxyTripleByTraitType( t.getValue() );
             if ( x != null ) {
 //                values.add( store.get( tripleFactory.newTriple( t.getValue(), TripleStore.PROXY, null ) ).getValue() );
-                values.add( t.getValue() );
+                values.add( x.getValue() );
             }
         }
         return values;

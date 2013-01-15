@@ -63,7 +63,7 @@ public class JpaPersistenceTraitTest {
 
 
     @Test
-    public void testTraitsWithJPA() {
+    public void testTripleBasedTraitsWithJPA() {
         String str = "package org.drools.trait.test; \n" +
                 "global java.util.List list; \n" +
                 "" +
@@ -159,8 +159,6 @@ public class JpaPersistenceTraitTest {
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak" ) );
 
     }
-
-
 
 
 
@@ -265,8 +263,8 @@ public class JpaPersistenceTraitTest {
 
 
 
-    @Test
-    public void testTraitsLegacyWrapperWithJPA() {
+
+    public void traitsLegacyWrapperWithJPA( TraitFactory.VirtualPropertyMode mode ) {
         String str = "package org.drools.trait.test; \n" +
                 "global java.util.List list; \n" +
                 "" +                "" +
@@ -311,6 +309,7 @@ public class JpaPersistenceTraitTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        TraitFactory.setMode( mode, ksession.getKieBase() );
         List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal("list",
@@ -321,6 +320,17 @@ public class JpaPersistenceTraitTest {
         assertEquals( 1,
                 list.size() );
         int id = ksession.getId();
+
+
+        Collection yOld = ksession.getObjects();
+        TraitableBean coreOld = null;
+        for ( Object o : yOld ) {
+            if ( o instanceof TraitableBean ) {
+                coreOld = (TraitableBean) o;
+                break;
+            }
+        }
+        assertNotNull( coreOld );
 
 
         StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
@@ -344,4 +354,16 @@ public class JpaPersistenceTraitTest {
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
 
     }
+
+
+    @Test
+    public void testTraitsOnLegacyJPATriple() {
+        traitsLegacyWrapperWithJPA( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testTraitsOnLegacyJPAMap() {
+        traitsLegacyWrapperWithJPA( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
 }
