@@ -524,4 +524,30 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
 
         List<String> results = executeTestWithDRL(str);
     }
+
+    /**
+    * DROOLS-5
+    */ 
+    @Test
+    public void testNamedConsequenceAfterNotPattern() {
+        String str = "import org.drools.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $a: Cheese ( type == \"stilton\" )\n" +
+                "    not Cheese ( type == \"brie\" )\n" +
+                "    do[t1]\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "then\n" +
+                "    results.add( $b.getType() );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.getType() );\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+
+        assertFalse(kbuilder.hasErrors());
+    }
+    
 }
