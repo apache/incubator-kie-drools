@@ -79,8 +79,8 @@ public class LinkingTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
-        ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
-        ObjectTypeNode cotn = getObjectTypeNode(kbase, A.class );
+        ObjectTypeNode botn = getObjectTypeNode(kbase, B.class );
+        ObjectTypeNode cotn = getObjectTypeNode(kbase, C.class );
         
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         List list = new ArrayList();
@@ -601,7 +601,6 @@ public class LinkingTest {
     }      
     
     @Test
-    @Ignore
     public void testAccumulateNodes1() throws Exception {
         String str = "";
         str += "package org.kie \n";
@@ -653,7 +652,6 @@ public class LinkingTest {
     }       
     
     @Test
-    @Ignore
     public void testAccumulateNodes2() throws Exception {
         String str = "";
         str += "package org.kie \n";
@@ -682,7 +680,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        //kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( LRUnlinkingOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -764,23 +762,12 @@ public class LinkingTest {
         AgendaItem item = (AgendaItem) group.getNext();
         int count = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( wm );
         //assertEquals(3, count );
-                
-        agenda.addActivation( item, true );
-        agenda = ( DefaultAgenda ) wm.getAgenda();
-        group = (InternalAgendaGroup) agenda.getNextFocus();
-        item = (AgendaItem) group.getNext();
-        
-        agenda.fireActivation( item );
-        assertEquals( 1, list.size() );        
-        
-        agenda = ( DefaultAgenda ) wm.getAgenda();
-        group = (InternalAgendaGroup) agenda.getNextFocus();
-        item = (AgendaItem) group.getNext();
-        count = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( wm );
-        //assertEquals(0, count );        
         
         wm.fireAllRules();
-        assertEquals( 1, list.size() );        
+        assertEquals( 1, list.size() );             
+        
+        wm.fireAllRules();
+        assertEquals( 1, list.size() ); // check it doesn't double fire        
     }
     
     @Test
@@ -836,28 +823,31 @@ public class LinkingTest {
         wm.insert( new E() );
         wm.insert( new F() );
         
-        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
-        InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
-        AgendaItem item = (AgendaItem) group.getNext();
-        int count = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( wm );
-        //assertEquals(7, count ); // proves we correctly track nested sub network staged propagations
-                
-        agenda.addActivation( item, true );
-        agenda = ( DefaultAgenda ) wm.getAgenda();
-        group = (InternalAgendaGroup) agenda.getNextFocus();
-        item = (AgendaItem) group.getNext();
-        
-        agenda.fireActivation( item );
-        assertEquals( 1, list.size() );        
-        
-        agenda = ( DefaultAgenda ) wm.getAgenda();
-        group = (InternalAgendaGroup) agenda.getNextFocus();
-        item = (AgendaItem) group.getNext();
-        count = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( wm );
-        //assertEquals(0, count );        
+//        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
+//        InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
+//        AgendaItem item = (AgendaItem) group.getNext();
+//        int count = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( wm );
+//        //assertEquals(7, count ); // proves we correctly track nested sub network staged propagations
+//                
+//        agenda.addActivation( item, true );
+//        agenda = ( DefaultAgenda ) wm.getAgenda();
+//        group = (InternalAgendaGroup) agenda.getNextFocus();
+//        item = (AgendaItem) group.getNext();
+//        
+//        agenda.fireActivation( item );
+//        assertEquals( 1, list.size() );        
+//        
+//        agenda = ( DefaultAgenda ) wm.getAgenda();
+//        group = (InternalAgendaGroup) agenda.getNextFocus();
+//        item = (AgendaItem) group.getNext();
+//        count = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( wm );
+//        //assertEquals(0, count );        
         
         wm.fireAllRules();
-        assertEquals( 1, list.size() );        
+        assertEquals( 1, list.size() );
+        
+        wm.fireAllRules();
+        assertEquals( 1, list.size() );         
     }      
     
     public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {

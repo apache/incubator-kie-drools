@@ -92,4 +92,6 @@ public interface LeftTupleSink
     int getLeftInputOtnId();
 
     void setLeftInputOtnId(int leftInputOtnId);    
+    
+    long getLeftInferredMask();
 }

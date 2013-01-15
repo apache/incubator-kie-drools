@@ -126,6 +126,11 @@ public class RightInputAdapterNode extends ObjectSource
         
         if ( this.unlinkingEnabled ) {
             int segmentCount = 1;
+            if ( getLeftTupleSource().getSinkPropagator().size() > 1 ) {
+                // it's shared, RIAN is in it's own segment, so increase segmentCount
+                segmentCount++;
+            }
+            
             int segmentPosMask = 1;
             long allLinkedTestMask = 1; // set to one to cover current segment
             
@@ -163,8 +168,11 @@ public class RightInputAdapterNode extends ObjectSource
     }
     
     public LeftTuple createPeer(LeftTuple original) {
-        return null;
-    }    
+        JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
+    }     
 
     /**
      * Takes the asserted <code>ReteTuple</code> received from the <code>TupleSource</code> and
@@ -497,6 +505,11 @@ public class RightInputAdapterNode extends ObjectSource
             return NodeTypeEnums.RightInputAdaterNode;
         }
      
+    }
+
+    @Override
+    public long getLeftInferredMask() {
+        throw new UnsupportedOperationException();
     }
 
 }

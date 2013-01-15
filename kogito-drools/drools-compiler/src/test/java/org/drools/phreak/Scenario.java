@@ -189,7 +189,6 @@ public class Scenario {
         
         SegmentMemory smem = bm.getSegmentMemory();
         SegmentPropagator.propagate( smem, actualResultLeftTuples, wm );
-
         if ( testLeftMemory ) {
             equalsLeftMemory( leftMemory );
         }

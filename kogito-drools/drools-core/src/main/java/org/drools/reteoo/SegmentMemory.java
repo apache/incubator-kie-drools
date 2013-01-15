@@ -15,61 +15,70 @@ import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.phreak.SegmentPropagator;
 
-public class SegmentMemory extends LinkedList<SegmentMemory> implements LinkedListNode<SegmentMemory>{
-    private LeftTupleSource   rootNode;
-    private NetworkNode       tipNode;
-    
+public class SegmentMemory extends LinkedList<SegmentMemory>
+    implements
+    LinkedListNode<SegmentMemory> {
+    private NetworkNode        rootNode;
+    private NetworkNode        tipNode;
+
     private LinkedList<Memory> nodeMemories;
-    
-    private long              linkedNodeMask;
 
-    private long              allLinkedMaskTest;
+    private long               linkedNodeMask;
 
-    private List<RuleMemory>  ruleMemories;
+    private long               allLinkedMaskTest;
 
-    private long              segmentPosMaskBit;
-    
-    private int               pos;
+    private List<RuleMemory>   ruleMemories;
 
-    private StagedLeftTuples         stagedLeftTuples;    
+    private long               segmentPosMaskBit;
 
-    private int               counter;
+    private int                pos;
 
-    private boolean           active;
-    
-    private SegmentMemory     previous;
-    private SegmentMemory     next;
-    
+    private StagedLeftTuples   stagedLeftTuples;
 
-    public SegmentMemory(LeftTupleSource rootNode) {
+    private int                counter;
+
+    private boolean            active;
+
+    private SegmentMemory      previous;
+    private SegmentMemory      next;
+
+    public SegmentMemory(NetworkNode rootNode) {
         this.rootNode = rootNode;
         this.ruleMemories = new ArrayList<RuleMemory>( 1 );
-        this.nodeMemories = new LinkedList<Memory>(); 
-        
+        this.nodeMemories = new LinkedList<Memory>();
+
         this.stagedLeftTuples = new StagedLeftTuples();
     }
-        
-    public LeftTupleSource getRootNode() {
+
+    public NetworkNode getRootNode() {
         return rootNode;
     }
-    
+
     public NetworkNode getTipNode() {
         return tipNode;
     }
     
+    public void setSinkFactory(LeftTupleSink sink) {
+    }
+    
+    public LeftTupleSink getSinkFactory() {
+        return ( LeftTupleSink ) rootNode;
+    }
+
     public void setTipNode(NetworkNode tipNode) {
         this.tipNode = tipNode;
     }
-    
-    public Memory createNodeMemory(MemoryFactory memoryFactory, InternalWorkingMemory wm) {
-        Memory memory = wm.getNodeMemory( memoryFactory );        
+
+    public Memory createNodeMemory(MemoryFactory memoryFactory,
+                                   InternalWorkingMemory wm) {
+        Memory memory = wm.getNodeMemory( memoryFactory );
         nodeMemories.add( memory );
         return memory;
     }
-    
+
     public LinkedList<Memory> getNodeMemories() {
         return nodeMemories;
-    }    
+    }
 
     public long getLinkedNodeMask() {
         return linkedNodeMask;
@@ -90,7 +99,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory> implements LinkedLi
     public void notifyRuleLinkSegment(InternalWorkingMemory wm) {
         for ( int i = 0, length = ruleMemories.size(); i < length; i++ ) {
             // do not use foreach, don't want Iterator object creation
-            ruleMemories.get( i ).linkSegment( segmentPosMaskBit, wm );
+            ruleMemories.get( i ).linkSegment( segmentPosMaskBit,
+                                               wm );
         }
     }
 
@@ -99,7 +109,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory> implements LinkedLi
         if ( isSegmentLinked() ) {
             for ( int i = 0, length = ruleMemories.size(); i < length; i++ ) {
                 // do not use foreach, don't want Iterator object creation
-                ruleMemories.get( i ).unlinkedSegment( segmentPosMaskBit, wm );
+                ruleMemories.get( i ).unlinkedSegment( segmentPosMaskBit,
+                                                       wm );
             }
         }
         linkedNodeMask = linkedNodeMask ^ mask;
@@ -175,7 +186,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory> implements LinkedLi
 
     @Override
     public int hashCode() {
-        final int prime = 31;        
+        final int prime = 31;
         int result = prime * rootNode.getId();
         return result;
     }
@@ -188,9 +199,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory> implements LinkedLi
         SegmentMemory other = (SegmentMemory) obj;
         if ( rootNode == null ) {
             if ( other.rootNode != null ) return false;
-        } else if ( rootNode.getId() != other.rootNode.getId()) return false;
+        } else if ( rootNode.getId() != other.rootNode.getId() ) return false;
         return true;
-    } 
-    
-    
+    }
+
 }

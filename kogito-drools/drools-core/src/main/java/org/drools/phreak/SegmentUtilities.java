@@ -58,8 +58,8 @@ public class SegmentUtilities {
                 }
     
                 if ( betaNode.isRightInputIsRiaNode() ) {
-                    // we need to iterate to find correct pair
-                    // as there may be more than one set of sub networks, due to sharing.
+                    // we need to iterate to find correct pair, this happens if betaNode is rootNode.
+                    // As there may be more than one set of sub networks, due to sharing.
                     LeftTupleSinkNode sinkNode = betaNode.getLeftTupleSource().getSinkPropagator().getFirstLeftTupleSink();
                     while ( sinkNode.getNextLeftTupleSinkNode() != betaNode ) {
                         sinkNode = sinkNode.getNextLeftTupleSinkNode();
@@ -129,7 +129,7 @@ public class SegmentUtilities {
             }   
             
     	}		
-    	smem.setAllLinkedMaskTest( allLinkedTestMask );    
+    	smem.setAllLinkedMaskTest( allLinkedTestMask );    	
     	
     	// iterate to find root and determine the SegmentNodes position in the RuleSegment
         LeftTupleSource parent = segmentRoot;	
@@ -148,6 +148,31 @@ public class SegmentUtilities {
     	
     	SegmentUtilities.updateRiaAndTerminalMemory( 0, tupleSource, tupleSource, smem, wm );
     	return smem;
+    }
+
+    public static void createChildSegments(final InternalWorkingMemory wm,
+                                            SegmentMemory smem,
+                                            LeftTupleSinkPropagator sinkProp) {
+        for ( LeftTupleSinkNode sink = ( LeftTupleSinkNode ) sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+            if ( !( NodeTypeEnums.isTerminalNode( sink  ) || sink.getType() == NodeTypeEnums.RightInputAdaterNode ) ) {
+                SegmentMemory childSmem = createSegmentMemory( (LeftTupleSource) sink, wm);
+                smem.add( childSmem );    	            
+            } else {
+                // RTNS and RiaNode's have their own segment, if they are the child of a split.
+                SegmentMemory childSmem = new SegmentMemory(sink);
+                RuleMemory rmem;
+                if ( NodeTypeEnums.isTerminalNode( sink  ) ) {
+                    rmem = ( RuleMemory )  wm.getNodeMemory( (MemoryFactory) sink );
+                } else {
+                    rmem =  ((RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) sink )).getRiaRuleMemory();
+                }
+                rmem.getSegmentMemories()[ rmem.getSegmentMemories().length -1 ] = childSmem;
+                
+                childSmem.setTipNode( sink );
+                childSmem.setSinkFactory( sink );
+                smem.add( childSmem );
+            }
+        }
     }
 
     /**

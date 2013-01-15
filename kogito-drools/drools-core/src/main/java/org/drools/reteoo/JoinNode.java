@@ -204,12 +204,24 @@ public class JoinNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        if ( leftTuple.getMemory().isStagingMemory() ) {
-            leftTuple.getMemory().remove( leftTuple );
-        } else {
-            memory.getLeftTupleMemory().remove( leftTuple );
+        
+        if ( isUnlinkingEnabled() ) {
+            //SegmentMemory
+            //mdp (for tom) if it's shared sink, we don't know which segment LeftTuple is in (lianode or child node) ***
+            switch ( leftTuple.getStagedType() ) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT :
+                    //stagedLeftTuples.removeInsert( childLeftTuple );
+                    break;
+                case LeftTuple.UPDATE :
+                    //stagedLeftTuples.removeUpdate( childLeftTuple );
+                    break;
+            }
+            
+            return;
         }
+        
+        memory.getLeftTupleMemory().remove( leftTuple );
         leftTuple.setMemory( null );
         
         if ( leftTuple.getFirstChild() != null ) {

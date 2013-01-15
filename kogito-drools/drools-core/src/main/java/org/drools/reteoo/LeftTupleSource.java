@@ -32,7 +32,11 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.marshalling.impl.ProtobufMessages.NodeMemory;
+import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Pattern;
 import org.drools.spi.ClassWireable;
@@ -296,27 +300,11 @@ public abstract class LeftTupleSource extends BaseNode
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.setPropagationContext( context );
             
-//            // we skipped this node, due to alpha hashing, so retract now
-//            if ( leftTuple.getMemory() != null && leftTuple.getMemory().isStagingMemory() ) {  // can be null for RTN, or no unlinking
-//                // this is only possible when unlinking is enabled
-//                leftTuple.getMemory().remove( leftTuple ); // could be in liam staging or segmentmemory staging, but it shouldn't matter
-//                LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( (LeftInputAdapterNode) sink.getLeftTupleSource() );
-//                lm.setCounter( lm.getCounter() - 1 ); // we need this to track when we unlink
-//                if ( lm.getCounter() == 0 ) {
-//                    lm.unlinkNode( workingMemory );
-//                }                
-//            } else {
-//            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
-//                                                           context,
-//                                                           workingMemory );
-//            }
-            
+            // we skipped this node, due to alpha hashing, so retract now
             ((LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource()).retractLeftTuple( leftTuple,
                                                                                                          context,
                                                                                                          workingMemory );
-            
 
-            
             leftTuple = modifyPreviousTuples.peekLeftTuple();
         }
 
@@ -329,66 +317,20 @@ public abstract class LeftTupleSource extends BaseNode
                 sink.modifyLeftTuple( leftTuple,
                                       context,
                                       workingMemory );
-                
-//                if ( leftTuple.getMemory() == null || !leftTuple.getMemory().isStagingMemory() ) { // can be null for RTN, or unlinking is off                    
-//                    sink.modifyLeftTuple( leftTuple,
-//                                          context,
-//                                          workingMemory );
-//                } // else LeftTuple is still staged, hasn't propagated yet
             }
         } else {
             if ( intersect( context.getModificationMask(), leftInferredMask ) ) {
-                // LeftTuple does not exist, so create and continue as assert
-                
+                // LeftTuple does not exist, so create and continue as assert                
                 LeftTuple newLeftTuple = sink.createLeftTuple( factHandle,
                                                                sink,
                                                                true );
                 newLeftTuple.setPropagationContext( context );
                 
-//                LeftInputAdapterNode liaNode = ((LeftInputAdapterNode) sink.getLeftTupleSource());
-//                if ( liaNode.isUnlinkingEnabled() ) {
-//                    // Add it to the lia node for lazy propagation on linking
-//                    LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( liaNode );
-//                    if ( lm.getSegmentMemory() == null ) {
-//                        BetaNode.createNodeSegmentMemory( liaNode, workingMemory ); // initialises for all nodes in segment, including this one
-//                    }          
-//                    if ( lm.getStagedLeftTupleList().size() == 0 ) {
-//                        // link. We do this on staged tuples, instead of entire count, as the lazy agenda might need re-activating
-//                        lm.linkNode( workingMemory );
-//                    }            
-//                    lm.getStagedLeftTupleList().add( newLeftTuple );
-//                    lm.setCounter( lm.getCounter() + 1 ); // we need this to track when we unlink
-//                } else {
-//      
-//                }
                 sink.assertLeftTuple( newLeftTuple,
                                       context,
                                       workingMemory );
             }
         }
-
-        //        // cast is safe, as LIANode never has this method called
-        //        LeftTupleSink sink = (LeftTupleSink)this;
-        //        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple(sink);
-        //        if ( leftTuple != null ) {
-        //            leftTuple.reAdd();
-        //        }
-        //
-        //        if ( intersect(context.getModificationMask(), leftInferredMask) ) {
-        //            if ( leftTuple != null ) {
-        //                // LeftTuple previously existed, so continue as modify
-        //                sink.modifyLeftTuple( leftTuple,
-        //                        context,
-        //                        workingMemory );
-        //            } else {
-        //                // LeftTuple does not exist, so create and continue as assert
-        //                sink.assertLeftTuple( sink.createLeftTuple( factHandle,
-        //                                                            sink,
-        //                                                            true ),
-        //                                      context,
-        //                                      workingMemory );
-        //            }
-        //        }
     }
     
     public long getLeftDeclaredMask() {

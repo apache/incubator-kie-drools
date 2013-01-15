@@ -16,6 +16,8 @@
 
 package org.drools.reteoo;
 
+import static org.drools.core.util.BitMaskUtil.intersect;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -192,14 +194,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
             if ( lm.getSegmentMemory() == null ) {
                 SegmentUtilities.createSegmentMemory( this, workingMemory );
             }
-            LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
-            LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, leftTupleMemoryEnabled );
-            leftTuple.setPropagationContext( context );
-            if ( lm.getSegmentMemory().getStagedLeftTuples().insertSize() == 0 ) {
-                lm.linkNode( workingMemory );
-            }
-            lm.setCounter( lm.getCounter() + 1 );
-            lm.getSegmentMemory().getStagedLeftTuples().addInsert( leftTuple );
+            
+            doInsertObject( factHandle,
+                            context,
+                            this,
+                            leftTupleMemoryEnabled,
+                            workingMemory,
+                            lm );          
             return;
         } 
         
@@ -224,31 +225,73 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                                                          context ) );
         }
     }
-    
-    public static LeftTuple propagateLeftTuples(LeftInputAdapterNode liaNode, LeftTupleList list, int length, InternalWorkingMemory wm) {
-        LeftTuple leftTuple = list.getFirst();
-        for ( int i = 0; i < length; i++ ) {   
-            LeftTuple next =   ( LeftTuple ) leftTuple.getNext();                    
-            
-            leftTuple.setPrevious( null );
-            leftTuple.setNext( null );
-            leftTuple.setMemory( null );
-            
-            leftTuple.getLeftTupleSink().assertLeftTuple( leftTuple,  leftTuple.getPropagationContext(), wm );
-            leftTuple.getPropagationContext().evaluateActionQueue( wm );
-            leftTuple = next;                      
-        }       
-        return leftTuple;
-    }    
 
-    public void retractLeftTuple(LeftTuple leftTuple,
-                                 PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {
-        if ( isUnlinkingEnabled() ) {
-            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
-            SegmentMemory smem = lm.getSegmentMemory();
+    private static void doInsertObject(final InternalFactHandle factHandle,
+                                       final PropagationContext context,
+                                       final LeftInputAdapterNode liaNode,
+                                       final boolean leftTupleMemoryEnabled,
+                                       final InternalWorkingMemory workingMemory,
+                                       final LiaNodeMemory lm) {
+        SegmentMemory sm = lm.getSegmentMemory();
+        if ( sm.getTipNode() == liaNode && sm.isEmpty()) {
+            // liaNode in it's own segment and child segments not yet created
+            SegmentUtilities.createChildSegments( workingMemory, sm, liaNode.getSinkPropagator() );
+            sm = sm.getFirst(); // repoint to the child sm
+        }
+        
+        LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink() ;                 
+        LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, leftTupleMemoryEnabled );
+        leftTuple.setPropagationContext( context );
+        long mask = sink.getLeftInferredMask();
+        if ( mask == Long.MAX_VALUE ||
+                intersect( context.getModificationMask(),  mask) ) {
+                // mask check is necessary if insert is a result of a modify
+            sm.getStagedLeftTuples().addInsert( leftTuple );
+        }  
+        
+        if ( sm.getRootNode() != liaNode ) {
+            // sm points to lia child sm, so iterate for all remaining children 
             
-            StagedLeftTuples leftTuples = smem.getStagedLeftTuples();
+            for ( SegmentMemory childSm = sm.getNext(); childSm != null; childSm = childSm.getNext() ) {
+                sink =  childSm.getSinkFactory();                
+                leftTuple = sink.createPeer( leftTuple );
+                leftTuple.setPropagationContext( context );
+                mask = ((LeftTupleSink)childSm.getRootNode()).getLeftInferredMask();
+                if ( mask == Long.MAX_VALUE ||
+                        intersect( context.getModificationMask(),  mask) ) {
+                        // mask check is necessary if insert is a result of a modify
+                    childSm.getStagedLeftTuples().addInsert( leftTuple );
+                }
+            }              
+        }
+  
+        if ( lm.getAndIncreaseCounter() == 0 ) {
+            lm.linkNode( workingMemory );
+        };          
+    } 
+
+    private static void doDeleteObject(LeftTuple leftTuple,
+                                PropagationContext context,
+                                SegmentMemory smem,
+                                final InternalWorkingMemory wm,
+                                final LiaNodeMemory lm) {
+        StagedLeftTuples leftTuples = smem.getStagedLeftTuples();
+        switch ( leftTuple.getStagedType() ) {
+            // handle clash with already staged entries
+            case LeftTuple.INSERT:
+                leftTuples.removeInsert( leftTuple );
+                break;
+            case LeftTuple.UPDATE:
+                leftTuples.removeUpdate( leftTuple );
+                break;
+        }
+        leftTuple.setPropagationContext( context );
+        smem.getStagedLeftTuples().addDelete( leftTuple );
+        
+        for ( smem = smem.getNext(); smem != null; smem = smem.getNext() ) {
+            // iterate for peers segment memory
+            leftTuple = leftTuple.getPeer();
+            leftTuples = smem.getStagedLeftTuples();
             switch ( leftTuple.getStagedType() ) {
                 // handle clash with already staged entries
                 case LeftTuple.INSERT:
@@ -257,14 +300,71 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 case LeftTuple.UPDATE:
                     leftTuples.removeUpdate( leftTuple );
                     break;
-            }                        
-            
-            lm.setCounter( lm.getCounter() - 1 ); // we need this to track when we unlink
-            if ( lm.getCounter() == 0 ) {
-                lm.unlinkNode( workingMemory );
-            }    
-            return;
+            }
+            leftTuple.setPropagationContext( context );
+            leftTuples.addDelete( leftTuple );                
         }
+        
+        if ( lm.getAndDecreaseCounter() == 1 ) {
+            lm.unlinkNode( wm );
+        }         
+    }
+    
+    private static void doUpdateObject(LeftTuple leftTuple,
+                                       PropagationContext context,
+                                       SegmentMemory smem) {
+        StagedLeftTuples leftTuples = smem.getStagedLeftTuples();
+        
+        leftTuple.setPropagationContext( context );
+        if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
+            // if LeftTuple is already staged, leave it there
+            long mask = ((LeftTupleSink)smem.getRootNode()).getLeftInferredMask();
+            if ( mask == Long.MAX_VALUE ||
+                 intersect( context.getModificationMask(),  mask) ) {
+                // only add to staging if masks match
+                leftTuples.addUpdate( leftTuple );  
+            }
+        }
+
+        
+        for ( smem = smem.getNext(); smem != null; smem = smem.getNext() ) {
+            // iterate for peers segment memory
+            leftTuple = leftTuple.getPeer();
+            leftTuples = smem.getStagedLeftTuples();
+            
+            leftTuple.setPropagationContext( context );
+            if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
+                // if LeftTuple is already staged, leave it there
+                long mask =  ((LeftTupleSink) smem.getRootNode()).getLeftInferredMask();
+                if ( mask == Long.MAX_VALUE ||
+                     intersect( context.getModificationMask(),  mask) ) {
+                    // only add to staging if masks match
+                    leftTuples.addUpdate( leftTuple );  
+                }
+            }               
+        }
+    }    
+
+    public void retractLeftTuple(LeftTuple leftTuple,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+        if ( isUnlinkingEnabled() ) {
+            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+            SegmentMemory smem = lm.getSegmentMemory();
+            if ( smem.getTipNode() == this ) { 
+                // segment with only a single LiaNode in it, skip to next segment
+                // as a liaNode only segment has no staging
+                smem = smem.getFirst();
+            }
+           
+            doDeleteObject( leftTuple,
+                            context,
+                            smem,
+                            workingMemory,
+                            lm );
+               
+            return;
+        }            
         
         leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                        context,
@@ -276,20 +376,83 @@ public class LeftInputAdapterNode extends LeftTupleSource
                              final ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        this.sink.propagateModifyObject( factHandle,
-                                         modifyPreviousTuples,
-                                         context,
-                                         workingMemory );
+        if ( unlinkingEnabled ) {
+            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+            if ( lm.getSegmentMemory() == null ) {
+                SegmentUtilities.createSegmentMemory( this, workingMemory );
+            }
+            
+            SegmentMemory smem = lm.getSegmentMemory();
+            if ( smem.getTipNode() == this ) { 
+                // segment with only a single LiaNode in it, skip to next segment
+                // as a liaNode only segment has no staging
+                smem = smem.getFirst();
+            }
+            
+            //SegmentMemory sm = lm.getSegmentMemory();
+            //StagedLeftTuples staged = sm.getStagedLeftTuples();
+            
+            LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
+            while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() < getLeftInputOtnId() ) {
+                doDeleteObject( leftTuple, context, smem, workingMemory, lm );
+//                // delete
+//                modifyPreviousTuples.removeLeftTuple();
+//                leftTuple.setPropagationContext( context );
+//                leftTuple = modifyPreviousTuples.peekLeftTuple();
+//                switch ( leftTuple.getStagedType() ) {
+//                    // handle clash with already staged entries
+//                    case LeftTuple.INSERT :
+//                        staged.removeInsert( leftTuple );
+//                        break;
+//                    case LeftTuple.UPDATE :
+//                        staged.removeUpdate( leftTuple );
+//                        break;
+//                }
+//                staged.addDelete( leftTuple );
+            }
+
+            if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() == getLeftInputOtnId() ) {
+                doUpdateObject( leftTuple, context, smem );
+//                // update
+//                modifyPreviousTuples.removeLeftTuple();
+//                leftTuple.reAdd();
+//                leftTuple.setPropagationContext( context );    
+//                
+//                switch ( leftTuple.getStagedType() ) {
+//                    // handle clash with already staged entries
+//                    case LeftTuple.INSERT :
+//                        staged.removeInsert( leftTuple );
+//                        break;
+//                    case LeftTuple.UPDATE :
+//                        staged.removeUpdate( leftTuple );
+//                        break;
+//                }     
+//                staged.addUpdate( leftTuple );
+            } else {
+                // insert
+                doInsertObject( factHandle, context, this,
+                                leftTupleMemoryEnabled, workingMemory, lm);
+            }
+        } else {
+            this.sink.propagateModifyObject( factHandle,
+                                             modifyPreviousTuples,
+                                             context,
+                                             workingMemory );
+        }
     }
     
     public void byPassModifyToBetaNode(InternalFactHandle factHandle,
                                        ModifyPreviousTuples modifyPreviousTuples,
                                        PropagationContext context,
                                        InternalWorkingMemory workingMemory) {
-        this.sink.byPassModifyToBetaNode( factHandle,
-                                          modifyPreviousTuples,
-                                          context,
-                                          workingMemory );        
+        if ( unlinkingEnabled ) {
+            modifyObject(factHandle, modifyPreviousTuples, context, workingMemory);
+        } else {
+            this.sink.byPassModifyToBetaNode( factHandle,
+                                              modifyPreviousTuples,
+                                              context,
+                                              workingMemory );  
+        }
     }
 
     public void updateSink(final LeftTupleSink sink,
@@ -477,7 +640,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public static class LiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory { 
         private int                 counter;
         
-        private SegmentMemory        segmentMemory;
+        private SegmentMemory       segmentMemory;
 
         private long                nodePosMaskBit;     
         
@@ -489,6 +652,14 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return counter;
         }
 
+        public int getAndIncreaseCounter() {
+            return this.counter++;
+        }
+        
+        public int getAndDecreaseCounter() {
+            return this.counter--;
+        }        
+        
         public void setCounter(int counter) {
             this.counter = counter;
         }

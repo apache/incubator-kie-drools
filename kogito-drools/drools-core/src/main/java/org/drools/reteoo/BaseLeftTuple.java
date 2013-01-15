@@ -90,6 +90,15 @@ public class BaseLeftTuple
         }
         this.sink = sink;
     }
+    
+    public BaseLeftTuple(final InternalFactHandle factHandle,
+                         final LeftTuple leftTuple,
+                         final LeftTupleSink sink) {
+    this.handle = factHandle;
+    this.index = leftTuple.getIndex() + 1;
+    this.parent = leftTuple;   
+    this.sink = sink;
+}    
 
     public BaseLeftTuple(final LeftTuple leftTuple,
                              final LeftTupleSink sink,

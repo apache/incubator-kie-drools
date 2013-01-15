@@ -281,6 +281,7 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
             }
         }
 
+        System.out.println( leftTuple );
         boolean fire = agenda.createActivation( leftTuple, 
                                                 context, 
                                                 workingMemory, 
@@ -621,6 +622,12 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
 
     public Memory createMemory(RuleBaseConfiguration config) {
         int segmentCount = 1; // always atleast one segment
+        
+        if ( getLeftTupleSource().getSinkPropagator().size() > 1 ) {
+            // it's shared, RTN is in it's own segment, so increase segmentCount
+            segmentCount++;
+        }
+        
         int segmentPosMask = 1;
         long allLinkedTestMask = 1;        
         RuleMemory rmem = new RuleMemory(this);
@@ -646,7 +653,10 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
     }
 
     public LeftTuple createPeer(LeftTuple original) {
-        throw new UnsupportedOperationException();
-    }            
+        RuleTerminalNodeLeftTuple peer = new RuleTerminalNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
+    }           
 
 }

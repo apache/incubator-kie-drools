@@ -116,6 +116,10 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public long getInferredMask() {
         return inferredMask;
     }
+    
+    public long getLeftInferredMask() {
+        return inferredMask;
+    }
 
     public void setDeclaredMask(long mask) {
         declaredMask = mask;
