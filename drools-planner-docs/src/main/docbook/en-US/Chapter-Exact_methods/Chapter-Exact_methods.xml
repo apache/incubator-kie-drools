@@ -14,7 +14,7 @@
     even beyond toy problems) and are therefore mostly useless.</para>
   </section>
 
-  <section>
+  <section xml:id="bruteForce">
     <title>Brute Force</title>
 
     <section>
@@ -52,7 +52,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="depthFirstSearch">
     <title>Depth-first search</title>
 
     <section>

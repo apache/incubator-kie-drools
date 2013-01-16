@@ -16,7 +16,7 @@
     <literal>Termination</literal> on the construction heuristic phase specifically.</para>
   </section>
 
-  <section>
+  <section xml:id="firstFit">
     <title>First Fit</title>
 
     <section>
@@ -71,7 +71,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="firstFitDecreasing">
     <title>First Fit Decreasing</title>
 
     <section>
@@ -108,7 +108,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="bestFit">
     <title>Best Fit</title>
 
     <section>
@@ -140,7 +140,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="bestFitDecreasing">
     <title>Best Fit Decreasing</title>
 
     <section>
@@ -171,8 +171,24 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="cheapestInsertion">
     <title>Cheapest insertion</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>TODO</para>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>TODO Not implemented yet.</para>
+    </section>
+  </section>
+
+  <section xml:id="regretInsertion">
+    <title>Regret insertion</title>
 
     <section>
       <title>Algorithm description</title>

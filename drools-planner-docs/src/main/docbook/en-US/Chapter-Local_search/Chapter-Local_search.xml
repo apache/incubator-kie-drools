@@ -22,7 +22,7 @@
     it's recommended to configure a construction heuristic solver phase before it.</para>
   </section>
 
-  <section>
+  <section xml:id="hillClimbing">
     <title>Hill climbing (simple local search)</title>
 
     <section>
@@ -56,7 +56,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="tabuSearch">
     <title>Tabu search</title>
 
     <section>
@@ -78,7 +78,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="simulatedAnnealing">
     <title>Simulated annealing</title>
 
     <section>
@@ -100,7 +100,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="lateAcceptance">
     <title>Late acceptance</title>
 
     <section>

@@ -12,13 +12,13 @@
     <para>Evolutionary algorithms work on a population of solutions and evolve that population.</para>
   </section>
 
-  <section>
+  <section xml:id="evolutionaryStrategies">
     <title>Evolutionary Strategies</title>
 
     <para>This algorithm has not been implemented yet.</para>
   </section>
 
-  <section>
+  <section xml:id="geneticAlgorithms">
     <title>Genetic algorithms</title>
 
     <para>This algorithm has not been implemented yet.</para>

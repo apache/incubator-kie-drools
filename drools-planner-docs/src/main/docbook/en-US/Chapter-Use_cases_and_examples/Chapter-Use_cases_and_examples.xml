@@ -21,7 +21,7 @@
   <section>
     <title>Toy examples</title>
 
-    <section>
+    <section xml:id="nQueens">
       <title>N queens</title>
 
       <section>
@@ -250,7 +250,7 @@
       <para>This example is explained in <link linkend="cloudBalancingTutorial">a tutorial</link>.</para>
     </section>
 
-    <section>
+    <section xml:id="tsp">
       <title>Traveling salesman (TSP - Traveling salesman problem)</title>
 
       <section>
@@ -276,7 +276,7 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
       </section>
     </section>
 
-    <section>
+    <section xml:id="manners2009">
       <title>Manners 2009</title>
 
       <section>
@@ -547,7 +547,7 @@ F-n72-k4  has 1 depots,  4 vehicles and  71 customers with a search space of 10^
       </section>
     </section>
 
-    <section>
+    <section xml:id="pas">
       <title>Hospital bed planning (PAS - Patient admission scheduling)</title>
 
       <section>
@@ -631,7 +631,7 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
   <section>
     <title>Difficult examples</title>
 
-    <section>
+    <section xml:id="examination">
       <title>Exam timetabling (ITC 2007 track 1 - Examination)</title>
 
       <section>
@@ -766,7 +766,7 @@ exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period 
       </section>
     </section>
 
-    <section>
+    <section xml:id="nurseRostering">
       <title>Employee rostering (INRC 2010 - Nurse rostering)</title>
 
       <section>
@@ -872,7 +872,7 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
       </section>
     </section>
 
-    <section>
+    <section xml:id="travelingTournament">
       <title>Sport scheduling (TTP - Traveling tournament problem)</title>
 
       <section>
