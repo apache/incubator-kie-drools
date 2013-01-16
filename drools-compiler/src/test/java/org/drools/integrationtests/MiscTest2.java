@@ -395,4 +395,44 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+
+    @Test(timeout = 5000) @Ignore
+    public void testInfiniteLoopCausedByInheritance() throws Exception {
+        // DROOLS-13
+        String str =
+                "declare Parent\n" +
+                "    active : boolean\n" +
+                "end\n" +
+                " \n" +
+                "declare Child extends Parent\n" +
+                "end\n" +
+                " \n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Child( false ) );\n" +
+                "end\n" +
+                " \n" +
+                "rule \"Print\"\n" +
+                "when\n" +
+                "    $g : Child( active == true )\n" +
+                "then\n" +
+                "end\n" +
+                " \n" +
+                " \n" +
+                "rule \"Switch\"\n" +
+                "when\n" +
+                "    $item : Parent( active == false )\n" +
+                "then\n" +
+                "    modify ( $item ) {\n" +
+                "            setActive( true );\n" +
+                "    }\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+    }
+
+
 }
