@@ -23,6 +23,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.solution.Solution;
 
 /**
@@ -34,7 +35,7 @@ public class PlanningValueSorter {
     // TODO also keep PlanningEntityDescriptor and the valueRange descriptor?
 
     private Comparator<Object> strengthComparator = null;
-    private PlanningValueStrengthWeightFactory strengthWeightFactory = null;
+    private SelectionSorterWeightFactory strengthWeightFactory = null;
 
     public PlanningValueSorter() {
     }
@@ -43,7 +44,7 @@ public class PlanningValueSorter {
         this.strengthComparator = strengthComparator;
     }
 
-    public void setStrengthWeightFactory(PlanningValueStrengthWeightFactory strengthWeightFactory) {
+    public void setStrengthWeightFactory(SelectionSorterWeightFactory strengthWeightFactory) {
         this.strengthWeightFactory = strengthWeightFactory;
     }
 
@@ -57,7 +58,7 @@ public class PlanningValueSorter {
         } else if (strengthWeightFactory != null) {
             SortedMap<Comparable, Object> planningValueMap = new TreeMap<Comparable, Object>();
             for (Object planningValue : planningValueList) {
-                Comparable strengthWeight = strengthWeightFactory.createStrengthWeight(solution, planningValue);
+                Comparable strengthWeight = strengthWeightFactory.createSorterWeight(solution, planningValue);
                 Object previous = planningValueMap.put(strengthWeight, planningValue);
                 if (previous != null) {
                     throw new IllegalStateException("The planningValueList contains 2 times the same planningValue ("

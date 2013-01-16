@@ -2533,6 +2533,32 @@ After in *.java:
         ...
     }
 
+[MAJOR] The interface PlanningValueStrengthWeightFactory has been replaced by SelectionSorterWeightFactory.
+The method createStrengthWeight has been replaced by the method createSorterWeight.
+Sorting direction (strength ascending) has not changed.
+Before in *.java:
+    public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFactory {
+
+        public Comparable createStrengthWeight(Solution solution, Object planningValue) {
+            NQueens nQueens = (NQueens) solution;
+            Row row = (Queen) planningValue;
+            ...
+            return ...;
+        }
+
+        ...
+    }
+After in *.java:
+    public class RowStrengthWeightFactory implements SelectionSorterWeightFactory<NQueens, Row> {
+
+        public Comparable createSorterWeight(NQueens nQueens, Row row) {
+            ...
+            return ...;
+        }
+
+        ...
+    }
+
 [MAJOR] The EnvironmentMode DEBUG and TRACE have been renamed to FAST_ASSERT and FULL_ASSERT
 to avoid confusion with the logging levels debug and trace.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:

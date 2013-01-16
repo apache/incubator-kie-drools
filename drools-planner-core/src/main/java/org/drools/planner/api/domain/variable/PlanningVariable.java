@@ -22,6 +22,7 @@ import java.util.Comparator;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.score.director.ScoreDirector;
 
 import static java.lang.annotation.ElementType.*;
@@ -70,9 +71,16 @@ public @interface PlanningVariable {
 
     /**
      * Allows a collection of planning values for this variable to be sorted by strength.
+     * A strengthWeight estimates how strong a planning value is.
+     * Some algorithms benefit from planning on weaker planning values first or from focusing on them.
+     * <p/>
+     * The {@link Comparator} should sort in ascending strength.
+     * For example: sorting 3 computers on strength based on their RAM capacity:
+     * Computer B (1GB RAM), Computer A (2GB RAM), Computer C (7GB RAM),
      * <p/>
      * Do not use together with {@link #strengthWeightFactoryClass()}.
      * @return {@link NullStrengthComparator} when it is null (workaround for annotation limitation)
+     * @see #strengthWeightFactoryClass()
      */
     Class<? extends Comparator> strengthComparatorClass()
             default NullStrengthComparator.class;
@@ -80,16 +88,16 @@ public @interface PlanningVariable {
     interface NullStrengthComparator extends Comparator {}
 
     /**
-     * Allows a collection of planning values for this variable  to be sorted by strength.
+     * The {@link SelectionSorterWeightFactory} alternative for {@link #strengthComparatorClass()}.
      * <p/>
      * Do not use together with {@link #strengthComparatorClass()}.
      * @return {@link NullStrengthWeightFactory} when it is null (workaround for annotation limitation)
-     * @see PlanningValueStrengthWeightFactory
+     * @see #strengthComparatorClass()
      */
-    Class<? extends PlanningValueStrengthWeightFactory> strengthWeightFactoryClass()
+    Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass()
             default NullStrengthWeightFactory.class;
 
-    interface NullStrengthWeightFactory extends PlanningValueStrengthWeightFactory {}
+    interface NullStrengthWeightFactory extends SelectionSorterWeightFactory {}
 
     /**
      * In some use cases, such as Vehicle Routing, planning entities are chained.

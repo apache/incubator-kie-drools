@@ -18,16 +18,15 @@ package org.drools.planner.examples.nqueens.domain.solution;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
 import org.drools.planner.examples.nqueens.domain.Row;
 
-public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFactory {
+public class RowStrengthWeightFactory implements SelectionSorterWeightFactory<NQueens, Row> {
 
-    public Comparable createStrengthWeight(Solution solution, Object planningValue) {
-        NQueens nQueens = (NQueens) solution;
-        Row row = (Row) planningValue;
+    public Comparable createSorterWeight(NQueens nQueens, Row row) {
         int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), row.getIndex());
         return new RowStrengthWeight(row, distanceFromMiddle);
     }

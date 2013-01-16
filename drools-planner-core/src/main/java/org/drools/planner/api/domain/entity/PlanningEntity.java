@@ -68,7 +68,7 @@ public @interface PlanningEntity {
      * @return {@link NullDifficultyComparator} when it is null (workaround for annotation limitation)
      * @see #difficultyWeightFactoryClass()
      */
-    public Class<? extends Comparator> difficultyComparatorClass() default NullDifficultyComparator.class;
+    Class<? extends Comparator> difficultyComparatorClass() default NullDifficultyComparator.class;
     interface NullDifficultyComparator extends Comparator {}
 
     /**
@@ -78,7 +78,7 @@ public @interface PlanningEntity {
      * @return {@link NullDifficultyWeightFactory} when it is null (workaround for annotation limitation)
      * @see #difficultyComparatorClass()
      */
-    public Class<? extends SelectionSorterWeightFactory> difficultyWeightFactoryClass()
+    Class<? extends SelectionSorterWeightFactory> difficultyWeightFactoryClass()
             default NullDifficultyWeightFactory.class;
     interface NullDifficultyWeightFactory extends SelectionSorterWeightFactory {}
 

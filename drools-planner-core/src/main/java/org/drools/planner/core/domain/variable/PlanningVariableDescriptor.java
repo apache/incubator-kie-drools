@@ -30,6 +30,7 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.drools.planner.core.solution.Solution;
 
@@ -92,7 +93,7 @@ public class PlanningVariableDescriptor {
         if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;
         }
-        Class<? extends PlanningValueStrengthWeightFactory> strengthWeightFactoryClass
+        Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass
                 = planningVariableAnnotation.strengthWeightFactoryClass();
         if (strengthWeightFactoryClass == PlanningVariable.NullStrengthWeightFactory.class) {
             strengthWeightFactoryClass = null;
@@ -100,8 +101,8 @@ public class PlanningVariableDescriptor {
         if (strengthComparatorClass != null && strengthWeightFactoryClass != null) {
             throw new IllegalStateException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()  + ") property ("
-                    + variablePropertyAccessor.getName() + ") cannot have a strengthComparatorClass ("
-                    + strengthComparatorClass.getName()
+                    + variablePropertyAccessor.getName()
+                    + ") cannot have a strengthComparatorClass (" + strengthComparatorClass.getName()
                     + ") and a strengthWeightFactoryClass (" + strengthWeightFactoryClass.getName()
                     + ") at the same time.");
         }
@@ -111,7 +112,7 @@ public class PlanningVariableDescriptor {
             valueSorter.setStrengthComparator(strengthComparator);
         }
         if (strengthWeightFactoryClass != null) {
-            PlanningValueStrengthWeightFactory strengthWeightFactory = ConfigUtils.newInstance(this,
+            SelectionSorterWeightFactory strengthWeightFactory = ConfigUtils.newInstance(this,
                     "strengthWeightFactoryClass", strengthWeightFactoryClass);
             valueSorter.setStrengthWeightFactory(strengthWeightFactory);
         }
