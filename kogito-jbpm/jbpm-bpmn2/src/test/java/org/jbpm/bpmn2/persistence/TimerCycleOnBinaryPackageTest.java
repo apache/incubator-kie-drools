@@ -30,7 +30,9 @@ import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +76,7 @@ public class TimerCycleOnBinaryPackageTest {
         KnowledgeBase kbase = readKnowledgeBaseFromDisc();
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 
-        new JPAWorkingMemoryDbLogger(ksession);
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
         int sessionId = ksession.getId();
         
         final List<Long> list = new ArrayList<Long>();
@@ -97,7 +99,7 @@ public class TimerCycleOnBinaryPackageTest {
         ksession.dispose();
         
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kbase, null, env);
-        new JPAWorkingMemoryDbLogger(ksession);
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
         
         final List<Long> list2 = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
@@ -123,7 +125,7 @@ public class TimerCycleOnBinaryPackageTest {
         KnowledgeBase kbase = readKnowledgeBase();
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 
-        new JPAWorkingMemoryDbLogger(ksession);
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
         int sessionId = ksession.getId();
         
         final List<Long> list = new ArrayList<Long>();
@@ -146,7 +148,7 @@ public class TimerCycleOnBinaryPackageTest {
         ksession.dispose();
         
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kbase, null, env);
-        new JPAWorkingMemoryDbLogger(ksession);
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
         
         final List<Long> list2 = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
@@ -172,7 +174,7 @@ public class TimerCycleOnBinaryPackageTest {
         KnowledgeBase kbase = readKnowledgeBaseFromDiscDRL();
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 
-        new JPAWorkingMemoryDbLogger(ksession);
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
         int sessionId = ksession.getId();
 
         final List<String> list = new ArrayList<String>();
@@ -190,7 +192,7 @@ public class TimerCycleOnBinaryPackageTest {
         ksession.dispose();
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kbase, null, env);
-        new JPAWorkingMemoryDbLogger(ksession);
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
 
         final List<String> list2 = new ArrayList<String>();
         ksession.setGlobal("list", list2);
@@ -212,7 +214,7 @@ public class TimerCycleOnBinaryPackageTest {
         KnowledgeBase kbase = readKnowledgeBaseDRL();
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 
-        new JPAWorkingMemoryDbLogger(ksession);
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
         int sessionId = ksession.getId();
 
         final List<String> list = new ArrayList<String>();
@@ -230,7 +232,7 @@ public class TimerCycleOnBinaryPackageTest {
         ksession.dispose();
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kbase, null, env);
-        new JPAWorkingMemoryDbLogger(ksession);
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
 
         final List<String> list2 = new ArrayList<String>();
         ksession.setGlobal("list", list2);

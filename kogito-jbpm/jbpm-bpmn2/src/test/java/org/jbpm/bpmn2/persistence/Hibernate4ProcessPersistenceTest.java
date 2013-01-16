@@ -7,9 +7,11 @@ import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.junit.After;
 import org.junit.Before;
@@ -184,7 +186,7 @@ public class Hibernate4ProcessPersistenceTest {
         Environment env = createEnvironment(context);
     
         StatefulKnowledgeSession result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
-        new JPAWorkingMemoryDbLogger(result);
+        AuditLoggerFactory.newInstance(Type.JPA, result, null);
         JPAProcessInstanceDbLog.setEnvironment(result.getEnvironment());
         return result;
     }
@@ -196,7 +198,7 @@ public class Hibernate4ProcessPersistenceTest {
         env = createEnvironment(context);
         KieSessionConfiguration config = ksession.getSessionConfiguration();
         StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
-        new JPAWorkingMemoryDbLogger(result);
+        AuditLoggerFactory.newInstance(Type.JPA, result, null);
         return result;
     }
 

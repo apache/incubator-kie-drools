@@ -2,7 +2,9 @@ package org.jbpm.session;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.kie.KnowledgeBase;
@@ -46,7 +48,7 @@ public class StatefulKnowledgeSessionFactory {
 		StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 		JPAWorkingMemoryDbLogger historyLogger = null;
 		if (useHistoryLogger) {
-			historyLogger = new JPAWorkingMemoryDbLogger(ksession);
+			historyLogger = (JPAWorkingMemoryDbLogger) AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
 		}
 		
 		// TODO reuse internalTaskService (but deregister listeners)

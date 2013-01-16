@@ -11,9 +11,11 @@ import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.impl.EnvironmentFactory;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
+import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
@@ -260,7 +262,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 		if (sessionPersistence) {
 		    Environment env = createEnvironment(emf);
 		    result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, conf, env);
-		    new JPAWorkingMemoryDbLogger(result);
+		    AuditLoggerFactory.newInstance(Type.JPA, result, null);
 		    if (log == null) {
 		    	log = new JPAProcessInstanceDbLog(result.getEnvironment());
 		    }
@@ -313,7 +315,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 			// reload knowledge session 
 			ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
 			KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
-			new JPAWorkingMemoryDbLogger(ksession);
+			AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
 			return ksession;
 		} else {
 			return ksession;
@@ -328,7 +330,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
         
 	    StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, createEnvironment(emf));
         KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
-        new JPAWorkingMemoryDbLogger(ksession);
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
         
         return ksession;
 	}

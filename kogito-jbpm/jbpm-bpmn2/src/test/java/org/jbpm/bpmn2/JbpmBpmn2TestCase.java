@@ -18,9 +18,11 @@ import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.impl.EnvironmentFactory;
+import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -153,7 +155,7 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 		    Environment env = createEnvironment(context);
 		    
 		    StatefulKnowledgeSession result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
-		    new JPAWorkingMemoryDbLogger(result);
+		    AuditLoggerFactory.newInstance(Type.JPA, result, null);
 		    JPAProcessInstanceDbLog.setEnvironment(result.getEnvironment());
 		    return result;
 		} else {
@@ -185,7 +187,7 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 			}
 			KieSessionConfiguration config = ksession.getSessionConfiguration();
 			StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
-			new JPAWorkingMemoryDbLogger(result);
+			AuditLoggerFactory.newInstance(Type.JPA, result, null);
 			return result;
 		} else {
 			return ksession;

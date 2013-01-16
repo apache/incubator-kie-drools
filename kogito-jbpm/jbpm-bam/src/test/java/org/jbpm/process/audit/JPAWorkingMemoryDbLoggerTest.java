@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.io.impl.ClassPathResource;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
@@ -85,7 +86,9 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
         KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
         StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
-        new JPAWorkingMemoryDbLogger(session);
+        AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
+        assertNotNull(dblogger);
+        assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
         JPAProcessInstanceDbLog.setEnvironment(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
@@ -130,7 +133,9 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
         KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
         StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
-        new JPAWorkingMemoryDbLogger(session);
+        AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
+        assertNotNull(dblogger);
+        assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
         JPAProcessInstanceDbLog.setEnvironment(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
@@ -170,7 +175,9 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
         KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
         StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
-        new JPAWorkingMemoryDbLogger(session);
+        AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
+        assertNotNull(dblogger);
+        assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
         JPAProcessInstanceDbLog.setEnvironment(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
@@ -214,7 +221,9 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
         KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
         StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
-        new JPAWorkingMemoryDbLogger(session);
+        AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
+        assertNotNull(dblogger);
+        assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
         JPAProcessInstanceDbLog.setEnvironment(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
             public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -272,7 +281,9 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
         KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
         StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
-        new JPAWorkingMemoryDbLogger(session);
+        AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
+        assertNotNull(dblogger);
+        assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
         JPAProcessInstanceDbLog.setEnvironment(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
             public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -339,7 +350,9 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
         KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
         StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
-        new JPAWorkingMemoryDbLogger(session);
+        AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
+        assertNotNull(dblogger);
+        assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
         JPAProcessInstanceDbLog.setEnvironment(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
