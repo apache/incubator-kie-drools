@@ -794,49 +794,17 @@ public class Visit ... implements Appearance {
         // ...
     }</programlisting>
 
-        <programlisting language="java">public interface PlanningValueStrengthWeightFactory {
+        <para>See <link linkend="sortedSelection">Sorted Selection</link> for more information.</para>
 
-    Comparable createStrengthWeight(Solution solution, Object planningValue);
+        <important>
+          <para>Strength should be implemented ascending: weaker values are lower, stronger values are higher. For
+          example in bin packing: small container &lt; medium container &lt; big container.</para>
+        </important>
 
-}</programlisting>
-
-        <programlisting language="java">public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFactory {
-
-    public Comparable createStrengthWeight(Solution solution, Object planningValue) {
-        NQueens nQueens = (NQueens) solution;
-        Row row = (Row) planningValue;
-        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), row.getIndex());
-        return new RowStrengthWeight(row, distanceFromMiddle);
-    }
-
-    // ...
-
-    public static class RowStrengthWeight implements Comparable&lt;RowStrengthWeight&gt; {
-
-        private final Row row;
-        private final int distanceFromMiddle;
-
-        public RowStrengthWeight(Row row, int distanceFromMiddle) {
-            this.row = row;
-            this.distanceFromMiddle = distanceFromMiddle;
-        }
-
-        public int compareTo(RowStrengthWeight other) {
-            return new CompareToBuilder()
-                    // The stronger rows have a lower distance to the middle
-                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing (but this is debatable)
-                    .append(row.getIndex(), other.row.getIndex())
-                    .toComparison();
-        }
-
-    }
-
-}</programlisting>
-
-        <para><emphasis>None of the current planning variable state in any of the planning entities may be used to
-        compare planning values.</emphasis> They are likely to be <literal>null</literal> anyway. For example, none of
-        the <literal>row</literal> variables of any <literal>Queen</literal> may be used to determine the strength of a
-        <literal>Row</literal>.</para>
+        <para><emphasis>None of the current planning variable state in any of the planning entities should be used to
+        compare planning values.</emphasis> During construction heuristics, those variables are likely to be
+        <literal>null</literal> anyway. For example, none of the <literal>row</literal> variables of any
+        <literal>Queen</literal> may be used to determine the strength of a <literal>Row</literal>.</para>
       </section>
     </section>
 
@@ -1277,8 +1245,8 @@ public class Visit ... implements Appearance {
       <section>
         <title>FAST_ASSERT</title>
 
-        <para>The FAST_ASSERT mode is reproducible (see the reproducible mode) and also turns on most assertions
-        (such as assert that an undo Move's score is the same as before the Move) to fail-fast on a bug in your Move
+        <para>The FAST_ASSERT mode is reproducible (see the reproducible mode) and also turns on most assertions (such
+        as assert that an undo Move's score is the same as before the Move) to fail-fast on a bug in your Move
         implementation, your score rule, ...</para>
 
         <para>The FAST_ASSERT mode is slow.</para>
