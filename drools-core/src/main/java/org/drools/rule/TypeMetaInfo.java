@@ -7,6 +7,8 @@ public class TypeMetaInfo {
     private TypeDeclaration.Kind kind;
     private TypeDeclaration.Role role;
 
+    public static TypeMetaInfo DEFAULT_TYPE_META_INFO = new TypeMetaInfo();
+
     private TypeMetaInfo() { }
 
     public TypeMetaInfo(TypeDeclaration typeDeclaration) {
