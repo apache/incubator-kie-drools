@@ -1,21 +1,18 @@
 package org.kie.scanner;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.builder.ReleaseId;
-import org.kie.KieServices;
-import org.kie.builder.impl.InternalKieModule;
-import org.kie.builder.impl.KieBuilderImpl;
-
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import org.drools.rule.TypeMetaInfo;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.KieServices;
+import org.kie.builder.ReleaseId;
+import org.kie.builder.impl.InternalKieModule;
+
+import static junit.framework.Assert.*;
 
 public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
@@ -35,10 +32,16 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     public void testKieModuleMetaDataInMemoryWithTypeDeclaration() throws Exception {
         testKieModuleMetaDataInMemory(true);
     }
-    
+
     @Test
     public void testKieModuleMetaDataInMemoryUsingPOMWithTypeDeclaration() throws Exception {
-    	testKieModuleMetaDataInMemoryUsingPOM(true);
+        testKieModuleMetaDataInMemoryUsingPOM(true);
+    }
+
+    @Test
+    @Ignore("This test fails. kieModuleMetaData.getTypeMetaInfo should not return null for classes in dependencies.")
+    public void testKieModuleMetaDataForDependenciesInMemory() throws Exception {
+        testKieModuleMetaDataForDependenciesInMemory(false);
     }
 
     private void testKieModuleMetaDataInMemory(boolean useTypeDeclaration) throws Exception {
@@ -60,14 +63,14 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
             assertTrue(kieModuleMetaData.getTypeMetaInfo(beanClass).isEvent());
         }
     }
-    
+
     private void testKieModuleMetaDataInMemoryUsingPOM(boolean useTypeDeclaration) throws Exception {
-    	//Build a KieModule jar, deploy it into local Maven repository
+        //Build a KieModule jar, deploy it into local Maven repository
         KieServices ks = KieServices.Factory.get();
         ReleaseId dependency = ks.newReleaseId("org.drools", "drools-core", "5.5.0.Final");
         ReleaseId releaseId = ks.newReleaseId("org.kie", "metadata-test", "1.0-SNAPSHOT");
         InternalKieModule kieModule = createKieJarWithClass(ks, releaseId, useTypeDeclaration, 2, 7, dependency);
-        String pomText = getPom(dependency);        
+        String pomText = getPom(dependency);
         File pomFile = new File( System.getProperty( "java.io.tmpdir" ), MavenRepository.toFileName(releaseId, null) + ".pom");
         try {
             FileOutputStream fos = new FileOutputStream(pomFile);
@@ -81,7 +84,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         //Build a second KieModule, depends on the first KieModule jar which we have deployed into Maven
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "metadata-test-using-pom", "1.0-SNAPSHOT");
-        String pomText2 = getPom(releaseId2, releaseId);        
+        String pomText2 = getPom(releaseId2, releaseId);
         File pomFile2 = new File( System.getProperty( "java.io.tmpdir" ), MavenRepository.toFileName(releaseId2, null) + ".pom");
         try {
             FileOutputStream fos = new FileOutputStream(pomFile2);
@@ -90,7 +93,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
             fos.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }        
+        }
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(pomFile2);
         //checkDroolsCoreDep(kieModuleMetaData);
 
@@ -104,11 +107,34 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
             assertTrue(kieModuleMetaData.getTypeMetaInfo(beanClass).isEvent());
         }
     }
-    
+
     private void checkDroolsCoreDep(KieModuleMetaData kieModuleMetaData) {
         assertEquals(17, kieModuleMetaData.getClasses("org.drools.runtime").size());
         Class<?> statefulKnowledgeSessionClass = kieModuleMetaData.getClass("org.drools.runtime", "StatefulKnowledgeSession");
         assertTrue(statefulKnowledgeSessionClass.isInterface());
         assertEquals(2, statefulKnowledgeSessionClass.getDeclaredMethods().length);
+    }
+
+    private void testKieModuleMetaDataForDependenciesInMemory(boolean useTypeDeclaration) throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId dependency = ks.newReleaseId("org.drools", "drools-core", "5.5.0.Final");
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "metadata-test", "1.0-SNAPSHOT");
+
+        InternalKieModule kieModule = createKieJarWithClass(ks, releaseId, useTypeDeclaration, 2, 7, dependency);
+        KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule);
+        checkDroolsCoreDep(kieModuleMetaData);
+
+        Collection<String> testClasses = kieModuleMetaData.getClasses("org.drools");
+        assertEquals(55, testClasses.size());
+        Class<?> beanClass = kieModuleMetaData.getClass("org.drools", "QueryResult");
+        assertNotNull( beanClass );
+
+        //Classes in dependencies should have TypeMetaInfo
+        TypeMetaInfo beanTypeInfo = kieModuleMetaData.getTypeMetaInfo( beanClass);
+        assertNotNull( beanTypeInfo );
+
+        if (useTypeDeclaration) {
+            assertTrue(kieModuleMetaData.getTypeMetaInfo(beanClass).isEvent());
+        }
     }
 }
