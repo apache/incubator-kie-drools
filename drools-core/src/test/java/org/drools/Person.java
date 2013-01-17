@@ -43,6 +43,10 @@ public class Person {
     public Person() {
     }
     
+    public Person(String name) {
+        this.name = name;
+    }
+    
     public Person(final String name,
                   final int age) {
         this( name, age, null );

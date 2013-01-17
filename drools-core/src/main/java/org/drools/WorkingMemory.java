@@ -247,6 +247,11 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * Starts a new process instance for the process with the given id.
      */
     ProcessInstance startProcess(String processId, Map<String, Object> parameters);
+    
+    /**
+     * Starts a new process instance for the process with the given id and custom business key.
+     */
+    ProcessInstance startProcess(String processId, String businessKey, Map<String, Object> parameters);
 
     /**
      * Returns the list of process instances of this working memory.
@@ -260,6 +265,12 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return the process instance with the given id
      */
     public ProcessInstance getProcessInstance(long id);
+    
+    /**
+     * Returns the process instance identified by given businessKey.
+     * @return the process instance identified by given businesKey
+     */
+    public ProcessInstance getProcessInstance(String businessKey);
 
     public WorkItemManager getWorkItemManager();
 

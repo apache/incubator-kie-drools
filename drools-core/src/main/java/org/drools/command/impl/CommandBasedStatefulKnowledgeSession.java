@@ -41,6 +41,7 @@ import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.CreateProcessInstanceCommand;
 import org.drools.command.runtime.process.GetProcessEventListenersCommand;
+import org.drools.command.runtime.process.GetProcessInstanceByKeyCommand;
 import org.drools.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.command.runtime.process.GetProcessInstancesCommand;
 import org.drools.command.runtime.process.GetWorkItemCommand;
@@ -93,8 +94,8 @@ import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.RuleFlowGroup;
-import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.time.SessionClock;
 
 public class CommandBasedStatefulKnowledgeSession
@@ -116,6 +117,12 @@ public class CommandBasedStatefulKnowledgeSession
     public ProcessInstance getProcessInstance(long id) {
         GetProcessInstanceCommand command = new GetProcessInstanceCommand();
         command.setProcessInstanceId( id );
+        return commandService.execute( command );
+    }
+    
+    public ProcessInstance getProcessInstance(String businessKey) {
+        GetProcessInstanceByKeyCommand command = new GetProcessInstanceByKeyCommand();
+        command.setBusinessKey( businessKey );
         return commandService.execute( command );
     }
 
@@ -211,19 +218,30 @@ public class CommandBasedStatefulKnowledgeSession
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
+        return startProcess(processId, null, parameters);
+    }
+    
+    public ProcessInstance startProcess(String processId, String businessKey,  Map<String, Object> parameters) {
         StartProcessCommand command = new StartProcessCommand();
         command.setProcessId( processId );
         command.setParameters( parameters );
+        command.setBusinessKey(businessKey);
         return commandService.execute( command );
     }
 
 	public ProcessInstance createProcessInstance(String processId,
 			                                     Map<String, Object> parameters) {
+        return createProcessInstance(processId, null, parameters);
+	}
+	
+    public ProcessInstance createProcessInstance(String processId,
+            String businessKey, Map<String, Object> parameters) {
         CreateProcessInstanceCommand command = new CreateProcessInstanceCommand();
         command.setProcessId( processId );
         command.setParameters( parameters );
+        command.setBusinessKey(businessKey);
         return commandService.execute( command );
-	}
+    }
 
 	public ProcessInstance startProcessInstance(long processInstanceId) {
         StartProcessInstanceCommand command = new StartProcessInstanceCommand();

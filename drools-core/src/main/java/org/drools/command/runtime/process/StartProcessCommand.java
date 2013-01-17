@@ -50,6 +50,8 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance>, Ide
     private List<Object> data = null;
     @XmlAttribute(name="out-identifier")
     private String outIdentifier;
+    @XmlAttribute
+    private String businessKey;
 
     public StartProcessCommand() {
     }
@@ -117,7 +119,7 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance>, Ide
                 ksession.insert(o);
             }
         }
-        ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters);
+        ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, businessKey, parameters);
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put(this.outIdentifier,
                                                                                                                processInstance.getId());
@@ -138,5 +140,13 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance>, Ide
         }
         result += "]);";
         return result;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
     }
 }

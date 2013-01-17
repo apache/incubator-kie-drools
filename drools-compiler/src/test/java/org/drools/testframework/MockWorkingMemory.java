@@ -599,4 +599,17 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
+    @Override
+    public ProcessInstance startProcess(String processId, String businessKey,
+            Map<String, Object> parameters) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(String businessKey) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

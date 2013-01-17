@@ -871,4 +871,23 @@ public class StatefulKnowledgeSessionImpl
         return this.session.getLastIdleTimestamp();
     }
 
+    @Override
+    public ProcessInstance startProcess(String processId, String businessKey,
+            Map<String, Object> parameters) {
+        
+        return this.session.startProcess(processId, businessKey, parameters);
+    }
+
+    @Override
+    public ProcessInstance createProcessInstance(String processId,
+            String businessKey, Map<String, Object> parameters) {
+        
+        return this.session.createProcessInstance(processId, businessKey, parameters);
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(String businessKey) {        
+        return this.session.getProcessInstance(businessKey);
+    }
+
 }

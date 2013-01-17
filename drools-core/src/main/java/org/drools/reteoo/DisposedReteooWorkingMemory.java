@@ -551,4 +551,21 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
     public long getLastIdleTimestamp() {
         throw new IllegalStateException( ERRORMSG );
     }
+
+    @Override
+    public ProcessInstance startProcess(String processId, String businessKey,
+            Map<String, Object> parameters) {
+        throw new IllegalStateException( ERRORMSG );
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(String businessKey) {
+        throw new IllegalStateException( ERRORMSG );
+    }
+
+    @Override
+    public ProcessInstance createProcessInstance(String processId,
+            String businessKey, Map<String, Object> parameters) {
+        throw new IllegalStateException( ERRORMSG );
+    }
 }

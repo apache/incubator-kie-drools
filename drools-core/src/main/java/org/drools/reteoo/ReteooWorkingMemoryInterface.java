@@ -32,6 +32,8 @@ public interface ReteooWorkingMemoryInterface extends InternalWorkingMemoryActio
     void fireUntilHalt( AgendaFilter agendaFilterWrapper );
 
     ProcessInstance createProcessInstance( String processId, Map<String, Object> parameters );
+    
+    ProcessInstance createProcessInstance( String processId, String businessKey, Map<String, Object> parameters );
 
     ProcessInstance startProcessInstance( long processInstanceId );
 
