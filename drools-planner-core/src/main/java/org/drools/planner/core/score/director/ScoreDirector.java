@@ -102,6 +102,8 @@ public interface ScoreDirector {
      */
     List<Object> getWorkingPlanningEntityList();
 
+    int countWorkingSolutionUninitializedVariables();
+
     /**
      * @return true if the {@link Solution workingSolution} is initialized
      */

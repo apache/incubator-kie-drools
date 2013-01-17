@@ -113,10 +113,6 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getWorkingPlanningEntityList();
     }
 
-    public boolean isWorkingSolutionInitialized() {
-        return solverScope.isWorkingSolutionInitialized();
-    }
-
     public Score calculateScore() {
         return solverScope.calculateScore();
     }

@@ -22,6 +22,8 @@ public class CustomStepScope extends AbstractStepScope {
 
     private final CustomSolverPhaseScope phaseScope;
 
+    private int uninitializedVariableCount = -1;
+
     public CustomStepScope(CustomSolverPhaseScope phaseScope) {
         this.phaseScope = phaseScope;
     }
@@ -34,6 +36,14 @@ public class CustomStepScope extends AbstractStepScope {
     @Override
     public boolean isBestSolutionCloningDelayed() {
         return false;
+    }
+
+    public int getUninitializedVariableCount() {
+        return uninitializedVariableCount;
+    }
+
+    public void setUninitializedVariableCount(int uninitializedVariableCount) {
+        this.uninitializedVariableCount = uninitializedVariableCount;
     }
 
     // ************************************************************************

@@ -36,6 +36,11 @@ public class BruteForceStepScope extends AbstractStepScope {
         return false;
     }
 
+    @Override
+    public int getUninitializedVariableCount() {
+        return 0;
+    }
+
     // ************************************************************************
     // Calculated methods
     // ************************************************************************

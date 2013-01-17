@@ -116,7 +116,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         super.phaseStarted(phaseScope);
         decider.phaseStarted(phaseScope);
         // TODO maybe this restriction should be lifted to allow LocalSearch to initialize a solution too?
-        if (!phaseScope.isWorkingSolutionInitialized()) {
+        if (!phaseScope.getScoreDirector().isWorkingSolutionInitialized()) {
             throw new IllegalStateException("Phase localSearch started with an uninitialized Solution." +
                     " First initialize the Solution. For example, run a phase constructionHeuristic first.");
         }

@@ -57,6 +57,9 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
             CustomSolverPhaseCommand customSolverPhaseCommand = commandIterator.next();
             stepStarted(stepScope);
             customSolverPhaseCommand.changeWorkingSolution(solverScope.getScoreDirector());
+            int uninitializedVariableCount = solverScope.getSolutionDescriptor()
+                    .countUninitializedVariables(stepScope.getWorkingSolution());
+            stepScope.setUninitializedVariableCount(uninitializedVariableCount);
             Score score = customSolverPhaseScope.calculateScore();
             stepScope.setScore(score);
             stepEnded(stepScope);
@@ -91,8 +94,8 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         if (forceUpdateBestSolution && !bestScoreImproved) {
             DefaultSolverScope solverScope = stepScope.getPhaseScope().getSolverScope();
             Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-            boolean newBestSolutionInitialized = solverScope.isWorkingSolutionInitialized();
-            bestSolutionRecaller.updateBestSolution(solverScope, newBestSolution, newBestSolutionInitialized);
+            bestSolutionRecaller.updateBestSolution(solverScope,
+                    newBestSolution, stepScope.getUninitializedVariableCount());
         }
         CustomSolverPhaseScope customSolverPhaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {

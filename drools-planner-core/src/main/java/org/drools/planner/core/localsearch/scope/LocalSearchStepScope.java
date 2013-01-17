@@ -44,6 +44,11 @@ public class LocalSearchStepScope extends AbstractStepScope {
         return false;
     }
 
+    @Override
+    public int getUninitializedVariableCount() {
+        return 0;
+    }
+
     public double getTimeGradient() {
         return timeGradient;
     }

@@ -42,7 +42,7 @@ public class DefaultSolverScope {
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with setPlanningProblem
 
     protected Solution bestSolution;
-    protected boolean bestSolutionInitialized; // TODO remove me by folding me into bestSolution.getScore()
+    protected int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore()
     protected Score bestScore; // TODO remove me by folding me into bestSolution.getScore()
 
     public boolean isRestartSolver() {
@@ -87,10 +87,6 @@ public class DefaultSolverScope {
 
     public List<Object> getWorkingPlanningEntityList() {
         return scoreDirector.getWorkingPlanningEntityList();
-    }
-
-    public boolean isWorkingSolutionInitialized() {
-        return scoreDirector.isWorkingSolutionInitialized();
     }
 
     public Score calculateScore() {
@@ -141,12 +137,16 @@ public class DefaultSolverScope {
         this.bestSolution = bestSolution;
     }
 
-    public boolean isBestSolutionInitialized() {
-        return bestSolutionInitialized;
+    public int getBestUninitializedVariableCount() {
+        return bestUninitializedVariableCount;
     }
 
-    public void setBestSolutionInitialized(boolean bestSolutionInitialized) {
-        this.bestSolutionInitialized = bestSolutionInitialized;
+    public void setBestUninitializedVariableCount(int bestUninitializedVariableCount) {
+        if (bestUninitializedVariableCount < 0) {
+            throw new IllegalArgumentException("The bestUninitializedVariableCount ("
+                    + bestUninitializedVariableCount + ") cannot be negative.");
+        }
+        this.bestUninitializedVariableCount = bestUninitializedVariableCount;
     }
 
     public Score getBestScore() {
@@ -161,6 +161,10 @@ public class DefaultSolverScope {
     // Calculated methods
     // ************************************************************************
 
+    public boolean isBestSolutionInitialized() {
+        return bestUninitializedVariableCount == 0;
+    }
+
     public long calculateTimeMillisSpend() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
@@ -173,7 +177,7 @@ public class DefaultSolverScope {
     }
 
     public String getBestScoreWithUninitializedPrefix() {
-        return bestSolutionInitialized ? bestScore.toString() : "uninitialized/" + bestScore;
+        return isBestSolutionInitialized() ? bestScore.toString() : "uninitialized/" + bestScore;
     }
 
 }

@@ -44,6 +44,8 @@ public abstract class AbstractStepScope {
 
     public abstract boolean isBestSolutionCloningDelayed();
 
+    public abstract int getUninitializedVariableCount();
+
     public Score getScore() {
         return score;
     }

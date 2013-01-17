@@ -130,10 +130,10 @@ public class PlanningEntityDescriptor {
                             + ") has a PlanningVariable annotated property (" + propertyAccessor.getName()
                             + ") that should have a setter.");
                 }
-                PlanningVariableDescriptor planningVariableDescriptor = new PlanningVariableDescriptor(
+                PlanningVariableDescriptor variableDescriptor = new PlanningVariableDescriptor(
                         this, propertyAccessor);
-                planningVariableDescriptorMap.put(propertyAccessor.getName(), planningVariableDescriptor);
-                planningVariableDescriptor.processAnnotations();
+                planningVariableDescriptorMap.put(propertyAccessor.getName(), variableDescriptor);
+                variableDescriptor.processAnnotations();
             }
         }
         if (noPlanningVariableAnnotation) {
@@ -197,15 +197,25 @@ public class PlanningEntityDescriptor {
 
     public long getProblemScale(Solution solution, Object planningEntity) {
         long problemScale = 1L;
-        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptorMap.values()) {
-            problemScale *= planningVariableDescriptor.getProblemScale(solution, planningEntity);
+        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptorMap.values()) {
+            problemScale *= variableDescriptor.getProblemScale(solution, planningEntity);
         }
         return problemScale;
     }
 
+    public int countUninitializedVariables(Object planningEntity) {
+        int uninitializedVariableCount = 0;
+        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptorMap.values()) {
+            if (!variableDescriptor.isInitialized(planningEntity)) {
+                uninitializedVariableCount++;
+            }
+        }
+        return uninitializedVariableCount;
+    }
+
     public boolean isInitialized(Object planningEntity) {
-        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptorMap.values()) {
-            if (!planningVariableDescriptor.isInitialized(planningEntity)) {
+        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptorMap.values()) {
+            if (!variableDescriptor.isInitialized(planningEntity)) {
                 return false;
             }
         }

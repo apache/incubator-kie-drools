@@ -43,6 +43,15 @@ public class GreedyFitStepScope extends AbstractStepScope {
         return true;
     }
 
+    /**
+     * Should not be called because {@link #isBestSolutionCloningDelayed} return true
+     * @return throws exception
+     */
+    @Override
+    public int getUninitializedVariableCount() {
+        throw new UnsupportedOperationException();
+    }
+
     public Object getPlanningEntity() {
         return planningEntity;
     }

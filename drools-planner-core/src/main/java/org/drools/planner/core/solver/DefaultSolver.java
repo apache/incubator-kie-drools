@@ -227,9 +227,11 @@ public class DefaultSolver implements Solver {
                 problemFactChange = problemFactChangeQueue.poll();
             }
             Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-            // TODO BestSolutionRecaller.solverStarted() already calls isWorkingSolutionInitialized()
-            boolean newBestSolutionInitialized = solverScope.isWorkingSolutionInitialized();
-            bestSolutionRecaller.updateBestSolution(solverScope, newBestSolution, newBestSolutionInitialized);
+            // TODO BestSolutionRecaller.solverStarted() already calls countUninitializedVariables()
+            int newBestUninitializedVariableCount = solverScope.getSolutionDescriptor()
+                    .countUninitializedVariables(newBestSolution);
+            bestSolutionRecaller.updateBestSolution(solverScope,
+                    newBestSolution, newBestUninitializedVariableCount);
             logger.info("Done {} ProblemFactChange(s): new score ({}) possibly uninitialized. Restarting solver.",
                     count, score);
         }

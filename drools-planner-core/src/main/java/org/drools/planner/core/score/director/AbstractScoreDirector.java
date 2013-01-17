@@ -225,6 +225,10 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return getSolutionDescriptor().getPlanningEntityList(workingSolution);
     }
 
+    public int countWorkingSolutionUninitializedVariables() {
+        return getSolutionDescriptor().countUninitializedVariables(workingSolution);
+    }
+
     public boolean isWorkingSolutionInitialized() {
         return getSolutionDescriptor().isInitialized(workingSolution);
     }
