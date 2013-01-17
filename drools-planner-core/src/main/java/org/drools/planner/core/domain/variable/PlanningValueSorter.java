@@ -22,14 +22,10 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * Helper class for {@link PlanningValueStrengthWeightFactory}.
- * @see PlanningValueStrengthWeightFactory
- */
+@Deprecated
 public class PlanningValueSorter {
 
     // TODO also keep PlanningEntityDescriptor and the valueRange descriptor?

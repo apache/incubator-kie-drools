@@ -17,7 +17,6 @@
 package org.drools.planner.examples.curriculumcourse.domain.solver;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;

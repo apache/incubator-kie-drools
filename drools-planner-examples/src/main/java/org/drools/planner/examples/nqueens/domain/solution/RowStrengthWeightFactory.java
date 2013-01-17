@@ -17,7 +17,6 @@
 package org.drools.planner.examples.nqueens.domain.solution;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.nqueens.domain.NQueens;

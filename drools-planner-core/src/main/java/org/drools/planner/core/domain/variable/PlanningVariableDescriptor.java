@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRanges;
