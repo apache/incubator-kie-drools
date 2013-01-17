@@ -23,13 +23,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
-import org.kie.definition.process.Process;
-import org.kie.runtime.rule.Agenda;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.impl.XmlProcessDumper;
+import org.jbpm.process.core.impl.XmlProcessDumperFactory;
+import org.jbpm.process.core.impl.XmlProcessDumperFactoryService;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
+import org.kie.definition.process.Process;
+import org.kie.runtime.rule.Agenda;
 
 /**
  * Default implementation of a process instance.
@@ -43,6 +46,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
 	private long id;
     private String processId;
     private transient Process process;
+    private String processXml;
     private int state = STATE_PENDING;
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
@@ -62,10 +66,32 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         this.processId = process.getId();
         this.process = ( Process ) process;
     }
+    
+    public void updateProcess(final Process process) {
+    	setProcess(process);
+    	XmlProcessDumper dumper = XmlProcessDumperFactory.newXmlProcessDumperFactory();
+    	this.processXml = dumper.dumpProcess(process);
+    }
+    
+    public String getProcessXml() {
+    	return processXml;
+    }
+    
+    public void setProcessXml(String processXml) {
+    	if (processXml != null && processXml.trim().length() > 0) {
+        	System.out.println("setProcessXml " + processXml);
+    		this.processXml = processXml;
+    	}
+    }
 
     public Process getProcess() {
         if (this.process == null) {
-            this.process = kruntime.getKieBase().getProcess(processId);
+        	if (processXml == null) {
+        		this.process = kruntime.getKieBase().getProcess(processId);
+        	} else {
+    	    	XmlProcessDumper dumper = XmlProcessDumperFactory.newXmlProcessDumperFactory();
+        		this.process = dumper.readProcess(processXml);
+        	}
         }
         return this.process;
     }

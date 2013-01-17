@@ -16,6 +16,7 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,9 +28,11 @@ import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
+import org.drools.xml.SemanticModules;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
@@ -38,6 +41,8 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.impl.ProcessImpl;
+import org.jbpm.process.core.impl.XmlProcessDumper;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -56,9 +61,10 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.definition.process.Connection;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.NodeContainer;
+import org.kie.definition.process.Process;
 import org.kie.definition.process.WorkflowProcess;
 
-public class XmlBPMNProcessDumper {
+public class XmlBPMNProcessDumper implements XmlProcessDumper {
 	
 	public static final String JAVA_LANGUAGE = "http://www.java.com/java";
 	public static final String MVEL_LANGUAGE = "http://www.mvel.org/2.0";
@@ -792,5 +798,26 @@ public class XmlBPMNProcessDumper {
         }
         return sb.toString();
     }
+
+	@Override
+	public String dumpProcess(Process process) {
+		return dump((WorkflowProcess) process, false);
+	}
+
+	@Override
+	public Process readProcess(String processXml) {
+		SemanticModules semanticModules = new SemanticModules();
+        semanticModules.addSemanticModule(new BPMNSemanticModule());
+	    semanticModules.addSemanticModule(new BPMNExtensionsSemanticModule());
+        semanticModules.addSemanticModule(new BPMNDISemanticModule());
+        XmlProcessReader xmlReader = new XmlProcessReader(semanticModules, Thread.currentThread().getContextClassLoader());
+        try {
+        	List<Process> processes = xmlReader.read(new StringReader(processXml));
+            return processes.get(0);
+        } catch (Throwable t) {
+        	t.printStackTrace();
+        	return null;
+        }
+	}
     
 }

@@ -39,6 +39,7 @@ message ProcessInstance {
     optional string process_id = 3;
     optional int32 state = 4;
     optional int64 node_instance_counter = 5;
+    optional string process_xml = 11;
 
     repeated SwimlaneContextInstance swimlane_context = 6;
     repeated NodeInstance node_instance = 7;

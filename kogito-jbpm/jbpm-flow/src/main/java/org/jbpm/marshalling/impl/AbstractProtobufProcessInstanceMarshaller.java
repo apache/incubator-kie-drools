@@ -86,6 +86,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 .setState( workFlow.getState() )
                 .setNodeInstanceCounter( workFlow.getNodeInstanceCounter() )
                 .setProcessType( workFlow.getProcess().getType() );
+        if (workFlow.getProcessXml() != null) {
+            _instance.setProcessXml( workFlow.getProcessXml());
+        }
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
         if ( swimlaneContextInstance != null ) {
@@ -393,8 +396,13 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setId( _instance.getId() );
         String processId = _instance.getProcessId();
         processInstance.setProcessId( processId );
-        Process process = ruleBase.getProcess( processId );
-        if ( ruleBase != null ) {
+        String processXml = _instance.getProcessXml();
+        Process process = null;
+        if (processXml != null && processXml.trim().length() > 0) {
+        	processInstance.setProcessXml( processXml );
+        	process = processInstance.getProcess();
+        } else {
+            process = ruleBase.getProcess( processId );
             processInstance.setProcess( process );
         }
         processInstance.setState( _instance.getState() );

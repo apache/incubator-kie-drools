@@ -87,11 +87,13 @@ public class JPAProcessInstanceManager
         processInstanceInfo.updateLastReadDate();
         processInstance = (org.jbpm.process.instance.ProcessInstance)
         	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment());
-        Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );
-        if ( process == null ) {
-            throw new IllegalArgumentException( "Could not find process " + processInstance.getProcessId() );
+        if (((ProcessInstanceImpl) processInstance).getProcessXml() == null) {
+	        Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );
+	        if ( process == null ) {
+	            throw new IllegalArgumentException( "Could not find process " + processInstance.getProcessId() );
+	        }
+	        processInstance.setProcess( process );
         }
-        processInstance.setProcess( process );
         if ( processInstance.getKnowledgeRuntime() == null ) {
             Long parentProcessInstanceId = (Long) ((ProcessInstanceImpl) processInstance).getMetaData().get("ParentProcessInstanceId");
             if (parentProcessInstanceId != null) {

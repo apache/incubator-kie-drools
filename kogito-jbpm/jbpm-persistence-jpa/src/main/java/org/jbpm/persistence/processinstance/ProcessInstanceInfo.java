@@ -1,19 +1,45 @@
 package org.jbpm.persistence.processinstance;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.event.ProcessEventSupport;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.marshalling.impl.*;
-import org.jbpm.marshalling.impl.*;
+import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.PersisterHelper;
+import org.drools.marshalling.impl.ProtobufMarshaller;
+import org.jbpm.marshalling.impl.JBPMMessages;
+import org.jbpm.marshalling.impl.ProcessInstanceMarshaller;
+import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
+import org.jbpm.marshalling.impl.ProtobufRuleFlowProcessInstanceMarshaller;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.kie.definition.process.WorkflowProcess;
 import org.kie.runtime.Environment;
 import org.kie.runtime.process.ProcessInstance;
 
