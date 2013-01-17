@@ -57,4 +57,6 @@ public interface KnowledgeDataService {
     
     Collection<VariableStateDesc> getVariableHistory(long processInstanceId, String variableId);
 
+    Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId);
+
 }
