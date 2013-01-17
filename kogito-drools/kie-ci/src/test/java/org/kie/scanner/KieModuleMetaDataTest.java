@@ -1,10 +1,5 @@
 package org.kie.scanner;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Collection;
-
 import org.drools.rule.TypeMetaInfo;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,7 +7,14 @@ import org.kie.KieServices;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.impl.InternalKieModule;
 
-import static junit.framework.Assert.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collection;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
@@ -39,7 +41,6 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     }
 
     @Test
-    @Ignore("This test fails. kieModuleMetaData.getTypeMetaInfo should not return null for classes in dependencies.")
     public void testKieModuleMetaDataForDependenciesInMemory() throws Exception {
         testKieModuleMetaDataForDependenciesInMemory(false);
     }

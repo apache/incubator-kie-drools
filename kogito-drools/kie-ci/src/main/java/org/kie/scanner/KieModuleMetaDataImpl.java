@@ -27,6 +27,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
+import static org.drools.rule.TypeMetaInfo.DEFAULT_TYPE_META_INFO;
 import static org.drools.rule.TypeMetaInfo.unmarshallMetaInfos;
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
 
@@ -90,7 +91,8 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     public TypeMetaInfo getTypeMetaInfo(Class<?> clazz) {
-        return typeMetaInfos.get(clazz.getName());
+        TypeMetaInfo typeMetaInfo = typeMetaInfos.get(clazz.getName());
+        return typeMetaInfo != null ? typeMetaInfo : DEFAULT_TYPE_META_INFO;
     }
 
     private ClassLoader getClassLoader() {
