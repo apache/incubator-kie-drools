@@ -7,7 +7,7 @@ import static org.drools.phreak.Pair.t;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.StagedLeftTuples;
+import org.drools.common.LeftTupleSets;
 import org.drools.phreak.RuleNetworkEvaluatorActivation.PhreakJoinNode;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;

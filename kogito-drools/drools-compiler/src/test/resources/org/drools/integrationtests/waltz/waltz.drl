@@ -116,6 +116,7 @@ rule "detecting done" salience -10
         //sysout.println("detecting done");
 end
 
+
 //If the initial boundary junction is an L, then we know it's labelling
 rule "initial boundary junction L"
     when
@@ -509,3 +510,6 @@ rule "done plotting" salience -10
         update( $stage );
         //sysout.println("Stage: done");
 end
+
+
+

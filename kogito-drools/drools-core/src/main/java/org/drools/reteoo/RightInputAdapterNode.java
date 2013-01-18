@@ -31,6 +31,7 @@ import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.marshalling.impl.ProtobufInputMarshaller;
 import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
@@ -139,7 +140,7 @@ public class RightInputAdapterNode extends ObjectSource
             //int associationCount = tupleSource.getAssociations().size();        
             while ( tupleSource != null && tupleSource != getStartTupleSource() ) {
                 if ( tupleSource.getLeftTupleSource() !=  getStartTupleSource() &&
-                        !BetaNode.parentInSameSegment( tupleSource ) ) {
+                        !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
                     //associationCount = tupleSource.getAssociations().size();
                     segmentPosMask = segmentPosMask << 1;                
                     allLinkedTestMask = allLinkedTestMask | segmentPosMask;  
@@ -152,7 +153,7 @@ public class RightInputAdapterNode extends ObjectSource
             // This is because the RIANode mask only cares about nodes in it's subnetwork, 
             // but offsets are still calculated from root
             while (tupleSource != null ) {
-                if ( !BetaNode.parentInSameSegment( tupleSource ) ) {
+                if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
                     allLinkedTestMask = allLinkedTestMask << 1;   
                     segmentCount++;
                 }
@@ -498,7 +499,7 @@ public class RightInputAdapterNode extends ObjectSource
         }
         
         public SegmentMemory getSegmentMemory() {
-            throw new UnsupportedOperationException();
+            return ruleSegments.getSegmentMemory();
         }        
         
         public short getNodeType() {

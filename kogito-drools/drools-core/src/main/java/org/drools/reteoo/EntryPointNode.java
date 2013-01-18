@@ -72,7 +72,9 @@ public class EntryPointNode extends ObjectSource
     
     private ObjectTypeNode queryNode;
     
-    private ObjectTypeNode activationNode;   
+    private ObjectTypeNode activationNode;
+
+    private boolean unlinkingEnabled;   
 
     // ------------------------------------------------------------
     // Constructors
@@ -103,6 +105,8 @@ public class EntryPointNode extends ObjectSource
                999 ); // irrelevant for this node, since it overrides sink management
         this.entryPoint = entryPoint;
         this.objectTypeNodes = new ConcurrentHashMap<ObjectType, ObjectTypeNode>();
+        
+        this.unlinkingEnabled = ((Rete)objectSource).getRuleBase().getConfiguration().isUnlinkingEnabled();
     }
 
     // ------------------------------------------------------------
@@ -171,7 +175,7 @@ public class EntryPointNode extends ObjectSource
          }
          
          if ( queryNode != null ) {
-             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple() );
+             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), unlinkingEnabled );
              factHandle.clearLeftTuples();
              factHandle.clearRightTuples();
              
@@ -215,7 +219,7 @@ public class EntryPointNode extends ObjectSource
          }
          
          if ( activationNode != null ) {
-             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple() );
+             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), unlinkingEnabled );
              factHandle.clearLeftTuples();
              factHandle.clearRightTuples();
              
@@ -260,7 +264,7 @@ public class EntryPointNode extends ObjectSource
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
         
         // make a reference to the previous tuples, then null then on the handle
-        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(handle.getFirstLeftTuple(), handle.getFirstRightTuple() );
+        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(handle.getFirstLeftTuple(), handle.getFirstRightTuple(), unlinkingEnabled );
         handle.clearLeftTuples();
         handle.clearRightTuples();
         

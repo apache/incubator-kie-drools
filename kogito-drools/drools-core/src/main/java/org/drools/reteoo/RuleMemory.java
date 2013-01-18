@@ -22,6 +22,8 @@ public class RuleMemory  extends AbstractBaseLinkedListNode<Memory>
     
     private SegmentMemory[]                segmentMemories;
 
+    private SegmentMemory                  segmentMemory;
+
     public RuleMemory(RuleTerminalNode rtn) {
         this.rtn = rtn;
     }
@@ -78,7 +80,15 @@ public class RuleMemory  extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void doUnlinkRule(InternalWorkingMemory wm) {
-        ((InternalAgenda) wm.getAgenda()).removeActivation( agendaItem );
+        if ( agendaItem == null ) {
+            int salience = rtn.getRule().getSalience().getValue( null,
+                                                                 rtn.getRule(),
+                                                                 wm );
+            agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleNetworkEvaluatorActivation( salience, this, rtn );
+        } else if ( !agendaItem.isActive() ) {
+            ((InternalAgenda) wm.getAgenda()).addActivation( agendaItem );
+        }
+        //((InternalAgenda) wm.getAgenda()).removeActivation( agendaItem );
     }
 
     public void unlinkedSegment(long mask,
@@ -105,8 +115,12 @@ public class RuleMemory  extends AbstractBaseLinkedListNode<Memory>
         this.segmentMemories = segmentMemories;
     }
 
+    public void setSegmentMemory(SegmentMemory sm) {
+        this.segmentMemory = sm;
+    }
+    
     public SegmentMemory getSegmentMemory() {
-        throw new UnsupportedOperationException();
+        return this.segmentMemory;
     }    
 
 }

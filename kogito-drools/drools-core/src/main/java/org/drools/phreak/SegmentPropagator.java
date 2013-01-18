@@ -5,7 +5,7 @@ import static org.drools.core.util.BitMaskUtil.intersect;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
-import org.drools.common.StagedLeftTuples;
+import org.drools.common.LeftTupleSets;
 import org.drools.reteoo.CompositeLeftTupleSinkAdapter;
 import org.drools.reteoo.EvalConditionNode;
 import org.drools.reteoo.LeftTuple;
@@ -107,7 +107,7 @@ public class SegmentPropagator {
 //        }
 //    }
 //    
-    public static void propagate(SegmentMemory sourceSegment, StagedLeftTuples stagedLeftTuples, InternalWorkingMemory wm) {
+    public static void propagate(SegmentMemory sourceSegment, LeftTupleSets stagedLeftTuples, InternalWorkingMemory wm) {
         LeftTupleSource source = ( LeftTupleSource )  sourceSegment.getTipNode();
         
         if ( sourceSegment.isEmpty() ) {
@@ -117,7 +117,7 @@ public class SegmentPropagator {
         processPeers(sourceSegment, stagedLeftTuples);
     }    
     
-    public static void processPeers(SegmentMemory sourceSegment, StagedLeftTuples leftTuples) {    
+    public static void processPeers(SegmentMemory sourceSegment, LeftTupleSets leftTuples) {    
         
         // Process Deletes
         SegmentMemory firstSmem = sourceSegment.getFirst();
@@ -126,7 +126,7 @@ public class SegmentPropagator {
                 SegmentMemory smem = firstSmem.getNext();
                 if ( smem != null ) {
                     for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
-                        StagedLeftTuples stagedLeftTuples = smem.getStagedLeftTuples();
+                        LeftTupleSets stagedLeftTuples = smem.getStagedLeftTuples();
                         switch ( peer.getStagedType() ) {
                             // handle clash with already staged entries
                             case LeftTuple.INSERT:
@@ -141,7 +141,7 @@ public class SegmentPropagator {
                     }
                 }
             }
-            firstSmem.getStagedLeftTuples().addAllDeletes( leftTuples.getDeleteFirst() );
+            firstSmem.getStagedLeftTuples().addAllDeletes( leftTuples );
         }
         
         // Process Updates        
@@ -151,7 +151,7 @@ public class SegmentPropagator {
                 SegmentMemory smem = firstSmem.getNext();
                 if ( smem != null ) {                
                     for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
-                        StagedLeftTuples stagedLeftTuples = smem.getStagedLeftTuples();
+                        LeftTupleSets stagedLeftTuples = smem.getStagedLeftTuples();
                         switch ( peer.getStagedType() ) {
                             // handle clash with already staged entries
                             case LeftTuple.INSERT:
@@ -163,7 +163,7 @@ public class SegmentPropagator {
                     }
                 }            
             }   
-            firstSmem.getStagedLeftTuples().addAllUpdates( leftTuples.getUpdateFirst() );
+            firstSmem.getStagedLeftTuples().addAllUpdates( leftTuples );
         }
         
         // Process Inserts
@@ -179,11 +179,11 @@ public class SegmentPropagator {
                     }
                 }           
             }
-            firstSmem.getStagedLeftTuples().addAllInserts( leftTuples.getInsertFirst() );
+            firstSmem.getStagedLeftTuples().addAllInserts( leftTuples );
         }
     }
     
-    public static void processPeers(StagedLeftTuples leftTuples, StagedLeftTuples peerLeftTuples, LeftTupleSink sink) {    
+    public static void processPeers(LeftTupleSets leftTuples, LeftTupleSets peerLeftTuples, LeftTupleSink sink) {    
         
         // Process Deletes
         for ( LeftTuple leftTuple = leftTuples.getDeleteFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {

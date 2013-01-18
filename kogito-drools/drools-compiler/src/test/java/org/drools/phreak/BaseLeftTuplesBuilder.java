@@ -2,7 +2,7 @@ package org.drools.phreak;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.StagedLeftTuples;
+import org.drools.common.LeftTupleSets;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleImpl;
@@ -14,14 +14,14 @@ import org.drools.reteoo.SegmentMemory;
 public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
     protected InternalWorkingMemory wm;
     protected LeftTupleSink         sink;
-    protected StagedLeftTuples      leftTuples;
+    protected LeftTupleSets      leftTuples;
     protected Scenario              scenario;
     
     private boolean testStagedInsert;
     private boolean testStagedDelete;
     private boolean testStagedUpdate;    
 
-    public BaseLeftTuplesBuilder(Scenario scenario, StagedLeftTuples leftTuples) {
+    public BaseLeftTuplesBuilder(Scenario scenario, LeftTupleSets leftTuples) {
         this.wm = scenario.getWorkingMemory();
         this.scenario = scenario;
         this.sink = scenario.getSinkNode();
@@ -124,7 +124,7 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
         return (T) this ;
     }    
     
-    StagedLeftTuples get() {
+    LeftTupleSets get() {
         return this.leftTuples;
     }
 

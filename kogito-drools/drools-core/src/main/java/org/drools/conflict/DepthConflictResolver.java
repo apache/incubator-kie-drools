@@ -62,10 +62,8 @@ public class DepthConflictResolver
         
         
         if ( existing.getRule() == adding.getRule() && existing.isRuleNetworkEvaluatorActivation()) {
-            return -1;
-        }
-        
-        
+            return +1;
+        }                
 
         // we know that no two activations will have the same number   
         return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );

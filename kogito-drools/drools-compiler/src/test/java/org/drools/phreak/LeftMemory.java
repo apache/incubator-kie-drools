@@ -6,7 +6,7 @@ import java.util.List;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.StagedLeftTuples;
+import org.drools.common.LeftTupleSets;
 import org.drools.core.util.FastIterator;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;

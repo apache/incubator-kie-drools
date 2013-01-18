@@ -880,7 +880,8 @@ public class ReteDslTestEngine {
                                                                                       null,
                                                                                       handle );
                             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.getFirstLeftTuple(),
-                                                                                                  handle.getFirstRightTuple() );
+                                                                                                  handle.getFirstRightTuple(),
+                                                                                                  false );
                             handle.clearRightTuples();
                             handle.clearLeftTuples();
                             ((ObjectSink) sink).modifyObject( handle,

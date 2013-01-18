@@ -17,16 +17,25 @@
 package org.drools.reteoo;
 
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.LeftTupleSets;
+import org.drools.common.Memory;
+import org.drools.common.MemoryFactory;
+import org.drools.common.NetworkNode;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.spi.PropagationContext;
 
 public class ModifyPreviousTuples {
     private LeftTuple                       leftTuple;
     private RightTuple                      rightTuple;
+    private boolean                         unlinkingEnabled;
 
-    public ModifyPreviousTuples(LeftTuple leftTuple,
-                                RightTuple rightTuple) {
+    public ModifyPreviousTuples(LeftTuple leftTuple,                                
+                                RightTuple rightTuple, 
+                                boolean unlinkingEnabled) {
         this.leftTuple = leftTuple;
         this.rightTuple = rightTuple;
+        this.unlinkingEnabled = unlinkingEnabled;
     }
     
     public LeftTuple peekLeftTuple() {
@@ -52,22 +61,34 @@ public class ModifyPreviousTuples {
     }        
     
     public void retractTuples(PropagationContext context,
-                              InternalWorkingMemory workingMemory) {
+                              InternalWorkingMemory wm) {
         // retract any remaining LeftTuples
         if ( this.leftTuple != null ) {
             for ( LeftTuple current = this.leftTuple; current != null; current = (LeftTuple) current.getLeftParentNext() ) {
-                current.getLeftTupleSink().retractLeftTuple( current,
-                                                             context,
-                                                             workingMemory );
+                if ( unlinkingEnabled ) {
+                    LeftInputAdapterNode liaNode = (LeftInputAdapterNode) current.getLeftTupleSink().getLeftTupleSource();
+                    LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
+                    LeftInputAdapterNode.doDeleteObject( current, context, lm.getSegmentMemory(), wm, liaNode, lm );
+                } else {
+                    current.getLeftTupleSink().retractLeftTuple( current,
+                                                                 context,
+                                                                 wm );                    
+                }
             }
         }
         
         // retract any remaining RightTuples
         if (this.rightTuple != null ) {
             for ( RightTuple current = this.rightTuple; current != null; current = (RightTuple) current.getHandleNext() ) {
-                current.getRightTupleSink().retractRightTuple( current,
-                                                               context,
-                                                               workingMemory );
+                BetaNode node = ( BetaNode ) current.getRightTupleSink();
+                if ( unlinkingEnabled) {
+                    BetaMemory bm = BetaNode.getBetaMemory( node, wm );
+                    BetaNode.doDeleteRightTuple( current, wm, bm );                    
+                } else {
+                    node.retractRightTuple( current,
+                                            context,
+                                            wm );
+                }
             }
         }
     }

@@ -18,7 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.common.Memory;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.StagedRightTuples;
+import org.drools.common.RightTupleSets;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.rule.ContextEntry;
@@ -32,7 +32,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
     private LeftTupleMemory   leftTupleMemory;
     private RightTupleMemory  rightTupleMemory;
 
-    private StagedRightTuples stagedRightTuples;
+    private RightTupleSets stagedRightTuples;
     
     private ContextEntry[]    context;
 
@@ -56,16 +56,16 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
                       final short nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
-        this.stagedRightTuples = new StagedRightTuples();
+        this.stagedRightTuples = new RightTupleSets();
         this.context = context;
         this.nodeType = nodeType;
     }
     
-    public StagedRightTuples getStagedRightTuples() {
+    public RightTupleSets getStagedRightTuples() {
         return stagedRightTuples;
     }
 
-    public void setStagedRightTuples(StagedRightTuples stagedRightTuples) {
+    public void setStagedRightTuples(RightTupleSets stagedRightTuples) {
         this.stagedRightTuples = stagedRightTuples;
     }
     
@@ -132,8 +132,8 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return counter++;
     }
 
-    public int getDecAndGetCounter() {
-        return --counter;
+    public int getAndDecCounter() {
+        return counter--;
     }
 
 }

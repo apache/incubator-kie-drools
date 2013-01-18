@@ -2,7 +2,7 @@ package org.drools.phreak;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.StagedLeftTuples;
+import org.drools.common.LeftTupleSets;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleImpl;
@@ -15,7 +15,7 @@ public class StagedBuilder extends BaseLeftTuplesBuilder<StagedBuilder> {
     private SegmentMemory sm;
     
     public StagedBuilder(Scenario scenario, SegmentMemory sm ) {
-        super(scenario, new StagedLeftTuples() );
+        super(scenario, new LeftTupleSets() );
         this.sm = sm;
     }
     
