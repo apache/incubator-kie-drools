@@ -6,18 +6,17 @@ import org.drools.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
-import org.kie.builder.model.KieSessionModel;
-import org.kie.builder.Results;
+import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.Message.Level;
+import org.kie.builder.ReleaseId;
+import org.kie.builder.Results;
+import org.kie.builder.model.KieBaseModel;
+import org.kie.builder.model.KieSessionModel;
 import org.kie.definition.KnowledgePackage;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatelessKieSession;
@@ -33,13 +32,15 @@ import static org.kie.util.CDIHelper.wireListnersAndWIHs;
 
 public class KieContainerImpl
     implements
-    KieContainer {
+    InternalKieContainer {
 
     private static final Logger        log    = LoggerFactory.getLogger( KieContainerImpl.class );
 
     private KieProject           kProject;
 
     private final Map<String, KieBase> kBases = new HashMap<String, KieBase>();
+
+    private final Map<String, KieSession> kSessions = new HashMap<String, KieSession>();
 
     private final KieRepository        kr;
 
@@ -125,6 +126,14 @@ public class KieContainerImpl
         return newKieSession((Environment)null);
     }
 
+    public KieSession getKieSession() {
+        KieSessionModel defaultKieSessionModel = kProject.getDefaultKieSession();
+        if (defaultKieSessionModel == null) {
+            throw new RuntimeException("Cannot find a defualt KieSession");
+        }
+        return getKieSession(defaultKieSessionModel.getName());
+    }
+
     public KieSession newKieSession(Environment environment) {
         KieSessionModel defaultKieSessionModel = kProject.getDefaultKieSession();
         if (defaultKieSessionModel == null) {
@@ -145,6 +154,11 @@ public class KieContainerImpl
         return newKieSession(kSessionName, null);
     }
 
+    public KieSession getKieSession(String kSessionName) {
+        KieSession kieSession = kSessions.get(kSessionName);
+        return kieSession != null ? kieSession : newKieSession(kSessionName);
+    }
+
     public KieSession newKieSession(String kSessionName, Environment environment) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
         if ( kSessionModel == null ) {
@@ -158,6 +172,13 @@ public class KieContainerImpl
         }
         KieSession kSession = kBase.newKieSession(getKnowledgeSessionConfiguration(kSessionModel), environment);
         wireListnersAndWIHs(kSessionModel, kSession);
+
+        KieSession oldSession = kSessions.remove(kSessionName);
+        if (oldSession != null) {
+            oldSession.dispose();
+        }
+        kSessions.put(kSessionName, kSession);
+
         return kSession;
     }
 
@@ -180,7 +201,10 @@ public class KieContainerImpl
     }
 
     public void dispose() {
-        // TODO
+        for (KieSession kieSession : kSessions.values()) {
+            kieSession.dispose();
+        }
+        kSessions.clear();
     }
 
     public KieProject getKieProject() {

@@ -18,7 +18,7 @@ public class KieFileSystemImpl
         implements
         KieFileSystem {
     
-    private static final String RESOURCE_PATH_PREFIX = "src/main/resource/"; 
+    private static final String RESOURCE_PATH_PREFIX = "src/main/resources/";
 
     private final MemoryFileSystem mfs;
 
