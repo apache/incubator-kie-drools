@@ -35,7 +35,7 @@ public abstract class AbstractSolverPhaseScope {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected DefaultSolverScope solverScope;
+    protected final DefaultSolverScope solverScope;
 
     protected long startingSystemTimeMillis;
 
