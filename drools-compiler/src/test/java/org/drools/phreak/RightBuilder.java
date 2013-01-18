@@ -3,8 +3,8 @@ package org.drools.phreak;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.StagedLeftTuples;
-import org.drools.common.StagedRightTuples;
+import org.drools.common.LeftTupleSets;
+import org.drools.common.RightTupleSets;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.SegmentMemory;
@@ -12,7 +12,7 @@ import org.drools.reteoo.SegmentMemory;
 public class RightBuilder {
     private InternalWorkingMemory wm;
     private RightTupleSink    sink;
-    private StagedRightTuples rightTuples;
+    private RightTupleSets rightTuples;
     private Scenario      scenario;
 
     public RightBuilder(Scenario scenario) {
@@ -52,7 +52,7 @@ public class RightBuilder {
         return this;
     }
 
-    StagedRightTuples get() {
+    RightTupleSets get() {
         return this.rightTuples;
     }
 

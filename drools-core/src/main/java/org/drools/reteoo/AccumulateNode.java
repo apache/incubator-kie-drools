@@ -31,7 +31,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.StagedRightTuples;
+import org.drools.common.RightTupleSets;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.ArrayUtils;
 import org.drools.core.util.FastIterator;
@@ -329,21 +329,7 @@ public class AccumulateNode extends BetaNode {
         BetaMemory bm = memory.getBetaMemory();
         
         if ( isUnlinkingEnabled() ) {
-
-            StagedRightTuples stagedRightTuples = bm.getStagedRightTuples();
-            switch ( rightTuple.getStagedType() ) {
-                // handle clash with already staged entries
-                case LeftTuple.INSERT:
-                    stagedRightTuples.removeInsert( rightTuple );
-                    break;
-                case LeftTuple.UPDATE:
-                    stagedRightTuples.removeUpdate( rightTuple );
-                    break;
-            }  
-            stagedRightTuples.addDelete( rightTuple );         
-            if ( bm.getDecAndGetCounter() == 0 && !isRightInputIsRiaNode() ) {
-                bm.unlinkNode( workingMemory );            
-            }              
+            doDeleteRightTuple( rightTuple, workingMemory, bm );            
             return;
         } 
 

@@ -7,7 +7,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.common.NetworkNode;
-import org.drools.common.StagedLeftTuples;
+import org.drools.common.LeftTupleSets;
 import org.drools.core.util.Entry;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
@@ -33,7 +33,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     private int                pos;
 
-    private StagedLeftTuples   stagedLeftTuples;
+    private LeftTupleSets   stagedLeftTuples;
 
     private int                counter;
 
@@ -47,7 +47,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.ruleMemories = new ArrayList<RuleMemory>( 1 );
         this.nodeMemories = new LinkedList<Memory>();
 
-        this.stagedLeftTuples = new StagedLeftTuples();
+        this.stagedLeftTuples = new LeftTupleSets();
     }
 
     public NetworkNode getRootNode() {
@@ -84,23 +84,19 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return linkedNodeMask;
     }
 
-    public void setLinkedNodeMask(long linkedSegmentMask) {
-        this.linkedNodeMask = linkedSegmentMask;
-    }
-
     public void linkNode(long mask,
                          InternalWorkingMemory wm) {
         linkedNodeMask = linkedNodeMask | mask;
-        if ( isSegmentLinked() ) {
-            notifyRuleLinkSegment( wm );
-        }
+        notifyRuleLinkSegment( wm );
     }
 
     public void notifyRuleLinkSegment(InternalWorkingMemory wm) {
-        for ( int i = 0, length = ruleMemories.size(); i < length; i++ ) {
-            // do not use foreach, don't want Iterator object creation
-            ruleMemories.get( i ).linkSegment( segmentPosMaskBit,
-                                               wm );
+        if ( isSegmentLinked() ) {            
+            for ( int i = 0, length = ruleMemories.size(); i < length; i++ ) {
+                // do not use foreach, don't want Iterator object creation
+                ruleMemories.get( i ).linkSegment( segmentPosMaskBit,
+                                                   wm );
+            }
         }
     }
 
@@ -160,11 +156,11 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.pos = pos;
     }
 
-    public StagedLeftTuples getStagedLeftTuples() {
+    public LeftTupleSets getStagedLeftTuples() {
         return stagedLeftTuples;
     }
 
-    public void setStagedTuples(StagedLeftTuples stagedTuples) {
+    public void setStagedTuples(LeftTupleSets stagedTuples) {
         this.stagedLeftTuples = stagedTuples;
     }
 

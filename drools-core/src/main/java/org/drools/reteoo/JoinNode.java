@@ -21,7 +21,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.StagedRightTuples;
+import org.drools.common.RightTupleSets;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;
@@ -168,23 +168,12 @@ public class JoinNode extends BetaNode {
     
     public void retractRightTuple( final RightTuple rightTuple,
                                    final PropagationContext context,
-                                   final InternalWorkingMemory workingMemory ) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this ); 
+                                   final InternalWorkingMemory wm ) {
+        final BetaMemory memory = (BetaMemory) wm.getNodeMemory( this ); 
         if ( isUnlinkingEnabled() ) {
-            StagedRightTuples stagedRightTuples = memory.getStagedRightTuples();
-            switch ( rightTuple.getStagedType() ) {
-                // handle clash with already staged entries
-                case LeftTuple.INSERT:
-                    stagedRightTuples.removeInsert( rightTuple );
-                    break;
-                case LeftTuple.UPDATE:
-                    stagedRightTuples.removeUpdate( rightTuple );
-                    break;
-            }  
-            stagedRightTuples.addDelete( rightTuple );         
-            if ( memory.getDecAndGetCounter() == 0 && !isRightInputIsRiaNode() ) {
-                memory.unlinkNode( workingMemory );            
-            }              
+            doDeleteRightTuple( rightTuple,
+                                 wm,
+                                 memory );
             return;
         } 
         
@@ -192,12 +181,7 @@ public class JoinNode extends BetaNode {
         
         this.sink.propagateRetractRightTuple( rightTuple,
                                               context,
-                                              workingMemory );
-                
-        if (  isUnlinkingEnabled() && memory.getDecAndGetCounter() == 0 && !isRightInputIsRiaNode() ) {
-            // unlink node
-            memory.unlinkNode( workingMemory );            
-        }
+                                              wm );                
     }
 
     public void retractLeftTuple( final LeftTuple leftTuple,
@@ -205,21 +189,6 @@ public class JoinNode extends BetaNode {
                                   final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         
-        if ( isUnlinkingEnabled() ) {
-            //SegmentMemory
-            //mdp (for tom) if it's shared sink, we don't know which segment LeftTuple is in (lianode or child node) ***
-            switch ( leftTuple.getStagedType() ) {
-                // handle clash with already staged entries
-                case LeftTuple.INSERT :
-                    //stagedLeftTuples.removeInsert( childLeftTuple );
-                    break;
-                case LeftTuple.UPDATE :
-                    //stagedLeftTuples.removeUpdate( childLeftTuple );
-                    break;
-            }
-            
-            return;
-        }
         
         memory.getLeftTupleMemory().remove( leftTuple );
         leftTuple.setMemory( null );

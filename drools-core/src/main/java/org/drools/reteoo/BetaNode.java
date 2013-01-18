@@ -29,6 +29,7 @@ import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.QuadroupleNonIndexSkipBetaConstraints;
+import org.drools.common.RightTupleSets;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.SingleNonIndexSkipBetaConstraints;
@@ -324,14 +325,12 @@ public abstract class BetaNode extends LeftTupleSource
                                                   context );
         rightTuple.setPropagationContext( context );
         
-        if ( isUnlinkingEnabled() ) {            
-            if (  memory.getStagedRightTuples().insertSize() == 0 && !isRightInputIsRiaNode() ) {
-                // link node. Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
-                // Even if rule is already linked, still call this in case the lazy agenda item needs re-activating
+        if ( isUnlinkingEnabled() ) {                            
+            if ( memory.getAndIncCounter() == 0 ) {
                 memory.linkNode( wm );
+            } else if (  memory.getStagedRightTuples().insertSize() == 0 ) {
+                memory.getSegmentMemory().notifyRuleLinkSegment( wm );
             }
-                
-            memory.getAndIncCounter();
             memory.getStagedRightTuples().addInsert( rightTuple );  
             return;
         }
@@ -344,39 +343,49 @@ public abstract class BetaNode extends LeftTupleSource
                                            final PropagationContext context,
                                            final InternalWorkingMemory workingMemory );    
     
-    public static RightTuple propagateAssertRightTuples(BetaNode betaNode, RightTupleList list, int length, InternalWorkingMemory wm) {
-        RightTuple rightTuple = list.getFirst();
-        for ( int i = 0; i < length; i++ ) {  
-            RightTuple next =   ( RightTuple ) rightTuple.getNext();
-            
-            rightTuple.setPrevious( null );
-            rightTuple.setNext( null );
-            
-            betaNode.assertRightTuple( rightTuple, rightTuple.getPropagationContext(), wm );
-            rightTuple.getPropagationContext().evaluateActionQueue( wm );
-            rightTuple = next;
-        }        
+
+    public static void doDeleteRightTuple(final RightTuple rightTuple,
+                                          final InternalWorkingMemory wm,
+                                          final BetaMemory memory) {
+        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+
+        switch ( rightTuple.getStagedType() ) {
+            // handle clash with already staged entries
+            case LeftTuple.INSERT:
+                stagedRightTuples.removeInsert( rightTuple );
+                break;
+            case LeftTuple.UPDATE:
+                stagedRightTuples.removeUpdate( rightTuple );
+                break;
+        }  
+         
+        if ( memory.getAndDecCounter() == 1 ) {
+            memory.unlinkNode( wm );            
+        } else if ( stagedRightTuples.deleteSize() == 0 ) {
+            // nothing staged before, notify rule, so it can evaluate network
+            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
+        }
         
-        return rightTuple;
+        stagedRightTuples.addDelete( rightTuple );
     }   
     
-//    public static RightTuple propagateRetractRightTuples(BetaNode betaNode, RightTupleList list, InternalWorkingMemory wm) {
-//        RightTuple rightTuple = list.getFirst();
-//        for ( int i = 0; i < length; i++ ) {  
-//            RightTuple next =   ( RightTuple ) rightTuple.getNext();
-//            
-//            rightTuple.setPrevious( null );
-//            rightTuple.setNext( null );
-//            
-//            betaNode.assertRightTuple( rightTuple, rightTuple.getPropagationContext(), wm );
-//            rightTuple.getPropagationContext().evaluateActionQueue( wm );
-//            rightTuple = next;
-//        }        
-//        
-//        return rightTuple;
-//    }     
+    public void doUpdateRightTuple(final RightTuple rightTuple,
+                                    final InternalWorkingMemory wm,
+                                    final BetaMemory memory) {
+       RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+       
+       if ( stagedRightTuples.updateSize() == 0 || stagedRightTuples.insertSize() == 0 ) {
+           // also check inserts, as we'll leave it in insert stage list, if it has not yet been processed
+           // nothing staged before, notify rule, so it can evaluate network
+           memory.getSegmentMemory().notifyRuleLinkSegment( wm );
+       }
+       
+       if ( rightTuple.getStagedType() == LeftTuple.NONE ) {
+           // only stage, if it's not already staged
+           stagedRightTuples.addUpdate( rightTuple );
+       }       
+   }      
     
-
 
     public boolean isRightInputIsRiaNode() {
         return rightInputIsRiaNode;
@@ -643,13 +652,8 @@ public abstract class BetaNode extends LeftTupleSource
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
             if ( isUnlinkingEnabled() ) {
-                BetaMemory bm = null;
-                if ( getType() == NodeTypeEnums.AccumulateNode ) {
-                    bm = ((AccumulateMemory)wm.getNodeMemory( this )).getBetaMemory();
-                } else {
-                    bm = ((BetaMemory)wm.getNodeMemory( this ));
-                }
-                bm.getStagedRightTuples().addDelete( rightTuple );
+                BetaMemory bm  = getBetaMemory( (BetaNode) rightTuple.getRightTupleSink(), wm );
+                doDeleteRightTuple( rightTuple, wm, bm );
             }  else {
                 rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                                   context,
@@ -665,40 +669,14 @@ public abstract class BetaNode extends LeftTupleSource
             if ( intersect( context.getModificationMask(), rightInferredMask ) ) {
                 // RightTuple previously existed, so continue as modify     
                 if ( isUnlinkingEnabled() ) {
-                    BetaMemory bm = null;
-                    if ( getType() == NodeTypeEnums.AccumulateNode ) {
-                        bm = ((AccumulateMemory)wm.getNodeMemory( this )).getBetaMemory();
-                    } else {
-                        bm = ((BetaMemory)wm.getNodeMemory( this ));
-                    }
+                    BetaMemory bm = getBetaMemory( this, wm );
                     rightTuple.setPropagationContext( context );
-                    bm.getStagedRightTuples().addUpdate( rightTuple );    
+                    doUpdateRightTuple(rightTuple, wm, bm);                        
                 } else {
                     modifyRightTuple( rightTuple,
                                       context,
                                       wm ); 
                 }
-                
-//                if ( rightTuple.getMemory() != null && rightTuple.getMemory().isStagingMemory() ) { // can be null for if unlinking is off
-//                    // RightTuple is still staged, hasn't propagated yet, just up date PropagationContext
-//                    rightTuple.setPropagationContext( context );                    
-//                } else {
-//                    if ( isUnlinkingEnabled() ) {
-//                        SegmentMemory sm;
-//                        if ( getType() == NodeTypeEnums.AccumulateNode ) {
-//                            sm = ((AccumulateMemory)wm.getNodeMemory( this )).getBetaMemory().getSegmentMemory();
-//                        } else {
-//                            sm = ((BetaMemory)wm.getNodeMemory( this )).getSegmentMemory();
-//                        }
-//                        //remove from main memory and stage
-//                        rightTuple.getMemory().remove( rightTuple );
-//                        sm.addModifyRightTuple( rightTuple, wm );
-//                    } else {
-//                        modifyRightTuple( rightTuple,
-//                                          context,
-//                                          wm );                        
-//                    }
-//                }
             }
         } else {
             if ( intersect( context.getModificationMask(), rightInferredMask ) ) {
@@ -708,6 +686,16 @@ public abstract class BetaNode extends LeftTupleSource
                               wm );
             }
         }
+    }
+
+    public static BetaMemory getBetaMemory(BetaNode node, InternalWorkingMemory wm) {
+        BetaMemory bm;
+        if ( node.getType() == NodeTypeEnums.AccumulateNode ) {
+            bm = ((AccumulateMemory)wm.getNodeMemory(  (MemoryFactory) node )).getBetaMemory();
+        } else {
+            bm = ((BetaMemory)wm.getNodeMemory(  node ));
+        }
+        return bm;
     }
     
     public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
@@ -892,19 +880,6 @@ public abstract class BetaNode extends LeftTupleSource
             SegmentUtilities.createSegmentMemory( betaNode, workingMemory ); // initialises for all nodes in segment, including this one
         }
         return memory;
-    }
-    
-    public static boolean parentInSameSegment(LeftTupleSource lt) {
-        LeftTupleSource parent = lt.getLeftTupleSource();        
-        if ( parent != null && ( parent.getSinkPropagator().size() == 1 || 
-               // same segment, if it's a subnetwork split and we are on the non subnetwork side of the split
-             ( parent.getSinkPropagator().size() == 2 && 
-               NodeTypeEnums.isBetaNode( lt ) &&
-               ((BetaNode)lt).isRightInputIsRiaNode() ) ) ) {
-            return true;
-        } else {        
-            return false;
-        }
     }
     
     public long getRightDeclaredMask() {

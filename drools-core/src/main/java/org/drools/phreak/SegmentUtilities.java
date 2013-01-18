@@ -33,7 +33,7 @@ public class SegmentUtilities {
     public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource ,
                                                     final InternalWorkingMemory wm) {
     	// find segment root
-    	while ( BetaNode.parentInSameSegment(tupleSource)  ) {
+    	while ( SegmentUtilities.parentInSameSegment(tupleSource)  ) {
     		tupleSource = tupleSource.getLeftTupleSource();
     	}
     	
@@ -109,10 +109,12 @@ public class SegmentUtilities {
                     // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
                     if ( firstSink.getType() == NodeTypeEnums.RightInputAdaterNode) {
                         RiaNodeMemory memory = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
-                        smem.getNodeMemories().add( memory.getRiaRuleMemory() );
+                        smem.getNodeMemories().add( memory.getRiaRuleMemory() );                        
+                        memory.getRiaRuleMemory().setSegmentMemory( smem );
                     } else if ( NodeTypeEnums.isTerminalNode( firstSink) ) {             
                         RuleMemory rmem = ( RuleMemory ) wm.getNodeMemory( (MemoryFactory) firstSink );
                         smem.getNodeMemories().add( rmem );
+                        rmem.setSegmentMemory( smem );
                     }                    
                     smem.setTipNode( firstSink );
                     break;
@@ -136,7 +138,7 @@ public class SegmentUtilities {
         int ruleSegmentPosMask = 1;
         int counter = 0;
         while ( parent.getLeftTupleSource() != null ) {
-               if ( !BetaNode.parentInSameSegment( parent ) ) {
+               if ( !SegmentUtilities.parentInSameSegment( parent ) ) {
                    // for each new found segment, increase the mask bit position
                    ruleSegmentPosMask = ruleSegmentPosMask << 1;
                    counter++;
@@ -154,24 +156,30 @@ public class SegmentUtilities {
                                             SegmentMemory smem,
                                             LeftTupleSinkPropagator sinkProp) {
         for ( LeftTupleSinkNode sink = ( LeftTupleSinkNode ) sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+            Memory memory = wm.getNodeMemory( (MemoryFactory ) sink );
+            
             if ( !( NodeTypeEnums.isTerminalNode( sink  ) || sink.getType() == NodeTypeEnums.RightInputAdaterNode ) ) {
-                SegmentMemory childSmem = createSegmentMemory( (LeftTupleSource) sink, wm);
-                smem.add( childSmem );    	            
+                if ( memory.getSegmentMemory() == null ) {
+                    SegmentUtilities.createSegmentMemory( (LeftTupleSource ) sink, wm );
+                }
             } else {
                 // RTNS and RiaNode's have their own segment, if they are the child of a split.
-                SegmentMemory childSmem = new SegmentMemory(sink);
-                RuleMemory rmem;
-                if ( NodeTypeEnums.isTerminalNode( sink  ) ) {
-                    rmem = ( RuleMemory )  wm.getNodeMemory( (MemoryFactory) sink );
-                } else {
-                    rmem =  ((RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) sink )).getRiaRuleMemory();
-                }
-                rmem.getSegmentMemories()[ rmem.getSegmentMemories().length -1 ] = childSmem;
-                
-                childSmem.setTipNode( sink );
-                childSmem.setSinkFactory( sink );
-                smem.add( childSmem );
+                if ( memory.getSegmentMemory() == null ) {
+                    SegmentMemory childSmem = new SegmentMemory(sink);
+                    RuleMemory rmem;
+                    if ( NodeTypeEnums.isTerminalNode( sink  ) ) {
+                        rmem = ( RuleMemory ) memory;
+                    } else {
+                        rmem =  ((RiaNodeMemory) memory ).getRiaRuleMemory();
+                    }
+                    rmem.getSegmentMemories()[ rmem.getSegmentMemories().length -1 ] = childSmem;
+                    rmem.setSegmentMemory( childSmem );
+                    
+                    childSmem.setTipNode( sink );
+                    childSmem.setSinkFactory( sink );                    
+                }                
             }
+            smem.add( memory.getSegmentMemory() );
         }
     }
 
@@ -239,6 +247,19 @@ public class SegmentUtilities {
                 rmem.getSegmentMemories()[smem.getPos()] = smem;
     	        
     	    }
+        }
+    }
+
+    public static boolean parentInSameSegment(LeftTupleSource lt) {
+        LeftTupleSource parent = lt.getLeftTupleSource();        
+        if ( parent != null && ( parent.getSinkPropagator().size() == 1 || 
+               // same segment, if it's a subnetwork split and we are on the non subnetwork side of the split
+             ( parent.getSinkPropagator().size() == 2 && 
+               NodeTypeEnums.isBetaNode( lt ) &&
+               ((BetaNode)lt).isRightInputIsRiaNode() ) ) ) {
+            return true;
+        } else {        
+            return false;
         }
     }
 

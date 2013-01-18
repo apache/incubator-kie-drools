@@ -44,6 +44,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.common.TruthMaintenanceSystemHelper;
 import org.drools.common.UpdateContext;
+import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
@@ -281,7 +282,6 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
             }
         }
 
-        System.out.println( leftTuple );
         boolean fire = agenda.createActivation( leftTuple, 
                                                 context, 
                                                 workingMemory, 
@@ -634,7 +634,7 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         LeftTupleSource tupleSource = getLeftTupleSource();
         boolean updateBitInNewSegment = false; // this is so we can handle segments that don't have betanode's, as their bit will never be set
         while ( tupleSource.getLeftTupleSource() != null ) {            
-            if ( !BetaNode.parentInSameSegment( tupleSource ) ) {
+            if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
                 updateBitInNewSegment = true;
                 segmentPosMask = segmentPosMask << 1;  
                 segmentCount++;

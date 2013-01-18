@@ -25,7 +25,7 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.StagedRightTuples;
+import org.drools.common.RightTupleSets;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.RightTupleList;
@@ -139,8 +139,8 @@ public class NotNode extends BetaNode {
     
     public void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext context,
-                              final InternalWorkingMemory workingMemory ) {
-        final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, workingMemory); 
+                              final InternalWorkingMemory wm ) {
+        final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, wm); 
 
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this,
@@ -152,10 +152,12 @@ public class NotNode extends BetaNode {
             // strangely we link here, this is actually just to force a network evaluation
             // The assert is then processed and the rule unlinks then. 
             // This is because we need the first RightTuple to link with it's blocked
-            if (  memory.getAndIncCounter() == 0 && !isRightInputIsRiaNode() && isEmptyBetaConstraints()  ) {
+            if (  memory.getAndIncCounter() == 0 && isEmptyBetaConstraints()  ) {
                 // NotNodes can only be unlinked, if they have no variable constraints
-                // Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
-                memory.linkNode( workingMemory ); 
+                memory.linkNode( wm ); 
+            } else if ( memory.getStagedRightTuples().deleteSize() == 0 ) {
+                // nothing staged before, notify rule, so it can evaluate network
+                memory.getSegmentMemory().notifyRuleLinkSegment( wm );
             } 
             
             memory.getStagedRightTuples().addInsert( rightTuple );   
@@ -163,7 +165,7 @@ public class NotNode extends BetaNode {
         }     
         
         // NotNodes must always propagate, they never get staged.
-        assertRightTuple(rightTuple, context, workingMemory );        
+        assertRightTuple(rightTuple, context, wm );        
     }      
 
     public void assertRightTuple( final RightTuple rightTuple,
@@ -213,7 +215,7 @@ public class NotNode extends BetaNode {
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( isUnlinkingEnabled() ) {
-            StagedRightTuples stagedRightTuples = memory.getStagedRightTuples();
+            RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
             switch ( rightTuple.getStagedType() ) {
                 // handle clash with already staged entries
                 case LeftTuple.INSERT:
@@ -222,14 +224,17 @@ public class NotNode extends BetaNode {
                 case LeftTuple.UPDATE:
                     stagedRightTuples.removeUpdate( rightTuple );
                     break;
-            }  
-            stagedRightTuples.addDelete( rightTuple );
+            } 
             
-            if (  memory.getDecAndGetCounter() == 0 && !isRightInputIsRiaNode() && isEmptyBetaConstraints()  ) {
+            if (  memory.getAndDecCounter() == 1 && isEmptyBetaConstraints()  ) {
                 // NotNodes can only be unlinked, if they have no variable constraints
-                // unlink node. Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
                 memory.linkNode( workingMemory ); 
-            }              
+            }  else if ( stagedRightTuples.deleteSize() == 0 ) {
+                // nothing staged before, notify rule, so it can evaluate network
+                memory.getSegmentMemory().notifyRuleLinkSegment( workingMemory );
+            } 
+            
+            stagedRightTuples.addDelete( rightTuple );
             return;
         }    
         

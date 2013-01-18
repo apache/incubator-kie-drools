@@ -1,6 +1,7 @@
 package org.drools.integrationtests.manners;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
@@ -37,23 +38,29 @@ public class MannersBenchmark {
     public static void main(final String[] args) throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl(new InputStreamReader(MannersBenchmark.class.getResourceAsStream("manners.drl")));
+        if ( builder.hasErrors() ) {
+            throw new RuntimeException( builder.getErrors().toString() );
+        }
         Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setUnlinkingEnabled( true );
+        
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
         ruleBase.addPackage(pkg);
 
-        for (ObjectTypeNode node : ((InternalRuleBase) ruleBase).getRete().getObjectTypeNodes()) {
-            CompiledNetwork compiledNetwork = ObjectTypeNodeCompiler.compile(builder, node);
-            node.setCompiledNetwork(compiledNetwork);
-        }
+//        for (ObjectTypeNode node : ((InternalRuleBase) ruleBase).getRete().getObjectTypeNodes()) {
+//            CompiledNetwork compiledNetwork = ObjectTypeNodeCompiler.compile(builder, node);
+//            node.setCompiledNetwork(compiledNetwork);
+//        }
 
         String filename;
         if (args.length != 0) {
             String arg = args[0];
             filename = arg;
         } else {
-            filename = "manners128.dat";
+            filename = "manners5.dat";
         }
 
         for (int i = 0; i < 3; ++i) {

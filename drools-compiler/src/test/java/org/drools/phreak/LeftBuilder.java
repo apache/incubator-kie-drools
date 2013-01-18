@@ -3,7 +3,7 @@ package org.drools.phreak;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.StagedLeftTuples;
+import org.drools.common.LeftTupleSets;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.RightTuple;
@@ -15,7 +15,7 @@ public class LeftBuilder {
      */
     private InternalWorkingMemory wm;
     private LeftTupleSink    sink;
-    private StagedLeftTuples leftTuples;
+    private LeftTupleSets leftTuples;
     private Scenario     scenario;
 
     public LeftBuilder(Scenario scenario) {
@@ -54,7 +54,7 @@ public class LeftBuilder {
         return this;
     }
 
-    StagedLeftTuples get() {
+    LeftTupleSets get() {
         return this.leftTuples;
     }
 

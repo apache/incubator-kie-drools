@@ -1418,7 +1418,7 @@ public class DefaultAgenda
             try {
                                
                 this.knowledgeHelper.setActivation( activation );
-                System.out.println( activation.getRule().getName() );
+                System.out.println( activation.getRule().getName() + " : " + activation.getTuple() );
                 activation.getConsequence().evaluate( this.knowledgeHelper,
                                                       this.workingMemory );
                 this.knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
