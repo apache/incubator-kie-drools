@@ -233,8 +233,8 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
   <para>The jbpm-bpmn2 module contains a lot of junit tests for each of the different node types. These test
   processes can also serve as simple examples: they don't really represent an entire real life business processes
   but can definitely be used to show how specific features can be used. For example, the following figures shows
-  the flow chart of a few of those examples. The entire list can be found in the src/main/resources folder for
-  the jbpm-bpmn2 module like <ulink url="http://github.com/krisv/jbpm/tree/master/jbpm-bpmn2/src/test/resources/">
+  the flow chart of a few of those examples. The entire list can be found in the src/test/resources folder for
+  the jbpm-bpmn2 module like <ulink url="http://github.com/droolsjbpm/jbpm/tree/master/jbpm-bpmn2/src/test/resources/">
   here</ulink>.</para>
 
   </section>
@@ -258,7 +258,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>definitions</entry>
           <entry></entry>
-          <entry>rootElement BPMNDiagram</entry>
+          <entry>
+            <para>
+            <itemizedlist>
+              <listitem>rootElement</listitem>
+              <listitem>BPMNDiagram</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -266,26 +273,93 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>process</entry>
-          <entry>processType isExecutable name id</entry>
-          <entry>property laneSet flowElement</entry>
-          <entry>packageName adHoc version</entry>
-          <entry>import global</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>processType</listitem>
+              <listitem>isExecutable</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>property</listitem>
+              <listitem>laneSet</listitem>
+              <listitem>flowElement</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>packageName</listitem>
+              <listitem>adHoc</listitem>
+              <listitem>version</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>import</listitem>
+              <listitem>global</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>sequenceFlow</entry>
-          <entry>sourceRef targetRef isImmediate name id</entry>
-          <entry>conditionExpression</entry>
-          <entry>priority</entry>
+          <entry>
+          <para>
+          <itemizedlist>
+            <listitem>sourceRef</listitem>
+            <listitem>targetRef</listitem>
+            <listitem>isImmediate</listitem>
+            <listitem>name</listitem>
+            <listitem>id</listitem>
+          </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>conditionExpression</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+           <para>
+            <itemizedlist>
+              <listitem>priority</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>interface</entry>
-          <entry>name id</entry>
-          <entry>operation</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>
+              <listitem>implementationRef</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>operation</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -293,8 +367,22 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>operation</entry>
-          <entry>name id</entry>
-          <entry>inMessageRef</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>
+              <listitem>implementationRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>inMessageRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -303,7 +391,12 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>laneSet</entry>
           <entry></entry>
-          <entry>lane</entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>lane</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -311,8 +404,20 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>lane</entry>
-          <entry>name id</entry>
-          <entry>flowNodeRef</entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>flowNodeRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -321,7 +426,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>import*</entry>
           <entry></entry>
-          <entry>name</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -330,7 +441,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>global*</entry>
           <entry></entry>
-          <entry>identifier type</entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>identifier</listitem>              
+              <listitem>type</listitem>
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -356,45 +473,122 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>startEvent</entry>
-          <entry>name id</entry>
-          <entry>dataOutput dataOutputAssociation outputSet eventDefinition</entry>
-          <entry>x y width height</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem> 
+              <listitem>id</listitem> 
+              <listitem>isInterrupting</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataOutput</listitem>
+              <listitem>dataOutputAssociation</listitem> 
+              <listitem>outputSet</listitem> 
+              <listitem>eventDefinition</listitem>               
+            </itemizedlist>
+          </para>
+             </entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>endEvent</entry>
-          <entry>name id</entry>
-          <entry>dataInput dataInputAssociation inputSet eventDefinition</entry>
-          <entry>x y width height</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>  
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataInput</listitem>
+              <listitem>dataInputAssociation</listitem>  
+              <listitem>inputSet</listitem>  
+              <listitem>eventDefinition</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>intermediateCatchEvent</entry>
-          <entry>name id</entry>
-          <entry>dataOutput dataOutputAssociation outputSet eventDefinition</entry>
-          <entry>x y width height</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>dataOutput</listitem>
+              <listitem>dataOutputAssociation</listitem>
+              <listitem>outputSet</listitem>
+              <listitem>eventDefinition</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>intermediateThrowEvent</entry>
-          <entry>name id</entry>
-          <entry>dataInput dataInputAssociation inputSet eventDefinition</entry>
-          <entry>x y width height</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>dataInput</listitem>
+              <listitem>dataInputAssociation</listitem>
+              <listitem>inputSet</listitem>
+              <listitem>eventDefinition</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>boundaryEvent</entry>
-          <entry>cancelActivity attachedToRef name id</entry>
-          <entry>eventDefinition</entry>
-          <entry>x y width height</entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>cancelActivity</listitem> 
+              <listitem>attachedToRef</listitem> 
+              <listitem>name</listitem> 
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>eventDefinition</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -410,8 +604,20 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>compensateEventDefinition</entry>
-          <entry>activityRef</entry>
-          <entry>documentation extensionElements</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>activityRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>documentation</listitem>
+              <listitem>extensionElements</listitem>                
+            </itemizedlist>
+          </para>
+           </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -420,7 +626,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>conditionalEventDefinition</entry>
           <entry></entry>
-          <entry>condition</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>condition</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -428,7 +640,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>errorEventDefinition</entry>
-          <entry>errorRef</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>errorRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -437,7 +655,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>error</entry>
-          <entry>errorCode id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>errorCode</listitem>              
+              <listitem>id</listitem>
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -446,7 +671,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>escalationEventDefinition</entry>
-          <entry>escalationRef</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>escalationRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -455,7 +686,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>escalation</entry>
-          <entry>escalationCode id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>escalationCode</listitem>              
+              <listitem>id</listitem>
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -464,7 +702,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>messageEventDefinition</entry>
-          <entry>messageRef</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>messageRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -473,7 +717,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>message</entry>
-          <entry>itemRef id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>itemRef</listitem>              
+              <listitem>id</listitem>
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -482,7 +733,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>signalEventDefinition</entry>
-          <entry>signalRef</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>signalRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -492,7 +749,15 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>timerEventDefinition</entry>
           <entry></entry>
-          <entry>timeCycle timeDuration</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>timeCycle</listitem>
+              <listitem>timeDuration</listitem> 
+              <listitem>timerDate</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -518,18 +783,53 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>task</entry>
-          <entry>name id</entry>
-          <entry>ioSpecification dataInputAssociation dataOutputAssociation</entry>
-          <entry>taskName x y width height</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>  
+              <listitem>id</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>dataOutputAssociation</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>taskName</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>scriptTask</entry>
-          <entry>scriptFormat name id</entry>
-          <entry>script</entry>
-          <entry>x y width height</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>scriptFormat</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -537,7 +837,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>script</entry>
           <entry></entry>
-          <entry>text[mixed content]</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>text[mixed content]</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -545,17 +851,46 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>userTask</entry>
-          <entry>name id</entry>
-          <entry>ioSpecification dataInputAssociation dataOutputAssociation resourceRole</entry>
-          <entry>x y width height</entry>
-          <entry>onEntry-script onExit-script</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>dataOutputAssociation</listitem> 
+              <listitem>resourceRole</listitem>    
+              <listitem>loopCharacteristics</listitem>           
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>potentialOwner</entry>
           <entry></entry>
-          <entry>resourceAssignmentExpression</entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>resourceAssignmentExpression</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -564,7 +899,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>resourceAssignmentExpression</entry>
           <entry></entry>
-          <entry>expression</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>expression</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -572,80 +913,265 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>businessRuleTask</entry>
-          <entry>name id</entry>
-          <entry></entry>
-          <entry>x y width height ruleFlowGroup</entry>
-          <entry>onEntry-script onExit-script</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>dataOutputAssociation</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ruleFlowGroup</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>manualTask</entry>
-          <entry>name id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
-          <entry>x y width height</entry>
-          <entry>onEntry-script onExit-script</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>sendTask</entry>
-          <entry>messageRef name id</entry>
-          <entry>ioSpecification dataInputAssociation</entry>
-          <entry>x y width height</entry>
-          <entry>onEntry-script onExit-script</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>messageRef</listitem> 
+              <listitem>name</listitem>
+              <listitem>id</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>loopCharacteristics</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>receiveTask</entry>
-          <entry>messageRef name id</entry>
-          <entry>ioSpecification dataOutputAssociation</entry>
-          <entry>x y width height</entry>
-          <entry>onEntry-script onExit-script</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>messageRef</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataOutputAssociation</listitem>  
+              <listitem>loopCharacteristics</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>serviceTask</entry>
-          <entry>operationRef name id</entry>
-          <entry>ioSpecification dataInputAssociation dataOutputAssociation</entry>
-          <entry>x y width height</entry>
-          <entry>onEntry-script onExit-script</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>operationRef</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>
+              <listitem>implementation</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>dataOutputAssociation</listitem>  
+              <listitem>loopCharacteristics</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>subProcess</entry>
-          <entry>name id</entry>
-          <entry>flowElement property loopCharacteristics</entry>
-          <entry>x y width height</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem> 
+              <listitem>triggeredByEvent</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>flowElement</listitem>
+              <listitem>property</listitem> 
+              <listitem>loopCharacteristics</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>adHocSubProcess</entry>
-          <entry>cancelRemainingInstances name id</entry>
-          <entry>completionCondition flowElement property</entry>
-          <entry>x y width height</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>cancelRemainingInstances</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>completionCondition</listitem>
+              <listitem>flowElement</listitem>
+              <listitem>property</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
+      
       <tbody>
         <row>
           <entry>callActivity</entry>
-          <entry>calledElement name id</entry>
-          <entry>ioSpecification dataInputAssociation dataOutputAssociation</entry>
-          <entry>x y width height waitForCompletion independent</entry>
-          <entry>onEntry-script onExit-script</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>calledElement</listitem>
+              <listitem>name</listitem> 
+              <listitem>id</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem> 
+              <listitem>dataInputAssociation</listitem>
+              <listitem>dataOutputAssociation</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>waitForCompletion</listitem>
+              <listitem>independent</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>multiInstanceLoopCharacteristics</entry>
           <entry></entry>
-          <entry>loopDataInputRef inputDataItem loopDataOutputRef outputDataItem</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>loopDataInputRef</listitem>
+              <listitem>inputDataItem</listitem>  
+              <listitem>loopDataOutputRef</listitem>  
+              <listitem>outputDataItem</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -653,18 +1179,42 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>onEntry-script*</entry>
-          <entry>scriptFormat</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>scriptFormat</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
-          <entry>script</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>onExit-script*</entry>
-          <entry>scriptFormat</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>scriptFormat</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
-          <entry>script</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
         </row>
       </tbody>
@@ -689,36 +1239,70 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>parallelGateway</entry>
-          <entry>gatewayDirection name id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>gatewayDirection</listitem>
+              <listitem>name</listitem> 
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
-          <entry>x y width height</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>eventBasedGateway</entry>
-          <entry>gatewayDirection name id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>gatewayDirection</listitem>
+              <listitem>name</listitem> 
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
-          <entry>x y width height</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>exclusiveGateway</entry>
-          <entry>default gatewayDirection name id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>default</listitem>
+              <listitem>gatewayDirection</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
-          <entry>x y width height</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>inclusiveGateway</entry>
-          <entry>default gatewayDirection name id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>default</listitem>
+              <listitem>gatewayDirection</listitem>  
+              <listitem>name</listitem>  
+              <listitem>id</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
-          <entry>x y width height</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -743,7 +1327,15 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>property</entry>
-          <entry>itemSubjectRef id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>itemSubjectRef</listitem>
+              <listitem>id</listitem> 
+              <listitem>name</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -752,7 +1344,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>dataObject</entry>
-          <entry>itemSubjectRef id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>itemSubjectRef</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -761,7 +1360,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>itemDefinition</entry>
-          <entry>structureRef id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>structureRef</listitem>
+              <listitem>id</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -771,7 +1377,16 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>ioSpecification</entry>
           <entry></entry>
-          <entry>dataInput dataOutput inputSet outputSet</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataInput</listitem>
+              <listitem>dataOutput</listitem> 
+              <listitem>inputSet</listitem> 
+              <listitem>outputSet</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -779,7 +1394,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>dataInput</entry>
-          <entry>name id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -789,7 +1411,15 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>dataInputAssociation</entry>
           <entry></entry>
-          <entry>sourceRef targetRef assignment</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>sourceRef</listitem>
+              <listitem>targetRef</listitem> 
+              <listitem>assignment</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -797,7 +1427,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>dataOutput</entry>
-          <entry>name id</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -807,7 +1444,15 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>dataOutputAssociation</entry>
           <entry></entry>
-          <entry>sourceRef targetRef assignment</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>sourceRef</listitem>
+              <listitem>targetRef</listitem> 
+              <listitem>assignment</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -816,7 +1461,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>inputSet</entry>
           <entry></entry>
-          <entry>dataInputRefs</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataInputRefs</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -825,7 +1476,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>outputSet</entry>
           <entry></entry>
-          <entry>dataOutputRefs</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataOutputRefs</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -834,7 +1491,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>assignment</entry>
           <entry></entry>
-          <entry>from to</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>from</listitem>
+              <listitem>to</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -842,8 +1506,20 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>formalExpression</entry>
-          <entry>language</entry>
-          <entry>text[mixed content]</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>language</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>text[mixed content]</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -870,7 +1546,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>BPMNDiagram</entry>
           <entry></entry>
-          <entry>BPMNPlane</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>BPMNPlane</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -878,8 +1560,21 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>BPMNPlane</entry>
-          <entry>bpmnElement</entry>
-          <entry>BPMNEdge BPMNShape</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>bpmnElement</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>BPMNEdge</listitem>
+              <listitem>BPMNShape</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -887,8 +1582,20 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>BPMNShape</entry>
-          <entry>bpmnElement</entry>
-          <entry>Bounds</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>bpmnElement</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>Bounds</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -896,8 +1603,20 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>BPMNEdge</entry>
-          <entry>bpmnElement</entry>
-          <entry>waypoint</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>bpmnElement</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>waypoint</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -905,7 +1624,16 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>Bounds</entry>
-          <entry>x y width height</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>x</listitem>
+              <listitem>y</listitem> 
+              <listitem>width</listitem> 
+              <listitem>height</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -914,7 +1642,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       <tbody>
         <row>
           <entry>waypoint</entry>
-          <entry>x y</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>x</listitem> 
+              <listitem>y</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
