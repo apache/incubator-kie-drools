@@ -247,7 +247,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.315"
      inkscape:cx="400"
-     inkscape:cy="300"
+     inkscape:cy="269.58175"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -256,7 +256,7 @@
      gridtolerance="10"
      inkscape:window-width="1680"
      inkscape:window-height="991"
-     inkscape:window-x="1680"
+     inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
@@ -282,12 +282,12 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Laag 1"
+     inkscape:label="Base"
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-452.36218)">
@@ -1206,5 +1206,14 @@
            height="20"
            width="120"
            id="rect3392" /></flowRegion><flowPara
-         id="flowPara3394">Highest score</flowPara></flowRoot>  </g>
+         id="flowPara3394">Highest score</flowPara></flowRoot>    <rect
+       style="fill:none;stroke:#4e9a06;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect4131"
+       width="159"
+       height="29"
+       x="570.5"
+       y="952.86218"
+       rx="4.999999"
+       ry="5" />
+  </g>
 </svg>

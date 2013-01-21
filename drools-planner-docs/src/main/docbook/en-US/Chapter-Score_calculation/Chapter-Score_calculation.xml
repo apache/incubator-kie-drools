@@ -1017,6 +1017,30 @@ end</programlisting>
           politician.</para>
         </listitem>
       </itemizedlist>
+
+      <para>For example, consider this score trap. If the blue item moves from an overloaded computer to an empty
+      computer, the hard score should improve. The trapped score implementation fails to do that:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreTrap.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>The Solver should eventually get out of this trap, but it will take a lot of effort (especially if there are
+      even more processes on the overloaded computer). Before they do that, they might actually start moving more
+      processes into that overloaded computer, as there is no penalty for doing so.</para>
+
+      <important>
+        <para>Always specify the degree of infeasibility. The business will often say: "if the solution is infeasible
+        and it doesn't matter how infeasible it." While that's true for the business, it's not true for score
+        calculation: it needs to specify how infeasible it is. In practice, soft constraints usually do this naturally
+        and it's just a matter of doing it for the hard constraints too.</para>
+      </important>
+
+      <note>
+        <para>Mixing course-grained and fine-grained moves reduces the chance of hitting a score trap.</para>
+      </note>
     </section>
 
     <section>
