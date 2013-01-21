@@ -116,7 +116,9 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
             System.out.println(" >>> Adding Path to ReleaseSession- > "+p.toString());
             // TODO automate this in another service
             String processString = new String( ioService.readAllBytes( p ) );
-            domain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            String processId = bpmn2Service.findProcessId( processString );
+            domain.addProcessBPMN2ContentToKsession(kSessionName, processId , processString );
+            domain.addAsset(processId, p.toString());
         }
         kSessionName = "releaseSession";
         for (Path p : releaseRulesFiles) {            
@@ -170,6 +172,11 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
     @Override
     public Map<String, String> getAvailableProcesses() {
         return domain.getAllProcesses();
+    }
+    
+    @Override
+    public Map<String, String> getAvailableProcessesPaths() {
+        return domain.getAssetsDefs();
     }
 
     @Override

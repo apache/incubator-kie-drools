@@ -31,6 +31,8 @@ public interface KnowledgeDomainService {
 
     Map<String, String> getAvailableProcesses();
 
+    Map<String, String> getAvailableProcessesPaths();
+    
     void createDomain();
     
     StatefulKnowledgeSession getSessionByName(String ksessionName);

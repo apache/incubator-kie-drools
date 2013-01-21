@@ -117,8 +117,7 @@ public class SimpleDomainImpl implements Domain{
         if(this.ksessionProcessDefinitions.get(ksession) == null){
             this.ksessionProcessDefinitions.put(ksession, new ArrayList<Path>());
         }
-        this.ksessionProcessDefinitions.get(ksession).add(path);
-        
+        this.ksessionProcessDefinitions.get(ksession).add(path);   
     }
     
     @Override
