@@ -21,29 +21,20 @@ import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
-import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.knowledgebase.DefaultKnowledgeBaseEventListener;
 import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
+import org.drools.event.rule.AgendaEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
-import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.impl.AgendaImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +46,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -364,5 +356,109 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
+    }
+
+    @Test(timeout = 5000) @Ignore
+    public void testInfiniteLoopCausedByInheritance() throws Exception {
+        // DROOLS-13
+        String str =
+                "declare Parent\n" +
+                "    active : boolean\n" +
+                "end\n" +
+                " \n" +
+                "declare Child extends Parent\n" +
+                "end\n" +
+                " \n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Child( false ) );\n" +
+                "end\n" +
+                " \n" +
+                "rule \"Print\"\n" +
+                "when\n" +
+                "    $g : Child( active == true )\n" +
+                "then\n" +
+                "end\n" +
+                " \n" +
+                " \n" +
+                "rule \"Switch\"\n" +
+                "when\n" +
+                "    $item : Parent( active == false )\n" +
+                "then\n" +
+                "    modify ( $item ) {\n" +
+                "            setActive( true );\n" +
+                "    }\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testIntSorting() {
+        // DROOLS-15
+        String str =
+                "global java.util.List list\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "   $number : Number()\n" +
+                "   not Number(intValue < $number.intValue)\n" +
+                "then\n" +
+                "   list.add($number);\n" +
+                "   retract($number);\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(5);
+        ksession.insert(6);
+        ksession.insert(4);
+        ksession.insert(1);
+        ksession.insert(2);
+
+        ksession.fireAllRules();
+
+        assertEquals(Arrays.asList(1, 2, 4, 5, 6), list);
+    }
+
+    @Test
+    public void testIntSorting2() {
+        // DROOLS-15
+        String str =
+                "global java.util.List list\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "   $number : Number()\n" +
+                "   not Number(intValue > $number.intValue)\n" +
+                "then\n" +
+                "   list.add($number);\n" +
+                "   retract($number);\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(3);
+        ksession.insert(7);
+        ksession.insert(4);
+        ksession.insert(5);
+        ksession.insert(2);
+        ksession.insert(1);
+        ksession.insert(6);
+
+        ksession.fireAllRules();
+
+        assertEquals(Arrays.asList(7, 6, 5, 4, 3, 2, 1), list);
     }
 }

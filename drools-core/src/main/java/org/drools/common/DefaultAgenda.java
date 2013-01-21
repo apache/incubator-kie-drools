@@ -16,31 +16,14 @@
 
 package org.drools.common;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
-import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.Entry;
-import org.drools.core.util.LinkedListNode;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -55,9 +38,20 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
-import org.drools.time.impl.DefaultJobHandle;
 import org.drools.time.impl.ExpressionIntervalTimer;
 import org.drools.time.impl.Timer;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Rule-firing Agenda.
@@ -290,7 +284,7 @@ public class DefaultAgenda
     private void addItemToActivationGroup(final AgendaItem item) {
         String group = item.getRule().getActivationGroup();
         if ( group != null && group.length() > 0 ) {
-            this.getActivationGroup( group ).addActivation( item );
+            this.getActivationGroup( group ).addActivation(item);
         }
     }
     
@@ -717,9 +711,9 @@ public class DefaultAgenda
             item.getActivationUnMatchListener().unMatch( workingMemory.getKnowledgeRuntime(), item );
         }
 
-        workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
-                                                                             context,
-                                                                             rtn.getRule() );
+        workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies(activation,
+                context,
+                rtn.getRule());
     }
 
     /*
@@ -731,8 +725,8 @@ public class DefaultAgenda
         // Set the focus to the agendaGroup if it doesn't already have the focus
         if ( this.focusStack.getLast() != agendaGroup ) {
             ((InternalAgendaGroup) this.focusStack.getLast()).setActive( false );
-            this.focusStack.add( agendaGroup );
-            ((InternalAgendaGroup) agendaGroup).setActive( true );
+            this.focusStack.add(agendaGroup);
+            ((InternalAgendaGroup) agendaGroup).setActive(true);
             final EventSupport eventsupport = (EventSupport) this.workingMemory;
             eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup,
                                                                         this.workingMemory );
@@ -1399,7 +1393,7 @@ public class DefaultAgenda
             if ( "processInstance".equals( declaration.getIdentifier() ) ) {
                 Object value = declaration.getValue( workingMemory,
                                                      activation.getTuple().get( declaration ).getObject() );
-                if ( value instanceof ProcessInstance ) {
+                if ( value instanceof ProcessInstance) {
                     return ((ProcessInstance) value).getId() == processInstanceId;
                 }
             }

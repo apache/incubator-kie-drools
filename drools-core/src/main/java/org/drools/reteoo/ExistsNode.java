@@ -217,12 +217,15 @@ public class ExistsNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
-        FastIterator it = memory.getRightTupleMemory().fastIterator();
-        final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
 
-        memory.getRightTupleMemory().remove( rightTuple );
+        RightTupleMemory rightTupleMemory = memory.getRightTupleMemory();
+        boolean useComparisonIndex = rightTupleMemory.getIndexType().isComparison();
+        FastIterator rightIt = rightTupleMemory.fastIterator();
+        RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) rightIt.next(rightTuple);
 
+        rightTupleMemory.remove( rightTuple );
+        rightTuple.setMemory( null );
+               
         if ( rightTuple.getBlocked() == null ) {
             return;
         }
@@ -238,8 +241,12 @@ public class ExistsNode extends BetaNode {
                                               workingMemory,
                                               leftTuple );
 
+            if (useComparisonIndex) {
+                rootBlocker = getFirstRightTuple( leftTuple, rightTupleMemory, context, rightIt );
+            }
+
             // we know that older tuples have been checked so continue previously
-            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker ) ) {
+            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker ) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            newBlocker.getFactHandle() ) ) {
                     leftTuple.setBlocker( newBlocker );
@@ -434,18 +441,19 @@ public class ExistsNode extends BetaNode {
             leftTuple = temp;
         }
 
+        RightTupleMemory rightTupleMemory = memory.getRightTupleMemory();
         if ( firstBlocked != null ) {
-            boolean useComparisonIndex = memory.getRightTupleMemory().getIndexType().isComparison();
+            boolean useComparisonIndex = rightTupleMemory.getIndexType().isComparison();
 
             // now process existing blocks, we only process existing and not new from above loop
-            FastIterator rightIt = getRightIterator( memory.getRightTupleMemory() );
+            FastIterator rightIt = getRightIterator( rightTupleMemory );
             RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) rightIt.next(rightTuple);
           
             RightTupleList list = rightTuple.getMemory();
             
             // we must do this after we have the next in memory
             // We add to the end to give an opportunity to re-match if in same bucket
-            memory.getRightTupleMemory().removeAdd( rightTuple );
+            rightTupleMemory.removeAdd( rightTuple );
 
             if ( !useComparisonIndex && rootBlocker == null && list == rightTuple.getMemory() ) {
                 // we are at the end of the list, but still in same bucket, so set to self, to give self a chance to rematch
@@ -466,7 +474,7 @@ public class ExistsNode extends BetaNode {
                                                   leftTuple );
 
                 if (useComparisonIndex) {
-                    rootBlocker = getFirstRightTuple( leftTuple, memory.getRightTupleMemory(), context, rightIt );
+                    rootBlocker = getFirstRightTuple( leftTuple, rightTupleMemory, context, rightIt );
                 }
 
                 // we know that older tuples have been checked so continue next
@@ -494,7 +502,7 @@ public class ExistsNode extends BetaNode {
             }
         } else {
             // we had to do this at the end, rather than beginning as this 'if' block needs the next memory tuple
-            memory.getRightTupleMemory().removeAdd( rightTuple );         
+            rightTupleMemory.removeAdd( rightTuple );
         }
 
         this.constraints.resetFactHandle( memory.getContext() );
