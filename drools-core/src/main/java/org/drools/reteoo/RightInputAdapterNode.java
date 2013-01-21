@@ -91,7 +91,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
+        super.writeExternal(out);
         out.writeObject( tupleSource );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeObject( previousTupleSinkNode );
@@ -139,9 +139,9 @@ public class RightInputAdapterNode extends ObjectSource
         }
 
         // propagate it
-        this.sink.propagateAssertObject( handle,
-                                         context,
-                                         workingMemory );
+        this.sink.propagateAssertObject(handle,
+                context,
+                workingMemory);
     }
 
     @SuppressWarnings("unchecked")
@@ -255,9 +255,9 @@ public class RightInputAdapterNode extends ObjectSource
 
         // iterates over all propagated handles and assert them to the new sink
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            sink.assertObject( (InternalFactHandle) entry.getValue(),
-                               context,
-                               workingMemory );
+            sink.assertObject((InternalFactHandle) entry.getValue(),
+                    context,
+                    workingMemory);
         }
     }
 
@@ -394,11 +394,11 @@ public class RightInputAdapterNode extends ObjectSource
         return this.tupleSource;
     }
 
-    public int getLeftInputOtnId() {
+    public ObjectTypeNode.Id getLeftInputOtnId() {
         throw new UnsupportedOperationException();
     }
 
-    public void setLeftInputOtnId(int leftInputOtnId) {
+    public void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId) {
         throw new UnsupportedOperationException();
     }      
     

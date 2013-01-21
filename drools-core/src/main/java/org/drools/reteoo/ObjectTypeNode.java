@@ -109,10 +109,10 @@ public class ObjectTypeNode extends ObjectSource
     private transient boolean               dirty;
 
     /* reset counter when dirty */
-    private transient int                   otnIdCounter;
+    private transient IdGenerator           idGenerator;
 
     public int getOtnIdCounter() {
-        return otnIdCounter;
+        return idGenerator.otnIdCounter;
     }
 
     /** @see LRUnlinkingOption */
@@ -139,7 +139,8 @@ public class ObjectTypeNode extends ObjectSource
                source,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;
-        this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
+        idGenerator = new IdGenerator(objectType);
+
         setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
 
         if ( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( objectType ) ) {
@@ -147,6 +148,73 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         this.dirty = true;
+    }
+
+    private static class IdGenerator {
+        private final Class<?> otnClass;
+        private int otnIdCounter;
+
+        private IdGenerator(ObjectType objectType) {
+            otnClass = objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : Object.class;
+        }
+
+        private Id nextId() {
+            return new Id(otnClass, otnIdCounter++);
+        }
+
+        private void reset() {
+            otnIdCounter = 0;
+        }
+    }
+
+    public static Id DEFUALT_ID = new Id(Object.class, 0);
+
+    public static class Id {
+
+        private final Class<?> clazz;
+        private final int id;
+
+        public Id(Class<?> clazz, int id) {
+            this.clazz = clazz;
+            this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return "ObjectTypeNode.Id[" + clazz.getName() + "#" + id + "]";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Id id1 = (Id) o;
+
+            if (id != id1.id) return false;
+            if (!clazz.equals(id1.clazz)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = clazz.hashCode();
+            result = 31 * result + id;
+            return result;
+        }
+
+        public boolean before(Id otherId) {
+            return this.id < otherId.id;
+        }
+
+        public Class<?> getTypeNodeClass() {
+            return clazz;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -159,6 +227,7 @@ public class ObjectTypeNode extends ObjectSource
         if ( objectType instanceof ClassObjectType ) {
             objectType = ((AbstractRuleBase) ((DroolsObjectInputStream) in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
         }
+        idGenerator = new IdGenerator(objectType);
 
         objectMemoryEnabled = in.readBoolean();
         expirationOffset = in.readLong();
@@ -168,7 +237,7 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
+        super.writeExternal(out);
         out.writeObject( objectType );
         out.writeBoolean( objectMemoryEnabled );
         out.writeLong( expirationOffset );
@@ -213,7 +282,7 @@ public class ObjectTypeNode extends ObjectSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         if ( dirty ) {
-            otnIdCounter = 0;
+            idGenerator.reset();
             updateTupleSinkId( this, this );
             dirty = false;
         }
@@ -268,14 +337,14 @@ public class ObjectTypeNode extends ObjectSource
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         if ( dirty ) {
-            otnIdCounter = 0;
+            idGenerator.reset();
             updateTupleSinkId( this, this );
             dirty = false;
         }
 
         if ( objectMemoryEnabled && !(queryNode && !((DroolsQuery) factHandle.getObject()).isOpen()) ) {
             final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
-            memory.memory.remove( factHandle );            
+            memory.memory.remove(factHandle);
         }
 
         for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
@@ -298,7 +367,7 @@ public class ObjectTypeNode extends ObjectSource
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
         if ( dirty ) {
-            otnIdCounter = 0;
+            idGenerator.reset();
             updateTupleSinkId( this, this );
             dirty = false;
         }
@@ -420,8 +489,8 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    public int nextOtnId() {
-        return otnIdCounter++;
+    public Id nextOtnId() {
+        return idGenerator.nextId();
     }
 
     /**
@@ -504,7 +573,7 @@ public class ObjectTypeNode extends ObjectSource
 
         final ObjectTypeNode other = (ObjectTypeNode) object;
 
-        return this.objectType.equals( other.objectType ) && this.source.equals( other.source );
+        return this.objectType.equals(other.objectType) && this.source.equals(other.source);
     }
 
     private boolean usesDeclaration(final Constraint[] constraints) {

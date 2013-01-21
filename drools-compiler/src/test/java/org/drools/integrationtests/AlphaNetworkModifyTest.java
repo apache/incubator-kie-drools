@@ -1,10 +1,5 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.Cat;
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
@@ -18,8 +13,9 @@ import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+
+import java.util.List;
 
 public class AlphaNetworkModifyTest extends CommonTestMethodBase {
     
@@ -133,10 +129,10 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         
         LeftTupleSink[] sinks = liaNode.getSinkPropagator().getSinks();
         
-        assertEquals(0, sinks[0].getLeftInputOtnId() );
-        assertEquals(1, sinks[1].getLeftInputOtnId() );
-        assertEquals(2, sinks[2].getLeftInputOtnId() );
-        assertEquals(3, sinks[3].getLeftInputOtnId() );
+        assertEquals(0, sinks[0].getLeftInputOtnId().getId() );
+        assertEquals(1, sinks[1].getLeftInputOtnId().getId() );
+        assertEquals(2, sinks[2].getLeftInputOtnId().getId() );
+        assertEquals(3, sinks[3].getLeftInputOtnId().getId() );
     }        
     
     @Test
@@ -187,10 +183,10 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         
         LeftTupleSink[] sinks = liaNode.getSinkPropagator().getSinks();
         
-        assertEquals(0, sinks[0].getLeftInputOtnId() );
-        assertEquals(1, sinks[1].getLeftInputOtnId() );
-        assertEquals(2, sinks[2].getLeftInputOtnId() );
-        assertEquals(3, sinks[3].getLeftInputOtnId() );
+        assertEquals(0, sinks[0].getLeftInputOtnId().getId() );
+        assertEquals(1, sinks[1].getLeftInputOtnId().getId() );
+        assertEquals(2, sinks[2].getLeftInputOtnId().getId() );
+        assertEquals(3, sinks[3].getLeftInputOtnId().getId() );
         
         ObjectTypeNode otnPerson = getObjectTypeNode(kbase, "Person" );
         ObjectTypeNode otnCheese = getObjectTypeNode(kbase, "Cheese" );
@@ -201,7 +197,7 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         wm.insert( new Cheese() );
         
         assertEquals( 5, otnPerson.getOtnIdCounter() );
-        assertEquals( 4, otnCheese.getOtnIdCounter() );        
+        assertEquals( 4, otnCheese.getOtnIdCounter() );
     }       
 
 }

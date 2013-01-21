@@ -16,6 +16,7 @@
 
 package org.drools.reteoo;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.AgendaItem;
@@ -79,7 +80,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     private boolean                       fireDirect;
 
-    private int                           leftInputOtnId;
+    private transient ObjectTypeNode.Id   leftInputOtnId;
 
     private String                        consequenceName;
 
@@ -190,8 +191,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         consequenceName = (String) in.readObject();
 
         fireDirect = rule.getActivationListener().equals( "direct" );
-
-        leftInputOtnId = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -209,8 +208,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         out.writeObject( salienceDeclarations );
         out.writeObject( enabledDeclarations );
         out.writeObject( consequenceName );
-
-        out.writeLong(leftInputOtnId);
     }
 
     /**
@@ -566,11 +563,11 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }      
     
-    public int getLeftInputOtnId() {
+    public ObjectTypeNode.Id getLeftInputOtnId() {
         return leftInputOtnId;
     }
 
-    public void setLeftInputOtnId(int leftInputOtnId) {
+    public void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }  
 
