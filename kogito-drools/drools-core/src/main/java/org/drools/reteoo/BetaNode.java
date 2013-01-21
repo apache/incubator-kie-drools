@@ -18,7 +18,6 @@ package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
-import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.DoubleNonIndexSkipBetaConstraints;
@@ -38,9 +37,6 @@ import org.drools.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.IndexUtil;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.index.RightTupleList;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.builder.BuildContext;
@@ -49,7 +45,6 @@ import org.drools.rule.Pattern;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.kie.builder.conf.LRUnlinkingOption;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -108,7 +103,7 @@ public abstract class BetaNode extends LeftTupleSource
     private List<String>      leftListenedProperties;
     private List<String>      rightListenedProperties;
 
-    private transient int     rightInputOtnId;
+    private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFUALT_ID;
     
     private boolean           rightInputIsRiaNode;
 
@@ -646,7 +641,7 @@ public abstract class BetaNode extends LeftTupleSource
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
         while ( rightTuple != null &&
-                ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < getRightInputOtnId() ) {
+                ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId().before( getRightInputOtnId() ) ) {
             modifyPreviousTuples.removeRightTuple();
                         
             // we skipped this node, due to alpha hashing, so retract now
@@ -662,7 +657,7 @@ public abstract class BetaNode extends LeftTupleSource
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
-        if ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() == getRightInputOtnId() ) {
+        if ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId().equals( getRightInputOtnId() ) ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
             rightTuple.setPropagationContext( context );
@@ -898,11 +893,11 @@ public abstract class BetaNode extends LeftTupleSource
         return rightNegativeMask;
     }
 
-    public int getRightInputOtnId() {
+    public ObjectTypeNode.Id getRightInputOtnId() {
         return rightInputOtnId;
     }
 
-    public void setRightInputOtnId(int rightInputOtnId) {
+    public void setRightInputOtnId(ObjectTypeNode.Id rightInputOtnId) {
         this.rightInputOtnId = rightInputOtnId;
     }
 }

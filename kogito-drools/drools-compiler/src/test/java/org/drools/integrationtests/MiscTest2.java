@@ -397,7 +397,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(timeout = 5000) @Ignore
+    @Test(timeout = 5000)
     public void testInfiniteLoopCausedByInheritance() throws Exception {
         // DROOLS-13
         String str =

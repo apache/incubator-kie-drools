@@ -16,31 +16,30 @@
 
 package org.drools.reteoo;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
+import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.LeftTupleSets;
+import org.drools.common.Memory;
+import org.drools.common.MemoryFactory;
+import org.drools.common.PropagationContextImpl;
+import org.drools.common.RuleBasePartitionId;
+import org.drools.common.UpdateContext;
+import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.phreak.SegmentUtilities;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.spi.PropagationContext;
+import org.drools.spi.RuleComponent;
+import org.kie.definition.rule.Rule;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Map;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
-import org.drools.common.PropagationContextImpl;
-import org.drools.common.RuleBasePartitionId;
-import org.drools.common.LeftTupleSets;
-import org.drools.common.UpdateContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.index.LeftTupleList;
-import org.drools.phreak.SegmentUtilities;
-import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleComponent;
-import org.kie.definition.rule.Rule;
+import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -445,8 +444,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
                      
             LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
             
-            int otnId = this.sink.getFirstLeftTupleSink().getLeftInputOtnId();          
-            while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() < otnId ) {
+            ObjectTypeNode.Id otnId = this.sink.getFirstLeftTupleSink().getLeftInputOtnId();
+            while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().before( otnId ) ) {
                 modifyPreviousTuples.removeLeftTuple();
                 
                 doDeleteObject( leftTuple, context, smem, workingMemory, (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource(), lm );
@@ -454,7 +453,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 leftTuple = modifyPreviousTuples.peekLeftTuple();
             }
 
-            if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() == otnId ) {
+            if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().equals( otnId ) ) {
                 modifyPreviousTuples.removeLeftTuple();
                 doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource(), smem );
                 

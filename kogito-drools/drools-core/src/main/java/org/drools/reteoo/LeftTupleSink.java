@@ -16,11 +16,11 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
-
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
+
+import java.io.Externalizable;
 
 /**
  * Receiver of propagated <code>ReteTuple</code>s from a
@@ -87,11 +87,11 @@ public interface LeftTupleSink
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
                                      LeftTupleSink sink,
-                                     boolean leftTupleMemoryEnabled);   
-    
-    int getLeftInputOtnId();
+                                     boolean leftTupleMemoryEnabled);
 
-    void setLeftInputOtnId(int leftInputOtnId);    
+    ObjectTypeNode.Id getLeftInputOtnId();
+
+    void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId);
     
     long getLeftInferredMask();
 }
