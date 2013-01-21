@@ -16,38 +16,19 @@
 
 package org.drools.common;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
-import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.Entry;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedListNode;
 import org.drools.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.RuleMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
@@ -57,12 +38,23 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
-import org.drools.time.impl.DefaultJobHandle;
 import org.drools.time.impl.ExpressionIntervalTimer;
 import org.drools.time.impl.Timer;
 import org.kie.event.rule.MatchCancelledCause;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.rule.Match;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Rule-firing Agenda.
@@ -1418,7 +1410,6 @@ public class DefaultAgenda
             try {
                                
                 this.knowledgeHelper.setActivation( activation );
-                System.out.println( activation.getRule().getName() + " : " + activation.getTuple() );
                 activation.getConsequence().evaluate( this.knowledgeHelper,
                                                       this.workingMemory );
                 this.knowledgeHelper.cancelRemainingPreviousLogicalDependencies();

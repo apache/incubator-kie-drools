@@ -46,6 +46,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -434,5 +435,69 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
+    @Test
+    public void testIntSorting() {
+        // DROOLS-15
+        String str =
+                "global java.util.List list\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "   $number : Number()\n" +
+                "   not Number(intValue < $number.intValue)\n" +
+                "then\n" +
+                "   list.add($number);\n" +
+                "   retract($number);\n" +
+                "end";
 
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(5);
+        ksession.insert(6);
+        ksession.insert(4);
+        ksession.insert(1);
+        ksession.insert(2);
+
+        ksession.fireAllRules();
+
+        assertEquals(Arrays.asList(1, 2, 4, 5, 6), list);
+    }
+
+    @Test
+    public void testIntSorting2() {
+        // DROOLS-15
+        String str =
+                "global java.util.List list\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "   $number : Number()\n" +
+                "   not Number(intValue > $number.intValue)\n" +
+                "then\n" +
+                "   list.add($number);\n" +
+                "   retract($number);\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(3);
+        ksession.insert(7);
+        ksession.insert(4);
+        ksession.insert(5);
+        ksession.insert(2);
+        ksession.insert(1);
+        ksession.insert(6);
+
+        ksession.fireAllRules();
+
+        assertEquals(Arrays.asList(7, 6, 5, 4, 3, 2, 1), list);
+    }
 }

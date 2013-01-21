@@ -187,6 +187,23 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
         return root == null ? FastIterator.EMPTY : new RangeFastIterator( first(), last() );
     }
 
+    @Override
+    public String toString() {
+        FastIterator iterator = fastIterator();
+        StringBuilder sb = new StringBuilder("[");
+        boolean first = true;
+        for (Entry entry = iterator.next(null); entry != null; entry = iterator.next(null)) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append(entry);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
     public FastIterator range(K lowerBound,
                               boolean testLowerEqual,
                               K upperBound,
