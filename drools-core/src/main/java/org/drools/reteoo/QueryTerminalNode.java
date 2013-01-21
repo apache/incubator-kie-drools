@@ -58,7 +58,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
     
-    private int              leftInputOtnId;
+    private transient ObjectTypeNode.Id leftInputOtnId;
 
     // ------------------------------------------------------------
     // Constructors
@@ -102,7 +102,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         query = (Query) in.readObject();
         subrule = (GroupElement) in.readObject();
         subruleIndex = in.readInt();        
-        leftInputOtnId = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -110,7 +109,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         out.writeObject( query );
         out.writeObject( subrule );
         out.writeInt(subruleIndex);
-        out.writeLong(leftInputOtnId);
     }
     
     public Rule getRule() {
@@ -330,11 +328,11 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     }    
     
     
-    public int getLeftInputOtnId() {
+    public ObjectTypeNode.Id getLeftInputOtnId() {
         return leftInputOtnId;
     }
 
-    public void setLeftInputOtnId(int leftInputOtnId) {
+    public void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }
 

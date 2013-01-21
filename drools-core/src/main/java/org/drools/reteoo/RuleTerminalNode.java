@@ -16,23 +16,9 @@
 
 package org.drools.reteoo;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.base.mvel.MVELSalienceExpression;
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
-import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
 import org.drools.common.AgendaItem;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
@@ -98,7 +84,7 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
 
     private boolean                       fireDirect;
 
-    private int                           leftInputOtnId;
+    private transient ObjectTypeNode.Id   leftInputOtnId;
 
     private String                        consequenceName;
 
@@ -212,8 +198,6 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         consequenceName = (String) in.readObject();
 
         fireDirect = rule.getActivationListener().equals( "direct" );
-
-        leftInputOtnId = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -231,8 +215,6 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         out.writeObject( salienceDeclarations );
         out.writeObject( enabledDeclarations );
         out.writeObject( consequenceName );
-
-        out.writeLong(leftInputOtnId);
     }
 
     /**
@@ -600,11 +582,11 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
 
     }      
     
-    public int getLeftInputOtnId() {
+    public ObjectTypeNode.Id getLeftInputOtnId() {
         return leftInputOtnId;
     }
 
-    public void setLeftInputOtnId(int leftInputOtnId) {
+    public void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }  
 

@@ -16,16 +16,6 @@
 
 package org.drools.reteoo;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
@@ -39,9 +29,17 @@ import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Pattern;
-import org.drools.rule.TypeDeclaration;
 import org.drools.spi.PropagationContext;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * A node that will add the propagation to the working memory actions queue,
@@ -220,7 +218,7 @@ public class PropagationQueuingNode extends ObjectSource
             BetaNode betaNode = (BetaNode) s;
             RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
             while ( rightTuple != null &&
-                    ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < betaNode.getRightInputOtnId() ) {
+                    ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId().before( betaNode.getRightInputOtnId() ) ) {
                 modifyPreviousTuples.removeRightTuple();
                 // we skipped this node, due to alpha hashing, so retract now
                 rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
@@ -229,7 +227,7 @@ public class PropagationQueuingNode extends ObjectSource
                 rightTuple = modifyPreviousTuples.peekRightTuple();
             }
 
-            if ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() == betaNode.getRightInputOtnId() ) {
+            if ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId().equals( betaNode.getRightInputOtnId() ) ) {
                 modifyPreviousTuples.removeRightTuple();
                 rightTuple.reAdd();
                 if ( intersect( context.getModificationMask(), betaNode.getRightInferredMask() ) ) {

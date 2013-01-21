@@ -35,7 +35,6 @@ import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -462,11 +461,11 @@ public class RightInputAdapterNode extends ObjectSource
         return this.tupleSource;
     }
 
-    public int getLeftInputOtnId() {
+    public ObjectTypeNode.Id getLeftInputOtnId() {
         throw new UnsupportedOperationException();
     }
 
-    public void setLeftInputOtnId(int leftInputOtnId) {
+    public void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId) {
         throw new UnsupportedOperationException();
     }      
     
