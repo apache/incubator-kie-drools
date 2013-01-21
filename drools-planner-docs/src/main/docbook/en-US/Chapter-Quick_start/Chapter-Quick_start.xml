@@ -433,7 +433,14 @@ public class CloudProcess ... {
       constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize
       maintenance cost).</para>
 
-      <para>There are several ways to implement the score function:</para>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Quick_start/cloudBalanceScoreCalculation.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Of course, Planner needs to be told about these domain-specific score constraints. There are several ways to
+      implement such a score function:</para>
 
       <itemizedlist>
         <listitem>

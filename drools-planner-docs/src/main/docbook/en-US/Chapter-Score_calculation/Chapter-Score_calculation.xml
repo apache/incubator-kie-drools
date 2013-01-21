@@ -576,8 +576,8 @@
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
       <para>Optionally, to get better output when the <literal>IncrementalScoreCalculator</literal> is corrupted in
-      <literal>environmentMode</literal> <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT</literal>,
-      you can overwrite the method <literal>buildScoreCorruptionAnalysis</literal> from
+      <literal>environmentMode</literal> <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT</literal>, you can
+      overwrite the method <literal>buildScoreCorruptionAnalysis</literal> from
       <literal>AbstractIncrementalScoreCalculator</literal>.</para>
     </section>
 
@@ -842,11 +842,12 @@ end</programlisting>
     <section>
       <title>Detecting invalid scores</title>
 
-      <para>Put the <literal>environmentMode</literal> in <literal>FULL_ASSERT</literal> (or <literal>FAST_ASSERT</literal>) to
-      detect corruption in the <link linkend="incrementalScoreCalculation">incremental score calculation</link>. For the
-      difference between both modes, <link linkend="environmentMode">see the
-      section about <literal>environmentMode</literal></link>. However, that will not detect if your score calculator
-      implements your score constraints as your business actually desires.</para>
+      <para>Put the <literal>environmentMode</literal> in <literal>FULL_ASSERT</literal> (or
+      <literal>FAST_ASSERT</literal>) to detect corruption in the <link
+      linkend="incrementalScoreCalculation">incremental score calculation</link>. For the difference between both modes,
+      <link linkend="environmentMode">see the section about <literal>environmentMode</literal></link>. However, that
+      will not detect if your score calculator implements your score constraints as your business actually
+      desires.</para>
 
       <para>A piece of incremental score calculator code can be difficult to write and to review. You can assert its
       correctness by using a different implementation (for example a <literal>SimpleScoreCalculator</literal>) to do the
@@ -926,7 +927,7 @@ end</programlisting>
     </section>
 
     <section>
-      <title>Caching</title>
+      <title>Avoid calling remote services during score calculation</title>
 
       <para>Do not call remote services in your score calculation (except if you're bridging
       <literal>SimpleScoreCalculator</literal> to a legacy system). The network latency will kill your score calculation
