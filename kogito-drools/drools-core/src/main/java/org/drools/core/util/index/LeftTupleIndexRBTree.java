@@ -164,7 +164,8 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
     public class LeftTupleFastIterator implements FastIterator {
         public Entry next(Entry object) {
             if (object == null) {
-                return null;
+                Node<Comparable<Comparable>> firstNode = tree.first();
+                return firstNode == null ? null : firstNode.getFirst();
             }
             LeftTuple leftTuple = (LeftTuple) object;
             LeftTuple next = (LeftTuple) leftTuple.getNext();

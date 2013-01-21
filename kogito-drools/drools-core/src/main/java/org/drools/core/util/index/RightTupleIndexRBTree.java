@@ -170,7 +170,8 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
     public class RightTupleFastIterator implements FastIterator {
         public Entry next(Entry object) {
             if (object == null) {
-                return null;
+                Node<Comparable<Comparable>> firstNode = tree.first();
+                return firstNode == null ? null : firstNode.getFirst();
             }
             RightTuple rightTuple = (RightTuple) object;
             RightTuple next = (RightTuple) rightTuple.getNext();

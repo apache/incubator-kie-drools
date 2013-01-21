@@ -1,36 +1,25 @@
 package org.drools.phreak;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
-
-import java.util.Map;
-
-import org.drools.WorkingMemory;
 import org.drools.base.DroolsQuery;
 import org.drools.common.AgendaItem;
-import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
-import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.LeftTupleSets;
 import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.common.NetworkNode;
-import org.drools.common.LeftTupleSets;
 import org.drools.common.RightTupleSets;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.AccumulateNode.ActivitySource;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
-import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.LeftTupleSink;
@@ -40,7 +29,6 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.ReteooWorkingMemory.EvaluateResultConstraints;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
@@ -49,7 +37,6 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.SegmentMemory;
 import org.drools.rule.Accumulate;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.Rule;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.slf4j.Logger;
@@ -1187,8 +1174,10 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
             for ( RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
+
                 // assign now, so we can remove from memory before doing any possible propagations
-                final RightTuple rootBlocker = (RightTuple) it.next( rightTuple );
+                boolean useComparisonIndex = rtm.getIndexType().isComparison();
+                RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) it.next(rightTuple);
 
                 if (  rightTuple.getMemory() != null ) {
                     // it may have been staged and never actually added
@@ -1212,7 +1201,11 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                         constraints.updateFromTuple( contextEntry,
                                                      wm,
                                                      leftTuple );
-    
+
+                        if (useComparisonIndex) {
+                            rootBlocker = rtm.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle(), it );
+                        }
+
                         // we know that older tuples have been checked so continue next
                         for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next( newBlocker ) ) {
                             if ( constraints.isAllowedCachedLeft( contextEntry,
@@ -1693,14 +1686,19 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
             for ( RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
+
+                boolean useComparisonIndex = rtm.getIndexType().isComparison();
+                RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) it.next(rightTuple);
+
                 if (  rightTuple.getMemory() != null ) {
                     // it may have been staged and never actually added
                     rtm.remove( rightTuple );
                 }
                                        
                 if ( rightTuple.getBlocked() != null ) {
-                    final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
-                    
+
+                    PropagationContext context = rightTuple.getPropagationContext();
+
                     for ( LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; ) {
                         LeftTuple temp = leftTuple.getBlockedNext();
     
@@ -1715,7 +1713,11 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                         constraints.updateFromTuple( contextEntry,
                                                       wm,
                                                       leftTuple );
-    
+
+                        if (useComparisonIndex) {
+                            rootBlocker = rtm.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle(), it );
+                        }
+
                         // we know that older tuples have been checked so continue previously
                         for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker ) ) {
                             if ( constraints.isAllowedCachedLeft( contextEntry,
