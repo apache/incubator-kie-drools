@@ -1,61 +1,42 @@
 package org.drools.phreak;
 
-import java.beans.IntrospectionException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ArrayElements;
-import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.LeftTupleSets;
-import org.drools.common.RightTupleSets;
-import org.drools.phreak.RuleNetworkEvaluatorActivation.PhreakJoinNode;
 import org.drools.phreak.RuleNetworkEvaluatorActivation.PhreakNotNode;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.JoinNode;
-import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.MockLeftTupleSink;
-import org.drools.reteoo.MockTupleSource;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.NotNode;
-import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.SegmentMemory;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.reteoo.test.dsl.NodeTestCase;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Rule;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import static org.drools.phreak.A.*;
-import static org.drools.phreak.B.*;
+import java.beans.IntrospectionException;
+
+import static org.drools.phreak.A.a;
+import static org.drools.phreak.B.b;
 
 public class PhreakNotNodeTest {
 
-    PhreakJoinNode        phreakJoinNode;
     BuildContext          buildContext;
     NotNode               notNode;
     JoinNode              sinkNode;
     InternalWorkingMemory wm;
     BetaMemory            bm;
 
-    public void setupNotNode() {
+    private void setupNotNode(String operator) {
         buildContext = createContext();
 
         notNode = (NotNode) BetaNodeBuilder.create( NodeTypeEnums.NotNode, buildContext )
                                              .setLeftType( A.class )
                                              .setBinding( "object", "$object" )
                                              .setRightType( B.class )
-                                             .setConstraint( "object", "!=", "$object" ).build();
+                                             .setConstraint( "object", operator, "$object" ).build();
 
         sinkNode = new JoinNode();
         sinkNode.setId( 1 );
@@ -92,7 +73,7 @@ public class PhreakNotNodeTest {
 
     @Test
     public void test1() throws IntrospectionException {
-        setupNotNode();
+        setupNotNode("!=");
 
         // @formatter:off
         test().left().insert( a0, a1, a2 )
@@ -112,7 +93,27 @@ public class PhreakNotNodeTest {
          .run().getActualResultLeftTuples().clear();   
         // @formatter:on
     }
-    
+
+    @Test
+    public void test2() throws IntrospectionException {
+        setupNotNode("<");
+
+        // @formatter:off
+        test().left().insert( a0, a1, a2 )
+
+              .result().insert( a2, a1, a0 )
+                       .left(a2, a1, a0)
+              .run().getActualResultLeftTuples().clear();
+
+        test().right().insert( b1 )
+
+              .result().delete( a2 )
+                       .left( a0, a1 )
+                       .right( b1 )
+              .run().getActualResultLeftTuples().clear();
+        // @formatter:on
+    }
+
     private Scenario test() {
         return test(notNode, sinkNode,
                     bm, wm);
