@@ -16,11 +16,6 @@
 
 package org.drools.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
-import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -32,6 +27,10 @@ import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.PropagationContext;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;
@@ -236,22 +235,21 @@ public class NotNode extends BetaNode {
             
             stagedRightTuples.addDelete( rightTuple );
             return;
-        }    
-        
-        
-        FastIterator it = memory.getRightTupleMemory().fastIterator();
+        }
+
+        RightTupleMemory rightTupleMemory = memory.getRightTupleMemory();
+        boolean useComparisonIndex = rightTupleMemory.getIndexType().isComparison();
+        FastIterator rightIt = rightTupleMemory.fastIterator();
 
         // assign now, so we can remove from memory before doing any possible propagations
-        final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
+        RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) rightIt.next(rightTuple);
 
-        memory.getRightTupleMemory().remove( rightTuple );
+        rightTupleMemory.remove( rightTuple );
         
-
         if ( rightTuple.getBlocked() == null ) {
             return;
         }
 
-        
         for ( LeftTuple leftTuple = (LeftTuple) rightTuple.getBlocked(); leftTuple != null; ) {
             LeftTuple temp = leftTuple.getBlockedNext();
 
@@ -263,8 +261,12 @@ public class NotNode extends BetaNode {
                                               workingMemory,
                                               leftTuple );
 
+            if (useComparisonIndex) {
+                rootBlocker = getFirstRightTuple( leftTuple, memory.getRightTupleMemory(), context, rightIt );
+            }
+
             // we know that older tuples have been checked so continue next
-            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker) ) {
+            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            newBlocker.getFactHandle() ) ) {
                     leftTuple.setBlocker( newBlocker );
