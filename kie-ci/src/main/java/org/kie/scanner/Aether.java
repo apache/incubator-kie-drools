@@ -22,7 +22,7 @@ import java.util.List;
 
 import static org.kie.scanner.embedder.MavenProjectLoader.loadMavenProject;
 
-class Aether {
+public class Aether {
 
     private static final String M2_REPO = System.getProperty( "user.home" ) + "/.m2/repository";
     private String localRepoDir = M2_REPO;
