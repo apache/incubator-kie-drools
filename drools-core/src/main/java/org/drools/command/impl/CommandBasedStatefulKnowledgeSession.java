@@ -39,13 +39,16 @@ import org.drools.command.runtime.UnregisterChannelCommand;
 import org.drools.command.runtime.process.AbortProcessInstanceCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
+import org.drools.command.runtime.process.CreateCorrelatedProcessInstanceCommand;
 import org.drools.command.runtime.process.CreateProcessInstanceCommand;
 import org.drools.command.runtime.process.GetProcessEventListenersCommand;
+import org.drools.command.runtime.process.GetProcessInstanceByCorrelationKeyCommand;
 import org.drools.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.command.runtime.process.GetProcessInstancesCommand;
 import org.drools.command.runtime.process.GetWorkItemCommand;
 import org.drools.command.runtime.process.RegisterWorkItemHandlerCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
+import org.drools.command.runtime.process.StartCorrelatedProcessCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.process.StartProcessInstanceCommand;
 import org.drools.command.runtime.rule.AgendaGroupSetFocusCommand;
@@ -76,6 +79,8 @@ import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.process.CorrelationAwareProcessRuntime;
+import org.kie.process.CorrelationKey;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
@@ -93,13 +98,13 @@ import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.RuleFlowGroup;
-import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.time.SessionClock;
 
 public class CommandBasedStatefulKnowledgeSession
     implements
-    StatefulKnowledgeSession {
+    StatefulKnowledgeSession, CorrelationAwareProcessRuntime {
 
     private CommandService            commandService;
     private transient WorkItemManager workItemManager;
@@ -499,6 +504,27 @@ public class CommandBasedStatefulKnowledgeSession
     public void addInterceptor(Interceptor interceptor) {
     	interceptor.setNext(this.commandService);
     	this.commandService = interceptor;
+    }
+
+    @Override
+    public ProcessInstance startProcess(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+        
+        return this.commandService.execute(new StartCorrelatedProcessCommand(processId, correlationKey, parameters));
+    }
+
+    @Override
+    public ProcessInstance createProcessInstance(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+        
+        return this.commandService.execute(
+                new CreateCorrelatedProcessInstanceCommand(processId, correlationKey, parameters));
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
+        
+        return this.commandService.execute(new GetProcessInstanceByCorrelationKeyCommand(correlationKey));
     }
 
 }

@@ -80,6 +80,8 @@ import org.kie.command.Context;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.process.CorrelationAwareProcessRuntime;
+import org.kie.process.CorrelationKey;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
@@ -95,8 +97,8 @@ import org.kie.runtime.rule.AgendaFilter;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.time.SessionClock;
 
 public class StatefulKnowledgeSessionImpl
@@ -104,7 +106,8 @@ public class StatefulKnowledgeSessionImpl
         StatefulKnowledgeSession,
         InternalWorkingMemoryEntryPoint,
         InternalKnowledgeRuntime,
-        KieSession {
+        KieSession,
+        CorrelationAwareProcessRuntime {
 
     public ReteooWorkingMemoryInterface session;
     public KnowledgeBase                kbase;
@@ -873,6 +876,26 @@ public class StatefulKnowledgeSessionImpl
 
     public long getLastIdleTimestamp() {
         return this.session.getLastIdleTimestamp();
+    }
+
+    @Override
+    public ProcessInstance startProcess(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+
+        return ((CorrelationAwareProcessRuntime)this.session).startProcess(processId, correlationKey, parameters);
+    }
+
+    @Override
+    public ProcessInstance createProcessInstance(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+        
+        return ((CorrelationAwareProcessRuntime)this.session).createProcessInstance(processId, correlationKey, parameters);
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
+
+        return ((CorrelationAwareProcessRuntime)this.session).getProcessInstance(correlationKey);
     }
 
 }
