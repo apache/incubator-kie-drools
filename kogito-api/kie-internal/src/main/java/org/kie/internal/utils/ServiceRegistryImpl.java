@@ -36,6 +36,7 @@ import org.kie.builder.KieScanner;
 import org.kie.concurrent.KieExecutors;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
+import org.kie.process.CorrelationKeyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -195,6 +196,8 @@ public class ServiceRegistryImpl
                     "org.kie.scanner.KieRepositoryScannerImpl");
         addDefault( KieStoreServices.class,
                     "org.drools.persistence.jpa.KnowledgeStoreServiceImpl");
+        addDefault( CorrelationKeyFactory.class,
+                "org.jbpm.persistence.correlation.JPACorrelationKeyFactory");
     }
 
     public synchronized void addDefault(Class cls,
