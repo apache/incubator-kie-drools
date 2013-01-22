@@ -17,6 +17,7 @@
 package org.drools.planner.config.heuristic.selector.move;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -37,13 +38,21 @@ import org.drools.planner.config.heuristic.selector.move.generic.chained.SubChai
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorter;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterOrder;
+import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.drools.planner.core.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
+import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.decorator.SortingEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.FilteringMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.ProbabilityMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
+import org.drools.planner.core.heuristic.selector.move.decorator.SortingMoveSelector;
 
 /**
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.
@@ -62,7 +71,10 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     @XStreamImplicit(itemFieldName = "filterClass")
     protected List<Class<? extends SelectionFilter>> filterClassList = null;
 
-    // TODO sorterClass, ...
+    protected Class<? extends Comparator> sorterComparatorClass = null;
+    protected Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass = null;
+    protected SelectionSorterOrder sorterOrder = null;
+    protected Class<? extends SelectionSorter> sorterClass = null;
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 
@@ -90,6 +102,38 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
     public void setFilterClassList(List<Class<? extends SelectionFilter>> filterClassList) {
         this.filterClassList = filterClassList;
+    }
+
+    public Class<? extends Comparator> getSorterComparatorClass() {
+        return sorterComparatorClass;
+    }
+
+    public void setSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
+        this.sorterComparatorClass = sorterComparatorClass;
+    }
+
+    public Class<? extends SelectionSorterWeightFactory> getSorterWeightFactoryClass() {
+        return sorterWeightFactoryClass;
+    }
+
+    public void setSorterWeightFactoryClass(Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass) {
+        this.sorterWeightFactoryClass = sorterWeightFactoryClass;
+    }
+
+    public SelectionSorterOrder getSorterOrder() {
+        return sorterOrder;
+    }
+
+    public void setSorterOrder(SelectionSorterOrder sorterOrder) {
+        this.sorterOrder = sorterOrder;
+    }
+
+    public Class<? extends SelectionSorter> getSorterClass() {
+        return sorterClass;
+    }
+
+    public void setSorterClass(Class<? extends SelectionSorter> sorterClass) {
+        this.sorterClass = sorterClass;
     }
 
     public Class<? extends SelectionProbabilityWeightFactory> getProbabilityWeightFactoryClass() {
@@ -132,21 +176,84 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
                 minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
-        moveSelector = applyFiltering(moveSelector);
-        // TODO applySorting
+        moveSelector = applyFiltering(resolvedCacheType, resolvedSelectionOrder, moveSelector);
+        moveSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         return moveSelector;
     }
 
-    private MoveSelector applyFiltering(MoveSelector moveSelector) {
+    private MoveSelector applyFiltering(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            MoveSelector moveSelector) {
         if (!CollectionUtils.isEmpty(filterClassList)) {
             List<SelectionFilter> filterList = new ArrayList<SelectionFilter>(filterClassList.size());
             for (Class<? extends SelectionFilter> filterClass : filterClassList) {
                 filterList.add(ConfigUtils.newInstance(this, "filterClass", filterClass));
             }
             moveSelector = new FilteringMoveSelector(moveSelector, filterList);
+        }
+        return moveSelector;
+    }
+
+    private MoveSelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            MoveSelector moveSelector) {
+        if (sorterComparatorClass != null) {
+            if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") with sorterComparatorClass (" + sorterComparatorClass
+                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") that is not " + SelectionOrder.ORIGINAL + ".");
+            }
+            Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
+                    "sorterComparatorClass", sorterComparatorClass);
+            SelectionSorter sorter = new ComparatorSelectionSorter(sorterComparator,
+                    SelectionSorterOrder.resolve(sorterOrder));
+            moveSelector = new SortingMoveSelector(moveSelector, resolvedCacheType, sorter);
+        }
+        if (sorterWeightFactoryClass != null) {
+            if (sorterComparatorClass != null) {
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") has both an sorterComparatorClass (" + sorterComparatorClass
+                        + ") and a sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
+            }
+            if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") with sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") that is not " + SelectionOrder.ORIGINAL + ".");
+            }
+            SelectionSorterWeightFactory sorterWeightFactory = ConfigUtils.newInstance(this,
+                    "sorterWeightFactoryClass", sorterWeightFactoryClass);
+            SelectionSorter sorter = new WeightFactorySelectionSorter(sorterWeightFactory,
+                    SelectionSorterOrder.resolve(sorterOrder));
+            moveSelector = new SortingMoveSelector(moveSelector, resolvedCacheType, sorter);
+        }
+        if (sorterClass != null) {
+            if (sorterComparatorClass != null) {
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") has both an sorterComparatorClass (" + sorterComparatorClass
+                        + ") and a sorterClass (" + sorterClass + ").");
+            }
+            if (sorterWeightFactoryClass != null) {
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") has both an sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                        + ") and a sorterClass (" + sorterClass + ").");
+            }
+            if (sorterOrder != null) {
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") has both an sorterClass (" + sorterClass
+                        + ") but the sorterOrder (" + sorterOrder + ") should be null.");
+            }
+            if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") with sorterClass (" + sorterClass
+                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") that is not " + SelectionOrder.ORIGINAL + ".");
+            }
+            SelectionSorter sorter = ConfigUtils.newInstance(this,
+                    "sorterClass", sorterClass);
+            moveSelector = new SortingMoveSelector(moveSelector, resolvedCacheType, sorter);
         }
         return moveSelector;
     }
@@ -210,6 +317,14 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClassList = ConfigUtils.inheritOverwritableProperty(
                 filterClassList, inheritedConfig.getFilterClassList());
+        sorterComparatorClass = ConfigUtils.inheritOverwritableProperty(
+                sorterComparatorClass, inheritedConfig.getSorterComparatorClass());
+        sorterWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                sorterWeightFactoryClass, inheritedConfig.getSorterWeightFactoryClass());
+        sorterOrder = ConfigUtils.inheritOverwritableProperty(
+                sorterOrder, inheritedConfig.getSorterOrder());
+        sorterClass = ConfigUtils.inheritOverwritableProperty(
+                sorterClass, inheritedConfig.getSorterClass());
         probabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
 

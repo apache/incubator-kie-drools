@@ -220,8 +220,7 @@ public class EntitySelectorConfig extends SelectorConfig {
                     "sorterWeightFactoryClass", sorterWeightFactoryClass);
             SelectionSorter sorter = new WeightFactorySelectionSorter(sorterWeightFactory,
                     SelectionSorterOrder.resolve(sorterOrder));
-            entitySelector = new SortingEntitySelector(entitySelector,
-                    resolvedCacheType, sorter);
+            entitySelector = new SortingEntitySelector(entitySelector, resolvedCacheType, sorter);
         }
         if (sorterClass != null) {
             if (sorterComparatorClass != null) {
@@ -247,8 +246,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             }
             SelectionSorter sorter = ConfigUtils.newInstance(this,
                     "sorterClass", sorterClass);
-            entitySelector = new SortingEntitySelector(entitySelector,
-                    resolvedCacheType, sorter);
+            entitySelector = new SortingEntitySelector(entitySelector, resolvedCacheType, sorter);
         }
         return entitySelector;
     }
