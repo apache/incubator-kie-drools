@@ -78,6 +78,8 @@ import org.kie.event.process.ProcessEventListener;
 import org.kie.event.process.ProcessEventManager;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.process.CorrelationAwareProcessRuntime;
+import org.kie.process.CorrelationKey;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
@@ -96,7 +98,8 @@ public abstract class AbstractWorkingMemory
     implements
     InternalWorkingMemoryActions,
     EventSupport,
-    ProcessEventManager {
+    ProcessEventManager, 
+    CorrelationAwareProcessRuntime {
 
     protected int                                                id;
 
@@ -1031,6 +1034,25 @@ public abstract class AbstractWorkingMemory
 
     public ProcessInstance getProcessInstance(long processInstanceId) {
         return processRuntime.getProcessInstance( processInstanceId );
+    }
+    
+    @Override
+    public ProcessInstance startProcess(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+        
+        return processRuntime.startProcess(processId, correlationKey, parameters);
+    }
+
+    @Override
+    public ProcessInstance createProcessInstance(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+
+        return processRuntime.createProcessInstance(processId, correlationKey, parameters);
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
+        return processRuntime.getProcessInstance(correlationKey);
     }
 
     public ProcessInstance getProcessInstance(long processInstanceId, boolean readOnly) {
