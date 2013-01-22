@@ -1,5 +1,11 @@
 package org.jbpm.process;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.base.MapGlobalResolver;
@@ -15,6 +21,8 @@ import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.process.CorrelationAwareProcessRuntime;
+import org.kie.process.CorrelationKey;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.Environment;
@@ -30,17 +38,11 @@ import org.kie.runtime.rule.AgendaFilter;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.LiveQuery;
 import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.runtime.rule.ViewChangedEventListener;
 import org.kie.time.SessionClock;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-
-public class StatefulProcessSession implements StatefulKnowledgeSession, InternalKnowledgeRuntime {
+public class StatefulProcessSession implements StatefulKnowledgeSession, InternalKnowledgeRuntime, CorrelationAwareProcessRuntime {
 
 	private KnowledgeBase kbase;
 	private InternalProcessRuntime processRuntime;
@@ -355,5 +357,25 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	public long getLastIdleTimestamp() {
 		throw new UnsupportedOperationException();
 	}
+
+    @Override
+    public ProcessInstance startProcess(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+
+        return processRuntime.startProcess(processId, correlationKey, parameters);
+    }
+
+    @Override
+    public ProcessInstance createProcessInstance(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+
+        return processRuntime.createProcessInstance(processId, correlationKey, parameters);
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
+
+        return processRuntime.getProcessInstance(correlationKey);
+    }
 
 }

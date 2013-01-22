@@ -1,5 +1,5 @@
-/**
- * Copyright 2010 JBoss Inc
+/*
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jbpm.persistence;
 
-package org.jbpm.process.instance;
 
-import java.util.Map;
-
-import org.drools.common.InternalKnowledgeRuntime;
-import org.kie.definition.process.Process;
-import org.kie.process.CorrelationKey;
-
-/**
- * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
-public interface ProcessInstanceFactory {
+public class StartProcessWithCorrelationKeyNoPersistenceTest extends AbstractStartProcessWithCorrelationKeyTest {
     
-    ProcessInstance createProcessInstance(Process process, CorrelationKey correlationKey, 
-            InternalKnowledgeRuntime kruntime, Map<String, Object> parameters);
-
+    public StartProcessWithCorrelationKeyNoPersistenceTest() {
+        super(false);
+    }
 }

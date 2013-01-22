@@ -47,6 +47,8 @@
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.WorkItemInfo</class>
+    <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
+    <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
     
    
     <properties>

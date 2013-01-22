@@ -35,6 +35,7 @@ import org.kie.event.rule.DefaultAgendaEventListener;
 import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.internal.utils.CompositeClassLoader;
+import org.kie.process.CorrelationKey;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.ProcessInstance;
@@ -143,19 +144,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     
     public ProcessInstance createProcessInstance(String processId,
                                                  Map<String, Object> parameters) {
-        try {
-            kruntime.startOperation();
-            if ( !kruntime.getActionQueue().isEmpty() ) {
-            	kruntime.executeQueuedActions();
-            }
-            final Process process = kruntime.getKieBase().getProcess( processId );
-            if ( process == null ) {
-                throw new IllegalArgumentException( "Unknown process ID: " + processId );
-            }
-            return startProcess( process, parameters );
-        } finally {
-        	kruntime.endOperation();
-        }
+        return createProcessInstance(processId, null, parameters);
     }
     
     public ProcessInstance startProcessInstance(long processInstanceId) {
@@ -173,14 +162,49 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         	kruntime.endOperation();
         }
     }
+    
+    @Override
+    public ProcessInstance startProcess(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+        ProcessInstance processInstance = createProcessInstance(processId, correlationKey, parameters);
+        if ( processInstance != null ) {
+            return startProcessInstance(processInstance.getId());
+        }
+        return null;
+    }
 
-    private org.jbpm.process.instance.ProcessInstance startProcess(final Process process,
+    @Override
+    public ProcessInstance createProcessInstance(String processId,
+            CorrelationKey correlationKey, Map<String, Object> parameters) {
+        try {
+            kruntime.startOperation();
+            if ( !kruntime.getActionQueue().isEmpty() ) {
+                kruntime.executeQueuedActions();
+            }
+            final Process process = kruntime.getKieBase().getProcess( processId );
+            if ( process == null ) {
+                throw new IllegalArgumentException( "Unknown process ID: " + processId );
+            }
+            return startProcess( process, correlationKey, parameters );
+        } finally {
+            kruntime.endOperation();
+        }
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
+
+        return processInstanceManager.getProcessInstance(correlationKey);
+    }
+
+    private org.jbpm.process.instance.ProcessInstance startProcess(final Process process, CorrelationKey correlationKey,
                                          Map<String, Object> parameters) {
         ProcessInstanceFactory conf = ProcessInstanceFactoryRegistry.INSTANCE.getProcessInstanceFactory( process );
         if ( conf == null ) {
             throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
         }
         return conf.createProcessInstance( process,
+                                           correlationKey,
         								   kruntime,
                                            parameters );
     }
@@ -410,5 +434,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         this.processInstanceManager.clearProcessInstancesState();
         
     }
+
 
 }

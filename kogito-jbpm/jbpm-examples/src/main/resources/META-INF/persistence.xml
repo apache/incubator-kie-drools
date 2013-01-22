@@ -14,7 +14,8 @@
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.drools.persistence.info.WorkItemInfo</class>
-    
+    <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
+    <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>    
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
       <property name="hibernate.max_fetch_depth" value="3"/>

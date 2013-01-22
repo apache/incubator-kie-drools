@@ -3,12 +3,14 @@ package org.jbpm.persistence.processinstance;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
+import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.kie.definition.process.Process;
+import org.kie.process.CorrelationKey;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;
@@ -44,7 +46,7 @@ public class JPAProcessInstanceManager
         this.kruntime = kruntime;
     }
 
-    public void addProcessInstance(ProcessInstance processInstance) {
+    public void addProcessInstance(ProcessInstance processInstance, CorrelationKey correlationKey) {
         ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo( processInstance, this.kruntime.getEnvironment() );
         ProcessPersistenceContext context 
             = ((ProcessPersistenceContextManager) this.kruntime.getEnvironment()
@@ -54,6 +56,12 @@ public class JPAProcessInstanceManager
         context.persist( processInstanceInfo );
         ((org.jbpm.process.instance.ProcessInstance) processInstance).setId( processInstanceInfo.getId() );
         processInstanceInfo.updateLastReadDate();
+        // persist correlation if exists
+        if (correlationKey != null) {
+            CorrelationKeyInfo correlationKeyInfo = (CorrelationKeyInfo) correlationKey;
+            correlationKeyInfo.setProcessInstanceId(processInstanceInfo.getId());
+            context.persist(correlationKeyInfo);
+        }
         internalAddProcessInstance(processInstance);
     }
     
@@ -155,6 +163,18 @@ public class JPAProcessInstanceManager
             }
             
         }
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
+        ProcessPersistenceContext context = ((ProcessPersistenceContextManager) this.kruntime.getEnvironment()
+                .get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ))
+                .getProcessPersistenceContext();
+        Long processInstanceId = context.getProcessInstanceByCorrelationKey(correlationKey);
+        if (processInstanceId == null) {
+            return null;
+        }
+        return getProcessInstance(processInstanceId);
     }
 
 }

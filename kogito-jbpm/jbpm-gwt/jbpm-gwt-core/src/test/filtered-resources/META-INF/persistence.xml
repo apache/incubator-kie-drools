@@ -19,6 +19,9 @@
         <class>org.jbpm.process.audit.NodeInstanceLog</class>
         <class>org.jbpm.process.audit.VariableInstanceLog</class>
         
+        <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
+        <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
+                
         <class>org.jbpm.marshalling.util.MarshalledData</class>
         
         <properties>
@@ -123,6 +126,9 @@
         <class>org.jbpm.process.audit.ProcessInstanceLog</class>
         <class>org.jbpm.process.audit.NodeInstanceLog</class>
         <class>org.jbpm.process.audit.VariableInstanceLog</class>
+        
+        <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
+        <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
         
         <class>org.jbpm.marshalling.util.MarshalledData</class>
         

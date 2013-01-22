@@ -20,13 +20,14 @@ import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.kie.definition.process.Process;
+import org.kie.process.CorrelationKey;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 
 public abstract class AbstractProcessInstanceFactory implements ProcessInstanceFactory {
 	
-	public ProcessInstance createProcessInstance(Process process,
+	public ProcessInstance createProcessInstance(Process process, CorrelationKey correlationKey, 
 			                                     InternalKnowledgeRuntime kruntime,
 			                                     Map<String, Object> parameters) {
 		ProcessInstance processInstance = (ProcessInstance) createProcessInstance();
@@ -34,7 +35,7 @@ public abstract class AbstractProcessInstanceFactory implements ProcessInstanceF
         processInstance.setProcess( process );
         
         ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager()
-    		.addProcessInstance( processInstance );
+    		.addProcessInstance( processInstance, correlationKey );
 
         // set variable default values
         // TODO: should be part of processInstanceImpl?
