@@ -198,62 +198,71 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
     private MoveSelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             MoveSelector moveSelector) {
-        if (sorterComparatorClass != null) {
-            if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") with sorterComparatorClass (" + sorterComparatorClass
-                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") that is not " + SelectionOrder.ORIGINAL + ".");
-            }
-            Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
-                    "sorterComparatorClass", sorterComparatorClass);
-            SelectionSorter sorter = new ComparatorSelectionSorter(sorterComparator,
-                    SelectionSorterOrder.resolve(sorterOrder));
-            moveSelector = new SortingMoveSelector(moveSelector, resolvedCacheType, sorter);
-        }
-        if (sorterWeightFactoryClass != null) {
+        if (sorterComparatorClass != null || sorterWeightFactoryClass != null || sorterClass != null) {
+            SelectionSorter sorter = null;
             if (sorterComparatorClass != null) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") has both an sorterComparatorClass (" + sorterComparatorClass
-                        + ") and a sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
-            }
-            if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") with sorterWeightFactoryClass (" + sorterWeightFactoryClass
-                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") that is not " + SelectionOrder.ORIGINAL + ".");
-            }
-            SelectionSorterWeightFactory sorterWeightFactory = ConfigUtils.newInstance(this,
-                    "sorterWeightFactoryClass", sorterWeightFactoryClass);
-            SelectionSorter sorter = new WeightFactorySelectionSorter(sorterWeightFactory,
-                    SelectionSorterOrder.resolve(sorterOrder));
-            moveSelector = new SortingMoveSelector(moveSelector, resolvedCacheType, sorter);
-        }
-        if (sorterClass != null) {
-            if (sorterComparatorClass != null) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") has both an sorterComparatorClass (" + sorterComparatorClass
-                        + ") and a sorterClass (" + sorterClass + ").");
+                if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                            + ") with sorterComparatorClass (" + sorterComparatorClass
+                            + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                            + ") that is not " + SelectionOrder.ORIGINAL + ".");
+                }
+                Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
+                        "sorterComparatorClass", sorterComparatorClass);
+                sorter = new ComparatorSelectionSorter(sorterComparator,
+                        SelectionSorterOrder.resolve(sorterOrder));
             }
             if (sorterWeightFactoryClass != null) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") has both an sorterWeightFactoryClass (" + sorterWeightFactoryClass
-                        + ") and a sorterClass (" + sorterClass + ").");
+                if (sorterComparatorClass != null) {
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                            + ") has both an sorterComparatorClass (" + sorterComparatorClass
+                            + ") and a sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
+                }
+                if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                            + ") with sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                            + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                            + ") that is not " + SelectionOrder.ORIGINAL + ".");
+                }
+                SelectionSorterWeightFactory sorterWeightFactory = ConfigUtils.newInstance(this,
+                        "sorterWeightFactoryClass", sorterWeightFactoryClass);
+                sorter = new WeightFactorySelectionSorter(sorterWeightFactory,
+                        SelectionSorterOrder.resolve(sorterOrder));
             }
-            if (sorterOrder != null) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") has both an sorterClass (" + sorterClass
-                        + ") but the sorterOrder (" + sorterOrder + ") should be null.");
+            if (sorterClass != null) {
+                if (sorterComparatorClass != null) {
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                            + ") has both an sorterComparatorClass (" + sorterComparatorClass
+                            + ") and a sorterClass (" + sorterClass + ").");
+                }
+                if (sorterWeightFactoryClass != null) {
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                            + ") has both an sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                            + ") and a sorterClass (" + sorterClass + ").");
+                }
+                if (sorterOrder != null) {
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                            + ") has both an sorterClass (" + sorterClass
+                            + ") but the sorterOrder (" + sorterOrder + ") should be null.");
+                }
+                if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                            + ") with sorterClass (" + sorterClass
+                            + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                            + ") that is not " + SelectionOrder.ORIGINAL + ".");
+                }
+                sorter = ConfigUtils.newInstance(this, "sorterClass", sorterClass);
             }
-            if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") with sorterClass (" + sorterClass
-                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") that is not " + SelectionOrder.ORIGINAL + ".");
-            }
-            SelectionSorter sorter = ConfigUtils.newInstance(this,
-                    "sorterClass", sorterClass);
             moveSelector = new SortingMoveSelector(moveSelector, resolvedCacheType, sorter);
+        } else {
+            if (sorterOrder != null) {
+                if (sorterOrder != null) {
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                            + ") has a sorterOrder (" + sorterOrder
+                            + "), but no sorterComparatorClass (" + sorterComparatorClass
+                            + ") or sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
+                }
+            }
         }
         return moveSelector;
     }
