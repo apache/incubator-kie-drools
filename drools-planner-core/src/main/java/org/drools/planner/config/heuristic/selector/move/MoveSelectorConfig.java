@@ -198,6 +198,21 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
     private MoveSelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             MoveSelector moveSelector) {
+        if (sorterComparatorClass != null && sorterWeightFactoryClass != null) {
+            throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                    + ") has both an sorterComparatorClass (" + sorterComparatorClass
+                    + ") and a sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
+        }
+        if (sorterComparatorClass != null && sorterClass != null) {
+            throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                    + ") has both an sorterComparatorClass (" + sorterComparatorClass
+                    + ") and a sorterClass (" + sorterClass + ").");
+        }
+        if (sorterWeightFactoryClass != null && sorterClass != null) {
+            throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                    + ") has both an sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                    + ") and a sorterClass (" + sorterClass + ").");
+        }
         if (sorterComparatorClass != null || sorterWeightFactoryClass != null || sorterClass != null) {
             SelectionSorter sorter = null;
             if (sorterComparatorClass != null) {
@@ -213,11 +228,6 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                         SelectionSorterOrder.resolve(sorterOrder));
             }
             if (sorterWeightFactoryClass != null) {
-                if (sorterComparatorClass != null) {
-                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                            + ") has both an sorterComparatorClass (" + sorterComparatorClass
-                            + ") and a sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
-                }
                 if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
                     throw new IllegalArgumentException("The moveSelectorConfig (" + this
                             + ") with sorterWeightFactoryClass (" + sorterWeightFactoryClass
@@ -230,16 +240,6 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                         SelectionSorterOrder.resolve(sorterOrder));
             }
             if (sorterClass != null) {
-                if (sorterComparatorClass != null) {
-                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                            + ") has both an sorterComparatorClass (" + sorterComparatorClass
-                            + ") and a sorterClass (" + sorterClass + ").");
-                }
-                if (sorterWeightFactoryClass != null) {
-                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                            + ") has both an sorterWeightFactoryClass (" + sorterWeightFactoryClass
-                            + ") and a sorterClass (" + sorterClass + ").");
-                }
                 if (sorterOrder != null) {
                     throw new IllegalArgumentException("The moveSelectorConfig (" + this
                             + ") has both an sorterClass (" + sorterClass
