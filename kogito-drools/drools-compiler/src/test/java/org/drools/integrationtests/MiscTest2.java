@@ -500,4 +500,75 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals(Arrays.asList(7, 6, 5, 4, 3, 2, 1), list);
     }
+
+    @Test(timeout = 5000)
+    public void testPropertyReactiveOnAlphaNodeFollowedByAccumulate() {
+        // DROOLS-16
+        String str =
+                "package org.drools.pmml.pmml_4_1.test;\n" +
+                "\n" +
+                "declare Charge\n" +
+                "    context     : String\n" +
+                "    index       : String = \"-1\"\n" +
+                "    source      : String = \"-1\"\n" +
+                "    value       : double\n" +
+                "end\n" +
+                "\n" +
+                "declare Neuron\n" +
+                "@propertyReactive\n" +
+                "    context     : String            @key\n" +
+                "    index       : String            @key\n" +
+                "    layerIndex  : int\n" +
+                "    bias        : double\n" +
+                "    fanIn       : int\n" +
+                "    value       : double\n" +
+                "    dvalue      : double\n" +
+                "    normalized  : boolean\n" +
+                "end\n" +
+                "\n" +
+                "rule \"LinkSynapses\"\n" +
+                "when\n" +
+                "then\n" +
+                "    Charge c = new Charge();\n" +
+                "    c.setContext( \"MockCold\" );\n" +
+                "    c.setSource( \"0\" );\n" +
+                "    c.setIndex( \"1\" );\n" +
+                "    c.setValue( 0.43 );\n" +
+                "    insert(c);\n" +
+                "end\n" +
+                "\n" +
+                "rule \"NeuralFire_MockCold_Layer0\"\n" +
+                "when\n" +
+                "    $neur : Neuron( context == \"MockCold\",\n" +
+                "                    layerIndex == 0\n" +
+                "                  )\n" +
+                "    accumulate( $c : Charge( context == \"MockCold\", index == $neur.index, $in : value ),\n" +
+                "                $list : collectList( $c ),\n" +
+                "                $val : sum( $in );\n" +
+                "                $list.size() == $neur.fanIn )\n" +
+                "then\n" +
+                "    double x = 1.0; // $neur.getBias() + $val.doubleValue();\n" +
+                "    modify ( $neur ) {\n" +
+                "        setValue( x );\n" +
+                "    }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"BuildNeurons_MockCold_Layer0\"\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Neuron( \"MockCold\",\n" +
+                "                               \"1\",\n" +
+                "                               0,\n" +
+                "                               1.0,\n" +
+                "                               1,\n" +
+                "                               0.0,\n" +
+                "                               0.0,\n" +
+                "                               true\n" +
+                "                             ) );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        assertEquals(3, ksession.fireAllRules());
+    }
 }
