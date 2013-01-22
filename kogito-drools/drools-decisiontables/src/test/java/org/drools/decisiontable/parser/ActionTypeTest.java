@@ -157,6 +157,26 @@ public class ActionTypeTest {
         assertEquals(Code.RULEFLOWGROUP, type.getCode());
 
         actionTypeMap = new HashMap<Integer, ActionType>();
+        ActionType.addNewActionType( actionTypeMap, "V", 0, 1 );
+        type = (ActionType) actionTypeMap.get( new Integer(0) );
+        assertEquals(Code.DATEEFFECTIVE, type.getCode());
+
+        actionTypeMap = new HashMap<Integer, ActionType>();
+        ActionType.addNewActionType( actionTypeMap, "DATE-EFFECTIVE", 0, 1 );
+        type = (ActionType) actionTypeMap.get( new Integer(0) );
+        assertEquals(Code.DATEEFFECTIVE, type.getCode());
+
+        actionTypeMap = new HashMap<Integer, ActionType>();
+        ActionType.addNewActionType( actionTypeMap, "Z", 0, 1 );
+        type = (ActionType) actionTypeMap.get( new Integer(0) );
+        assertEquals(Code.DATEEXPIRES, type.getCode());
+
+        actionTypeMap = new HashMap<Integer, ActionType>();
+        ActionType.addNewActionType( actionTypeMap, "DATE-EXPIRES", 0, 1 );
+        type = (ActionType) actionTypeMap.get( new Integer(0) );
+        assertEquals(Code.DATEEXPIRES, type.getCode());
+
+        actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "@", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
         assertEquals(Code.METADATA, type.getCode());
