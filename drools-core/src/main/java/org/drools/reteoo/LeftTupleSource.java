@@ -223,17 +223,9 @@ public abstract class LeftTupleSource extends BaseNode
 
         Pattern pattern = context.getLastBuiltPatterns()[1]; // left input pattern
 
-        ObjectType objectType;
-        if ( pattern == null || this instanceof AccumulateNode ) {
-            ObjectSource objectSource = ((LeftInputAdapterNode) leftInput).getParentObjectSource();
-            if ( !(objectSource instanceof ObjectTypeNode) ) {
-                leftDeclaredMask = Long.MAX_VALUE;
-                return;
-            }
-            objectType = ((ObjectTypeNode) objectSource).getObjectType();
-        } else {
-            objectType = pattern.getObjectType();
-        }
+        ObjectType objectType = pattern == null || this instanceof AccumulateNode ?
+            ((LeftInputAdapterNode)leftInput).getParentObjectSource().getObjectTypeNode().getObjectType() :
+            pattern.getObjectType();
 
         if ( !(objectType instanceof ClassObjectType) ) {
             // Only ClassObjectType can use property specific
