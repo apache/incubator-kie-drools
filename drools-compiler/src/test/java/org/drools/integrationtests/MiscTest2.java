@@ -571,4 +571,76 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals(3, ksession.fireAllRules());
     }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testMvelAssignmentToPublicField() {
+        String str =
+                "import org.drools.integrationtests.MiscTest2.Foo\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "   $foo : Foo()\n" +
+                "then\n" +
+                "   $foo.x = 1;\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Foo foo1 = new Foo();
+        Foo foo2 = new Foo();
+        ksession.insert(foo1);
+        ksession.insert(foo2);
+        ksession.fireAllRules();
+        assertEquals(1, foo1.x);
+        assertEquals(1, foo2.x);
+    }
+
+    public static class Foo {
+        public int x;
+        public int getX() {
+            return x;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testMvelInvokeAsList() {
+        String str =
+                "import java.util.List;\n" +
+                "import java.util.Arrays;\n" +
+                "import java.util.ArrayList;\n" +
+                "\n" +
+                "declare Project\n" +
+                "@typesafe (false)\n" +
+                "        list1 : List\n" +
+                "        list2 : List\n" +
+                "end\n" +
+                "\n" +
+                "rule kickoff\n" +
+                "salience 999999\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Project() );\n" +
+                "    insert( new Project() );   // necessary to trigger the exception\n" +
+                "end\n" +
+                "\n" +
+                "rule \" Config rule \"\n" +
+                "dialect \"mvel\"\n" +
+                "no-loop true\n" +
+                "when\n" +
+                "    P : Project()\n" +
+                "then\n" +
+                "    modify(P) {\n" +
+                "       list1 = Arrays.asList(10, 15, 20, 25),\n" +
+                "       list2 = Arrays.asList(11, 2, 3, 4, 5, 10, 9, 8, 7)\n" +
+                "    };\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+    }
 }
