@@ -185,6 +185,10 @@ public class SpreadsheetCompilerUnitTest {
                                  rule1 ) > -1 );
         assertTrue( drl.indexOf( "calendars \"CAL1\"",
                                  rule1 ) > -1 );
+        assertTrue( drl.indexOf( "date-effective \"01-Jan-2007\"",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "date-expires \"31-Dec-2007\"",
+                                 rule1 ) > -1 );
 
         int rule2 = drl.indexOf( "rule \"N2\"" );
         assertFalse( rule2 == -1 );
@@ -208,6 +212,10 @@ public class SpreadsheetCompilerUnitTest {
         assertTrue( drl.indexOf( "auto-focus false",
                                  rule2 ) > -1 );
         assertTrue( drl.indexOf( "calendars \"CAL2\"",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "date-effective \"01-Jan-2012\"",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "date-expires \"31-Dec-2015\"",
                                  rule2 ) > -1 );
     }
     

@@ -240,6 +240,12 @@ implements RuleSheetListener {
                 case RULEFLOWGROUP:
                     ruleset.setRuleFlowGroup( value );
                     break;
+                case DATEEFFECTIVE:
+                    ruleset.setDateEffective( value );
+                    break;
+                case DATEEXPIRES:
+                    ruleset.setDateExpires( value );
+                    break;
                 }
             }
         }
@@ -647,6 +653,12 @@ implements RuleSheetListener {
             break;
         case CALENDARS:
             this._currentRule.setCalendars( value );
+            break;
+        case DATEEFFECTIVE:
+            this._currentRule.setDateEffective( value );
+            break;
+        case DATEEXPIRES:
+            this._currentRule.setDateExpires( value );
             break;
         }
     }
