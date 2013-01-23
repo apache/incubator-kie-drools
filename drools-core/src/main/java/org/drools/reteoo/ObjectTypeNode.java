@@ -201,7 +201,7 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         public boolean before(Id otherId) {
-            return this.id < otherId.id;
+            return otherId != null && this.id < otherId.id;
         }
 
         public Class<?> getTypeNodeClass() {
@@ -393,6 +393,12 @@ public class ObjectTypeNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
+        if ( dirty ) {
+            idGenerator.reset();
+            updateTupleSinkId( this, this );
+            dirty = false;
+        }
+
         // Regular updateSink
         final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
         Iterator it = memory.memory.iterator();

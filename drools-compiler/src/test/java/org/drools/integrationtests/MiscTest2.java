@@ -19,8 +19,11 @@ package org.drools.integrationtests;
 import org.drools.Address;
 import org.drools.CommonTestMethodBase;
 import org.drools.Person;
+import org.drools.common.DefaultFactHandle;
 import org.drools.core.util.FileManager;
 import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,6 +32,7 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
+import org.kie.definition.type.PropertyReactive;
 import org.kie.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.event.kiebase.KieBaseEventListener;
 import org.kie.event.rule.AgendaEventListener;
@@ -710,5 +714,124 @@ public class MiscTest2 extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testDynamicAddRule() {
+        // DROOLS-17
+        String str =
+                "import org.drools.integrationtests.MiscTest2.A\n" +
+                "rule r1 when\n" +
+                "    $a : A( f1 == 1 )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule r2 when\n" +
+                "    $a : A( f2 == 1 )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule r3 when\n" +
+                "    $a : A( f3 == 1 )" +
+                "then\n" +
+                "end";
+
+        String str2 =
+                "import org.drools.integrationtests.MiscTest2.A\n" +
+                "rule r4 when\n" +
+                "    $a : A( f2 == 1, f4 == 1 )" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        FactHandle fh = ksession.insert(new A(1, 1, 1, 1));
+
+        ksession.fireAllRules();
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ),
+                ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        ksession.fireAllRules();
+
+        // this second insert forces the regeneration of the otnIds
+        ksession.insert(new A(2, 2, 2, 2));
+
+        LeftTuple leftTuple = ((DefaultFactHandle) fh).getFirstLeftTuple();
+        ObjectTypeNode.Id letTupleOtnId = leftTuple.getLeftTupleSink().getLeftInputOtnId();
+        leftTuple = leftTuple.getLeftParentNext();
+        while ( leftTuple != null ) {
+            assertTrue( letTupleOtnId.before( leftTuple.getLeftTupleSink().getLeftInputOtnId() ) );
+            letTupleOtnId = leftTuple.getLeftTupleSink().getLeftInputOtnId();
+            leftTuple = leftTuple.getLeftParentNext();
+        }
+    }
+
+    @PropertyReactive
+    public static class A {
+        private int f1;
+        private int f2;
+        private int f3;
+        private int f4;
+
+        public A(int f1, int f2, int f3, int f4) {
+            this.f1 = f1;
+            this.f2 = f2;
+            this.f3 = f3;
+            this.f4 = f4;
+        }
+
+        public int getF1() {
+            return f1;
+        }
+
+        public void setF1(int f1) {
+            this.f1 = f1;
+        }
+
+        public int getF2() {
+            return f2;
+        }
+
+        public void setF2(int f2) {
+            this.f2 = f2;
+        }
+
+        public int getF3() {
+            return f3;
+        }
+
+        public void setF3(int f3) {
+            this.f3 = f3;
+        }
+
+        public int getF4() {
+            return f4;
+        }
+
+        public void setF4(int f4) {
+            this.f4 = f4;
+        }
+
+        @Override
+        public String toString() {
+            return "A[f1=" + f1 + ", f2=" + f2 + ", f3=" + f3 + ", f4=" + f4 + "]";
+        }
     }
 }

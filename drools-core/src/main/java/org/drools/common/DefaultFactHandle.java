@@ -16,26 +16,19 @@
 
 package org.drools.common;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Map;
+import org.drools.FactHandle;
+import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.StringUtils;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.RightTuple;
+import org.kie.runtime.rule.SessionEntryPoint;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.drools.FactHandle;
-import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.StringUtils;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RightTuple;
-import org.drools.spi.RuleComponent;
-import org.kie.definition.rule.Rule;
-import org.kie.runtime.rule.SessionEntryPoint;
+import java.util.Arrays;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -346,7 +339,47 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             setLastLeftTuple( leftTuple );
         }
     }
-    
+
+    public void addLeftTupleInPosition( LeftTuple leftTuple ) {
+        ObjectTypeNode.Id otnId = leftTuple.getLeftTupleSink() == null ? null : leftTuple.getLeftTupleSink().getLeftInputOtnId();
+        if (otnId == null) { // can happen only in tests
+            addLastLeftTuple( leftTuple );
+            return;
+        }
+
+        LeftTuple previous = this.getLastLeftTuple();
+        if ( previous == null ) {
+            // no other LeftTuples, just add.
+            leftTuple.setLeftParentPrevious( null );
+            leftTuple.setLeftParentNext( null );
+            setFirstLeftTuple( leftTuple );
+            setLastLeftTuple( leftTuple );
+            return;
+        } else if ( previous.getLeftTupleSink() == null || !otnId.before( previous.getLeftTupleSink().getLeftInputOtnId() ) ) {
+            // the last LeftTuple comes before the new one so just add it at the end
+            leftTuple.setLeftParentPrevious( previous );
+            leftTuple.setLeftParentNext( null );
+            previous.setLeftParentNext( leftTuple );
+            setLastLeftTuple( leftTuple );
+            return;
+        }
+
+        LeftTuple next = previous;
+        previous = previous.getLeftParentPrevious();
+        while (previous != null && otnId.before( previous.getLeftTupleSink().getLeftInputOtnId() ) ) {
+            next = previous;
+            previous = previous.getLeftParentPrevious();
+        }
+        leftTuple.setLeftParentNext( next );
+        next.setLeftParentPrevious( leftTuple );
+        leftTuple.setLeftParentPrevious( previous );
+        if ( previous != null ) {
+            previous.setLeftParentNext( leftTuple );
+        } else {
+            setFirstLeftTuple( leftTuple );
+        }
+    }
+
     public void removeLeftTuple( LeftTuple leftTuple ) {
         LeftTuple previous = leftTuple.getLeftParentPrevious();
         LeftTuple next = leftTuple.getLeftParentNext();
@@ -400,7 +433,47 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             setLastRightTuple( rightTuple );
         }
     }
-    
+
+    public void addRightTupleInPosition( RightTuple rightTuple ) {
+        ObjectTypeNode.Id otnId = rightTuple.getRightTupleSink() == null ? null : rightTuple.getRightTupleSink().getRightInputOtnId();
+        if (otnId == null) { // can happen only in tests
+            addLastRightTuple( rightTuple );
+            return;
+        }
+
+        RightTuple previous = getLastRightTuple();
+        if ( previous == null ) {
+            // no other RightTuples, just add.
+            rightTuple.setHandlePrevious( null );
+            rightTuple.setHandleNext( null );
+            setFirstRightTuple( rightTuple );
+            setLastRightTuple( rightTuple );
+            return;
+        } else if ( previous.getRightTupleSink() == null || !otnId.before( previous.getRightTupleSink().getRightInputOtnId() ) ) {
+            // the last RightTuple comes before the new one so just add it at the end
+            rightTuple.setHandlePrevious( previous );
+            rightTuple.setHandleNext( null );
+            previous.setHandleNext( rightTuple );
+            setLastRightTuple( rightTuple );
+            return;
+        }
+
+        RightTuple next = previous;
+        previous = previous.getHandlePrevious();
+        while (previous != null && otnId.before( previous.getRightTupleSink().getRightInputOtnId() ) ) {
+            next = previous;
+            previous = previous.getHandlePrevious();
+        }
+        rightTuple.setHandleNext( next );
+        next.setHandlePrevious( rightTuple );
+        rightTuple.setHandlePrevious( previous );
+        if ( previous != null ) {
+            previous.setHandleNext( rightTuple );
+        } else {
+            setFirstRightTuple( rightTuple );
+        }
+    }
+
     public void removeRightTuple( RightTuple rightTuple ) {
         RightTuple previous = rightTuple.getHandlePrevious();
         RightTuple next = rightTuple.getHandleNext();

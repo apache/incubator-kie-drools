@@ -1,18 +1,17 @@
 package org.drools.common;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.SessionEntryPoint;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class DisconnectedFactHandle
@@ -206,6 +205,10 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
+    public void addLeftTupleInPosition(LeftTuple leftTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
     public void removeLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
@@ -223,6 +226,10 @@ public class DisconnectedFactHandle
     }
 
     public void addLastRightTuple(RightTuple rightTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public void addRightTupleInPosition(RightTuple rightTuple) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
