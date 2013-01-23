@@ -279,7 +279,7 @@ public class PlannerBenchmarkConfig {
                     break;
                 default:
                     throw new IllegalStateException("The solverBenchmarkRankingType ("
-                            + solverBenchmarkRankingType + ") is not implemented");
+                            + solverBenchmarkRankingType + ") is not implemented.");
             }
         }
         if (solverBenchmarkRankingComparatorClass != null) {

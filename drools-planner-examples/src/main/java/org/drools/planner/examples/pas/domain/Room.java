@@ -107,7 +107,7 @@ public class Room extends AbstractPersistable {
                 // scoreRules check this
                 return 25;
             default:
-                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented");
+                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented.");
         }
     }
 

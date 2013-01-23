@@ -35,7 +35,7 @@ public enum ProblemStatisticType implements StatisticType {
             case MEMORY_USE:
                 return new MemoryUseProblemStatistic(problemBenchmark);
             default:
-                throw new IllegalStateException("The problemStatisticType (" + this + ") is not implemented");
+                throw new IllegalStateException("The problemStatisticType (" + this + ") is not implemented.");
         }
     }
 }
