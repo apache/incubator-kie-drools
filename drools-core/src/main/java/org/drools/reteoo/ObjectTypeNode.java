@@ -205,7 +205,7 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         public boolean before(Id otherId) {
-            return this.id < otherId.id;
+            return otherId != null && this.id < otherId.id;
         }
 
         public Class<?> getTypeNodeClass() {
@@ -389,31 +389,11 @@ public class ObjectTypeNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        if ( lrUnlinkingEnabled ) {
-            // Update sink taking into account L&R unlinking peculiarities
-            updateLRUnlinking( sink, context, workingMemory );
-
-        } else {
-            // Regular updateSink
-            final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
-            Iterator it = memory.memory.iterator();
-    
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                sink.assertObject( (InternalFactHandle) entry.getValue(),
-                                   context,
-                                   workingMemory );
-            }
+        if ( dirty ) {
+            idGenerator.reset();
+            updateTupleSinkId( this, this );
+            dirty = false;
         }
-
-    }
-
-    /**
-     *  When L&R Unlinking is enabled, updateSink() is used to populate 
-     *  a node's memory, but it has to take into account if it's propagating.
-     */
-    private void updateLRUnlinking(final ObjectSink sink,
-                                   final PropagationContext context,
-                                   final InternalWorkingMemory workingMemory) {
 
         final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
         

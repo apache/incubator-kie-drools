@@ -16,15 +16,14 @@
 
 package org.drools.common;
 
-import java.util.Arrays;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RightTuple;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RightTuple;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import java.util.Arrays;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class QueryElementFactHandle
@@ -161,7 +160,7 @@ public class QueryElementFactHandle
     }
     
     public String toString() {
-        return "results: " + Arrays.asList( (Object[]) this.object ).toString();
+        return "results: " + Arrays.asList((Object[]) this.object).toString();
     }
 
     public void disconnect() {
@@ -169,6 +168,10 @@ public class QueryElementFactHandle
     }
 
     public void addLastLeftTuple( LeftTuple leftTuple ) {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
+    public void addLeftTupleInPosition( LeftTuple leftTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
@@ -189,6 +192,10 @@ public class QueryElementFactHandle
     }
 
     public void addLastRightTuple( RightTuple rightTuple ) {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
+    public void addRightTupleInPosition( RightTuple rightTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 

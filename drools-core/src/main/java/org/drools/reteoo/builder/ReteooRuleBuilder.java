@@ -16,9 +16,6 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.ActivationListenerFactory;
 import org.drools.RuleIntegrationException;
 import org.drools.base.ClassObjectType;
@@ -47,7 +44,8 @@ import org.drools.rule.WindowDeclaration;
 import org.drools.rule.WindowReference;
 import org.drools.time.TemporalDependencyMatrix;
 
-import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReteooRuleBuilder implements RuleBuilder {
 
@@ -171,10 +169,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                                                   context );
 
         BaseNode baseTerminalNode = (BaseNode) terminal;
-        baseTerminalNode.attach(context);
-
         baseTerminalNode.networkUpdated(new UpdateContext());
-
+        baseTerminalNode.attach(context);
+        
         // adds the terminal node to the list of nodes created/added by this sub-rule
         context.getNodes().add( baseTerminalNode );
 

@@ -16,14 +16,14 @@
 
 package org.drools.reteoo;
 
-import java.util.Arrays;
-
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
+
+import java.util.Arrays;
 
 /**
  * A parent class for all specific LeftTuple specializations
@@ -70,11 +70,10 @@ public class BaseLeftTuple
                              final LeftTupleSink sink,
                              final boolean leftTupleMemoryEnabled) {
         this.handle = factHandle;
-
-        if ( leftTupleMemoryEnabled ) {
-            this.handle.addLastLeftTuple( this );
-        }
         this.sink = sink;
+        if ( leftTupleMemoryEnabled ) {
+            this.handle.addLeftTupleInPosition( this );
+        }
     }
 
     public BaseLeftTuple(final LeftTuple leftTuple,
