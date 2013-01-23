@@ -46,6 +46,8 @@ public class ActionType {
         ACTIVATIONGROUP( "ACTIVATION-GROUP", "X", 1 ),
         AGENDAGROUP(     "AGENDA-GROUP",     "G", 1 ),
         RULEFLOWGROUP(   "RULEFLOW-GROUP",   "R", 1 ),
+        DATEEFFECTIVE(   "DATE-EFFECTIVE",   "V", 1 ),
+        DATEEXPIRES(     "DATE-EXPIRES",     "Z", 1 ),
         METADATA(        "METADATA",         "@" );
                 
         private String colHeader;
@@ -80,7 +82,7 @@ public class ActionType {
         }
     }
 
-    public static final EnumSet<Code> ATTRIBUTE_CODE_SET = EnumSet.range( Code.SALIENCE, Code.RULEFLOWGROUP );
+    public static final EnumSet<Code> ATTRIBUTE_CODE_SET = EnumSet.range( Code.SALIENCE, Code.DATEEXPIRES );
 
     private static final Map<String,Code> tag2code = new HashMap<String,Code>();
     static {
