@@ -59,7 +59,7 @@ public class FromNode extends LeftTupleSource
     MemoryFactory {
     private static final long          serialVersionUID = 510l;
 
-    protected DataProvider               dataProvider;;
+    protected DataProvider               dataProvider;
     protected AlphaNodeFieldConstraint[] alphaConstraints;
     protected BetaConstraints            betaConstraints;
 
@@ -114,6 +114,23 @@ public class FromNode extends LeftTupleSource
         out.writeObject( betaConstraints );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeObject( from );
+    }
+
+    public DataProvider getDataProvider() {
+        return dataProvider;
+    }
+
+    public AlphaNodeFieldConstraint[] getAlphaConstraints() {
+        return alphaConstraints;
+    }
+
+    public BetaConstraints getBetaConstraints() {
+        return betaConstraints;
+    }
+    
+
+    public Class< ? > getResultClass() {
+        return resultClass;
     }
 
     /**
@@ -174,7 +191,7 @@ public class FromNode extends LeftTupleSource
     }
 
     @SuppressWarnings("unchecked")
-    protected RightTuple createRightTuple( final LeftTuple leftTuple,
+    public RightTuple createRightTuple( final LeftTuple leftTuple,
                                            final PropagationContext context,
                                            final InternalWorkingMemory workingMemory,
                                            final Object object ) {
@@ -218,7 +235,7 @@ public class FromNode extends LeftTupleSource
 
     }
 
-    private void addToCreatedHandlesMap(final Map<Object, RightTuple> matches,
+    public void addToCreatedHandlesMap(final Map<Object, RightTuple> matches,
                                         final RightTuple rightTuple) {
         if ( rightTuple.getFactHandle().isValid() ) {
             Object object = rightTuple.getFactHandle().getObject();
@@ -504,8 +521,10 @@ public class FromNode extends LeftTupleSource
 
     @Override
     public LeftTuple createPeer(LeftTuple original) {
-        // TODO Auto-generated method stub
-        return null;
+        FromNodeLeftTuple peer = new FromNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
     }    
 
     public boolean isLeftTupleMemoryEnabled() {

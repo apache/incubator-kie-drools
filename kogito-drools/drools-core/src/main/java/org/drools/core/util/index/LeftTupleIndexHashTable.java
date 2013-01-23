@@ -492,12 +492,4 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         return builder.toString();
     }
 
-    public boolean isStagingMemory() {
-        return false;
-    }
-
-    public void setStagingMemory(boolean liaNodeMemory) {
-        throw new UnsupportedOperationException();
-    }
-
 }

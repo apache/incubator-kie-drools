@@ -119,7 +119,7 @@ public class JoinNode extends BetaNode {
 
     protected void propagateFromRight( RightTuple rightTuple, LeftTuple leftTuple, BetaMemory memory, PropagationContext context, InternalWorkingMemory workingMemory ) {
         if ( this.constraints.isAllowedCachedRight( memory.getContext(),
-                leftTuple ) ) {
+                                                    leftTuple ) ) {
             // wm.marshaller.write( i, leftTuple )
             this.sink.propagateAssertLeftTuple( leftTuple,
                     rightTuple,
@@ -191,7 +191,6 @@ public class JoinNode extends BetaNode {
         
         
         memory.getLeftTupleMemory().remove( leftTuple );
-        leftTuple.setMemory( null );
         
         if ( leftTuple.getFirstChild() != null ) {
             this.sink.propagateRetractLeftTuple( leftTuple,

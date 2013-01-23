@@ -27,10 +27,12 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.conf.LRUnlinkingOption;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.type.Modifies;
 import org.kie.definition.type.PropertyReactive;
@@ -92,7 +94,9 @@ public class MiscTest2 extends CommonTestMethodBase {
         if ( builder.hasErrors() ) {
             throw new RuntimeException(builder.getErrors().toString());
         }
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( LRUnlinkingOption.ENABLED );                
+        KnowledgeBase knowledgeBase  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
 
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
@@ -153,7 +157,9 @@ public class MiscTest2 extends CommonTestMethodBase {
             out.writeObject( kbuilder.getKnowledgePackages());
             out.close();
 
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kconf.setOption( LRUnlinkingOption.ENABLED );                
+            KnowledgeBase kbase  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
 
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(root, "test.drl.compiled")));
             kbase.addKnowledgePackages((Collection<KnowledgePackage>) in.readObject());

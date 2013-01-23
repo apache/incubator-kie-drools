@@ -222,12 +222,7 @@ public class AccumulateNode extends BetaNode {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
                 
-        if ( leftTuple.getMemory().isStagingMemory() ) {
-            leftTuple.getMemory().remove( leftTuple );
-        } else {
-            (( BetaMemory ) memory.getBetaMemory()).getLeftTupleMemory().remove( leftTuple );
-        }
-        leftTuple.setMemory( null );       
+        (( BetaMemory ) memory.getBetaMemory()).getLeftTupleMemory().remove( leftTuple );       
         
         final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
         if ( accctx.getAction() != null ) {
@@ -861,7 +856,10 @@ public class AccumulateNode extends BetaNode {
     }
     
     public LeftTuple createPeer(LeftTuple original) {
-        return null;
+        FromNodeLeftTuple peer = new FromNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
     }
 
     public short getType() {

@@ -198,6 +198,7 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         consequenceName = (String) in.readObject();
 
         fireDirect = rule.getActivationListener().equals( "direct" );
+        unlinkingEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -215,6 +216,7 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         out.writeObject( salienceDeclarations );
         out.writeObject( enabledDeclarations );
         out.writeObject( consequenceName );
+        out.writeBoolean(unlinkingEnabled);
     }
 
     /**
@@ -241,6 +243,11 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
+        if( unlinkingEnabled ) {
+            context = findMostRecentPropagationContext( leftTuple,
+                                                        context );
+        }
+        
         //check if the rule is not effective or
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( (!this.rule.isEffective( leftTuple,
@@ -251,18 +258,7 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
             return;
         }
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-        
-        if( unlinkingEnabled ) {
-            // Find the most recent PropagationContext, as this caused this rule to elegible for firing
-            LeftTuple lt = leftTuple;
-            while ( lt != null ) {
-                if ( lt.getPropagationContext() != null && lt.getPropagationContext().getPropagationNumber() > context.getPropagationNumber() ) {
-                    context = lt.getPropagationContext();
-                }
-                lt = lt.getParent();
-            }
-        }
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();        
 
         boolean fire = agenda.createActivation( leftTuple, 
                                                 context, 
@@ -274,9 +270,27 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         }
     }
 
+    private PropagationContext findMostRecentPropagationContext(final LeftTuple leftTuple,
+                                                                PropagationContext context) {
+        // Find the most recent PropagationContext, as this caused this rule to elegible for firing
+        LeftTuple lt = leftTuple;
+        while ( lt != null ) {
+            if ( lt.getPropagationContext() != null && lt.getPropagationContext().getPropagationNumber() > context.getPropagationNumber() ) {
+                context = lt.getPropagationContext();
+            }
+            lt = lt.getParent();
+        }
+        return context;
+    }
+
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
+        if( unlinkingEnabled ) {
+            context = findMostRecentPropagationContext( leftTuple,
+                                                        context );
+        }
+        
     	InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
     	
         // we need the inserted facthandle so we can update the network with new Activation
@@ -301,9 +315,9 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         }
 
         boolean reuseActivation = true;
-        if ( o  == Boolean.TRUE ) {
+        // o (AgendaItem) could be null, if this was staged as an insert but not processed, then pushed as a update
+        if ( o == null || o  == Boolean.TRUE ) {
         	// set to Boolean.TRUE when lock-on-active stops an Activation being created
-        	// We set this instead of doing a null check, as it's a little safer due to intent.
         	reuseActivation = false;
         	leftTuple.setObject( null );
         }

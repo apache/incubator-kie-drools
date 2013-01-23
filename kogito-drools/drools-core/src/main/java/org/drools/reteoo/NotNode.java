@@ -16,6 +16,10 @@
 
 package org.drools.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+ 
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -27,10 +31,6 @@ import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.PropagationContext;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;
@@ -253,9 +253,7 @@ public class NotNode extends BetaNode {
         for ( LeftTuple leftTuple = (LeftTuple) rightTuple.getBlocked(); leftTuple != null; ) {
             LeftTuple temp = leftTuple.getBlockedNext();
 
-            leftTuple.setBlocker( null );
-            leftTuple.setBlockedPrevious( null );
-            leftTuple.setBlockedNext( null );
+            leftTuple.clearBlocker();
 
             this.constraints.updateFromTuple( memory.getContext(),
                                               workingMemory,
@@ -330,9 +328,6 @@ public class NotNode extends BetaNode {
                 if ( firstRightTuple == null || firstRightTuple.getMemory() != blocker.getMemory() ) {
                     // we changed bucket, so blocker no longer blocks
                     blocker.removeBlocked( leftTuple );
-                    leftTuple.setBlocker( null );
-                    leftTuple.setBlockedPrevious( null );
-                    leftTuple.setBlockedNext( null );
                     blocker = null;
                 }
             }
@@ -349,9 +344,6 @@ public class NotNode extends BetaNode {
             if ( blocker != null ) {
                 // remove previous blocker if it exists, as we know it doesn't block any more
                 blocker.removeBlocked( leftTuple );
-                leftTuple.setBlocker( null );
-                leftTuple.setBlockedPrevious( null );
-                leftTuple.setBlockedNext( null );
             }
             
             // find first blocker, because it's a modify, we need to start from the beginning again        

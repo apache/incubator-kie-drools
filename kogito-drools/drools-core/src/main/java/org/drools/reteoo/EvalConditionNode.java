@@ -258,8 +258,10 @@ public class EvalConditionNode extends LeftTupleSource
 
     @Override
     public LeftTuple createPeer(LeftTuple original) {
-        // TODO Auto-generated method stub
-        return null;
+        EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
     }    
 
     public void updateSink(final LeftTupleSink sink,

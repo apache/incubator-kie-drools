@@ -2065,7 +2065,8 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 6,
                       ((List) ksession.getGlobal( "list" )).size() );
 
-        final List array = (List) ((List) ksession.getGlobal( "list" )).get( 0 );
+        
+        final List array = (List) ((List) ksession.getGlobal( "list" )).get( 5 );
         assertEquals( 3,
                       array.size() );
         final Person p = (Person) array.get( 0 );
@@ -2081,7 +2082,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( "y",
                       nested.get( 1 ) );
 
-        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 1 );
+        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 4 );
         assertEquals( 2,
                       map.keySet().size() );
 
@@ -2098,13 +2099,13 @@ public class MiscTest extends CommonTestMethodBase {
                       nestedMap.get( "key2" ) );
 
         assertEquals( new Integer( 42 ),
-                      ((List) ksession.getGlobal( "list" )).get( 2 ) );
-        assertEquals( "literal",
                       ((List) ksession.getGlobal( "list" )).get( 3 ) );
+        assertEquals( "literal",
+                      ((List) ksession.getGlobal( "list" )).get( 2 ) );
         assertEquals( bob,
-                      ((List) ksession.getGlobal( "list" )).get( 4 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 1 ) );
         assertEquals( globalObject,
-                      ((List) ksession.getGlobal( "list" )).get( 5 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
     }
 
     @Test
@@ -4222,8 +4223,12 @@ public class MiscTest extends CommonTestMethodBase {
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
         drl += "when\n";
-        drl += "   $p1 : Person( )\n";
+   
+        // selects the youngest person, for
+        drl += "   $p1 : Person( )\n"; 
         drl += "     not Person( name == $p1.name, age < $p1.age )\n";
+        
+        // select the youngest person with the same name as $p1, but different likes and must be older
         drl += "   $p2 : Person( name == $p1.name, likes != $p1.likes, age > $p1.age)\n";
         drl += "     not Person( name == $p1.name, likes == $p2.likes, age < $p2.age )\n";
         drl += "then\n";
@@ -4239,27 +4244,24 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.setGlobal( "list",
                             list );
 
-        Person p0 = new Person( "yoda",
-                                0 );
+        Person p0 = new Person( "yoda", 0 );
         p0.setLikes( "cheddar" );
         org.kie.runtime.rule.FactHandle fh0 = ksession.insert( p0 );
 
-        Person p1 = new Person( "darth",
-                                15 );
+        Person p1 = new Person( "darth", 15 );
         p1.setLikes( "cheddar" );
         org.kie.runtime.rule.FactHandle fh1 = ksession.insert( p1 );
 
-        Person p2 = new Person( "darth",
-                                25 );
+        Person p2 = new Person( "darth", 25 );
         p2.setLikes( "cheddar" );
-        org.kie.runtime.rule.FactHandle fh2 = ksession.insert( p2 ); // creates activation.
-
-        Person p3 = new Person( "darth",
-                                30 );
+        org.kie.runtime.rule.FactHandle fh2 = ksession.insert( p2 ); // creates activation.        
+        
+        Person p3 = new Person( "darth", 30 );
         p3.setLikes( "brie" );
         org.kie.runtime.rule.FactHandle fh3 = ksession.insert( p3 );
 
         ksession.fireAllRules();
+        // selects p1 and p3
         assertEquals( 2,
                       list.size() );
         assertSame( p1,
@@ -4272,6 +4274,7 @@ public class MiscTest extends CommonTestMethodBase {
                          p1 ); // creates activation
 
         ksession.fireAllRules();
+        // now selects p2 and p3
         assertEquals( 4,
                       list.size() );
         assertSame( p2,
@@ -5113,11 +5116,11 @@ public class MiscTest extends CommonTestMethodBase {
                       list.size() );
 
         assertEquals( "Message3",
-                      list.get( 0 ) );
+                      list.get( 2 ) );
         assertEquals( "Message2",
                       list.get( 1 ) );
         assertEquals( "Message1",
-                      list.get( 2 ) );
+                      list.get( 0 ) );
 
     }
 
