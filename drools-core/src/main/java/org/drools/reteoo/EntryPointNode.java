@@ -283,7 +283,9 @@ public class EntryPointNode extends ObjectSource
                     otn = null;
                     if (leftTuple != null) {
                         LeftTupleSink leftTupleSink = leftTuple.getLeftTupleSink();
-                        if (leftTupleSink instanceof LeftTupleSource) {
+                        if (leftTupleSink instanceof BetaNode) {
+                            otn = ((BetaNode)leftTupleSink).getLeftTupleSource().getObjectTypeNode();
+                        } else if (leftTupleSink instanceof LeftTupleSource) {
                             otn = ((LeftTupleSource)leftTupleSink).getObjectTypeNode();
                         } else if (leftTupleSink instanceof RuleTerminalNode) {
                             otn = ((RuleTerminalNode)leftTupleSink).getObjectTypeNode();

@@ -34,6 +34,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.impl.AgendaImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -530,5 +531,145 @@ public class MiscTest2 extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals(3, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testPropertyReactiveAccumulateModification() {
+        // DROOLS-16
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "declare Neuron\n" +
+                "@propertyReactive\n" +
+                "  id : int\n" +
+                "  value : double\n" +
+                "end\n" +
+                "\n" +
+                "declare Charge\n" +
+                "  nId : int\n" +
+                "  val : double\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Log 2\"\n" +
+                "salience 9999\n" +
+                "when\n" +
+                "  $n : Object();\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"Update\"\n" +
+                "salience -9999\n" +
+                "when\n" +
+                "  $c : Charge( val == 1.0 );\n" +
+                "then\n" +
+                "  modify ( $c ) { " +
+                "    setVal( 2.0 ); \n" +
+                " } \n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Neuron( 0, 0.0 ) );\n" +
+                "  insert( new Charge( 0, 1.0 ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Modify\"\n" +
+                "salience -100\n" +
+                "when\n" +
+                "  $n : Neuron( )\n" +
+                "  accumulate( Charge( $v : val ), $x : sum( $v ) )\n" +
+                "then\n" +
+                "  modify ( $n ) {\n" +
+                "    setValue( $x.doubleValue() );\n" +
+                "  }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Watch\"\n" +
+                "when\n" +
+                "   $n : Neuron() @watch( value )" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "query getNeuron\n" +
+                "  Neuron( $value : value )\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+        assertEquals(2.0, ksession.getQueryResults( "getNeuron" ).iterator().next().get( "$value" ));
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testMvelAssignmentToPublicField() {
+        String str =
+                "import org.drools.integrationtests.MiscTest2.Foo\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "   $foo : Foo()\n" +
+                "then\n" +
+                "   $foo.x = 1;\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Foo foo1 = new Foo();
+        Foo foo2 = new Foo();
+        ksession.insert(foo1);
+        ksession.insert(foo2);
+        ksession.fireAllRules();
+        assertEquals(1, foo1.x);
+        assertEquals(1, foo2.x);
+    }
+
+    public static class Foo {
+        public int x;
+        public int getX() {
+            return x;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testMvelInvokeAsList() {
+        String str =
+                "import java.util.List;\n" +
+                "import java.util.Arrays;\n" +
+                "import java.util.ArrayList;\n" +
+                "\n" +
+                "declare Project\n" +
+                "@typesafe (false)\n" +
+                "        list1 : List\n" +
+                "        list2 : List\n" +
+                "end\n" +
+                "\n" +
+                "rule kickoff\n" +
+                "salience 999999\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Project() );\n" +
+                "    insert( new Project() );   // necessary to trigger the exception\n" +
+                "end\n" +
+                "\n" +
+                "rule \" Config rule \"\n" +
+                "dialect \"mvel\"\n" +
+                "no-loop true\n" +
+                "when\n" +
+                "    P : Project()\n" +
+                "then\n" +
+                "    modify(P) {\n" +
+                "       list1 = Arrays.asList(10, 15, 20, 25),\n" +
+                "       list2 = Arrays.asList(11, 2, 3, 4, 5, 10, 9, 8, 7)\n" +
+                "    };\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
     }
 }
