@@ -105,6 +105,14 @@ public abstract class AttributedDRLElement extends DRLElement {
         this._attr2value.put( "auto-focus", Boolean.toString( value ) );
     }
 
+    public void setDateEffective(final String value) {
+        this._attr2value.put( "date-effective", asStringLiteral( value ) );
+    }
+
+    public void setDateExpires(final String value) {
+        this._attr2value.put( "date-expires", asStringLiteral( value ) );
+    }
+
     public String getAttribute( String name ){
         return this._attr2value.get( name ).toString();
     }
