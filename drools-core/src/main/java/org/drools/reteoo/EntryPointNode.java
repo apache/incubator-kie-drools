@@ -25,6 +25,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
+import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
@@ -119,12 +120,14 @@ public class EntryPointNode extends ObjectSource
         super.readExternal( in );
         entryPoint = (EntryPoint) in.readObject();
         objectTypeNodes = (Map<ObjectType, ObjectTypeNode>) in.readObject();
+        unlinkingEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( entryPoint );
         out.writeObject( objectTypeNodes );
+        out.writeBoolean( unlinkingEnabled );
     }
 
     public short getType() {
@@ -253,7 +256,7 @@ public class EntryPointNode extends ObjectSource
     public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final ObjectTypeConf objectTypeConf,
-                             final InternalWorkingMemory workingMemory) {
+                             final InternalWorkingMemory wm) {
         // checks if shadow is enabled
         if ( objectTypeConf.isShadowEnabled() ) {
             // the user has implemented the ShadowProxy interface, let their implementation
@@ -271,15 +274,24 @@ public class EntryPointNode extends ObjectSource
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
             cachedNodes[i].modifyObject( handle,
                                          modifyPreviousTuples,
-                                         context, workingMemory );
+                                         context, wm );
 
             // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
             if (i < cachedNodes.length - 1) {
                 RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
                 while ( rightTuple != null &&
-                        ((BetaNode) rightTuple.getRightTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
+                        (( BetaNode ) rightTuple.getRightTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
                     modifyPreviousTuples.removeRightTuple();
-                    rightTuple.getRightTupleSink().retractRightTuple( rightTuple, context, workingMemory );
+                    
+                    if ( unlinkingEnabled) {
+                        BetaMemory bm = BetaNode.getBetaMemory( ( BetaNode ) rightTuple.getRightTupleSink(), wm );
+                        BetaNode.doDeleteRightTuple( rightTuple, wm, bm );                    
+                    } else {
+                        (( BetaNode ) rightTuple.getRightTupleSink()).retractRightTuple( rightTuple,
+                                                                                         context,
+                                                                                         wm );
+                    }
+                    
                     rightTuple = modifyPreviousTuples.peekRightTuple();
                 }
 
@@ -301,11 +313,21 @@ public class EntryPointNode extends ObjectSource
                     if ( otn == null || otn == cachedNodes[i+1] ) break;
 
                     modifyPreviousTuples.removeLeftTuple();
-                    leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, context, workingMemory );
+                    
+                    
+                    if ( unlinkingEnabled ) {
+                        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
+                        LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
+                        LeftInputAdapterNode.doDeleteObject( leftTuple, context, lm.getSegmentMemory(), wm, liaNode, lm );
+                    } else {
+                        leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
+                                                                     context,
+                                                                     wm );                    
+                    }                   
                 }
             }
         }
-        modifyPreviousTuples.retractTuples( context, workingMemory );
+        modifyPreviousTuples.retractTuples( context, wm );
     }
     
     public void modifyObject(InternalFactHandle factHandle,

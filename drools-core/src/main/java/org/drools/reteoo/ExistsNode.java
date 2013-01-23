@@ -291,12 +291,7 @@ public class ExistsNode extends BetaNode {
         RightTuple blocker = leftTuple.getBlocker();
         if ( blocker == null ) {
             final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-            if ( leftTuple.getMemory().isStagingMemory() ) {
-                leftTuple.getMemory().remove( leftTuple );
-            } else {
-                memory.getLeftTupleMemory().remove( leftTuple );
-            }
-            leftTuple.setMemory( null );
+            memory.getLeftTupleMemory().remove( leftTuple );
         } else {
             this.sink.propagateRetractLeftTuple( leftTuple,
                                                  context,
@@ -318,22 +313,14 @@ public class ExistsNode extends BetaNode {
         // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
         RightTuple blocker = leftTuple.getBlocker();
         if ( blocker == null ) {
-            if ( leftTuple.getMemory().isStagingMemory() ) {
-                leftTuple.getMemory().remove( leftTuple );
-            } else {
-                memory.getLeftTupleMemory().remove( leftTuple );
-            }
-            leftTuple.setMemory( null );
+            memory.getLeftTupleMemory().remove( leftTuple );
         } else {
             // check if we changed bucket
             if ( rightMemory.isIndexed()&& !rightIt.isFullIterator()  ) {                
                 // if newRightTuple is null, we assume there was a bucket change and that bucket is empty                
                 if ( firstRightTuple == null || firstRightTuple.getMemory() != blocker.getMemory() ) {
                     // we changed bucket, so blocker no longer blocks
-                    blocker.removeBlocked( leftTuple );
-                    leftTuple.setBlocker( null );
-                    leftTuple.setBlockedPrevious( null );
-                    leftTuple.setBlockedNext( null );
+                    blocker.removeBlocked( leftTuple );                    
                     blocker = null;
                 }
             }            
@@ -350,9 +337,6 @@ public class ExistsNode extends BetaNode {
             if ( blocker != null ) {
                 // remove previous blocker if it exists, as we know it doesn't block any more
                 blocker.removeBlocked( leftTuple );
-                leftTuple.setBlocker( null );
-                leftTuple.setBlockedPrevious( null );
-                leftTuple.setBlockedNext( null );
             }
 
             FastIterator it = memory.getRightTupleMemory().fastIterator();

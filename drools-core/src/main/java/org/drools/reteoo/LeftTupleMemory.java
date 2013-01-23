@@ -44,9 +44,5 @@ public interface LeftTupleMemory {
     public FastIterator fullFastIterator();
     
     public FastIterator fullFastIterator(LeftTuple leftTuple);
-    
-    public boolean isStagingMemory();
-
-    public void setStagingMemory(boolean stagingMemory);
 
 }

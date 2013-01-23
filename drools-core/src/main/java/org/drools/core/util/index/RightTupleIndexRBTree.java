@@ -150,7 +150,8 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {
             case LESS_THAN:
-                firstNode = tree.findNearestNode(key, false, Boundary.UPPER);
+                //firstNode = tree.findNearestNode(key, false, Boundary.UPPER);
+                firstNode = tree.findNearestNode(key, false, first ? Boundary.UPPER : Boundary.LOWER);
                 break;
             case LESS_OR_EQUAL:
                 firstNode = tree.findNearestNode(key, first, Boundary.UPPER);
@@ -185,13 +186,5 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
         public boolean isFullIterator() {
             return false;
         }
-    }
-    
-    public boolean isStagingMemory() {
-        return false;
-    }
-
-    public void setStagingMemory(boolean liaNodeMemory) {
-        throw new UnsupportedOperationException();
-    }    
+    }  
 }

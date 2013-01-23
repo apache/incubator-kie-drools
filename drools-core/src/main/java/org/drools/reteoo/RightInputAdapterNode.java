@@ -16,8 +16,15 @@
 
 package org.drools.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+import java.util.Map;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
+import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
@@ -34,12 +41,6 @@ import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-import java.util.Map;
 
 /**
  * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the
@@ -330,7 +331,12 @@ public class RightInputAdapterNode extends ObjectSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
+                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
+        if ( !node.isInUse() ) {
+            removeObjectSink( (ObjectSink) node );
+        }
+
         if ( !this.isInUse() ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
                 RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
@@ -344,13 +350,9 @@ public class RightInputAdapterNode extends ObjectSource
                 workingMemory.clearNodeMemory( this );
             }
         }
-        if ( !isInUse() ) {
-            tupleSource.removeTupleSink(this);
-        }
-    }
-
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        this.tupleSource.collectAncestors(nodeSet);
+        this.tupleSource.remove( context,
+                                 builder,
+                                 workingMemories );
     }
 
     public boolean isLeftTupleMemoryEnabled() {

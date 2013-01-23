@@ -44,8 +44,6 @@ public class RightTupleList
     private TupleHashTableIterator iterator;
     
     private int                    size;    
-    
-    private boolean                stagingMemory;
 
     public RightTupleList() {
         // this is not an index bucket
@@ -325,11 +323,4 @@ public class RightTupleList
         return IndexType.NONE;
     }
 
-    public boolean isStagingMemory() {
-        return stagingMemory;
-    }
-
-    public void setStagingMemory(boolean stagingMemory) {
-        this.stagingMemory = stagingMemory;
-    }
 }

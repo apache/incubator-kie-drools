@@ -43,8 +43,6 @@ public class LeftTupleList
     private TupleHashTableIterator iterator;
 
     private int                    size;
-    
-    private boolean                stagingMemory;
 
     public LeftTupleList() {
         // this is not an index bucket        
@@ -279,14 +277,6 @@ public class LeftTupleList
         }
 
         return builder.toString();
-    }
-
-    public boolean isStagingMemory() {
-        return stagingMemory;
-    }
-
-    public void setStagingMemory(boolean stagingMemory) {
-        this.stagingMemory = stagingMemory;
     }
 
 }

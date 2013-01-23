@@ -19,6 +19,7 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.conf.LRUnlinkingOption;
 import org.kie.builder.conf.LanguageLevelOption;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
@@ -146,6 +147,10 @@ public class CommonTestMethodBase extends Assert {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
+        if ( kBaseConfig == null ) {
+            kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        }
+        //kBaseConfig.setOption( LRUnlinkingOption.ENABLED );        
 
         KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase( kBaseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -160,6 +165,7 @@ public class CommonTestMethodBase extends Assert {
         if ( kbaseConf == null ) {
             kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
+        //kbaseConf.setOption( LRUnlinkingOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( knowledgePackages );
         return kbase;
@@ -177,6 +183,7 @@ public class CommonTestMethodBase extends Assert {
         if ( kbaseConf == null ) {
             kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
+        //kbaseConf.setOption( LRUnlinkingOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( knowledgePackages );
         return kbase;

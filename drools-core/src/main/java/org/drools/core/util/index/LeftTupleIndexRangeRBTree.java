@@ -284,13 +284,5 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
         public boolean isFullIterator() {
             return false;
         }
-    }
-    
-    public boolean isStagingMemory() {
-        return false;
-    }
-
-    public void setStagingMemory(boolean liaNodeMemory) {
-        throw new UnsupportedOperationException();
-    }    
+    }  
 }

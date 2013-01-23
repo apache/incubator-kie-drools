@@ -1,21 +1,21 @@
 package org.drools.phreak;
 
 public class A {
-    Object object;
+    Integer object;
 
-    public A(Object object) {
+    public A(Integer object) {
         super();
         this.object = object;
     }
     
-    public static A a(Object object) {
+    public static A a(Integer object) {
         return new A( object );
     }
 
-    public static A[] a(Object... objects) {
+    public static A[] a(Integer... objects) {
         A[] as = new A[objects.length];
         int i = 0;
-        for ( Object object : objects ) {
+        for ( Integer object : objects ) {
             as[i++] = new A( object );
         }
         return as;
@@ -25,7 +25,7 @@ public class A {
         return object;
     }
 
-    public void setObject(Object object) {
+    public void setObject(Integer object) {
         this.object = object;
     }
 
