@@ -572,6 +572,74 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(3, ksession.fireAllRules());
     }
 
+    @Test
+    public void testPropertyReactiveAccumulateModification() {
+        // DROOLS-16
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "declare Neuron\n" +
+                "@propertyReactive\n" +
+                "  id : int\n" +
+                "  value : double\n" +
+                "end\n" +
+                "\n" +
+                "declare Charge\n" +
+                "  nId : int\n" +
+                "  val : double\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Log 2\"\n" +
+                "salience 9999\n" +
+                "when\n" +
+                "  $n : Object();\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"Update\"\n" +
+                "salience -9999\n" +
+                "when\n" +
+                "  $c : Charge( val == 1.0 );\n" +
+                "then\n" +
+                "  modify ( $c ) { " +
+                "    setVal( 2.0 ); \n" +
+                " } \n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Neuron( 0, 0.0 ) );\n" +
+                "  insert( new Charge( 0, 1.0 ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Modify\"\n" +
+                "salience -100\n" +
+                "when\n" +
+                "  $n : Neuron( )\n" +
+                "  accumulate( Charge( $v : val ), $x : sum( $v ) )\n" +
+                "then\n" +
+                "  modify ( $n ) {\n" +
+                "    setValue( $x.doubleValue() );\n" +
+                "  }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Watch\"\n" +
+                "when\n" +
+                "   $n : Neuron() @watch( value )" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "query getNeuron\n" +
+                "  Neuron( $value : value )\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+        assertEquals(2.0, ksession.getQueryResults( "getNeuron" ).iterator().next().get( "$value" ));
+    }
+
     @Test @Ignore("fixed with mvel 2.1.4")
     public void testMvelAssignmentToPublicField() {
         String str =
