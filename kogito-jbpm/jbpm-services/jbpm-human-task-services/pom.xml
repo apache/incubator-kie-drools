@@ -93,6 +93,11 @@
       <artifactId>btm</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.core</groupId>
+      <artifactId>arquillian-core-api</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <testResources>

@@ -61,7 +61,11 @@
       <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.jboss.arquillian.core</groupId>
+      <artifactId>arquillian-core-api</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
