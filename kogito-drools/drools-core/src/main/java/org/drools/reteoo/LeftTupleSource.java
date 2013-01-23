@@ -284,7 +284,8 @@ public abstract class LeftTupleSource extends BaseNode
                                          ObjectTypeNode.Id leftInputOtnId,
                                          long leftInferredMask) {
         LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
-        while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().before( leftInputOtnId ) ) {
+        while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() != null &&
+                leftTuple.getLeftTupleSink().getLeftInputOtnId().before( leftInputOtnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.setPropagationContext( context );
             
@@ -296,7 +297,8 @@ public abstract class LeftTupleSource extends BaseNode
             leftTuple = modifyPreviousTuples.peekLeftTuple();
         }
 
-        if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().equals( leftInputOtnId ) ) {
+        if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() != null &&
+             leftTuple.getLeftTupleSink().getLeftInputOtnId().equals( leftInputOtnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.reAdd();
             leftTuple.setPropagationContext( context );

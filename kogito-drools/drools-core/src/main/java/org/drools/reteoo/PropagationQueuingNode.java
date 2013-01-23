@@ -218,7 +218,7 @@ public class PropagationQueuingNode extends ObjectSource
             BetaNode betaNode = (BetaNode) s;
             RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
             while ( rightTuple != null &&
-                    ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId().before( betaNode.getRightInputOtnId() ) ) {
+                    rightTuple.getRightTupleSink().getRightInputOtnId().before( betaNode.getRightInputOtnId() ) ) {
                 modifyPreviousTuples.removeRightTuple();
                 // we skipped this node, due to alpha hashing, so retract now
                 rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
@@ -227,7 +227,7 @@ public class PropagationQueuingNode extends ObjectSource
                 rightTuple = modifyPreviousTuples.peekRightTuple();
             }
 
-            if ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId().equals( betaNode.getRightInputOtnId() ) ) {
+            if ( rightTuple != null && rightTuple.getRightTupleSink().getRightInputOtnId().equals( betaNode.getRightInputOtnId() ) ) {
                 modifyPreviousTuples.removeRightTuple();
                 rightTuple.reAdd();
                 if ( intersect( context.getModificationMask(), betaNode.getRightInferredMask() ) ) {

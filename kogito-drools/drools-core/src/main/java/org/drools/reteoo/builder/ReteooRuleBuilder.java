@@ -16,9 +16,6 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.ActivationListenerFactory;
 import org.drools.RuleIntegrationException;
 import org.drools.base.ClassObjectType;
@@ -27,23 +24,11 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.UpdateContext;
-import org.drools.core.util.index.LeftTupleList;
-import org.drools.core.util.index.RightTupleList;
-import org.drools.reteoo.AccumulateNode;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.LeftInputAdapterNode;
-import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleBuilder;
-import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.TerminalNode;
 import org.drools.reteoo.WindowNode;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
 import org.drools.rule.ConditionalBranch;
@@ -55,7 +40,6 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.NamedConsequence;
 import org.drools.rule.Pattern;
-import org.drools.rule.Query;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
@@ -63,7 +47,8 @@ import org.drools.rule.WindowReference;
 import org.drools.time.TemporalDependencyMatrix;
 import org.kie.conf.EventProcessingOption;
 
-import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReteooRuleBuilder implements RuleBuilder {
 
@@ -185,13 +170,12 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                                                   context );
 
         BaseNode baseTerminalNode = (BaseNode) terminal;
-        baseTerminalNode.attach(context);             
+        baseTerminalNode.networkUpdated(new UpdateContext());
+        baseTerminalNode.attach(context);
         
         if ( context.getRuleBase().getConfiguration().isUnlinkingEnabled() && !unlinkingAllowedForRule(context.getRule() ) ) {
             setUnlinkDisabledCount( null, terminal.getLeftTupleSource(),  ( context.getWorkingMemories().length == 0) ? null : context.getWorkingMemories() ); 
         }               
-
-        baseTerminalNode.networkUpdated(new UpdateContext());
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
         context.getNodes().add( baseTerminalNode );

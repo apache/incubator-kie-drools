@@ -24,29 +24,29 @@ import org.kie.runtime.rule.SessionEntryPoint;
 public interface InternalFactHandle
     extends
     FactHandle, Cloneable {
-    public int getId();
+    int getId();
 
-    public long getRecency();
+    long getRecency();
 
-    public Object getObject();
+    Object getObject();
 
-    public void setObject(Object object);
+    void setObject(Object object);
 
-    public void setEqualityKey(EqualityKey key);
+    void setEqualityKey(EqualityKey key);
 
-    public EqualityKey getEqualityKey();
+    EqualityKey getEqualityKey();
 
-    public void setRecency(long recency);
+    void setRecency(long recency);
 
-    public void invalidate();
+    void invalidate();
     
-    public boolean isValid();
+    boolean isValid();
     
-    public int getIdentityHashCode();
+    int getIdentityHashCode();
 
-    public int getObjectHashCode();
+    int getObjectHashCode();
     
-    public boolean isDisconnected();
+    boolean isDisconnected();
     
     /**
      * Returns true if this FactHandle represents
@@ -55,42 +55,46 @@ public interface InternalFactHandle
      * 
      * @return
      */
-    public boolean isEvent();
+    boolean isEvent();
     
-    public RightTuple getFirstRightTuple();
+    RightTuple getFirstRightTuple();
 
-    public RightTuple getLastRightTuple();
+    RightTuple getLastRightTuple();
 
-    public LeftTuple getFirstLeftTuple();
+    LeftTuple getFirstLeftTuple();
     
-    public LeftTuple getLastLeftTuple();
+    LeftTuple getLastLeftTuple();
     
-    public SessionEntryPoint getEntryPoint();
+    SessionEntryPoint getEntryPoint();
     
-    public void setEntryPoint( SessionEntryPoint ep );
+    void setEntryPoint( SessionEntryPoint ep );
     
-    public InternalFactHandle clone();
+    InternalFactHandle clone();
     
-    public String toExternalForm();
+    String toExternalForm();
     
-    public String toTupleTree( int indent );
+    String toTupleTree( int indent );
     
-    public void disconnect();
+    void disconnect();
 
-    public void addLastLeftTuple( LeftTuple leftTuple );
+    void addLastLeftTuple( LeftTuple leftTuple );
 
-    public void removeLeftTuple( LeftTuple leftTuple );
+    void addLeftTupleInPosition( LeftTuple leftTuple );
 
-    public void clearLeftTuples();
+    void removeLeftTuple( LeftTuple leftTuple );
 
-    public void clearRightTuples();
+    void clearLeftTuples();
 
-    public void addFirstRightTuple( RightTuple rightTuple );
+    void clearRightTuples();
 
-    public void addLastRightTuple( RightTuple rightTuple );
+    void addFirstRightTuple( RightTuple rightTuple );
 
-    public void removeRightTuple( RightTuple rightTuple );
+    void addLastRightTuple( RightTuple rightTuple );
+
+    void addRightTupleInPosition( RightTuple rightTuple );
+
+    void removeRightTuple( RightTuple rightTuple );
     
-    public InternalFactHandle quickClone();
+    InternalFactHandle quickClone();
     
 }
