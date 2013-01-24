@@ -596,6 +596,12 @@
       <para>For 1 planning variable, the <literal>ChangeMove</literal> selects 1 planning entity and 1 planning value
       and assigns the entity's variable to that value.</para>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/changeMove.png"/>
+        </imageobject>
+      </mediaobject>
+
       <para>Simplest configuration:</para>
 
       <programlisting language="xml">    &lt;changeMoveSelector/&gt;</programlisting>
