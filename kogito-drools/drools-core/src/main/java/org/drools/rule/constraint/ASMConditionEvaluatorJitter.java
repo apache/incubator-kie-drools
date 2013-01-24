@@ -862,8 +862,14 @@ public class ASMConditionEvaluatorJitter {
                 result = convertFromPrimitiveType(class1);
             } else if (class1 == Object.class) {
                 result = convertFromPrimitiveType(class2);
+                if (Number.class.isAssignableFrom(result) && !result.getSimpleName().startsWith("Big")) {
+                    result = Double.class;
+                }
             } else if (class2 == Object.class) {
                 result = convertFromPrimitiveType(class1);
+                if (Number.class.isAssignableFrom(result) && !result.getSimpleName().startsWith("Big")) {
+                    result = Double.class;
+                }
             } else if (class1 == String.class) {
                 result = convertFromPrimitiveType(class2);
             } else if (class2 == String.class) {

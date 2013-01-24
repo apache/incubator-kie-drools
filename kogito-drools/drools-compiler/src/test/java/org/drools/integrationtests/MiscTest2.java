@@ -52,7 +52,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -832,6 +834,65 @@ public class MiscTest2 extends CommonTestMethodBase {
         @Override
         public String toString() {
             return "A[f1=" + f1 + ", f2=" + f2 + ", f3=" + f3 + ", f4=" + f4 + "]";
+        }
+    }
+
+    @Test
+    public void testNumberCoercionOnNonGenericMap() {
+        // JBRULES-3708
+        String str =
+                "package com.ilesteban.jit;\n" +
+                "\n" +
+                "import java.util.Map;\n" +
+                "import java.util.EnumMap;\n" +
+                "import org.drools.integrationtests.MiscTest2.Parameter\n" +
+                "import org.drools.integrationtests.MiscTest2.DataSample\n" +
+                "\n" +
+                "declare TestObject\n" +
+                "    data    :   java.util.Map\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Rule 1\"\n" +
+                "when\n" +
+                "    $d: DataSample()\n" +
+                "then\n" +
+                "    //create a new object copying the Map<Parameter, Double> to a Map<Object, Object>\n" +
+                "    insert( new TestObject($d.getValues()));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Rule 2\"\n" +
+                "when\n" +
+                "    TestObject(data[Parameter.PARAM_A] > 3)\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Map<Parameter, Double> values = new EnumMap<Parameter, Double>(Parameter.class);
+        values.put(Parameter.PARAM_A, 4.0);
+        DataSample data = new DataSample();
+        data.setValues(values);
+        ksession.insert(data);
+
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    public enum Parameter { PARAM_A, PARAM_B }
+
+    public static class DataSample {
+        private Map<Parameter, Double> values = new EnumMap<Parameter, Double>(Parameter.class);
+
+        public Map<Parameter, Double> getValues() {
+            return values;
+        }
+
+        public void setValues(Map<Parameter, Double> values) {
+            this.values = values;
+        }
+
+        public void addValue(Parameter p, double value){
+            this.values.put(p, value);
         }
     }
 }
