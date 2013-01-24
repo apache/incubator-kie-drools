@@ -64,4 +64,6 @@ public interface SessionManager {
     
     void registerRuleListenerForSession(String ksessionName);
     
+    void clear();
+    
 }

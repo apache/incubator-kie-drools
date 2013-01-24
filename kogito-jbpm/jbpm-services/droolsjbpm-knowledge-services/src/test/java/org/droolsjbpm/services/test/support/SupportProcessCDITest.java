@@ -15,6 +15,7 @@
  */
 package org.droolsjbpm.services.test.support;
 
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.droolsjbpm.services.test.*;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,6 +24,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -62,11 +64,31 @@ public class SupportProcessCDITest extends SupportProcessBaseTest {
                 .addPackage("org.droolsjbpm.services.test")
                 .addPackage("org.droolsjbpm.services.impl.event.listeners")
                 .addPackage("org.droolsjbpm.services.impl.example") 
+                .addPackage("org.droolsjbpm.services.impl.util") 
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"))
                 .addAsManifestResource("META-INF/services/org.kie.commons.java.nio.file.spi.FileSystemProvider", ArchivePaths.create("org.kie.commons.java.nio.file.spi.FileSystemProvider"));
 
+    }
+    
+     private PoolingDataSource ds = new PoolingDataSource();
+    
+    @Before
+    public void setUp(){
+        ds.setUniqueName("jdbc/testDS1");
+
+
+          //NON XA CONFIGS
+          ds.setClassName("org.h2.jdbcx.JdbcDataSource");
+          ds.setMaxPoolSize(3);
+          ds.setAllowLocalTransactions(true);
+          ds.getDriverProperties().put("user", "sa");
+          ds.getDriverProperties().put("password", "sasa");
+          ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");
+
+          ds.init();
+        
     }
     
     @After
@@ -75,5 +97,6 @@ public class SupportProcessCDITest extends SupportProcessBaseTest {
         int removedLogs = adminDataService.removeAllData();
         System.out.println(" --> Removed Tasks = "+removedTasks + " - ");
         System.out.println(" --> Removed Logs = "+removedLogs + " - ");
+        ds.close();
     }
 }

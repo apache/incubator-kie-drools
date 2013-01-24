@@ -18,7 +18,7 @@ import org.jboss.solder.core.ExtensionManaged;
 public class TaskDatabaseProducer {
 
     
-    @PersistenceUnit(unitName = "org.jbpm.task")
+    @PersistenceUnit(unitName = "org.jbpm.domain")
     @ExtensionManaged
     @ApplicationScoped
     @Produces

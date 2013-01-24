@@ -62,4 +62,6 @@ public interface Domain {
 
     void setKsessionRepositoryRoot(Map<String, String> ksessionRepositoryRoot);
     
+    void clear();
+    
 }

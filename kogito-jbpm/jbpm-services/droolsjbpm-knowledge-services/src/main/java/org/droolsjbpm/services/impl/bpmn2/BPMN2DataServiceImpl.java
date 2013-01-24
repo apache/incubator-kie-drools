@@ -166,7 +166,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     @Override
     public String findProcessId(final String bpmn2Content) {
         if (bpmn2Content == null || "".equals(bpmn2Content)) {
-            throw new IllegalStateException("The Process Content cannot be Empty!");
+            return "";
         }
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {

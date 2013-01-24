@@ -81,10 +81,14 @@ public abstract class SupportProcessBaseTest {
         myDomain.addKsessionRepositoryRoot(kSessionName, "examples/general/");
         for (Path p : loadFilesByType) {
 
-            System.out.println(" >>> Loading Path -> " + p.toString());
-            myDomain.addProcessDefinitionToKsession("myKsession", p);
+            
             String processString = new String(fs.loadFile(p));
-            myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId(processString), processString);
+            String processId = bpmn2Service.findProcessId(processString);
+            if(!processId.equals("")){
+              System.out.println(" >>> Loading Path -> " + p.toString());
+              myDomain.addProcessDefinitionToKsession("myKsession", p);
+              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId, processString);
+            }
         }
 
         sessionManager.buildSessions(false);

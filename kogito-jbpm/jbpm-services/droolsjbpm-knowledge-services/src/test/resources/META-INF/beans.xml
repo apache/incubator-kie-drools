@@ -21,8 +21,11 @@
 <beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xmlns:s="urn:java:ee"
        xmlns:t="urn:java:org.jboss.seam.transaction"
+       xmlns:m="urn:java:org.droolsjbpm.services.impl.util"
        xmlns:task="urn:java:org.jbpm.task.annotations"
-       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd">
+       xmlns:weld="http://jboss.org/schema/weld/beans"
+       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd
+                           http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
     
     <alternatives>
         <class>org.jbpm.task.lifecycle.listeners.JPATaskLifeCycleEventListener</class>
@@ -37,17 +40,19 @@
         <class>org.jboss.seam.transaction.TransactionInterceptor</class>
     </interceptors>
     
-    <t:SeSynchronizations>
+    <!--t:SeSynchronizations>
         <s:modifies/>
-    </t:SeSynchronizations>
-
-    <t:EntityTransaction>
+    </t:SeSynchronizations-->
+    <weld:scan>
+        <weld:exclude name="org.jboss.seam.transaction.DefaultSeamTransaction"/>
+        <weld:exclude name="org.jboss.seam.transaction.TransactionManagerSynchronizations"/>
+    </weld:scan>
+    <!--m:BTMTransactionManagerSynchronizations>
+        <s:modifies/>
+    </m:BTMTransactionManagerSynchronizations-->
+    <m:CMTBTMTransaction>
         <s:modifies />
-    </t:EntityTransaction>
+    </m:CMTBTMTransaction>
     
     
 </beans>
-
-    
-    
-

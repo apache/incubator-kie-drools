@@ -17,7 +17,7 @@
       <artifactId>jbpm-human-task-services</artifactId>
       <type>jar</type>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-shared-services</artifactId>
       <version>${project.version}</version>
@@ -43,6 +43,10 @@
       <type>jar</type>
     </dependency>
     <dependency>
+      <groupId>org.codehaus.btm</groupId>
+      <artifactId>btm</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <type>jar</type>
@@ -55,6 +59,11 @@
     <dependency>
       <groupId>org.jboss.seam.persistence</groupId>
       <artifactId>seam-persistence</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.seam.transaction</groupId>
+      <artifactId>seam-transaction</artifactId>
+      <version>3.1.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -97,6 +106,11 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-persistence-jpa</artifactId>
       <type>jar</type>
     </dependency>
     <dependency>

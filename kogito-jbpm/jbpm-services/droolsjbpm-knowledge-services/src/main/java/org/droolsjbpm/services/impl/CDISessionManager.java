@@ -15,14 +15,21 @@
  */
 package org.droolsjbpm.services.impl;
 
+import bitronix.tm.TransactionManagerServices;
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
+import org.drools.impl.EnvironmentFactory;
 
 import org.droolsjbpm.services.api.Domain;
 import org.droolsjbpm.services.api.SessionManager;
@@ -49,6 +56,9 @@ import org.kie.conf.EventProcessingOption;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemHandler;
 
@@ -57,6 +67,9 @@ import org.kie.runtime.process.WorkItemHandler;
  */
 public class CDISessionManager implements SessionManager {
 
+    @Inject
+    private EntityManager em; 
+    
     @Inject
     private TaskServiceEntryPoint taskService;
     @Inject
@@ -89,8 +102,11 @@ public class CDISessionManager implements SessionManager {
     // Ksession Name / List of handlers
     private Map<String, Map<String, WorkItemHandler>> ksessionHandlers = new HashMap<String, Map<String, WorkItemHandler>>();
 
+    
     public CDISessionManager() {
     }
+    
+   
 
     public CDISessionManager(Domain domain) {
         this.domain = domain;
@@ -143,9 +159,14 @@ public class CDISessionManager implements SessionManager {
             if (ksessionProcessDefinitions.get(session) != null) {
                 for (Path path : ksessionProcessDefinitions.get(session)) {
                     String processString = new String(ioService.readAllBytes(path));
-                    addProcessDefinitionToSession(session, bpmn2Service.findProcessId(processString));
-                    System.out.println(">>>>>>>>>> Adding Process to KBase - > " + path.toString());
-                    kbuilder.add(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
+                    String processId = bpmn2Service.findProcessId(processString);
+                    if(!processId.equals("")){
+                      addProcessDefinitionToSession(session, processId);
+                      System.out.println(">>>>>>>>>> Adding Process to KBase - > " + path.toString());
+                      kbuilder.add(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
+                    }else{
+                      System.out.println("EEEEEEEEE> Path - > " + path.toString()+" was not added!");
+                    }
                 }
             }
             if (ksessionRulesDefinitions.get(session) != null) {
@@ -175,7 +196,10 @@ public class CDISessionManager implements SessionManager {
             
             kbase.addEventListener(kbaseEventListener);
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();            
+            Environment env = EnvironmentFactory.newEnvironment();
+            env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, em.getEntityManagerFactory());
+            env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
+            StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);            
 
             ksession.addEventListener(processListener);
             
@@ -294,5 +318,14 @@ public class CDISessionManager implements SessionManager {
             }
         }
         return "";
+    }
+
+    @Override
+    public void clear() {
+      this.ksessions.clear();
+      this.ksessionIds.clear();
+      this.processInstanceIdKsession.clear();
+      this.processDefinitionNamesBySession.clear();
+      this.ksessionHandlers.clear();
     }
 }

@@ -1,5 +1,7 @@
 package org.droolsjbpm.services.impl.event.listeners;
 
+import org.droolsjbpm.services.impl.event.NodeInstanceLeftEvent;
+import org.droolsjbpm.services.impl.event.NodeInstanceTriggeredEvent;
 import org.jboss.seam.transaction.Transactional;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;
@@ -22,24 +24,19 @@ import org.kie.runtime.KieRuntime;
 @Transactional
 public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
     
-    private ConcurrentHashMap<Long, FactHandle> store = new ConcurrentHashMap<Long, FactHandle>();
 
-    public void beforeProcessStarted(ProcessStartedEvent event) {
-        
-        FactHandle handle = event.getKieRuntime().insert(event.getProcessInstance());
-        store.put(event.getProcessInstance().getId(), handle);
-        
-        
+    public void beforeProcessStarted(ProcessStartedEvent event) {        
+        event.getKieRuntime().insert(event.getProcessInstance());
     }
 
     public void afterProcessStarted(ProcessStartedEvent event) {
         // do nothing
-        event.getKieRuntime().getEntryPoint("process-events").insert(event);
+        event.getKieRuntime().getEntryPoint("process-events").insert(new org.droolsjbpm.services.impl.event.ProcessStartedEvent(event));
         ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
-        event.getKieRuntime().getEntryPoint("process-events").insert(event);
+        event.getKieRuntime().getEntryPoint("process-events").insert(new org.droolsjbpm.services.impl.event.ProcessCompletedEvent(event));
         ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
     }
 
@@ -53,7 +50,7 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
 
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         // do nothing
-        event.getKieRuntime().getEntryPoint("process-events").insert(event);
+        event.getKieRuntime().getEntryPoint("process-events").insert(new NodeInstanceTriggeredEvent(event));
         ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
         
     }
@@ -63,7 +60,7 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
     }
 
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-        event.getKieRuntime().getEntryPoint("process-events").insert(event);
+        event.getKieRuntime().getEntryPoint("process-events").insert(new NodeInstanceLeftEvent(event));
         ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
     }
 
@@ -81,18 +78,14 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
         if (handle != null) {
             event.getKieRuntime().update(handle, event.getProcessInstance());
         } else {
-            handle = event.getKieRuntime().insert(event.getProcessInstance());
-            store.put(event.getProcessInstance().getId(), handle);
+            event.getKieRuntime().insert(event.getProcessInstance());
+          
         }
     }
 
     protected FactHandle getProcessInstanceFactHandle(final Long processInstanceId, KieRuntime kruntime) {
         
-        if (store.containsKey(processInstanceId)) {
-            return store.get(processInstanceId);
-        }
-        
-        //else try to search for it in the working memory
+
         Collection<FactHandle> factHandles = kruntime.getFactHandles(new ObjectFilter() {
             
             public boolean accept(Object object) {
@@ -107,8 +100,6 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
         
         if (factHandles != null && factHandles.size() > 0) {
             FactHandle handle = factHandles.iterator().next();
-            // put it into store for faster access
-            store.put(processInstanceId, handle);
             return handle;
         }
         return null;

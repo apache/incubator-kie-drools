@@ -96,7 +96,9 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
     @PostConstruct
     public void createDomain() {
         // TODO: Do this based on configuration and use the new CDI approach
+        domain.clear();
         sessionManager.setDomain(domain);
+        
 
         Iterable<Path> releaseProcessesFiles = null;
         Iterable<Path> releaseRulesFiles = null;
@@ -117,8 +119,10 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
             // TODO automate this in another service
             String processString = new String( ioService.readAllBytes( p ) );
             String processId = bpmn2Service.findProcessId( processString );
-            domain.addProcessBPMN2ContentToKsession(kSessionName, processId , processString );
-            domain.addAsset(processId, p.toString());
+            if(!processId.equals("")){
+              domain.addProcessBPMN2ContentToKsession(kSessionName, processId , processString );
+              domain.addAsset(processId, p.toString());
+            }
         }
         kSessionName = "releaseSession";
         for (Path p : releaseRulesFiles) {            
@@ -130,15 +134,20 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         kSessionName = "generalSession";
         domain.addKsessionRepositoryRoot(kSessionName, "examples/general/");
         for (Path p : exampleProcessesFiles) {
-            domain.addProcessDefinitionToKsession("generalSession", p);
-            System.out.println(" >>> Adding Path to GeneralSession - > "+p.toString());
+            
             // TODO automate this in another service
             String processString = new String( ioService.readAllBytes( p ) );
-            domain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            String processId = bpmn2Service.findProcessId( processString );
+            if(!processId.equals("")){
+              System.out.println(" >>> Adding Path to GeneralSession - > "+p.toString());
+              domain.addProcessDefinitionToKsession("generalSession", p);
+              domain.addProcessBPMN2ContentToKsession(kSessionName, processId ,processString );
+            }
+            
         }
         
         
-
+        sessionManager.clear();
         sessionManager.buildSessions(true);
         
         

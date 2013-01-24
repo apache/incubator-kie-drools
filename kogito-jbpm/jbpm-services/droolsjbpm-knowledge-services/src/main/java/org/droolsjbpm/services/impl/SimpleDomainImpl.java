@@ -179,5 +179,14 @@ public class SimpleDomainImpl implements Domain{
         this.ksessionRepositoryRoot = ksessionRepositoryRoot;
     }
 
+    @Override
+    public void clear() {
+      this.assetsDefs.clear();
+      this.ksessionProcessDefinitions.clear();
+      this.ksessionRulesDefinitions.clear();
+      this.processes.clear();
+      this.ksessionRepositoryRoot.clear();
+    }
+
  
 }

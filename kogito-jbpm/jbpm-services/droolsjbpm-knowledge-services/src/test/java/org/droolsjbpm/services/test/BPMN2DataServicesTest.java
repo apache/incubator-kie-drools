@@ -15,6 +15,9 @@
  */
 package org.droolsjbpm.services.test;
 
+import bitronix.tm.Configuration;
+import bitronix.tm.TransactionManagerServices;
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -81,6 +84,7 @@ public class BPMN2DataServicesTest {
                 .addPackage("org.droolsjbpm.services.test")
                 .addPackage("org.droolsjbpm.services.impl.event.listeners")
                 .addPackage("org.droolsjbpm.services.impl.example") 
+                .addPackage("org.droolsjbpm.services.impl.util") 
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"))
@@ -92,6 +96,9 @@ public class BPMN2DataServicesTest {
     @Inject
     private BPMN2DataService bpmn2Service;
 
+    
+    private PoolingDataSource ds;
+    
     public BPMN2DataServicesTest() {
     }
 
@@ -105,11 +112,29 @@ public class BPMN2DataServicesTest {
 
     @Before
     public void setUp() {
+        Configuration conf = TransactionManagerServices.getConfiguration();
+      
+        ds = new PoolingDataSource();
+        ds.setUniqueName("jdbc/testDS1");
+        
+        
+        //NON XA CONFIGS
+        ds.setClassName("org.h2.jdbcx.JdbcDataSource");
+        ds.setMaxPoolSize(3);
+        ds.setAllowLocalTransactions(true);
+        ds.getDriverProperties().put("user", "sa");
+        ds.getDriverProperties().put("password", "sasa");
+        ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");
+         
+        ds.init();
+        
+        
         knolwedgeService.getAvailableProcesses();
     }
 
     @After
     public void tearDown() {
+      ds.close();
     }
 
     @Test

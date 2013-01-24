@@ -87,9 +87,12 @@ public abstract class DomainKnowledgeServiceBaseTest {
         }
         for (Path p : loadFilesByType) {
             String kSessionName = "myKsession";
-            myDomain.addProcessDefinitionToKsession(kSessionName, p);
             String processString = new String( fs.loadFile(p) );
-            myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            String processId = bpmn2Service.findProcessId( processString );
+            if(!processId.equals("")){
+              myDomain.addProcessDefinitionToKsession(kSessionName, p);
+              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId , processString );
+            }
         }
 
         sessionManager.buildSessions(false); //DO THIS -> OR oneSessionOneProcessStrategy.buildSessionByName("mySession");
@@ -124,9 +127,14 @@ public abstract class DomainKnowledgeServiceBaseTest {
         for (Path p : loadFilesByType) {
             
             String kSessionName = "myKsession" + i;
-            myDomain.addProcessDefinitionToKsession(kSessionName , p);
+            
             String processString = new String( fs.loadFile(p) );
-            myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            String processId = bpmn2Service.findProcessId( processString );
+            if(!processId.equals("")){
+               myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId , processString ); 
+               myDomain.addProcessDefinitionToKsession(kSessionName , p);
+            }
+            
             i++;
         }
 
@@ -167,9 +175,13 @@ public abstract class DomainKnowledgeServiceBaseTest {
         for (Path p : loadFilesByType) {
             String kSessionName = "myKsession";
             System.out.println(" >>> Loading Path -> "+p.toString());
-            myDomain.addProcessDefinitionToKsession("myKsession", p);
+            
             String processString = new String( fs.loadFile(p) );
-            myDomain.addProcessBPMN2ContentToKsession(kSessionName, bpmn2Service.findProcessId( processString ), processString );
+            String processId = bpmn2Service.findProcessId( processString );
+            if(!processId.equals("")){
+              myDomain.addProcessDefinitionToKsession("myKsession", p);
+              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId, processString );
+            }
         }
 
         sessionManager.buildSessions(false);

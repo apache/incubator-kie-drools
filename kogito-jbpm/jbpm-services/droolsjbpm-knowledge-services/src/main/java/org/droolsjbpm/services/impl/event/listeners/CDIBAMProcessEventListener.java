@@ -59,28 +59,25 @@ public class CDIBAMProcessEventListener implements ProcessEventListener {
 
     @Override
     public void beforeProcessStarted(ProcessStartedEvent pse) {
-        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)pse.getProcessInstance();
-        int sessionId = ((StatefulKnowledgeSession)pse.getKieRuntime()).getId();
-        // TODO: include session ID
-        String version = processInstance.getProcess().getVersion();
-        if(version == null){
-            version = "";
-        }
-        em.persist(new BAMProcessSummary(processInstance.getId(), processInstance.getProcessName(), StateHelper.getProcessState(processInstance.getState()), new Date(), identity.getName(), version));
+        int currentState = pse.getProcessInstance().getState();
+
+//        if (currentState == ProcessInstance.STATE_ACTIVE) {
+            System.out.println("Saving event for process instance " + pse.getProcessInstance().getId());
+            ProcessInstance processInstance = pse.getProcessInstance();
+            int sessionId = ((StatefulKnowledgeSession)pse.getKieRuntime()).getId();
+            String version = processInstance.getProcess().getVersion();
+//            BAMProcessSummary processSummaryById = (BAMProcessSummary)em.createQuery("select bps from BAMProcessSummary bps where bps.processInstanceId =:processId")
+//                                                    .setParameter("processId", processInstance.getId()).getSingleResult();
+//            processSummaryById.setStatus(StateHelper.getProcessState(processInstance.getState()));
+//            em.merge(processSummaryById);
+            // FIXME this will record state pending so we might hard code it as Active to keep the right state in bam
+            em.persist(new BAMProcessSummary(processInstance.getId(), processInstance.getProcessName(), StateHelper.getProcessState(processInstance.getState()), new Date(), identity.getName(), version));
+//        }
     }
 
     @Override
     public void afterProcessStarted(ProcessStartedEvent pse) {
-        int currentState = pse.getProcessInstance().getState();
 
-        if (currentState == ProcessInstance.STATE_ACTIVE) {
-            ProcessInstance processInstance = pse.getProcessInstance();
-            int sessionId = ((StatefulKnowledgeSession)pse.getKieRuntime()).getId();
-            BAMProcessSummary processSummaryById = (BAMProcessSummary)em.createQuery("select bps from BAMProcessSummary bps where bps.processInstanceId =:processId")
-                                                    .setParameter("processId", processInstance.getId()).getSingleResult();
-            processSummaryById.setStatus(StateHelper.getProcessState(processInstance.getState()));
-            em.merge(processSummaryById);
-        }
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent pce) {

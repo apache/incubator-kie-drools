@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 import org.kie.runtime.process.ProcessInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.event.process.*;
+import org.droolsjbpm.services.impl.event.*;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.impl.factories.TaskFactory;
 import java.io.StringReader;
@@ -24,11 +24,11 @@ declare ProcessCompletedEvent
 	@role(event)
 end
 
-declare ProcessNodeTriggeredEvent
+declare NodeInstanceTriggeredEvent
 	@role(event)
 end
 
-declare ProcessNodeLeftEvent
+declare NodeInstanceLeftEvent
 	@role(event)
 end
 
@@ -39,8 +39,8 @@ end
 rule "Ongoing process for more than 15 seconds"
  when
 	$w: WorkflowProcessInstanceImpl( )
-	$pse: ProcessStartedEvent(processInstance == $w) from entry-point "process-events"
-        not(ProcessCompletedEvent(processInstance == $w,  this after[0s, 2m] $pse ) from entry-point "process-events") 
+	$pse: ProcessStartedEvent(processInstanceId == $w.getId()) from entry-point "process-events"
+        not(ProcessCompletedEvent(processInstanceId == $w.getId(),  this after[0s, 2m] $pse ) from entry-point "process-events") 
  then
 	
 	rulesNotificationService.insertNotification(((StatefulKnowledgeSession)kcontext.getKieRuntime()).getId(), "The Process Instance (id="+$w.getId()+") is taking too long!");
@@ -61,7 +61,7 @@ end
 rule "More than two Fix Issues for the same Release Process Instance"
   when
 	$w1: WorkflowProcessInstanceImpl($id: id)
-	Number( intValue > 1) from accumulate($e: ProcessNodeTriggeredEvent(processInstance.id == $id, nodeInstance.nodeName == "Fix Issues") from entry-point "process-events", count($e))
+	Number( intValue > 1) from accumulate($e: NodeInstanceTriggeredEvent(processInstanceId == $id, nodeName == "Fix Issues") from entry-point "process-events", count($e))
 
   then
 	rulesNotificationService.insertNotification(((StatefulKnowledgeSession) kcontext.getKieRuntime()).getId(),"WARN: The Process Instance (id="+$w1.getId()+") has being rejected at least 2 times");
@@ -70,8 +70,8 @@ end
 rule "Fix Issues Task pending for more than 30 seconds"
   when
 	$w1: WorkflowProcessInstanceImpl($id: id)
-	$onEntry: ProcessNodeTriggeredEvent(processInstance.id == $id, $nid: nodeInstance.id, nodeInstance.nodeName == "Fix Issues") from entry-point "process-events"
-	$onExit: ProcessNodeLeftEvent(this after[30s] $onEntry, processInstance.id == $id,  nodeInstance.id == $nid, nodeInstance.nodeName == "Fix Issues") from entry-point "process-events"
+	$onEntry: NodeInstanceTriggeredEvent(processInstanceId == $id, $nid: nodeInstanceId, nodeName == "Fix Issues") from entry-point "process-events"
+	$onExit: NodeInstanceLeftEvent(this after[30s] $onEntry, processInstanceId == $id,  nodeInstanceId == $nid, nodeName == "Fix Issues") from entry-point "process-events"
   then
 	rulesNotificationService.insertNotification(((StatefulKnowledgeSession) kcontext.getKieRuntime()).getId(),"WARN: There is a Pending Fix Issues Task for process ("+$id+") for more than 30 seconds now");
 end
@@ -80,8 +80,8 @@ end
 rule "Trigger Test is taking too much time to run the tests - Create ad - hoc task"
   when
 	$w1: WorkflowProcessInstanceImpl($id: id)
-	$onEntry: ProcessNodeTriggeredEvent(processInstance.id == $id, $nid: nodeInstance.id,  nodeInstance.nodeName == "Trigger Tests") from entry-point "process-events"
-	$onExit: ProcessNodeLeftEvent(this after[10s] $onEntry, processInstance.id == $id, nodeInstance.id == $nid, nodeInstance.nodeName == "Trigger Tests") from entry-point "process-events"
+	$onEntry: NodeInstanceTriggeredEvent(processInstanceId == $id, $nid: nodeInstanceId,  nodeName == "Trigger Tests") from entry-point "process-events"
+	$onExit: NodeInstanceLeftEvent(this after[10s] $onEntry, processInstanceId == $id, nodeInstanceId == $nid, nodeName == "Trigger Tests") from entry-point "process-events"
   then
 	rulesNotificationService.insertNotification(((StatefulKnowledgeSession) kcontext.getKieRuntime()).getId(),"WARN: Trigger Tests activity from process id="+$w1.getId()+" is took too much time! an ad-hoc task was created to improve the performance of those tests");
 	String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
