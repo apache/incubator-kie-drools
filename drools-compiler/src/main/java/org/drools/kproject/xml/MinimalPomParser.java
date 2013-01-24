@@ -1,28 +1,33 @@
-package org.drools.xml;
+package org.drools.kproject.xml;
 
-import java.io.InputStream;
-import java.util.LinkedList;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
+import org.drools.kproject.ReleaseIdImpl;
+import org.kie.builder.ReleaseId;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.InputStream;
 
 public class MinimalPomParser extends DefaultHandler {
 
     private int           depth;
 
-    private boolean       inParent;
-
     private PomModel      model;
 
     private StringBuilder characters;    
     
-    private Document            document;    
+    private Document      document;
+
+    private String        pomGroupId;
+    private String        pomArtifactId;
+    private String        pomVersion;
+
+    private String        currentGroupId;
+    private String        currentArtifactId;
+    private String        currentVersion;
 
     public MinimalPomParser() {
         model = new PomModel();
@@ -54,9 +59,7 @@ public class MinimalPomParser extends DefaultHandler {
                              final String localName,
                              final String qname,
                              final Attributes attrs) throws SAXException {
-        if ( "parent".equals( qname ) && depth == 1 ) {
-            inParent = true;
-        } else if ( "groupId".equals( qname ) || "artifactId".equals( qname ) || "version".equals( qname ) ) {
+        if ( "groupId".equals( qname ) || "artifactId".equals( qname ) || "version".equals( qname ) ) {
             this.characters = new StringBuilder();            
         }
         
@@ -66,30 +69,47 @@ public class MinimalPomParser extends DefaultHandler {
     public void endElement(final String uri,
                            final String localName,
                            final String qname) throws SAXException {
-        if ( inParent ) {
+        if ( "project".equals( qname ) ) {
+            ReleaseId parentReleaseId = model.getParentReleaseId();
+            model.setReleaseId(new ReleaseIdImpl(pomGroupId != null ? pomGroupId : parentReleaseId.getGroupId(),
+                                                 pomArtifactId,
+                                                 pomVersion != null ? pomVersion : parentReleaseId.getVersion()));
+        } else if ( "parent".equals( qname ) ) {
+            if ( currentGroupId != null && currentArtifactId != null && currentVersion != null ) {
+                model.setParentReleaseId(new ReleaseIdImpl(currentGroupId, currentArtifactId, currentVersion));
+            }
+            currentGroupId = null;
+            currentArtifactId = null;
+            currentVersion = null;
+        } else if ( "dependency".equals( qname ) ) {
+            if ( currentGroupId != null && currentArtifactId != null && currentVersion != null ) {
+                model.addDependency(new ReleaseIdImpl(currentGroupId, currentArtifactId, currentVersion));
+            }
+            currentGroupId = null;
+            currentArtifactId = null;
+            currentVersion = null;
+        } else {
             String text = ( this.characters != null ) ? this.characters.toString() : null;
-            if ( text != null ) {
+            if ( text != null) {
                 if ( "groupId".equals( qname ) ) {
-                    model.setParentGroupId( text );
+                    if ( depth == 2 ) {
+                        pomGroupId = text;
+                    } else {
+                        currentGroupId = text;
+                    }
                 } else if ( "artifactId".equals( qname ) ) {
-                    model.setParentArtifactId( text );
+                    if ( depth == 2 ) {
+                        pomArtifactId = text;
+                    } else {
+                        currentArtifactId = text;
+                    }
                 } else if ( "version".equals( qname ) ) {
-                    model.setParentVersion( text );
+                    if ( depth == 2 ) {
+                        pomVersion = text;
+                    } else {
+                        currentVersion = text;
+                    }
                 }
-            }
-            if ( "parent".equals( qname ) && depth == 2 ) {
-                inParent = false;
-            }
-        } else if ( depth == 2 ){
-            String text = ( this.characters != null ) ? this.characters.toString() : null;
-            if ( text != null ) {
-                if ( "groupId".equals( qname ) ) {
-                    model.setGroupId( text );
-                } else if ( "artifactId".equals( qname ) ) {
-                    model.setArtifactId( text );                
-                } else if ( "version".equals( qname ) ) {
-                    model.setVersion( text );
-                }            
             }
         }
         this.characters = null;

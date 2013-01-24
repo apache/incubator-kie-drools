@@ -3,8 +3,8 @@ package org.kie.builder.impl;
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.ReleaseIdImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
-import org.drools.xml.MinimalPomParser;
-import org.drools.xml.PomModel;
+import org.drools.kproject.xml.MinimalPomParser;
+import org.drools.kproject.xml.PomModel;
 import org.kie.KieServices;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.model.KieModuleModel;
@@ -209,9 +209,7 @@ public class ClasspathKieProject extends AbstractKieProject {
                     
                     KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
                     
-                    ReleaseIdImpl gav = (ReleaseIdImpl) KieServices.Factory.get().newReleaseId(pomModel.getGroupId(),
-                            pomModel.getArtifactId(),
-                            pomModel.getVersion());
+                    ReleaseIdImpl gav = (ReleaseIdImpl) pomModel.getReleaseId();
                     
                     String str =  KieBuilderImpl.generatePomProperties( gav );
                     log.info( "Recursed up folders,  found and used pom.xml " + file );

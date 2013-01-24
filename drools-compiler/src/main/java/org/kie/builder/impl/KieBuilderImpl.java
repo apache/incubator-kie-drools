@@ -16,8 +16,8 @@ import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.TypeMetaInfo;
-import org.drools.xml.MinimalPomParser;
-import org.drools.xml.PomModel;
+import org.drools.kproject.xml.MinimalPomParser;
+import org.drools.kproject.xml.PomModel;
 import org.kie.KieBaseConfiguration;
 import org.kie.KieServices;
 import org.kie.KnowledgeBaseFactory;
@@ -114,10 +114,23 @@ public class KieBuilderImpl
         if ( pomModel != null ) {
             // creates ReleaseId from build pom
             // If the pom was generated, it will be the same as teh default ReleaseId
-            releaseId = ks.newReleaseId(pomModel.getGroupId(),
-                    pomModel.getArtifactId(),
-                    pomModel.getVersion());
+            releaseId = pomModel.getReleaseId();
+
+            // add all the pom dependencies to this builder ... not sure this is a good idea (?)
+            for (ReleaseId dep : pomModel.getDependencies()) {
+                KieModule depModule = ks.getRepository().getKieModule(dep);
+                if (depModule != null) {
+                    addDependency(depModule);
+                }
+            }
         }
+    }
+
+    private void addDependency(KieModule depModule) {
+        if (dependencies == null) {
+            dependencies = new ArrayList<KieModule>();
+        }
+        dependencies.add(depModule);
     }
 
     public KieBuilder buildAll() {
@@ -356,7 +369,8 @@ public class KieBuilderImpl
     }
 
     public static void validatePomModel(PomModel pomModel) {
-        if ( StringUtils.isEmpty( pomModel.getGroupId() ) || StringUtils.isEmpty( pomModel.getArtifactId() ) || StringUtils.isEmpty( pomModel.getVersion() ) ) {
+        ReleaseId pomReleaseId = pomModel.getReleaseId();
+        if ( StringUtils.isEmpty( pomReleaseId.getGroupId() ) || StringUtils.isEmpty( pomReleaseId.getArtifactId() ) || StringUtils.isEmpty( pomReleaseId.getVersion() ) ) {
             throw new RuntimeException( "Maven pom.properties exists but ReleaseId content is malformed" );
         }
     }

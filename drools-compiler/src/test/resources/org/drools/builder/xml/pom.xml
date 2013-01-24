@@ -14,11 +14,11 @@
   <version>version</version>
 
   <name>Drools :: Compiler</name>
-<!-- 
+
   <dependencies>
     <dependency>
       <groupId>dep1GroupId</groupId>
-      <artifactId>dep1GroupId</artifactId>
+      <artifactId>dep1ArtifactId</artifactId>
      <version>dep1Version</version>
     </dependency>     
   </dependencies>
@@ -29,5 +29,4 @@
   
   <build>
   </build>
-   -->
 </project>

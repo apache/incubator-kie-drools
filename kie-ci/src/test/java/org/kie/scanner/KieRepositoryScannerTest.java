@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieServices;
+import org.kie.builder.KieBuilder;
+import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieScanner;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.impl.InternalKieModule;
@@ -205,13 +207,13 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
             fail("Creating a KieScanner from a KieClasspathContainer must fail");
         } catch (RuntimeException e) { }
     }
-/*
+
     @Test @Ignore
-    public void testGlobalAndRuleInDifferentKieModules() throws Exception {
+    public void testTypeAndRuleInDifferentKieModules() throws Exception {
         KieServices ks = KieServices.Factory.get();
 
-        ReleaseId depId = ks.newReleaseId("org.kie", "test-globals", "1.0");
-        InternalKieModule kJar1 = createKieJarWithGlobal(ks, depId);
+        ReleaseId depId = ks.newReleaseId("org.kie", "test-types", "1.0");
+        InternalKieModule kJar1 = createKieJarWithType(ks, depId);
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(depId, kJar1, kPom);
 
@@ -223,9 +225,9 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         checkKSession(ksession, 15);
     }
 
-    private InternalKieModule createKieJarWithGlobal(KieServices ks, ReleaseId releaseId) throws IOException {
+    private InternalKieModule createKieJarWithType(KieServices ks, ReleaseId releaseId) throws IOException {
         KieFileSystem kfs = createKieFileSystemWithKProject(ks);
-        kfs.write("src/main/resources/KBase1/r1.drl", "package org.kie.test\n" + getDRLWithGlobalAndType());
+        kfs.write("src/main/resources/KBase1/r1.drl", "package org.kie.test\n" + getDRLWithType());
 
         kfs.writePomXML( getPom(releaseId) );
 
@@ -245,5 +247,4 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         assertTrue(kieBuilder.getResults().getMessages().isEmpty());
         return ( InternalKieModule ) kieBuilder.getKieModule();
     }
-*/
 }
