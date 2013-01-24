@@ -131,19 +131,19 @@ public class AbstractKieCiTest {
 
     protected String createDRLWithTypeDeclaration(int value, int factor) {
         return "package org.kie.test\n" +
-                getDRLWithGlobalAndType() +
+                getDRLWithType() +
                 getDRLWithRules(value, factor);
     }
 
-    protected String getDRLWithGlobalAndType() {
-        return "global java.util.List list\n" +
-                "declare Bean @role(event)\n" +
+    protected String getDRLWithType() {
+        return "declare Bean @role(event)\n" +
                 "   value : int\n" +
                 "end\n";
     }
 
     protected String getDRLWithRules(int value, int factor) {
-        return "rule Init salience 100\n" +
+        return "global java.util.List list\n" +
+                "rule Init salience 100\n" +
                 "when\n" +
                 "then\n" +
                 "insert( new Bean(" + value + ") );\n" +

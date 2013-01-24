@@ -10,6 +10,7 @@ import org.kie.builder.impl.InternalKieScanner;
 import org.kie.builder.impl.MemoryKieModule;
 import org.kie.builder.impl.ResultsImpl;
 import org.kie.builder.impl.ZipKieModule;
+import org.kie.builder.model.KieModuleModel;
 import org.kie.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,9 +95,11 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private InternalKieModule buildArtifact(ReleaseId releaseId, Artifact artifact) {
         ArtifactResolver resolver = getArtifactResolver();
-        ZipKieModule kieModule = new ZipKieModule(releaseId, artifact.getFile());
-        addDependencies(kieModule, resolver, resolver.getArtifactDependecies(new DependencyDescriptor(artifact).toString()));
-        build(kieModule);
+        ZipKieModule kieModule = createZipKieModule(releaseId, artifact.getFile());
+        if (kieModule != null) {
+            addDependencies(kieModule, resolver, resolver.getArtifactDependecies(new DependencyDescriptor(artifact).toString()));
+            build(kieModule);
+        }
         return kieModule;
     }
     
@@ -105,9 +108,32 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             Artifact depArtifact = resolver.resolveArtifact(dep.toString());
             if (isKJar(depArtifact.getFile())) {
                 ReleaseId depReleaseId = new DependencyDescriptor(depArtifact).getGav();
-                kieModule.addDependency(new ZipKieModule(depReleaseId, depArtifact.getFile()));
+                ZipKieModule zipKieModule = createZipKieModule(depReleaseId, depArtifact.getFile());
+                if (zipKieModule != null) {
+                    kieModule.addDependency(zipKieModule);
+                }
             }
         }
+    }
+
+    private static ZipKieModule createZipKieModule(ReleaseId releaseId, File jar) {
+        KieModuleModel kieModuleModel = getKieModuleModelFromJar(jar);
+        return kieModuleModel != null ? new ZipKieModule(releaseId, kieModuleModel, jar) : null;
+    }
+
+    private static KieModuleModel getKieModuleModelFromJar(File jar) {
+        ZipFile zipFile = null;
+        try {
+            zipFile = new ZipFile( jar );
+            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
+            return KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
+        } catch ( Exception e ) {
+        } finally {
+            try {
+                zipFile.close();
+            } catch ( IOException e ) { }
+        }
+        return null;
     }
 
     private ResultsImpl build(InternalKieModule kieModule) {
@@ -159,10 +185,12 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     private void updateKieModule(Artifact artifact, ReleaseId releaseId) {
-        ZipKieModule kieModule = new ZipKieModule(releaseId, artifact.getFile());
-        ResultsImpl messages = build(kieModule);
-        if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
-            kieContainer.updateToVersion(releaseId);
+        ZipKieModule kieModule = createZipKieModule(releaseId, artifact.getFile());
+        if (kieModule != null) {
+            ResultsImpl messages = build(kieModule);
+            if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
+                kieContainer.updateToVersion(releaseId);
+            }
         }
     }
 
