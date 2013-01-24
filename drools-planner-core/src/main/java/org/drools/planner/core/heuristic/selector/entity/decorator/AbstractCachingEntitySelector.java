@@ -51,8 +51,9 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
     public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childEntitySelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
-            throw new IllegalStateException("The selector (" + this + ") has a childEntitySelector ("
-                    + childEntitySelector + ") with childSize (" + childSize
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a childEntitySelector (" + childEntitySelector
+                    + ") with childSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         cachedEntityList = new ArrayList<Object>((int) childSize);
