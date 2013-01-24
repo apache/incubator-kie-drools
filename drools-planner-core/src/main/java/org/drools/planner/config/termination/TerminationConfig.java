@@ -189,7 +189,7 @@ public class TerminationConfig implements Cloneable {
                 compositeTermination = new AndCompositeTermination();
             } else {
                 throw new IllegalStateException("The terminationCompositionStyle (" + terminationCompositionStyle
-                        + ") is not implemented");
+                        + ") is not implemented.");
             }
             compositeTermination.setTerminationList(terminationList);
             return compositeTermination;

@@ -76,7 +76,7 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
                         phaseScope.getWorkingSolution(), workingPlanningEntityList);
                 break;
             default:
-                throw new IllegalStateException("The selectionOrder (" + selectionOrder + ") is not implemented");
+                throw new IllegalStateException("The selectionOrder (" + selectionOrder + ") is not implemented.");
         }
         selectedPlanningEntityList = workingPlanningEntityList;
     }

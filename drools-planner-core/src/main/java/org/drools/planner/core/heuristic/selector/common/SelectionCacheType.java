@@ -58,7 +58,7 @@ public enum SelectionCacheType {
             case SOLVER:
                 return true;
             default:
-                throw new IllegalStateException("The cacheType (" + this + ") is not implemented");
+                throw new IllegalStateException("The cacheType (" + this + ") is not implemented.");
         }
     }
 

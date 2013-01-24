@@ -174,7 +174,7 @@ public class PlanningVariableDescriptor {
                 return new UndefinedPlanningValueRangeDescriptor(this, valueRangeAnnotation);
             default:
                 throw new IllegalStateException("The valueRangeType ("
-                        + valueRangeAnnotation.type() + ") is not implemented");
+                        + valueRangeAnnotation.type() + ") is not implemented.");
         }
         // TODO Support plugging in other ValueRange implementations
     }

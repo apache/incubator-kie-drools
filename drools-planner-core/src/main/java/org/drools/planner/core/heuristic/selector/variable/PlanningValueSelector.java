@@ -127,7 +127,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
                         scoreDirector.getWorkingSolution(), increasingStrengthPlanningValueList);
                 return increasingStrengthPlanningValueList;
             default:
-                throw new IllegalStateException("The selectionOrder (" + selectionOrder + ") is not implemented");
+                throw new IllegalStateException("The selectionOrder (" + selectionOrder + ") is not implemented.");
         }
     }
 

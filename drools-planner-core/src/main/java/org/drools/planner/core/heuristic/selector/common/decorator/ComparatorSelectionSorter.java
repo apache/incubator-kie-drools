@@ -20,7 +20,7 @@ public class ComparatorSelectionSorter implements SelectionSorter<Object> {
                 break;
             default:
                 throw new IllegalStateException("The selectionSorterOrder (" + selectionSorterOrder
-                        + ") is not implemented");
+                        + ") is not implemented.");
         }
     }
 

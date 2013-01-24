@@ -120,7 +120,7 @@ public class AcceptedForager extends AbstractForager {
                 }
                 break;
             default:
-                throw new IllegalStateException("The pickEarlyType (" + pickEarlyType + ") is not implemented");
+                throw new IllegalStateException("The pickEarlyType (" + pickEarlyType + ") is not implemented.");
         }
     }
 

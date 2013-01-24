@@ -203,7 +203,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                 return PlanningEntitySelectionOrder.DECREASING_DIFFICULTY;
             default:
                 throw new IllegalStateException("The constructionHeuristicType ("
-                        + constructionHeuristicType + ") is not implemented");
+                        + constructionHeuristicType + ") is not implemented.");
         }
     }
 
@@ -217,7 +217,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                 return PlanningValueSelectionOrder.INCREASING_STRENGTH;
             default:
                 throw new IllegalStateException("The constructionHeuristicType ("
-                        + constructionHeuristicType + ") is not implemented");
+                        + constructionHeuristicType + ") is not implemented.");
         }
     }
 

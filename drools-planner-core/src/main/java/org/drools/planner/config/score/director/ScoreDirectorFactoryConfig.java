@@ -208,7 +208,7 @@ public class ScoreDirectorFactoryConfig {
                     return new HardMediumSoftScoreDefinition();
                 default:
                     throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
-                            + ") is not implemented");
+                            + ") is not implemented.");
             }
         } else {
             return new SimpleScoreDefinition();
