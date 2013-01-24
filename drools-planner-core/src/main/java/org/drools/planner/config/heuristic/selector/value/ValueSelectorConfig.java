@@ -110,7 +110,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         ValueSelector valueSelector = buildBaseValueSelector(environmentMode, variableDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
+                resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean());
 
 //        valueSelector = applyFiltering(variableDescriptor, resolvedCacheType, resolvedSelectionOrder, valueSelector);
 //        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
@@ -195,7 +195,7 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     private ValueSelector buildBaseValueSelector(
             EnvironmentMode environmentMode, PlanningVariableDescriptor variableDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
         if (variableDescriptor.isPlanningValuesCacheable()) {
             if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
@@ -208,8 +208,7 @@ public class ValueSelectorConfig extends SelectorConfig {
                 minimumCacheType = SelectionCacheType.STEP;
             }
         }
-        return new FromSolutionPropertyValueSelector(variableDescriptor,
-                    minimumCacheType, resolvedSelectionOrder == SelectionOrder.RANDOM);
+        return new FromSolutionPropertyValueSelector(variableDescriptor, minimumCacheType, randomSelection);
     }
 
     public void inherit(ValueSelectorConfig inheritedConfig) {

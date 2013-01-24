@@ -77,4 +77,19 @@ public enum SelectionOrder {
         }
     }
 
+    public static SelectionOrder fromRandomSelectionBoolean(boolean randomSelection) {
+        return randomSelection ? RANDOM : ORIGINAL;
+    }
+
+    public boolean toRandomSelectionBoolean() {
+        if (this == RANDOM) {
+            return true;
+        } else if (this == ORIGINAL) {
+            return false;
+        } else {
+            throw new IllegalStateException("The selectionOrder (" + this
+                    + ") cannot be casted to a randomSelectionBoolean.");
+        }
+    }
+
 }

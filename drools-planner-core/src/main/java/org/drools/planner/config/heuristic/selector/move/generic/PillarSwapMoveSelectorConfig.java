@@ -59,17 +59,19 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelector leftPillarSelector = pillarSelectorConfig.buildPillarSelector(
-                environmentMode, solutionDescriptor, minimumCacheType, resolvedSelectionOrder);
+                environmentMode, solutionDescriptor,
+                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         PillarSelectorConfig rightPillarSelectorConfig = secondaryPillarSelectorConfig == null
                 ? pillarSelectorConfig : secondaryPillarSelectorConfig;
         PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(
-                environmentMode, solutionDescriptor, minimumCacheType, resolvedSelectionOrder);
+                environmentMode, solutionDescriptor,
+                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         Collection<PlanningVariableDescriptor> variableDescriptors = leftPillarSelector.getEntityDescriptor()
                 .getPlanningVariableDescriptors();
         return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptors,
-                resolvedSelectionOrder == SelectionOrder.RANDOM);
+                randomSelection);
     }
 
     public void inherit(PillarSwapMoveSelectorConfig inheritedConfig) {

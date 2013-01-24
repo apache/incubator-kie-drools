@@ -55,15 +55,14 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
             moveSelectorList.add(
                     moveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor,
-                            minimumCacheType, resolvedSelectionOrder));
+                            minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection)));
         }
 
-        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;
         return new CartesianProductMoveSelector(moveSelectorList, randomSelection);
     }
 

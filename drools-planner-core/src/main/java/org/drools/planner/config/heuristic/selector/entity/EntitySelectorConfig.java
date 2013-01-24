@@ -163,7 +163,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         // baseEntitySelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         EntitySelector entitySelector = buildBaseEntitySelector(environmentMode, entityDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
+                resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean());
 
         entitySelector = applyFiltering(entityDescriptor, resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector);
@@ -332,7 +332,7 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     private EntitySelector buildBaseEntitySelector(
             EnvironmentMode environmentMode, PlanningEntityDescriptor entityDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
             // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
@@ -345,9 +345,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
                     + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
         }
-        return new FromSolutionEntitySelector(entityDescriptor,
-                minimumCacheType, resolvedSelectionOrder == SelectionOrder.RANDOM
-        );
+        return new FromSolutionEntitySelector(entityDescriptor, minimumCacheType, randomSelection);
     }
 
     public void inherit(EntitySelectorConfig inheritedConfig) {

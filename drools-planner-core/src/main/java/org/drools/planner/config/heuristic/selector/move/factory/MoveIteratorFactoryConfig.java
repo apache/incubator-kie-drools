@@ -45,11 +45,10 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         MoveIteratorFactory moveIteratorFactory = ConfigUtils.newInstance(this,
                 "moveIteratorFactoryClass", moveIteratorFactoryClass);
-        return new MoveIteratorFactoryToMoveSelectorBridge(moveIteratorFactory,
-                resolvedSelectionOrder == SelectionOrder.RANDOM);
+        return new MoveIteratorFactoryToMoveSelectorBridge(moveIteratorFactory, randomSelection);
     }
 
     public void inherit(MoveIteratorFactoryConfig inheritedConfig) {

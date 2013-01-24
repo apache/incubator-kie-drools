@@ -178,7 +178,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
+                resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean());
 
         moveSelector = applyFiltering(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, moveSelector);
@@ -317,12 +317,13 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
-     * @param resolvedSelectionOrder never null
+     * @param randomSelection true is equivalent to {@link SelectionOrder#RANDOM},
+     * false is equivalent to {@link SelectionOrder#ORIGINAL}
      * @return never null
      */
     protected abstract MoveSelector buildBaseMoveSelector(
             EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder);
+            SelectionCacheType minimumCacheType, boolean randomSelection);
 
     protected void inherit(MoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

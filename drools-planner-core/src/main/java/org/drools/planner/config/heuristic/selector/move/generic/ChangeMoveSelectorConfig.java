@@ -59,13 +59,13 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
-                minimumCacheType, resolvedSelectionOrder);
+                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode,
                 solutionDescriptor, entitySelector.getEntityDescriptor(),
-                minimumCacheType, resolvedSelectionOrder);
-        return new ChangeMoveSelector(entitySelector, valueSelector, resolvedSelectionOrder == SelectionOrder.RANDOM);
+                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        return new ChangeMoveSelector(entitySelector, valueSelector, randomSelection);
     }
 
     public void inherit(ChangeMoveSelectorConfig inheritedConfig) {

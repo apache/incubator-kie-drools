@@ -64,22 +64,20 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
     // ************************************************************************
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
             moveSelectorList.add(
                     moveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor,
-                            minimumCacheType, resolvedSelectionOrder));
+                            minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection)));
         }
 
-        boolean randomSelection = resolvedSelectionOrder == SelectionOrder.RANDOM;
         SelectionProbabilityWeightFactory selectorProbabilityWeightFactory;
         if (selectorProbabilityWeightFactoryClass != null) {
-            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
+            if (!randomSelection) {
                 throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") with selectorProbabilityWeightFactoryClass ("
-                        + selectorProbabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
-                        + resolvedSelectionOrder + ").");
+                        + ") with selectorProbabilityWeightFactoryClass (" + selectorProbabilityWeightFactoryClass
+                        + ") has non-random randomSelection (" + randomSelection + ").");
             }
             selectorProbabilityWeightFactory = ConfigUtils.newInstance(this,
                     "selectorProbabilityWeightFactoryClass", selectorProbabilityWeightFactoryClass);
