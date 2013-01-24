@@ -18,6 +18,7 @@ package org.drools.planner.examples.tsp.swingui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -147,6 +148,9 @@ public class TspWorldPanel extends JPanel {
         g.setColor(TangoColors.PLUM_2);
         g.fillRect(6, (int) height - 9, 3, 3);
         g.drawString("Visit", 15, (int) height - 5);
+        g.setColor(TangoColors.ALUMINIUM_5);
+        String clickString = "Click anywhere in the map to add a visit.";
+        g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString),(int) height - 5);
         repaint();
     }
 
