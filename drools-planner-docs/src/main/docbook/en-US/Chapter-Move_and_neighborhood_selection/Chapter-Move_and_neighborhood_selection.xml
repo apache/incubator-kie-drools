@@ -562,7 +562,28 @@
     <section xml:id="probabilisticSelection">
       <title>Probabilistic selection</title>
 
-      <para>TODO Already implemented, but experiments needed to prove usefulness.</para>
+      <para>Probabilistic selection can happen on any Selector in the selector tree, including any
+      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
+      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and <literal>it only works with
+      selectionOrder</literal> <literal>PROBABILISTIC</literal>.</para>
+
+      <para>Each selection has a <literal>probabilityWeight</literal>, which determines the chance that's that selection
+      will be selected:</para>
+
+      <programlisting language="java">public interface SelectionProbabilityWeightFactory&lt;T&gt; {
+
+    double createProbabilityWeight(ScoreDirector scoreDirector, T selection);
+
+}</programlisting>
+
+      <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;PROBABILISTIC&lt;/selectionOrder&gt;
+      &lt;probabilityWeightFactoryClass&gt;...MyEntityProbabilityWeightFactoryClass&lt;/probabilityWeightFactoryClass&gt;
+    &lt;/entitySelector&gt;</programlisting>
+
+      <para>For example, if there are 3 entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5)
+      and process C (probabilityWeight 0.5), then process A will be selected 4 times more than B and C.</para>
     </section>
   </section>
 
