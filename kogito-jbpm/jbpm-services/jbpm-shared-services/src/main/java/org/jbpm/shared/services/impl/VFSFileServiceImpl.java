@@ -159,6 +159,11 @@ public class VFSFileServiceImpl implements FileService {
     }
     
     @Override
+    public Path createFile(String path){
+        return ioService.createFile(ioService.get( "git://jbpm-playground/" + path));
+    }
+    
+    @Override
     public boolean deleteIfExists(String path){
         
         checkNotNull( "path", path );

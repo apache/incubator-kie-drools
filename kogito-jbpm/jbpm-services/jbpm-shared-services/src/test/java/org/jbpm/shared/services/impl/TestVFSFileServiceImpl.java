@@ -129,4 +129,9 @@ public class TestVFSFileServiceImpl implements FileService {
         return ioService.newOutputStream(ioService.get( repositoryRoot + path ), StandardOpenOption.TRUNCATE_EXISTING);
     }
 
+    @Override
+    public Path createFile(String path) {
+      return ioService.createFile(ioService.get( repositoryRoot + path));
+    }
+
 }

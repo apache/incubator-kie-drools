@@ -45,6 +45,8 @@ public interface FileService {
     
     Path createDirectory(String path);
     
+    Path createFile(String path);
+    
     boolean deleteIfExists(String path);
     
     OutputStream openFile(String path);
