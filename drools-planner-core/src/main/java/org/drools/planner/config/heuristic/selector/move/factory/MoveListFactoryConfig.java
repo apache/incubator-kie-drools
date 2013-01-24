@@ -44,6 +44,11 @@ public class MoveListFactoryConfig extends MoveSelectorConfig {
     // Builder methods
     // ************************************************************************
 
+    @Override
+    protected boolean isBaseInherentlyCached() {
+        return true;
+    }
+
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         MoveListFactory moveListFactory = ConfigUtils.newInstance(this,

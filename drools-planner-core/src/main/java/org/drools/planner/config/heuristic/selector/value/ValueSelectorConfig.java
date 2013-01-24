@@ -19,6 +19,7 @@ package org.drools.planner.config.heuristic.selector.value;
 import java.util.Collection;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
@@ -120,9 +121,27 @@ public class ValueSelectorConfig extends SelectorConfig {
         return valueSelector;
     }
 
-    private boolean determineBaseRandomSelection(
+    protected boolean determineBaseRandomSelection(
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
-        return resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean();
+        switch (resolvedSelectionOrder) {
+            case ORIGINAL:
+                return false;
+            case SORTED:
+            case SHUFFLED:
+            case PROBABILISTIC:
+                // baseValueSelector and lower should be ORIGINAL if they are going to get cached completely
+                return false;
+            case RANDOM:
+                // Predict if caching will occur
+                return resolvedCacheType.isNotCached() || (isBaseInherentlyCached() && !hasFiltering());
+            default:
+                throw new IllegalStateException("The selectionOrder (" + resolvedSelectionOrder
+                        + ") is not implemented.");
+        }
+    }
+
+    protected boolean isBaseInherentlyCached() {
+        return true;
     }
 
     private ValueSelector buildBaseValueSelector(
@@ -141,6 +160,10 @@ public class ValueSelectorConfig extends SelectorConfig {
             }
         }
         return new FromSolutionPropertyValueSelector(variableDescriptor, minimumCacheType, randomSelection);
+    }
+
+    private boolean hasFiltering() {
+        return false; // NOT yet implemented
     }
 
     private void validateProbability(SelectionOrder resolvedSelectionOrder) {
@@ -182,7 +205,7 @@ public class ValueSelectorConfig extends SelectorConfig {
             ValueSelector valueSelector) {
         if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(valueSelector.getCacheType()) > 0) {
             valueSelector = new CachingValueSelector(valueSelector, resolvedCacheType,
-                    resolvedSelectionOrder == SelectionOrder.RANDOM);
+                    resolvedSelectionOrder.toRandomSelectionBoolean());
         }
         return valueSelector;
     }

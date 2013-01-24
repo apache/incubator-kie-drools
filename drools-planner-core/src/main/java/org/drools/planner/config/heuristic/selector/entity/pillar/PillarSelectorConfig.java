@@ -84,7 +84,7 @@ public class PillarSelectorConfig extends SelectorConfig {
         Collection<PlanningVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
                 .getPlanningVariableDescriptors();
         return new SameValuePillarSelector(entitySelector, variableDescriptors,
-                inheritedSelectionOrder == SelectionOrder.RANDOM);
+                inheritedSelectionOrder.toRandomSelectionBoolean());
     }
 
     public void inherit(PillarSelectorConfig inheritedConfig) {

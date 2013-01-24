@@ -163,7 +163,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         // baseEntitySelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         EntitySelector entitySelector = buildBaseEntitySelector(environmentMode, entityDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                determineBaseRandomSelection(resolvedCacheType, resolvedSelectionOrder));
+                determineBaseRandomSelection(entityDescriptor, resolvedCacheType, resolvedSelectionOrder));
 
         entitySelector = applyFiltering(entityDescriptor, resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector);
@@ -173,9 +173,27 @@ public class EntitySelectorConfig extends SelectorConfig {
         return entitySelector;
     }
 
-    private boolean determineBaseRandomSelection(
+    protected boolean determineBaseRandomSelection(PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
-        return resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean();
+        switch (resolvedSelectionOrder) {
+            case ORIGINAL:
+                return false;
+            case SORTED:
+            case SHUFFLED:
+            case PROBABILISTIC:
+                // baseValueSelector and lower should be ORIGINAL if they are going to get cached completely
+                return false;
+            case RANDOM:
+                // Predict if caching will occur
+                return resolvedCacheType.isNotCached() || (isBaseInherentlyCached() && !hasFiltering(entityDescriptor));
+            default:
+                throw new IllegalStateException("The selectionOrder (" + resolvedSelectionOrder
+                        + ") is not implemented.");
+        }
+    }
+
+    protected boolean isBaseInherentlyCached() {
+        return true;
     }
 
     private EntitySelector buildBaseEntitySelector(
@@ -321,7 +339,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             EntitySelector entitySelector) {
         if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(entitySelector.getCacheType()) > 0) {
             entitySelector = new CachingEntitySelector(entitySelector, resolvedCacheType,
-                    resolvedSelectionOrder == SelectionOrder.RANDOM);
+                    resolvedSelectionOrder.toRandomSelectionBoolean());
         }
         return entitySelector;
     }

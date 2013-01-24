@@ -101,7 +101,7 @@ public class SubChainSelectorConfig extends SelectorConfig {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.ORIGINAL);
-        return new DefaultSubChainSelector(valueSelector, inheritedSelectionOrder == SelectionOrder.RANDOM,
+        return new DefaultSubChainSelector(valueSelector, inheritedSelectionOrder.toRandomSelectionBoolean(),
                 minimumSubChainSize == null ? DEFAULT_MINIMUM_SUB_CHAIN_SIZE : minimumSubChainSize,
                 maximumSubChainSize == null ? DEFAULT_MAXIMUM_SUB_CHAIN_SIZE : maximumSubChainSize);
     }
