@@ -100,30 +100,44 @@ public class ValueSelectorConfig extends SelectorConfig {
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         PlanningVariableDescriptor variableDescriptor = fetchVariableDescriptor(entityDescriptor);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
-        minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
                 inheritedSelectionOrder);
 
+        validateCacheTypeVersusSelectionOrder(resolvedCacheType, resolvedSelectionOrder);
+//        validateSorting(resolvedSelectionOrder);
+        validateProbability(resolvedSelectionOrder);
+
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         ValueSelector valueSelector = buildBaseValueSelector(environmentMode, variableDescriptor,
-                minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
+                SelectionCacheType.max(minimumCacheType, resolvedCacheType),
+                resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
-        // TODO applyFiltering
-        // TODO applySorting
+//        valueSelector = applyFiltering(variableDescriptor, resolvedCacheType, resolvedSelectionOrder, valueSelector);
+//        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         return valueSelector;
     }
 
+    private void validateProbability(SelectionOrder resolvedSelectionOrder) {
+        if (probabilityWeightFactoryClass != null
+                && resolvedSelectionOrder != SelectionOrder.PROBABILISTIC) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") with probabilityWeightFactoryClass (" + probabilityWeightFactoryClass
+                    + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                    + ") that is not " + SelectionOrder.PROBABILISTIC + ".");
+        }
+    }
+
     private ValueSelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             ValueSelector valueSelector) {
-        if (probabilityWeightFactoryClass != null) {
-            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
+        if (resolvedSelectionOrder == SelectionOrder.PROBABILISTIC) {
+            if (probabilityWeightFactoryClass == null) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                        + ") with probabilityWeightFactoryClass ("
-                        + probabilityWeightFactoryClass + ") has a non-random resolvedSelectionOrder ("
-                        + resolvedSelectionOrder + ").");
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") needs a probabilityWeightFactoryClass ("
+                        + probabilityWeightFactoryClass + ").");
             }
             SelectionProbabilityWeightFactory probabilityWeightFactory = ConfigUtils.newInstance(this,
                     "probabilityWeightFactoryClass", probabilityWeightFactoryClass);

@@ -16,9 +16,11 @@
 
 package org.drools.planner.config.heuristic.selector;
 
+import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
+import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 
 /**
  * General superclass for {@link MoveSelectorConfig}, {@link EntitySelectorConfig} and {@link ValueSelectorConfig}.
@@ -28,6 +30,31 @@ public abstract class SelectorConfig {
     // ************************************************************************
     // Builder methods
     // ************************************************************************
+
+    protected void validateCacheTypeVersusSelectionOrder(
+            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
+        switch (resolvedSelectionOrder) {
+            case INHERIT:
+                throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") which should have been resolved by now.");
+            case ORIGINAL:
+            case RANDOM:
+                break;
+            case SORTED:
+            case SHUFFLED:
+            case PROBABILISTIC:
+                if (resolvedCacheType.isNotCached()) {
+                    throw new IllegalArgumentException("The moveSelectorConfig (" + this
+                            + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                            + ") which does not support the resolvedCacheType (" + resolvedCacheType + ").");
+                }
+                break;
+            default:
+                throw new IllegalStateException("The resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") is not implemented.");
+        }
+    }
 
     protected void inherit(SelectorConfig inheritedConfig) {
     }

@@ -124,7 +124,7 @@
     <title>General <literal>Selector</literal> features</title>
 
     <section>
-      <title><literal>CacheType</literal>: Create moves in advance or Just In Time</title>
+      <title><literal>CacheType</literal>: Create moves ahead of time or Just In Time</title>
 
       <para>A <literal>Selector</literal>'s <literal>cacheType</literal> determines when a selection (such as a
       <literal>Move</literal>, an entity, a value, ...) is created and how long it lives.</para>
@@ -181,19 +181,19 @@
     </section>
 
     <section>
-      <title>SelectionOrder: original, random or shuffled selection</title>
+      <title>SelectionOrder: original, sorted, random, shuffled or probabilistic</title>
 
       <para>A <literal>Selector</literal>'s <literal>selectionOrder</literal> determines the order in which the
       selections (such as <literal>Move</literal>s, entities, values, ...) are iterated. An optimization algorithm will
       usually only iterate through a subset of its <literal>MoveSelector</literal>'s selections, starting from the
-      start, so the <literal>selectionOrder</literal> is critical to decide which <literal>Move</literal>s are
+      start, so the <literal>selectionOrder</literal> is critical to decide which <literal>Move</literal>s are actually
       evaluated.</para>
 
       <para>Almost every <literal>Selector</literal> supports setting a <literal>selectionOrder</literal>:</para>
 
       <programlisting language="xml">    &lt;changeMoveSelector&gt;
       ...
-      &lt;selectionOrder&gt;ORIGINAL&lt;/selectionOrder&gt;
+      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
       ...
     &lt;/changeMoveSelector&gt;</programlisting>
 
@@ -201,36 +201,65 @@
 
       <itemizedlist>
         <listitem>
-          <para><literal>ORIGINAL</literal>: Select the selections (<literal>Move</literal>s, ...) in default order.
-          Each selection will be selected only once.</para>
+          <para><literal>ORIGINAL</literal>: Select the selections (<literal>Move</literal>s, entities, values, ...) in
+          default order. Each selection will be selected only once.</para>
 
           <itemizedlist>
             <listitem>
-              <para>For example: A0, A1, A2, A3, ..., B0, B1, B2, B3, ...</para>
+              <para>For example: A0, A1, A2, A3, ..., B0, B1, B2, B3, ..., C0, C1, C2, C3, ...</para>
             </listitem>
           </itemizedlist>
         </listitem>
 
         <listitem>
-          <para>RANDOM (default): Select the selections (<literal>Move</literal>s, ...) in non-shuffled random order. A
-          selection might be selected multiple times. This scales up well in performance.</para>
+          <para>SORTED: Select the selections (<literal>Move</literal>s, entities, values, ...) in sorted order. Each
+          selection will be selected only once. Requires <literal>cacheType &gt;= STEP</literal>. Mostly used on an
+          <literal>entitySelector</literal> or <literal>valueSelector</literal> for construction heuristics. See <link
+          linkend="sortedSelection">sorted selection</link>.</para>
 
           <itemizedlist>
             <listitem>
-              <para>For example: C2, A3, C2, B1, A0, C0, ...</para>
+              <para>For example: A0, B0, C0, ..., A2, B2, C2, ..., A1, B1, C1, ...</para>
             </listitem>
           </itemizedlist>
         </listitem>
 
         <listitem>
-          <para>SHUFFLED: Select the selections (<literal>Move</literal>s, ...) in shuffled random order. Each selection
-          will be selected only once. Requires <literal>cacheType &gt;= STEP</literal>. This scales up badly in
-          performance because a random number is generated for each element, even if it's not selected (which is the
-          grand majority when scaling up).</para>
+          <para>RANDOM (default): Select the selections (<literal>Move</literal>s, entities, values, ...) in
+          non-shuffled random order. A selection might be selected multiple times. This scales up well in performance
+          because it does not require caching.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: C2, A3, B1, C2, A0, C0, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>SHUFFLED: Select the selections (<literal>Move</literal>s, entities, values, ...) in shuffled random
+          order. Each selection will be selected only once. Requires <literal>cacheType &gt;= STEP</literal>. This
+          scales up badly in performance, not just because it requires caching, but also because a random number is
+          generated for each element, even if it's not selected (which is the grand majority when scaling up).</para>
 
           <itemizedlist>
             <listitem>
               <para>For example: C2, A3, B1, A0, C0, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>PROBABILISTIC: Select the selections (<literal>Move</literal>s, entities, values, ...) in random order,
+          based on the selection probability of each element. A selection with a higher probability has a higher chance
+          to be selected than elements with a lower probability. A selection might be selected multiple times. Requires
+          <literal>cacheType &gt;= STEP</literal>. Mostly used on an <literal>entitySelector</literal> or
+          <literal>valueSelector</literal>. See <link linkend="probabilisticSelection">probabilistic
+          selection</link>.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: B1, B1, A1, B2, B1, C2, B1, B1, ...</para>
             </listitem>
           </itemizedlist>
         </listitem>
@@ -292,7 +321,7 @@
       &lt;swapMoveSelector/&gt;
     &lt;/unionMoveSelector&gt;</programlisting>
 
-        <para>Here's how it works. At the start of the phase (or step depending on the <literal>cacheType</literal>),
+        <para>Here's how it works: At the start of the phase (or step depending on the <literal>cacheType</literal>),
         all moves are created (1) and cached (2). When <literal>MoveSelector.iterator()</literal> is called, the moves
         are shuffled (3). When <literal>Iterator&lt;Move&gt;.next()</literal> is called, the next element in the
         shuffled list is returned (4):</para>
@@ -449,6 +478,8 @@
         <para>You 'll also need to configure it (unless it's annotated applied for this optimization algorithm):</para>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
       &lt;sorterComparatorClass&gt;...CloudProcessDifficultyComparator&lt;/sorterComparatorClass&gt;
       &lt;sorterOrder&gt;DESCENDING&lt;/sorterOrder&gt;
     &lt;/entitySelector&gt;</programlisting>
@@ -502,6 +533,8 @@
         algorithm):</para>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
       &lt;sorterWeightFactoryClass&gt;...QueenDifficultyWeightFactory&lt;/sorterWeightFactoryClass&gt;
       &lt;sorterOrder&gt;DESCENDING&lt;/sorterOrder&gt;
     &lt;/entitySelector&gt;</programlisting>
@@ -519,13 +552,15 @@
 }</programlisting>
 
         <programlisting language="xml">    &lt;entitySelector&gt;
-      &lt;sorterClass&gt;...EntitySorter&lt;/sorterClass&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
+      &lt;sorterClass&gt;...MyEntitySorter&lt;/sorterClass&gt;
     &lt;/entitySelector&gt;</programlisting>
       </section>
     </section>
 
-    <section xml:id="probabilitySelection">
-      <title>Probability selection</title>
+    <section xml:id="probabilisticSelection">
+      <title>Probabilistic selection</title>
 
       <para>TODO Already implemented, but experiments needed to prove usefulness.</para>
     </section>

@@ -154,12 +154,16 @@ public class EntitySelectorConfig extends SelectorConfig {
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
-        minimumCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
+
+        validateCacheTypeVersusSelectionOrder(resolvedCacheType, resolvedSelectionOrder);
+        validateSorting(resolvedSelectionOrder);
+        validateProbability(resolvedSelectionOrder);
 
         // baseEntitySelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         EntitySelector entitySelector = buildBaseEntitySelector(environmentMode, entityDescriptor,
-                minimumCacheType, resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
+                SelectionCacheType.max(minimumCacheType, resolvedCacheType),
+                resolvedCacheType.isCached() ? SelectionOrder.ORIGINAL : resolvedSelectionOrder);
 
         entitySelector = applyFiltering(entityDescriptor, resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector);
@@ -169,11 +173,15 @@ public class EntitySelectorConfig extends SelectorConfig {
         return entitySelector;
     }
 
+    private boolean hasFiltering(PlanningEntityDescriptor entityDescriptor) {
+        return !CollectionUtils.isEmpty(filterClassList)
+                || entityDescriptor.hasMovableEntitySelectionFilter();
+    }
+
     private EntitySelector applyFiltering(PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             EntitySelector entitySelector) {
-        if (!CollectionUtils.isEmpty(filterClassList)
-                || entityDescriptor.hasMovableEntitySelectionFilter()) {
+        if (hasFiltering(entityDescriptor)) {
             List<SelectionFilter> filterList = new ArrayList<SelectionFilter>(
                     filterClassList == null ? 1 : filterClassList.size() + 1);
             if (filterClassList != null) {
@@ -189,85 +197,86 @@ public class EntitySelectorConfig extends SelectorConfig {
         return entitySelector;
     }
 
-    private EntitySelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
-            EntitySelector entitySelector) {
+    private void validateSorting(SelectionOrder resolvedSelectionOrder) {
+        if ((sorterComparatorClass != null || sorterWeightFactoryClass != null
+                || sorterOrder != null || sorterClass != null)
+                && resolvedSelectionOrder != SelectionOrder.SORTED) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") with sorterComparatorClass ("  + sorterComparatorClass
+                    + ") and sorterWeightFactoryClass ("  + sorterWeightFactoryClass
+                    + ") and sorterOrder ("  + sorterOrder
+                    + ") and sorterClass ("  + sorterClass
+                    + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                    + ") that is not " + SelectionOrder.SORTED + ".");
+        }
         if (sorterComparatorClass != null && sorterWeightFactoryClass != null) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                    + ") has both an sorterComparatorClass (" + sorterComparatorClass
+                    + ") has both a sorterComparatorClass (" + sorterComparatorClass
                     + ") and a sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
         }
         if (sorterComparatorClass != null && sorterClass != null) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                    + ") has both an sorterComparatorClass (" + sorterComparatorClass
+                    + ") has both a sorterComparatorClass (" + sorterComparatorClass
                     + ") and a sorterClass (" + sorterClass + ").");
         }
         if (sorterWeightFactoryClass != null && sorterClass != null) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                    + ") has both an sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                    + ") has both a sorterWeightFactoryClass (" + sorterWeightFactoryClass
                     + ") and a sorterClass (" + sorterClass + ").");
         }
-        if (sorterComparatorClass != null || sorterWeightFactoryClass != null || sorterClass != null) {
-            SelectionSorter sorter = null;
+        if (sorterClass != null && sorterOrder != null) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") with sorterClass (" + sorterClass
+                    + ") has a non-null sorterOrder (" + sorterOrder + ").");
+        }
+    }
+
+    private EntitySelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            EntitySelector entitySelector) {
+        if (resolvedSelectionOrder == SelectionOrder.SORTED) {
+            SelectionSorter sorter;
             if (sorterComparatorClass != null) {
-                if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
-                    throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                            + ") with sorterComparatorClass (" + sorterComparatorClass
-                            + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
-                            + ") that is not " + SelectionOrder.ORIGINAL + ".");
-                }
                 Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
                         "sorterComparatorClass", sorterComparatorClass);
                 sorter = new ComparatorSelectionSorter(sorterComparator,
                         SelectionSorterOrder.resolve(sorterOrder));
-            }
-            if (sorterWeightFactoryClass != null) {
-                if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
-                    throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                            + ") with sorterWeightFactoryClass (" + sorterWeightFactoryClass
-                            + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
-                            + ") that is not " + SelectionOrder.ORIGINAL + ".");
-                }
+            } else if (sorterWeightFactoryClass != null) {
                 SelectionSorterWeightFactory sorterWeightFactory = ConfigUtils.newInstance(this,
                         "sorterWeightFactoryClass", sorterWeightFactoryClass);
                 sorter = new WeightFactorySelectionSorter(sorterWeightFactory,
                         SelectionSorterOrder.resolve(sorterOrder));
-            }
-            if (sorterClass != null) {
-                if (sorterOrder != null) {
-                    throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                            + ") has both an sorterClass (" + sorterClass
-                            + ") but the sorterOrder (" + sorterOrder + ") should be null.");
-                }
-                if (resolvedSelectionOrder != SelectionOrder.ORIGINAL) {
-                    throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                            + ") with sorterClass (" + sorterClass
-                            + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
-                            + ") that is not " + SelectionOrder.ORIGINAL + ".");
-                }
+            } else if (sorterClass != null) {
                 sorter = ConfigUtils.newInstance(this, "sorterClass", sorterClass);
+            } else {
+                throw new IllegalArgumentException("The sorterClass (" + this
+                        + ") with resolvedSelectionOrder ("  + resolvedSelectionOrder
+                        + ") needs a sorterComparatorClass (" + sorterComparatorClass
+                        + ") or a sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                        + ") or a sorterClass (" + sorterClass + ").");
             }
             entitySelector = new SortingEntitySelector(entitySelector, resolvedCacheType, sorter);
-        } else {
-            if (sorterOrder != null) {
-                if (sorterOrder != null) {
-                    throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                            + ") has a sorterOrder (" + sorterOrder
-                            + "), but no sorterComparatorClass (" + sorterComparatorClass
-                            + ") or sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
-                }
-            }
         }
         return entitySelector;
     }
 
+    private void validateProbability(SelectionOrder resolvedSelectionOrder) {
+        if (probabilityWeightFactoryClass != null
+                && resolvedSelectionOrder != SelectionOrder.PROBABILISTIC) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") with probabilityWeightFactoryClass (" + probabilityWeightFactoryClass
+                    + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                    + ") that is not " + SelectionOrder.PROBABILISTIC + ".");
+        }
+    }
+
     private EntitySelector applyProbability(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             EntitySelector entitySelector) {
-        if (probabilityWeightFactoryClass != null) {
-            if (resolvedSelectionOrder != SelectionOrder.RANDOM) {
+        if (resolvedSelectionOrder == SelectionOrder.PROBABILISTIC) {
+            if (probabilityWeightFactoryClass == null) {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") with probabilityWeightFactoryClass ("
-                        + probabilityWeightFactoryClass + ") has a resolvedSelectionOrder ("
-                        + resolvedSelectionOrder + ") that is not " + SelectionOrder.RANDOM + ".");
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") needs a probabilityWeightFactoryClass ("
+                        + probabilityWeightFactoryClass + ").");
             }
             SelectionProbabilityWeightFactory probabilityWeightFactory = ConfigUtils.newInstance(this,
                     "probabilityWeightFactoryClass", probabilityWeightFactoryClass);
