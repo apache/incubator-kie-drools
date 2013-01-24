@@ -163,7 +163,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         // baseEntitySelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         EntitySelector entitySelector = buildBaseEntitySelector(environmentMode, entityDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean());
+                determineBaseRandomSelection(resolvedCacheType, resolvedSelectionOrder));
 
         entitySelector = applyFiltering(entityDescriptor, resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector);
@@ -171,6 +171,29 @@ public class EntitySelectorConfig extends SelectorConfig {
         entitySelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         return entitySelector;
+    }
+
+    private boolean determineBaseRandomSelection(
+            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
+        return resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean();
+    }
+
+    private EntitySelector buildBaseEntitySelector(
+            EnvironmentMode environmentMode, PlanningEntityDescriptor entityDescriptor,
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
+        // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
+        if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
+            // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
+            minimumCacheType = SelectionCacheType.STEP;
+        }
+        if (minimumCacheType == SelectionCacheType.SOLVER) {
+            // TODO Solver cached entities are not compatible with DroolsScoreCalculator
+            // because between phases the entities get cloned and the WorkingMemory contains those clones afterwards
+            // https://issues.jboss.org/browse/JBRULES-3557
+            throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
+                    + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
+        }
+        return new FromSolutionEntitySelector(entityDescriptor, minimumCacheType, randomSelection);
     }
 
     private boolean hasFiltering(PlanningEntityDescriptor entityDescriptor) {
@@ -328,24 +351,6 @@ public class EntitySelectorConfig extends SelectorConfig {
             entityDescriptor = planningEntityDescriptors.iterator().next();
         }
         return entityDescriptor;
-    }
-
-    private EntitySelector buildBaseEntitySelector(
-            EnvironmentMode environmentMode, PlanningEntityDescriptor entityDescriptor,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
-        if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-            // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
-            minimumCacheType = SelectionCacheType.STEP;
-        }
-        if (minimumCacheType == SelectionCacheType.SOLVER) {
-            // TODO Solver cached entities are not compatible with DroolsScoreCalculator
-            // because between phases the entities get cloned and the WorkingMemory contains those clones afterwards
-            // https://issues.jboss.org/browse/JBRULES-3557
-            throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
-                    + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
-        }
-        return new FromSolutionEntitySelector(entityDescriptor, minimumCacheType, randomSelection);
     }
 
     public void inherit(EntitySelectorConfig inheritedConfig) {

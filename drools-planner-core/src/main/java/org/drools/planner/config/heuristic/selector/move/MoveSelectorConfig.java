@@ -178,7 +178,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean());
+                determineBaseRandomSelection(resolvedCacheType, resolvedSelectionOrder));
 
         moveSelector = applyFiltering(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, moveSelector);
@@ -187,6 +187,26 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         moveSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         return moveSelector;
     }
+
+    private boolean determineBaseRandomSelection(
+            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
+        return resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean();
+    }
+
+    /**
+     *
+     * @param environmentMode never null
+     * @param solutionDescriptor never null
+     * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
+     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     * and less would be pointless.
+     * @param randomSelection true is equivalent to {@link SelectionOrder#RANDOM},
+     * false is equivalent to {@link SelectionOrder#ORIGINAL}
+     * @return never null
+     */
+    protected abstract MoveSelector buildBaseMoveSelector(
+            EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            SelectionCacheType minimumCacheType, boolean randomSelection);
 
     private boolean hasFiltering() {
         return !CollectionUtils.isEmpty(filterClassList);
@@ -309,21 +329,6 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         }
         return moveSelector;
     }
-
-    /**
-     *
-     * @param environmentMode never null
-     * @param solutionDescriptor never null
-     * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
-     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
-     * and less would be pointless.
-     * @param randomSelection true is equivalent to {@link SelectionOrder#RANDOM},
-     * false is equivalent to {@link SelectionOrder#ORIGINAL}
-     * @return never null
-     */
-    protected abstract MoveSelector buildBaseMoveSelector(
-            EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            SelectionCacheType minimumCacheType, boolean randomSelection);
 
     protected void inherit(MoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

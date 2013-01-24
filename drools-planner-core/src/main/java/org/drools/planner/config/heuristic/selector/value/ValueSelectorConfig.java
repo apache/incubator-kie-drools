@@ -110,7 +110,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         ValueSelector valueSelector = buildBaseValueSelector(environmentMode, variableDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean());
+                determineBaseRandomSelection(resolvedCacheType, resolvedSelectionOrder));
 
 //        valueSelector = applyFiltering(variableDescriptor, resolvedCacheType, resolvedSelectionOrder, valueSelector);
 //        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
@@ -118,6 +118,29 @@ public class ValueSelectorConfig extends SelectorConfig {
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         return valueSelector;
+    }
+
+    private boolean determineBaseRandomSelection(
+            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
+        return resolvedCacheType.isCached() ? false : resolvedSelectionOrder.toRandomSelectionBoolean();
+    }
+
+    private ValueSelector buildBaseValueSelector(
+            EnvironmentMode environmentMode, PlanningVariableDescriptor variableDescriptor,
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
+        // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
+        if (variableDescriptor.isPlanningValuesCacheable()) {
+            if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
+                // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
+                minimumCacheType = SelectionCacheType.PHASE;
+            }
+        } else {
+            if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
+                // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
+                minimumCacheType = SelectionCacheType.STEP;
+            }
+        }
+        return new FromSolutionPropertyValueSelector(variableDescriptor, minimumCacheType, randomSelection);
     }
 
     private void validateProbability(SelectionOrder resolvedSelectionOrder) {
@@ -191,24 +214,6 @@ public class ValueSelectorConfig extends SelectorConfig {
             variableDescriptor = planningVariableDescriptors.iterator().next();
         }
         return variableDescriptor;
-    }
-
-    private ValueSelector buildBaseValueSelector(
-            EnvironmentMode environmentMode, PlanningVariableDescriptor variableDescriptor,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
-        // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
-        if (variableDescriptor.isPlanningValuesCacheable()) {
-            if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
-                // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
-                minimumCacheType = SelectionCacheType.PHASE;
-            }
-        } else {
-            if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-                // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
-                minimumCacheType = SelectionCacheType.STEP;
-            }
-        }
-        return new FromSolutionPropertyValueSelector(variableDescriptor, minimumCacheType, randomSelection);
     }
 
     public void inherit(ValueSelectorConfig inheritedConfig) {
