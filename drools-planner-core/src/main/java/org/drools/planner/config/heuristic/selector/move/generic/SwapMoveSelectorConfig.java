@@ -16,13 +16,18 @@
 
 package org.drools.planner.config.heuristic.selector.move.generic;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
+import org.drools.planner.config.util.ConfigUtils;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
@@ -37,6 +42,9 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
     private EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
     @XStreamAlias("secondaryEntitySelector")
     private EntitySelectorConfig secondaryEntitySelectorConfig = null;
+
+    @XStreamImplicit(itemFieldName = "variableNameInclude")
+    private List<String> variableNameIncludeList = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -54,6 +62,14 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         this.secondaryEntitySelectorConfig = secondaryEntitySelectorConfig;
     }
 
+    public List<String> getVariableNameIncludeList() {
+        return variableNameIncludeList;
+    }
+
+    public void setVariableNameIncludeList(List<String> variableNameIncludeList) {
+        this.variableNameIncludeList = variableNameIncludeList;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -68,10 +84,36 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
                 environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        Collection<PlanningVariableDescriptor> variableDescriptors = leftEntitySelector.getEntityDescriptor()
-                .getPlanningVariableDescriptors();
+        Collection<PlanningVariableDescriptor> variableDescriptors = determineVariableDescriptors(
+                leftEntitySelector.getEntityDescriptor());
         return new SwapMoveSelector(leftEntitySelector, rightEntitySelector, variableDescriptors,
                 randomSelection);
+    }
+
+    private Collection<PlanningVariableDescriptor> determineVariableDescriptors(
+            PlanningEntityDescriptor entityDescriptor) {
+        Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getPlanningVariableDescriptors();
+        if (variableNameIncludeList == null) {
+            return variableDescriptors;
+        }
+        List<PlanningVariableDescriptor> resolvedVariableDescriptors
+                = new ArrayList<PlanningVariableDescriptor>(variableDescriptors.size());
+        for (String variableNameInclude : variableNameIncludeList) {
+            boolean found = false;
+            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+                if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
+                    resolvedVariableDescriptors.add(variableDescriptor);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new IllegalStateException("The selectorConfig (" + this
+                        + ") has a variableNameInclude (" + variableNameInclude
+                        + ") which does not exist in the variableDescriptors (" + variableDescriptors + ").");
+            }
+        }
+        return resolvedVariableDescriptors;
     }
 
     public void inherit(SwapMoveSelectorConfig inheritedConfig) {
@@ -86,6 +128,8 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         } else if (inheritedConfig.getSecondaryEntitySelectorConfig() != null) {
             secondaryEntitySelectorConfig.inherit(inheritedConfig.getSecondaryEntitySelectorConfig());
         }
+        variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
+                variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
     }
 
     @Override

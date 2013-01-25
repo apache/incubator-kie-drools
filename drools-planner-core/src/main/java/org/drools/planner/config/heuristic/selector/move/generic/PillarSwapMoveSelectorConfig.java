@@ -16,13 +16,18 @@
 
 package org.drools.planner.config.heuristic.selector.move.generic;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
+import org.drools.planner.config.util.ConfigUtils;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
@@ -37,6 +42,9 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
     private PillarSelectorConfig pillarSelectorConfig = new PillarSelectorConfig();
     @XStreamAlias("secondaryPillarSelector")
     private PillarSelectorConfig secondaryPillarSelectorConfig = null;
+
+    @XStreamImplicit(itemFieldName = "variableNameInclude")
+    private List<String> variableNameIncludeList = null;
 
     public PillarSelectorConfig getPillarSelectorConfig() {
         return pillarSelectorConfig;
@@ -54,6 +62,14 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
         this.secondaryPillarSelectorConfig = secondaryPillarSelectorConfig;
     }
 
+    public List<String> getVariableNameIncludeList() {
+        return variableNameIncludeList;
+    }
+
+    public void setVariableNameIncludeList(List<String> variableNameIncludeList) {
+        this.variableNameIncludeList = variableNameIncludeList;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -68,10 +84,36 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
         PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(
                 environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        Collection<PlanningVariableDescriptor> variableDescriptors = leftPillarSelector.getEntityDescriptor()
-                .getPlanningVariableDescriptors();
+        Collection<PlanningVariableDescriptor> variableDescriptors = determineVariableDescriptors(
+                leftPillarSelector.getEntityDescriptor());
         return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptors,
                 randomSelection);
+    }
+
+    private Collection<PlanningVariableDescriptor> determineVariableDescriptors(
+            PlanningEntityDescriptor entityDescriptor) {
+        Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getPlanningVariableDescriptors();
+        if (variableNameIncludeList == null) {
+            return variableDescriptors;
+        }
+        List<PlanningVariableDescriptor> resolvedVariableDescriptors
+                = new ArrayList<PlanningVariableDescriptor>(variableDescriptors.size());
+        for (String variableNameInclude : variableNameIncludeList) {
+            boolean found = false;
+            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+                if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
+                    resolvedVariableDescriptors.add(variableDescriptor);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new IllegalStateException("The selectorConfig (" + this
+                        + ") has a variableNameInclude (" + variableNameInclude
+                        + ") which does not exist in the variableDescriptors (" + variableDescriptors + ").");
+            }
+        }
+        return resolvedVariableDescriptors;
     }
 
     public void inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
@@ -86,6 +128,8 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
         } else if (inheritedConfig.getSecondaryPillarSelectorConfig() != null) {
             secondaryPillarSelectorConfig.inherit(inheritedConfig.getSecondaryPillarSelectorConfig());
         }
+        variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
+                variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
     }
 
     @Override

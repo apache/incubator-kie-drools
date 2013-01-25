@@ -590,7 +590,7 @@
   <section>
     <title>Generic MoveSelectors</title>
 
-    <section>
+    <section xml:id="changeMoveSelector">
       <title><literal>changeMoveSelector</literal></title>
 
       <para>For 1 planning variable, the <literal>ChangeMove</literal> selects 1 planning entity and 1 planning value
@@ -629,11 +629,17 @@
       </important>
     </section>
 
-    <section>
+    <section xml:id="swapMoveSelector">
       <title>swapMoveSelector</title>
 
       <para>The <literal>SwapMove</literal> selects 2 different planning entities and swaps the planning values of all
       their planning variables.</para>
+
+      <para>Although a <literal>SwapMove</literal> on a single variable is essentially just 2
+      <literal>ChangeMove</literal>s, it's often the winning step where the first of the 2
+      <literal>ChangeMove</literal>s would not be the winning step because it leave the solution in a state with broken
+      hard constraints. For example: swapping the room of 2 lectures doesn't bring the solution in a intermediate state
+      where both lectures are in the same room which breaks a hard constraint.</para>
 
       <para>Simplest configuration:</para>
 
@@ -649,19 +655,19 @@
       &lt;secondaryEntitySelector&gt;
         ...
       &lt;/secondaryEntitySelector&gt;
+      &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
+      &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
     &lt;/swapMoveSelector&gt;</programlisting>
 
       <para>The <literal>secondaryEntitySelector</literal> is rarely needed: if it is not specified, entities from the
       same <literal>entitySelector</literal> are swapped.</para>
 
-      <para>Although a <literal>SwapMove</literal> on a single variable is essentially just 2
-      <literal>ChangeMove</literal>s, it's often the winning step where the first of the 2
-      <literal>ChangeMove</literal>s would not be the winning step because it leave the solution in a state with broken
-      hard constraints. For example: swapping the room of 2 lectures doesn't bring the solution in a intermediate state
-      where both lectures are in the same room which breaks a hard constraint.</para>
+      <para>If one or more <literal>variableNameInclude</literal> properties are specified, not all planning variables
+      will be swapped, but only those specified. For example for course scheduling, specifying
+      <literal>variableNameInclude</literal> room will make it only swap room, not period.</para>
     </section>
 
-    <section>
+    <section xml:id="pillarSwapMoveSelector">
       <title>pillarSwapMoveSelector</title>
 
       <para>A <emphasis>pillar</emphasis> is a set of planning entities which have the same planning value(s) for each
@@ -686,19 +692,23 @@
           ...
         &lt;/entitySelector&gt;
       &lt;/secondaryPillarSelector&gt;
+      &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
+      &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
     &lt;/pillarSwapMoveSelector&gt;</programlisting>
 
       <para>The <literal>secondaryPillarSelector</literal> is rarely needed: if it is not specified, entities from the
       same <literal>pillarSelector</literal> are swapped.</para>
+
+      <para>The other properties are explained in <link linkend="swapMoveSelector">swapMoveSelector</link>.</para>
     </section>
 
-    <section>
+    <section xml:id="subChainChangeMoveSelector">
       <title>subChainChangeMoveSelector</title>
 
       <para>TODO</para>
     </section>
 
-    <section>
+    <section xml:id="subChainSwapMoveSelector">
       <title>subChainSwapMoveSelector</title>
 
       <para>TODO</para>
