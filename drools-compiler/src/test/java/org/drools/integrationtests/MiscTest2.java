@@ -952,7 +952,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
     @Test @Ignore("fixed with mvel 2.1.4")
-    public void testMvel() {
+    public void testMvelResolvingGenericVariableDeclaredInParentClass() {
         // JBRULES-3684
         String str =
                 "import org.drools.integrationtests.MiscTest2.AbstractBase\n" +
@@ -975,5 +975,19 @@ public class MiscTest2 extends CommonTestMethodBase {
 
     public static class StringConcrete extends AbstractBase<String> {
         public StringConcrete() { this.foo = new String(); }
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testMvelParsingParenthesisInString() {
+        // JBRULES-3698
+        String str =
+                "rule \"Test Rule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "String s = new String(\"write something with ) a paren\");\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
     }
 }
