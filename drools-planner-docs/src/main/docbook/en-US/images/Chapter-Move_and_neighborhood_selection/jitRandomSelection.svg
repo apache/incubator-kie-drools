@@ -282,7 +282,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -820,5 +820,5 @@
            x="320.11249"
            y="12.45747"
            style="font-size:12.0707407px;text-align:start;text-anchor:start;fill:#a40000" /></flowRegion><flowPara
-         id="flowPara3532">Move C2 was never cached</flowPara></flowRoot>  </g>
+         id="flowPara3532">Move C2 is never cached</flowPara></flowRoot>  </g>
 </svg>
