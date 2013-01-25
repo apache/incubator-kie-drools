@@ -33,11 +33,7 @@ public class TestdataSolution extends TestdataObject implements Solution<SimpleS
     public static SolutionDescriptor buildSolutionDescriptor() {
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(TestdataSolution.class);
         solutionDescriptor.processAnnotations();
-        PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
-                solutionDescriptor, TestdataEntity.class);
-        entityDescriptor.processAnnotations();
-        solutionDescriptor.addPlanningEntityDescriptor(
-                entityDescriptor);
+        solutionDescriptor.addPlanningEntityDescriptor(TestdataEntity.buildEntityDescriptor(solutionDescriptor));
         return solutionDescriptor;
     }
 

@@ -1,4 +1,4 @@
-package org.drools.planner.core.testdata.domain;
+package org.drools.planner.core.testdata.domain.chained;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
@@ -6,6 +6,7 @@ import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.testdata.domain.TestdataObject;
 
 import static org.mockito.Mockito.mock;
 
@@ -13,8 +14,12 @@ import static org.mockito.Mockito.mock;
 public class TestdataChainedEntity extends TestdataObject implements TestdataChainedObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
+        return buildEntityDescriptor(mock(SolutionDescriptor.class));
+    }
+
+    public static PlanningEntityDescriptor buildEntityDescriptor(SolutionDescriptor solutionDescriptor) {
         PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
-                mock(SolutionDescriptor.class), TestdataChainedEntity.class);
+                solutionDescriptor, TestdataChainedEntity.class);
         entityDescriptor.processAnnotations();
         return entityDescriptor;
     }

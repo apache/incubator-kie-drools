@@ -24,11 +24,10 @@ import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChain;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
-import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedAnchor;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class SubChainReversingSwapMoveTest {

@@ -24,11 +24,10 @@ import org.drools.planner.core.domain.solution.cloner.FieldAccessingSolutionClon
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
-import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
-import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
-import org.drools.planner.core.testdata.domain.TestdataChainedSolution;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedAnchor;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedSolution;
 import org.drools.planner.core.testdata.domain.TestdataObject;
-import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.junit.Test;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;

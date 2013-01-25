@@ -32,8 +32,8 @@ import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
-import org.drools.planner.core.testdata.domain.TestdataChainedObject;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedObject;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.testdata.domain;
+package org.drools.planner.core.testdata.domain.chained;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,6 +25,8 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.testdata.domain.TestdataEntity;
+import org.drools.planner.core.testdata.domain.TestdataObject;
 
 import static org.mockito.Mockito.mock;
 
@@ -35,11 +36,7 @@ public class TestdataChainedSolution extends TestdataObject implements Solution<
     public static SolutionDescriptor buildSolutionDescriptor() {
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(TestdataChainedSolution.class);
         solutionDescriptor.processAnnotations();
-        PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
-                solutionDescriptor, TestdataChainedEntity.class);
-        entityDescriptor.processAnnotations();
-        solutionDescriptor.addPlanningEntityDescriptor(
-                entityDescriptor);
+        solutionDescriptor.addPlanningEntityDescriptor(TestdataChainedEntity.buildEntityDescriptor(solutionDescriptor));
         return solutionDescriptor;
     }
 

@@ -27,8 +27,8 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
-import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
-import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedAnchor;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
 import org.junit.Test;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;

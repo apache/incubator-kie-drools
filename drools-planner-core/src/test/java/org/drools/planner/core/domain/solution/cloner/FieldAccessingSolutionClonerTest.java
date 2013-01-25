@@ -16,15 +16,14 @@
 
 package org.drools.planner.core.domain.solution.cloner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
-import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
-import org.drools.planner.core.testdata.domain.TestdataChainedObject;
-import org.drools.planner.core.testdata.domain.TestdataChainedSolution;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedAnchor;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedObject;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedSolution;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.drools.planner.core.testdata.domain.TestdataValue;
