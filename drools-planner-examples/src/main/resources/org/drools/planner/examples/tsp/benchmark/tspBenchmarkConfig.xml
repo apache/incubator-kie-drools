@@ -40,17 +40,28 @@
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
           </changeMoveSelector>
-          <swapMoveSelector>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-          </swapMoveSelector>
+          <!--<swapMoveSelector>-->
+            <!--<cacheType>PHASE</cacheType>-->
+            <!--<selectionOrder>SHUFFLED</selectionOrder>-->
+          <!--</swapMoveSelector>-->
+          <subChainChangeMoveSelector>
+            <subChainSelector>
+              <maximumSubChainSize>40</maximumSubChainSize>
+            </subChainSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
+          <!--<subChainSwapMoveSelector>-->
+            <!--<subChainSelector>-->
+              <!--<maximumSubChainSize>40</maximumSubChainSize>-->
+            <!--</subChainSelector>-->
+            <!--<selectReversingMoveToo>true</selectReversingMoveToo>-->
+          <!--</subChainSwapMoveSelector>-->
         </unionMoveSelector>
         <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>10000</minimalAcceptedSelection>
+          <minimalAcceptedSelection>5000</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
