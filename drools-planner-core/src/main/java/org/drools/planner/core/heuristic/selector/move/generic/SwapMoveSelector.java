@@ -52,6 +52,10 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     + rightEntityDescriptor.getPlanningEntityClass() + ").");
         }
         boolean anyChained = false;
+        if (variableDescriptors.isEmpty()) {
+            throw new IllegalStateException("The selector (" + this
+                    + ")'s variableDescriptors (" + variableDescriptors + ") is empty.");
+        }
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!leftEntityDescriptor.getPlanningEntityClass().equals(
                     variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass())) {

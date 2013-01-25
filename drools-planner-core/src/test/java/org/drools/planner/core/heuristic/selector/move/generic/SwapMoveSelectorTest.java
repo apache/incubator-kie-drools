@@ -35,7 +35,7 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void originalLeftEqualsRight() {
-        EntitySelector entitySelector  = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
+        EntitySelector entitySelector  = SelectorTestUtils.mockEntitySelector(TestdataEntity.buildEntityDescriptor(),
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector,
@@ -108,7 +108,7 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void emptyOriginalLeftEqualsRight() {
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.buildEntityDescriptor());
 
         SwapMoveSelector moveSelector = new SwapMoveSelector(entitySelector, entitySelector,
                 entitySelector.getEntityDescriptor().getPlanningVariableDescriptors(), false);
@@ -174,8 +174,7 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void originalLeftUnequalsRight() {
-        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
-        when(entityDescriptor.getPlanningEntityClass()).thenReturn((Class) TestdataEntity.class);
+        PlanningEntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
 
         EntitySelector leftEntitySelector  = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
@@ -260,8 +259,7 @@ public class SwapMoveSelectorTest {
 
     @Test
     public void emptyRightOriginalLeftUnequalsRight() {
-        PlanningEntityDescriptor entityDescriptor = mock(PlanningEntityDescriptor.class);
-        when(entityDescriptor.getPlanningEntityClass()).thenReturn((Class) TestdataEntity.class);
+        PlanningEntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
 
         EntitySelector leftEntitySelector = SelectorTestUtils.mockEntitySelector(entityDescriptor,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
