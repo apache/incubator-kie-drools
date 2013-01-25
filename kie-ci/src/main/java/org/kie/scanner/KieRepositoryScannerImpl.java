@@ -18,6 +18,7 @@ import org.sonatype.aether.artifact.Artifact;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -81,6 +82,12 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return artifact != null ? buildArtifact(releaseId, artifact) : loadPomArtifact(releaseId);
     }
 
+    public KieModule loadArtifact(ReleaseId releaseId, InputStream pomXML) {
+        String artifactName = releaseId.toString();       
+        Artifact artifact = ArtifactResolver.getResolverFor(pomXML).resolveArtifact(artifactName);
+        return artifact != null ? buildArtifact(releaseId, artifact) : loadPomArtifact(releaseId);
+    }
+    
     private KieModule loadPomArtifact(ReleaseId releaseId) {
         ArtifactResolver resolver = getResolverFor(releaseId, false);
         if (resolver == null) {

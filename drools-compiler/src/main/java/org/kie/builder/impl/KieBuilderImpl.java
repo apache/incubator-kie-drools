@@ -118,7 +118,7 @@ public class KieBuilderImpl
 
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
             for (ReleaseId dep : pomModel.getDependencies()) {
-                KieModule depModule = ks.getRepository().getKieModule(dep);
+                KieModule depModule = ks.getRepository().setPOMXML(pomXml).getKieModule(dep);
                 if (depModule != null) {
                     addDependency(depModule);
                 }

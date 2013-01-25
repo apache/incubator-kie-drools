@@ -13,6 +13,8 @@ import org.kie.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ public class KieRepositoryImpl
                                                                                             DEFAULT_VERSION ) );
 
     private InternalKieScanner         internalKieScanner;
+    private byte[]                     pomXml;
 
     public void setDefaultGAV(ReleaseId releaseId) {
         this.defaultGAV.set(releaseId);
@@ -58,6 +61,11 @@ public class KieRepositoryImpl
     public void addKieModule(KieModule kieModule) {
         kieModuleRepo.store(kieModule);
         log.info( "KieModule was added:" + kieModule);
+    }
+    
+    public KieRepository setPOMXML(byte[] pomXml) {
+        this.pomXml = pomXml;
+        return this;
     }
 
     public KieModule getKieModule(ReleaseId releaseId) {
@@ -87,6 +95,9 @@ public class KieRepositoryImpl
     }
 
     private KieModule loadKieModuleFromMavenRepo(ReleaseId releaseId) {
+        if(pomXml != null) {
+            return getInternalKieScanner().loadArtifact(releaseId, new ByteArrayInputStream( pomXml ) );
+        }
         return getInternalKieScanner().loadArtifact(releaseId);
     }
 
@@ -120,6 +131,11 @@ public class KieRepositoryImpl
         }
 
         public void scanNow() {
+        }
+
+        @Override
+        public KieModule loadArtifact(ReleaseId releaseId, InputStream pomXML) {
+            return null;
         }
     }
 
