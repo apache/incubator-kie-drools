@@ -18,6 +18,7 @@ package org.drools.planner.examples.nqueens.app;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,9 +65,7 @@ public class NQueensApp extends CommonApp {
         SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
-        Set<Class<?>> planningEntityClassSet = new HashSet<Class<?>>();
-        planningEntityClassSet.add(Queen.class);
-        solverConfig.setPlanningEntityClassSet(planningEntityClassSet);
+        solverConfig.setPlanningEntityClassSet(Collections.<Class<?>>singleton(Queen.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);

@@ -46,9 +46,8 @@ public class SwapMoveSelector extends GenericMoveSelector {
         PlanningEntityDescriptor rightEntityDescriptor = rightEntitySelector.getEntityDescriptor();
         if (!leftEntityDescriptor.getPlanningEntityClass().equals(rightEntityDescriptor.getPlanningEntityClass())) {
             throw new IllegalStateException("The selector (" + this
-                    + ") has a leftEntitySelector's planningEntityClass ("
-                    + leftEntityDescriptor.getPlanningEntityClass()
-                    + ") which is not equal to the rightEntitySelector's planningEntityClass ("
+                    + ") has a leftEntitySelector's entityClass (" + leftEntityDescriptor.getPlanningEntityClass()
+                    + ") which is not equal to the rightEntitySelector's entityClass ("
                     + rightEntityDescriptor.getPlanningEntityClass() + ").");
         }
         boolean anyChained = false;
@@ -60,9 +59,9 @@ public class SwapMoveSelector extends GenericMoveSelector {
             if (!leftEntityDescriptor.getPlanningEntityClass().equals(
                     variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
-                        + ") has a variableDescriptor with a planningEntityClass ("
+                        + ") has a variableDescriptor with a entityClass ("
                         + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                        + ") which is not equal to the leftEntitySelector's planningEntityClass ("
+                        + ") which is not equal to the leftEntitySelector's entityClass ("
                         + leftEntityDescriptor.getPlanningEntityClass() + ").");
             }
             if (variableDescriptor.isChained()) {

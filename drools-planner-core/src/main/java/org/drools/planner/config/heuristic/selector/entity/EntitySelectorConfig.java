@@ -48,7 +48,7 @@ import org.drools.planner.core.heuristic.selector.entity.decorator.SortingEntity
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {
 
-    protected Class<?> planningEntityClass = null;
+    protected Class<?> entityClass = null;
 
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
@@ -63,12 +63,12 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 
-    public Class<?> getPlanningEntityClass() {
-        return planningEntityClass;
+    public Class<?> getEntityClass() {
+        return entityClass;
     }
 
-    public void setPlanningEntityClass(Class<?> planningEntityClass) {
-        this.planningEntityClass = planningEntityClass;
+    public void setEntityClass(Class<?> entityClass) {
+        this.entityClass = entityClass;
     }
 
     public SelectionCacheType getCacheType() {
@@ -151,7 +151,7 @@ public class EntitySelectorConfig extends SelectorConfig {
      */
     public EntitySelector buildEntitySelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(solutionDescriptor, planningEntityClass);
+        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(solutionDescriptor, entityClass);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
 
@@ -345,8 +345,8 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     public void inherit(EntitySelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        planningEntityClass = ConfigUtils.inheritOverwritableProperty(planningEntityClass,
-                inheritedConfig.getPlanningEntityClass());
+        entityClass = ConfigUtils.inheritOverwritableProperty(entityClass,
+                inheritedConfig.getEntityClass());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClassList = ConfigUtils.inheritOverwritableProperty
@@ -365,7 +365,7 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + planningEntityClass + ")";
+        return getClass().getSimpleName() + "(" + entityClass + ")";
     }
 
 }

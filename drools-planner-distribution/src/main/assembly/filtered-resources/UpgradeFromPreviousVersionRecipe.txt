@@ -2620,6 +2620,16 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <probabilityWeightFactoryClass>...</probabilityWeightFactoryClass>
     </...MoveSelector>
 
+[MINOR] For entitySelector, configuration property planningEntityClass has been renamed to entityClass.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <entitySelector>
+      <planningEntityClass>...Lecture</planningEntityClass>
+    </entitySelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <entitySelector>
+      <entityClass>...Lecture</entityClass>
+    </entitySelector>
+
 [MAJOR] Configuration property planningVariableName has been renamed to variableName.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <valueSelector>
