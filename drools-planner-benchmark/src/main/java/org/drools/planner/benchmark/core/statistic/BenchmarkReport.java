@@ -70,7 +70,7 @@ public class BenchmarkReport {
     protected List<File> winningScoreDifferenceSummaryChartFileList = null;
     protected List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
     protected File timeSpendSummaryChartFile = null;
-    protected File scalabilitySummaryChartFile = null;
+    protected File timeSpendScalabilitySummaryChartFile = null;
     protected File averageCalculateCountSummaryChartFile = null;
     protected Integer defaultShownScoreLevelIndex = null;
 
@@ -112,8 +112,8 @@ public class BenchmarkReport {
         return timeSpendSummaryChartFile;
     }
 
-    public File getScalabilitySummaryChartFile() {
-        return scalabilitySummaryChartFile;
+    public File getTimeSpendScalabilitySummaryChartFile() {
+        return timeSpendScalabilitySummaryChartFile;
     }
 
     public File getAverageCalculateCountSummaryChartFile() {
@@ -168,7 +168,7 @@ public class BenchmarkReport {
         writeWinningScoreDifferenceSummaryChart();
         writeWorstScoreDifferencePercentageSummaryChart();
         writeTimeSpendSummaryChart();
-        writeScalabilitySummaryChart();
+        writeTimeSpendScalabilitySummaryChart();
         writeAverageCalculateCountPerSecondSummaryChart();
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             if (problemBenchmark.hasAnySuccess()) {
@@ -307,7 +307,7 @@ public class BenchmarkReport {
         timeSpendSummaryChartFile = writeChartToImageFile(chart, "timeSpendSummary");
     }
 
-    private void writeScalabilitySummaryChart() {
+    private void writeTimeSpendScalabilitySummaryChart() {
         NumberAxis xAxis = new NumberAxis("Problem scale");
         xAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         NumberAxis yAxis = new NumberAxis("Time spend");
@@ -336,9 +336,9 @@ public class BenchmarkReport {
             seriesIndex++;
         }
         plot.setOrientation(PlotOrientation.VERTICAL);
-        JFreeChart chart = new JFreeChart("Scalability summary (lower is better)",
+        JFreeChart chart = new JFreeChart("Time spend scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        scalabilitySummaryChartFile = writeChartToImageFile(chart, "scalabilitySummary");
+        timeSpendScalabilitySummaryChartFile = writeChartToImageFile(chart, "timeSpendScalabilitySummary");
     }
 
     private void writeAverageCalculateCountPerSecondSummaryChart() {

@@ -290,7 +290,7 @@
                                 <a href="#summary_timeSpend" data-toggle="tab">Time spend</a>
                             </li>
                             <li>
-                                <a href="#summary_scalability" data-toggle="tab">Scalability</a>
+                                <a href="#summary_timeSpendScalability" data-toggle="tab">Time spend scalability</a>
                             </li>
                             <li class="active">
                                 <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
@@ -334,10 +334,10 @@
                                 </#list>
                                 </table>
                             </div>
-                            <div class="tab-pane" id="summary_scalability">
-                                <h3>Scalability summary</h3>
+                            <div class="tab-pane" id="summary_timeSpendScalability">
+                                <h3>Time spend scalability summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${benchmarkReport.scalabilitySummaryChartFile.name}"/>
+                                    <img src="${benchmarkReport.timeSpendScalabilitySummaryChartFile.name}"/>
                                 </div>
                             </div>
                             <div class="tab-pane active" id="summary_averageCalculateCount">
@@ -387,7 +387,7 @@
                                 <a href="#summary_timeSpend" data-toggle="tab">Time spend</a>
                             </li>
                             <li>
-                                <a href="#summary_scalability" data-toggle="tab">Scalability</a>
+                                <a href="#summary_timeSpendScalability" data-toggle="tab">Time spend scalability</a>
                             </li>
                             <li class="active">
                                 <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
