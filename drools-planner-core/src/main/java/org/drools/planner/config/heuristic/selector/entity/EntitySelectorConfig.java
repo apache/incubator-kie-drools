@@ -17,7 +17,6 @@
 package org.drools.planner.config.heuristic.selector.entity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -152,7 +151,7 @@ public class EntitySelectorConfig extends SelectorConfig {
      */
     public EntitySelector buildEntitySelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor, planningEntityClass);
+        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(solutionDescriptor, planningEntityClass);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
 

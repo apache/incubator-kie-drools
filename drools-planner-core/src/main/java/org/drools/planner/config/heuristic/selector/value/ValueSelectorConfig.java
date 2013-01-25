@@ -16,10 +16,7 @@
 
 package org.drools.planner.config.heuristic.selector.value;
 
-import java.util.Collection;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
@@ -99,7 +96,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     public ValueSelector buildValueSelector(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        PlanningVariableDescriptor variableDescriptor = fetchVariableDescriptor(entityDescriptor, planningVariableName);
+        PlanningVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, planningVariableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
                 inheritedSelectionOrder);

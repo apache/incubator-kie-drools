@@ -16,8 +16,6 @@
 
 package org.drools.planner.config.heuristic.selector.move.generic.chained;
 
-import java.util.Collection;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
@@ -80,7 +78,7 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor, planningEntityClass);
+        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(solutionDescriptor, planningEntityClass);
         SubChainSelector leftSubChainSelector = subChainSelectorConfig.buildSubChainSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));

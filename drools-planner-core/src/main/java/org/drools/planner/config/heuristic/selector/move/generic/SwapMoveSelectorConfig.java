@@ -16,7 +16,6 @@
 
 package org.drools.planner.config.heuristic.selector.move.generic;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
@@ -84,7 +82,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
                 environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        Collection<PlanningVariableDescriptor> variableDescriptors = determineVariableDescriptors(
+        Collection<PlanningVariableDescriptor> variableDescriptors = deduceVariableDescriptors(
                 leftEntitySelector.getEntityDescriptor(), variableNameIncludeList);
         return new SwapMoveSelector(leftEntitySelector, rightEntitySelector, variableDescriptors,
                 randomSelection);

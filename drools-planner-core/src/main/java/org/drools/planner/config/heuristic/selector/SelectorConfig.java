@@ -63,7 +63,7 @@ public abstract class SelectorConfig {
         }
     }
 
-    protected PlanningEntityDescriptor fetchEntityDescriptor(SolutionDescriptor solutionDescriptor,
+    protected PlanningEntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor,
             Class<?> entityClass) {
         PlanningEntityDescriptor entityDescriptor;
         if (entityClass != null) {
@@ -89,7 +89,7 @@ public abstract class SelectorConfig {
         return entityDescriptor;
     }
 
-    protected PlanningVariableDescriptor fetchVariableDescriptor(
+    protected PlanningVariableDescriptor deduceVariableDescriptor(
             PlanningEntityDescriptor entityDescriptor, String variableName) {
         PlanningVariableDescriptor variableDescriptor;
         if (variableName != null) {
@@ -117,7 +117,7 @@ public abstract class SelectorConfig {
         return variableDescriptor;
     }
 
-    protected Collection<PlanningVariableDescriptor> determineVariableDescriptors(
+    protected Collection<PlanningVariableDescriptor> deduceVariableDescriptors(
             PlanningEntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
         Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getPlanningVariableDescriptors();
         if (variableNameIncludeList == null) {
