@@ -32,6 +32,7 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
+import org.kie.definition.type.Modifies;
 import org.kie.definition.type.PropertyReactive;
 import org.kie.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.event.kiebase.KieBaseEventListener;
@@ -878,8 +879,57 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(2, ksession.fireAllRules());
     }
 
+    @Test
+    public void testPropertyReactivityWithNestedAccessorsInModify() {
+        // JBRULES-3691
+        String str =
+                "package com.ilesteban.rulenotbeingfired;\n" +
+                "\n" +
+                "import java.util.Map;\n" +
+                "import java.util.EnumMap;\n" +
+                "import org.drools.integrationtests.MiscTest2.Parameter\n" +
+                "import org.drools.integrationtests.MiscTest2.DataSample\n" +
+                "\n" +
+                "declare Recommendation\n" +
+                "    parameter : Parameter\n" +
+                "    value : double\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\" salience 100\n" +
+                "when\n" +
+                "then\n" +
+                "    insert(new Recommendation(Parameter.PARAM_A, 1.0));" +
+                "end\n" +
+                "rule \"Rule 1\"\n" +
+                "when\n" +
+                "    $d: DataSample()\n" +
+                "    $re: Recommendation ($p: parameter, $v: value)\n" +
+                "then\n" +
+                "    System.out.println(drools.getRule().getName());\n" +
+                "    modify($d){\n" +
+                "        addValue($re.getParameter(), $re.getValue())\n" +
+                "    }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Data with messages\"\n" +
+                "salience -100\n" +
+                "when\n" +
+                "    $d: DataSample(notEmpty == true)\n" +
+                "then\n" +
+                "    System.out.println(drools.getRule().getName());\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new DataSample());
+
+        assertEquals(3, ksession.fireAllRules());
+    }
+
     public enum Parameter { PARAM_A, PARAM_B }
 
+    @PropertyReactive
     public static class DataSample {
         private Map<Parameter, Double> values = new EnumMap<Parameter, Double>(Parameter.class);
 
@@ -891,8 +941,13 @@ public class MiscTest2 extends CommonTestMethodBase {
             this.values = values;
         }
 
+        @Modifies({"values", "notEmpty"})
         public void addValue(Parameter p, double value){
             this.values.put(p, value);
+        }
+
+        public boolean isNotEmpty(){
+            return !this.values.isEmpty();
         }
     }
 

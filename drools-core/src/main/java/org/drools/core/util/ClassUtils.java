@@ -18,6 +18,7 @@ package org.drools.core.util;
 
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
+import org.kie.definition.type.Modifies;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
 
@@ -42,9 +43,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public final class ClassUtils {
     private static final ProtectionDomain  PROTECTION_DOMAIN;
@@ -332,21 +335,28 @@ public final class ClassUtils {
     }
 
     public static List<String> getSettableProperties(Class<?> clazz) {
-        List<String> settableProperties = new ArrayList<String>();
+        Set<String> props = new HashSet<String>();
         for (Method m : clazz.getMethods()) {
             if (m.getParameterTypes().length == 1) {
                 String propName = setter2property(m.getName());
                 if (propName != null) {
-                    settableProperties.add(propName);
+                    props.add(propName);
+                }
+            }
+
+            Modifies modifies = m.getAnnotation( Modifies.class );
+            if (modifies != null) {
+                for (String prop : modifies.value()) {
+                    props.add( prop.trim() );
                 }
             }
         }
+
         for (Field f : clazz.getFields()) {
-            String fieldName = f.getName();
-            if (!settableProperties.contains(fieldName)) {
-                settableProperties.add(fieldName);
-            }
+            props.add(f.getName());
         }
+
+        List<String> settableProperties = new ArrayList<String>(props);
         Collections.sort(settableProperties);
         return settableProperties;
     }
