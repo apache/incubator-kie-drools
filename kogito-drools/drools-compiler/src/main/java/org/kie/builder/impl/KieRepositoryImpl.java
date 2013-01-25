@@ -48,7 +48,6 @@ public class KieRepositoryImpl
                                                                                             DEFAULT_VERSION ) );
 
     private InternalKieScanner         internalKieScanner;
-    private byte[]                     pomXml;
 
     public void setDefaultGAV(ReleaseId releaseId) {
         this.defaultGAV.set(releaseId);
@@ -63,27 +62,26 @@ public class KieRepositoryImpl
         log.info( "KieModule was added:" + kieModule);
     }
     
-    public KieRepository setPOMXML(byte[] pomXml) {
-        this.pomXml = pomXml;
-        return this;
+    public KieModule getKieModule(ReleaseId releaseId) {
+        return getKieModule(releaseId, null);
     }
 
-    public KieModule getKieModule(ReleaseId releaseId) {
+    public KieModule getKieModule(ReleaseId releaseId, byte[] pomXml) {
         VersionRange versionRange = new VersionRange(releaseId.getVersion());
 
         KieModule kieModule = kieModuleRepo.load(releaseId, versionRange);
         if ( kieModule == null ) {
             log.debug( "KieModule Lookup. ReleaseId {} was not in cache, checking classpath",
-                       releaseId.toExternalForm() );
+                    releaseId.toExternalForm() );
             kieModule = checkClasspathForKieModule(releaseId);
         }
-        
+
         if ( kieModule == null ) {
             log.debug( "KieModule Lookup. ReleaseId {} was not in cache, checking maven repository",
-                       releaseId.toExternalForm() );
-            kieModule = loadKieModuleFromMavenRepo(releaseId);
+                    releaseId.toExternalForm() );
+            kieModule = loadKieModuleFromMavenRepo(releaseId, pomXml);
         }
-        
+
         return kieModule;
     }
 
@@ -94,11 +92,10 @@ public class KieRepositoryImpl
         return null;
     }
 
-    private KieModule loadKieModuleFromMavenRepo(ReleaseId releaseId) {
-        if(pomXml != null) {
-            return getInternalKieScanner().loadArtifact(releaseId, new ByteArrayInputStream( pomXml ) );
-        }
-        return getInternalKieScanner().loadArtifact(releaseId);
+    private KieModule loadKieModuleFromMavenRepo(ReleaseId releaseId, byte[] pomXml) {
+        return pomXml != null ?
+                getInternalKieScanner().loadArtifact(releaseId, new ByteArrayInputStream( pomXml ) ) :
+                getInternalKieScanner().loadArtifact(releaseId);
     }
 
     private InternalKieScanner getInternalKieScanner() {
@@ -117,23 +114,18 @@ public class KieRepositoryImpl
         implements
         InternalKieScanner {
 
-        public void setKieContainer(KieContainer kieContainer) {
-        }
-
         public KieModule loadArtifact(ReleaseId releaseId) {
             return null;
         }
 
-        public void start(long pollingInterval) {
-        }
+        public void start(long pollingInterval) { }
 
-        public void stop() {
-        }
+        public void stop() { }
 
-        public void scanNow() {
-        }
+        public void scanNow() { }
 
-        @Override
+        public void setKieContainer(KieContainer kieContainer) { }
+
         public KieModule loadArtifact(ReleaseId releaseId, InputStream pomXML) {
             return null;
         }

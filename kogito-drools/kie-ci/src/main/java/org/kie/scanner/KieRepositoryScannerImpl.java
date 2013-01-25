@@ -77,14 +77,13 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     public KieModule loadArtifact(ReleaseId releaseId) {
-        String artifactName = releaseId.toString();
-        Artifact artifact = getArtifactResolver().resolveArtifact(artifactName);
-        return artifact != null ? buildArtifact(releaseId, artifact) : loadPomArtifact(releaseId);
+        return loadArtifact(releaseId, null);
     }
 
-    public KieModule loadArtifact(ReleaseId releaseId, InputStream pomXML) {
-        String artifactName = releaseId.toString();       
-        Artifact artifact = ArtifactResolver.getResolverFor(pomXML).resolveArtifact(artifactName);
+    public KieModule loadArtifact(ReleaseId releaseId, InputStream pomXml) {
+        String artifactName = releaseId.toString();
+        ArtifactResolver resolver = pomXml != null ? ArtifactResolver.getResolverFor(pomXml) : getArtifactResolver();
+        Artifact artifact = resolver.resolveArtifact(artifactName);
         return artifact != null ? buildArtifact(releaseId, artifact) : loadPomArtifact(releaseId);
     }
     
