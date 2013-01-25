@@ -18,6 +18,7 @@ package org.drools.core.util;
 
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
+import org.drools.definition.type.Modifies;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,8 +35,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class ClassUtils {
     private static Map<String, Class<?>> classes = Collections.synchronizedMap( new HashMap() );
@@ -69,7 +72,7 @@ public final class ClassUtils {
      */
     public static String stripExtension(final String pResourceName) {
         final int i = pResourceName.lastIndexOf( '.' );
-        return pResourceName.substring( 0, i );
+        return pResourceName.substring(0, i);
     }
 
     public static String toJavaCasing(final String pName) {
@@ -83,8 +86,8 @@ public final class ClassUtils {
         final int rootLength = base.getAbsolutePath().length();
         final String absFileName = file.getAbsolutePath();
         final int p = absFileName.lastIndexOf( '.' );
-        final String relFileName = absFileName.substring( rootLength + 1, p );
-        return relFileName.replace( File.separatorChar, '.' );
+        final String relFileName = absFileName.substring(rootLength + 1, p);
+        return relFileName.replace(File.separatorChar, '.');
     }
 
     public static String relative(final File base,
@@ -112,8 +115,8 @@ public final class ClassUtils {
     }
 
     public static Object instantiateObject(String className) {
-        return instantiateObject( className,
-                                  null );
+        return instantiateObject(className,
+                null);
     }
 
     /**
@@ -312,21 +315,28 @@ public final class ClassUtils {
     }
 
     public static List<String> getSettableProperties(Class<?> clazz) {
-        List<String> settableProperties = new ArrayList<String>();
+        Set<String> props = new HashSet<String>();
         for (Method m : clazz.getMethods()) {
             if (m.getParameterTypes().length == 1) {
                 String propName = setter2property(m.getName());
                 if (propName != null) {
-                    settableProperties.add(propName);
+                    props.add(propName);
+                }
+            }
+
+            Modifies modifies = m.getAnnotation( Modifies.class );
+            if (modifies != null) {
+                for (String prop : modifies.value()) {
+                    props.add( prop.trim() );
                 }
             }
         }
+
         for (Field f : clazz.getFields()) {
-            String fieldName = f.getName();
-            if (!settableProperties.contains(fieldName)) {
-                settableProperties.add(fieldName);
-            }
+            props.add(f.getName());
         }
+
+        List<String> settableProperties = new ArrayList<String>(props);
         Collections.sort(settableProperties);
         return settableProperties;
     }
