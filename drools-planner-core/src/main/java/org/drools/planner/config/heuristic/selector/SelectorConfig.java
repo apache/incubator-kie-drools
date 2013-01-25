@@ -16,10 +16,16 @@
 
 package org.drools.planner.config.heuristic.selector;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 
 /**
@@ -28,7 +34,7 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 public abstract class SelectorConfig {
 
     // ************************************************************************
-    // Builder methods
+    // Helper methods
     // ************************************************************************
 
     protected void validateCacheTypeVersusSelectionOrder(
@@ -55,6 +61,37 @@ public abstract class SelectorConfig {
                         + ") is not implemented.");
         }
     }
+
+    protected Collection<PlanningVariableDescriptor> determineVariableDescriptors(
+            PlanningEntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
+        Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getPlanningVariableDescriptors();
+        if (variableNameIncludeList == null) {
+            return variableDescriptors;
+        }
+        List<PlanningVariableDescriptor> resolvedVariableDescriptors
+                = new ArrayList<PlanningVariableDescriptor>(variableDescriptors.size());
+        for (String variableNameInclude : variableNameIncludeList) {
+            boolean found = false;
+            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+                if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
+                    resolvedVariableDescriptors.add(variableDescriptor);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new IllegalStateException("The selectorConfig (" + this
+                        + ") has a variableNameInclude (" + variableNameInclude
+                        + ") which does not exist in the entity (" + entityDescriptor.getPlanningEntityClass()
+                        + ")'s variableDescriptors (" + variableDescriptors + ").");
+            }
+        }
+        return resolvedVariableDescriptors;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
 
     protected void inherit(SelectorConfig inheritedConfig) {
     }

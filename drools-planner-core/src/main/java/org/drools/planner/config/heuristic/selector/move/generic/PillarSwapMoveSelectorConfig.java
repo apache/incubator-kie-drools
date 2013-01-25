@@ -85,35 +85,9 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
                 environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         Collection<PlanningVariableDescriptor> variableDescriptors = determineVariableDescriptors(
-                leftPillarSelector.getEntityDescriptor());
+                leftPillarSelector.getEntityDescriptor(), variableNameIncludeList);
         return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptors,
                 randomSelection);
-    }
-
-    private Collection<PlanningVariableDescriptor> determineVariableDescriptors(
-            PlanningEntityDescriptor entityDescriptor) {
-        Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getPlanningVariableDescriptors();
-        if (variableNameIncludeList == null) {
-            return variableDescriptors;
-        }
-        List<PlanningVariableDescriptor> resolvedVariableDescriptors
-                = new ArrayList<PlanningVariableDescriptor>(variableDescriptors.size());
-        for (String variableNameInclude : variableNameIncludeList) {
-            boolean found = false;
-            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
-                if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
-                    resolvedVariableDescriptors.add(variableDescriptor);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                throw new IllegalStateException("The selectorConfig (" + this
-                        + ") has a variableNameInclude (" + variableNameInclude
-                        + ") which does not exist in the variableDescriptors (" + variableDescriptors + ").");
-            }
-        }
-        return resolvedVariableDescriptors;
     }
 
     public void inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
