@@ -111,32 +111,9 @@ public class SingleSessionCommandService
 
         checkEnvironment( this.env );
 
-        this.sessionInfo = new SessionInfo();
-
         initTransactionManager( this.env );
-
-        // create session but bypass command service
-        this.ksession = kbase.newKieSession( conf,
-                                             this.env );
-
-        this.kContext = new FixedKnowledgeCommandContext( null,
-                                                          null,
-                                                          null,
-                                                          this.ksession,
-                                                          null );
-
-        this.commandService = new DefaultCommandService( kContext );
-
-        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
-
-        this.marshallingHelper = new SessionMarshallingHelper( this.ksession,
-                                                               conf );
-        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
-        config.setMarshallProcessInstances( false );
-        config.setMarshallWorkItems( false );
-
-        this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
-        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        
+        initNewKnowledgeSession(kbase, conf);
 
         // Use the App scoped EntityManager if the user has provided it, and it is open.
         // - open the entity manager before the transaction begins. 
@@ -167,6 +144,34 @@ public class SingleSessionCommandService
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
     }
 
+    protected void initNewKnowledgeSession(KieBase kbase, KieSessionConfiguration conf) { 
+        this.sessionInfo = new SessionInfo();
+
+        // create session but bypass command service
+        this.ksession = kbase.newKieSession( conf,
+                                             this.env );
+
+        this.marshallingHelper = new SessionMarshallingHelper( this.ksession, conf );
+        
+        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
+        config.setMarshallProcessInstances( false );
+        config.setMarshallWorkItems( false );
+
+        this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
+        
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        
+        this.kContext = new FixedKnowledgeCommandContext( null,
+                                                          null,
+                                                          null,
+                                                          this.ksession,
+                                                          null );
+
+        this.commandService = new DefaultCommandService(kContext);
+
+        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
+    }
+    
     public SingleSessionCommandService(Integer sessionId,
                                        KieBase kbase,
                                        KieSessionConfiguration conf,
@@ -191,7 +196,7 @@ public class SingleSessionCommandService
             registerRollbackSync();
 
             persistenceContext.joinTransaction();
-            initKsession( sessionId,
+            initExistingKnowledgeSession( sessionId,
                           kbase,
                           conf,
                           persistenceContext );
@@ -209,7 +214,7 @@ public class SingleSessionCommandService
         }
     }
 
-    protected void initKsession(Integer sessionId,
+    protected void initExistingKnowledgeSession(Integer sessionId,
                                 KieBase kbase,
                                 KieSessionConfiguration conf,
                                 PersistenceContext persistenceContext) {
@@ -267,7 +272,6 @@ public class SingleSessionCommandService
                                                               null );
         }
 
-        this.commandService = new DefaultCommandService( kContext );
         this.commandService = new DefaultCommandService(kContext);
     }
 
@@ -354,7 +358,7 @@ public class SingleSessionCommandService
             transactionOwner = txm.begin();
 
             persistenceContext.joinTransaction();
-            initKsession( this.sessionInfo.getId(),
+            initExistingKnowledgeSession( this.sessionInfo.getId(),
                           this.marshallingHelper.getKbase(),
                           this.marshallingHelper.getConf(),
                           persistenceContext );
