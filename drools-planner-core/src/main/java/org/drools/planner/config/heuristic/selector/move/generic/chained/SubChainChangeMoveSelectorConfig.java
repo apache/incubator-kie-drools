@@ -82,7 +82,7 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
+        PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor, planningEntityClass);
         SubChainSelector subChainSelector = subChainSelectorConfig.buildSubChainSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
@@ -91,35 +91,6 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new SubChainChangeMoveSelector(subChainSelector, valueSelector, randomSelection,
                 selectReversingMoveToo == null ? true : selectReversingMoveToo);
-    }
-
-    // TODO DRY
-    private PlanningEntityDescriptor fetchEntityDescriptor(SolutionDescriptor solutionDescriptor) {
-        PlanningEntityDescriptor entityDescriptor;
-        if (planningEntityClass != null) {
-            entityDescriptor = solutionDescriptor.getPlanningEntityDescriptorStrict(planningEntityClass);
-            if (entityDescriptor == null) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") has a planningEntityClass (" + planningEntityClass
-                        + ") that is not configured as a planningEntity.\n" +
-                        "If that class (" + planningEntityClass.getSimpleName() + ") is not a " +
-                        "planningEntityClass (" + solutionDescriptor.getPlanningEntityClassSet()
-                        + "), check your Solution implementation's annotated methods.\n" +
-                        "If it is, check your solver configuration.");
-            }
-        } else {
-            Collection<PlanningEntityDescriptor> planningEntityDescriptors = solutionDescriptor
-                    .getPlanningEntityDescriptors();
-            if (planningEntityDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") has no configured planningEntityClass ("  + planningEntityClass
-                        + ") and because there are multiple in the planningEntityClassSet ("
-                        + solutionDescriptor.getPlanningEntityClassSet()
-                        + "), it can not be deducted automatically.");
-            }
-            entityDescriptor = planningEntityDescriptors.iterator().next();
-        }
-        return entityDescriptor;
     }
 
     public void inherit(SubChainChangeMoveSelectorConfig inheritedConfig) {

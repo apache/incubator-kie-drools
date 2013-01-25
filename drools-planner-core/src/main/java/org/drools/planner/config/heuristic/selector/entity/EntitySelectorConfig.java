@@ -152,7 +152,7 @@ public class EntitySelectorConfig extends SelectorConfig {
      */
     public EntitySelector buildEntitySelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor);
+        PlanningEntityDescriptor entityDescriptor = fetchEntityDescriptor(solutionDescriptor, planningEntityClass);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
 
@@ -342,33 +342,6 @@ public class EntitySelectorConfig extends SelectorConfig {
                     resolvedSelectionOrder.toRandomSelectionBoolean());
         }
         return entitySelector;
-    }
-
-    private PlanningEntityDescriptor fetchEntityDescriptor(SolutionDescriptor solutionDescriptor) {
-        PlanningEntityDescriptor entityDescriptor;
-        if (planningEntityClass != null) {
-            entityDescriptor = solutionDescriptor.getPlanningEntityDescriptorStrict(planningEntityClass);
-            if (entityDescriptor == null) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this + ") has a planningEntityClass ("
-                        + planningEntityClass + ") that is not configured as a planningEntity.\n" +
-                        "If that class (" + planningEntityClass.getSimpleName() + ") is not a " +
-                        "planningEntityClass (" + solutionDescriptor.getPlanningEntityClassSet()
-                        + "), check your Solution implementation's annotated methods.\n" +
-                        "If it is, check your solver configuration.");
-            }
-        } else {
-            Collection<PlanningEntityDescriptor> planningEntityDescriptors = solutionDescriptor
-                    .getPlanningEntityDescriptors();
-            if (planningEntityDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") has no configured planningEntityClass ("
-                        + planningEntityClass + ") and because there are multiple in the planningEntityClassSet ("
-                        + solutionDescriptor.getPlanningEntityClassSet()
-                        + "), it can not be deducted automatically.");
-            }
-            entityDescriptor = planningEntityDescriptors.iterator().next();
-        }
-        return entityDescriptor;
     }
 
     public void inherit(EntitySelectorConfig inheritedConfig) {

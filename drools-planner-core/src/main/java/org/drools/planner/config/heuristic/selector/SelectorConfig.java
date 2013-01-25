@@ -25,6 +25,7 @@ import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 
@@ -60,6 +61,32 @@ public abstract class SelectorConfig {
                 throw new IllegalStateException("The resolvedSelectionOrder (" + resolvedSelectionOrder
                         + ") is not implemented.");
         }
+    }
+
+    protected PlanningEntityDescriptor fetchEntityDescriptor(SolutionDescriptor solutionDescriptor,
+            Class<?> entityClass) {
+        PlanningEntityDescriptor entityDescriptor;
+        if (entityClass != null) {
+            entityDescriptor = solutionDescriptor.getPlanningEntityDescriptorStrict(entityClass);
+            if (entityDescriptor == null) {
+                throw new IllegalArgumentException("The selectorConfig (" + this
+                        + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
+                        + "Check your solver configuration. If that class (" + entityClass.getSimpleName()
+                        + ") is not in the planningEntityClassSet (" + solutionDescriptor.getPlanningEntityClassSet()
+                        + "), check your Solution implementation's annotated methods too.");
+            }
+        } else {
+            Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getPlanningEntityDescriptors();
+            if (entityDescriptors.size() != 1) {
+                throw new IllegalArgumentException("The selectorConfig (" + this
+                        + ") has no entityClass (" + entityClass
+                        + ") configured and because there are multiple in the planningEntityClassSet ("
+                        + solutionDescriptor.getPlanningEntityClassSet()
+                        + "), it can not be deducted automatically.");
+            }
+            entityDescriptor = entityDescriptors.iterator().next();
+        }
+        return entityDescriptor;
     }
 
     protected Collection<PlanningVariableDescriptor> determineVariableDescriptors(
