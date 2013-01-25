@@ -895,4 +895,30 @@ public class MiscTest2 extends CommonTestMethodBase {
             this.values.put(p, value);
         }
     }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testMvel() {
+        // JBRULES-3684
+        String str =
+                "import org.drools.integrationtests.MiscTest2.AbstractBase\n" +
+                "import org.drools.integrationtests.MiscTest2.StringConcrete\n" +
+                "rule \"test\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$S : StringConcrete()\n" +
+                "then\n" +
+                "$S.getFoo().concat(\"this works with java dialect\");\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+    }
+
+    public static abstract class AbstractBase<T> {
+        protected T foo;
+        public T getFoo() { return foo; }
+    }
+
+    public static class StringConcrete extends AbstractBase<String> {
+        public StringConcrete() { this.foo = new String(); }
+    }
 }
