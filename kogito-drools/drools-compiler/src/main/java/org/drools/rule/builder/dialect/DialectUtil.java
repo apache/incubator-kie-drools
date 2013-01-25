@@ -27,7 +27,6 @@ import org.drools.rule.builder.dialect.java.parser.JavaInterfacePointsDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr.IdentifierDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
-import org.drools.rule.builder.dialect.java.parser.JavaStatementBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaThrowBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaTryBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaWhileBlockDescr;
@@ -709,7 +708,7 @@ public final class DialectUtil {
             String methodName = exprStr.substring(0, endMethodName).trim();
             String propertyName = setter2property(methodName);
 
-            String methodParams = exprStr.substring(endMethodName+1, exprStr.indexOf(')')).trim();
+            String methodParams = exprStr.substring(endMethodName+1, exprStr.lastIndexOf(')')).trim();
             List<String> args = splitArgumentsList(methodParams);
             int argsNr = args.size();
 
