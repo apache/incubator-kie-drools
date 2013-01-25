@@ -89,6 +89,34 @@ public abstract class SelectorConfig {
         return entityDescriptor;
     }
 
+    protected PlanningVariableDescriptor fetchVariableDescriptor(
+            PlanningEntityDescriptor entityDescriptor, String variableName) {
+        PlanningVariableDescriptor variableDescriptor;
+        if (variableName != null) {
+            variableDescriptor = entityDescriptor.getPlanningVariableDescriptor(variableName);
+            if (variableDescriptor == null) {
+                throw new IllegalArgumentException("The selectorConfig (" + this
+                        + ") has a variableName (" + variableName
+                        + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
+                        + ") that is not annotated as a planning variable.\n" +
+                        "Check your planning entity implementation's annotated methods.");
+            }
+        } else {
+            Collection<PlanningVariableDescriptor> planningVariableDescriptors = entityDescriptor
+                    .getPlanningVariableDescriptors();
+            if (planningVariableDescriptors.size() != 1) {
+                throw new IllegalArgumentException("The selectorConfig (" + this
+                        + ") has no configured variableName (" + variableName
+                        + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
+                        + ") and because there are multiple in the planningVariableNameSet ("
+                        + entityDescriptor.getPlanningVariableNameSet()
+                        + "), it can not be deducted automatically.");
+            }
+            variableDescriptor = planningVariableDescriptors.iterator().next();
+        }
+        return variableDescriptor;
+    }
+
     protected Collection<PlanningVariableDescriptor> determineVariableDescriptors(
             PlanningEntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
         Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getPlanningVariableDescriptors();

@@ -99,7 +99,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     public ValueSelector buildValueSelector(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        PlanningVariableDescriptor variableDescriptor = fetchVariableDescriptor(entityDescriptor);
+        PlanningVariableDescriptor variableDescriptor = fetchVariableDescriptor(entityDescriptor, planningVariableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
                 inheritedSelectionOrder);
@@ -208,35 +208,6 @@ public class ValueSelectorConfig extends SelectorConfig {
                     resolvedSelectionOrder.toRandomSelectionBoolean());
         }
         return valueSelector;
-    }
-
-    private PlanningVariableDescriptor fetchVariableDescriptor(PlanningEntityDescriptor entityDescriptor) {
-        PlanningVariableDescriptor variableDescriptor;
-        if (planningVariableName != null) {
-            variableDescriptor = entityDescriptor.getPlanningVariableDescriptor(planningVariableName);
-            if (variableDescriptor == null) {
-                throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                        + ") has a planningVariableName ("
-                        + planningVariableName + ") for planningEntityClass ("
-                        + entityDescriptor.getPlanningEntityClass()
-                        + ") that is not annotated as a planningVariable.\n" +
-                        "Check your planningEntity implementation's annotated methods.");
-            }
-        } else {
-            Collection<PlanningVariableDescriptor> planningVariableDescriptors = entityDescriptor
-                    .getPlanningVariableDescriptors();
-            if (planningVariableDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                        + ") has no configured planningVariableName ("
-                        + planningVariableName + ") for planningEntityClass ("
-                        + entityDescriptor.getPlanningEntityClass()
-                        + ") and because there are multiple in the planningVariableNameSet ("
-                        + entityDescriptor.getPlanningVariableNameSet()
-                        + "), it can not be deducted automatically.");
-            }
-            variableDescriptor = planningVariableDescriptors.iterator().next();
-        }
-        return variableDescriptor;
     }
 
     public void inherit(ValueSelectorConfig inheritedConfig) {
