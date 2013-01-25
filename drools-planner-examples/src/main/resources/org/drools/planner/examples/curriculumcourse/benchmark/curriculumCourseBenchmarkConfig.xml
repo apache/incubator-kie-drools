@@ -82,12 +82,12 @@
         <unionMoveSelector>
           <changeMoveSelector>
             <valueSelector>
-              <planningVariableName>period</planningVariableName>
+              <variableName>period</variableName>
             </valueSelector>
           </changeMoveSelector>
           <changeMoveSelector>
             <valueSelector>
-              <planningVariableName>room</planningVariableName>
+              <variableName>room</variableName>
             </valueSelector>
           </changeMoveSelector>
           <swapMoveSelector>
@@ -111,13 +111,13 @@
           <changeMoveSelector>
             <cacheType>PHASE</cacheType>
             <valueSelector>
-              <planningVariableName>period</planningVariableName>
+              <variableName>period</variableName>
             </valueSelector>
           </changeMoveSelector>
           <changeMoveSelector>
             <cacheType>PHASE</cacheType>
             <valueSelector>
-              <planningVariableName>room</planningVariableName>
+              <variableName>room</variableName>
             </valueSelector>
           </changeMoveSelector>
           <swapMoveSelector>
@@ -142,12 +142,12 @@
           <!--<cacheType>PHASE</cacheType>-->
           <!--<changeMoveSelector>-->
             <!--<valueSelector>-->
-              <!--<planningVariableName>period</planningVariableName>-->
+              <!--<variableName>period</variableName>-->
             <!--</valueSelector>-->
           <!--</changeMoveSelector>-->
           <!--<changeMoveSelector>-->
             <!--<valueSelector>-->
-              <!--<planningVariableName>room</planningVariableName>-->
+              <!--<variableName>room</variableName>-->
             <!--</valueSelector>-->
           <!--</changeMoveSelector>-->
           <!--<swapMoveSelector>-->

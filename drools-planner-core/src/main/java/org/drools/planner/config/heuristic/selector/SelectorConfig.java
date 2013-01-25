@@ -108,7 +108,7 @@ public abstract class SelectorConfig {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has no configured variableName (" + variableName
                         + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
-                        + ") and because there are multiple in the planningVariableNameSet ("
+                        + ") and because there are multiple in the variableNameSet ("
                         + entityDescriptor.getPlanningVariableNameSet()
                         + "), it can not be deducted automatically.");
             }

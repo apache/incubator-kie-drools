@@ -609,11 +609,13 @@
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;changeMoveSelector&gt;
-      ... &lt;!-- Normal moveSelector properties --&gt;
+      ... &lt;!-- Normal selector properties --&gt;
       &lt;entitySelector&gt;
+        &lt;entityClass&gt;...Lecture&lt;/entityClass&gt;
         ...
       &lt;/entitySelector&gt;
       &lt;valueSelector&gt;
+        &lt;variableName&gt;room&lt;/variableName&gt;
         ...
       &lt;/valueSelector&gt;
     &lt;/changeMoveSelector&gt;</programlisting>
@@ -648,14 +650,15 @@
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;swapMoveSelector&gt;
-      ... &lt;!-- Normal moveSelector properties --&gt;
+      ... &lt;!-- Normal selector properties --&gt;
       &lt;entitySelector&gt;
+        &lt;entityClass&gt;...Lecture&lt;/entityClass&gt;
         ...
       &lt;/entitySelector&gt;
       &lt;secondaryEntitySelector&gt;
         ...
       &lt;/secondaryEntitySelector&gt;
-      &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
+      &lt;variableNameInclude&gt;room&lt;/variableNameInclude&gt;
       &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
     &lt;/swapMoveSelector&gt;</programlisting>
 
@@ -663,7 +666,7 @@
       same <literal>entitySelector</literal> are swapped.</para>
 
       <para>If one or more <literal>variableNameInclude</literal> properties are specified, not all planning variables
-      will be swapped, but only those specified. For example for course scheduling, specifying
+      will be swapped, but only those specified. For example for course scheduling, specifying only
       <literal>variableNameInclude</literal> room will make it only swap room, not period.</para>
     </section>
 
@@ -681,9 +684,10 @@
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;pillarSwapMoveSelector&gt;
-      ... &lt;!-- Normal moveSelector properties --&gt;
+      ... &lt;!-- Normal selector properties --&gt;
       &lt;pillarSelector&gt;
         &lt;entitySelector&gt;
+        &lt;entityClass&gt;...Lecture&lt;/entityClass&gt;
           ...
         &lt;/entitySelector&gt;
       &lt;/pillarSelector&gt;
@@ -692,7 +696,7 @@
           ...
         &lt;/entitySelector&gt;
       &lt;/secondaryPillarSelector&gt;
-      &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
+      &lt;variableNameInclude&gt;room&lt;/variableNameInclude&gt;
       &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
     &lt;/pillarSwapMoveSelector&gt;</programlisting>
 
@@ -736,7 +740,7 @@
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;unionMoveSelector&gt;
-      ... &lt;!-- Normal moveSelector properties --&gt;
+      ... &lt;!-- Normal selector properties --&gt;
       &lt;selectorProbabilityWeightFactoryClass&gt;...ProbabilityWeightFactory&lt;/selectorProbabilityWeightFactoryClass&gt;
       &lt;changeMoveSelector&gt;
         &lt;fixedProbabilityWeight&gt;...&lt;/fixedProbabilityWeight&gt;
@@ -802,7 +806,7 @@
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;cartesianProductMoveSelector&gt;
-      ... &lt;!-- Normal moveSelector properties --&gt;
+      ... &lt;!-- Normal selector properties --&gt;
       &lt;changeMoveSelector&gt;
         ...
       &lt;/changeMoveSelector&gt;
@@ -820,21 +824,37 @@
   <section>
     <title>EntitySelector</title>
 
-    <section>
-      <title>TODO</title>
+    <para>Simplest configuration:</para>
 
-      <para>TODO</para>
-    </section>
+    <programlisting language="xml">      &lt;entitySelector/&gt;</programlisting>
+
+    <para>Advanced configuration:</para>
+
+    <programlisting language="xml">      &lt;entitySelector&gt;
+        ... &lt;!-- Normal selector properties --&gt;
+        &lt;entityClass&gt;org.drools.planner.examples.curriculumcourse.domain.Lecture&lt;/entityClass&gt;
+      &lt;/entitySelector&gt;</programlisting>
+
+    <para>The <literal>entityClass</literal> property is only required if it cannot be deduced automatically because
+    there are multiple entity classes.</para>
   </section>
 
   <section>
     <title>ValueSelector</title>
 
-    <section>
-      <title>TODO</title>
+    <para>Simplest configuration:</para>
 
-      <para>TODO</para>
-    </section>
+    <programlisting language="xml">      &lt;valueSelector/&gt;</programlisting>
+
+    <para>Advanced configuration:</para>
+
+    <programlisting language="xml">      &lt;valueSelector&gt;
+        ... &lt;!-- Normal selector properties --&gt;
+        &lt;variableName&gt;room&lt;/variableName&gt;
+      &lt;/valueSelector&gt;</programlisting>
+
+    <para>The <literal>variableName</literal> property is only required if it cannot be deduced automatically because
+    there are multiple variables (for the related entity class).</para>
   </section>
 
   <section>

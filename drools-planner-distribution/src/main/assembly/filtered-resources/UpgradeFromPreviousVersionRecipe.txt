@@ -2619,3 +2619,13 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <...MoveSelector>
       <probabilityWeightFactoryClass>...</probabilityWeightFactoryClass>
     </...MoveSelector>
+
+[MAJOR] Configuration property planningVariableName has been renamed to variableName.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <valueSelector>
+      <planningVariableName>period</planningVariableName>
+    </valueSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <valueSelector>
+      <variableName>period</variableName>
+    </valueSelector>

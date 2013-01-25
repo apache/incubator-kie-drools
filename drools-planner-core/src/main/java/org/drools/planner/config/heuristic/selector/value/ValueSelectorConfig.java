@@ -35,7 +35,7 @@ import org.drools.planner.core.heuristic.selector.value.decorator.ShufflingValue
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig {
 
-    protected String planningVariableName = null;
+    protected String variableName = null;
 
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
@@ -46,12 +46,12 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 
-    public String getPlanningVariableName() {
-        return planningVariableName;
+    public String getVariableName() {
+        return variableName;
     }
 
-    public void setPlanningVariableName(String planningVariableName) {
-        this.planningVariableName = planningVariableName;
+    public void setVariableName(String variableName) {
+        this.variableName = variableName;
     }
 
     public SelectionCacheType getCacheType() {
@@ -96,7 +96,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     public ValueSelector buildValueSelector(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        PlanningVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, planningVariableName);
+        PlanningVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
                 inheritedSelectionOrder);
@@ -209,8 +209,8 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     public void inherit(ValueSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (planningVariableName == null) {
-            planningVariableName = inheritedConfig.getPlanningVariableName();
+        if (variableName == null) {
+            variableName = inheritedConfig.getVariableName();
         }
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
@@ -220,7 +220,7 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + planningVariableName + ")";
+        return getClass().getSimpleName() + "(" + variableName + ")";
     }
 
 }
