@@ -5,6 +5,7 @@
 package org.jbpm.task.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -68,8 +69,8 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         List tasksByGroups = em.createNamedQuery("TasksAssignedAsPotentialOwnerByGroups")
                 .setParameter("groupIds", groupIds)
                 .getResultList();
-        Set<Long> tasksIds = new HashSet<Long>();
-        Map<Long, List<String>> potentialOwners = new HashMap<Long, List<String>>();
+        Set<Long> tasksIds = Collections.synchronizedSet(new HashSet<Long>());
+        Map<Long, List<String>> potentialOwners = Collections.synchronizedMap(new HashMap<Long, List<String>>());
         for (Object o : tasksByGroups) {
             Object[] get = (Object[]) o;
             tasksIds.add((Long) get[0]);

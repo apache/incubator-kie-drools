@@ -40,16 +40,11 @@
         <class>org.jboss.seam.transaction.TransactionInterceptor</class>
     </interceptors>
     
-    <!--t:SeSynchronizations>
-        <s:modifies/>
-    </t:SeSynchronizations-->
     <weld:scan>
         <weld:exclude name="org.jboss.seam.transaction.DefaultSeamTransaction"/>
         <weld:exclude name="org.jboss.seam.transaction.TransactionManagerSynchronizations"/>
     </weld:scan>
-    <!--m:BTMTransactionManagerSynchronizations>
-        <s:modifies/>
-    </m:BTMTransactionManagerSynchronizations-->
+  
     <m:CMTBTMTransaction>
         <s:modifies />
     </m:CMTBTMTransaction>
