@@ -97,10 +97,13 @@
                                 <a href="#summary_bestScore" data-toggle="tab">Best score</a>
                             </li>
                             <li>
+                                <a href="#summary_bestScoreScalability" data-toggle="tab">Best score scalability</a>
+                            </li>
+                            <li>
                                 <a href="#summary_winningScoreDifference" data-toggle="tab">Winning score difference</a>
                             </li>
                             <li>
-                                <a href="#summary_worstScoreDifferencePercentage" data-toggle="tab">Worst score difference percentage</a>
+                                <a href="#summary_worstScoreDifferencePercentage" data-toggle="tab">Worst score difference percentage (ROI)</a>
                             </li>
                         </ul>
                         <div class="tab-content">
@@ -158,6 +161,31 @@
                                 </#list>
                                 </table>
                             </div>
+                            <div class="tab-pane active" id="summary_bestScoreScalability">
+                                <h3>Best score scalability summary</h3>
+                                <div class="tabbable tabs-right">
+                                    <ul class="nav nav-tabs">
+                                        <#assign scoreLevelIndex = 0>
+                                        <#list benchmarkReport.bestScoreScalabilitySummaryChartFileList as bestScoreScalabilitySummaryChartFile>
+                                            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
+                                                <a href="#summary_bestScoreScalability_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                            </li>
+                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                        </#list>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <#assign scoreLevelIndex = 0>
+                                        <#list benchmarkReport.bestScoreScalabilitySummaryChartFileList as bestScoreScalabilitySummaryChartFile>
+                                            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScoreScalability_chart_${scoreLevelIndex}">
+                                                <div class="benchmark-chart">
+                                                    <img src="${bestScoreScalabilitySummaryChartFile.name}"/>
+                                                </div>
+                                            </div>
+                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                        </#list>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="tab-pane" id="summary_winningScoreDifference">
                                 <h3>Winning score difference summary</h3>
                                 <div class="tabbable tabs-right">
@@ -211,7 +239,7 @@
                                 </table>
                             </div>
                             <div class="tab-pane" id="summary_worstScoreDifferencePercentage">
-                                <h3>Worst score difference percentage summary</h3>
+                                <h3>Worst score difference percentage summary (ROI)</h3>
                                 <div class="tabbable tabs-right">
                                     <ul class="nav nav-tabs">
                                     <#assign scoreLevelIndex = 0>
@@ -273,10 +301,13 @@
                                 <a href="#summary_bestScore" data-toggle="tab">Best score</a>
                             </li>
                             <li>
+                                <a href="#summary_bestScoreScalability" data-toggle="tab">Best score scalability</a>
+                            </li>
+                            <li>
                                 <a href="#summary_winningScoreDifference" data-toggle="tab">Winning score difference</a>
                             </li>
                             <li>
-                                <a href="#summary_worstScoreDifferencePercentage" data-toggle="tab">Worst score difference percentage</a>
+                                <a href="#summary_worstScoreDifferencePercentage" data-toggle="tab">Worst score difference percentage (ROI)</a>
                             </li>
                         </ul>
                     </div>

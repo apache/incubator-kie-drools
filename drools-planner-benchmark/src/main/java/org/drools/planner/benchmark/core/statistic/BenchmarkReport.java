@@ -67,6 +67,7 @@ public class BenchmarkReport {
 
     protected File htmlOverviewFile = null;
     protected List<File> bestScoreSummaryChartFileList = null;
+    protected List<File> bestScoreScalabilitySummaryChartFileList = null;
     protected List<File> winningScoreDifferenceSummaryChartFileList = null;
     protected List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
     protected File timeSpendSummaryChartFile = null;
@@ -98,6 +99,10 @@ public class BenchmarkReport {
 
     public List<File> getBestScoreSummaryChartFileList() {
         return bestScoreSummaryChartFileList;
+    }
+
+    public List<File> getBestScoreScalabilitySummaryChartFileList() {
+        return bestScoreScalabilitySummaryChartFileList;
     }
 
     public List<File> getWinningScoreDifferenceSummaryChartFileList() {
@@ -165,6 +170,7 @@ public class BenchmarkReport {
         warningList = new ArrayList<String>();
         fillWarningList();
         writeBestScoreSummaryCharts();
+        writeBestScoreScalabilitySummaryChart();
         writeWinningScoreDifferenceSummaryChart();
         writeWorstScoreDifferencePercentageSummaryChart();
         writeTimeSpendSummaryChart();
@@ -220,6 +226,46 @@ public class BenchmarkReport {
             JFreeChart chart = new JFreeChart("Best score level " + scoreLevelIndex + " summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             bestScoreSummaryChartFileList.add(writeChartToImageFile(chart, "bestScoreSummaryLevel" + scoreLevelIndex));
+            scoreLevelIndex++;
+        }
+    }
+
+    private void writeBestScoreScalabilitySummaryChart() {
+        // Each scoreLevel has it's own dataset and chartFile
+        List<List<XYSeries>> seriesListList = new ArrayList<List<XYSeries>>(
+                CHARTED_SCORE_LEVEL_SIZE);
+        int solverBenchmarkIndex = 0;
+        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+            String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
+            for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                if (singleBenchmark.isSuccess()) {
+                    long problemScale = singleBenchmark.getProblemBenchmark().getProblemScale();
+                    double[] levelValues = singleBenchmark.getScore().toDoubleLevels();
+                    for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                        if (i >= seriesListList.size()) {
+                            seriesListList.add(new ArrayList<XYSeries>(
+                                    plannerBenchmark.getSolverBenchmarkList().size()));
+                        }
+                        List<XYSeries> seriesList = seriesListList.get(i);
+                        if (solverBenchmarkIndex >= seriesList.size()) {
+                            seriesList.add(new XYSeries(solverLabel));
+                        }
+                        seriesList.get(solverBenchmarkIndex).add((double) problemScale, levelValues[i]);
+                    }
+                }
+            }
+            solverBenchmarkIndex++;
+        }
+        bestScoreScalabilitySummaryChartFileList = new ArrayList<File>(seriesListList.size());
+        int scoreLevelIndex = 0;
+        for (List<XYSeries> seriesList : seriesListList) {
+            XYPlot plot = createScalabilityPlot(seriesList,
+                    "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
+            JFreeChart chart = new JFreeChart(
+                    "Best score scalability level " + scoreLevelIndex + " summary (higher is better)",
+                    JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            bestScoreScalabilitySummaryChartFileList.add(
+                    writeChartToImageFile(chart, "bestScoreScalabilitySummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
     }
@@ -287,6 +333,29 @@ public class BenchmarkReport {
                     writeChartToImageFile(chart, "worstScoreDifferencePercentageSummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
+    }
+
+    private XYPlot createScalabilityPlot(List<XYSeries> seriesList, String yAxisLabel, NumberFormat numberFormat) {
+        NumberAxis xAxis = new NumberAxis("Problem scale");
+        xAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
+        NumberAxis yAxis = new NumberAxis(yAxisLabel);
+        yAxis.setNumberFormatOverride(numberFormat);
+        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        int seriesIndex = 0;
+        for (XYSeries series : seriesList) {
+            XYSeriesCollection seriesCollection = new XYSeriesCollection();
+            seriesCollection.addSeries(series);
+            plot.setDataset(seriesIndex, seriesCollection);
+            XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
+            // Use dashed line
+            renderer.setSeriesStroke(0, new BasicStroke(
+                    1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[]{2.0f, 6.0f}, 0.0f
+            ));
+            plot.setRenderer(seriesIndex, renderer);
+            seriesIndex++;
+        }
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        return plot;
     }
 
     private void writeTimeSpendSummaryChart() {
