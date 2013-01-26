@@ -161,7 +161,7 @@
                                 </#list>
                                 </table>
                             </div>
-                            <div class="tab-pane active" id="summary_bestScoreScalability">
+                            <div class="tab-pane" id="summary_bestScoreScalability">
                                 <h3>Best score scalability summary</h3>
                                 <div class="tabbable tabs-right">
                                     <ul class="nav nav-tabs">
