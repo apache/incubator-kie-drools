@@ -335,29 +335,6 @@ public class BenchmarkReport {
         }
     }
 
-    private XYPlot createScalabilityPlot(List<XYSeries> seriesList, String yAxisLabel, NumberFormat numberFormat) {
-        NumberAxis xAxis = new NumberAxis("Problem scale");
-        xAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
-        NumberAxis yAxis = new NumberAxis(yAxisLabel);
-        yAxis.setNumberFormatOverride(numberFormat);
-        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
-        int seriesIndex = 0;
-        for (XYSeries series : seriesList) {
-            XYSeriesCollection seriesCollection = new XYSeriesCollection();
-            seriesCollection.addSeries(series);
-            plot.setDataset(seriesIndex, seriesCollection);
-            XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
-            // Use dashed line
-            renderer.setSeriesStroke(0, new BasicStroke(
-                    1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[]{2.0f, 6.0f}, 0.0f
-            ));
-            plot.setRenderer(seriesIndex, renderer);
-            seriesIndex++;
-        }
-        plot.setOrientation(PlotOrientation.VERTICAL);
-        return plot;
-    }
-
     private void writeTimeSpendSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
@@ -377,12 +354,7 @@ public class BenchmarkReport {
     }
 
     private void writeTimeSpendScalabilitySummaryChart() {
-        NumberAxis xAxis = new NumberAxis("Problem scale");
-        xAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
-        NumberAxis yAxis = new NumberAxis("Time spend");
-        yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
-        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
-        int seriesIndex = 0;
+        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmark.getSolverBenchmarkList().size());
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             XYSeries series = new XYSeries(solverLabel);
@@ -393,30 +365,17 @@ public class BenchmarkReport {
                     series.add((Long) problemScale, (Long) timeMillisSpend);
                 }
             }
-            XYSeriesCollection seriesCollection = new XYSeriesCollection();
-            seriesCollection.addSeries(series);
-            plot.setDataset(seriesIndex, seriesCollection);
-            XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
-            // Use dashed line
-            renderer.setSeriesStroke(0, new BasicStroke(
-                    1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[]{2.0f, 6.0f}, 0.0f
-            ));
-            plot.setRenderer(seriesIndex, renderer);
-            seriesIndex++;
+            seriesList.add(series);
         }
-        plot.setOrientation(PlotOrientation.VERTICAL);
+        XYPlot plot = createScalabilityPlot(seriesList,
+                "Time spend", new MillisecondsSpendNumberFormat(locale));
         JFreeChart chart = new JFreeChart("Time spend scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         timeSpendScalabilitySummaryChartFile = writeChartToImageFile(chart, "timeSpendScalabilitySummary");
     }
 
     private void writeAverageCalculateCountPerSecondSummaryChart() {
-        NumberAxis xAxis = new NumberAxis("Problem scale");
-        xAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
-        NumberAxis yAxis = new NumberAxis("Average calculate count per second");
-        yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
-        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
-        int seriesIndex = 0;
+        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmark.getSolverBenchmarkList().size());
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             XYSeries series = new XYSeries(solverLabel);
@@ -427,18 +386,10 @@ public class BenchmarkReport {
                     series.add((Long) problemScale, (Long) averageCalculateCountPerSecond);
                 }
             }
-            XYSeriesCollection seriesCollection = new XYSeriesCollection();
-            seriesCollection.addSeries(series);
-            plot.setDataset(seriesIndex, seriesCollection);
-            XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
-            // Use dashed line
-            renderer.setSeriesStroke(0, new BasicStroke(
-                    1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[]{2.0f, 6.0f}, 0.0f
-            ));
-            plot.setRenderer(seriesIndex, renderer);
-            seriesIndex++;
+            seriesList.add(series);
         }
-        plot.setOrientation(PlotOrientation.VERTICAL);
+        XYPlot plot = createScalabilityPlot(seriesList,
+                "Average calculate count per second", NumberFormat.getInstance(locale));
         JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         averageCalculateCountSummaryChartFile = writeChartToImageFile(chart, "averageCalculateCountSummary");
@@ -467,6 +418,34 @@ public class BenchmarkReport {
         renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator(
                 StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, numberFormat));
         renderer.setBaseItemLabelsVisible(true);
+        return renderer;
+    }
+
+    private XYPlot createScalabilityPlot(List<XYSeries> seriesList, String yAxisLabel, NumberFormat numberFormat) {
+        NumberAxis xAxis = new NumberAxis("Problem scale");
+        xAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
+        NumberAxis yAxis = new NumberAxis(yAxisLabel);
+        yAxis.setNumberFormatOverride(numberFormat);
+        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        int seriesIndex = 0;
+        for (XYSeries series : seriesList) {
+            XYSeriesCollection seriesCollection = new XYSeriesCollection();
+            seriesCollection.addSeries(series);
+            plot.setDataset(seriesIndex, seriesCollection);
+            XYItemRenderer renderer = createScalabilityPlotRenderer(numberFormat);
+            plot.setRenderer(seriesIndex, renderer);
+            seriesIndex++;
+        }
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        return plot;
+    }
+
+    private XYItemRenderer createScalabilityPlotRenderer(NumberFormat numberFormat) {
+        XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
+        // Use dashed line
+        renderer.setSeriesStroke(0, new BasicStroke(
+                1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[]{2.0f, 6.0f}, 0.0f
+        ));
         return renderer;
     }
 
