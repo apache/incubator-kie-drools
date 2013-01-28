@@ -55,13 +55,8 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
             TypeDeclaration type = conf.getTypeDeclaration();
             long timestamp;
             if ( type.getTimestampExtractor() != null ) {
-                if ( Date.class.isAssignableFrom( type.getTimestampExtractor().getExtractToClass() ) ) {
-                    timestamp = ((Date) type.getTimestampExtractor().getValue( workingMemory,
-                                                                               object )).getTime();
-                } else {
-                    timestamp = type.getTimestampExtractor().getLongValue( workingMemory,
-                                                                           object );
-                }
+                timestamp = type.getTimestampExtractor().getLongValue( workingMemory,
+                                                                       object );
             } else {
                 timestamp = workingMemory.getTimerService().getCurrentTime();
             }

@@ -15,13 +15,13 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class PackageRegistry {
-    private final Package              pkg;
-    private String                     dialect;
+    private final Package                    pkg;
+    private String                           dialect;
 
     private final DialectRuntimeRegistry     dialectRuntimeRegistry;
     private final DialectCompiletimeRegistry dialectCompiletimeRegistry;
 
-    private final TypeResolver         typeResolver;
+    private final TypeResolver               typeResolver;
 
     public PackageRegistry(PackageBuilder packageBuilder, Package pkg) {
         this.pkg = pkg;

@@ -1456,7 +1456,6 @@ public class PatternBuilder
                     return null;
                 }
 
-                // TODO (sunday MDP), we should make sure returnValue is passed and used to determine correct ClassFieldReader
                 reader = context.getPkg().getClassFieldAccessorStore().getMVELReader( context.getPkg().getName(),
                                                                                       ((ClassObjectType) objectType).getClassName(),
                                                                                       fieldName,
