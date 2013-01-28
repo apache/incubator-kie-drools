@@ -22,6 +22,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.base.ClassObjectType;
 import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.base.mvel.MVELCompileable;
@@ -88,10 +89,13 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.WindowDeclaration;
+import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.DialectError;
+import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
@@ -2186,12 +2190,30 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         String timestamp = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
         if (timestamp != null) {
             type.setTimestampAttribute( timestamp );
-            Package pkg = pkgRegistry.getPackage();
+            Package pkg = pkgRegistry.getPackage();            
+
+            MVELDialect dialect = ( MVELDialect ) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );            
+            PackageBuildContext context = new PackageBuildContext();            
+            context.init( this, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null );
+            if ( !type.isTypesafe() ) {
+                context.setTypesafe( false );
+            }
+            
+            MVELAnalysisResult results = ( MVELAnalysisResult )
+                                context.getDialect().analyzeExpression( context,
+                                                                        typeDescr,
+                                                                        timestamp,
+                                                                        new BoundIdentifiers( Collections.EMPTY_MAP,
+                                                                                              Collections.EMPTY_MAP,
+                                                                                              Collections.EMPTY_MAP,
+                                                                                              type.getTypeClass() ) );
+            
             InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage(type.getTypeClass()),
                                                                                           type.getTypeClass().getName(),
                                                                                           timestamp,
                                                                                           type.isTypesafe(),
-                                                                                          Date.class );
+                                                                                          results.getReturnType() );
+            
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( (MVELCompileable) reader );
             ( (MVELCompileable) reader ).compile( data );
@@ -2203,11 +2225,29 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         if (duration != null) {
             type.setDurationAttribute( duration );
             Package pkg = pkgRegistry.getPackage();
+            
+            MVELDialect dialect = ( MVELDialect ) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );            
+            PackageBuildContext context = new PackageBuildContext();            
+            context.init( this, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null );
+            if ( !type.isTypesafe() ) {
+                context.setTypesafe( false );
+            }
+            
+            MVELAnalysisResult results = ( MVELAnalysisResult )
+                                context.getDialect().analyzeExpression( context,
+                                                                        typeDescr,
+                                                                        timestamp,
+                                                                        new BoundIdentifiers( Collections.EMPTY_MAP,
+                                                                                              Collections.EMPTY_MAP,
+                                                                                              Collections.EMPTY_MAP,
+                                                                                              type.getTypeClass() ) );            
+            
             InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
                                                                                           type.getTypeClass().getName(),
                                                                                           duration,
                                                                                           type.isTypesafe(),
-                                                                                          Number.class );
+                                                                                          results.getReturnType()  );
+            
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( (MVELCompileable) reader );
             ( (MVELCompileable) reader ).compile( data );
