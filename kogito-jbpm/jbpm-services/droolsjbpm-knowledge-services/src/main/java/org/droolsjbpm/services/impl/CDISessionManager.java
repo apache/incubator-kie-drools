@@ -15,22 +15,18 @@
  */
 package org.droolsjbpm.services.impl;
 
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.transaction.UserTransaction;
-import org.drools.impl.EnvironmentFactory;
 
+import org.drools.impl.EnvironmentFactory;
 import org.droolsjbpm.services.api.Domain;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.WorkItemHandlerProducer;
@@ -43,8 +39,8 @@ import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventList
 import org.droolsjbpm.services.impl.helpers.StatefulKnowledgeSessionDelegate;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
-import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
+import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
@@ -198,7 +194,6 @@ public class CDISessionManager implements SessionManager {
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
             Environment env = EnvironmentFactory.newEnvironment();
             env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, em.getEntityManagerFactory());
-            env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
             StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);            
 
             ksession.addEventListener(processListener);

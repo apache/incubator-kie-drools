@@ -88,7 +88,7 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
     }
 
     public Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId){
-      List<ProcessInstanceDesc> processInstances = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.processDefId =:processDefId, pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id and pid.processDefId =:processDefId )")
+      List<ProcessInstanceDesc> processInstances = em.createQuery("select pi FROM ProcessInstanceDesc pi where pi.processDefId =:processDefId and pi.pk = (select max(pid.pk) FROM ProcessInstanceDesc pid WHERE pid.id = pi.id and pid.processDefId =:processDefId )")
                 .setParameter("processDefId", processDefId).getResultList();
 
         return processInstances;
