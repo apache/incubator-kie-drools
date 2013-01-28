@@ -19,19 +19,18 @@ package org.drools.rule;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
 import org.drools.base.evaluators.BeforeEvaluatorDefinition.BeforeEvaluator;
-import org.drools.base.evaluators.EvaluatorDefinition;
+import org.drools.base.evaluators.CoincidesEvaluatorDefinition.CoincidesEvaluator;
+import org.drools.base.evaluators.MetByEvaluatorDefinition.MetByEvaluator;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ReadAccessor;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Date;
 
 public class VariableRestriction {
 
@@ -43,8 +42,14 @@ public class VariableRestriction {
         ValueType coerced = evaluator.getCoercedValueType();
         
         if ( evaluator instanceof AfterEvaluator || evaluator instanceof BeforeEvaluator ) {
-            return new TemperalVariableContextEntry( fieldExtractor, 
+            return new TemporalVariableContextEntry( fieldExtractor,
                                                      declaration, 
+                                                     evaluator );
+        }
+
+        if ( evaluator instanceof CoincidesEvaluator || evaluator instanceof MetByEvaluator) {
+            return new DurationVariableContextEntry( fieldExtractor,
+                                                     declaration,
                                                      evaluator );
         }
 
@@ -529,17 +534,17 @@ public class VariableRestriction {
         }
     }
     
-    public static class TemperalVariableContextEntry extends VariableContextEntry {
+    public static class TemporalVariableContextEntry extends VariableContextEntry {
 
         private static final long serialVersionUID = 510l;
 
         public long               left;
         public long               right;
 
-        public TemperalVariableContextEntry() {
+        public TemporalVariableContextEntry() {
         }
 
-        public TemperalVariableContextEntry(final InternalReadAccessor extractor,
+        public TemporalVariableContextEntry(final InternalReadAccessor extractor,
                                             final Declaration declaration,
                                             final Evaluator evaluator) {
             super( extractor,
@@ -596,5 +601,51 @@ public class VariableRestriction {
                 }                
             }
         }
-    }    
+    }
+
+    public static class DurationVariableContextEntry extends TemporalVariableContextEntry {
+        private static final long serialVersionUID = 510l;
+
+        public long               leftEnd;
+        public long               rightEnd;
+
+        public DurationVariableContextEntry() {
+        }
+
+        public DurationVariableContextEntry(final InternalReadAccessor extractor,
+                                            final Declaration declaration,
+                                            final Evaluator evaluator) {
+            super( extractor,
+                    declaration,
+                    evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal( in );
+            leftEnd = in.readLong();
+            rightEnd = in.readLong();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal( out );
+            out.writeLong( leftEnd );
+            out.writeLong( rightEnd );
+        }
+
+        @Override
+        public void updateFromTuple(InternalWorkingMemory workingMemory, LeftTuple tuple) {
+            super.updateFromTuple(workingMemory, tuple);
+            if ( this.declaration.getExtractor().isSelfReference() ) {
+                this.leftEnd = ((EventFactHandle)tuple.get( this.declaration )).getEndTimestamp();
+            }
+        }
+
+        @Override
+        public void updateFromFactHandle(InternalWorkingMemory workingMemory, InternalFactHandle handle) {
+            super.updateFromFactHandle(workingMemory, handle);
+            if ( this.extractor.isSelfReference() ) {
+                this.rightEnd = ((EventFactHandle)handle).getEndTimestamp();
+            }
+        }
+    }
 }

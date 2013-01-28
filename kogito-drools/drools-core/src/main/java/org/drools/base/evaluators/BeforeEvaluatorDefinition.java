@@ -16,27 +16,25 @@
 
 package org.drools.base.evaluators;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.VariableRestriction.LongVariableContextEntry;
-import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction.TemporalVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>The implementation of the 'before' evaluator definition.</p>
@@ -287,6 +285,7 @@ public class BeforeEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
+/*
             long rightTS;
             if ( this.unwrapRight ) {
                 if ( context instanceof ObjectVariableContextEntry ) {
@@ -303,6 +302,14 @@ public class BeforeEvaluatorDefinition
             }
             long leftTS = this.unwrapLeft ? context.declaration.getExtractor().getLongValue( workingMemory,
                                                                                              left ) : ((EventFactHandle) left).getStartTimestamp();
+*/
+            long rightTS = ((TemporalVariableContextEntry)context).right;
+            long leftTS;
+            if ( context.declaration.getExtractor().isSelfReference() ) {
+                leftTS = ((EventFactHandle) left).getStartTimestamp();
+            } else {
+                leftTS = context.declaration.getExtractor().getLongValue( workingMemory, left.getObject() );
+            }
 
             long dist = leftTS - rightTS;
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
@@ -315,6 +322,7 @@ public class BeforeEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
+/*
             long rightTS = this.unwrapRight ? context.extractor.getLongValue( workingMemory,
                                                                               right ) : ((EventFactHandle) right).getEndTimestamp();
 
@@ -332,8 +340,15 @@ public class BeforeEvaluatorDefinition
             } else {
                 leftTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
             }
+*/
+            long leftTS = ((TemporalVariableContextEntry)context).left;
+            long rightTS;
+            if ( context.getFieldExtractor().isSelfReference() ) {
+                rightTS = ((EventFactHandle) right).getStartTimestamp();
+            } else {
+                rightTS = context.getFieldExtractor().getLongValue( workingMemory, right.getObject() );
+            }
             long dist = leftTS - rightTS;
-
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
