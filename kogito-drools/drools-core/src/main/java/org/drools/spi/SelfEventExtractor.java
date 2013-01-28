@@ -29,7 +29,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.facttemplates.Fact;
 
-public class PatternExtractor extends BaseObjectClassFieldReader
+public class SelfEventExtractor extends BaseObjectClassFieldReader
     implements
     InternalReadAccessor,
     AcceptsClassObjectType,
@@ -38,17 +38,19 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     private static final long serialVersionUID = 510l;
     private ObjectType        objectType;
 
-    public PatternExtractor() {
+    public SelfEventExtractor() {
     }
 
-    public PatternExtractor(final ObjectType objectType) {
+    public SelfEventExtractor(final ObjectType objectType) {
         super(-1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
-        this.objectType = objectType;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         objectType = (ObjectType) in.readObject();
+        setIndex( -1 );
+        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setValueType( objectType.getValueType() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -113,10 +115,10 @@ public class PatternExtractor extends BaseObjectClassFieldReader
         if ( this == obj ) {
             return true;
         }
-        if ( !(obj instanceof PatternExtractor) ) {
+        if ( !(obj instanceof SelfEventExtractor) ) {
             return false;
         }
-        final PatternExtractor other = (PatternExtractor) obj;
+        final SelfEventExtractor other = (SelfEventExtractor) obj;
         return this.objectType.equals( other.objectType );
     }
 

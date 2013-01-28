@@ -8,6 +8,7 @@ import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.Operator;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
@@ -139,9 +140,9 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
          * @inheridDoc
          */
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                InternalReadAccessor extractor, Object object, FieldValue value) {
+                InternalReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
             final Object objectValue = extractor
-                    .getValue(workingMemory, object);
+                    .getValue(workingMemory, factHandle);
                 switch (parameter) {
                 case startsWith:
                     return this.getOperator().isNegated() ^ (((String)objectValue).startsWith( (String)value.getValue() ));
@@ -155,8 +156,8 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                InternalReadAccessor leftExtractor, Object left,
-                InternalReadAccessor rightExtractor, Object right) {
+                InternalReadAccessor leftExtractor, InternalFactHandle left,
+                InternalReadAccessor rightExtractor, InternalFactHandle right) {
             final Object value1 = leftExtractor.getValue(workingMemory, left);
             final Object value2 = rightExtractor.getValue(workingMemory, right);
 
@@ -174,17 +175,17 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                VariableContextEntry context, Object right) {
+                VariableContextEntry context, InternalFactHandle right) {
 
                 switch (parameter) {
                 case startsWith:
-                    return this.getOperator().isNegated() ^ (((String)right).startsWith( (String)((ObjectVariableContextEntry)
+                    return this.getOperator().isNegated() ^ (((String)right.getObject()).startsWith( (String)((ObjectVariableContextEntry)
                             context).left) );
                 case endsWith:
-                    return this.getOperator().isNegated() ^ (((String)right).endsWith( (String)((ObjectVariableContextEntry)
+                    return this.getOperator().isNegated() ^ (((String)right.getObject()).endsWith( (String)((ObjectVariableContextEntry)
                             context).left));
                 case length:
-                    return this.getOperator().isNegated() ^ (((String)right).length() ==  ((Number)((ObjectVariableContextEntry)
+                    return this.getOperator().isNegated() ^ (((String)right.getObject()).length() ==  ((Number)((ObjectVariableContextEntry)
                             context).left).longValue());
                 default:
                     throw new IllegalAccessError("Illegal str comparison parameter");
@@ -193,16 +194,16 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                VariableContextEntry context, Object left) {
+                VariableContextEntry context, InternalFactHandle left) {
                 switch (parameter) {
                 case startsWith:
-                    return this.getOperator().isNegated() ^ (((String)left).startsWith((String)((ObjectVariableContextEntry)
+                    return this.getOperator().isNegated() ^ (((String)left.getObject()).startsWith((String)((ObjectVariableContextEntry)
                             context).right));
                 case endsWith:
-                    return this.getOperator().isNegated() ^ (((String)left).endsWith((String)((ObjectVariableContextEntry)
+                    return this.getOperator().isNegated() ^ (((String)left.getObject()).endsWith((String)((ObjectVariableContextEntry)
                             context).right));
                 case length:
-                    return this.getOperator().isNegated() ^ (((String)left).length() == ((Number)((ObjectVariableContextEntry)
+                    return this.getOperator().isNegated() ^ (((String)left.getObject()).length() == ((Number)((ObjectVariableContextEntry)
                             context).right).longValue());
                 default:
                     throw new IllegalAccessError("Illegal str comparison parameter");

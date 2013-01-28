@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.DoubleVariableContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
@@ -328,37 +329,39 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
+                                final InternalFactHandle handle1,
+                                final FieldValue fieldValue) {
             final Object array = extractor.getValue( workingMemory,
-                                                     object1 );
+                                                     handle1.getObject() );
 
             if ( array == null ) return false;
 
             return getArrayContains( array.getClass() ).contains( array,
-                                                                  object2 );
+                                                                  fieldValue );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
+                                           final InternalFactHandle left) {
             final Object array = ((ObjectVariableContextEntry) context).right;
             if ( array == null ) return false;
 
             return getArrayContains( array.getClass() ).contains( array,
                                                                   workingMemory,
                                                                   context.declaration.getExtractor(),
-                                                                  left );
+                                                                  left.getObject() );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
+                                          final InternalFactHandle right) {
             final Object array = context.extractor.getValue( workingMemory,
-                                                             right );
+                                                             right.getObject() );
 
             if ( array == null ) return false;
 
+            // the original object is passed, as the extractor
+            // is used to cast to the correct type for the array comparison
             return getArrayContains( array.getClass() ).contains( array,
                                                                   workingMemory,
                                                                   context.declaration.getExtractor(),
@@ -367,18 +370,18 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
+                                final InternalFactHandle handle2) {
             final Object array = extractor1.getValue( workingMemory,
-                                                      object1 );
+                                                      handle1.getObject() );
 
             if ( array == null ) return false;
 
             return getArrayContains( array.getClass() ).contains( array,
                                                                   workingMemory,
                                                                   extractor2,
-                                                                  object2 );
+                                                                  handle2.getObject() );
         }
 
         public String toString() {
@@ -397,34 +400,34 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
+                                final InternalFactHandle handle1,
+                                final FieldValue fieldValue) {
             final Object array = extractor.getValue( workingMemory,
-                                                     object1 );
+                                                     handle1.getObject() );
 
             if ( array == null ) return false;
 
             return !getArrayContains( array.getClass() ).contains( array,
-                                                                   object2 );
+                                                                   fieldValue );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
+                                           final InternalFactHandle left) {
             final Object array = ((ObjectVariableContextEntry) context).right;
             if ( array == null ) return false;
 
             return !getArrayContains( array.getClass() ).contains( array,
                                                                    workingMemory,
                                                                    context.declaration.getExtractor(),
-                                                                   left );
+                                                                   left.getObject() );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
+                                          final InternalFactHandle right) {
             final Object array = context.extractor.getValue( workingMemory,
-                                                             right );
+                                                             right.getObject() );
 
             if ( array == null ) return false;
 
@@ -436,18 +439,18 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
+                                final InternalFactHandle handle2) {
             final Object array = extractor1.getValue( workingMemory,
-                                                      object1 );
+                                                      handle1 .getObject());
 
             if ( array == null ) return false;
 
             return !getArrayContains( array.getClass() ).contains( array,
                                                                    workingMemory,
                                                                    extractor2,
-                                                                   object2 );
+                                                                   handle2.getObject() );
         }
 
         public String toString() {
@@ -488,30 +491,30 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if ( object2.isNull() ) {
+                                final InternalFactHandle handle1,
+                                final FieldValue fieldValue) {
+            if ( fieldValue.isNull() ) {
                 return false;
-            } else if ( object2.isCollectionField() ) {
-                final Collection col = (Collection) object2.getValue();
+            } else if ( fieldValue.isCollectionField() ) {
+                final Collection col = (Collection) fieldValue.getValue();
                 final Object value = extractor.getValue( workingMemory,
-                                                         object1 );
+                                                         handle1.getObject() );
                 return col.contains( value );
-            } else if ( object2.getValue().getClass().isArray() ) {
-                return getArrayContains( object2.getValue().getClass() ).contains( object2.getValue(),
-                                                                                   workingMemory,
-                                                                                   extractor,
-                                                                                   object1 );
+            } else if ( fieldValue.getValue().getClass().isArray() ) {
+                return getArrayContains( fieldValue.getValue().getClass() ).contains( fieldValue.getValue(),
+                                                                                      workingMemory,
+                                                                                      extractor,
+                                                                                      handle1.getObject() );
             } else {
-                throw new ClassCastException( "Can't check if an attribute is member of an object of class " + object2.getValue().getClass() );
+                throw new ClassCastException( "Can't check if an attribute is member of an object of class " + fieldValue.getValue().getClass() );
             }
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
+                                           final InternalFactHandle left) {
             final Object object = context.declaration.getExtractor().getValue( workingMemory,
-                                                                               left );
+                                                                               left.getObject() );
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
@@ -530,20 +533,20 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
+                                          final InternalFactHandle right) {
             final Object object = ((ObjectVariableContextEntry) context).left;
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
                 final Collection col = (Collection) object;
                 final Object value = context.extractor.getValue( workingMemory,
-                                                                 right );
+                                                                 right.getObject() );
                 return col.contains( value );
             } else if ( object.getClass().isArray() ) {
                 return getArrayContains( object.getClass() ).contains( object,
                                                                        workingMemory,
                                                                        context.extractor,
-                                                                       right );
+                                                                       right.getObject() );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is member of an object of class " + object.getClass() );
             }
@@ -551,23 +554,23 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
+                                final InternalFactHandle handle2) {
             final Object object = extractor2.getValue( workingMemory,
-                                                       object2 );
+                                                       handle2.getObject() );
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
                 final Collection col = (Collection) object;
                 final Object value = extractor1.getValue( workingMemory,
-                                                          object1 );
+                                                          handle1.getObject() );
                 return col.contains( value );
             } else if ( object.getClass().isArray() ) {
                 return getArrayContains( object.getClass() ).contains( object,
                                                                       workingMemory,
                                                                       extractor1,
-                                                                      object1 );
+                                                                      handle1.getObject() );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is member of an object of class " + object.getClass() );
             }
@@ -594,30 +597,30 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if ( object2.isNull() ) {
+                                final InternalFactHandle handle1,
+                                final FieldValue fieldValue) {
+            if ( fieldValue.isNull() ) {
                 return false;
-            } else if ( object2.isCollectionField() ) {
-                final Collection col = (Collection) object2.getValue();
+            } else if ( fieldValue.isCollectionField() ) {
+                final Collection col = (Collection) fieldValue.getValue();
                 final Object value = extractor.getValue( workingMemory,
-                                                         object1 );
+                                                         handle1.getObject() );
                 return !col.contains( value );
-            } else if ( object2.getValue().getClass().isArray() ) {
-                return !getArrayContains( object2.getValue().getClass() ).contains( object2.getValue(),
+            } else if ( fieldValue.getValue().getClass().isArray() ) {
+                return !getArrayContains( fieldValue.getValue().getClass() ).contains( fieldValue.getValue(),
                                                                                    workingMemory,
                                                                                    extractor,
-                                                                                   object1 );
+                                                                                   handle1.getObject() );
             } else {
-                throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + object2.getValue().getClass() );
+                throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + fieldValue.getValue().getClass() );
             }
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
+                                           final InternalFactHandle left) {
             final Object object = context.declaration.getExtractor().getValue( workingMemory,
-                                                                               left );
+                                                                               left.getObject() );
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
@@ -625,10 +628,13 @@ public class SetEvaluatorsDefinition
                 final Object value = ((ObjectVariableContextEntry) context).right;
                 return !col.contains( value );
             } else if ( object.getClass().isArray() ) {
+                // the original object is passed, as the extractor
+                // is used to cast to the correct type for the array comparison
                 return !getArrayContains( object.getClass() ).contains( object,
                                                                        workingMemory,
                                                                        context.extractor,
-                                                                       context.object );
+                                                                       context.object ); 
+                  
             } else {
                 throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + object.getClass() );
             }
@@ -636,20 +642,20 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
+                                          final InternalFactHandle right) {
             final Object object = ((ObjectVariableContextEntry) context).left;
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
                 final Collection col = (Collection) object;
                 final Object value = context.extractor.getValue( workingMemory,
-                                                                 right );
+                                                                 right.getObject() );
                 return !col.contains( value );
             } else if ( object.getClass().isArray() ) {
                 return !getArrayContains( object.getClass() ).contains( object,
                                                                        workingMemory,
                                                                        context.extractor,
-                                                                       right );
+                                                                       right.getObject() );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + object.getClass() );
             }
@@ -657,23 +663,23 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
+                                final InternalFactHandle handle2) {
             final Object object = extractor2.getValue( workingMemory,
-                                                       object2 );
+                                                       handle2.getObject() );
             if ( object == null ) {
                 return false;
             } else if ( object instanceof Collection ) {
                 final Collection col = (Collection) object;
                 final Object value = extractor1.getValue( workingMemory,
-                                                          object1 );
+                                                          handle1.getObject() );
                 return !col.contains( value );
             } else if ( object.getClass().isArray() ) {
                 return !getArrayContains( object.getClass() ).contains( object,
                                                                       workingMemory,
                                                                       extractor1,
-                                                                      object1 );
+                                                                      handle1.getObject() );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + object.getClass() );
             }
@@ -993,41 +999,41 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            final Object value = object2.getValue();
+                                final InternalFactHandle handle1,
+                                final FieldValue fieldValue) {
+            final Object value = fieldValue.getValue();
             final Collection col = (Collection) extractor.getValue( workingMemory,
-                                                                    object1 );
+                                                                    handle1.getObject() );
             return (col == null) ? false : col.contains( value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
+                                           final InternalFactHandle left) {
             final Object value = context.declaration.getExtractor().getValue( workingMemory,
-                                                                              left );
+                                                                              left.getObject() );
             final Collection col = (Collection) ((ObjectVariableContextEntry) context).right;
             return (col == null) ? false : col.contains( value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
+                                          final InternalFactHandle right) {
             final Object value = ((ObjectVariableContextEntry) context).left;
             final Collection col = (Collection) context.extractor.getValue( workingMemory,
-                                                                            right );
+                                                                            right.getObject() );
             return (col == null) ? false : col.contains( value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
+                                final InternalFactHandle handle2) {
             final Object value = extractor2.getValue( workingMemory,
-                                                      object2 );
+                                                      handle2.getObject() );
             final Collection col = (Collection) extractor1.getValue( workingMemory,
-                                                                     object1 );
+                                                                     handle1.getObject() );
             return (col == null) ? false : col.contains( value );
         }
 
@@ -1047,41 +1053,41 @@ public class SetEvaluatorsDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            final Object value = object2.getValue();
+                                final InternalFactHandle handle1,
+                                final FieldValue fieldValue) {
+            final Object value = fieldValue.getValue();
             final Collection col = (Collection) extractor.getValue( workingMemory,
-                                                                    object1 );
+                                                                    handle1.getObject() );
             return (col == null) ? true : !col.contains( value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
+                                           final InternalFactHandle left) {
             final Object value = context.declaration.getExtractor().getValue( workingMemory,
-                                                                              left );
+                                                                              left.getObject() );
             final Collection col = (Collection) ((ObjectVariableContextEntry) context).right;
             return (col == null) ? true : !col.contains( value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
+                                          final InternalFactHandle right) {
             final Object value = ((ObjectVariableContextEntry) context).left;
             final Collection col = (Collection) context.extractor.getValue( workingMemory,
-                                                                            right );
+                                                                            right.getObject() );
             return (col == null) ? true : !col.contains( value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
+                                final InternalFactHandle handle2) {
             final Object value = extractor2.getValue( workingMemory,
-                                                      object2 );
+                                                      handle2.getObject() );
             final Collection col = (Collection) extractor1.getValue( workingMemory,
-                                                                     object1 );
+                                                                     handle1.getObject() );
             return (col == null) ? true : !col.contains( value );
         }
 

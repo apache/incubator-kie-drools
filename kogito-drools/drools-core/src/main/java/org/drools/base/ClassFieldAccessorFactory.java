@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
+import java.util.Date;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
@@ -31,6 +32,7 @@ import org.drools.base.extractors.BaseByteClassFieldReader;
 import org.drools.base.extractors.BaseByteClassFieldWriter;
 import org.drools.base.extractors.BaseCharClassFieldReader;
 import org.drools.base.extractors.BaseCharClassFieldWriter;
+import org.drools.base.extractors.BaseDateClassFieldReader;
 import org.drools.base.extractors.BaseDoubleClassFieldReader;
 import org.drools.base.extractors.BaseDoubleClassFieldWriter;
 import org.drools.base.extractors.BaseFloatClassFieldReader;
@@ -39,11 +41,12 @@ import org.drools.base.extractors.BaseIntClassFieldReader;
 import org.drools.base.extractors.BaseIntClassFieldWriter;
 import org.drools.base.extractors.BaseLongClassFieldReader;
 import org.drools.base.extractors.BaseLongClassFieldWriter;
+import org.drools.base.extractors.BaseNumberClassFieldReader;
 import org.drools.base.extractors.BaseObjectClassFieldReader;
 import org.drools.base.extractors.BaseObjectClassFieldWriter;
 import org.drools.base.extractors.BaseShortClassFieldReader;
 import org.drools.base.extractors.BaseShortClassFieldWriter;
-import org.drools.base.extractors.MVELClassFieldReader;
+import org.drools.base.extractors.MVELObjectClassFieldReader;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.asm.ClassFieldInspector;
@@ -600,6 +603,10 @@ public class ClassFieldAccessorFactory {
             } else if ( fieldType == boolean.class ) {
                 ret = BaseBooleanClassFieldReader.class;
             }
+        } else if ( Number.class.isAssignableFrom( fieldType ) ) {
+            ret = BaseNumberClassFieldReader.class;
+        } else if ( Date.class.isAssignableFrom( fieldType ) ) {
+            ret = BaseDateClassFieldReader.class;
         } else {
             ret = BaseObjectClassFieldReader.class;
         }

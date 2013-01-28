@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,20 +23,21 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Date;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.extractors.BaseDateClassFieldReader;
+import org.drools.base.extractors.BaseNumberClassFieldReader;
+import org.drools.base.extractors.BaseObjectClassFieldReader;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MathUtils;
 import org.drools.facttemplates.Fact;
 
-/**
- * This is a global variable extractor used to get a global variable value
- */
-public class GlobalExtractor extends BaseDateClassFieldReader
+public class GlobalDateExtractor extends BaseDateClassFieldReader
     implements
     InternalReadAccessor,
     AcceptsClassObjectType,
@@ -46,16 +47,14 @@ public class GlobalExtractor extends BaseDateClassFieldReader
     private ObjectType        objectType;
     private String            identifier;
 
-    public GlobalExtractor() {
+    public GlobalDateExtractor() {
     }
 
-    public GlobalExtractor(final String identifier,
-                           final ObjectType objectType) {
-        super( -1,
-               ((ClassObjectType) objectType).getClassType(),
-               objectType.getValueType() );
+    public GlobalDateExtractor(final String identifier,
+                               final ObjectType objectType) {
+        super(-1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
         this.identifier = identifier;
-        this.objectType = objectType;
+        this.objectType = objectType;        
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -71,12 +70,12 @@ public class GlobalExtractor extends BaseDateClassFieldReader
         out.writeUTF( identifier );
         out.writeObject( objectType );
     }
-
+    
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType() );
-        setValueType( objectType.getValueType() );
+        setFieldType( ((ClassObjectType) objectType).getClassType()  );
+        setValueType( objectType.getValueType() );        
     }
 
     public Object getValue(InternalWorkingMemory workingMemory,
@@ -88,24 +87,12 @@ public class GlobalExtractor extends BaseDateClassFieldReader
         return this.objectType;
     }
 
-    public Class< ? > getExtractToClass() {
-        // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            return ((ClassObjectType) this.objectType).getClassType();
-        } else {
-            return Fact.class;
-        }
+    public Class<?> getExtractToClass() {
+        return Date.class;
     }
 
     public String getExtractToClassName() {
-        Class< ? > clazz = null;
-        // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            clazz = ((ClassObjectType) this.objectType).getClassType();
-        } else {
-            clazz = Fact.class;
-        }
-        return ClassUtils.canonicalName( clazz );
+        return ClassUtils.canonicalName( Date.class );
     }
 
     public Method getNativeReadMethod() {
@@ -130,10 +117,10 @@ public class GlobalExtractor extends BaseDateClassFieldReader
         if ( this == obj ) {
             return true;
         }
-        if ( !(obj instanceof GlobalExtractor) ) {
+        if ( !(obj instanceof GlobalDateExtractor) ) {
             return false;
         }
-        final GlobalExtractor other = (GlobalExtractor) obj;
+        final GlobalDateExtractor other = (GlobalDateExtractor) obj;
         return this.objectType.equals( other.objectType );
     }
 
@@ -144,7 +131,7 @@ public class GlobalExtractor extends BaseDateClassFieldReader
     public boolean isSelfReference() {
         return true;
     }
-
+    
     public boolean getBooleanValue(Object object) {
         throw new RuntimeDroolsException( "Can't extract a value from global " + identifier + " without a working memory reference" );
     }

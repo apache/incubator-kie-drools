@@ -18,6 +18,7 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.factmodel.traits.*;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
@@ -147,9 +148,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
          * @inheridDoc
          */
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                InternalReadAccessor extractor, Object object, FieldValue value) {
-            final Object objectValue = extractor
-                    .getValue(workingMemory, object);
+                InternalReadAccessor extractor, InternalFactHandle handle, FieldValue value) {
+            final Object objectValue = extractor.getValue(workingMemory, handle.getObject());
 
             Object typeName = value.getValue();
             if ( typeName instanceof Class ) {
@@ -196,8 +196,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                                InternalReadAccessor leftExtractor, Object left,
-                                InternalReadAccessor rightExtractor, Object right) {
+                                InternalReadAccessor leftExtractor, InternalFactHandle left,
+                                InternalReadAccessor rightExtractor, InternalFactHandle right) {
             final Object value1 = leftExtractor.getValue(workingMemory, left);
             final Object value2 = rightExtractor.getValue(workingMemory, right);
 
@@ -209,18 +209,18 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
 
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                VariableContextEntry context, Object right) {
+                VariableContextEntry context, InternalFactHandle right) {
 
-            Object target = right;
+            Object target = right.getObject();
             Object source = context.getObject();
 
             return compare( source, target, workingMemory );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                VariableContextEntry context, Object left) {
+                VariableContextEntry context, InternalFactHandle left) {
 
-            Object target = left;
+            Object target = left.getObject();
             Object source = context.getObject();
 
             return compare( source, target, workingMemory );

@@ -56,46 +56,6 @@ public interface Evaluator
      * @return
      */
     public ValueType getCoercedValueType();
-
-    /**
-     * There are evaluators that operate on fact attributes,
-     * there are evaluators that operate on fact handle attributes
-     * (metadata), and there are evaluators that can operate in
-     * either one. 
-     * 
-     * This method allows the evaluator to prepare the left object
-     * for evaluation. That includes, unwrapping the object from the
-     * handle, if necessary.
-     * 
-     * It is important to note that the concept of left and right
-     * is based on the Rete notion of left and right, where right
-     * corresponds to the current pattern, while left is a binding 
-     * to a previous pattern.
-     *  
-     * @param handle
-     * @return
-     */
-    public Object prepareLeftObject( InternalFactHandle handle );
-    
-    /**
-     * There are evaluators that operate on fact attributes,
-     * there are evaluators that operate on fact handle attributes
-     * (metadata), and there are evaluators that can operate in
-     * either one. 
-     * 
-     * This method allows the evaluator to prepare the right object
-     * for evaluation. That includes, unwrapping the object from the
-     * handle, if necessary.
-     * 
-     * It is important to note that the concept of left and right
-     * is based on the Rete notion of left and right, where right
-     * corresponds to the current pattern, while left is a binding 
-     * to a previous pattern.
-     *  
-     * @param handle
-     * @return
-     */
-    public Object prepareRightObject( InternalFactHandle handle );
     
     /**
      * Evaluates the expression using the provided parameters.
@@ -115,7 +75,7 @@ public interface Evaluator
      *        The current working memory 
      * @param extractor 
      *        The extractor used to get the field value from the object
-     * @param object
+     * @param factHandle
      *        The source object to evaluate, i.e., the fact
      * @param value
      *        The actual value to compare to, i.e., the constant value.
@@ -124,7 +84,7 @@ public interface Evaluator
      */
     public boolean evaluate(InternalWorkingMemory workingMemory,
                             InternalReadAccessor extractor,
-                            Object object,
+                            InternalFactHandle factHandle,
                             FieldValue value);
 
     /**
@@ -161,9 +121,9 @@ public interface Evaluator
      */
     public boolean evaluate(InternalWorkingMemory workingMemory,
                             InternalReadAccessor leftExtractor,
-                            Object left,
+                            InternalFactHandle left,
                             InternalReadAccessor rightExtractor,
-                            Object right);
+                            InternalFactHandle right);
 
     /**
      * Evaluates the expression using the provided parameters.
@@ -195,7 +155,7 @@ public interface Evaluator
      */
     public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                       VariableContextEntry context,
-                                      Object right);
+                                      InternalFactHandle right);
 
     /**
      * Evaluates the expression using the provided parameters.
@@ -226,7 +186,7 @@ public interface Evaluator
      */
     public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                        VariableContextEntry context,
-                                       Object left);
+                                       InternalFactHandle left);
     
     /**
      * Returns true if this evaluator implements a temporal evaluation,

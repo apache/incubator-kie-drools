@@ -32,6 +32,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction.TemperalVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
@@ -251,16 +252,6 @@ public class AfterEvaluatorDefinition
         }
 
         @Override
-        public Object prepareLeftObject(InternalFactHandle handle) {
-            return unwrapLeft ? handle.getObject() : handle;
-        }
-
-        @Override
-        public Object prepareRightObject(InternalFactHandle handle) {
-            return unwrapRight ? handle.getObject() : handle;
-        }
-
-        @Override
         public boolean isTemporal() {
             return true;
         }
@@ -290,33 +281,43 @@ public class AfterEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
+                                final InternalFactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeDroolsException( "The 'after' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
+                                           final InternalFactHandle left) {
             if ( context.rightNull ) {
                 return false;
             }
-            long rightTS;
-            if( this.unwrapRight ) {
-                if( context instanceof ObjectVariableContextEntry ) {
-                    if( ((ObjectVariableContextEntry) context).right instanceof Date ) {
-                        rightTS = ((Date)((ObjectVariableContextEntry) context).right).getTime();
-                    } else {
-                        rightTS = ((Number)((ObjectVariableContextEntry) context).right).longValue();
-                    }
-                } else {
-                    rightTS = ((LongVariableContextEntry) context).right;
-                }
+//            long rightTS;
+//            if( this.unwrapRight ) {
+//                if( context instanceof ObjectVariableContextEntry ) {
+//                    if( ((ObjectVariableContextEntry) context).right instanceof Date ) {
+//                        rightTS = ((Date)((ObjectVariableContextEntry) context).right).getTime();
+//                    } else {
+//                        rightTS = ((Number)((ObjectVariableContextEntry) context).right).longValue();
+//                    }
+//                } else {
+//                    rightTS = ((LongVariableContextEntry) context).right;
+//                }
+//            } else {
+//                rightTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
+//            }
+//            long leftTS = this.unwrapLeft ? context.declaration.getExtractor().getLongValue( workingMemory,
+//                                                                                             left ) : ((EventFactHandle) left).getEndTimestamp();
+            
+            long rightTS = ((TemperalVariableContextEntry)context).right;
+            long leftTS;
+            if ( context.declaration.getExtractor().isSelfReference() ) {
+                leftTS = ((EventFactHandle) left).getEndTimestamp();
             } else {
-                rightTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
+                leftTS = context.declaration.getExtractor().getLongValue( workingMemory,
+                                                                          left.getObject() );                
             }
-            long leftTS = this.unwrapLeft ? context.declaration.getExtractor().getLongValue( workingMemory,
-                                                                                             left ) : ((EventFactHandle) left).getEndTimestamp();
+             
 
             long dist = rightTS - leftTS;
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
@@ -324,28 +325,37 @@ public class AfterEvaluatorDefinition
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
+                                          final InternalFactHandle right) {
             if ( context.extractor.isNullValue( workingMemory,
                                                 right ) ) {
                 return false;
             }
-            long rightTS = this.unwrapRight ? context.extractor.getLongValue( workingMemory,
-                                                                              right ) : ((EventFactHandle) right).getStartTimestamp();
-
-            long leftTS;
-            if( this.unwrapLeft ) {
-                if( context instanceof ObjectVariableContextEntry ) {
-                    if( ((ObjectVariableContextEntry) context).left instanceof Date ) {
-                        leftTS = ((Date)((ObjectVariableContextEntry) context).left).getTime();
-                    } else {
-                        leftTS = ((Number)((ObjectVariableContextEntry) context).left).longValue();
-                    }
-                } else {
-                    leftTS = ((LongVariableContextEntry) context).left;
-                }
+//            long rightTS = this.unwrapRight ? context.extractor.getLongValue( workingMemory,
+//                                                                              right ) : ((EventFactHandle) right).getStartTimestamp();
+//
+//            long leftTS;
+//            if( this.unwrapLeft ) {
+//                if( context instanceof ObjectVariableContextEntry ) {
+//                    if( ((ObjectVariableContextEntry) context).left instanceof Date ) {
+//                        leftTS = ((Date)((ObjectVariableContextEntry) context).left).getTime();
+//                    } else {
+//                        leftTS = ((Number)((ObjectVariableContextEntry) context).left).longValue();
+//                    }
+//                } else {
+//                    leftTS = ((LongVariableContextEntry) context).left;
+//                }
+//            } else {
+//                leftTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
+//            }
+       
+            long leftTS = ((TemperalVariableContextEntry)context).left;
+            long rightTS;
+            if ( context.getFieldExtractor().isSelfReference() ) {
+                rightTS = ((EventFactHandle) right).getEndTimestamp();
             } else {
-                leftTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
-            }
+                rightTS = context.getFieldExtractor().getLongValue( workingMemory, right.getObject() );
+            } 
+            
             long dist = rightTS - leftTS;
 
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
@@ -353,9 +363,9 @@ public class AfterEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle object1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
+                                final InternalFactHandle object2) {
             if ( extractor1.isNullValue( workingMemory,
                                          object1 ) ) {
                 return false;

@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.extractors.MVELClassFieldReader;
+import org.drools.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.util.asm.ClassFieldInspector;
 
 public class ClassFieldAccessorCache {

@@ -128,6 +128,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -2189,7 +2190,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage(type.getTypeClass()),
                                                                                           type.getTypeClass().getName(),
                                                                                           timestamp,
-                                                                                          type.isTypesafe() );
+                                                                                          type.isTypesafe(),
+                                                                                          Date.class );
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( (MVELCompileable) reader );
             ( (MVELCompileable) reader ).compile( data );
@@ -2204,7 +2206,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
                                                                                           type.getTypeClass().getName(),
                                                                                           duration,
-                                                                                          type.isTypesafe() );
+                                                                                          type.isTypesafe(),
+                                                                                          Number.class );
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( (MVELCompileable) reader );
             ( (MVELCompileable) reader ).compile( data );

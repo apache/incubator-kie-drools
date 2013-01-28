@@ -22,7 +22,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
 
     protected Declaration[] declarations;
     protected Evaluator evaluator;
-    protected InternalReadAccessor extractor;
+    protected InternalReadAccessor rightReadAccessor;
     protected FieldValue field;
 
     public EvaluatorConstraint() { }
@@ -31,13 +31,13 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         this.field = field;
         this.declarations = new Declaration[0];
         this.evaluator = evaluator;
-        this.extractor = extractor;
+        this.rightReadAccessor = extractor;
     }
 
     public EvaluatorConstraint(Declaration[] declarations, Evaluator evaluator, InternalReadAccessor extractor) {
         this.declarations = declarations;
         this.evaluator = evaluator;
-        this.extractor = extractor;
+        this.rightReadAccessor = extractor;
     }
 
     protected boolean isLiteral() {
@@ -46,40 +46,40 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
 
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
         if (isLiteral()) {
-            return evaluator.evaluate(workingMemory, extractor, handle.getObject(), field);
+            return evaluator.evaluate(workingMemory, rightReadAccessor, handle, field);
         }
 
         return evaluator.evaluate( workingMemory,
-                                   extractor,
-                                   evaluator.prepareLeftObject( handle ),
+                                   rightReadAccessor,
+                                   handle,
                                    declarations[0].getExtractor(),
-                                   evaluator.prepareRightObject( handle ) );
+                                   handle );
     }
 
     public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
         if (isLiteral()) {
             return evaluator.evaluate( ((LiteralContextEntry) context).workingMemory,
                                        ((LiteralContextEntry) context).getFieldExtractor(),
-                                       handle.getObject(),
+                                       handle,
                                        field );
         }
 
         return evaluator.evaluateCachedLeft( ((VariableContextEntry) context).workingMemory,
                                              (VariableContextEntry) context,
-                                             evaluator.prepareRightObject(handle));
+                                             handle );
     }
 
     public boolean isAllowedCachedRight(LeftTuple tuple, ContextEntry context) {
         if (isLiteral()) {
             return evaluator.evaluate( ((LiteralContextEntry) context).workingMemory,
                                        ((LiteralContextEntry) context).getFieldExtractor(),
-                                       ((LiteralContextEntry) context).getObject(),
+                                       ((LiteralContextEntry) context).getFactHandle(),
                                        field );
         }
 
         return evaluator.evaluateCachedRight( ((VariableContextEntry) context).workingMemory,
                                               (VariableContextEntry) context,
-                                              evaluator.prepareLeftObject(tuple.get(declarations[0])));
+                                              tuple.get(declarations[0]));
     }
 
     public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
@@ -108,22 +108,22 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return field;
     }
 
-    protected InternalReadAccessor getExtractor() {
-        return extractor;
+    protected InternalReadAccessor getRightReadAccessor() {
+        return rightReadAccessor;
     }
 
     public EvaluatorConstraint clone() {
         if (isLiteral()) {
-            return new EvaluatorConstraint(field, evaluator, extractor);
+            return new EvaluatorConstraint(field, evaluator, rightReadAccessor);
         }
 
         Declaration[] clonedDeclarations = new Declaration[declarations.length];
         System.arraycopy(declarations, 0, clonedDeclarations, 0, declarations.length);
-        return new EvaluatorConstraint(clonedDeclarations, evaluator, extractor);
+        return new EvaluatorConstraint(clonedDeclarations, evaluator, rightReadAccessor);
     }
 
     public ContextEntry createContextEntry() {
-        return isLiteral() ? new LiteralContextEntry(extractor) : VariableRestriction.createContextEntry(extractor, declarations[0], evaluator);
+        return isLiteral() ? new LiteralContextEntry(rightReadAccessor) : VariableRestriction.createContextEntry(rightReadAccessor, declarations[0], evaluator);
     }
 
     // Externalizable
@@ -132,7 +132,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         super.writeExternal(out);
         out.writeObject(field);
         out.writeObject(declarations);
-        out.writeObject(extractor);
+        out.writeObject(rightReadAccessor);
         out.writeObject(evaluator);
     }
 
@@ -140,7 +140,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         super.readExternal(in);
         field = (FieldValue) in.readObject();
         declarations = (Declaration[]) in.readObject();
-        extractor = (InternalReadAccessor) in.readObject();
+        rightReadAccessor = (InternalReadAccessor) in.readObject();
         evaluator = (Evaluator) in.readObject();
     }
 
@@ -148,7 +148,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
 
         private static final long   serialVersionUID = 510l;
         public InternalReadAccessor extractor;
-        public Object               object;
+        public InternalFactHandle   factHandle;
         public ContextEntry         next;
         public InternalWorkingMemory workingMemory;
 
@@ -162,14 +162,14 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             extractor = (InternalReadAccessor) in.readObject();
-            object = in.readObject();
+            factHandle = ( InternalFactHandle ) in.readObject();
             next = (ContextEntry) in.readObject();
             workingMemory = ( InternalWorkingMemory ) in .readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( extractor );
-            out.writeObject( object );
+            out.writeObject( factHandle );
             out.writeObject( next );
             out.writeObject( workingMemory );
         }
@@ -178,8 +178,8 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
             return this.extractor;
         }
 
-        public Object getObject() {
-            return this.object;
+        public InternalFactHandle getFactHandle() {
+            return this.factHandle;
         }
 
         public ContextEntry getNext() {
@@ -192,7 +192,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
-            this.object = handle.getObject();
+            this.factHandle = handle;
             this.workingMemory = workingMemory;
         }
 
@@ -205,7 +205,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         }
 
         public void resetFactHandle() {
-            this.object = null;
+            this.factHandle = null;
         }
 
     }
