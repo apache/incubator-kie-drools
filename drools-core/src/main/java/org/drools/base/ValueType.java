@@ -38,31 +38,6 @@ public class ValueType
     public static final ValueType  NULL_TYPE         = new ValueType( "null",
                                                                       null,
                                                                       SimpleValueType.NULL);
-    // wrapper types
-    public static final ValueType  CHAR_TYPE         = new ValueType( "Character",
-                                                                      Character.class,
-                                                                      SimpleValueType.CHAR );
-    public static final ValueType  BYTE_TYPE         = new ValueType( "Byte",
-                                                                      Byte.class,
-                                                                      SimpleValueType.INTEGER);
-    public static final ValueType  SHORT_TYPE        = new ValueType( "Short",
-                                                                      Short.class,
-                                                                      SimpleValueType.INTEGER );
-    public static final ValueType  INTEGER_TYPE      = new ValueType( "Integer",
-                                                                      Integer.class,
-                                                                      SimpleValueType.INTEGER );
-    public static final ValueType  LONG_TYPE         = new ValueType( "Long",
-                                                                      Long.class,
-                                                                      SimpleValueType.INTEGER );
-    public static final ValueType  FLOAT_TYPE        = new ValueType( "Float",
-                                                                      Float.class,
-                                                                      SimpleValueType.DECIMAL );
-    public static final ValueType  DOUBLE_TYPE       = new ValueType( "Double",
-                                                                      Double.class,
-                                                                      SimpleValueType.DECIMAL );
-    public static final ValueType  BOOLEAN_TYPE      = new ValueType( "Boolean",
-                                                                      Boolean.class,
-                                                                      SimpleValueType.BOOLEAN );
     // primitive types
     public static final ValueType  PCHAR_TYPE        = new ValueType( "char",
                                                                       Character.TYPE,
@@ -88,7 +63,46 @@ public class ValueType
     public static final ValueType  PBOOLEAN_TYPE     = new ValueType( "boolean",
                                                                       Boolean.TYPE,
                                                                       SimpleValueType.BOOLEAN );
-    // other types
+    
+    // wrapper types
+    public static final ValueType  CHAR_TYPE         = new ValueType( "Character",
+                                                                      Character.class,
+                                                                      SimpleValueType.CHAR );
+    public static final ValueType  BYTE_TYPE         = new ValueType( "Byte",
+                                                                      Byte.class,
+                                                                      SimpleValueType.INTEGER);
+    public static final ValueType  SHORT_TYPE        = new ValueType( "Short",
+                                                                      Short.class,
+                                                                      SimpleValueType.INTEGER );
+    public static final ValueType  INTEGER_TYPE      = new ValueType( "Integer",
+                                                                      Integer.class,
+                                                                      SimpleValueType.INTEGER );
+    public static final ValueType  LONG_TYPE         = new ValueType( "Long",
+                                                                      Long.class,
+                                                                      SimpleValueType.INTEGER );
+    public static final ValueType  FLOAT_TYPE        = new ValueType( "Float",
+                                                                      Float.class,
+                                                                      SimpleValueType.DECIMAL );
+    public static final ValueType  DOUBLE_TYPE       = new ValueType( "Double",
+                                                                      Double.class,
+                                                                      SimpleValueType.DECIMAL );
+    public static final ValueType  BOOLEAN_TYPE      = new ValueType( "Boolean",
+                                                                      Boolean.class,
+                                                                      SimpleValueType.BOOLEAN );
+   
+    public static final ValueType  NUMBER_TYPE         = new ValueType( "Number",
+                                                                        Number.class,
+                                                                        SimpleValueType.DATE );
+   
+    public static final ValueType  BIG_DECIMAL_TYPE  = new ValueType( "BigDecimal",
+                                                                      BigDecimal.class,
+                                                                      SimpleValueType.NUMBER );
+    public static final ValueType  BIG_INTEGER_TYPE  = new ValueType( "BigInteger",
+                                                                      BigInteger.class,
+                                                                      SimpleValueType.NUMBER );
+    
+    
+    // other types    
     public static final ValueType  DATE_TYPE         = new ValueType( "Date",
                                                                       Date.class,
                                                                       SimpleValueType.DATE );
@@ -104,12 +118,6 @@ public class ValueType
     public static final ValueType  FACTTEMPLATE_TYPE = new ValueType( "FactTemplate",
                                                                       FactTemplate.class,
                                                                       SimpleValueType.UNKNOWN );
-    public static final ValueType  BIG_DECIMAL_TYPE  = new ValueType( "BigDecimal",
-                                                                      BigDecimal.class,
-                                                                      SimpleValueType.OBJECT );
-    public static final ValueType  BIG_INTEGER_TYPE  = new ValueType( "BigInteger",
-                                                                      BigInteger.class,
-                                                                      SimpleValueType.OBJECT );
     public static final ValueType  EVENT_TYPE        = new ValueType( "Event",
                                                                       EventFactHandle.class,
                                                                       SimpleValueType.OBJECT );
@@ -182,6 +190,8 @@ public class ValueType
         if ( clazz == null ) {
             return ValueType.NULL_TYPE;
         }
+        
+        // primitives
         if ( clazz == FactTemplate.class ) {
             return ValueType.FACTTEMPLATE_TYPE;
         } else if ( clazz == DroolsQuery.class ) {
@@ -202,7 +212,10 @@ public class ValueType
             return ValueType.PDOUBLE_TYPE;
         } else if ( clazz == Boolean.TYPE ) {
             return ValueType.PBOOLEAN_TYPE;
-        } else if ( clazz == Character.class ) {
+        } 
+        
+        // Number Wrappers
+        if ( clazz == Character.class ) {
             return ValueType.CHAR_TYPE;
         } else if ( clazz == Byte.class ) {
             return ValueType.BYTE_TYPE;
@@ -218,26 +231,33 @@ public class ValueType
             return ValueType.DOUBLE_TYPE;
         } else if ( clazz == Boolean.class ) {
             return ValueType.BOOLEAN_TYPE;
-        } else if ( clazz == java.sql.Date.class ) {
-            return ValueType.DATE_TYPE;
-        } else if ( clazz == java.util.Date.class ) {
-            return ValueType.DATE_TYPE;
-        } else if ( clazz.isArray() ) {
-            return ValueType.ARRAY_TYPE;
-        } else if ( clazz == BigDecimal.class ) {
+        } else if ( Number.class.isAssignableFrom( clazz ) ) {
+            return ValueType.NUMBER_TYPE;
+        }  else if ( clazz == BigDecimal.class ) {
             return ValueType.BIG_DECIMAL_TYPE;
         } else if ( clazz == BigInteger.class ) {
             return ValueType.BIG_INTEGER_TYPE;
+        }
+        
+        
+        // Other Object types
+        if ( Date.class.isAssignableFrom( clazz ) ) {
+            return ValueType.DATE_TYPE;
+        } else if ( clazz.isArray() ) {
+            return ValueType.ARRAY_TYPE;
         } else if ( clazz == String.class ) {
             return ValueType.STRING_TYPE;
         } else if ( clazz == EventFactHandle.class ) {
             return ValueType.EVENT_TYPE;
         } else if ( clazz == Class.class ) {
             return ValueType.CLASS_TYPE;
-        } else if ( Object.class.isAssignableFrom( clazz ) ) {
+        } 
+//        else if ( Thing.class.isAssignableFrom( clazz )) {
+//            return ValueType.TRAIT_TYPE;
+//        } 
+        else {
             return ValueType.OBJECT_TYPE;
         }
-        throw new RuntimeDroolsException( "unable to determine ValueType for Class [" + clazz + "]" );
     }
 
     public String toString() {
@@ -266,14 +286,19 @@ public class ValueType
     public boolean isBoolean() {
         return ((this.classType == Boolean.class) || (this.classType == Boolean.TYPE));
     }
+    
+    public boolean isDate() {
+        return this.classType == Date.class;
+    }    
 
     /* (non-Javadoc)
      * @see org.kie.base.ValueTypeInterface#isNumber()
      */
     public boolean isNumber() {
-        return (this.simpleType == SimpleValueType.INTEGER ||
-                this.simpleType == SimpleValueType.DECIMAL ||
-                this.simpleType == SimpleValueType.CHAR);
+        return ( this.simpleType == SimpleValueType.INTEGER ||
+                 this.simpleType == SimpleValueType.DECIMAL ||
+                 this.simpleType == SimpleValueType.CHAR || 
+                 this.simpleType == SimpleValueType.NUMBER ) ;
     }
 
     /* (non-Javadoc)

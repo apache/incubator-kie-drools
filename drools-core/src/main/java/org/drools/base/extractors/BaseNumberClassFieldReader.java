@@ -24,15 +24,15 @@ import org.drools.base.BaseClassFieldReader;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 
-public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
+public abstract class BaseNumberClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 510l;
 
-    public BaseObjectClassFieldReader() {
+    public BaseNumberClassFieldReader() {
 
     }
 
-    protected BaseObjectClassFieldReader(final int index,
+    protected BaseNumberClassFieldReader(final int index,
                                          final Class< ? > fieldType,
                                          final ValueType valueType) {
         super( index,
@@ -40,7 +40,7 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
-    public BaseObjectClassFieldReader(final Class< ? > clazz,
+    public BaseNumberClassFieldReader(final Class< ? > clazz,
                                       final String fieldName) {
         super( clazz,
                fieldName );
@@ -51,98 +51,62 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory,
                                    final Object object) {
-        final Object value = getValue( workingMemory,
-                                       object );
-
-        if ( value instanceof Boolean ) {
-            return ((Boolean) value).booleanValue();
-        }
-        
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from " + getExtractToClass().getName() );
+        throw new RuntimeDroolsException( "Conversion to boolean not supported from Number" );
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory,
                              final Object object) {
         final Object value = getValue( workingMemory,
                                        object );
-
-        if ( value instanceof Character ) {
-            return (byte) ((Character) value).charValue();
-        } 
         
-        throw new RuntimeDroolsException( "Conversion to byte not supported from " +  getExtractToClass().getName());
+        return ((Number) value).byteValue();
     }
 
     public char getCharValue(InternalWorkingMemory workingMemory,
                              final Object object) {
         final Object value = getValue( workingMemory,
                                        object );
-
-        if ( value instanceof Character ) {
-            return ((Character) value).charValue();
-        } 
         
-        throw new RuntimeDroolsException( "Conversion to char not supported from " +  getExtractToClass().getName() );
+        return ((Character) value).charValue();
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory,
                                  final Object object) {
         final Object value = getValue( workingMemory,
                                        object );
-
-        if( value instanceof Character ) {
-            return ((Character) value).charValue();
-        }
         
-        throw new RuntimeDroolsException( "Conversion to double not supported from " +  getExtractToClass().getName() );
+        return ((Number) value).doubleValue();
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory,
                                final Object object) {
         final Object value = getValue( workingMemory,
                                        object );
-
-        if( value instanceof Character ) {
-            return ((Character) value).charValue();
-        }
         
-        throw new RuntimeDroolsException( "Conversion to float not supported from " +  getExtractToClass().getName() );
+        return ((Number) value).floatValue();
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory,
                            final Object object) {
         final Object value = getValue( workingMemory,
                                        object );
-
-        if( value instanceof Character ) {
-            return ((Character) value).charValue();
-        }
         
-        throw new RuntimeDroolsException( "Conversion to int not supported from " +  getExtractToClass().getName() );
+        return ((Number) value).intValue();
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory,
                              final Object object) {
         final Object value = getValue( workingMemory,
                                        object );
-
-        if( value instanceof Character ) {
-            return ((Character) value).charValue();
-        }
         
-        throw new RuntimeDroolsException( "Conversion to long not supported from " +  getExtractToClass().getName() );
+        return ((Number) value).longValue();
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory,
                                final Object object) {
         final Object value = getValue( workingMemory,
                                        object );
-
-        if( value instanceof Character ) {
-            return (short) ((Character) value).charValue();
-        }
-        
-        throw new RuntimeDroolsException( "Conversion to short not supported from " +  getExtractToClass().getName() );
+        return ((Number) value).shortValue();
     }
 
     public boolean isNullValue(InternalWorkingMemory workingMemory,

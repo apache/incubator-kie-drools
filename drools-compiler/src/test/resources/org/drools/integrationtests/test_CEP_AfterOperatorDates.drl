@@ -9,6 +9,7 @@ declare StockTick
     @timestamp( time )
 end
 
+/*
 rule "after operator on date"
     salience 10
 when
@@ -36,6 +37,7 @@ when
 then
     results.add( $a );
 end
+*/
 
 rule "after operator on mixed date and event"
     salience 0

@@ -868,8 +868,9 @@ public class CepEspTest extends CommonTestMethodBase {
                                                   104000, // 4 seconds after DROO
                                                   3 );
 
-        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
+        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
+        
 
         assertNotNull( handle1 );
         assertNotNull( handle2 );

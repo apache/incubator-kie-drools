@@ -961,9 +961,9 @@ public class TemporalEvaluatorFactoryTest {
                                                      final Evaluator evaluator) {
         final boolean result = evaluator.evaluate( null,
                                                    extractor,
-                                                   row[0],
+                                                   ( EventFactHandle ) row[0],
                                                    extractor,
-                                                   row[2] );
+                                                   ( EventFactHandle ) row[2] );
         final String message = "The evaluator type: [" + valueType + "] with 2 extractors incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -985,7 +985,7 @@ public class TemporalEvaluatorFactoryTest {
                                                                    row );
         final boolean result = evaluator.evaluateCachedRight( null,
                                                               context,
-                                                              row[2] );
+                                                              ( EventFactHandle ) row[2] );
         final String message = "The evaluator type: [" + valueType + "] with CachedRight incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -1007,7 +1007,7 @@ public class TemporalEvaluatorFactoryTest {
                                                                    row );
         final boolean result = evaluator.evaluateCachedLeft( null,
                                                              context,
-                                                             row[0] );
+                                                             ( EventFactHandle ) row[0] );
         final String message = "The evaluator type: [" + valueType + "] with CachedLeft incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -1028,7 +1028,7 @@ public class TemporalEvaluatorFactoryTest {
         try {
             evaluator.evaluate( null,
                                 extractor,
-                                row[0],
+                                ( EventFactHandle ) row[0],
                                 value );
         } catch ( RuntimeDroolsException e ) {
             exc = e;

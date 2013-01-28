@@ -49,8 +49,9 @@ public abstract class BaseEvaluator
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         operator    = (Operator)in.readObject();
         type        = (ValueType)in.readObject();
-        if (type != null)
+        if (type != null) {
             type   = ValueType.determineValueType(type.getClassType());
+        }
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -68,26 +69,6 @@ public abstract class BaseEvaluator
 
     public ValueType getCoercedValueType() {
         return this.type;
-    }
-
-    /**
-     * Most evaluators operate on the fact attributes,
-     * so, by default, the implementation unwraps it,
-     * but subclasses can override this behaviour.
-     */
-    public Object prepareLeftObject(InternalFactHandle handle) {
-        return handle.getObject();
-    }
-    
-    /**
-     * Most evaluators operate o symmetrical types of object
-     * on both sides, i.e., either they operate on facts on 
-     * both sides, or fact handles on both sides. But eventually,
-     * some operators (like 'after') may differ in behaviour and 
-     * so, they are allowed to override this method.
-     */
-    public Object prepareRightObject(InternalFactHandle handle) {
-        return prepareLeftObject( handle );
     }
     
     public boolean isTemporal() {

@@ -21,15 +21,23 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
+import org.drools.base.ValueType;
+import org.drools.base.extractors.BaseDateClassFieldReader;
+import org.drools.base.extractors.BaseNumberClassFieldReader;
 import org.drools.base.extractors.BaseObjectClassFieldReader;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MathUtils;
 import org.drools.facttemplates.Fact;
 
-public class PatternExtractor extends BaseObjectClassFieldReader
+public class SelfDateExtractor extends BaseDateClassFieldReader
     implements
     InternalReadAccessor,
     AcceptsClassObjectType,
@@ -38,17 +46,19 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     private static final long serialVersionUID = 510l;
     private ObjectType        objectType;
 
-    public PatternExtractor() {
+    public SelfDateExtractor() {
     }
 
-    public PatternExtractor(final ObjectType objectType) {
+    public SelfDateExtractor(final ObjectType objectType) {
         super(-1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
-        this.objectType = objectType;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         objectType = (ObjectType) in.readObject();
+        setIndex( -1 );
+        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setValueType( objectType.getValueType() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -58,7 +68,7 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setFieldType( ((ClassObjectType) objectType).getClassType());
         setValueType( objectType.getValueType() );        
     }
 
@@ -71,39 +81,6 @@ public class PatternExtractor extends BaseObjectClassFieldReader
         return this.objectType;
     }
 
-    public Class<?> getExtractToClass() {
-        // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            return ((ClassObjectType) this.objectType).getClassType();
-        } else {
-            return Fact.class;
-        }
-    }
-
-    public String getExtractToClassName() {
-        Class<?> clazz = null;
-        // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            clazz = ((ClassObjectType) this.objectType).getClassType();
-        } else {
-            clazz = Fact.class;
-        }
-        return ClassUtils.canonicalName( clazz );
-    }
-
-    public Method getNativeReadMethod() {
-        try {
-            return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
-        }
-    }
-
-    public String getNativeReadMethodName() {
-        return "getValue";
-    }
 
     public int hashCode() {
         return this.objectType.hashCode();
@@ -113,10 +90,10 @@ public class PatternExtractor extends BaseObjectClassFieldReader
         if ( this == obj ) {
             return true;
         }
-        if ( !(obj instanceof PatternExtractor) ) {
+        if ( !(obj instanceof SelfDateExtractor) ) {
             return false;
         }
-        final PatternExtractor other = (PatternExtractor) obj;
+        final SelfDateExtractor other = (SelfDateExtractor) obj;
         return this.objectType.equals( other.objectType );
     }
 

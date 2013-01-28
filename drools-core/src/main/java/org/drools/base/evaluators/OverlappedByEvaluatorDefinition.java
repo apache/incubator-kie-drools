@@ -231,12 +231,7 @@ public class OverlappedByEvaluatorDefinition
             out.writeLong(maxDev);
             out.writeObject( paramText );
         }
-
-        @Override
-        public Object prepareLeftObject(InternalFactHandle handle) {
-            return handle;
-        }
-
+        
         @Override
         public boolean isTemporal() {
             return true;
@@ -252,14 +247,14 @@ public class OverlappedByEvaluatorDefinition
         
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
+                                final InternalFactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeDroolsException( "The 'overlappedby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
+                                           final InternalFactHandle left) {
             if ( context.rightNull ) {
                 return false;
             }
@@ -274,7 +269,7 @@ public class OverlappedByEvaluatorDefinition
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
+                                          final InternalFactHandle right) {
             if ( context.extractor.isNullValue( workingMemory,
                                                 right ) ) {
                 return false;
@@ -290,9 +285,9 @@ public class OverlappedByEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle object1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
+                                final InternalFactHandle object2) {
             if ( extractor1.isNullValue( workingMemory,
                                          object1 ) ) {
                 return false;

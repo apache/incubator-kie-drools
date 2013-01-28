@@ -45,13 +45,15 @@ public class EvaluatorWrapper
     private Evaluator                                  evaluator;
     private transient InternalWorkingMemory            workingMemory;
 
-    private Declaration leftBinding;
-    private Declaration rightBinding;
+    private Declaration                                leftBinding;
+    private Declaration                                rightBinding;
 
-    private InternalFactHandle leftHandle;
-    private InternalFactHandle rightHandle;
+    private InternalFactHandle                         leftHandle;
+    private InternalFactHandle                         rightHandle;
 
-    public EvaluatorWrapper(Evaluator evaluator, Declaration leftBinding, Declaration rightBinding ) {
+    public EvaluatorWrapper(Evaluator evaluator,
+                            Declaration leftBinding,
+                            Declaration rightBinding) {
         this.evaluator = evaluator;
         this.leftBinding = leftBinding;
         this.rightBinding = rightBinding;
@@ -68,20 +70,20 @@ public class EvaluatorWrapper
      * 
      * @return
      */
-    public boolean evaluate( Object left,
-                             Object right ) {
-        if( leftBinding != null ) {
-            left = evaluator.prepareLeftObject( leftHandle ); 
-        }
-        if( rightBinding != null ) {
-            right = evaluator.prepareRightObject( rightHandle );
-        }
-        
+    public boolean evaluate(Object left,
+                            Object right) {
+        //        if( leftBinding != null ) {
+        //            left = evaluator.prepareLeftObject( leftHandle ); 
+        //        }
+        //        if( rightBinding != null ) {
+        //            right = evaluator.prepareRightObject( rightHandle );
+        //        }
+
         return evaluator.evaluate( workingMemory,
                                    extractor,
-                                   left,
+                                   leftHandle,
                                    extractor,
-                                   right );
+                                   rightHandle );
     }
 
     /**
@@ -109,38 +111,20 @@ public class EvaluatorWrapper
     }
 
     /**
-     * @param handle
-     * @return
-     * @see org.kie.spi.Evaluator#prepareLeftObject(org.kie.common.InternalFactHandle)
-     */
-    public Object prepareLeftObject( InternalFactHandle handle ) {
-        return evaluator.prepareLeftObject( handle );
-    }
-
-    /**
-     * @param handle
-     * @return
-     * @see org.kie.spi.Evaluator#prepareRightObject(org.kie.common.InternalFactHandle)
-     */
-    public Object prepareRightObject( InternalFactHandle handle ) {
-        return evaluator.prepareRightObject( handle );
-    }
-
-    /**
      * @param workingMemory
      * @param extractor
-     * @param object
+     * @param factHandle
      * @param value
      * @return
-     * @see org.kie.spi.Evaluator#evaluate(org.kie.common.InternalWorkingMemory, org.kie.spi.InternalReadAccessor, java.lang.Object, org.kie.spi.FieldValue)
+     * @see org.kie.spi.Evaluator#evaluate(org.kie.common.InternalWorkingMemory, org.kie.spi.InternalReadAccessor, InternalFactHandle, org.kie.spi.FieldValue)
      */
-    public boolean evaluate( InternalWorkingMemory workingMemory,
-                             InternalReadAccessor extractor,
-                             Object object,
-                             FieldValue value ) {
+    public boolean evaluate(InternalWorkingMemory workingMemory,
+                            InternalReadAccessor extractor,
+                            InternalFactHandle factHandle,
+                            FieldValue value) {
         return evaluator.evaluate( workingMemory,
                                    extractor,
-                                   object,
+                                   factHandle,
                                    value );
     }
 
@@ -151,13 +135,13 @@ public class EvaluatorWrapper
      * @param rightExtractor
      * @param right
      * @return
-     * @see org.kie.spi.Evaluator#evaluate(org.kie.common.InternalWorkingMemory, org.kie.spi.InternalReadAccessor, java.lang.Object, org.kie.spi.InternalReadAccessor, java.lang.Object)
+     * @see org.kie.spi.Evaluator#evaluate(org.kie.common.InternalWorkingMemory, org.kie.spi.InternalReadAccessor, InternalFactHandle, org.kie.spi.InternalReadAccessor, InternalFactHandle)
      */
-    public boolean evaluate( InternalWorkingMemory workingMemory,
-                             InternalReadAccessor leftExtractor,
-                             Object left,
-                             InternalReadAccessor rightExtractor,
-                             Object right ) {
+    public boolean evaluate(InternalWorkingMemory workingMemory,
+                            InternalReadAccessor leftExtractor,
+                            InternalFactHandle left,
+                            InternalReadAccessor rightExtractor,
+                            InternalFactHandle right) {
         return evaluator.evaluate( workingMemory,
                                    leftExtractor,
                                    left,
@@ -170,11 +154,11 @@ public class EvaluatorWrapper
      * @param context
      * @param right
      * @return
-     * @see org.kie.spi.Evaluator#evaluateCachedLeft(org.kie.common.InternalWorkingMemory, org.kie.rule.VariableRestriction.VariableContextEntry, java.lang.Object)
+     * @see org.kie.spi.Evaluator#evaluateCachedLeft(org.kie.common.InternalWorkingMemory, org.kie.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
      */
-    public boolean evaluateCachedLeft( InternalWorkingMemory workingMemory,
-                                       VariableContextEntry context,
-                                       Object right ) {
+    public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                      VariableContextEntry context,
+                                      InternalFactHandle right) {
         return evaluator.evaluateCachedLeft( workingMemory,
                                              context,
                                              right );
@@ -185,11 +169,11 @@ public class EvaluatorWrapper
      * @param context
      * @param left
      * @return
-     * @see org.kie.spi.Evaluator#evaluateCachedRight(org.kie.common.InternalWorkingMemory, org.kie.rule.VariableRestriction.VariableContextEntry, java.lang.Object)
+     * @see org.kie.spi.Evaluator#evaluateCachedRight(org.kie.common.InternalWorkingMemory, org.kie.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
      */
-    public boolean evaluateCachedRight( InternalWorkingMemory workingMemory,
-                                        VariableContextEntry context,
-                                        Object left ) {
+    public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                       VariableContextEntry context,
+                                       InternalFactHandle left) {
         return evaluator.evaluateCachedRight( workingMemory,
                                               context,
                                               left );
@@ -221,7 +205,7 @@ public class EvaluatorWrapper
     /**
      * @param workingMemory the workingMemory to set
      */
-    public EvaluatorWrapper setWorkingMemory( InternalWorkingMemory workingMemory ) {
+    public EvaluatorWrapper setWorkingMemory(InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         return this;
     }
@@ -236,7 +220,7 @@ public class EvaluatorWrapper
     /**
      * @param leftHandle the leftHandle to set
      */
-    public EvaluatorWrapper setLeftHandle( InternalFactHandle leftHandle ) {
+    public EvaluatorWrapper setLeftHandle(InternalFactHandle leftHandle) {
         this.leftHandle = leftHandle;
         return this;
     }
@@ -251,7 +235,7 @@ public class EvaluatorWrapper
     /**
      * @param rightHandle the rightHandle to set
      */
-    public EvaluatorWrapper setRightHandle( InternalFactHandle rightHandle ) {
+    public EvaluatorWrapper setRightHandle(InternalFactHandle rightHandle) {
         this.rightHandle = rightHandle;
         return this;
     }
@@ -266,7 +250,7 @@ public class EvaluatorWrapper
     /**
      * @param leftBinding the leftBinding to set
      */
-    public void setLeftBinding( Declaration leftBinding ) {
+    public void setLeftBinding(Declaration leftBinding) {
         this.leftBinding = leftBinding;
     }
 
@@ -280,10 +264,10 @@ public class EvaluatorWrapper
     /**
      * @param rightBinding the rightBinding to set
      */
-    public void setRightBinding( Declaration rightBinding ) {
+    public void setRightBinding(Declaration rightBinding) {
         this.rightBinding = rightBinding;
     }
-    
+
     @Override
     public String toString() {
         return this.evaluator.toString();

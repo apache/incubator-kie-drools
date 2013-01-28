@@ -70,8 +70,10 @@ import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.rule.constraint.MvelConstraint;
+import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
@@ -241,7 +243,7 @@ public class PatternBuilder
             if ( objectType instanceof ClassObjectType ) {
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
                 context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
-                                                                                  (PatternExtractor) pattern.getDeclaration().getExtractor() );
+                                                                                  (AcceptsClassObjectType) pattern.getDeclaration().getExtractor() );
             }
         } else {
             pattern = new Pattern( context.getNextPatternId(),
@@ -466,9 +468,9 @@ public class PatternBuilder
 
             if ( isPositional ) {
                 processPositional(context,
-                        patternDescr,
-                        pattern,
-                        (ExprConstraintDescr) b);
+                                  patternDescr,
+                                  pattern,
+                                  (ExprConstraintDescr) b);
             } else {
                 // need to build the actual constraint
                 build( context,
@@ -610,10 +612,10 @@ public class PatternBuilder
     }
 
     protected void build( RuleBuildContext context,
-                        PatternDescr patternDescr,
-                        Pattern pattern,
-                        ConstraintConnectiveDescr descr,
-                        MVELDumper.MVELDumperContext mvelCtx ) {
+                          PatternDescr patternDescr,
+                          Pattern pattern,
+                          ConstraintConnectiveDescr descr,
+                          MVELDumper.MVELDumperContext mvelCtx ) {
         for ( BaseDescr d : descr.getDescrs() ) {
             buildCcdDescr(context, patternDescr, pattern, d, mvelCtx);
         }
@@ -892,10 +894,10 @@ public class PatternBuilder
     }
 
     protected LiteralRestrictionDescr buildLiteralRestrictionDescr(RuleBuildContext context,
-                                         RelationalExprDescr exprDescr,
-                                         String rightValue,
-                                         String operator,
-                                         boolean isRightLiteral) {
+                                                                   RelationalExprDescr exprDescr,
+                                                                   String rightValue,
+                                                                   String operator,
+                                                                   boolean isRightLiteral) {
         // is it a literal? Does not include enums
         if ( isRightLiteral )
             return new LiteralRestrictionDescr(operator, exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
@@ -1197,9 +1199,9 @@ public class PatternBuilder
     }
 
     protected static Map<String, EvaluatorWrapper> buildOperators(RuleBuildContext context,
-                                                         Pattern pattern,
-                                                         PredicateDescr predicateDescr,
-                                                         Map<String, OperatorDescr> aliases) {
+                                                                  Pattern pattern,
+                                                                  PredicateDescr predicateDescr,
+                                                                  Map<String, OperatorDescr> aliases) {
         Map<String, EvaluatorWrapper> operators = new HashMap<String, EvaluatorWrapper>();
         for ( Map.Entry<String, OperatorDescr> entry : aliases.entrySet() ) {
             OperatorDescr op = entry.getValue();
@@ -1376,8 +1378,8 @@ public class PatternBuilder
             }
 
             field = context.getCompilerFactory().getFieldFactory().getFieldValue(o,
-                    vtype,
-                    context.getPackageBuilder().getDateFormats());
+                                                                                 vtype,
+                                                                                 context.getPackageBuilder().getDateFormats());
         } catch ( final Exception e ) {
             // we will fallback to regular preducates, so don't raise an error
             e.printStackTrace();
@@ -1454,10 +1456,13 @@ public class PatternBuilder
                     return null;
                 }
 
+                // TODO (sunday MDP), we should make sure returnValue is passed and used to determine correct ClassFieldReader
                 reader = context.getPkg().getClassFieldAccessorStore().getMVELReader( context.getPkg().getName(),
                                                                                       ((ClassObjectType) objectType).getClassName(),
                                                                                       fieldName,
-                                                                                      context.isTypesafe() );
+                                                                                      context.isTypesafe(), 
+                                                                                      ((MVELAnalysisResult)analysis).getReturnType() );
+                
                 MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
                 ((MVELCompileable) reader).compile( data );
                 data.addCompileable( (MVELCompileable) reader );

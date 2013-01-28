@@ -122,7 +122,7 @@ public final class JavaRuleBuilderHelper {
         final Boolean[] notPatterns = new Boolean[declarations.length];
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             indexes[i] = i;
-            notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? Boolean.FALSE : Boolean.TRUE ;
+            notPatterns[i] = (declarations[i].getExtractor() instanceof AcceptsClassObjectType) ? Boolean.FALSE : Boolean.TRUE ;
             if (indexes[i] == -1 ) {
                 context.addError( new DescrBuildError( context.getParentDescr(),
                                                               context.getRuleDescr(),

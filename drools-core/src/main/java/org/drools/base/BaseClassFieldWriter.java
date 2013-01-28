@@ -79,7 +79,9 @@ abstract public class BaseClassFieldWriter
         index = in.readInt();
         fieldType = (Class< ? >) in.readObject();
         valueType = (ValueType) in.readObject();
-        if ( valueType != null ) valueType = ValueType.determineValueType( valueType.getClassType() );
+        if ( valueType != null ) {
+            valueType = ValueType.determineValueType( valueType.getClassType() );
+        }
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

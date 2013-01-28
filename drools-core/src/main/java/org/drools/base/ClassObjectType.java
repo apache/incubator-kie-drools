@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Map;
 
+import org.drools.InitialFact;
 import org.drools.RuntimeDroolsException;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.spi.ClassWireable;
@@ -99,21 +100,21 @@ public class ClassObjectType
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.clsName = in.readUTF();
-        if ( clsName.equals( "org.drools.InitialFact" ) || clsName.equals( "org.drools.base.DroolsQuery" ) ) {
-            // we handle this one especially as it never gets written to the packagestore for rewiring
-            try {
-                setClassType( getClass().getClassLoader().loadClass( clsName ) );
-            } catch ( ClassNotFoundException e ) {
-                throw new RuntimeDroolsException( "Unable to resolve class '" + clsName + "'" );
-            }
+        
+        // we handle these directly as they never gets written to the packagestore for rewiring
+        if ( InitialFact.class.getName().equals( clsName ) || InitialFactImpl.class.getName().equals( clsName )  ) {
+            setClassType( InitialFactImpl.class );
+            this.valueType = ValueType.OBJECT_TYPE;
+        } else if ( DroolsQuery.class.getName().equals( clsName )  ){
+            setClassType( DroolsQuery.class );
+            this.valueType = ValueType.QUERY_TYPE;
         }
-//        this.valueType = (ValueType) in.readObject();
+
         this.isEvent = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF( clsName );
-//        out.writeObject( valueType );
         out.writeBoolean( isEvent );
     }
 

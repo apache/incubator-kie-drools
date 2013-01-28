@@ -247,16 +247,6 @@ public class BeforeEvaluatorDefinition
         }
 
         @Override
-        public Object prepareLeftObject(InternalFactHandle handle) {
-            return unwrapLeft ? handle.getObject() : handle;
-        }
-
-        @Override
-        public Object prepareRightObject(InternalFactHandle handle) {
-            return unwrapRight ? handle.getObject() : handle;
-        }
-
-        @Override
         public boolean isTemporal() {
             return true;
         }
@@ -286,14 +276,14 @@ public class BeforeEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
+                                final InternalFactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeDroolsException( "The 'before' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
+                                           final InternalFactHandle left) {
             if ( context.rightNull ) {
                 return false;
             }
@@ -320,7 +310,7 @@ public class BeforeEvaluatorDefinition
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
+                                          final InternalFactHandle right) {
             if ( context.extractor.isNullValue( workingMemory,
                                                 right ) ) {
                 return false;
@@ -349,9 +339,9 @@ public class BeforeEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle object1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
+                                final InternalFactHandle object2) {
             if ( extractor1.isNullValue( workingMemory,
                                          object1 ) ) {
                 return false;
