@@ -41,6 +41,7 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
     @XStreamAlias("secondaryPillarSelector")
     private PillarSelectorConfig secondaryPillarSelectorConfig = null;
 
+    // TODO jaxb use @XmlElementWrapper and wrap in variableNameIncludes
     @XStreamImplicit(itemFieldName = "variableNameInclude")
     private List<String> variableNameIncludeList = null;
 
