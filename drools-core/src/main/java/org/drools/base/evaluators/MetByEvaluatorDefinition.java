@@ -16,25 +16,25 @@
 
 package org.drools.base.evaluators;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>The implementation of the <code>metby</code> evaluator definition.</p>
@@ -250,7 +250,8 @@ public class MetByEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long rightStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
+            long rightStartTS = ((VariableRestriction.DurationVariableContextEntry)context).right;
+            // long rightStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
             long dist = Math.abs( rightStartTS - ((EventFactHandle) left).getEndTimestamp() );
             return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
         }
@@ -263,7 +264,8 @@ public class MetByEvaluatorDefinition
                 return false;
             }
             long rightStartTS = ((EventFactHandle) right).getStartTimestamp();
-            long dist = Math.abs( rightStartTS - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp() );
+            // long dist = Math.abs( rightStartTS - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp() );
+            long dist = Math.abs( rightStartTS - ((VariableRestriction.DurationVariableContextEntry)context).leftEnd );
 
             return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
         }

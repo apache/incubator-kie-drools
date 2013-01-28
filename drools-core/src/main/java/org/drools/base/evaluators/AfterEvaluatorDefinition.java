@@ -16,28 +16,25 @@
 
 package org.drools.base.evaluators;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.VariableRestriction.LongVariableContextEntry;
-import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
-import org.drools.rule.VariableRestriction.TemperalVariableContextEntry;
+import org.drools.rule.VariableRestriction;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>The implementation of the 'after' evaluator definition.</p>
@@ -224,12 +221,12 @@ public class AfterEvaluatorDefinition
                               final String paramText,
                               final boolean unwrapLeft,
                               final boolean unwrapRight) {
-            super( type,
-                   isNegated ? NOT_AFTER : AFTER );
+            super(type,
+                    isNegated ? NOT_AFTER : AFTER);
             this.paramText = paramText;
             this.unwrapLeft = unwrapLeft;
             this.unwrapRight = unwrapRight;
-            this.setParameters( parameters );
+            this.setParameters(parameters);
         }
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -309,13 +306,12 @@ public class AfterEvaluatorDefinition
 //            long leftTS = this.unwrapLeft ? context.declaration.getExtractor().getLongValue( workingMemory,
 //                                                                                             left ) : ((EventFactHandle) left).getEndTimestamp();
             
-            long rightTS = ((TemperalVariableContextEntry)context).right;
+            long rightTS = ((VariableRestriction.TemporalVariableContextEntry)context).right;
             long leftTS;
             if ( context.declaration.getExtractor().isSelfReference() ) {
-                leftTS = ((EventFactHandle) left).getEndTimestamp();
+                leftTS = ((EventFactHandle) left).getStartTimestamp();
             } else {
-                leftTS = context.declaration.getExtractor().getLongValue( workingMemory,
-                                                                          left.getObject() );                
+                leftTS = context.declaration.getExtractor().getLongValue( workingMemory, left.getObject() );
             }
              
 
@@ -348,16 +344,15 @@ public class AfterEvaluatorDefinition
 //                leftTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
 //            }
        
-            long leftTS = ((TemperalVariableContextEntry)context).left;
+            long leftTS = ((VariableRestriction.TemporalVariableContextEntry)context).left;
             long rightTS;
             if ( context.getFieldExtractor().isSelfReference() ) {
-                rightTS = ((EventFactHandle) right).getEndTimestamp();
+                rightTS = ((EventFactHandle) right).getStartTimestamp();
             } else {
                 rightTS = context.getFieldExtractor().getLongValue( workingMemory, right.getObject() );
             } 
             
             long dist = rightTS - leftTS;
-
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
