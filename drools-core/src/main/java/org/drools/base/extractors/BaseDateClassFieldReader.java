@@ -20,13 +20,19 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldReader;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.ClassUtils;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 
-public abstract class BaseLongClassFieldReader extends BaseClassFieldReader {
+public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 510l;
 
+    public BaseDateClassFieldReader() {
+        
+    }
+    
     /**
      * This constructor is not supposed to be used from outside the class hirarchy
      * 
@@ -34,7 +40,7 @@ public abstract class BaseLongClassFieldReader extends BaseClassFieldReader {
      * @param fieldType
      * @param valueType
      */
-    protected BaseLongClassFieldReader(final int index,
+    protected BaseDateClassFieldReader(final int index,
                                            final Class fieldType,
                                            final ValueType valueType) {
         super( index,
@@ -43,11 +49,11 @@ public abstract class BaseLongClassFieldReader extends BaseClassFieldReader {
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Long( getLongValue( workingMemory, object ) );
+        return object;
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to boolean not supported from long" );
+        throw new RuntimeDroolsException( "Conversion to boolean not supported from Date" );
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
@@ -56,7 +62,7 @@ public abstract class BaseLongClassFieldReader extends BaseClassFieldReader {
     }
 
     public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
-        throw new RuntimeDroolsException( "Conversion to char not supported from long" );
+        return (char) getLongValue( workingMemory, object );
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
@@ -71,19 +77,34 @@ public abstract class BaseLongClassFieldReader extends BaseClassFieldReader {
         return (int) getLongValue( workingMemory, object );
     }
 
-    public abstract long getLongValue(InternalWorkingMemory workingMemory, Object object);
+    public long getLongValue(InternalWorkingMemory workingMemory, Object object) {
+        return ((Date)getValue(workingMemory, object)).getTime();
+    }
 
     public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
         return (short) getLongValue( workingMemory, object );
     }
 
     public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
-        return false;
+        if ( object == null ) {
+            return true;
+        } else {
+            return getValue( workingMemory,
+                             object ) == null;
+        }
+    }
+
+    public Class<?> getExtractToClass() {
+        return Date.class;
+    }
+
+    public String getExtractToClassName() {
+        return ClassUtils.canonicalName( Date.class );
     }
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getLongValue",
+            return this.getClass().getDeclaredMethod( "getValue",
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
@@ -91,7 +112,11 @@ public abstract class BaseLongClassFieldReader extends BaseClassFieldReader {
         }
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
+    public String getNativeReadMethodName() {
+        return "getValue";
+    }
+
+    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {        
         final long temp = getLongValue( workingMemory, object );
         return (int) (temp ^ (temp >>> 32));
     }

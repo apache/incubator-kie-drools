@@ -75,6 +75,24 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 public class CepEspTest extends CommonTestMethodBase {
     
     private RuleBase loadRuleBase( final Reader reader,
@@ -703,7 +721,8 @@ public class CepEspTest extends CommonTestMethodBase {
         assertTrue( handle7.isEvent() );
         assertTrue( handle8.isEvent() );
 
-        //        wm  = SerializationHelper.serializeObject(wm);
+        // TODO: serialization needs to be fixed
+        //wm = SerializationHelper.getSerialisedStatefulKnowledgeSession( wm, true );
         wm.fireAllRules();
 
         assertEquals( 1,
@@ -868,6 +887,83 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testComplexOperator() throws Exception {
+        // read in the source
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_ComplexOperator.drl" );
+
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase, sconf );
+
+        final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
+        clock.setStartupTime( 1000 );
+
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  0,
+                                                  3 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  4,
+                                                  3 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  8,
+                                                  3 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  12,
+                                                  5 );
+        StockTickInterface tick5 = new StockTick( 5,
+                                                  "ACME",
+                                                  10,
+                                                  12,
+                                                  5 );
+        StockTickInterface tick6 = new StockTick( 6,
+                                                  "ACME",
+                                                  10,
+                                                  13,
+                                                  3 );
+        StockTickInterface tick7 = new StockTick( 7,
+                                                  "ACME",
+                                                  10,
+                                                  13,
+                                                  5 );
+        StockTickInterface tick8 = new StockTick( 8,
+                                                  "ACME",
+                                                  10,
+                                                  15,
+                                                  3 );
+
+        ksession.insert( tick1 );
+        ksession.insert( tick2 );
+        ksession.insert( tick3 );
+        ksession.insert( tick4 );
+        ksession.insert( tick5 );
+        ksession.insert( tick6 );
+        ksession.insert( tick7 );
+        ksession.insert( tick8 );
+
+        ArgumentCaptor<ActivationCreatedEvent> arg = ArgumentCaptor.forClass( ActivationCreatedEvent.class );
+        verify( ael ).activationCreated( arg.capture() );
+        assertThat( arg.getValue().getActivation().getRule().getName(),
+                is( "before" ) );
+
+        ksession.fireAllRules();
+
+        verify( ael ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+    }
+
+    @Test
     public void testMetByOperator() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_MetByOperator.drl" ) );
@@ -989,8 +1085,9 @@ public class CepEspTest extends CommonTestMethodBase {
                                                   104000, // 4 seconds after DROO
                                                   3 );
 
-        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
+        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
+        
 
         assertNotNull( handle1 );
         assertNotNull( handle2 );

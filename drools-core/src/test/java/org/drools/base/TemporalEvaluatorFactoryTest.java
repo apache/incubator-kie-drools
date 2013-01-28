@@ -16,18 +16,6 @@
 
 package org.drools.base;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.AfterEvaluatorDefinition;
 import org.drools.base.evaluators.BeforeEvaluatorDefinition;
@@ -35,6 +23,8 @@ import org.drools.base.evaluators.CoincidesEvaluatorDefinition;
 import org.drools.base.evaluators.DuringEvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.base.evaluators.MeetsEvaluatorDefinition;
+import org.drools.base.evaluators.MetByEvaluatorDefinition;
 import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -42,12 +32,28 @@ import org.drools.rule.Declaration;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
 import org.drools.rule.VariableRestriction.CharVariableContextEntry;
 import org.drools.rule.VariableRestriction.DoubleVariableContextEntry;
+import org.drools.rule.VariableRestriction.LeftEndRightStartContextEntry;
+import org.drools.rule.VariableRestriction.LeftStartRightEndContextEntry;
 import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction.TemporalVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test coverage for the temporal evaluators.
@@ -961,9 +967,9 @@ public class TemporalEvaluatorFactoryTest {
                                                      final Evaluator evaluator) {
         final boolean result = evaluator.evaluate( null,
                                                    extractor,
-                                                   row[0],
+                                                   ( EventFactHandle ) row[0],
                                                    extractor,
-                                                   row[2] );
+                                                   ( EventFactHandle ) row[2] );
         final String message = "The evaluator type: [" + valueType + "] with 2 extractors incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -982,10 +988,11 @@ public class TemporalEvaluatorFactoryTest {
         final VariableContextEntry context = this.getContextEntry( evaluator,
                                                                    extractor,
                                                                    valueType,
-                                                                   row );
+                                                                   row,
+                                                                   false );
         final boolean result = evaluator.evaluateCachedRight( null,
                                                               context,
-                                                              row[2] );
+                                                              ( EventFactHandle ) row[2] );
         final String message = "The evaluator type: [" + valueType + "] with CachedRight incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -1004,10 +1011,11 @@ public class TemporalEvaluatorFactoryTest {
         final VariableContextEntry context = this.getContextEntry( evaluator,
                                                                    extractor,
                                                                    valueType,
-                                                                   row );
+                                                                   row,
+                                                                   true );
         final boolean result = evaluator.evaluateCachedLeft( null,
                                                              context,
-                                                             row[0] );
+                                                             ( EventFactHandle ) row[0] );
         final String message = "The evaluator type: [" + valueType + "] with CachedLeft incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -1028,7 +1036,7 @@ public class TemporalEvaluatorFactoryTest {
         try {
             evaluator.evaluate( null,
                                 extractor,
-                                row[0],
+                                ( EventFactHandle ) row[0],
                                 value );
         } catch ( RuntimeDroolsException e ) {
             exc = e;
@@ -1039,11 +1047,51 @@ public class TemporalEvaluatorFactoryTest {
     private VariableContextEntry getContextEntry(final Evaluator evaluator,
                                                  final InternalReadAccessor extractor,
                                                  final ValueType valueType,
-                                                 final Object[] row) {
+                                                 final Object[] row,
+                                                 final boolean left) {
         final Declaration declaration = new Declaration( "test",
                                                          extractor,
                                                          null );
         final ValueType coerced = evaluator.getCoercedValueType();
+
+        if ( evaluator.isTemporal() ) {
+            if ( evaluator instanceof BeforeEvaluatorDefinition.BeforeEvaluator || evaluator instanceof MeetsEvaluatorDefinition.MeetsEvaluator) {
+                LeftStartRightEndContextEntry context = new LeftStartRightEndContextEntry( extractor,
+                                                                                           declaration,
+                                                                                           evaluator );
+                if (left) {
+                    context.timestamp = ((EventFactHandle) row[2]).getStartTimestamp();
+                } else {
+                    context.timestamp = ((EventFactHandle) row[0]).getEndTimestamp();
+                }
+                return context;
+            }
+
+            if ( evaluator instanceof AfterEvaluatorDefinition.AfterEvaluator || evaluator instanceof MetByEvaluatorDefinition.MetByEvaluator) {
+                LeftEndRightStartContextEntry context = new LeftEndRightStartContextEntry( extractor,
+                                                                                           declaration,
+                                                                                           evaluator );
+                if (left) {
+                    context.timestamp = ((EventFactHandle) row[2]).getEndTimestamp();
+                } else {
+                    context.timestamp = ((EventFactHandle) row[0]).getStartTimestamp();
+                }
+                return context;
+            }
+
+            // else
+            TemporalVariableContextEntry context = new TemporalVariableContextEntry( extractor,
+                                                                                     declaration,
+                                                                                     evaluator );
+            if (left) {
+                context.startTS = ((EventFactHandle) row[2]).getStartTimestamp();
+                context.endTS = ((EventFactHandle) row[2]).getEndTimestamp();
+            } else {
+                context.startTS = ((EventFactHandle) row[0]).getStartTimestamp();
+                context.endTS = ((EventFactHandle) row[0]).getEndTimestamp();
+            }
+            return context;
+        }
 
         if ( coerced.isIntegerNumber() ) {
             final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
@@ -1145,7 +1193,7 @@ public class TemporalEvaluatorFactoryTest {
         }
 
         public boolean isSelfReference() {
-            return false;
+            return true;
         }
 
         public boolean getBooleanValue(InternalWorkingMemory workingMemory,

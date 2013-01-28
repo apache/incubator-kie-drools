@@ -17,7 +17,7 @@
 package org.drools.reteoo;
 
 import org.drools.base.ValueType;
-import org.drools.base.extractors.MVELClassFieldReader;
+import org.drools.base.extractors.MVELObjectClassFieldReader;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -114,7 +114,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 if ( indexableConstraint.isIndexable(NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
                         indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
                         // our current implementation does not support hashing of deeply nested properties
-                        !( indexableConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {
+                        !( indexableConstraint.getFieldExtractor() instanceof MVELObjectClassFieldReader )) {
                     final InternalReadAccessor readAccessor = indexableConstraint.getFieldExtractor();
                     final int index = readAccessor.getIndex();
                     final FieldIndex fieldIndex = registerFieldIndex( index,
@@ -161,7 +161,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 if ( indexableConstraint.isIndexable(NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
                         indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
                         // our current implementation does not support hashing of deeply nested properties
-                        !( indexableConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {
+                        !( indexableConstraint.getFieldExtractor() instanceof MVELObjectClassFieldReader )) {
                     final InternalReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
                     final int index = fieldAccessor.getIndex();
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );

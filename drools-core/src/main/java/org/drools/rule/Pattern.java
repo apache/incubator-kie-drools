@@ -16,21 +16,31 @@
 
 package org.drools.rule;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.*;
-
 import org.drools.base.ClassObjectType;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.Constraint;
+import org.drools.spi.Constraint.ConstraintType;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
-import org.drools.spi.Constraint.ConstraintType;
+import org.drools.spi.SelfDateExtractor;
+import org.drools.spi.SelfNumberExtractor;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Pattern
     implements
@@ -98,7 +108,7 @@ public class Pattern
         this.objectType = objectType;
         if ( identifier != null && (!identifier.equals( "" )) ) {
             this.declaration = new Declaration( identifier,
-                                                new PatternExtractor( objectType ),
+                                                getReadAcessor( objectType ),
                                                 this,
                                                 isInternalFact );
             this.declarations = new HashMap<String, Declaration>( 2 ); // default to avoid immediate resize
@@ -137,6 +147,27 @@ public class Pattern
         out.writeInt( offset );
         out.writeObject(getListenedProperties());
         out.writeObject( annotations );
+    }
+    
+    public static InternalReadAccessor getReadAcessor(ObjectType objectType) {
+        if ( !(objectType instanceof ClassObjectType) ) {
+            return new PatternExtractor(objectType);
+        }
+        Class returnType = ((ClassObjectType) objectType).getClassType();
+        
+        if (Number.class.isAssignableFrom( returnType ) ||
+                ( returnType == byte.class ||
+                  returnType == short.class ||
+                  returnType == int.class ||
+                  returnType == long.class ||
+                  returnType == float.class ||
+                  returnType == double.class ) ) {            
+            return new SelfNumberExtractor(objectType);            
+         } else if (  Date.class.isAssignableFrom( returnType ) ) {
+            return new SelfDateExtractor(objectType);
+        } else {
+            return new PatternExtractor(objectType);
+        }        
     }
     
     public void setClassObjectType(ClassObjectType objectType) {

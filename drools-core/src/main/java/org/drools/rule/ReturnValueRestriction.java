@@ -227,7 +227,7 @@ public class ReturnValueRestriction
         try {
             return this.evaluator.evaluate( (InternalWorkingMemory) workingMemory,
                                             this.readAccessor,
-                                            handle.getObject(),
+                                            handle,
                                             this.expression.evaluate( handle.getObject(),
                                                                       tuple,
                                                                       this.previousDeclarations,
@@ -253,7 +253,7 @@ public class ReturnValueRestriction
                                                          ctx.dialectContext );
             return this.evaluator.evaluate( workingMemory,
                                             this.readAccessor,
-                                            handle.getObject(),
+                                            handle,
                                             value );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
@@ -272,7 +272,7 @@ public class ReturnValueRestriction
                                                          ctx.dialectContext );
             return this.evaluator.evaluate( ctx.workingMemory,
                                             this.readAccessor,
-                                            handle.getObject(),
+                                            handle,
                                             value );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
@@ -291,7 +291,7 @@ public class ReturnValueRestriction
                                                          ctx.dialectContext );
             return this.evaluator.evaluate( ctx.workingMemory,
                                             this.readAccessor,
-                                            ctx.handle.getObject(),
+                                            ctx.handle,
                                             value );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );

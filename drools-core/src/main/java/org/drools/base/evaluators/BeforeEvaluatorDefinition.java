@@ -16,27 +16,25 @@
 
 package org.drools.base.evaluators;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.VariableRestriction.LongVariableContextEntry;
-import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction.LeftStartRightEndContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>The implementation of the 'before' evaluator definition.</p>
@@ -247,16 +245,6 @@ public class BeforeEvaluatorDefinition
         }
 
         @Override
-        public Object prepareLeftObject(InternalFactHandle handle) {
-            return unwrapLeft ? handle.getObject() : handle;
-        }
-
-        @Override
-        public Object prepareRightObject(InternalFactHandle handle) {
-            return unwrapRight ? handle.getObject() : handle;
-        }
-
-        @Override
         public boolean isTemporal() {
             return true;
         }
@@ -286,33 +274,26 @@ public class BeforeEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
+                                final InternalFactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeDroolsException( "The 'before' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
-            if ( context.rightNull ) {
+                                           final InternalFactHandle left) {
+            if ( context.rightNull || 
+                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
                 return false;
             }
-            long rightTS;
-            if ( this.unwrapRight ) {
-                if ( context instanceof ObjectVariableContextEntry ) {
-                    if ( ((ObjectVariableContextEntry) context).right instanceof Date ) {
-                        rightTS = ((Date) ((ObjectVariableContextEntry) context).right).getTime();
-                    } else {
-                        rightTS = ((Number) ((ObjectVariableContextEntry) context).right).longValue();
-                    }
-                } else {
-                    rightTS = ((LongVariableContextEntry) context).right;
-                }
+            
+            long rightTS = ((LeftStartRightEndContextEntry)context).timestamp;
+            long leftTS;
+            if ( context.declaration.getExtractor().isSelfReference() ) {
+                leftTS = ((EventFactHandle) left).getStartTimestamp();
             } else {
-                rightTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getEndTimestamp();
+                leftTS = context.declaration.getExtractor().getLongValue( workingMemory, left.getObject() );
             }
-            long leftTS = this.unwrapLeft ? context.declaration.getExtractor().getLongValue( workingMemory,
-                                                                                             left ) : ((EventFactHandle) left).getStartTimestamp();
 
             long dist = leftTS - rightTS;
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
@@ -320,47 +301,46 @@ public class BeforeEvaluatorDefinition
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
-            if ( context.extractor.isNullValue( workingMemory,
-                                                right ) ) {
+                                          final InternalFactHandle right) {
+            if ( context.leftNull ||
+                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
                 return false;
             }
-            long rightTS = this.unwrapRight ? context.extractor.getLongValue( workingMemory,
-                                                                              right ) : ((EventFactHandle) right).getEndTimestamp();
 
-            long leftTS;
-            if ( this.unwrapLeft ) {
-                if ( context instanceof ObjectVariableContextEntry ) {
-                    if ( ((ObjectVariableContextEntry) context).left instanceof Date ) {
-                        leftTS = ((Date) ((ObjectVariableContextEntry) context).left).getTime();
-                    } else {
-                        leftTS = ((Number) ((ObjectVariableContextEntry) context).left).longValue();
-                    }
-                } else {
-                    leftTS = ((LongVariableContextEntry) context).left;
-                }
+            long leftTS = ((LeftStartRightEndContextEntry)context).timestamp;
+            long rightTS;
+            if ( context.getFieldExtractor().isSelfReference() ) {
+                rightTS = ((EventFactHandle) right).getEndTimestamp();
             } else {
-                leftTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
+                rightTS = context.getFieldExtractor().getLongValue( workingMemory, right.getObject() );
             }
             long dist = leftTS - rightTS;
-
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
-            if ( extractor1.isNullValue( workingMemory,
-                                         object1 ) ) {
+                                final InternalFactHandle handle2) {
+            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
+                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
                 return false;
             }
-            long rightTS = this.unwrapRight ? extractor1.getLongValue( workingMemory,
-                                                                       object1 ) : ((EventFactHandle) object1).getEndTimestamp();
-
-            long leftTS = this.unwrapLeft ? extractor2.getLongValue( workingMemory,
-                                                                     object2 ) : ((EventFactHandle) object2).getStartTimestamp();
+            
+            long rightTS;
+            if ( extractor1.isSelfReference() ) {
+                rightTS = ((EventFactHandle) handle1).getEndTimestamp();
+            } else {
+                rightTS = extractor1.getLongValue( workingMemory, handle1.getObject() );
+            }
+            
+            long leftTS;
+            if ( extractor2.isSelfReference() ) {
+                leftTS = ((EventFactHandle) handle2).getStartTimestamp();
+            } else {
+                leftTS = extractor2.getLongValue( workingMemory, handle2.getObject() );
+            }
 
             long dist = leftTS - rightTS;
 

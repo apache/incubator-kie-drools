@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
@@ -135,9 +136,9 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1, final FieldValue object2) {
-            final String value1 = (String) extractor.getValue( workingMemory, object1 );
-            final String value2 = (String) object2.getValue();
+                                final InternalFactHandle handle1, final FieldValue fieldValue) {
+            final String value1 = (String) extractor.getValue( workingMemory, handle1.getObject() );
+            final String value2 = (String) fieldValue.getValue();
             if ( value1 == null ) {
                 return false;
             }
@@ -145,17 +146,17 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context, final Object left) {
+                                           final VariableContextEntry context, final InternalFactHandle left) {
             final String value = (String) ((ObjectVariableContextEntry) context).right;
             if ( value == null ) {
                 return false;
             }
-            return value.matches( (String) context.declaration.getExtractor().getValue( workingMemory, left ) );
+            return value.matches( (String) context.declaration.getExtractor().getValue( workingMemory, left.getObject() ) );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context, final Object right) {
-            final String value = (String) context.extractor.getValue( workingMemory, right );
+                                          final VariableContextEntry context, final InternalFactHandle right) {
+            final String value = (String) context.extractor.getValue( workingMemory, right.getObject() );
             if ( value == null ) {
                 return false;
             }
@@ -164,10 +165,10 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
-                                final InternalReadAccessor extractor2, final Object object2) {
-            final Object value1 = extractor1.getValue( workingMemory, object1 );
-            final Object value2 = extractor2.getValue( workingMemory, object2 );
+                                final InternalFactHandle handle1,
+                                final InternalReadAccessor extractor2, final InternalFactHandle handle2) {
+            final Object value1 = extractor1.getValue( workingMemory, handle1.getObject() );
+            final Object value2 = extractor2.getValue( workingMemory, handle2.getObject() );
             if ( value1 == null ) {
                 return false;
             }
@@ -190,9 +191,9 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1, final FieldValue object2) {
-            final String value1 = (String) extractor.getValue( workingMemory, object1 );
-            final String value2 = (String) object2.getValue();
+                                final InternalFactHandle handle1, final FieldValue fieldValue) {
+            final String value1 = (String) extractor.getValue( workingMemory, handle1.getObject() );
+            final String value2 = (String) fieldValue.getValue();
             if ( value1 == null ) {
                 return false;
             }
@@ -200,17 +201,17 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context, final Object left) {
+                                           final VariableContextEntry context, final InternalFactHandle left) {
             final String value = (String) ((ObjectVariableContextEntry) context).right;
             if ( value == null ) {
                 return false;
             }
-            return ! value.matches( (String) context.declaration.getExtractor().getValue( workingMemory, left ) );
+            return ! value.matches( (String) context.declaration.getExtractor().getValue( workingMemory, left.getObject() ) );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context, final Object right) {
-            final String value = (String) context.extractor.getValue( workingMemory, right );
+                                          final VariableContextEntry context, final InternalFactHandle right) {
+            final String value = (String) context.extractor.getValue( workingMemory, right.getObject() );
             if ( value == null ) {
                 return false;
             }
@@ -219,10 +220,10 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
-                                final InternalReadAccessor extractor2, final Object object2) {
-            final Object value1 = extractor1.getValue( workingMemory, object1 );
-            final Object value2 = extractor2.getValue( workingMemory, object2 );
+                                final InternalFactHandle handle1,
+                                final InternalReadAccessor extractor2, final InternalFactHandle handle2) {
+            final Object value1 = extractor1.getValue( workingMemory, handle1.getObject() );
+            final Object value2 = extractor2.getValue( workingMemory, handle2.getObject() );
             if ( value1 == null ) {
                 return false;
             }

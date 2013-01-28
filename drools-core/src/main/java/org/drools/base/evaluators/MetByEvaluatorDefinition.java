@@ -16,25 +16,26 @@
 
 package org.drools.base.evaluators;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction;
+import org.drools.rule.VariableRestriction.LeftEndRightStartContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>The implementation of the <code>metby</code> evaluator definition.</p>
@@ -223,11 +224,6 @@ public class MetByEvaluatorDefinition
         }
 
         @Override
-        public Object prepareLeftObject(InternalFactHandle handle) {
-            return handle;
-        }
-
-        @Override
         public boolean isTemporal() {
             return true;
         }
@@ -244,46 +240,50 @@ public class MetByEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
+                                final InternalFactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeDroolsException( "The 'metby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
-            if ( context.rightNull ) {
+                                           final InternalFactHandle left) {
+            if ( context.rightNull || 
+                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
                 return false;
             }
-            long rightStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
+            
+            long rightStartTS = ((LeftEndRightStartContextEntry)context).timestamp;
             long dist = Math.abs( rightStartTS - ((EventFactHandle) left).getEndTimestamp() );
             return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
-            if ( context.extractor.isNullValue( workingMemory,
-                                                right ) ) {
+                                          final InternalFactHandle right) {
+            if ( context.leftNull ||
+                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
                 return false;
             }
+            
             long rightStartTS = ((EventFactHandle) right).getStartTimestamp();
-            long dist = Math.abs( rightStartTS - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp() );
+            long dist = Math.abs( rightStartTS - ((LeftEndRightStartContextEntry)context).timestamp );
 
             return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
-            if ( extractor1.isNullValue( workingMemory,
-                                         object1 ) ) {
+                                final InternalFactHandle handle2) {
+            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
+                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
                 return false;
             }
-            long obj1StartTS = ((EventFactHandle) object1).getStartTimestamp();
-            long dist = Math.abs( obj1StartTS - ((EventFactHandle) object2).getEndTimestamp() );
+            
+            long obj1StartTS = ((EventFactHandle) handle1).getStartTimestamp();
+            long dist = Math.abs( obj1StartTS - ((EventFactHandle) handle2).getEndTimestamp() );
             return this.getOperator().isNegated() ^ ( dist <= this.finalRange );
         }
 

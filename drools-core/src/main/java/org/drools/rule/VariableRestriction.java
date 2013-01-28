@@ -17,12 +17,16 @@
 package org.drools.rule;
 
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
+import org.drools.base.evaluators.BeforeEvaluatorDefinition.BeforeEvaluator;
+import org.drools.base.evaluators.MeetsEvaluatorDefinition.MeetsEvaluator;
+import org.drools.base.evaluators.MetByEvaluatorDefinition.MetByEvaluator;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ReadAccessor;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -36,6 +40,27 @@ public class VariableRestriction {
                                                           Declaration declaration,
                                                           Evaluator evaluator) {
         ValueType coerced = evaluator.getCoercedValueType();
+        
+        if ( evaluator.isTemporal() ) {
+            if ( evaluator instanceof BeforeEvaluator || evaluator instanceof MeetsEvaluator) {
+                return new LeftStartRightEndContextEntry( fieldExtractor,
+                                                         declaration, 
+                                                         evaluator );
+            }
+            
+            if ( evaluator instanceof AfterEvaluator || evaluator instanceof MetByEvaluator  ) {
+                return new LeftEndRightStartContextEntry( fieldExtractor,
+                                                         declaration, 
+                                                         evaluator );
+            }        
+
+            // else
+            return new TemporalVariableContextEntry( fieldExtractor,
+                                                     declaration,
+                                                     evaluator );          
+        }
+        
+
 
         if ( coerced.isBoolean() ) {
             return new BooleanVariableContextEntry( fieldExtractor,
@@ -117,7 +142,7 @@ public class VariableRestriction {
             this.entry = entry;
         }
 
-        public ReadAccessor getFieldExtractor() {
+        public InternalReadAccessor getFieldExtractor() {
             return this.extractor;
         }
 
@@ -185,19 +210,19 @@ public class VariableRestriction {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
-                                                                         evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                         tuple.get( this.declaration ).getObject() );
             this.left = this.declaration.getExtractor().getValue( workingMemory,
-                                                                  evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                  tuple.get( this.declaration ).getObject() );
         }
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
-            this.object = evaluator.prepareLeftObject( handle );
+            this.object = handle.getObject();
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareRightObject( handle ) );
+                                                         handle.getObject() );
             this.right = this.extractor.getValue( workingMemory,
-                                                  evaluator.prepareRightObject( handle ) );
+                                                  handle.getObject() );
         }
 
         public void resetTuple() {
@@ -246,19 +271,19 @@ public class VariableRestriction {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
-                                                                         evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                         tuple.get( this.declaration ).getObject() );
             this.left = this.declaration.getExtractor().getValue( workingMemory,
-                                                                  evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                  tuple.get( this.declaration ).getObject() );
         }
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
-            this.object = evaluator.prepareLeftObject( handle );
+            this.object = handle.getObject();
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareRightObject( handle ) );
+                                                         handle.getObject());
             this.right = this.extractor.getValue( workingMemory,
-                                                  evaluator.prepareRightObject( handle ) );
+                                                  handle.getObject() );
         }
 
         public void resetTuple() {
@@ -290,8 +315,7 @@ public class VariableRestriction {
                    evaluator );
         }
 
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             super.readExternal( in );
             left = in.readLong();
             right = in.readLong();
@@ -308,11 +332,11 @@ public class VariableRestriction {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
-                                                                         evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                         tuple.get( this.declaration ).getObject() );
 
             if ( !leftNull ) {
                 this.left = this.declaration.getExtractor().getLongValue( workingMemory,
-                                                                          evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                          tuple.get( this.declaration ).getObject() );
             } else {
                 this.left = 0;
             }
@@ -320,14 +344,14 @@ public class VariableRestriction {
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
-            this.object = evaluator.prepareLeftObject( handle );
+            this.object = handle.getObject();
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareRightObject( handle ) );
+                                                         handle.getObject());
 
             if ( !rightNull ) { // avoid a NullPointerException
                 this.right = this.extractor.getLongValue( workingMemory,
-                                                          evaluator.prepareRightObject( handle ) );
+                                                          handle.getObject() );
             } else {
                 this.right = 0;
             }
@@ -370,11 +394,11 @@ public class VariableRestriction {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
-                                                                         evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                         tuple.get( this.declaration ).getObject());
 
             if ( !leftNull ) {
                 this.left = this.declaration.getExtractor().getCharValue( workingMemory,
-                                                                          evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                          tuple.get( this.declaration ).getObject() );
             } else {
                 this.left = 0;
             }
@@ -382,14 +406,14 @@ public class VariableRestriction {
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
-            this.object = evaluator.prepareLeftObject( handle );
+            this.object = handle.getObject();
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareRightObject( handle ) );
+                                                         handle.getObject());
 
             if ( !rightNull ) { // avoid a NullPointerException
                 this.right = this.extractor.getCharValue( workingMemory,
-                                                          evaluator.prepareRightObject( handle ) );
+                                                          handle.getObject() );
             } else {
                 this.right = 0;
             }
@@ -432,11 +456,11 @@ public class VariableRestriction {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
-                                                                         evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                         tuple.get( this.declaration ).getObject() );
 
             if ( !leftNull ) {
                 this.left = this.declaration.getExtractor().getDoubleValue( workingMemory,
-                                                                            evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                            tuple.get( this.declaration ).getObject() );
             } else {
                 this.left = 0;
             }
@@ -444,14 +468,14 @@ public class VariableRestriction {
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
-            this.object = evaluator.prepareLeftObject( handle );
+            this.object = handle.getObject();
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareRightObject( handle ) );
+                                                         handle.getObject() );
 
             if ( !rightNull ) { // avoid a NullPointerException
                 this.right = this.extractor.getDoubleValue( workingMemory,
-                                                            evaluator.prepareRightObject( handle ) );
+                                                            handle.getObject() );
             } else {
                 this.right = 0;
             }
@@ -493,11 +517,11 @@ public class VariableRestriction {
             this.reteTuple = tuple;
             this.workingMemory = workingMemory;
             this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
-                                                                         evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                         tuple.get( this.declaration ).getObject() );
 
             if ( !leftNull ) {
                 this.left = this.declaration.getExtractor().getBooleanValue( workingMemory,
-                                                                             evaluator.prepareLeftObject( tuple.get( this.declaration ) ) );
+                                                                             tuple.get( this.declaration ).getObject() );
             } else {
                 this.left = false;
             }
@@ -505,17 +529,222 @@ public class VariableRestriction {
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
-            this.object = evaluator.prepareLeftObject( handle );
+            this.object = handle.getObject();
             this.workingMemory = workingMemory;
             this.rightNull = this.extractor.isNullValue( workingMemory,
-                                                         evaluator.prepareRightObject( handle ) );
+                                                         handle.getObject() );
 
             if ( !rightNull ) { // avoid a NullPointerException
                 this.right = this.extractor.getBooleanValue( workingMemory,
-                                                             evaluator.prepareRightObject( handle ) );
+                                                             handle.getObject() );
             } else {
                 this.right = false;
             }
         }
     }
+    
+    public static class LeftStartRightEndContextEntry extends VariableContextEntry {
+
+        private static final long serialVersionUID = 510l;
+
+        public long               timestamp;
+
+        public LeftStartRightEndContextEntry() {
+        }
+
+        public LeftStartRightEndContextEntry(final InternalReadAccessor extractor,
+                                             final Declaration declaration,
+                                             final Evaluator evaluator) {
+            super( extractor,
+                   declaration,
+                   evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal( in );
+            timestamp = in.readLong();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal( out );
+            out.writeLong( timestamp );
+        }
+
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final LeftTuple tuple) {
+            this.reteTuple = tuple;
+            this.workingMemory = workingMemory;
+            
+            if ( this.declaration.getExtractor().isSelfReference() ) {
+                this.timestamp = ((EventFactHandle)tuple.get( this.declaration )).getStartTimestamp();
+            } else {
+              this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
+                                                                           tuple.get( this.declaration ).getObject() );
+              if ( !leftNull ) { // avoid a NullPointerException
+                  this.timestamp = this.declaration.getExtractor().getLongValue( workingMemory,
+                                                                            tuple.get( this.declaration ).getObject() );
+                } else {
+                    this.timestamp = 0;
+                }                
+            }
+        }
+
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            this.object = handle.getObject(); 
+            this.workingMemory = workingMemory;
+            
+            if ( this.extractor.isSelfReference() ) {
+                this.timestamp = ((EventFactHandle)handle).getEndTimestamp();
+            } else {
+              this.rightNull = this.extractor.isNullValue( workingMemory,
+                                                           handle.getObject());
+              if ( !rightNull ) { // avoid a NullPointerException
+                  this.timestamp = this.extractor.getLongValue( workingMemory,
+                                                            handle.getObject() );
+                } else {
+                    this.timestamp = 0;
+                }                
+            }
+        }
+    }
+    
+    public static class LeftEndRightStartContextEntry extends VariableContextEntry {
+
+        private static final long serialVersionUID = 510l;
+
+        public long               timestamp;
+
+        public LeftEndRightStartContextEntry() {
+        }
+
+        public LeftEndRightStartContextEntry(final InternalReadAccessor extractor,
+                                            final Declaration declaration,
+                                            final Evaluator evaluator) {
+            super( extractor,
+                   declaration,
+                   evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal( in );
+            timestamp = in.readLong();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal( out );
+            out.writeLong( timestamp );
+        }
+
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final LeftTuple tuple) {
+            this.reteTuple = tuple;
+            this.workingMemory = workingMemory;
+            
+            if ( this.declaration.getExtractor().isSelfReference() ) {
+                this.timestamp = ((EventFactHandle)tuple.get( this.declaration )).getEndTimestamp();
+            } else {
+              this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
+                                                                           tuple.get( this.declaration ).getObject() );
+              if ( !leftNull ) { // avoid a NullPointerException
+                  this.timestamp = this.declaration.getExtractor().getLongValue( workingMemory,
+                                                                             tuple.get( this.declaration ).getObject() );
+                } else {
+                    this.timestamp = 0;
+                }                
+            }
+        }
+
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            this.object = handle.getObject(); 
+            this.workingMemory = workingMemory;
+            
+            if ( this.extractor.isSelfReference() ) {
+                this.timestamp = ((EventFactHandle)handle).getStartTimestamp();
+            } else {
+              this.rightNull = this.extractor.isNullValue( workingMemory,
+                                                           handle.getObject());
+              if ( !rightNull ) { // avoid a NullPointerException
+                  this.timestamp = this.extractor.getLongValue( workingMemory,
+                                                            handle.getObject() );
+                } else {
+                    this.timestamp = 0;
+                }                
+            }
+        }
+    }    
+    
+    public static class TemporalVariableContextEntry extends VariableContextEntry {
+
+        private static final long serialVersionUID = 510l;
+
+        public long               startTS;
+        public long               endTS;
+
+        public TemporalVariableContextEntry() {
+        }
+
+        public TemporalVariableContextEntry(final InternalReadAccessor extractor,
+                                            final Declaration declaration,
+                                            final Evaluator evaluator) {
+            super( extractor,
+                   declaration,
+                   evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal( in );
+            startTS = in.readLong();
+            endTS = in.readLong();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal( out );
+            out.writeLong( startTS );
+            out.writeLong( startTS );
+        }
+
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final LeftTuple tuple) {
+            this.reteTuple = tuple;
+            this.workingMemory = workingMemory;
+            
+            if ( this.declaration.getExtractor().isSelfReference() ) {
+                this.startTS = ((EventFactHandle)tuple.get( this.declaration )).getStartTimestamp();
+                this.endTS = ((EventFactHandle)tuple.get( this.declaration )).getEndTimestamp();
+            } else {
+              this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory,
+                                                                           tuple.get( this.declaration ).getObject() );
+              if ( !leftNull ) { // avoid a NullPointerException
+                  this.startTS = this.declaration.getExtractor().getLongValue( workingMemory,
+                                                                             tuple.get( this.declaration ).getObject() );
+                } else {
+                    this.startTS = 0;
+                }    
+              endTS = startTS;
+            }
+        }
+
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            this.object = handle.getObject(); 
+            this.workingMemory = workingMemory;
+            
+            if ( this.extractor.isSelfReference() ) {
+                this.startTS = ((EventFactHandle)handle).getStartTimestamp();
+                this.endTS = ((EventFactHandle)handle).getEndTimestamp();
+            } else {
+              this.rightNull = this.extractor.isNullValue( workingMemory,
+                                                           handle.getObject());
+              if ( !rightNull ) { // avoid a NullPointerException
+                  this.startTS = this.extractor.getLongValue( workingMemory,
+                                                              handle.getObject() );
+              } else {
+                    this.startTS = 0;
+              }  
+              endTS = startTS;
+            }
+        }
+    }       
 }

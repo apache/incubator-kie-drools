@@ -16,6 +16,12 @@
 
 package org.drools.spi;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.extractors.BaseObjectClassFieldReader;
@@ -23,13 +29,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.facttemplates.Fact;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-
-public class PatternExtractor extends BaseObjectClassFieldReader
+public class SelfEventExtractor extends BaseObjectClassFieldReader
     implements
     InternalReadAccessor,
     AcceptsClassObjectType,
@@ -38,21 +38,19 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     private static final long serialVersionUID = 510l;
     private ObjectType        objectType;
 
-    public PatternExtractor() {
+    public SelfEventExtractor() {
     }
 
-    public PatternExtractor(final ObjectType objectType) {
-        this.objectType = objectType;
-        if (objectType instanceof ClassObjectType) {
-            setClassObjectType((ClassObjectType) objectType);
-        } else {
-            this.objectType = objectType;
-        }
+    public SelfEventExtractor(final ObjectType objectType) {
+        super(-1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         objectType = (ObjectType) in.readObject();
+        setIndex( -1 );
+        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setValueType( objectType.getValueType() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -62,7 +60,7 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
         setIndex( -1 );
-        setFieldType( objectType.getClassType() );
+        setFieldType( ((ClassObjectType) objectType).getClassType() );
         setValueType( objectType.getValueType() );        
     }
 
@@ -117,10 +115,10 @@ public class PatternExtractor extends BaseObjectClassFieldReader
         if ( this == obj ) {
             return true;
         }
-        if ( !(obj instanceof PatternExtractor) ) {
+        if ( !(obj instanceof SelfEventExtractor) ) {
             return false;
         }
-        final PatternExtractor other = (PatternExtractor) obj;
+        final SelfEventExtractor other = (SelfEventExtractor) obj;
         return this.objectType.equals( other.objectType );
     }
 

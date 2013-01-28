@@ -35,7 +35,7 @@ import org.drools.util.ClassLoaderUtil;
 public class MVELClassFieldExtractorTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-    MVELClassFieldReader    extractor;
+    MVELObjectClassFieldReader    extractor;
     private final Person[]  person   = new Person[2];
     private final Address[] business = new Address[2];
     private final Address[] home     = new Address[2];
@@ -45,10 +45,11 @@ public class MVELClassFieldExtractorTest {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
 
-        extractor = ( MVELClassFieldReader ) store.getMVELReader(  Person.class.getPackage().getName(),
-                                                                   Person.class.getName(),
-                                                                   "addresses['home'].street",
-                                                                   true );
+        extractor = ( MVELObjectClassFieldReader ) store.getMVELReader(  Person.class.getPackage().getName(),
+                                                                         Person.class.getName(),
+                                                                         "addresses['home'].street",
+                                                                         true,
+                                                                         String.class );
         MVELDialectRuntimeData data = new MVELDialectRuntimeData();
         data.addImport( Person.class.getSimpleName(), Person.class );
         data.onAdd( null, ClassLoaderUtil.getClassLoader( null, getClass(), false ) );
@@ -191,10 +192,11 @@ public class MVELClassFieldExtractorTest {
             assertFalse( this.extractor.isNullValue( null,
                                                      this.person[0] ) );
             
-            MVELClassFieldReader nullExtractor =  ( MVELClassFieldReader ) store.getMVELReader(  Person.class.getPackage().getName(),
-                                                                       Person.class.getName(),
-                                                                       "addresses['business'].phone",
-                                                                       true );
+            MVELObjectClassFieldReader nullExtractor =  ( MVELObjectClassFieldReader ) store.getMVELReader(  Person.class.getPackage().getName(),
+                                                                                                             Person.class.getName(),
+                                                                                                             "addresses['business'].phone",
+                                                                                                             true,
+                                                                                                             String.class );
             MVELDialectRuntimeData data = new MVELDialectRuntimeData();
             data.addImport( Person.class.getSimpleName(), Person.class );
             data.onAdd( null, ClassLoaderUtil.getClassLoader( null, getClass(), false ) );

@@ -73,15 +73,16 @@ import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.rule.constraint.MvelConstraint;
+import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
-import org.drools.spi.PatternExtractor;
 import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
@@ -244,7 +245,7 @@ public class PatternBuilder
             if ( objectType instanceof ClassObjectType ) {
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
                 context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
-                                                                                  (PatternExtractor) pattern.getDeclaration().getExtractor() );
+                                                                                  (AcceptsClassObjectType) pattern.getDeclaration().getExtractor() );
             }
         } else {
             pattern = new Pattern( context.getNextPatternId(),
@@ -469,9 +470,9 @@ public class PatternBuilder
 
             if ( isPositional ) {
                 processPositional(context,
-                        patternDescr,
-                        pattern,
-                        (ExprConstraintDescr) b);
+                                  patternDescr,
+                                  pattern,
+                                  (ExprConstraintDescr) b);
             } else {
                 // need to build the actual constraint
                 build( context,
@@ -621,10 +622,10 @@ public class PatternBuilder
     }
 
     protected void build( RuleBuildContext context,
-                        PatternDescr patternDescr,
-                        Pattern pattern,
-                        ConstraintConnectiveDescr descr,
-                        MVELDumper.MVELDumperContext mvelCtx ) {
+                          PatternDescr patternDescr,
+                          Pattern pattern,
+                          ConstraintConnectiveDescr descr,
+                          MVELDumper.MVELDumperContext mvelCtx ) {
         for ( BaseDescr d : descr.getDescrs() ) {
             buildCcdDescr(context, patternDescr, pattern, d, mvelCtx);
         }
@@ -903,10 +904,10 @@ public class PatternBuilder
     }
 
     protected LiteralRestrictionDescr buildLiteralRestrictionDescr(RuleBuildContext context,
-                                         RelationalExprDescr exprDescr,
-                                         String rightValue,
-                                         String operator,
-                                         boolean isRightLiteral) {
+                                                                   RelationalExprDescr exprDescr,
+                                                                   String rightValue,
+                                                                   String operator,
+                                                                   boolean isRightLiteral) {
         // is it a literal? Does not include enums
         if ( isRightLiteral )
             return new LiteralRestrictionDescr(operator, exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
@@ -1208,31 +1209,15 @@ public class PatternBuilder
     }
 
     protected static Map<String, EvaluatorWrapper> buildOperators(RuleBuildContext context,
-                                                         Pattern pattern,
-                                                         PredicateDescr predicateDescr,
-                                                         Map<String, OperatorDescr> aliases) {
+                                                                  Pattern pattern,
+                                                                  PredicateDescr predicateDescr,
+                                                                  Map<String, OperatorDescr> aliases) {
         Map<String, EvaluatorWrapper> operators = new HashMap<String, EvaluatorWrapper>();
         for ( Map.Entry<String, OperatorDescr> entry : aliases.entrySet() ) {
             OperatorDescr op = entry.getValue();
-            String leftStr = op.getLeftString();
-            String rightStr = op.getRightString();
 
-            Declaration leftDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                    leftStr );
-            if ( leftDecl == null && "this".equals( leftStr ) ) {
-                leftDecl = createDeclarationObject( context,
-                                                         "this",
-                                                         pattern );
-
-            }
-            Declaration rightDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                           rightStr );
-            if ( rightDecl == null && "this".equals( rightStr ) ) {
-                rightDecl = createDeclarationObject( context,
-                                                          "this",
-                                                          pattern );
-
-            }
+            Declaration leftDecl = createDeclarationForOperator(context, pattern, op.getLeftString());
+            Declaration rightDecl = createDeclarationForOperator(context, pattern, op.getRightString());
 
             Target left = leftDecl != null && leftDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
             Target right = rightDecl != null && rightDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
@@ -1250,12 +1235,40 @@ public class PatternBuilder
                     left,
                     right);
             EvaluatorWrapper wrapper = getConstraintBuilder( context ).wrapEvaluator( evaluator,
-                                                               left == Target.HANDLE ? leftDecl : null,
-                                                               right == Target.HANDLE ? rightDecl : null );
+                                                                                      leftDecl,
+                                                                                      rightDecl );
             operators.put( entry.getKey(),
                            wrapper );
         }
         return operators;
+    }
+
+    private static Declaration createDeclarationForOperator(RuleBuildContext context, Pattern pattern, String expr) {
+        Declaration declaration = null;
+        int dotPos = expr.indexOf('.');
+        if (dotPos < 0) {
+            declaration = context.getDeclarationResolver().getDeclaration( context.getRule(), expr );
+            if ( declaration == null && "this".equals( expr ) ) {
+                declaration = createDeclarationObject( context, "this", pattern );
+            }
+        } else {
+            String part1 = expr.substring(0, dotPos).trim();
+            String part2 = expr.substring(dotPos+1).trim();
+            if ( "this".equals( part1 ) ) {
+                declaration = createDeclarationObject(context, part2, (Pattern) context.getBuildStack().peek());
+            } else {
+                declaration = context.getDeclarationResolver().getDeclaration( context.getRule(), part1 );
+                // if a declaration exists, then it may be a variable direct property access
+                if ( declaration != null ) {
+                    if ( declaration.isPatternDeclaration() ) {
+                        declaration = createDeclarationObject(context, part2, declaration.getPattern());
+                    } else {
+                        declaration = null;
+                    }
+                }
+            }
+        }
+        return declaration;
     }
 
     public static Map<String, Class< ? >> getDeclarationsMap( final BaseDescr baseDescr,
@@ -1387,8 +1400,8 @@ public class PatternBuilder
             }
 
             field = context.getCompilerFactory().getFieldFactory().getFieldValue(o,
-                    vtype,
-                    context.getPackageBuilder().getDateFormats());
+                                                                                 vtype,
+                                                                                 context.getPackageBuilder().getDateFormats());
         } catch ( final Exception e ) {
             // we will fallback to regular preducates, so don't raise an error
             e.printStackTrace();
@@ -1468,7 +1481,9 @@ public class PatternBuilder
                 reader = context.getPkg().getClassFieldAccessorStore().getMVELReader( context.getPkg().getName(),
                                                                                       ((ClassObjectType) objectType).getClassName(),
                                                                                       fieldName,
-                                                                                      context.isTypesafe() );
+                                                                                      context.isTypesafe(), 
+                                                                                      ((MVELAnalysisResult)analysis).getReturnType() );
+                
                 MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
                 ((MVELCompileable) reader).compile( data );
                 data.addCompileable( (MVELCompileable) reader );

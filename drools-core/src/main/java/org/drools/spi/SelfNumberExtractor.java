@@ -16,20 +16,26 @@
 
 package org.drools.spi;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassObjectType;
-import org.drools.base.extractors.BaseObjectClassFieldReader;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.drools.facttemplates.Fact;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
-public class PatternExtractor extends BaseObjectClassFieldReader
+import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassObjectType;
+import org.drools.base.ValueType;
+import org.drools.base.extractors.BaseNumberClassFieldReader;
+import org.drools.base.extractors.BaseObjectClassFieldReader;
+import org.drools.common.EventFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MathUtils;
+import org.drools.facttemplates.Fact;
+
+public class SelfNumberExtractor extends BaseNumberClassFieldReader
     implements
     InternalReadAccessor,
     AcceptsClassObjectType,
@@ -38,21 +44,19 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     private static final long serialVersionUID = 510l;
     private ObjectType        objectType;
 
-    public PatternExtractor() {
+    public SelfNumberExtractor() {
     }
 
-    public PatternExtractor(final ObjectType objectType) {
-        this.objectType = objectType;
-        if (objectType instanceof ClassObjectType) {
-            setClassObjectType((ClassObjectType) objectType);
-        } else {
-            this.objectType = objectType;
-        }
+    public SelfNumberExtractor(final ObjectType objectType) {
+        super(-1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         objectType = (ObjectType) in.readObject();
+        setIndex( -1 );
+        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setValueType( objectType.getValueType() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -62,7 +66,7 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
         setIndex( -1 );
-        setFieldType( objectType.getClassType() );
+        setFieldType( ((ClassObjectType) objectType).getClassType() );
         setValueType( objectType.getValueType() );        
     }
 
@@ -95,20 +99,6 @@ public class PatternExtractor extends BaseObjectClassFieldReader
         return ClassUtils.canonicalName( clazz );
     }
 
-    public Method getNativeReadMethod() {
-        try {
-            return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
-                                              e );
-        }
-    }
-
-    public String getNativeReadMethodName() {
-        return "getValue";
-    }
-
     public int hashCode() {
         return this.objectType.hashCode();
     }
@@ -117,10 +107,10 @@ public class PatternExtractor extends BaseObjectClassFieldReader
         if ( this == obj ) {
             return true;
         }
-        if ( !(obj instanceof PatternExtractor) ) {
+        if ( !(obj instanceof SelfNumberExtractor) ) {
             return false;
         }
-        final PatternExtractor other = (PatternExtractor) obj;
+        final SelfNumberExtractor other = (SelfNumberExtractor) obj;
         return this.objectType.equals( other.objectType );
     }
 
@@ -131,5 +121,4 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     public boolean isSelfReference() {
         return true;
     }
-
 }

@@ -32,6 +32,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction.TemporalVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
@@ -241,16 +242,6 @@ public class CoincidesEvaluatorDefinition
         }
 
         @Override
-        public Object prepareLeftObject(InternalFactHandle handle) {
-            return unwrapLeft ? handle.getObject() : handle;
-        }
-
-        @Override
-        public Object prepareRightObject(InternalFactHandle handle) {
-            return unwrapRight ? handle.getObject() : handle;
-        }
-
-        @Override
         public boolean isTemporal() {
             return true;
         }
@@ -267,37 +258,32 @@ public class CoincidesEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor,
-                                final Object object1,
+                                final InternalFactHandle object1,
                                 final FieldValue object2) {
             throw new RuntimeDroolsException( "The 'coincides' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
-                                           final Object left) {
-            if ( context.rightNull ) {
+                                           final InternalFactHandle left) {
+            if ( context.rightNull || 
+                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
                 return false;
             }
+            
             long rightStartTS, rightEndTS;
             long leftStartTS, leftEndTS;
-            if ( this.unwrapRight ) {
-                if ( context instanceof ObjectVariableContextEntry ) {
-                    if ( ((ObjectVariableContextEntry) context).right instanceof Date ) {
-                        rightStartTS = ((Date) ((ObjectVariableContextEntry) context).right).getTime();
-                    } else {
-                        rightStartTS = ((Number) ((ObjectVariableContextEntry) context).right).longValue();
-                    }
-                } else {
-                    rightStartTS = ((LongVariableContextEntry) context).right;
-                }
-                rightEndTS = rightStartTS;
+            
+            rightStartTS = ((TemporalVariableContextEntry) context).startTS;
+            rightEndTS = ((TemporalVariableContextEntry) context).endTS;
+            
+            if ( context.declaration.getExtractor().isSelfReference() ) {
+                leftStartTS = ((EventFactHandle) left).getStartTimestamp();
+                leftEndTS = ((EventFactHandle) left).getEndTimestamp();
             } else {
-                rightStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp();
-                rightEndTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getEndTimestamp();
+                leftStartTS = context.declaration.getExtractor().getLongValue( workingMemory, left.getObject() );
+                leftEndTS = leftStartTS;
             }
-            leftStartTS = this.unwrapLeft ? context.declaration.getExtractor().getLongValue( workingMemory,
-                                                                                             left ) : ((EventFactHandle) left).getStartTimestamp();
-            leftEndTS = this.unwrapLeft ? rightStartTS : ((EventFactHandle) left).getEndTimestamp();
 
             long distStart = Math.abs( rightStartTS - leftStartTS );
             long distEnd = Math.abs( rightEndTS - leftEndTS );
@@ -306,34 +292,25 @@ public class CoincidesEvaluatorDefinition
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
-                                          final Object right) {
-            if ( context.extractor.isNullValue( workingMemory,
-                                                right ) ) {
+                                          final InternalFactHandle right) {
+            if ( context.leftNull ||
+                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
                 return false;
             }
 
             long rightStartTS, rightEndTS;
             long leftStartTS, leftEndTS;
 
-            rightStartTS = this.unwrapRight ? context.extractor.getLongValue( workingMemory,
-                                                                              right ) : ((EventFactHandle) right).getStartTimestamp();
-            rightEndTS = this.unwrapRight ? rightStartTS : ((EventFactHandle) right).getEndTimestamp();
-
-            if ( this.unwrapLeft ) {
-                if ( context instanceof ObjectVariableContextEntry ) {
-                    if ( ((ObjectVariableContextEntry) context).left instanceof Date ) {
-                        leftStartTS = ((Date) ((ObjectVariableContextEntry) context).left).getTime();
-                    } else {
-                        leftStartTS = ((Number) ((ObjectVariableContextEntry) context).left).longValue();
-                    }
-                } else {
-                    leftStartTS = ((LongVariableContextEntry) context).left;
-                }
-                leftEndTS = leftStartTS;
+            if ( context.extractor.isSelfReference() ) {
+                rightStartTS = ((EventFactHandle) right).getStartTimestamp();
+                rightEndTS = ((EventFactHandle) right).getEndTimestamp();
             } else {
-                leftStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
-                leftEndTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
-            }
+                rightStartTS = context.extractor.getLongValue( workingMemory, right.getObject() );
+                rightEndTS = rightStartTS;
+            }                        
+            
+            leftStartTS = ((TemporalVariableContextEntry) context).startTS;
+            leftEndTS = ((TemporalVariableContextEntry) context).endTS;
 
             long distStart = Math.abs( rightStartTS - leftStartTS );
             long distEnd = Math.abs( rightEndTS - leftEndTS );
@@ -342,23 +319,32 @@ public class CoincidesEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final Object object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final Object object2) {
-            if ( extractor1.isNullValue( workingMemory,
-                                         object1 ) ) {
+                                final InternalFactHandle handle2) {
+            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
+                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
                 return false;
             }
+            
             long rightStartTS, rightEndTS;
             long leftStartTS, leftEndTS;
 
-            rightStartTS = this.unwrapRight ? extractor1.getLongValue( workingMemory,
-                                                                       object1 ) : ((EventFactHandle) object1).getStartTimestamp();
-            rightEndTS = this.unwrapRight ? rightStartTS : ((EventFactHandle) object1).getEndTimestamp();
-
-            leftStartTS = this.unwrapLeft ? extractor2.getLongValue( workingMemory,
-                                                                     object2 ) : ((EventFactHandle) object2).getStartTimestamp();
-            leftEndTS = this.unwrapLeft ? leftStartTS : ((EventFactHandle) object2).getEndTimestamp();
+            if ( extractor1.isSelfReference() ) {
+                rightStartTS = ((EventFactHandle) handle1).getStartTimestamp();
+                rightEndTS = ((EventFactHandle) handle1).getEndTimestamp();
+            } else {
+                rightStartTS = extractor1.getLongValue( workingMemory, handle1.getObject() );
+                rightEndTS = rightStartTS;
+            }       
+            
+            if ( extractor2.isSelfReference() ) {
+                leftStartTS = ((EventFactHandle) handle2).getStartTimestamp();
+                leftEndTS = ((EventFactHandle) handle2).getEndTimestamp();
+            } else {
+                leftStartTS = extractor2.getLongValue( workingMemory, handle2.getObject() );
+                leftEndTS = leftStartTS;
+            }            
 
             long distStart = Math.abs( rightStartTS - leftStartTS );
             long distEnd = Math.abs( rightEndTS - leftEndTS );

@@ -476,6 +476,7 @@ public class ConditionAnalyzer {
                 if (declaration.getExtractor() != null) {
                     return declaration.getExtractor().getExtractToClass();
                 } else {
+                    // TODO when can declaration.getExtractor() be null? (mdp)
                     return declaration.getValueType().getClassType();
                 }
             }

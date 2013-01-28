@@ -16,35 +16,6 @@
 
 package org.drools.compiler;
 
-import static org.drools.core.util.BitMaskUtil.isSet;
-
-import java.beans.IntrospectionException;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.Stack;
-
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -103,9 +74,9 @@ import org.drools.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.EnumDeclarationDescr;
 import org.drools.lang.descr.EnumLiteralDescr;
-import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -114,6 +85,7 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.QualifiedName;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
@@ -121,7 +93,6 @@ import org.drools.lang.descr.WindowDeclarationDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
-import org.drools.lang.descr.QualifiedName;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
@@ -132,10 +103,13 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.WindowDeclaration;
+import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.DialectError;
+import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.runtime.rule.Activation;
 import org.drools.spi.InternalReadAccessor;
@@ -144,6 +118,35 @@ import org.drools.type.DateFormatsImpl;
 import org.drools.util.CompositeClassLoader;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
+
+import java.beans.IntrospectionException;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.Stack;
+
+import static org.drools.core.util.BitMaskUtil.isSet;
 
 /**
  * This is the main compiler class for parsing and compiling rules and
@@ -2184,11 +2187,30 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         String timestamp = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
         if (timestamp != null) {
             type.setTimestampAttribute( timestamp );
-            Package pkg = pkgRegistry.getPackage();
+            Package pkg = pkgRegistry.getPackage();            
+
+            MVELDialect dialect = ( MVELDialect ) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );            
+            PackageBuildContext context = new PackageBuildContext();            
+            context.init( this, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null );
+            if ( !type.isTypesafe() ) {
+                context.setTypesafe( false );
+            }
+            
+            MVELAnalysisResult results = ( MVELAnalysisResult )
+                                context.getDialect().analyzeExpression( context,
+                                                                        typeDescr,
+                                                                        timestamp,
+                                                                        new BoundIdentifiers( Collections.EMPTY_MAP,
+                                                                                              Collections.EMPTY_MAP,
+                                                                                              Collections.EMPTY_MAP,
+                                                                                              type.getTypeClass() ) );
+            
             InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage(type.getTypeClass()),
                                                                                           type.getTypeClass().getName(),
                                                                                           timestamp,
-                                                                                          type.isTypesafe() );
+                                                                                          type.isTypesafe(),
+                                                                                          results.getReturnType() );
+            
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( (MVELCompileable) reader );
             ( (MVELCompileable) reader ).compile( data );
@@ -2200,10 +2222,29 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         if (duration != null) {
             type.setDurationAttribute( duration );
             Package pkg = pkgRegistry.getPackage();
+            
+            MVELDialect dialect = ( MVELDialect ) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );            
+            PackageBuildContext context = new PackageBuildContext();            
+            context.init( this, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null );
+            if ( !type.isTypesafe() ) {
+                context.setTypesafe( false );
+            }
+            
+            MVELAnalysisResult results = ( MVELAnalysisResult )
+                                context.getDialect().analyzeExpression( context,
+                                                                        typeDescr,
+                                                                        duration,
+                                                                        new BoundIdentifiers( Collections.EMPTY_MAP,
+                                                                                              Collections.EMPTY_MAP,
+                                                                                              Collections.EMPTY_MAP,
+                                                                                              type.getTypeClass() ) );            
+            
             InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
                                                                                           type.getTypeClass().getName(),
                                                                                           duration,
-                                                                                          type.isTypesafe() );
+                                                                                          type.isTypesafe(),
+                                                                                          results.getReturnType()  );
+            
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( (MVELCompileable) reader );
             ( (MVELCompileable) reader ).compile( data );
@@ -2230,9 +2271,20 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         if ( type.isValid() ) {
             // prefer definitions where possible
-            if ( type.getNature() == TypeDeclaration.Nature.DEFINITION
-                 || pkgRegistry.getPackage().getTypeDeclaration( type.getTypeName() ) == null ) {
+            if ( type.getNature() == TypeDeclaration.Nature.DEFINITION ) {
                 pkgRegistry.getPackage().addTypeDeclaration( type );
+            } else {
+                TypeDeclaration oldType = pkgRegistry.getPackage().getTypeDeclaration( type.getTypeName() );
+                if (oldType == null) {
+                    pkgRegistry.getPackage().addTypeDeclaration( type );
+                } else {
+                    if (type.getRole() == TypeDeclaration.Role.EVENT) {
+                        oldType.setRole(TypeDeclaration.Role.EVENT);
+                    }
+                    if (type.isPropertyReactive()) {
+                        oldType.setPropertyReactive(true);
+                    }
+                }
             }
         }
 

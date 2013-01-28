@@ -9,6 +9,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.conf.EvaluatorOption;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
@@ -132,22 +133,22 @@ public class CustomOperatorTest extends CommonTestMethodBase {
             super(type, isNegated ? F_StrEvaluatorDefinition.NOT_STR_COMPARE : F_StrEvaluatorDefinition.STR_COMPARE);
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory, InternalReadAccessor extractor, Object object, FieldValue value) {
-            final Object objectValue = extractor.getValue(workingMemory, object);
+        public boolean evaluate(InternalWorkingMemory workingMemory, InternalReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
+            final Object objectValue = extractor.getValue(workingMemory, factHandle);
             String objectValueString = (String) objectValue;
             return evaluateAll((String) value.getValue(), objectValueString);
         }
 
-        public boolean evaluate(InternalWorkingMemory iwm, InternalReadAccessor ira, Object left, InternalReadAccessor ira1, Object right) {
-            return evaluateAll((String) left, (String) right);
+        public boolean evaluate(InternalWorkingMemory iwm, InternalReadAccessor ira, InternalFactHandle left, InternalReadAccessor ira1, InternalFactHandle right) {
+            return evaluateAll((String) left.getObject(), (String) right.getObject());
         }
 
-        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory, VariableContextEntry context, Object right) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory, VariableContextEntry context, InternalFactHandle right) {
             final Object valRight = context.extractor.getValue(workingMemory, right);
             return evaluateAll((String) ((ObjectVariableContextEntry) context).left, (String) valRight);
         }
 
-        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory, VariableContextEntry context, Object left) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory, VariableContextEntry context, InternalFactHandle left) {
             final Object varLeft = context.declaration.getExtractor().getValue(workingMemory, left);
             return evaluateAll((String) varLeft, (String) ((ObjectVariableContextEntry) context).right);
         }

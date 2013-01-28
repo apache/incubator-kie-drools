@@ -14,7 +14,7 @@ import org.drools.TestEnum;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
-import org.drools.base.extractors.MVELClassFieldReader;
+import org.drools.base.extractors.MVELObjectClassFieldReader;
 import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
@@ -547,7 +547,7 @@ public class MVELTest extends CommonTestMethodBase {
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( ((MvelConstraint)constraint).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertTrue( ((MvelConstraint)constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader );
             assertEquals( new Address("s1"), (( MvelConstraint )constraint).getField().getValue() );
         }
 
@@ -555,7 +555,7 @@ public class MVELTest extends CommonTestMethodBase {
         constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint )constraint).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertTrue( (( MvelConstraint )constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader );
             assertEquals( new Address("s1").getStreet(), (( MvelConstraint )constraint).getField().getValue() );
         }
     }    
@@ -611,14 +611,14 @@ public class MVELTest extends CommonTestMethodBase {
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader );
             assertEquals( new Address("s1"), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
 
         alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader );
             assertEquals( new Address("s1").getStreet(), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
     }       
@@ -674,7 +674,7 @@ public class MVELTest extends CommonTestMethodBase {
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader );
             assertEquals( new Address("s1"), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
 
@@ -682,7 +682,7 @@ public class MVELTest extends CommonTestMethodBase {
         constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader );
             assertEquals( new Address("s1").getStreet(), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
     }     
