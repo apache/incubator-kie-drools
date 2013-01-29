@@ -134,4 +134,17 @@ public class TestVFSFileServiceImpl implements FileService {
       return ioService.createFile(ioService.get( repositoryRoot + path));
     }
 
+  @Override
+  public Iterable<Path> listDirectories(String path) {
+     return ioService.newDirectoryStream( ioService.get( repositoryRoot + path ), new DirectoryStream.Filter<Path>() {
+            @Override
+            public boolean accept( final Path entry ) throws IOException {
+                if ( org.kie.commons.java.nio.file.Files.isDirectory(entry) ) {
+                    return true;
+                }
+                return false;
+            }
+        } );
+  }
+
 }

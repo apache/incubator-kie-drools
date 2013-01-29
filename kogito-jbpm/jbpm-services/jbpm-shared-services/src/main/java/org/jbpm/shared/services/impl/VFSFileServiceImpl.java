@@ -114,6 +114,19 @@ public class VFSFileServiceImpl implements FileService {
             }
         } );
     }
+    
+    public Iterable<Path> listDirectories(final String path){
+      return ioService.newDirectoryStream( ioService.get( "git://jbpm-playground/" + path ), new DirectoryStream.Filter<Path>() {
+            @Override
+            public boolean accept( final Path entry ) throws IOException {
+                if ( org.kie.commons.java.nio.file.Files.isDirectory(entry) ) {
+                    return true;
+                }
+                return false;
+            }
+        } );
+    
+    }
 
     @Produces
     @Named("fileServiceIOStrategy")

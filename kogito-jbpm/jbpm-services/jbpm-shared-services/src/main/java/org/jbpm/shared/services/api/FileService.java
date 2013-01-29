@@ -32,6 +32,8 @@ public interface FileService {
     byte[] loadFile(String file) throws FileException;
     
     byte[] loadFile(Path file) throws FileException;
+    
+    Iterable<Path> listDirectories(final String path);
 
     Iterable<Path> loadFilesByType(final String path, final String fileType) throws FileException;
   

@@ -1,36 +1,63 @@
-/**
- * Copyright 2010 JBoss Inc
+/*
+ * Copyright 2013 JBoss by Red Hat.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.droolsjbpm.services.test.support;
+package org.droolsjbpm.services.test.sessionmgmt;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.inject.Inject;
+import org.droolsjbpm.services.api.Domain;
+import org.droolsjbpm.services.api.KnowledgeAdminDataService;
+import org.droolsjbpm.services.api.KnowledgeDataService;
+import org.droolsjbpm.services.api.KnowledgeDomainService;
+import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
+import org.droolsjbpm.services.impl.SimpleDomainImpl;
+import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.shared.services.api.FileException;
+import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.task.query.TaskSummary;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
+import org.kie.runtime.process.WorkflowProcessInstance;
+
+/**
+ *
+ * @author salaboy
+ */
 
 @RunWith(Arquillian.class)
-public class SupportProcessCDITest extends SupportProcessBaseTest {
-
-    @Deployment()
+public class SimpleSessionManagementTest {
+  
+  public SimpleSessionManagementTest() {
+  }
+  
+  @Deployment()
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "droolsjbpm-knowledge-services.jar")
                 .addPackage("org.jboss.seam.persistence") //seam-persistence
@@ -104,4 +131,70 @@ public class SupportProcessCDITest extends SupportProcessBaseTest {
     public static void tearDownClass(){
        ds.close();
     }
+
+    @Inject
+    protected TaskServiceEntryPoint taskService;
+    @Inject
+    private BPMN2DataService bpmn2Service;
+    @Inject
+    protected KnowledgeDataService dataService;
+    @Inject
+    protected KnowledgeAdminDataService adminDataService;
+    
+    
+    @Inject
+    private SessionManager sessionManager;
+    
+    
+   @Test
+   public void supportProcessSessionCreation() throws FileException {
+        Domain myDomain = new SimpleDomainImpl("myDomain");
+        
+        sessionManager.setDomain(myDomain);
+        int firstSessionId = sessionManager.buildSession("supportKsession","examples/support/", false);
+        
+        
+        sessionManager.registerHandlersForSession("supportKsession",firstSessionId);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("customer", "Salaboy");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)sessionManager.getKsessionsByName("supportKsession").get(firstSessionId).startProcess("support.process", params);
+        
+        assertNotNull(processInstance);
+        
+        assertEquals(processInstance.getVariable("customer"), "Salaboy");
+        List<Integer> supportSessionsIds = sessionManager.getSessionIdsByName("supportKsession");
+        
+        
+        assertEquals(1, supportSessionsIds.size());
+        
+        int secondSessionId = sessionManager.buildSession("supportKsession","examples/support/", false);
+        
+        sessionManager.registerHandlersForSession("supportKsession", secondSessionId);
+        
+        supportSessionsIds = sessionManager.getSessionIdsByName("supportKsession");
+        
+        assertEquals(2, supportSessionsIds.size());
+        
+        
+        List<TaskSummary> salaboysTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
+        
+        assertEquals(1, salaboysTasks.size());
+        long processInstanceId = salaboysTasks.get(0).getProcessInstanceId();
+        
+        assertEquals(processInstance.getId(), processInstanceId);
+        int sessionForProcessInstanceId = sessionManager.getSessionForProcessInstanceId(processInstanceId);
+        
+        assertEquals(firstSessionId, sessionForProcessInstanceId);
+        Collection<String> sessionsNames = sessionManager.getAllSessionsNames();
+        
+        assertEquals(1, sessionsNames.size());
+        Collection<ProcessDesc> processes = dataService.getProcesses();
+        
+        assertEquals(1, processes.size());
+        
+        
+        
+   }
+   
+   
 }

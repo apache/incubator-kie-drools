@@ -15,16 +15,20 @@
  */
 package org.droolsjbpm.services.impl;
 
+import bitronix.tm.TransactionManagerServices;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import org.drools.impl.EnvironmentFactory;
 
 import org.drools.impl.EnvironmentFactory;
 import org.droolsjbpm.services.api.Domain;
@@ -33,10 +37,14 @@ import org.droolsjbpm.services.api.WorkItemHandlerProducer;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.BAM;
 import org.droolsjbpm.services.impl.event.listeners.CDIBAMProcessEventListener;
-import org.droolsjbpm.services.impl.event.listeners.CDIKbaseEventListener;
+
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
 import org.droolsjbpm.services.impl.helpers.StatefulKnowledgeSessionDelegate;
+import org.droolsjbpm.services.impl.model.ProcessDesc;
+import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.FileException;
+import org.jbpm.shared.services.api.FileService;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.KieBaseConfiguration;
@@ -61,6 +69,8 @@ import org.kie.runtime.process.WorkItemHandler;
 /**
  * @author salaboy
  */
+@Transactional
+@ApplicationScoped
 public class CDISessionManager implements SessionManager {
 
     @Inject
@@ -77,22 +87,25 @@ public class CDISessionManager implements SessionManager {
     private CDIBAMProcessEventListener bamProcessListener;
     @Inject
     private CDIRuleAwareProcessEventListener processFactsListener;
-    @Inject
-    private CDIKbaseEventListener kbaseEventListener;
+    
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject
     private WorkItemHandlerProducer workItemHandlerProducer;
+    
+    @Inject
+    private FileService fs;
+    
     @Inject
     @Named("fileServiceIOStrategy")
     private IOService ioService;
     private Domain domain;
-    // Ksession Name  / Ksession
-    private Map<String, StatefulKnowledgeSession> ksessions = new HashMap<String, StatefulKnowledgeSession>();
+    // Ksession Name  / sessionId , Ksession
+    private Map<String, Map<Integer, StatefulKnowledgeSession>> ksessions = new HashMap<String, Map<Integer, StatefulKnowledgeSession>>();
     // Ksession Name, Ksession Id
-    private Map<String, Integer> ksessionIds = new HashMap<String, Integer>();
-    // Ksession Name / Process Instance Id 
-    private Map<String, Long> processInstanceIdKsession = new HashMap<String, Long>();
+    private Map<String, List<Integer>> ksessionIds = new HashMap<String, List<Integer>>();
+    // Ksession Id / Process Instance Id 
+    private Map<Integer, Long> processInstanceIdKsession = new HashMap<Integer, Long>();
     // Process Path / Process Id - String 
     private Map<String, List<String>> processDefinitionNamesBySession = new HashMap<String, List<String>>();
     // Ksession Name / List of handlers
@@ -126,11 +139,11 @@ public class CDISessionManager implements SessionManager {
     }
 
     @Override
-    public void registerHandlersForSession(String ksessionName) {
+    public void registerHandlersForSession(String ksessionName, int version) {
         Map<String, WorkItemHandler> handlers = ksessionHandlers.get(ksessionName);
         if (handlers != null) {
             for (String key : handlers.keySet()) {
-                ksessions.get(ksessionName).getWorkItemManager().registerWorkItemHandler(key, handlers.get(key));
+                ksessions.get(ksessionName).get(version).getWorkItemManager().registerWorkItemHandler(key, handlers.get(key));
             }
         } else {
             // Log NONE Handler Registered
@@ -138,26 +151,25 @@ public class CDISessionManager implements SessionManager {
     }
 
     @Override
-    public void registerRuleListenerForSession(String ksessionName) {
-        ksessions.get(ksessionName).addEventListener(processFactsListener);
+    public void registerRuleListenerForSession(String ksessionName, int version) {
+        ksessions.get(ksessionName).get(version).addEventListener(processFactsListener);
     }
 
     @Override
     public void buildSessions(boolean streamMode) {
-        processListener.setDomainName(domain.getName());
-        kbaseEventListener.setDomainName(domain.getName());
+        processListener.setDomainName(getDomain().getName());
         processListener.setSessionManager(this);
 
-        Map<String, List<Path>> ksessionProcessDefinitions = domain.getProcessDefinitionFromKsession();
-        Map<String, List<Path>> ksessionRulesDefinitions = domain.getRulesDefinitionFromKsession();
-        for (String session : ksessionProcessDefinitions.keySet()) {
+        Map<String, List<Path>> ksessionProcessDefinitions = getDomain().getProcessDefinitionFromKsession();
+        Map<String, List<Path>> ksessionRulesDefinitions = getDomain().getRulesDefinitionFromKsession();
+        for (String sessionName : ksessionProcessDefinitions.keySet()) {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            if (ksessionProcessDefinitions.get(session) != null) {
-                for (Path path : ksessionProcessDefinitions.get(session)) {
+            if (ksessionProcessDefinitions.get(sessionName) != null) {
+                for (Path path : ksessionProcessDefinitions.get(sessionName)) {
                     String processString = new String(ioService.readAllBytes(path));
                     String processId = bpmn2Service.findProcessId(processString);
                     if(!processId.equals("")){
-                      addProcessDefinitionToSession(session, processId);
+                      addProcessDefinitionToSession(sessionName, processId);
                       System.out.println(">>>>>>>>>> Adding Process to KBase - > " + path.toString());
                       kbuilder.add(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
                     }else{
@@ -165,8 +177,8 @@ public class CDISessionManager implements SessionManager {
                     }
                 }
             }
-            if (ksessionRulesDefinitions.get(session) != null) {
-                for (Path path : ksessionRulesDefinitions.get(session)) {
+            if (ksessionRulesDefinitions.get(sessionName) != null) {
+                for (Path path : ksessionRulesDefinitions.get(sessionName)) {
                     String rules = new String(ioService.readAllBytes(path));
                     System.out.println(">>>>>>>>>> Adding Rules to KBase - > " + path.toString());
                     kbuilder.add(ResourceFactory.newByteArrayResource(rules.getBytes()), ResourceType.DRL);
@@ -190,7 +202,7 @@ public class CDISessionManager implements SessionManager {
                 kbase = KnowledgeBaseFactory.newKnowledgeBase();
             }
             
-            kbase.addEventListener(kbaseEventListener);
+            
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
             Environment env = EnvironmentFactory.newEnvironment();
             env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, em.getEntityManagerFactory());
@@ -209,67 +221,71 @@ public class CDISessionManager implements SessionManager {
             // Register the configured handlers
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("ksession", ksession);
-            Map<String, WorkItemHandler> handlers = workItemHandlerProducer.getWorkItemHandlers(domain.getKsessionRepositoryRoot().get(session), params);
-            StatefulKnowledgeSessionDelegate statefulKnowledgeSessionDelegate = new StatefulKnowledgeSessionDelegate(session, ksession, this);
+            Map<String, WorkItemHandler> handlers = workItemHandlerProducer.getWorkItemHandlers(getDomain().getKsessionRepositoryRoot().get(sessionName), params);
+            StatefulKnowledgeSessionDelegate statefulKnowledgeSessionDelegate = new StatefulKnowledgeSessionDelegate(sessionName, ksession, this);
             
             for (Map.Entry<String, WorkItemHandler> wihandler : handlers.entrySet()) {
                 ksession.getWorkItemManager().registerWorkItemHandler(wihandler.getKey(), wihandler.getValue());
             }
 
-            ksessions.put(session, statefulKnowledgeSessionDelegate);
-            ksessionIds.put(session, ksession.getId());
+          if(ksessions.get(sessionName) == null){
+            ksessions.put(sessionName, new HashMap<Integer, StatefulKnowledgeSession>());
+          }
+          ksessions.get(sessionName).put(ksession.getId(), statefulKnowledgeSessionDelegate);
 
-        }
+          if(ksessionIds.get(sessionName) == null){
+            ksessionIds.put(sessionName, new ArrayList<Integer>());
+          }
+          ksessionIds.get(sessionName).add(ksession.getId());
+       }
     }
 
-    public Map<String, StatefulKnowledgeSession> getKsessions() {
-        return ksessions;
-    }
+   
+
+    
 
     @Override
-    public void setKsessions(Map<String, StatefulKnowledgeSession> ksessions) {
-        this.ksessions = ksessions;
-    }
-
-    @Override
-    public void addKsession(String name,
-            StatefulKnowledgeSession ksession) {
-        this.ksessions.put(name, ksession);
-    }
-
-    @Override
-    public Map<String, Long> getProcessInstanceIdKsession() {
+    public Map<Integer, Long> getProcessInstanceIdKsession() {
         return processInstanceIdKsession;
     }
 
+   
     @Override
-    public void setProcessInstanceIdKsession(Map<String, Long> processInstanceIdKsession) {
-        this.processInstanceIdKsession = processInstanceIdKsession;
-    }
-
-    @Override
-    public void addProcessInstanceIdKsession(String ksessionName,
+    public void addProcessInstanceIdKsession(Integer ksessionId,
             Long processInstanceId) {
-        this.processInstanceIdKsession.put(ksessionName, processInstanceId);
+        this.processInstanceIdKsession.put(ksessionId, processInstanceId);
     }
 
     @Override
-    public StatefulKnowledgeSession getKsessionByName(String ksessionName) {
+    public Map<Integer, StatefulKnowledgeSession> getKsessionsByName(String ksessionName) {
         return ksessions.get(ksessionName);
     }
+    
+    @Override
+    public StatefulKnowledgeSession getKsessionById(int ksessionId) {
+    Collection<Map<Integer, StatefulKnowledgeSession>> values = ksessions.values();
+      for(Map<Integer, StatefulKnowledgeSession> value : values){
+        StatefulKnowledgeSession session = value.get(ksessionId);
+        if(session != null){
+          return session;
+        }
+      }
+      return null;
+    }
+    
 
     @Override
-    public String getSessionForProcessInstanceId(Long processInstanceId) {
-        for (String sessionName : processInstanceIdKsession.keySet()) {
-            if (processInstanceIdKsession.get(sessionName) == processInstanceId) {
-                return sessionName;
+    public int getSessionForProcessInstanceId(Long processInstanceId) {
+        for (int sessionId : processInstanceIdKsession.keySet()) {
+            if (processInstanceIdKsession.get(sessionId) == processInstanceId) {
+                return sessionId;
             }
         }
-        return null;
+        return -1;
     }
 
     @Override
-    public int getSessionIdByName(String ksessionName) {
+    public List<Integer> getSessionIdsByName(String ksessionName) {
         return ksessionIds.get(ksessionName);
     }
 
@@ -323,4 +339,134 @@ public class CDISessionManager implements SessionManager {
       this.processDefinitionNamesBySession.clear();
       this.ksessionHandlers.clear();
     }
+
+  @Override
+  public int buildSession(String sessionName, String path, boolean streamMode) {
+        getDomain().addKsessionRepositoryRoot(sessionName, path);
+        
+        Iterable<Path> loadProcessFiles = null;
+        Iterable<Path> loadRulesFiles = null;
+        try {
+            loadProcessFiles = fs.loadFilesByType(path, "bpmn");
+            loadRulesFiles = fs.loadFilesByType(path, "drl");
+        } catch (FileException ex) {
+            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        for (Path p : loadProcessFiles) {
+            String processString = "";
+            try {
+              processString = new String(fs.loadFile(p));
+            } catch (FileException ex) {
+              Logger.getLogger(CDISessionManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String processId = bpmn2Service.findProcessId(processString);
+            if(!processId.equals("")){
+              
+              getDomain().addProcessDefinitionToKsession(sessionName, p);
+              getDomain().addProcessBPMN2ContentToKsession(sessionName, processId, processString);
+            }
+        }
+        
+         for (Path p : loadRulesFiles) {            
+            System.out.println(" >>> Adding Path to Session- > "+p.toString());
+            // TODO automate this in another service
+            domain.addRulesDefinitionToKsession(sessionName, p);
+        }
+        
+        processListener.setDomainName(getDomain().getName());
+        processListener.setSessionManager(this);
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            if (getDomain().getProcessDefinitionFromKsession().get(sessionName) != null) {
+                for (Path processPath : getDomain().getProcessDefinitionFromKsession().get(sessionName)) {
+                    String processString = new String(ioService.readAllBytes(processPath));
+                    String processId = bpmn2Service.findProcessId(processString);
+                    
+                    if(!processId.equals("")){
+                      addProcessDefinitionToSession(sessionName, processId);
+                      System.out.println(">>>>>>>>>> Adding Process to KBase - > " + processPath.toString());
+                      kbuilder.add(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
+                    }else{
+                      System.out.println("EEEEEEEEE> Path - > " + processPath.toString()+" was not added!");
+                    }
+                }
+            }
+            if (getDomain().getRulesDefinitionFromKsession().get(sessionName) != null) {
+                for (Path rulesPath : getDomain().getRulesDefinitionFromKsession().get(sessionName)) {
+                    String rules = new String(ioService.readAllBytes(rulesPath));
+                    System.out.println(">>>>>>>>>> Adding Rules to KBase - > " + rulesPath.toString());
+                    kbuilder.add(ResourceFactory.newByteArrayResource(rules.getBytes()), ResourceType.DRL);
+                }
+            }
+
+            if (!kbuilder.getErrors().isEmpty()) {
+                KnowledgeBuilderErrors errors = kbuilder.getErrors();
+                Iterator<KnowledgeBuilderError> iterator = errors.iterator();
+                while (iterator.hasNext()) {
+                    System.out.println("Error: " + iterator.next().getMessage());
+                }
+                return -1;
+            }
+            KnowledgeBase kbase = null;
+            if (streamMode) {
+                KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+                config.setOption(EventProcessingOption.STREAM);
+                kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
+            } else {
+                kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            }
+            
+            //kbase.addEventListener(kbaseEventListener);
+            
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+            Environment env = EnvironmentFactory.newEnvironment();
+            env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, em.getEntityManagerFactory());
+            env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
+            StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);            
+            
+            
+            for(String processId : processDefinitionNamesBySession.get(sessionName)){
+              ProcessDesc processDesc = bpmn2Service.getProcessDesc(processId);
+              processDesc.setSessionId(ksession.getId());
+              processDesc.setDomainName(domain.getName());
+              em.persist(processDesc);
+            }
+            
+            ksession.addEventListener(processListener);
+            
+            ksession.addEventListener(bamProcessListener);
+
+            KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+
+            handler.setSession(ksession);
+            handler.init();
+            // Register the same handler for all the ksessions
+            ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+            // Register the configured handlers
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("ksession", ksession);
+            Map<String, WorkItemHandler> handlers = workItemHandlerProducer.getWorkItemHandlers(getDomain().getKsessionRepositoryRoot().get(sessionName), params);
+            StatefulKnowledgeSessionDelegate statefulKnowledgeSessionDelegate = new StatefulKnowledgeSessionDelegate(sessionName, ksession, this);
+            
+            for (Map.Entry<String, WorkItemHandler> wihandler : handlers.entrySet()) {
+                ksession.getWorkItemManager().registerWorkItemHandler(wihandler.getKey(), wihandler.getValue());
+            }
+
+            if(ksessions.get(sessionName) == null){
+              ksessions.put(sessionName, new HashMap<Integer, StatefulKnowledgeSession>());
+            }
+            ksessions.get(sessionName).put(ksession.getId(), statefulKnowledgeSessionDelegate);
+            
+            if(ksessionIds.get(sessionName) == null){
+              ksessionIds.put(sessionName, new ArrayList<Integer>());
+            }
+            ksessionIds.get(sessionName).add(ksession.getId());
+
+            return ksession.getId();
+        
+  }
+
 }

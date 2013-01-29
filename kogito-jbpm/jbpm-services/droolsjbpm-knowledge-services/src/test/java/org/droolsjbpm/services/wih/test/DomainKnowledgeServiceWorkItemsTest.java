@@ -88,21 +88,21 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
 
-        Iterable<Path> loadFilesByType = null;
-        try {
-            loadFilesByType = fs.loadFilesByType("examples/release/", "bpmn");
-        } catch (FileException ex) {
-            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        for (Path p : loadFilesByType) {
-            myDomain.addProcessDefinitionToKsession("myKsession", p);
-        }
+//        Iterable<Path> loadFilesByType = null;
+//        try {
+//            loadFilesByType = fs.loadFilesByType("examples/release/", "bpmn");
+//        } catch (FileException ex) {
+//            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        for (Path p : loadFilesByType) {
+//            myDomain.addProcessDefinitionToKsession("myKsession", p);
+//        }
         
-        sessionManager.buildSessions(false);
+        sessionManager.buildSession("myKsession", "examples/release/", false);
 
         sessionManager.addKsessionHandler("myKsession", "MoveFile", moveFileWorkItemHandler);
 
-        sessionManager.registerHandlersForSession("myKsession");
+        sessionManager.registerHandlersForSession("myKsession", 1);
     }
     
     @After
@@ -135,7 +135,7 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
         params.put("files", files);
         
         
-        WorkflowProcessInstance pI = (WorkflowProcessInstance) sessionManager.getKsessionByName("myKsession").startProcess("MoveFileWorkItemHandlerTest", params);
+        WorkflowProcessInstance pI = (WorkflowProcessInstance) sessionManager.getKsessionsByName("myKsession").get(1).startProcess("MoveFileWorkItemHandlerTest", params);
         
         //The files should be there now
         targetFiles = fs.loadFilesByType(releasePath+"/"+targetDir, "txt");

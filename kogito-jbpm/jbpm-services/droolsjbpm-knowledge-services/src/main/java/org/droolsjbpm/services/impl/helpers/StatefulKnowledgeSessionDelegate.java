@@ -214,28 +214,28 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
     @Override
     public ProcessInstance startProcess(String string) {
         ProcessInstance processInstance = ksession.startProcess(string);
-        domainStrategy.addProcessInstanceIdKsession(name, processInstance.getId());
+        domainStrategy.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId());
         return processInstance;
     }
 
     @Override
     public ProcessInstance startProcess(String string, Map<String, Object> map) {
         ProcessInstance processInstance = ksession.startProcess(string, map);
-        domainStrategy.addProcessInstanceIdKsession(name, processInstance.getId() );
+        domainStrategy.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId() );
         return processInstance;
     }
 
     @Override
     public ProcessInstance createProcessInstance(String string, Map<String, Object> map) {
         ProcessInstance processInstance = ksession.createProcessInstance(string, map);
-        domainStrategy.addProcessInstanceIdKsession(name, processInstance.getId());
+        domainStrategy.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId());
         return processInstance;
     }
 
     @Override
     public ProcessInstance startProcessInstance(long l) {
         ProcessInstance processInstance = ksession.startProcessInstance(l);
-        domainStrategy.addProcessInstanceIdKsession(name, processInstance.getId());
+        domainStrategy.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId());
         return processInstance;
     }
 

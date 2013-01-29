@@ -16,6 +16,7 @@
 package org.droolsjbpm.services.impl.event.listeners;
 
 import java.util.Date;
+import java.util.List;
 import org.droolsjbpm.services.api.IdentityProvider;
 import org.droolsjbpm.services.api.SessionManager;
 import org.jboss.seam.transaction.Transactional;
@@ -33,7 +34,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.droolsjbpm.services.impl.model.BAMProcessSummary;
 import org.droolsjbpm.services.impl.model.StateHelper;
-import org.kie.runtime.process.WorkflowProcessInstance;
 
 /**
  *
@@ -82,14 +82,20 @@ public class CDIBAMProcessEventListener implements ProcessEventListener {
 
     public void beforeProcessCompleted(ProcessCompletedEvent pce) {
         ProcessInstance processInstance = pce.getProcessInstance();
-        BAMProcessSummary processSummaryById = (BAMProcessSummary)em.createQuery("select bps from BAMProcessSummary bps where bps.processInstanceId =:processId")
-                                                    .setParameter("processId", processInstance.getId()).getSingleResult();
-        processSummaryById.setStatus(StateHelper.getProcessState(processInstance.getState()));
-        Date completedDate = new Date();
-        Date startDate = processSummaryById.getStartDate();
-        processSummaryById.setEndDate(completedDate);
-        processSummaryById.setDuration(completedDate.getTime() - startDate.getTime() );
-        em.merge(processSummaryById);
+        List<BAMProcessSummary> summaries = (List<BAMProcessSummary>)em.createQuery("select bps from BAMProcessSummary bps where bps.processInstanceId =:processId")
+                                                    .setParameter("processId", processInstance.getId()).getResultList();
+        if(summaries.size() == 1){
+          BAMProcessSummary processSummaryById = (BAMProcessSummary) summaries.get(0);
+          processSummaryById.setStatus(StateHelper.getProcessState(processInstance.getState()));
+          Date completedDate = new Date();
+          Date startDate = processSummaryById.getStartDate();
+          processSummaryById.setEndDate(completedDate);
+          processSummaryById.setDuration(completedDate.getTime() - startDate.getTime() );
+          em.merge(processSummaryById);
+        }else{
+          // Log
+          System.out.print("EEEE: Something went wrong with the BAM Listener");
+        }
         
     }
 

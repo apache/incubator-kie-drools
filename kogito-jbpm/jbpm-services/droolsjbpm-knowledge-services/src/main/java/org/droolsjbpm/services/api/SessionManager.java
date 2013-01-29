@@ -16,6 +16,7 @@
 package org.droolsjbpm.services.api;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemHandler;
@@ -27,26 +28,22 @@ import org.kie.runtime.process.WorkItemHandler;
 public interface SessionManager {
 
     void setDomain(Domain domain);
+    
+    int buildSession(String sessionName, String path, boolean streamMode);
 
     void buildSessions(boolean streamMode);
 
-    Map<String, StatefulKnowledgeSession> getKsessions();
+    Map<Integer, StatefulKnowledgeSession> getKsessionsByName(String ksessionName);
 
-    void setKsessions(Map<String, StatefulKnowledgeSession> ksessions);
+    Map<Integer, Long> getProcessInstanceIdKsession();
 
-    void addKsession(String name, StatefulKnowledgeSession ksession);
+    StatefulKnowledgeSession getKsessionById(int ksessionId);
 
-    StatefulKnowledgeSession getKsessionByName(String ksessionName);
+    void addProcessInstanceIdKsession(Integer ksessionId, Long processInstanceId);
 
-    Map<String, Long> getProcessInstanceIdKsession();
+    int getSessionForProcessInstanceId(Long processInstanceId);
 
-    void setProcessInstanceIdKsession(Map<String, Long> processInstanceIdKsession);
-
-    void addProcessInstanceIdKsession(String ksessionName, Long processInstanceId);
-
-    String getSessionForProcessInstanceId(Long processInstanceId);
-
-    int getSessionIdByName(String ksessionName);
+    List<Integer> getSessionIdsByName(String ksessionName);
 
     Collection<String> getAllSessionsNames();
 
@@ -60,9 +57,9 @@ public interface SessionManager {
 
     void addKsessionHandler(String ksessionName, String handlerName, WorkItemHandler handler);
 
-    void registerHandlersForSession(String ksessionName);
+    void registerHandlersForSession(String ksessionName, int version);
     
-    void registerRuleListenerForSession(String ksessionName);
+    void registerRuleListenerForSession(String ksessionName, int version);
     
     void clear();
     

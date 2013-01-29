@@ -77,32 +77,34 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
 
-        Iterable<Path> processFiles = null;
-        Iterable<Path> rulesFiles = null;
-        try {
-            processFiles = fs.loadFilesByType("examples/release/", "bpmn");
-            rulesFiles = fs.loadFilesByType("examples/release/", "drl");
-        } catch (FileException ex) {
-            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String kSessionName = "myKsession";
-        for (Path p : processFiles) {
-
-            
-            String processString = new String(fs.loadFile(p));
-            String processId = bpmn2Service.findProcessId(processString);
-            if(!processId.equals("")){
-              System.out.println(" >>> Loading Path -> " + p.toString());
-              myDomain.addProcessDefinitionToKsession(kSessionName, p);
-              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId , processString);
-            }
-        }
-        for (Path p : rulesFiles) {
-            System.out.println(" >>> Loading Path -> " + p.toString());
-            myDomain.addRulesDefinitionToKsession(kSessionName, p);
-        }
-
-        sessionManager.buildSessions(true);
+//        Iterable<Path> processFiles = null;
+//        Iterable<Path> rulesFiles = null;
+//        try {
+//            processFiles = fs.loadFilesByType("examples/release/", "bpmn");
+//            rulesFiles = fs.loadFilesByType("examples/release/", "drl");
+//        } catch (FileException ex) {
+//            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        String kSessionName = "myKsession";
+//        for (Path p : processFiles) {
+//
+//            
+//            String processString = new String(fs.loadFile(p));
+//            String processId = bpmn2Service.findProcessId(processString);
+//            if(!processId.equals("")){
+//              System.out.println(" >>> Loading Path -> " + p.toString());
+//              myDomain.addProcessDefinitionToKsession(kSessionName, p);
+//              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId , processString);
+//            }
+//        }
+//        for (Path p : rulesFiles) {
+//            System.out.println(" >>> Loading Path -> " + p.toString());
+//            myDomain.addRulesDefinitionToKsession(kSessionName, p);
+//        }
+//
+//        sessionManager.buildSessions(true);
+        
+        sessionManager.buildSession("myKsession", "examples/release/", true);
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
@@ -112,20 +114,20 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
 
         sessionManager.addKsessionHandler("myKsession", "Email", notificationWorkItemHandler);
 
-        sessionManager.registerHandlersForSession("myKsession");
+        sessionManager.registerHandlersForSession("myKsession", 1);
 
-        sessionManager.registerRuleListenerForSession("myKsession");
+        sessionManager.registerRuleListenerForSession("myKsession", 1);
 
-        sessionManager.getKsessionByName("myKsession").setGlobal("rulesNotificationService", rulesNotificationService);
+        sessionManager.getKsessionsByName("myKsession").get(1).setGlobal("rulesNotificationService", rulesNotificationService);
 
-        sessionManager.getKsessionByName("myKsession").setGlobal("taskService", taskService);
+        sessionManager.getKsessionsByName("myKsession").get(1).setGlobal("taskService", taskService);
 
         // Let's start a couple of processes
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("release_name", "first release");
         params.put("release_path", "/releasePath/");
 
-        ProcessInstance firstPI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
+        ProcessInstance firstPI = sessionManager.getKsessionsByName("myKsession").get(1).startProcess("org.jbpm.release.process", params);
 
         params = new HashMap<String, Object>();
         params.put("release_name", "second release");
@@ -133,9 +135,9 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
 
 
 
-        ProcessInstance secondPI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
+        ProcessInstance secondPI = sessionManager.getKsessionsByName("myKsession").get(1).startProcess("org.jbpm.release.process", params);
 
-        QueryResults queryResults = sessionManager.getKsessionByName("myKsession").getQueryResults("getProcessInstances", new Object[]{});
+        QueryResults queryResults = sessionManager.getKsessionsByName("myKsession").get(1).getQueryResults("getProcessInstances", new Object[]{});
 
         assertEquals(2, queryResults.size());
 
@@ -145,7 +147,7 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
 
 
         // This process must be automatically aborted because it's using the same release path than the first process.
-        ProcessInstance thirdPI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
+        ProcessInstance thirdPI = sessionManager.getKsessionsByName("myKsession").get(1).startProcess("org.jbpm.release.process", params);
 
         assertEquals(ProcessInstance.STATE_ABORTED, thirdPI.getState());
 

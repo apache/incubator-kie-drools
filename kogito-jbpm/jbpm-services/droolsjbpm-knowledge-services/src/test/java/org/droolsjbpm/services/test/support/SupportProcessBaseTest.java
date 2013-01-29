@@ -67,41 +67,41 @@ public abstract class SupportProcessBaseTest {
     }
 
     @Test
-    public void testReleaseProcess() throws FileException {
+    public void testSupportProcess() throws FileException {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
 
-        Iterable<Path> loadFilesByType = null;
-        try {
-            loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
-        } catch (FileException ex) {
-            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String kSessionName = "myKsession";
-        myDomain.addKsessionRepositoryRoot(kSessionName, "examples/general/");
-        for (Path p : loadFilesByType) {
+//        Iterable<Path> loadFilesByType = null;
+//        try {
+//            loadFilesByType = fs.loadFilesByType("examples/support/", "bpmn");
+//        } catch (FileException ex) {
+//            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        String kSessionName = "myKsession";
+//        myDomain.addKsessionRepositoryRoot(kSessionName, "examples/support/");
+//        for (Path p : loadFilesByType) {
+//
+//            
+//            String processString = new String(fs.loadFile(p));
+//            String processId = bpmn2Service.findProcessId(processString);
+//            if(!processId.equals("")){
+//              System.out.println(" >>> Loading Path -> " + p.toString());
+//              myDomain.addProcessDefinitionToKsession("myKsession", p);
+//              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId, processString);
+//            }
+//        }
 
-            
-            String processString = new String(fs.loadFile(p));
-            String processId = bpmn2Service.findProcessId(processString);
-            if(!processId.equals("")){
-              System.out.println(" >>> Loading Path -> " + p.toString());
-              myDomain.addProcessDefinitionToKsession("myKsession", p);
-              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId, processString);
-            }
-        }
-
-        sessionManager.buildSessions(false);
+        sessionManager.buildSession("myKsession", "examples/support/", false);
 
 
 
-        sessionManager.registerHandlersForSession("myKsession");
+        sessionManager.registerHandlersForSession("myKsession", 1);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("customer", "polymita");
 
 
-        ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("support.process", params);
+        ProcessInstance pI = sessionManager.getKsessionsByName("myKsession").get(1).startProcess("support.process", params);
 
         // Configure Release
         List<TaskSummary> tasksAssignedToSalaboy = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");

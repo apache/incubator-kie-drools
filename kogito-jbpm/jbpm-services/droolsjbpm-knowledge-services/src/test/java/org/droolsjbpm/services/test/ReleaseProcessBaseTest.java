@@ -135,27 +135,27 @@ public abstract class ReleaseProcessBaseTest {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
 
-        Iterable<Path> loadFilesByType = null;
-        try {
-            loadFilesByType = fs.loadFilesByType("examples/release/", "bpmn");
-        } catch (FileException ex) {
-            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String kSessionName = "myKsession";
-        myDomain.addKsessionRepositoryRoot(kSessionName, "examples/release/");
-        for (Path p : loadFilesByType) {
-            
-            
-            String processString = new String( fs.loadFile(p) );
-            String processId = bpmn2Service.findProcessId( processString );
-            if(!processId.equals("")){
-              System.out.println(" >>> Loading Path -> "+p.toString());
-              myDomain.addProcessDefinitionToKsession("myKsession", p);
-              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId, processString );
-            }
-        }
+//        Iterable<Path> loadFilesByType = null;
+//        try {
+//            loadFilesByType = fs.loadFilesByType("examples/release/", "bpmn");
+//        } catch (FileException ex) {
+//            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        String kSessionName = "myKsession";
+//        myDomain.addKsessionRepositoryRoot(kSessionName, "examples/release/");
+//        for (Path p : loadFilesByType) {
+//            
+//            
+//            String processString = new String( fs.loadFile(p) );
+//            String processId = bpmn2Service.findProcessId( processString );
+//            if(!processId.equals("")){
+//              System.out.println(" >>> Loading Path -> "+p.toString());
+//              myDomain.addProcessDefinitionToKsession("myKsession", p);
+//              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId, processString );
+//            }
+//        }
 
-        sessionManager.buildSessions(false);
+        sessionManager.buildSession("myKsession", "examples/release/", false);
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", moveFilesWIHandler);
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", moveFilesWIHandler);
@@ -164,13 +164,13 @@ public abstract class ReleaseProcessBaseTest {
         sessionManager.addKsessionHandler("myKsession", "MoveToProduction", moveFilesWIHandler);
         sessionManager.addKsessionHandler("myKsession", "Email", notificationWorkItemHandler);
 
-        sessionManager.registerHandlersForSession("myKsession");
+        sessionManager.registerHandlersForSession("myKsession", 1);
          
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("release_name", "first release ever");
         params.put("release_path", releasePath);
         
-        ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
+        ProcessInstance pI = sessionManager.getKsessionsByName("myKsession").get(1).startProcess("org.jbpm.release.process", params);
         
         // Configure Release
         List<TaskSummary> tasksAssignedByGroup = taskService.getTasksAssignedByGroup("Release Manager", "en-UK");

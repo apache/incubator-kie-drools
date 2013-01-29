@@ -98,7 +98,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         sessionManager.buildSessions(false); //DO THIS -> OR oneSessionOneProcessStrategy.buildSessionByName("mySession");
 
 
-        ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.writedocument");
+        ProcessInstance pI = sessionManager.getKsessionsByName("myKsession").get(1).startProcess("org.jbpm.writedocument");
 
 
         assertNotNull(pI);
@@ -142,6 +142,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
 
         Collection<String> sessionNames = sessionManager.getAllSessionsNames();
+        i = 1;
         for (String sessionName : sessionNames) {
             Collection<String> processDefinitionsIds = sessionManager.getProcessesInSession(sessionName);
             for (String processDefId : processDefinitionsIds) {
@@ -150,10 +151,11 @@ public abstract class DomainKnowledgeServiceBaseTest {
                     continue;
                 }
                 String ksessionName = sessionManager.getProcessInSessionByName(processDefId);
-                ProcessInstance pI = sessionManager.getKsessionByName(ksessionName).startProcess(processDefId);
+                ProcessInstance pI = sessionManager.getKsessionsByName(ksessionName).get(i).startProcess(processDefId);
                 assertNotNull(pI);
 
             }
+            i++;
         }
         assertEquals(2, sessionManager.getProcessInstanceIdKsession().size());
 
@@ -194,7 +196,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         sessionManager.addKsessionHandler("myKsession", "ApplyChangestoRuntimes", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "Email", new DoNothingWorkItemHandler());
 
-        sessionManager.registerHandlersForSession("myKsession");
+        sessionManager.registerHandlersForSession("myKsession", 1);
          
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("release_name", "first release ever");
@@ -202,7 +204,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         
         
         
-        ProcessInstance pI = sessionManager.getKsessionByName("myKsession").startProcess("org.jbpm.release.process", params);
+        ProcessInstance pI = sessionManager.getKsessionsByName("myKsession").get(1).startProcess("org.jbpm.release.process", params);
         
         // Configure Release
         List<TaskSummary> tasksAssignedByGroup = taskService.getTasksAssignedByGroup("Release Manager", "en-UK");
@@ -288,7 +290,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
 
 
-        StatefulKnowledgeSession ksession = sessionManager.getKsessionByName("myKsession");
+        StatefulKnowledgeSession ksession = sessionManager.getKsessionsByName("myKsession").get(1);
 
 
 
@@ -472,7 +474,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
         sessionManager.buildSessions(false);
 
-        StatefulKnowledgeSession ksession = sessionManager.getKsessionByName("myKsession");
+        StatefulKnowledgeSession ksession = sessionManager.getKsessionsByName("myKsession").get(1);
 
 
         ProcessInstance processInstance = ksession.startProcess("org.jbpm.writedocument", null);

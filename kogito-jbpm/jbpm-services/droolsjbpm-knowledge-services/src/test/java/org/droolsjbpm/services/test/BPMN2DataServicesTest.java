@@ -97,22 +97,15 @@ public class BPMN2DataServicesTest {
     private BPMN2DataService bpmn2Service;
 
     
-    private PoolingDataSource ds;
+    private static PoolingDataSource ds;
     
     public BPMN2DataServicesTest() {
     }
 
+   
     @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-        Configuration conf = TransactionManagerServices.getConfiguration();
+    public static void setUp() {
+       
       
         ds = new PoolingDataSource();
         ds.setUniqueName("jdbc/testDS1");
@@ -129,16 +122,19 @@ public class BPMN2DataServicesTest {
         ds.init();
         
         
-        knolwedgeService.getAvailableProcesses();
+       
     }
 
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDown() {
       ds.close();
     }
 
     @Test
     public void hello() throws IOException {
+      
+        knolwedgeService.createDomain();
+      
         String theString = "org.jbpm.writedocument";
         
 
@@ -160,6 +156,8 @@ public class BPMN2DataServicesTest {
     
     @Test
     public void testFindReusableSubProcesses() {
+      
+        knolwedgeService.createDomain();
         String theString = "ParentProcess";
         
         assertNotNull(theString);

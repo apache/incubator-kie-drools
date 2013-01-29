@@ -82,7 +82,7 @@ public class DomainKnowledgeServiceWithRulesCDITest extends DomainKnowledgeServi
           //NON XA CONFIGS
           ds.setClassName("org.h2.jdbcx.JdbcDataSource");
           ds.setMaxPoolSize(3);
-          //ds.setAllowLocalTransactions(true);
+          ds.setAllowLocalTransactions(true);
           ds.getDriverProperties().put("user", "sa");
           ds.getDriverProperties().put("password", "sasa");
           ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");

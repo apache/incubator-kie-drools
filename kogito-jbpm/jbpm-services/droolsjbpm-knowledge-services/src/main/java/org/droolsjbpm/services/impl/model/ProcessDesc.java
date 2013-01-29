@@ -42,6 +42,7 @@ public class ProcessDesc implements Serializable {
     private String knowledgeType;
     private String namespace;
     private String domainName;
+    private int    sessionId;
     
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataTimeStamp;
@@ -118,13 +119,25 @@ public class ProcessDesc implements Serializable {
         return domainName;
     }
 
+    public void setDomainName(String domainName) {
+      this.domainName = domainName;
+    }
+
     public Date getDataTimeStamp() {
         return dataTimeStamp;
     }
 
+    public int getSessionId() {
+      return sessionId;
+    }
+
+    public void setSessionId(int sessionId) {
+      this.sessionId = sessionId;
+    }
+ 
     @Override
     public String toString() {
-        return "ProcessDesc["+dataTimeStamp.toString()+"]{" + "pk=" + pki + ", id=" + id + ", name=" + name + ", version=" + version + ", packageName=" + packageName + ", type=" + type + ", knowledgeType=" + knowledgeType + ", namespace=" + namespace + ", domainName=" + domainName + '}';
+        return "ProcessDesc["+dataTimeStamp.toString()+"]{" + "pk=" + pki + ", id=" + id + ", name=" + name + ", version=" + version + ", sessionId=" + sessionId + ", packageName=" + packageName + ", type=" + type + ", knowledgeType=" + knowledgeType + ", namespace=" + namespace + ", domainName=" + domainName + '}';
     }
     
 

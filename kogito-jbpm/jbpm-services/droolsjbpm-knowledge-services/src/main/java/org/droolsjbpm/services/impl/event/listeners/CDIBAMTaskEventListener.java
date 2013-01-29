@@ -22,6 +22,7 @@ import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
+import org.droolsjbpm.services.impl.model.BAMProcessSummary;
 import org.droolsjbpm.services.impl.model.BAMTaskSummary;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Task;
@@ -116,13 +117,22 @@ public class CDIBAMTaskEventListener implements TaskLifeCycleEventListener {
 
     public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskCompletedEvent Task ti) {
 
-        BAMTaskSummary taskSummaryById = (BAMTaskSummary) em.createQuery("select bts from BAMTaskSummary bts where bts.taskId=:taskId")
-                .setParameter("taskId", ti.getId()).getSingleResult();
-        taskSummaryById.setStatus("Completed");
-        Date completedDate = new Date();
-        taskSummaryById.setEndDate(completedDate);
-        taskSummaryById.setDuration(completedDate.getTime() - taskSummaryById.getStartDate().getTime());
-        em.merge(taskSummaryById);
+        List<BAMTaskSummary> summaries = (List<BAMTaskSummary>) em.createQuery("select bts from BAMTaskSummary bts where bts.taskId=:taskId")
+                .setParameter("taskId", ti.getId()).getResultList();
+        
+        if(summaries.size() == 1){
+        
+          BAMTaskSummary taskSummaryById = (BAMTaskSummary)summaries.get(0);
+
+          taskSummaryById.setStatus("Completed");
+          Date completedDate = new Date();
+          taskSummaryById.setEndDate(completedDate);
+          taskSummaryById.setDuration(completedDate.getTime() - taskSummaryById.getStartDate().getTime());
+          em.merge(taskSummaryById);
+        }else{
+          // Log
+          System.out.print("EEEE: Something went wrong with the Task BAM Listener");
+        }
     }
 
     public void afterTaskFailedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskFailedEvent Task ti) {
