@@ -22,7 +22,7 @@ import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.VariableRestriction.TemporalVariableContextEntry;
+import org.drools.rule.VariableRestriction.LeftStartRightEndContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
@@ -282,28 +282,12 @@ public class BeforeEvaluatorDefinition
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
                                            final InternalFactHandle left) {
-            if ( context.rightNull ) {
+            if ( context.rightNull || 
+                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
                 return false;
             }
-/*
-            long rightTS;
-            if ( this.unwrapRight ) {
-                if ( context instanceof ObjectVariableContextEntry ) {
-                    if ( ((ObjectVariableContextEntry) context).right instanceof Date ) {
-                        rightTS = ((Date) ((ObjectVariableContextEntry) context).right).getTime();
-                    } else {
-                        rightTS = ((Number) ((ObjectVariableContextEntry) context).right).longValue();
-                    }
-                } else {
-                    rightTS = ((LongVariableContextEntry) context).right;
-                }
-            } else {
-                rightTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getEndTimestamp();
-            }
-            long leftTS = this.unwrapLeft ? context.declaration.getExtractor().getLongValue( workingMemory,
-                                                                                             left ) : ((EventFactHandle) left).getStartTimestamp();
-*/
-            long rightTS = ((TemporalVariableContextEntry)context).right;
+            
+            long rightTS = ((LeftStartRightEndContextEntry)context).timestamp;
             long leftTS;
             if ( context.declaration.getExtractor().isSelfReference() ) {
                 leftTS = ((EventFactHandle) left).getStartTimestamp();
@@ -318,33 +302,15 @@ public class BeforeEvaluatorDefinition
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
                                           final InternalFactHandle right) {
-            if ( context.extractor.isNullValue( workingMemory,
-                                                right ) ) {
+            if ( context.leftNull ||
+                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
                 return false;
             }
-/*
-            long rightTS = this.unwrapRight ? context.extractor.getLongValue( workingMemory,
-                                                                              right ) : ((EventFactHandle) right).getEndTimestamp();
 
-            long leftTS;
-            if ( this.unwrapLeft ) {
-                if ( context instanceof ObjectVariableContextEntry ) {
-                    if ( ((ObjectVariableContextEntry) context).left instanceof Date ) {
-                        leftTS = ((Date) ((ObjectVariableContextEntry) context).left).getTime();
-                    } else {
-                        leftTS = ((Number) ((ObjectVariableContextEntry) context).left).longValue();
-                    }
-                } else {
-                    leftTS = ((LongVariableContextEntry) context).left;
-                }
-            } else {
-                leftTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
-            }
-*/
-            long leftTS = ((TemporalVariableContextEntry)context).left;
+            long leftTS = ((LeftStartRightEndContextEntry)context).timestamp;
             long rightTS;
             if ( context.getFieldExtractor().isSelfReference() ) {
-                rightTS = ((EventFactHandle) right).getStartTimestamp();
+                rightTS = ((EventFactHandle) right).getEndTimestamp();
             } else {
                 rightTS = context.getFieldExtractor().getLongValue( workingMemory, right.getObject() );
             }
@@ -354,18 +320,27 @@ public class BeforeEvaluatorDefinition
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final InternalFactHandle object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final InternalFactHandle object2) {
-            if ( extractor1.isNullValue( workingMemory,
-                                         object1 ) ) {
+                                final InternalFactHandle handle2) {
+            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
+                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
                 return false;
             }
-            long rightTS = this.unwrapRight ? extractor1.getLongValue( workingMemory,
-                                                                       object1 ) : ((EventFactHandle) object1).getEndTimestamp();
-
-            long leftTS = this.unwrapLeft ? extractor2.getLongValue( workingMemory,
-                                                                     object2 ) : ((EventFactHandle) object2).getStartTimestamp();
+            
+            long rightTS;
+            if ( extractor1.isSelfReference() ) {
+                rightTS = ((EventFactHandle) handle1).getEndTimestamp();
+            } else {
+                rightTS = extractor1.getLongValue( workingMemory, handle1.getObject() );
+            }
+            
+            long leftTS;
+            if ( extractor2.isSelfReference() ) {
+                leftTS = ((EventFactHandle) handle2).getStartTimestamp();
+            } else {
+                leftTS = extractor2.getLongValue( workingMemory, handle2.getObject() );
+            }
 
             long dist = leftTS - rightTS;
 

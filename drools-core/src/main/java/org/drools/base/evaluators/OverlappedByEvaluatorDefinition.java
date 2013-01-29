@@ -30,6 +30,7 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
+import org.drools.rule.VariableRestriction.TemporalVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
@@ -255,48 +256,52 @@ public class OverlappedByEvaluatorDefinition
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
                                            final InternalFactHandle left) {
-            if ( context.rightNull ) {
+            if ( context.rightNull || 
+                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
                 return false;
             }
-            long rightStartTS = ((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp();
+            
+            long rightStartTS = ((TemporalVariableContextEntry) context).startTS;
             long leftEndTS = ((EventFactHandle) left ).getEndTimestamp();
             long dist = leftEndTS - rightStartTS;
             return this.getOperator().isNegated() ^ ( 
                     ((EventFactHandle) left ).getStartTimestamp() < rightStartTS &&
-                    leftEndTS < ((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() &&
+                    leftEndTS < ((TemporalVariableContextEntry) context).endTS &&
                     dist >= this.minDev && dist <= maxDev );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
                                           final InternalFactHandle right) {
-            if ( context.extractor.isNullValue( workingMemory,
-                                                right ) ) {
+            if ( context.leftNull ||
+                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
                 return false;
             }
-            long leftEndTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
+            
+            long leftEndTS = ((TemporalVariableContextEntry) context).endTS;
             long rightStartTS = ((EventFactHandle) right ).getStartTimestamp();
             long dist = leftEndTS - rightStartTS;
             return this.getOperator().isNegated() ^ ( 
-                    ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() < rightStartTS &&
+                    ((TemporalVariableContextEntry) context).startTS < rightStartTS &&
                     leftEndTS < ((EventFactHandle) right).getEndTimestamp() &&
                     dist >= this.minDev && dist <= maxDev );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final InternalFactHandle object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final InternalFactHandle object2) {
-            if ( extractor1.isNullValue( workingMemory,
-                                         object1 ) ) {
+                                final InternalFactHandle handle2) {
+            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
+                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
                 return false;
             }
-            long startTS = ((EventFactHandle) object1).getStartTimestamp();
-            long endTS = ((EventFactHandle) object2).getEndTimestamp();
+            
+            long startTS = ((EventFactHandle) handle1).getStartTimestamp();
+            long endTS = ((EventFactHandle) handle2).getEndTimestamp();
             long dist = endTS - startTS;
-            return this.getOperator().isNegated() ^ ( ((EventFactHandle) object2).getStartTimestamp() < startTS &&
-                    endTS < ((EventFactHandle) object1).getEndTimestamp() &&
+            return this.getOperator().isNegated() ^ ( ((EventFactHandle) handle2).getStartTimestamp() < startTS &&
+                    endTS < ((EventFactHandle) handle1).getEndTimestamp() &&
                     dist >= this.minDev && dist <= this.maxDev );
         }
 
