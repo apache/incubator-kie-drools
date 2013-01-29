@@ -911,4 +911,66 @@ public class MiscTest2 extends CommonTestMethodBase {
             return !this.values.isEmpty();
         }
     }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testMvelResolvingGenericVariableDeclaredInParentClass() {
+        // JBRULES-3684
+        String str =
+                "import org.drools.integrationtests.MiscTest2.AbstractBase\n" +
+                "import org.drools.integrationtests.MiscTest2.StringConcrete\n" +
+                "rule \"test\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$S : StringConcrete()\n" +
+                "then\n" +
+                "$S.getFoo().concat(\"this works with java dialect\");\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+    }
+
+    public static abstract class AbstractBase<T> {
+        protected T foo;
+        public T getFoo() { return foo; }
+    }
+
+    public static class StringConcrete extends AbstractBase<String> {
+        public StringConcrete() { this.foo = new String(); }
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testMvelParsingParenthesisInString() {
+        // JBRULES-3698
+        String str =
+                "rule \"Test Rule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "String s = new String(\"write something with ) a paren\");\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+    }
+
+    public static enum Answer { YES, NO }
+    public static class AnswerGiver {
+        public Answer getAnswer() { return Answer.YES; }
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testCompilationMustFailComparingAClassLiteral() {
+        // DROOLS-20
+        String str =
+                "import org.drools.integrationtests.MiscTest2.Answer\n" +
+                "import org.drools.integrationtests.MiscTest2.AnswerGiver\n" +
+                "rule \"Test Rule\"\n" +
+                "when\n" +
+                "   AnswerGiver(Answer == Answer.YES)\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        assertTrue( kbuilder.hasErrors() );
+    }
 }
