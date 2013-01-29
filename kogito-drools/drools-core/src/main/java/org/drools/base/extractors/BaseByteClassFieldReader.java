@@ -16,12 +16,12 @@
 
 package org.drools.base.extractors;
 
-import java.lang.reflect.Method;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldReader;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
+
+import java.lang.reflect.Method;
 
 /**
  * A Base class for primitive byte class field
@@ -30,12 +30,6 @@ import org.drools.common.InternalWorkingMemory;
 public abstract class BaseByteClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 510l;
-
-    public BaseByteClassFieldReader(final Class clazz,
-                                       final String fieldName) {
-        super( clazz,
-               fieldName );
-    }
 
     /**
      * This constructor is not supposed to be used from outside the class hirarchy

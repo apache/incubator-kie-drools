@@ -16,14 +16,14 @@
 
 package org.drools.base.extractors;
 
-import java.lang.reflect.Method;
-import java.util.Date;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldReader;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
+
+import java.lang.reflect.Method;
+import java.util.Date;
 
 public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
 
@@ -33,12 +33,6 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
         
     }
     
-    public BaseDateClassFieldReader(final Class clazz,
-                                    final String fieldName) {
-        super( clazz,
-               fieldName );
-    }
-
     /**
      * This constructor is not supposed to be used from outside the class hirarchy
      * 

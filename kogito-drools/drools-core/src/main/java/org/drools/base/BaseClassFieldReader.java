@@ -16,17 +16,12 @@
 
 package org.drools.base;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MathUtils;
-import org.drools.core.util.asm.ClassFieldInspector;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * This is the supertype for the ASM generated classes for accessing a field.
@@ -58,24 +53,6 @@ abstract public class BaseClassFieldReader
         this.index = index;
         this.fieldType = fieldType;
         this.valueType = valueType;
-    }
-
-    /**
-     * This is the constructor to be used
-     *
-     * @param clazz
-     * @param fieldName
-     */
-    public BaseClassFieldReader(final Class< ? > clazz,
-                                final String fieldName) {
-        try {
-            final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-            this.index = ((Integer) inspector.getFieldNames().get( fieldName )).intValue();
-            this.fieldType = (Class< ? >) inspector.getFieldTypes().get( fieldName );
-            this.valueType = ValueType.determineValueType( this.fieldType );
-        } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
-        }
     }
 
     public int getIndex() {

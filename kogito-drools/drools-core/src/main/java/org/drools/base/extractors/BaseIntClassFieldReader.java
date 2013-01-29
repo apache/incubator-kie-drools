@@ -27,12 +27,6 @@ public abstract class BaseIntClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 510l;
 
-    public BaseIntClassFieldReader(final Class clazz,
-                                      final String fieldName) {
-        super( clazz,
-               fieldName );
-    }
-
     /**
      * This constructor is not supposed to be used from outside the class hirarchy
      * 

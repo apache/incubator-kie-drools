@@ -16,18 +16,18 @@
 
 package org.drools.spi;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.extractors.BaseObjectClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.facttemplates.Fact;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
 
 public class PatternExtractor extends BaseObjectClassFieldReader
     implements
@@ -42,8 +42,12 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     }
 
     public PatternExtractor(final ObjectType objectType) {
-        super(-1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
         this.objectType = objectType;
+        if (objectType instanceof ClassObjectType) {
+            setClassObjectType((ClassObjectType) objectType);
+        } else {
+            this.objectType = objectType;
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -58,7 +62,7 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setFieldType( objectType.getClassType() );
         setValueType( objectType.getValueType() );        
     }
 
