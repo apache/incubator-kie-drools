@@ -990,4 +990,26 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
     }
+
+    public static enum Answer { YES, NO }
+    public static class AnswerGiver {
+        public Answer getAnswer() { return Answer.YES; }
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.4")
+    public void testCompilationMustFailComparingAClassLiteral() {
+        // DROOLS-20
+        String str =
+                "import org.drools.integrationtests.MiscTest2.Answer\n" +
+                "import org.drools.integrationtests.MiscTest2.AnswerGiver\n" +
+                "rule \"Test Rule\"\n" +
+                "when\n" +
+                "   AnswerGiver(Answer == Answer.YES)\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        assertTrue( kbuilder.hasErrors() );
+    }
 }
