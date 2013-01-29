@@ -19,7 +19,6 @@ package org.drools.rule;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
 import org.drools.base.evaluators.BeforeEvaluatorDefinition.BeforeEvaluator;
-import org.drools.base.evaluators.CoincidesEvaluatorDefinition.CoincidesEvaluator;
 import org.drools.base.evaluators.MeetsEvaluatorDefinition.MeetsEvaluator;
 import org.drools.base.evaluators.MetByEvaluatorDefinition.MetByEvaluator;
 import org.drools.common.EventFactHandle;
@@ -748,50 +747,4 @@ public class VariableRestriction {
             }
         }
     }       
-//
-//    public static class DurationVariableContextEntry extends LeftStartRightEndContextEntry {
-//        private static final long serialVersionUID = 510l;
-//
-//        public long               leftEnd;
-//        public long               rightEnd;
-//
-//        public DurationVariableContextEntry() {
-//        }
-//
-//        public DurationVariableContextEntry(final InternalReadAccessor extractor,
-//                                            final Declaration declaration,
-//                                            final Evaluator evaluator) {
-//            super( extractor,
-//                    declaration,
-//                    evaluator );
-//        }
-//
-//        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-//            super.readExternal( in );
-//            leftEnd = in.readLong();
-//            rightEnd = in.readLong();
-//        }
-//
-//        public void writeExternal(ObjectOutput out) throws IOException {
-//            super.writeExternal( out );
-//            out.writeLong( leftEnd );
-//            out.writeLong( rightEnd );
-//        }
-//
-//        @Override
-//        public void updateFromTuple(InternalWorkingMemory workingMemory, LeftTuple tuple) {
-//            super.updateFromTuple(workingMemory, tuple);
-//            if ( this.declaration.getExtractor().isSelfReference() ) {
-//                this.leftEnd = ((EventFactHandle)tuple.get( this.declaration )).getEndTimestamp();
-//            }
-//        }
-//
-//        @Override
-//        public void updateFromFactHandle(InternalWorkingMemory workingMemory, InternalFactHandle handle) {
-//            super.updateFromFactHandle(workingMemory, handle);
-//            if ( this.extractor.isSelfReference() ) {
-//                this.rightEnd = ((EventFactHandle)handle).getEndTimestamp();
-//            }
-//        }
-//    }
 }

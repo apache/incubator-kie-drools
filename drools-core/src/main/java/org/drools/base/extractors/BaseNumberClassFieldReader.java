@@ -40,12 +40,6 @@ public abstract class BaseNumberClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
-    public BaseNumberClassFieldReader(final Class< ? > clazz,
-                                      final String fieldName) {
-        super( clazz,
-               fieldName );
-    }
-
     public abstract Object getValue(InternalWorkingMemory workingMemory,
                                     Object object);
 
