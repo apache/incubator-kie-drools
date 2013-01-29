@@ -43,7 +43,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
     		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.drools.Person\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"MyObject\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"Number\" >\n" +
     		"        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
@@ -74,7 +74,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
             "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Attachment\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "      <mapping type=\"in\" from=\"MyObject\" to=\"Attachment\" />" +
@@ -156,7 +156,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
     		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"MyObject\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"Number\" >\n" +
     		"        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
@@ -187,7 +187,7 @@ public class ProcessWorkItemTest extends JbpmTestCase {
             "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Attachment\" >\n" +
-            "          <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.lang.Object\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "      <mapping type=\"in\" from=\"MyObject\" to=\"Attachment\" />" +

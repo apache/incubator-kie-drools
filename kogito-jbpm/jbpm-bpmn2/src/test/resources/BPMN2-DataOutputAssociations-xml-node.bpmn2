@@ -12,7 +12,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_instanceMetadataItem" />
+  <itemDefinition id="_instanceMetadataItem" structureRef="org.w3c.dom.Node" />
 
   <process processType="Private" isExecutable="true" id="process" name="process" >
   

@@ -11,7 +11,7 @@
         <value></value>
       </variable>
       <variable name="var" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="Object" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
       </variable>
     </variables>
   </header>

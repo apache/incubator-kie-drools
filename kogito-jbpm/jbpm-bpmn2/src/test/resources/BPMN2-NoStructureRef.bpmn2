@@ -1,75 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <definitions id="Definition"
-             targetNamespace="http://www.example.org/MinimalExample"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_xItem" structureRef="String" />
-  <itemDefinition id="_yItem" structureRef="String" />
+  <itemDefinition id="_testItem" />
 
-  <process processType="Private" isExecutable="true" id="ParentProcess" name="Parent Process" >
+  <process processType="Private" isExecutable="true" id="StructureRef" name="StructureRef" tns:packageName="defaultPackage" >
 
     <!-- process variables -->
-    <property id="x" itemSubjectRef="_xItem"/>
-    <property id="y" itemSubjectRef="_yItem"/>
+    <property id="test" itemSubjectRef="_testItem"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
-    <callActivity id="_2" name="CallActivity" calledElement="SubProcess" >
+    <userTask id="_2" name="User Task" >
       <ioSpecification>
-        <dataInput id="_2_subXInput" name="subX" />
-        <dataOutput id="_2_subYOutput" name="subY" />
+        <dataOutput id="_2_testHTOutput" name="testHT" />
         <inputSet>
-          <dataInputRefs>_2_subXInput</dataInputRefs>
         </inputSet>
         <outputSet>
-          <dataOutputRefs>_2_subYOutput</dataOutputRefs>
+          <dataOutputRefs>_2_testHTOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
-      <dataInputAssociation>
-        <sourceRef>x</sourceRef>
-        <targetRef>_2_subXInput</targetRef>
-      </dataInputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_2_subYOutput</sourceRef>
-        <targetRef>y</targetRef>
+        <sourceRef>_2_testHTOutput</sourceRef>
+        <targetRef>test</targetRef>
       </dataOutputAssociation>
-    </callActivity>
-    <endEvent id="_3" name="EndProcess" >
+    </userTask>
+    <scriptTask id="_3" name="Script" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println("Result "+test);</script>
+    </scriptTask>
+    <endEvent id="_4" name="End" >
         <terminateEventDefinition/>
     </endEvent>
 
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
 
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="ParentProcess" >
+    <bpmndi:BPMNPlane bpmnElement="StructureRef" >
       <bpmndi:BPMNShape bpmnElement="_1" >
-        <dc:Bounds x="16" y="16" width="48" height="48" />
+        <dc:Bounds x="45" y="45" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
-        <dc:Bounds x="96" y="16" width="110" height="48" />
+        <dc:Bounds x="135" y="45" width="100" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_3" >
-        <dc:Bounds x="238" y="16" width="48" height="48" />
+        <dc:Bounds x="297" y="43" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="446" y="44" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="_1-_2" >
-        <di:waypoint x="40" y="40" />
-        <di:waypoint x="151" y="40" />
+        <di:waypoint x="69" y="69" />
+        <di:waypoint x="185" y="69" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_2-_3" >
-        <di:waypoint x="151" y="40" />
-        <di:waypoint x="262" y="40" />
+        <di:waypoint x="185" y="69" />
+        <di:waypoint x="337" y="67" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_4" >
+        <di:waypoint x="337" y="67" />
+        <di:waypoint x="470" y="68" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

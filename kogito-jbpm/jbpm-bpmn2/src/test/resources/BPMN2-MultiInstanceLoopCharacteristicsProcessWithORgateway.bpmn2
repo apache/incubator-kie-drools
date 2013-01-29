@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
-  <itemDefinition id="_listItem"/>
+  <itemDefinition id="_listItem" structureRef="java.util.List" />
   <itemDefinition id="_2_multiInstanceItemType" structureRef="java.lang.Integer"/>
   <process id="MultiInstanceLoopCharacteristicsProcess" name="MultiInstanceLoopCharacteristics SubProcess" isExecutable="true" processType="Private">
     <property id="list" itemSubjectRef="_listItem"/>

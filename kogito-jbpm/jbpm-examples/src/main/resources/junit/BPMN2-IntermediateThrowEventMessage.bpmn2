@@ -11,7 +11,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_xItem" />
+  <itemDefinition id="_xItem" structureRef="String" />
 
   <itemDefinition id="_2_MessageType" />
   <message id="_2_Message" itemRef="_2_MessageType" />

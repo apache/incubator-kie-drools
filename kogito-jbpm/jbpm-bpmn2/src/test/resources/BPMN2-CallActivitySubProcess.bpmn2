@@ -11,8 +11,8 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_subXItem" />
-  <itemDefinition id="_subYItem" />
+  <itemDefinition id="_subXItem" structureRef="String" />
+  <itemDefinition id="_subYItem" structureRef="String" />
 
   <process processType="Private" isExecutable="true" id="SubProcess" name="Sub Process" tns:version="1" >
 

@@ -121,7 +121,7 @@ public class JavaInvokerTest extends TestCase {
 		children.add("Arne");
 		parameters.add(children);
 		params.put("Parameters", parameters);
-		ksession.startProcess("com.sample.bpmn.java", params);
+		ksession.startProcess("com.sample.bpmn.java.list", params);
 	}
 
 	public void failingtestHello() throws Exception {
@@ -144,6 +144,7 @@ public class JavaInvokerTest extends TestCase {
 		BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newClassPathResource("JavaInvoker.bpmn"), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory.newClassPathResource("JavaInvokerListResult.bpmn"), ResourceType.BPMN2);
 		return kbuilder.newKnowledgeBase();
 	}
 	

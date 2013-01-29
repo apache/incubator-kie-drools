@@ -20,8 +20,8 @@
            tns:packageName="org.jbpm.persistence.timer" >
 
     <!-- process variables -->
-    <property id="timeBeforeTimer" itemSubjectRef="_timeBeforeTimerItem"/>
-    <property id="timeAfterTimer" itemSubjectRef="_timeAfterTimerItem"/>
+    <property id="timeBeforeTimer" itemSubjectRef="_timeBefore"/>
+    <property id="timeAfterTimer" itemSubjectRef="_timeExecution"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="Start" />

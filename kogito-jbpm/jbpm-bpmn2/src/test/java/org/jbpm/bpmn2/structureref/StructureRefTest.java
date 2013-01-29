@@ -115,4 +115,15 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
+    
+    public void testNoStructureRef() {
+        
+        try {
+        
+            KnowledgeBase kbase = createKnowledgeBase("BPMN2-NoStructureRef.bpmn2");
+            fail("Structure ref must be defined for a process");
+        } catch (Exception e ) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

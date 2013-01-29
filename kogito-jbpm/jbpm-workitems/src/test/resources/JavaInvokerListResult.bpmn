@@ -16,9 +16,9 @@
   <itemDefinition id="_ParameterTypesItem" structureRef="java.util.List" />
   <itemDefinition id="_ParametersItem" structureRef="java.util.List" />
   <itemDefinition id="_ObjectItem" structureRef="org.jbpm.process.workitem.java.MyJavaClass" />
-  <itemDefinition id="_ResultItem" structureRef="java.lang.String" />
+  <itemDefinition id="_ResultItem" structureRef="java.util.List" />
 
-  <process processType="Private" isExecutable="true" id="com.sample.bpmn.java" name="Hello World" >
+  <process processType="Private" isExecutable="true" id="com.sample.bpmn.java.list" name="Hello World" >
 
     <!-- process variables -->
     <property id="Class" itemSubjectRef="_ClassItem"/>

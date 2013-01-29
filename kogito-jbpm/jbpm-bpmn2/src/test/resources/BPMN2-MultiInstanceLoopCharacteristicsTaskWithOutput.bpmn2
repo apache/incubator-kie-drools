@@ -13,8 +13,8 @@
 
   <itemDefinition id="_listItem" structureRef="java.util.List"/>
   <itemDefinition id="_listItemOut" structureRef="java.util.List"/>
-  <itemDefinition id="_2_multiInstanceItemType" />
-  <itemDefinition id="_2_multiInstanceItemOutType"/>
+  <itemDefinition id="_2_multiInstanceItemType" structureRef="String" />
+  <itemDefinition id="_2_multiInstanceItemOutType" structureRef="String" />
 
   <process processType="Private" isExecutable="true" id="MultiInstanceLoopCharacteristicsTask" name="MultiInstanceLoopCharacteristics SubProcess" >
 

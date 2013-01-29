@@ -645,7 +645,7 @@ public class ProcessMarshallingTest extends JbpmTestCase {
             "        <value>OldValue</value>\n" +
             "      </variable>\n" +
             "      <variable name=\"myPerson\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\"/>\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +

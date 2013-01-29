@@ -11,7 +11,7 @@
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
-  <itemDefinition id='objectType' structureRef='java.lang.Object'/>
+  <itemDefinition id='objectType' structureRef='org.w3c.dom.Element'/>
   <process id='process'>
     <property id='instanceMetadata' itemSubjectRef='objectType'/>
     <startEvent id='_5DF6C746-EEDF-4D39-A953-B529A0320D24' name=''/>

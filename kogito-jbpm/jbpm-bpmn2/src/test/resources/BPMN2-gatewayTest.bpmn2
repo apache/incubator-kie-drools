@@ -1,6 +1,6 @@
 <bpmn2:definitions xmlns:bpmn2='http://www.omg.org/spec/BPMN/20100524/MODEL' xmlns:xrm='http://www.intalio.com/cloud/xrm' typeLanguage='http://www.java.com/javaTypes' expressionLanguage='http://www.mvel.org/2.0' id='600355600991789200' targetNamespace=''>
   <bpmn2:import importType='xrm' namespace='http://www.intalio.com/cloud/xrm'/>
-  <bpmn2:itemDefinition id='objectType' structureRef='java.lang.Object'/>
+  <bpmn2:itemDefinition id='objectType' structureRef='org.w3c.dom.Document'/>
   <bpmn2:process id='process'>
     <bpmn2:property id='instanceMetadata' itemSubjectRef='objectType'/>
     <bpmn2:property id='processMetadata' itemSubjectRef='objectType'/>

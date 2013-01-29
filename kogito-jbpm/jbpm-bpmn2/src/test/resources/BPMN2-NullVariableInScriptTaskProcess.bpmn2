@@ -20,8 +20,8 @@
            tns:packageName="defaultPackage" >
 
     <!-- process variables -->
-    <property id="timeBeforeTimer" itemSubjectRef="_timeBeforeTimerItem"/>
-    <property id="timerExecutionTime" itemSubjectRef="_timerExecutionTimeItem"/>
+    <property id="timeBeforeTimer" itemSubjectRef="_timeBefore"/>
+    <property id="timerExecutionTime" itemSubjectRef="_timeExecution"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="Start" />

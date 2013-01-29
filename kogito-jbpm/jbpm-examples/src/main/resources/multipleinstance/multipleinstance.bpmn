@@ -13,7 +13,7 @@
 
   <itemDefinition id="_listItem" structureRef="java.util.List" />
 
-  <itemDefinition id="_2_multiInstanceItemType" />
+  <itemDefinition id="_2_multiInstanceItemType" structureRef="String" />
 
   <process processType="Private" isExecutable="true" id="com.sample.multipleinstance" name="Multiple instances sub-process" tns:packageName="com.sample" >
 

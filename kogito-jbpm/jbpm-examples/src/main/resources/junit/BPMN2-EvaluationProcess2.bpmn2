@@ -10,7 +10,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_employeeItem" />
+  <itemDefinition id="_employeeItem" structureRef="String" />
 
   <process processType="Private" isExecutable="true" id="com.sample.evaluation" name="Evaluation" >
 
