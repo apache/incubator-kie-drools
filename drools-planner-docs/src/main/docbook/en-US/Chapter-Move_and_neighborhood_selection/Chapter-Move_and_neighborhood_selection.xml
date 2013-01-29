@@ -757,12 +757,11 @@
       ...
     &lt;/unionMoveSelector&gt;</programlisting>
 
-      <para>In <literal>selectionOrder</literal> <literal>RANDOM</literal>, the
-      <literal>selectorProbabilityWeightFactory</literal> determines how often a child MoveSelector is selected to
-      supply the next Move. By default, each child <literal>MoveSelector</literal> has the same chance of being
-      selected. Change the fixedProbabilityWeight of such a child to select it more often. For example, the
-      <literal>unionMoveSelector</literal> can return a <literal>SwapMove</literal> twice as often as a
-      <literal>ChangeMove</literal>:</para>
+      <para>The <literal>selectorProbabilityWeightFactory</literal> determines In <literal>selectionOrder</literal>
+      <literal>RANDOM</literal> how often a child MoveSelector is selected to supply the next Move. By default, each
+      child <literal>MoveSelector</literal> has the same chance of being selected. Change the fixedProbabilityWeight of
+      such a child to select it more often. For example, the <literal>unionMoveSelector</literal> can return a
+      <literal>SwapMove</literal> twice as often as a <literal>ChangeMove</literal>:</para>
 
       <programlisting language="xml">    &lt;unionMoveSelector&gt;
       &lt;changeMoveSelector&gt;
@@ -776,8 +775,8 @@
     &lt;/unionMoveSelector&gt;</programlisting>
 
       <para>The number of possible <literal>ChangeMove</literal>s is very different from the number of possible
-      <literal>SwapMove</literal>s and it's problem dependent. To give each individual <literal>Move</literal> the same
-      selection chance (as opposed to each <literal>MoveSelector</literal>), use the
+      <literal>SwapMove</literal>s and furthermore it's problem dependent. To give each individual
+      <literal>Move</literal> the same selection chance (as opposed to each <literal>MoveSelector</literal>), use the
       <literal>FairSelectorProbabilityWeightFactory</literal>:</para>
 
       <programlisting language="xml">    &lt;unionMoveSelector&gt;
