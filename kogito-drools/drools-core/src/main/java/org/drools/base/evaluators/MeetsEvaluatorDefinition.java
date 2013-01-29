@@ -29,6 +29,7 @@ import org.drools.base.ValueType;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.VariableRestriction.LeftStartRightEndContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
@@ -247,37 +248,41 @@ public class MeetsEvaluatorDefinition
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context,
                                            final InternalFactHandle left) {
-            if ( context.rightNull ) {
+            if ( context.rightNull || 
+                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
                 return false;
             }
+            
             long leftStartTS = ((EventFactHandle) left).getStartTimestamp();
-            long dist = Math.abs( leftStartTS - ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getEndTimestamp() );
+            long dist = Math.abs( leftStartTS - ((LeftStartRightEndContextEntry) context).timestamp );
             return this.getOperator().isNegated() ^ (dist <= this.finalRange);
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context,
                                           final InternalFactHandle right) {
-            if ( context.extractor.isNullValue( workingMemory,
-                                                right ) ) {
+            if ( context.leftNull ||
+                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
                 return false;
             }
-            long leftStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
+            
+            long leftStartTS =  ((LeftStartRightEndContextEntry) context).timestamp;
             long dist = Math.abs( leftStartTS - ((EventFactHandle) right).getEndTimestamp() );
             return this.getOperator().isNegated() ^ (dist <= this.finalRange);
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
-                                final InternalFactHandle object1,
+                                final InternalFactHandle handle1,
                                 final InternalReadAccessor extractor2,
-                                final InternalFactHandle object2) {
-            if ( extractor1.isNullValue( workingMemory,
-                                         object1 ) ) {
+                                final InternalFactHandle handle2) {
+            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
+                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
                 return false;
             }
-            long obj2StartTS = ((EventFactHandle) object2).getStartTimestamp();
-            long dist = Math.abs( obj2StartTS - ((EventFactHandle) object1).getEndTimestamp() );
+            
+            long obj2StartTS = ((EventFactHandle) handle2).getStartTimestamp();
+            long dist = Math.abs( obj2StartTS - ((EventFactHandle) handle1).getEndTimestamp() );
             return this.getOperator().isNegated() ^ (dist <= this.finalRange);
         }
 

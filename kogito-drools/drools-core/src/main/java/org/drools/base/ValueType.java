@@ -231,12 +231,12 @@ public class ValueType
             return ValueType.DOUBLE_TYPE;
         } else if ( clazz == Boolean.class ) {
             return ValueType.BOOLEAN_TYPE;
-        } else if ( Number.class.isAssignableFrom( clazz ) ) {
-            return ValueType.NUMBER_TYPE;
         }  else if ( clazz == BigDecimal.class ) {
             return ValueType.BIG_DECIMAL_TYPE;
         } else if ( clazz == BigInteger.class ) {
             return ValueType.BIG_INTEGER_TYPE;
+        } else if ( Number.class.isAssignableFrom( clazz ) ) {
+            return ValueType.NUMBER_TYPE;
         }
         
         

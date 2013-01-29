@@ -2236,7 +2236,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             MVELAnalysisResult results = ( MVELAnalysisResult )
                                 context.getDialect().analyzeExpression( context,
                                                                         typeDescr,
-                                                                        timestamp,
+                                                                        duration,
                                                                         new BoundIdentifiers( Collections.EMPTY_MAP,
                                                                                               Collections.EMPTY_MAP,
                                                                                               Collections.EMPTY_MAP,
