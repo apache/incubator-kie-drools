@@ -80,7 +80,6 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
-import org.drools.spi.PatternExtractor;
 import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
@@ -1205,25 +1204,9 @@ public class PatternBuilder
         Map<String, EvaluatorWrapper> operators = new HashMap<String, EvaluatorWrapper>();
         for ( Map.Entry<String, OperatorDescr> entry : aliases.entrySet() ) {
             OperatorDescr op = entry.getValue();
-            String leftStr = op.getLeftString();
-            String rightStr = op.getRightString();
 
-            Declaration leftDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                    leftStr );
-            if ( leftDecl == null && "this".equals( leftStr ) ) {
-                leftDecl = createDeclarationObject( context,
-                                                         "this",
-                                                         pattern );
-
-            }
-            Declaration rightDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                           rightStr );
-            if ( rightDecl == null && "this".equals( rightStr ) ) {
-                rightDecl = createDeclarationObject( context,
-                                                          "this",
-                                                          pattern );
-
-            }
+            Declaration leftDecl = createDeclarationForOperator(context, pattern, op.getLeftString());
+            Declaration rightDecl = createDeclarationForOperator(context, pattern, op.getRightString());
 
             Target left = leftDecl != null && leftDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
             Target right = rightDecl != null && rightDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
@@ -1241,12 +1224,40 @@ public class PatternBuilder
                     left,
                     right);
             EvaluatorWrapper wrapper = getConstraintBuilder( context ).wrapEvaluator( evaluator,
-                                                               left == Target.HANDLE ? leftDecl : null,
-                                                               right == Target.HANDLE ? rightDecl : null );
+                                                                                      leftDecl,
+                                                                                      rightDecl );
             operators.put( entry.getKey(),
                            wrapper );
         }
         return operators;
+    }
+
+    private static Declaration createDeclarationForOperator(RuleBuildContext context, Pattern pattern, String expr) {
+        Declaration declaration = null;
+        int dotPos = expr.indexOf('.');
+        if (dotPos < 0) {
+            declaration = context.getDeclarationResolver().getDeclaration( context.getRule(), expr );
+            if ( declaration == null && "this".equals( expr ) ) {
+                declaration = createDeclarationObject( context, "this", pattern );
+            }
+        } else {
+            String part1 = expr.substring(0, dotPos).trim();
+            String part2 = expr.substring(dotPos+1).trim();
+            if ( "this".equals( part1 ) ) {
+                declaration = createDeclarationObject(context, part2, (Pattern) context.getBuildStack().peek());
+            } else {
+                declaration = context.getDeclarationResolver().getDeclaration( context.getRule(), part1 );
+                // if a declaration exists, then it may be a variable direct property access
+                if ( declaration != null ) {
+                    if ( declaration.isPatternDeclaration() ) {
+                        declaration = createDeclarationObject(context, part2, declaration.getPattern());
+                    } else {
+                        declaration = null;
+                    }
+                }
+            }
+        }
+        return declaration;
     }
 
     public static Map<String, Class< ? >> getDeclarationsMap( final BaseDescr baseDescr,

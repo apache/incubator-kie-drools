@@ -16,22 +16,6 @@
 
 package org.drools.base.mvel;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EvaluatorWrapper;
@@ -56,6 +40,22 @@ import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.SimpleVariableSpaceModel;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class MVELCompilationUnit
     implements
@@ -315,30 +315,12 @@ public class MVELCompilationUnit
             }
         }
 
-        InternalFactHandle[] handles;
-        if( tuples != null ) {
-            handles = tuples.toFactHandles();
-        } else {
-            handles = new InternalFactHandle[0];
-        }
+        InternalFactHandle[] handles = tuples != null ? tuples.toFactHandles() : new InternalFactHandle[0];
         if ( operators != null ) {
             for (EvaluatorWrapper operator : operators) {
                 // TODO: need to have one operator per working memory
-                factory.getIndexedVariableResolver(i++).setValue(operator.setWorkingMemory(workingMemory));
-                if (operator.getLeftBinding() != null) {
-                    if (operator.getLeftBinding().getIdentifier().equals("this")) {
-                        operator.setLeftHandle((InternalFactHandle) workingMemory.getFactHandle(rightObject));
-                    } else {
-                        operator.setLeftHandle(getFactHandle(operator.getLeftBinding(), handles));
-                    }
-                }
-                if (operator.getRightBinding() != null) {
-                    if (operator.getRightBinding().getIdentifier().equals("this")) {
-                        operator.setRightHandle((InternalFactHandle) workingMemory.getFactHandle(rightObject));
-                    } else {
-                        operator.setRightHandle(getFactHandle(operator.getRightBinding(), handles));
-                    }
-                }
+                factory.getIndexedVariableResolver(i++).setValue(operator);
+                operator.loadHandles(workingMemory, handles, rightObject);
             }
         }
 
@@ -411,8 +393,8 @@ public class MVELCompilationUnit
         }        
     }
 
-    private static InternalFactHandle getFactHandle( Declaration declaration,
-                                                     InternalFactHandle[] handles ) {
+    public static InternalFactHandle getFactHandle( Declaration declaration,
+                                                    InternalFactHandle[] handles ) {
         return handles.length >= declaration.getPattern().getOffset() ? handles[declaration.getPattern().getOffset()] : null;
     }
 
