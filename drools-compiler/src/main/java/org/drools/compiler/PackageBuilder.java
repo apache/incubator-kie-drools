@@ -22,7 +22,6 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
 import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.base.mvel.MVELCompileable;
@@ -132,7 +131,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -2274,9 +2272,20 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         if ( type.isValid() ) {
             // prefer definitions where possible
-            if ( type.getNature() == TypeDeclaration.Nature.DEFINITION
-                 || pkgRegistry.getPackage().getTypeDeclaration( type.getTypeName() ) == null ) {
+            if ( type.getNature() == TypeDeclaration.Nature.DEFINITION ) {
                 pkgRegistry.getPackage().addTypeDeclaration( type );
+            } else {
+                TypeDeclaration oldType = pkgRegistry.getPackage().getTypeDeclaration( type.getTypeName() );
+                if (oldType == null) {
+                    pkgRegistry.getPackage().addTypeDeclaration( type );
+                } else {
+                    if (type.getRole() == TypeDeclaration.Role.EVENT) {
+                        oldType.setRole(TypeDeclaration.Role.EVENT);
+                    }
+                    if (type.isPropertyReactive()) {
+                        oldType.setPropertyReactive(true);
+                    }
+                }
             }
         }
 
