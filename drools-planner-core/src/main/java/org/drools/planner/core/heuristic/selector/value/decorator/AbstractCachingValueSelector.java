@@ -9,17 +9,19 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
+import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 public abstract class AbstractCachingValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
 
-    protected final ValueSelector childValueSelector;
+    protected final EntityIndependentValueSelector childValueSelector;
     protected final SelectionCacheType cacheType;
 
     protected List<Object> cachedValueList = null;
 
-    public AbstractCachingValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType) {
+    public AbstractCachingValueSelector(EntityIndependentValueSelector childValueSelector, SelectionCacheType cacheType) {
         this.childValueSelector = childValueSelector;
         this.cacheType = cacheType;
         if (childValueSelector.isNeverEnding()) {
@@ -57,6 +59,7 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         cachedValueList = new ArrayList<Object>((int) childSize);
+        // TODO Fail-faster if a non FromSolutionPropertyValueSelector is used
         CollectionUtils.addAll(cachedValueList, childValueSelector.iterator());
         logger.trace("    Created cachedValueList with size ({}) in valueSelector({}).",
                 cachedValueList.size(), this);

@@ -17,6 +17,7 @@
 package org.drools.planner.config.heuristic.selector.value;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
@@ -26,6 +27,7 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
@@ -184,7 +186,13 @@ public class ValueSelectorConfig extends SelectorConfig {
             }
             SelectionProbabilityWeightFactory probabilityWeightFactory = ConfigUtils.newInstance(this,
                     "probabilityWeightFactoryClass", probabilityWeightFactoryClass);
-            valueSelector = new ProbabilityValueSelector(valueSelector,
+            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") needs to be based on a EntityIndependentValueSelector."
+                        + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+            }
+            valueSelector = new ProbabilityValueSelector((EntityIndependentValueSelector) valueSelector,
                     resolvedCacheType, probabilityWeightFactory);
         }
         return valueSelector;
@@ -193,7 +201,14 @@ public class ValueSelectorConfig extends SelectorConfig {
     private ValueSelector applyShuffling(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             ValueSelector valueSelector) {
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
-            valueSelector = new ShufflingValueSelector(valueSelector, resolvedCacheType);
+            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") needs to be based on a EntityIndependentValueSelector."
+                        + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+            }
+            valueSelector = new ShufflingValueSelector((EntityIndependentValueSelector) valueSelector,
+                    resolvedCacheType);
         }
         return valueSelector;
     }
@@ -201,7 +216,13 @@ public class ValueSelectorConfig extends SelectorConfig {
     private ValueSelector applyCaching(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             ValueSelector valueSelector) {
         if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(valueSelector.getCacheType()) > 0) {
-            valueSelector = new CachingValueSelector(valueSelector, resolvedCacheType,
+            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") needs to be based on a EntityIndependentValueSelector."
+                        + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+            }
+            valueSelector = new CachingValueSelector((EntityIndependentValueSelector) valueSelector, resolvedCacheType,
                     resolvedSelectionOrder.toRandomSelectionBoolean());
         }
         return valueSelector;

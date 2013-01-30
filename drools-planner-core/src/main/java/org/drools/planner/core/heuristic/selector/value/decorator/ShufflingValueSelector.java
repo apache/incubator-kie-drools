@@ -17,18 +17,15 @@
 package org.drools.planner.core.heuristic.selector.value.decorator;
 
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
-import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
-import org.drools.planner.core.heuristic.selector.value.iterator.IteratorToValueIteratorBridge;
-import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
-import org.drools.planner.core.phase.step.AbstractStepScope;
 
-public class ShufflingValueSelector extends AbstractCachingValueSelector {
+public class ShufflingValueSelector extends AbstractCachingValueSelector implements EntityIndependentValueSelector {
 
-    public ShufflingValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType) {
+    public ShufflingValueSelector(EntityIndependentValueSelector childValueSelector, SelectionCacheType cacheType) {
         super(childValueSelector, cacheType);
     }
 
@@ -40,11 +37,15 @@ public class ShufflingValueSelector extends AbstractCachingValueSelector {
         return false;
     }
 
-    public ValueIterator iterator() {
+    public Iterator<Object> iterator(Object entity) {
+        return iterator();
+    }
+
+    public Iterator<Object> iterator() {
         Collections.shuffle(cachedValueList, workingRandom);
         logger.trace("    Shuffled cachedValueList with size ({}) in valueSelector({}).",
                 cachedValueList.size(), this);
-        return new IteratorToValueIteratorBridge(cachedValueList.iterator());
+        return cachedValueList.iterator();
     }
 
     @Override

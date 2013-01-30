@@ -28,6 +28,7 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
@@ -41,7 +42,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     protected static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
 
-    protected final ValueSelector valueSelector;
+    protected final EntityIndependentValueSelector valueSelector;
     protected final boolean randomSelection;
 
     protected final int minimumSubChainSize;
@@ -49,8 +50,8 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     protected List<SubChain> anchorTrailingChainList = null;
 
-    public DefaultSubChainSelector(ValueSelector valueSelector, boolean randomSelection, int minimumSubChainSize,
-            int maximumSubChainSize) {
+    public DefaultSubChainSelector(EntityIndependentValueSelector valueSelector, boolean randomSelection,
+            int minimumSubChainSize, int maximumSubChainSize) {
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
         this.minimumSubChainSize = minimumSubChainSize;

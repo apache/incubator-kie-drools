@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -53,7 +54,8 @@ public class CachingValueSelectorTest {
     }
 
     public void runOriginalSelection(SelectionCacheType cacheType, int timesCalled) {
-        ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
+        EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
+                TestdataEntity.class, "value",
                 new TestdataValue("e1"), new TestdataValue("e2"), new TestdataValue("e3"));
 
         CachingValueSelector valueSelector = new CachingValueSelector(childValueSelector, cacheType, false);

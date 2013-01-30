@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.value.iterator;
+package org.drools.planner.core.heuristic.selector.value;
 
-public abstract class EntityIgnoringValueIterator implements ValueIterator {
+import java.util.Iterator;
 
-    public void remove() {
-        throw new UnsupportedOperationException("Remove is not supported.");
-    }
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRange;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.Selector;
 
-    public boolean hasNext(Object entity) {
-        return hasNext();
-    }
-
-    public Object next(Object entity) {
-        return next();
-    }
+/**
+ * @see FromSolutionPropertyValueSelector
+ */
+public interface EntityIndependentValueSelector extends ValueSelector, Iterable<Object> {
 
 }

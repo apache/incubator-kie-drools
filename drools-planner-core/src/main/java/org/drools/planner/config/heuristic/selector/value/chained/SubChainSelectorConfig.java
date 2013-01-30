@@ -17,6 +17,7 @@
 package org.drools.planner.config.heuristic.selector.value.chained;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
@@ -28,6 +29,7 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.generic.SwapMoveSelector;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChainSelector;
@@ -101,7 +103,13 @@ public class SubChainSelectorConfig extends SelectorConfig {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.ORIGINAL);
-        return new DefaultSubChainSelector(valueSelector, inheritedSelectionOrder.toRandomSelectionBoolean(),
+        if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+            throw new IllegalArgumentException("The minimumCacheType (" + this
+                    + ") needs to be based on a EntityIndependentValueSelector."
+                    + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+        }
+        return new DefaultSubChainSelector((EntityIndependentValueSelector) valueSelector,
+                inheritedSelectionOrder.toRandomSelectionBoolean(),
                 minimumSubChainSize == null ? DEFAULT_MINIMUM_SUB_CHAIN_SIZE : minimumSubChainSize,
                 maximumSubChainSize == null ? DEFAULT_MAXIMUM_SUB_CHAIN_SIZE : maximumSubChainSize);
     }

@@ -72,33 +72,32 @@ public class ChangeMoveSelector extends GenericMoveSelector {
     private class OriginalChangeMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<Object> entityIterator;
-        private ValueIterator valueIterator;
+        private Iterator<Object> valueIterator;
 
         private Object upcomingEntity;
 
         private OriginalChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
-            valueIterator = valueSelector.iterator();
-            // valueIterator.hasNext() returns true if there is a next for any entity parameter
-            if (!entityIterator.hasNext() || !valueIterator.hasNext()) {
+            if (!entityIterator.hasNext()) {
                 upcomingSelection = null;
             } else {
                 upcomingEntity = entityIterator.next();
+                valueIterator = valueSelector.iterator(upcomingEntity);
                 createUpcomingSelection();
             }
         }
 
         @Override
         protected void createUpcomingSelection() {
-            while (!valueIterator.hasNext(upcomingEntity)) {
+            while (!valueIterator.hasNext()) {
                 if (!entityIterator.hasNext()) {
                     upcomingSelection = null;
                     return;
                 }
                 upcomingEntity = entityIterator.next();
-                valueIterator = valueSelector.iterator();
+                valueIterator = valueSelector.iterator(upcomingEntity);
             }
-            Object toValue = valueIterator.next(upcomingEntity);
+            Object toValue = valueIterator.next();
             upcomingSelection = chained
                     ? new ChainedChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue)
                     : new ChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue);
@@ -109,13 +108,11 @@ public class ChangeMoveSelector extends GenericMoveSelector {
     private class RandomChangeMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<Object> entityIterator;
-        private ValueIterator valueIterator;
+        private Iterator<Object> valueIterator = null;
 
         private RandomChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
-            valueIterator = valueSelector.iterator();
-            // valueIterator.hasNext() returns true if there is a next for any entity parameter
-            if (!entityIterator.hasNext() || !valueIterator.hasNext()) {
+            if (!entityIterator.hasNext()) {
                 upcomingSelection = null;
             } else {
                 createUpcomingSelection();
@@ -132,26 +129,24 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 entityIterator = entitySelector.iterator();
             }
             Object entity = entityIterator.next();
+            valueIterator = valueSelector.iterator(entity);
             int entityIteratorCreationCount = 0;
             // This loop is mostly only relevant when the entityIterator or valueIterator is non-random or shuffled
-            while (!valueIterator.hasNext(entity)) {
-                // First try to reset the valueIterator to get a next value
-                valueIterator = valueSelector.iterator();
-                // If that's not sufficient (that entity has an empty value list), then use the next entity
-                if (!valueIterator.hasNext(entity)) {
-                    if (!entityIterator.hasNext()) {
-                        entityIterator = entitySelector.iterator();
-                        entityIteratorCreationCount++;
-                        if (entityIteratorCreationCount >= 2) {
-                            // All entity-value combinations have been tried (some even more than once)
-                            upcomingSelection = null;
-                            return;
-                        }
+            while (!valueIterator.hasNext()) {
+                // Try the next entity
+                if (!entityIterator.hasNext()) {
+                    entityIterator = entitySelector.iterator();
+                    entityIteratorCreationCount++;
+                    if (entityIteratorCreationCount >= 2) {
+                        // All entity-value combinations have been tried (some even more than once)
+                        upcomingSelection = null;
+                        return;
                     }
-                    entity = entityIterator.next();
                 }
+                entity = entityIterator.next();
+                valueIterator = valueSelector.iterator(entity);
             }
-            Object toValue = valueIterator.next(entity);
+            Object toValue = valueIterator.next();
             upcomingSelection = chained
                     ? new ChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
                     : new ChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);

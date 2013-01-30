@@ -1,5 +1,7 @@
 package org.drools.planner.core.constructionheuristic.placer.value;
 
+import java.util.Iterator;
+
 import org.drools.planner.core.constructionheuristic.placer.AbstractPlacer;
 import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
@@ -59,7 +61,8 @@ public class ValuePlacer extends AbstractPlacer {
         ConstructionHeuristicMoveScope nominatedMoveScope = null;
 
         int moveIndex = 0;
-        for (Object value : valueSelector) {
+        for (Iterator it = valueSelector.iterator(entity); it.hasNext(); ) {
+            Object value =  it.next();
             // TODO check terminator
             ConstructionHeuristicMoveScope moveScope = new ConstructionHeuristicMoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);

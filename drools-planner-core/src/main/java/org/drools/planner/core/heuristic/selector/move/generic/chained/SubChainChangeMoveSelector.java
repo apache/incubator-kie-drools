@@ -20,6 +20,8 @@ import java.util.Iterator;
 
 import org.drools.planner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.drools.planner.core.heuristic.selector.move.generic.GenericMoveSelector;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
+import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.heuristic.selector.value.chained.SubChain;
@@ -29,11 +31,11 @@ import org.drools.planner.core.move.Move;
 public class SubChainChangeMoveSelector extends GenericMoveSelector {
 
     protected final SubChainSelector subChainSelector;
-    protected final ValueSelector valueSelector;
+    protected final EntityIndependentValueSelector valueSelector;
     protected final boolean randomSelection;
     protected final boolean selectReversingMoveToo;
 
-    public SubChainChangeMoveSelector(SubChainSelector subChainSelector, ValueSelector valueSelector,
+    public SubChainChangeMoveSelector(SubChainSelector subChainSelector, EntityIndependentValueSelector valueSelector,
             boolean randomSelection, boolean selectReversingMoveToo) {
         this.subChainSelector = subChainSelector;
         this.valueSelector = valueSelector;
@@ -89,7 +91,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
     private class OriginalSubChainChangeMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<SubChain> subChainIterator;
-        private ValueIterator valueIterator;
+        private Iterator<Object> valueIterator = null;
 
         private SubChain upcomingSubChain;
 
@@ -113,7 +115,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
                 nextReversingSelection = null;
                 return;
             }
-            while (!valueIterator.hasNext(upcomingSubChain.getFirstEntity())) {
+            while (!valueIterator.hasNext()) {
                 if (!subChainIterator.hasNext()) {
                     upcomingSelection = null;
                     return;
@@ -121,7 +123,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
                 upcomingSubChain = subChainIterator.next();
                 valueIterator = valueSelector.iterator();
             }
-            Object toValue = valueIterator.next(upcomingSubChain);
+            Object toValue = valueIterator.next();
             upcomingSelection = new SubChainChangeMove(upcomingSubChain, valueSelector.getVariableDescriptor(), toValue);
             if (selectReversingMoveToo) {
                 nextReversingSelection = new SubChainReversingChangeMove(
@@ -134,7 +136,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
     private class RandomSubChainChangeMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private Iterator<SubChain> subChainIterator;
-        private ValueIterator valueIterator;
+        private Iterator<Object> valueIterator;
 
         private RandomSubChainChangeMoveIterator() {
             subChainIterator = subChainSelector.iterator();
@@ -158,11 +160,11 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             SubChain subChain = subChainIterator.next();
             int subChainIteratorCreationCount = 0;
             // This loop is mostly only relevant when the subChainIterator or valueIterator is non-random or shuffled
-            while (!valueIterator.hasNext(subChain)) {
+            while (!valueIterator.hasNext()) {
                 // First try to reset the valueIterator to get a next value
                 valueIterator = valueSelector.iterator();
                 // If that's not sufficient (that subChain has an empty value list), then use the next subChain
-                if (!valueIterator.hasNext(subChain)) {
+                if (!valueIterator.hasNext()) {
                     if (!subChainIterator.hasNext()) {
                         subChainIterator = subChainSelector.iterator();
                         subChainIteratorCreationCount++;
@@ -175,7 +177,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
                     subChain = subChainIterator.next();
                 }
             }
-            Object toValue = valueIterator.next(subChain);
+            Object toValue = valueIterator.next();
             boolean reversing = selectReversingMoveToo ? workingRandom.nextBoolean() : false;
             upcomingSelection = reversing
                     ? new SubChainReversingChangeMove(subChain, valueSelector.getVariableDescriptor(), toValue)

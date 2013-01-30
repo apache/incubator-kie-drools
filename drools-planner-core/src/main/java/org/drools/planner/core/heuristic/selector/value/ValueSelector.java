@@ -16,6 +16,8 @@
 
 package org.drools.planner.core.heuristic.selector.value;
 
+import java.util.Iterator;
+
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -26,9 +28,9 @@ import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
  * Selects values from the {@link ValueRange) for a {@link PlanningVariable} annotated property.
  * @see AbstractValueSelector
  */
-public interface ValueSelector extends Selector, Iterable<Object>  {
+public interface ValueSelector extends Selector  {
 
-    ValueIterator iterator();
+    Iterator<Object> iterator(Object entity);
 
     /**
      * @return never null

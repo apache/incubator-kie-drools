@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.heuristic.selector.value.decorator;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -26,23 +27,22 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
-import org.drools.planner.core.heuristic.selector.value.iterator.EntityIgnoringValueIterator;
-import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
-public class ProbabilityValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
+public class ProbabilityValueSelector extends AbstractValueSelector implements EntityIndependentValueSelector, SelectionCacheLifecycleListener  {
 
-    protected final ValueSelector childValueSelector;
+    protected final EntityIndependentValueSelector childValueSelector;
     protected final SelectionCacheType cacheType;
     protected final SelectionProbabilityWeightFactory probabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
 
-    public ProbabilityValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType,
+    public ProbabilityValueSelector(EntityIndependentValueSelector childValueSelector, SelectionCacheType cacheType,
             SelectionProbabilityWeightFactory probabilityWeightFactory) {
         this.childValueSelector = childValueSelector;
         this.cacheType = cacheType;
@@ -73,6 +73,7 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements S
         cachedEntityMap = new TreeMap<Double, Object>();
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
+        // TODO Fail-faster if a non FromSolutionPropertyValueSelector is used
         for (Object value : childValueSelector) {
             double probabilityWeight = probabilityWeightFactory.createProbabilityWeight(
                     scoreDirector, value);
@@ -102,8 +103,12 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements S
         return cachedEntityMap.size();
     }
 
-    public ValueIterator iterator() {
-        return new EntityIgnoringValueIterator() {
+    public Iterator<Object> iterator(Object entity) {
+        return iterator();
+    }
+
+    public Iterator<Object> iterator() {
+        return new Iterator<Object>() {
             public boolean hasNext() {
                 return true;
             }
@@ -113,6 +118,10 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements S
                 Map.Entry<Double, Object> entry = cachedEntityMap.floorEntry(randomOffset);
                 // entry is never null because randomOffset < probabilityWeightTotal
                 return entry.getValue();
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException("Remove is not supported.");
             }
         };
     }

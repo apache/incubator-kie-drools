@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -56,7 +57,8 @@ public class DefaultSubChainSelectorTest {
         SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
                 new TestdataChainedEntity[]{a1, a2, a3, a4, b1, b2});
 
-        ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
+        EntityIndependentValueSelector valueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
+                variableDescriptor,
                 a0, a1, a2, a3, a4, b0, b1, b2);
 
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(
@@ -161,7 +163,8 @@ public class DefaultSubChainSelectorTest {
         SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
                 new TestdataChainedEntity[]{});
 
-        ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
+        EntityIndependentValueSelector valueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
+                variableDescriptor,
                 a0, b0);
 
         DefaultSubChainSelector subChainSelector = new DefaultSubChainSelector(

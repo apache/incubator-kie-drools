@@ -16,12 +16,13 @@
 
 package org.drools.planner.core.heuristic.selector.value.decorator;
 
+import java.util.Iterator;
+
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.drools.planner.core.heuristic.selector.entity.decorator.CachingEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
-import org.drools.planner.core.heuristic.selector.value.iterator.IteratorToValueIteratorBridge;
-import org.drools.planner.core.heuristic.selector.value.iterator.ValueIterator;
+import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 
 /**
@@ -29,11 +30,11 @@ import org.drools.planner.core.heuristic.selector.value.ValueSelector;
  * <p/>
  * Keep this code in sync with {@link CachingEntitySelector} and {@link CachingMoveSelector}.
  */
-public class CachingValueSelector extends AbstractCachingValueSelector {
+public class CachingValueSelector extends AbstractCachingValueSelector implements EntityIndependentValueSelector {
 
     protected final boolean randomSelection;
 
-    public CachingValueSelector(ValueSelector childValueSelector, SelectionCacheType cacheType,
+    public CachingValueSelector(EntityIndependentValueSelector childValueSelector, SelectionCacheType cacheType,
             boolean randomSelection) {
         super(childValueSelector, cacheType);
         this.randomSelection = randomSelection;
@@ -48,12 +49,15 @@ public class CachingValueSelector extends AbstractCachingValueSelector {
         return randomSelection;
     }
 
-    public ValueIterator iterator() {
+    public Iterator<Object> iterator(Object entity) {
+        return iterator();
+    }
+
+    public Iterator<Object> iterator() {
         if (!randomSelection) {
-            return new IteratorToValueIteratorBridge(cachedValueList.iterator());
+            return cachedValueList.iterator();
         } else {
-            return new IteratorToValueIteratorBridge(
-                    new CachedListRandomIterator<Object>(cachedValueList, workingRandom));
+            return new CachedListRandomIterator<Object>(cachedValueList, workingRandom);
         }
     }
 
