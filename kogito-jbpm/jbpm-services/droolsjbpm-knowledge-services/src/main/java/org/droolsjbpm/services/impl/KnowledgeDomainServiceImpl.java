@@ -88,13 +88,13 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
     public KnowledgeDomainServiceImpl() {
         domain = new SimpleDomainImpl("myDomain");
-
+        
     }
 
     //@PostConstruct
     public void createDomain() {
         // TODO: Do this based on configuration and use the new CDI approach
-        domain.clear();
+       // domain.clear();
         sessionManager.setDomain(domain);
         Iterable<Path> availableDirectories = fs.listDirectories("examples/");
         

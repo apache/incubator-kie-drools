@@ -364,7 +364,7 @@ public class CDISessionManager implements SessionManager {
             }
             String processId = bpmn2Service.findProcessId(processString);
             if(!processId.equals("")){
-              
+              getDomain().addAsset(processId, "/"+path +"/"+ p.getFileName().toString());
               getDomain().addProcessDefinitionToKsession(sessionName, p);
               getDomain().addProcessBPMN2ContentToKsession(sessionName, processId, processString);
             }
