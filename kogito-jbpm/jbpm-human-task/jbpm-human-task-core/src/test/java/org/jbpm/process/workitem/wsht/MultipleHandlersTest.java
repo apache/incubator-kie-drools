@@ -18,6 +18,9 @@ package org.jbpm.process.workitem.wsht;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
@@ -33,8 +36,13 @@ public class MultipleHandlersTest extends BaseTest {
 
     private TaskService client;
     
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
+    
     @Override
     protected void setUp() throws Exception {
+       setupJTADataSource();
        super.setUp();
        client = new LocalTaskService(taskService);
         

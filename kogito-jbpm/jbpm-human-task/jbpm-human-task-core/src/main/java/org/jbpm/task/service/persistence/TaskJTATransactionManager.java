@@ -53,6 +53,7 @@ class TaskJTATransactionManager implements TaskTransactionManager {
     }
 
     public void commit(EntityManager em, boolean txOwner) {
+        em.flush();
         tm.commit(txOwner);
     }
 

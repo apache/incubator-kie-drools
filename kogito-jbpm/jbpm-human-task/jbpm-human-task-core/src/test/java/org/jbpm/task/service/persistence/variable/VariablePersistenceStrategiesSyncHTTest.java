@@ -66,8 +66,13 @@ public class VariablePersistenceStrategiesSyncHTTest extends BaseTest {
     protected TestStatefulKnowledgeSession ksession = new TestStatefulKnowledgeSession();
     private static Wiser wiser;
     protected Environment env;
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
+    
     @Override
     protected void setUp() throws Exception {
+        setupJTADataSource();
         super.setUp();
         env = EnvironmentFactory.newEnvironment();
         Environment domainEnv = EnvironmentFactory.newEnvironment();

@@ -264,7 +264,8 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         public void handleCompletedTask(long taskId) {
             Task task = client.getTask(taskId);
             long workItemId = task.getTaskData().getWorkItemId();
-            if (task.getTaskData().getStatus() == Status.Completed) {
+            Status taskStatus = task.getTaskData().getStatus(); 
+            if (taskStatus == Status.Completed) {
                 String userId = task.getTaskData().getActualOwner().getId();
                 Map<String, Object> results = new HashMap<String, Object>();
                 results.put("ActorId", userId);
@@ -286,6 +287,11 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 } else {
                 	session.getWorkItemManager().completeWorkItem(workItemId, results);
                 }
+            } else if (taskStatus == Status.Created 
+                    || taskStatus == Status.Ready 
+                    || taskStatus == Status.Reserved
+                    || taskStatus == Status.InProgress) {
+                    throw new RuntimeException("Invalid status received with completed task event " + taskStatus);
             } else {
             	session.getWorkItemManager().abortWorkItem(workItemId);
             }

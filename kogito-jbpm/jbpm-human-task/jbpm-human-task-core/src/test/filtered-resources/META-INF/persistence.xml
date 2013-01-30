@@ -68,8 +68,69 @@
       <property name="hibernate.id.new_generator_mappings" value="false" />
       
       <!-- needed for JTA testing 
+      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" /> -->
+       
+    </properties>
+  </persistence-unit>
+  <!-- for LocalTaskService a JTA persistence unit must be used to secure all operations will be executed in same tx -->
+  <persistence-unit name="org.jbpm.task.local" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>jdbc/taskDS</jta-data-source>
+    <mapping-file>META-INF/Taskorm.xml</mapping-file>
+    <mapping-file>META-INF/TaskEventsorm.xml</mapping-file>
+
+    <class>org.jbpm.task.Attachment</class>
+    <class>org.jbpm.task.Content</class>
+    <class>org.jbpm.task.BooleanExpression</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Delegation</class>
+    <class>org.jbpm.task.Escalation</class>
+    <class>org.jbpm.task.Group</class>
+    <class>org.jbpm.task.I18NText</class>
+    <class>org.jbpm.task.Notification</class>
+    <class>org.jbpm.task.EmailNotification</class>
+    <class>org.jbpm.task.EmailNotificationHeader</class>
+    <class>org.jbpm.task.PeopleAssignments</class>
+    <class>org.jbpm.task.Reassignment</class>
+    <class>org.jbpm.task.Status</class>
+    <class>org.jbpm.task.Task</class>
+    <class>org.jbpm.task.TaskData</class>
+    <class>org.jbpm.task.SubTasksStrategy</class>
+    <class>org.jbpm.task.OnParentAbortAllSubTasksEndStrategy</class>
+    <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
+    <class>org.jbpm.task.User</class>
+    
+    <!-- Event Classes -->
+    <class>org.jbpm.task.event.entity.TaskEvent</class>
+    <class>org.jbpm.task.event.entity.TaskUserEvent</class>
+    
+    <!-- Specific Event Classes -->
+    <class>org.jbpm.task.event.entity.TaskClaimedEvent</class>
+    <class>org.jbpm.task.event.entity.TaskCompletedEvent</class>
+    <class>org.jbpm.task.event.entity.TaskCreatedEvent</class>
+    <class>org.jbpm.task.event.entity.TaskFailedEvent</class>
+    <class>org.jbpm.task.event.entity.TaskForwardedEvent</class>
+    <class>org.jbpm.task.event.entity.TaskReleasedEvent</class>
+    <class>org.jbpm.task.event.entity.TaskSkippedEvent</class>
+    <class>org.jbpm.task.event.entity.TaskStartedEvent</class>
+    <class>org.jbpm.task.event.entity.TaskStoppedEvent</class>
+   
+    <properties>
+      <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
+
+      <property name="hibernate.max_fetch_depth" value="3" />
+      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+      <property name="hibernate.show_sql" value="false" />
+
+      <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
+      <property name="hibernate.id.new_generator_mappings" value="false" />
+      
+      <!-- needed for JTA testing  -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
-        -->
+       
     </properties>
   </persistence-unit>
 

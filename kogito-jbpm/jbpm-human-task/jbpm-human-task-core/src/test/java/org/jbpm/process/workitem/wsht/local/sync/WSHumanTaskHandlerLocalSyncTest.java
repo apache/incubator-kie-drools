@@ -15,17 +15,25 @@
  */
 package org.jbpm.process.workitem.wsht.local.sync;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
 import org.jbpm.task.service.local.LocalTaskService;
 
+import bitronix.tm.resource.jdbc.PoolingDataSource;
+
 public class WSHumanTaskHandlerLocalSyncTest extends WSHumanTaskHandlerBaseSyncTest {
 
-
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
+    
     @Override
     protected void setUp() throws Exception {
+        setupJTADataSource();
         super.setUp();
-       
         setClient(new LocalTaskService(taskService));
         LocalHTWorkItemHandler htWorkItemHandler = new LocalHTWorkItemHandler(getClient(), ksession);
         setHandler(htWorkItemHandler);

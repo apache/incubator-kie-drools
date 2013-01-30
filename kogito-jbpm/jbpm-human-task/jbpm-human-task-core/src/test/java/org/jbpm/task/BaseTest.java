@@ -57,7 +57,7 @@ public abstract class BaseTest extends TestCase {
 
     protected boolean useJTA = false;
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
-    private PoolingDataSource pds;
+    protected PoolingDataSource pds;
 
     public static final long TASK_SERVER_START_WAIT_TIME = 10000;
     
@@ -72,7 +72,7 @@ public abstract class BaseTest extends TestCase {
         conf.setProperty("from", "from@domain.com");
         conf.setProperty("replyTo", "replyTo@domain.com");
         conf.setProperty("defaultLanguage", "en-UK");
-        SendIcal.initInstance(conf);
+        SendIcal.initInstance(conf);       
 
         // Use persistence.xml configuration
         emf = createEntityManagerFactory();
@@ -90,10 +90,10 @@ public abstract class BaseTest extends TestCase {
         taskSession = taskService.createSession();
     }
     
-    protected Properties loadDataSourceProperties() { 
+    public static Properties loadDataSourceProperties() { 
         String propertiesNotFoundMessage = "Unable to load datasource properties [" + DATASOURCE_PROPERTIES + "]";
 
-        InputStream propsInputStream = getClass().getResourceAsStream(DATASOURCE_PROPERTIES);
+        InputStream propsInputStream = BaseTest.class.getResourceAsStream(DATASOURCE_PROPERTIES);
         assertNotNull(propertiesNotFoundMessage, propsInputStream);
         Properties dsProps = new Properties();
         if (propsInputStream != null) {
@@ -202,7 +202,7 @@ public abstract class BaseTest extends TestCase {
         Thread.sleep(1000); 
     }
     
-    private void setDatabaseSpecificDataSourceProperties(PoolingDataSource pds, Properties dsProps) { 
+    public static void setDatabaseSpecificDataSourceProperties(PoolingDataSource pds, Properties dsProps) { 
         String driverClass = dsProps.getProperty("driverClassName");
         if (driverClass.startsWith("org.h2")) {
             for (String propertyName : new String[] { "url", "driverClassName" }) {
@@ -287,5 +287,22 @@ public abstract class BaseTest extends TestCase {
                 }
             }
         }
+    }
+    
+    protected void setupJTADataSource() {
+        Properties dsProps = loadDataSourceProperties();
+        
+        pds = new PoolingDataSource();
+        pds.setUniqueName( "jdbc/taskDS" );
+        pds.setClassName(dsProps.getProperty("className"));
+        pds.setMaxPoolSize(Integer.parseInt(dsProps.getProperty("maxPoolSize")));
+        pds.setAllowLocalTransactions(Boolean.parseBoolean(dsProps.getProperty("allowLocalTransactions")));
+        for (String propertyName : new String[] { "user", "password" }) {
+            pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+        }
+        setDatabaseSpecificDataSourceProperties(pds, dsProps);
+        
+        pds.init();
+        useJTA = true;
     }
 }

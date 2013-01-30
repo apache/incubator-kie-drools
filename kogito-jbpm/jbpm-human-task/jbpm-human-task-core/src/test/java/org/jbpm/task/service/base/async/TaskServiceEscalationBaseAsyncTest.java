@@ -82,8 +82,7 @@ public abstract class TaskServiceEscalationBaseAsyncTest extends BaseTest {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.UnescalatedDeadlines ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
-        long now = ((Date)vars.get( "now" )).getTime();
-        
+        long now = ((Date)vars.get( "now" )).getTime();        
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         for ( Task task : tasks ) {

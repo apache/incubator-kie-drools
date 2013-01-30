@@ -44,41 +44,53 @@ import org.kie.runtime.Environment;
 public class LocalTaskService implements TaskService {
 
     private org.jbpm.task.service.TaskService service;
-    private TaskServiceSession session;
     private Environment environment;
 
     public LocalTaskService(org.jbpm.task.service.TaskService taskService) {
         this.service = taskService;
-        this.session = service.createSession();
     }
 
     public void activate(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Activate, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void addAttachment(long taskId, Attachment attachment, Content content) {
+        TaskServiceSession session = service.createSession();
         session.addAttachment(taskId, attachment, content);
+        session.dispose();
     }
 
     public void addComment(long taskId, Comment comment) {
+        TaskServiceSession session = service.createSession();
         session.addComment(taskId, comment);
+        session.dispose();
     }
 
     public void addTask(Task task, ContentData content) {
+        TaskServiceSession session = service.createSession();
         session.addTask(task, content);
+        session.dispose();
     }
 
     public void claim(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Claim, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     @Deprecated
     public void claim(long taskId, String userId, List<String> groupIds) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Claim, taskId, userId, null, null, groupIds);
+        session.dispose();
     }
 
     public void complete(long taskId, String userId, ContentData outputData) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Complete, taskId, userId, null, outputData, null);
+        session.dispose();
     }
 
     public void completeWithResults(long taskId, String userId, Object results) {
@@ -100,123 +112,219 @@ public class LocalTaskService implements TaskService {
     }
 
     public void delegate(long taskId, String userId, String targetUserId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Delegate, taskId, userId, targetUserId, null, null);
-    }
-
-    public void deleteAttachment(long taskId, long attachmentId, long contentId) {
-        session.deleteAttachment(taskId, attachmentId, contentId);
-    }
-
-    public void deleteComment(long taskId, long commentId) {
-        session.deleteComment(taskId, commentId);
-    }
-
-    public void deleteFault(long taskId, String userId) {
-        session.deleteFault(taskId, userId);
-    }
-
-    public void deleteOutput(long taskId, String userId) {
-        session.deleteOutput(taskId, userId);
-    }
-
-    public void disconnect() throws Exception {
-        dispose();
-    }
-
-    public void dispose() {
         session.dispose();
     }
 
+    public void deleteAttachment(long taskId, long attachmentId, long contentId) {
+        TaskServiceSession session = service.createSession();
+        session.deleteAttachment(taskId, attachmentId, contentId);
+        session.dispose();
+    }
+
+    public void deleteComment(long taskId, long commentId) {
+        TaskServiceSession session = service.createSession();
+        session.deleteComment(taskId, commentId);
+        session.dispose();
+    }
+
+    public void deleteFault(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
+        session.deleteFault(taskId, userId);
+        session.dispose();
+    }
+
+    public void deleteOutput(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
+        session.deleteOutput(taskId, userId);
+        session.dispose();
+    }
+
+    public void disconnect() throws Exception {
+        
+    }
+
+    public void dispose() {
+        
+    }
+
     public void exit(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Exit, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void fail(long taskId, String userId, FaultData faultData) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Fail, taskId, userId, null, faultData, null);
+        session.dispose();
     }
 
     public void forward(long taskId, String userId, String targetEntityId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Forward, taskId, userId, targetEntityId, null, null);
+        session.dispose();
     }
 
     public Content getContent(long contentId) {
-        return session.getContent(contentId);
+        TaskServiceSession session = service.createSession();
+        Content content = session.getContent(contentId);
+        session.dispose();
+        
+        return content;
     }
 
     public List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId, String language) {
-        return session.getSubTasksAssignedAsPotentialOwner(parentId, userId, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getSubTasksAssignedAsPotentialOwner(parentId, userId, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getSubTasksByParent(long parentId) {
-        return session.getSubTasksByParent(parentId, null);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getSubTasksByParent(parentId, null);
+        session.dispose();
+        
+        return result;
     }
 
     public Task getTask(long taskId) {
-        return session.getTask(taskId);
+        TaskServiceSession session = service.createSession();
+        Task result = session.getTask(taskId);
+        loadLazyFields(result);
+        session.dispose();
+        
+        return result;
     }
 
     public Task getTaskByWorkItemId(long workItemId) {
-        return session.getTaskByWorkItemId(workItemId);
+        TaskServiceSession session = service.createSession();
+        Task result = session.getTaskByWorkItemId(workItemId);
+        loadLazyFields(result);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language) {
-        return session.getTasksAssignedAsBusinessAdministrator(userId, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsBusinessAdministrator(userId, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId, String language) {
-        return session.getTasksAssignedAsExcludedOwner(userId, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsExcludedOwner(userId, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language) {
-        return session.getTasksAssignedAsPotentialOwner(userId, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsPotentialOwner(userId, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language) {
-        return session.getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
+        session.dispose();
+        
+        return result;
     }
     @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
-        return session.getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language);
+        session.dispose();
+        
+        return result;
     }
     @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language) {
-        return session.getTasksAssignedAsPotentialOwner(userId, groupIds, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsPotentialOwner(userId, groupIds, language);
+        session.dispose();
+        
+        return result;
     }
     @Deprecated
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult) {
-        return session.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResult);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResult);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language) {
-        return session.getTasksAssignedAsRecipient(userId, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsRecipient(userId, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId, String language) {
-        return session.getTasksAssignedAsTaskInitiator(userId, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsTaskInitiator(userId, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId, String language) {
-        return session.getTasksAssignedAsTaskStakeholder(userId, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksAssignedAsTaskStakeholder(userId, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language) {
-        return session.getTasksByStatusByProcessId(processInstanceId, status, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksByStatusByProcessId(processInstanceId, status, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language) {
-        return session.getTasksByStatusByProcessIdByTaskName(processInstanceId, status, taskName, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksByStatusByProcessIdByTaskName(processInstanceId, status, taskName, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksOwned(String userId, String language) {
-        return session.getTasksOwned(userId, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksOwned(userId, language);
+        session.dispose();
+        
+        return result;
     }
 
     public List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language) {
-        return session.getTasksOwned(userId, status, language);
+        TaskServiceSession session = service.createSession();
+        List<TaskSummary> result = session.getTasksOwned(userId, status, language);
+        session.dispose();
+        
+        return result;
     }
 
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
+        TaskServiceSession session = service.createSession();
         session.nominateTask(taskId, userId, potentialOwners);
+        session.dispose();
     }
 
     /**
@@ -233,11 +341,17 @@ public class LocalTaskService implements TaskService {
      */
     @Deprecated
     public List<?> query(String qlString, Integer size, Integer offset) {
-        return session.query(qlString, size, offset);
+        TaskServiceSession session = service.createSession();
+        List<?> result = session.query(qlString, size, offset);
+        session.dispose();
+        
+        return result;
     }
 
     public void register(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Register, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void registerForEvent(EventKey key, boolean remove, EventResponseHandler responseHandler) {
@@ -251,56 +365,81 @@ public class LocalTaskService implements TaskService {
     }
     
     public void release(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Release, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void remove(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Remove, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void resume(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Resume, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void setDocumentContent(long taskId, Content content) {
+        TaskServiceSession session = service.createSession();
         session.setDocumentContent(taskId, content);
+        session.dispose();
     }
 
     public void setFault(long taskId, String userId, FaultData fault) {
+        TaskServiceSession session = service.createSession();
         session.setFault(taskId, userId, fault);
+        session.dispose();
     }
 
     public void setOutput(long taskId, String userId, ContentData outputContentData) {
+        TaskServiceSession session = service.createSession();
         session.setOutput(taskId, userId, outputContentData);
+        session.dispose();
     }
 
     public void setPriority(long taskId, String userId, int priority) {
+        TaskServiceSession session = service.createSession();
         session.setPriority(taskId, userId, priority);
+        session.dispose();
     }
 
     public void skip(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Skip, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void start(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Start, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void stop(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Stop, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void suspend(long taskId, String userId) {
+        TaskServiceSession session = service.createSession();
         session.taskOperation(Operation.Suspend, taskId, userId, null, null, null);
+        session.dispose();
     }
 
     public void claimNextAvailable(String userId, String language) {
+        TaskServiceSession session = service.createSession();
         session.claimNextAvailable(userId, language);
-
+        session.dispose();
     }
     @Deprecated
     public void claimNextAvailable(String userId, List<String> groupIds, String language) {
+        TaskServiceSession session = service.createSession();
         session.claimNextAvailable(userId, groupIds, language);
+        session.dispose();
     }
 
     public Environment getEnvironment() {
@@ -334,5 +473,23 @@ public class LocalTaskService implements TaskService {
     
     public void addEventListener(final TaskEventListener listener) {
         service.addEventListener(listener);
+    }
+    
+    private void loadLazyFields(Task task) {
+        task.getPeopleAssignments().getBusinessAdministrators().size();
+        task.getPeopleAssignments().getPotentialOwners().size();
+        task.getPeopleAssignments().getRecipients().size();
+        task.getPeopleAssignments().getExcludedOwners().size();
+        task.getPeopleAssignments().getTaskStakeholders().size();
+        task.getDeadlines().getStartDeadlines().size();
+        task.getDeadlines().getEndDeadlines().size();
+        task.getDelegation().getDelegates().size();
+        task.getTaskData().getAttachments().size();
+        task.getTaskData().getComments().size();
+        task.getDescriptions().size();
+        task.getNames().size();
+        task.getSubjects().size();
+        task.getSubTaskStrategies().size();
+        
     }
 }

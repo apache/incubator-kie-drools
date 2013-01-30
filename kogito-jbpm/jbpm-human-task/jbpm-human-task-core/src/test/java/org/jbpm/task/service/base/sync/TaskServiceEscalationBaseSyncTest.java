@@ -22,7 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
 
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.MvelFilePath;
@@ -77,20 +79,23 @@ public abstract class TaskServiceEscalationBaseSyncTest extends BaseTest {
         List<Task> tasks = (List<Task>) eval(reader,
                 vars);
         long now = ((Date) vars.get("now")).getTime();
-
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        for (Task task : tasks) {
-            // for this one we put the task in directly;
-            em.persist(task);
-        }
-        em.getTransaction().commit();
+        persist(tasks, emf.createEntityManager());
 
         // now create a new service, to see if it initiates from the DB correctly
         MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
         org.jbpm.task.service.TaskService local = new org.jbpm.task.service.TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);
 
         testDeadlines(now, handler);
+    }
+    
+    protected void persist(List<Task> tasks, EntityManager em) throws Exception {
+        em.getTransaction().begin();
+
+        for (Task task : tasks) {
+            // for this one we put the task in directly;
+            em.persist(task);
+        }
+        em.getTransaction().commit();
     }
 
 }

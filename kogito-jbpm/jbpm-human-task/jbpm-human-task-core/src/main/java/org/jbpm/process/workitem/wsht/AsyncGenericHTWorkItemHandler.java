@@ -283,7 +283,8 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
         public void execute(Task task) {
             long workItemId = task.getTaskData().getWorkItemId();
-            if (task.getTaskData().getStatus() == Status.Completed) {
+            Status taskStatus = task.getTaskData().getStatus(); 
+            if (taskStatus == Status.Completed) {
                 String userId = task.getTaskData().getActualOwner().getId();
                 Map<String, Object> results = new HashMap<String, Object>();
                 results.put("ActorId", userId);
@@ -295,6 +296,11 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                 } else {
                     session.getWorkItemManager().completeWorkItem(workItemId, results);
                 }
+            } else if (taskStatus == Status.Created 
+                    || taskStatus == Status.Ready 
+                    || taskStatus == Status.Reserved
+                    || taskStatus == Status.InProgress) {
+                throw new RuntimeException("Invalid status received with completed task event " + taskStatus);
             } else {
                 session.getWorkItemManager().abortWorkItem(workItemId);
             }

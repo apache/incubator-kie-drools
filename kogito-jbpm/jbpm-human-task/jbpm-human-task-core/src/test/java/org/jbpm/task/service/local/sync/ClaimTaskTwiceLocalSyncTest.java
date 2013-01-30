@@ -16,6 +16,9 @@
 
 package org.jbpm.task.service.local.sync;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.jbpm.task.TaskService;
 import org.jbpm.task.service.ClaimTaskTwiceTest;
 import org.jbpm.task.service.local.LocalTaskService;
@@ -25,6 +28,15 @@ import org.jbpm.task.service.local.LocalTaskService;
  * 
  */
 public class ClaimTaskTwiceLocalSyncTest extends ClaimTaskTwiceTest {
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+       setupJTADataSource();
+       super.setUp();
+    }
 
     protected TaskService createClient(String clientName) throws Exception { 
         TaskService client = new LocalTaskService(taskService);

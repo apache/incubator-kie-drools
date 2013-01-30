@@ -18,6 +18,7 @@ package org.jbpm.task.admin;
 import java.util.Date;
 import java.util.List;
 
+import org.jbpm.task.Status;
 import org.jbpm.task.query.TaskSummary;
 
 
@@ -27,6 +28,9 @@ public interface TasksAdmin {
     public List<TaskSummary> getCompletedTasks();
     public List<TaskSummary> getCompletedTasks(Date since); 
     public List<TaskSummary> getCompletedTasksByProcessId(Long processId); 
+    public List<TaskSummary> getTasks(List<Status> statuses); 
+    public List<TaskSummary> getTasks(Date since, List<Status> statuses);  
+    public List<TaskSummary> getTasksByProcessId(Long processId, List<Status> statuses);
     public int archiveTasks(List<TaskSummary> tasks);
     public List<TaskSummary> getArchivedTasks(); 
     public int removeTasks(List<TaskSummary> tasks);

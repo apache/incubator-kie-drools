@@ -15,10 +15,13 @@
  */
 package org.jbpm.task.admin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.event.DefaultProcessEventListener;
+import org.jbpm.task.Status;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.TaskService;
 import org.kie.event.process.ProcessCompletedEvent;
 
 /**
@@ -27,19 +30,28 @@ import org.kie.event.process.ProcessCompletedEvent;
  */
 public class TaskCleanUpProcessEventListener extends DefaultProcessEventListener {
 
-    private TasksAdmin admin;
-
-    public TaskCleanUpProcessEventListener(TasksAdmin admin) {
-        this.admin = admin;
-    }
+    private TaskService taskService;
     
+    public TaskCleanUpProcessEventListener(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @Override
     public void afterProcessCompleted(ProcessCompletedEvent event) {
+        TasksAdmin admin = taskService.createTaskAdmin();
         
-        List<TaskSummary> completedTasksByProcessId = admin.getCompletedTasksByProcessId(event.getProcessInstance().getId());
+        List<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.Error);
+        statuses.add(Status.Failed);
+        statuses.add(Status.Obsolete);
+        statuses.add(Status.Suspended);
+        statuses.add(Status.Completed);
+        statuses.add(Status.Exited);
+        List<TaskSummary> completedTasksByProcessId = admin.getTasksByProcessId(event.getProcessInstance().getId(), statuses);
         admin.archiveTasks(completedTasksByProcessId);
         admin.removeTasks(completedTasksByProcessId);
+        
+        admin.dispose();
         
     }
 }

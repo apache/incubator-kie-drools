@@ -16,15 +16,31 @@
 
 package org.jbpm.task.service.local.sync;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.jbpm.task.service.base.sync.TaskServiceEventMessagingBaseSyncTest;
 import org.jbpm.task.service.local.LocalTaskService;
 
 public class TaskServiceEventMessagingLocalSyncTest extends TaskServiceEventMessagingBaseSyncTest {
 
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
+    
     @Override
     protected void setUp() throws Exception {
+        setupJTADataSource();
         super.setUp();
         client = new LocalTaskService(taskService);
     }
+
+    @Override
+    protected void tearDown() throws Exception {
+        // TODO Auto-generated method stub
+        super.tearDown();
+    }
+    
+    
 
 }

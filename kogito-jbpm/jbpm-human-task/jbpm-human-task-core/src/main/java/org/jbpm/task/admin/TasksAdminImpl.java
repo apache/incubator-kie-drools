@@ -42,7 +42,7 @@ public class TasksAdminImpl implements TasksAdmin {
 
     public List<TaskSummary> getActiveTasks() {
         HashMap<String, Object> params = addParametersToMap(
-                "status", Status.InProgress,
+                "status", Arrays.asList(Status.InProgress),
                 "language", "en-UK");
         
         return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatus", params);
@@ -50,7 +50,7 @@ public class TasksAdminImpl implements TasksAdmin {
 
     public List<TaskSummary> getActiveTasks(Date since) {
         HashMap<String, Object> params = addParametersToMap(
-                "status", Status.InProgress,
+                "status", Arrays.asList(Status.InProgress),
                 "language", "en-UK",
                 "since", since);
                 
@@ -59,7 +59,7 @@ public class TasksAdminImpl implements TasksAdmin {
 
     public List<TaskSummary> getCompletedTasks() {
         HashMap<String, Object> params = addParametersToMap(
-                "status", Status.Completed,
+                "status", Arrays.asList(Status.Completed),
                 "language", "en-UK");
         
         return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatus", params);
@@ -67,7 +67,7 @@ public class TasksAdminImpl implements TasksAdmin {
 
     public List<TaskSummary> getCompletedTasks(Date since) {
         HashMap<String, Object> params = addParametersToMap(
-                "status", Status.Completed,
+                "status", Arrays.asList(Status.Completed),
                 "language", "en-UK",
                 "since", since);
         
@@ -127,6 +127,35 @@ public class TasksAdminImpl implements TasksAdmin {
 
     public void dispose() {
         this.tpm.endPersistenceContext();
+    }
+
+    @Override
+    public List<TaskSummary> getTasks(List<Status> statuses) {
+        HashMap<String, Object> params = addParametersToMap(
+                "status", statuses,
+                "language", "en-UK");
+        
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatus", params);
+    }
+
+    @Override
+    public List<TaskSummary> getTasks(Date since, List<Status> statuses) {
+        HashMap<String, Object> params = addParametersToMap(
+                "status", statuses,
+                "language", "en-UK",
+                "since", since);
+        
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatusSince", params);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByProcessId(Long processId, List<Status> statuses) {
+        HashMap<String, Object> params = addParametersToMap(
+                "status", statuses,
+                "language", "en-UK",
+                "processInstanceId", processId);
+        
+        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksByStatusByProcessId", params);
     }
     
     

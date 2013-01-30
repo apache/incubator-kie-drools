@@ -462,6 +462,45 @@ public class TaskServiceSession {
                 	break;
                 }
             }
+            // process notifications and additional steps per operation
+            switch (operation) {
+                case Start: {
+                    postTaskStartOperation(task);
+                    break;
+                }
+                case Forward: {
+                    postTaskForwardOperation(task);
+                    break;
+                }
+                case Release: {
+                    postTaskReleaseOperation(task);
+                    break;
+                }
+                case Stop: {
+                    postTaskStopOperation(task);
+                    break;
+                }
+                case Claim: {
+                    postTaskClaimOperation(task);
+                    break;
+                }
+                case Complete: {
+                    postTaskCompleteOperation(task);
+                    break;
+                }
+                case Fail: {
+                    postTaskFailOperation(task);
+                    break;
+                }
+                case Skip: {
+                    postTaskSkipOperation(task, userId);
+                    break;
+                }
+                case Exit: {
+                    postTaskExitOperation(task, userId);
+                    break;
+                }
+            }
             
             tpm.endTransaction(transactionOwner);
             
@@ -481,44 +520,7 @@ public class TaskServiceSession {
             throw re;
         } 
 
-        switch (operation) {
-            case Start: {
-                postTaskStartOperation(task);
-                break;
-            }
-            case Forward: {
-                postTaskForwardOperation(task);
-                break;
-            }
-            case Release: {
-                postTaskReleaseOperation(task);
-                break;
-            }
-            case Stop: {
-                postTaskStopOperation(task);
-                break;
-            }
-            case Claim: {
-                postTaskClaimOperation(task);
-                break;
-            }
-            case Complete: {
-                postTaskCompleteOperation(task);
-                break;
-            }
-            case Fail: {
-                postTaskFailOperation(task);
-                break;
-            }
-            case Skip: {
-                postTaskSkipOperation(task, userId);
-                break;
-            }
-            case Exit: {
-                postTaskExitOperation(task, userId);
-                break;
-            }
-        }
+        
 
     }
 

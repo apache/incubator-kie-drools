@@ -70,6 +70,7 @@ public class EventPersistenceServerSideTestTest extends BaseTest {
     public void tearDown() throws Exception {
         client.disconnect();
         server.stop();
+        super.tearDown();
     }
 
    public void testPersistentEventHandlers() throws Exception {      

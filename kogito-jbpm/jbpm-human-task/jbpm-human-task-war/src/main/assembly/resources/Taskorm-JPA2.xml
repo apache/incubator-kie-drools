@@ -710,7 +710,7 @@ where
             left join t.names as name
             where
             t.archived = 0 and
-            t.taskData.status = :status and
+            t.taskData.status in (:status) and
 
             (
             name.language = :language
@@ -860,7 +860,7 @@ where
             left join t.names as name
             where
             t.archived = 0 and
-            t.taskData.status = :status and
+            t.taskData.status in (:status) and
             
             (
             name.language = :language

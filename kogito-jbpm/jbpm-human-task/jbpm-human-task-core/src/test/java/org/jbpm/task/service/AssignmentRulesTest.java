@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
@@ -29,8 +32,13 @@ public class AssignmentRulesTest extends BaseTest {
     protected TaskServer server;
     protected TaskService client;
     
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
     
+    @Override
     protected void setUp() throws Exception {
+        setupJTADataSource(); 
         super.setUp();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         

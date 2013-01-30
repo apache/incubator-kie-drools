@@ -16,16 +16,45 @@
 
 package org.jbpm.task.service.local.sync;
 
+import java.util.List;
+
+import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.transaction.UserTransaction;
+
+import org.jbpm.task.Task;
 import org.jbpm.task.service.base.sync.TaskServiceEscalationBaseSyncTest;
 import org.jbpm.task.service.local.LocalTaskService;
 
 public class TaskServiceEscalationLocalSyncTest extends TaskServiceEscalationBaseSyncTest {
 
-	@Override
-	protected void setUp() throws Exception {
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+        setupJTADataSource();
 		super.setUp();
 		
 		client = new LocalTaskService(taskService);
 	}
+
+    @Override
+    protected void persist(List<Task> tasks, EntityManager em) throws Exception {
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        em.joinTransaction();
+
+        for (Task task : tasks) {
+            // for this one we put the task in directly;
+            em.persist(task);
+        }
+        ut.commit();
+    }
+	
+	
 
 }

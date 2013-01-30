@@ -139,7 +139,7 @@ public class AdminAPIsWithListenerTest {
         KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
         LocalHTWorkItemHandler htHandler = new LocalHTWorkItemHandler(localTaskService, ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
-        ksession.addEventListener(new TaskCleanUpProcessEventListener(admin));
+        ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
         
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
@@ -186,7 +186,7 @@ public class AdminAPIsWithListenerTest {
         this.localTaskService.start(managerTasks.get(0).getId(), "manager");
 
         this.localTaskService.complete(managerTasks.get(0).getId(), "manager", null);
-
+        
         // since persisted process instance is completed it should be null
         process = ksession.getProcessInstance(process.getId());
         Assert.assertNull(process);
@@ -201,7 +201,78 @@ public class AdminAPIsWithListenerTest {
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
         Assert.assertEquals(0, em.createQuery("select c from Content c").getResultList().size());
+        em.close();
+    }
+    
+    @Test
+    public void automaticCleanUpTestAbortProcess() throws Exception {
+   
+        Environment env = createEnvironment();
+        KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
+        StatefulKnowledgeSession ksession = createSession(kbase, env);
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+        LocalHTWorkItemHandler htHandler = new LocalHTWorkItemHandler(localTaskService, ksession);
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
+        ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
+        
+        logger.info("### Starting process ###");
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        
+        ProcessInstance process = ksession.startProcess("org.jbpm.PatientAppointment", parameters);
+        long processInstanceId = process.getId();
 
+        //The process is in the first Human Task waiting for its completion
+        Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
+
+        //gets frontDesk's tasks
+        List<TaskSummary> frontDeskTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("frontDesk", "en-UK");
+        Assert.assertEquals(1, frontDeskTasks.size());
+
+        //doctor doesn't have any task
+        List<TaskSummary> doctorTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");
+        Assert.assertTrue(doctorTasks.isEmpty());
+
+        //manager doesn't have any task
+        List<TaskSummary> managerTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
+        Assert.assertTrue(managerTasks.isEmpty());
+
+
+        this.localTaskService.start(frontDeskTasks.get(0).getId(), "frontDesk");
+       
+        this.localTaskService.complete(frontDeskTasks.get(0).getId(), "frontDesk", null);
+
+        //Now doctor has 1 task
+        doctorTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");
+        Assert.assertEquals(1, doctorTasks.size());
+
+        //No tasks for manager yet
+        managerTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
+        Assert.assertTrue(managerTasks.isEmpty());
+
+
+        this.localTaskService.start(doctorTasks.get(0).getId(), "doctor");
+
+        this.localTaskService.complete(doctorTasks.get(0).getId(), "doctor", null);
+        
+        // abort process instance
+        ksession.abortProcessInstance(processInstanceId);
+        // since persisted process instance is completed it should be null
+        process = ksession.getProcessInstance(process.getId());
+        Assert.assertNull(process);
+
+        
+        final EntityManager em = emfTasks.createEntityManager();
+
+        Assert.assertEquals(0, em.createQuery("select t from Task t").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select i from I18NText i").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select c from Content c").getResultList().size());
+        em.close();
     }
 
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase, Environment env) {

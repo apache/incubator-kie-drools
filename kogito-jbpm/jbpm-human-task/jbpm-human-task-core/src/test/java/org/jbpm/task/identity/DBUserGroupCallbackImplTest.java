@@ -51,6 +51,10 @@ public class DBUserGroupCallbackImplTest {
 		props.setProperty(DBUserGroupCallbackImpl.USER_ROLES_QUERY, "select groupId from Groups where userId = ?");
 	}
     
+    public void tearDown() {
+        pds.close();
+    }
+    
     protected Properties loadDataSourceProperties() { 
         
         InputStream propsInputStream = getClass().getResourceAsStream(DATASOURCE_PROPERTIES);

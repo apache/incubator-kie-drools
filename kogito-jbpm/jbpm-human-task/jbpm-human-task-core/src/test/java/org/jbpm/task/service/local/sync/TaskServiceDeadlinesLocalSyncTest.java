@@ -18,6 +18,9 @@ package org.jbpm.task.service.local.sync;
 
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.jbpm.task.service.base.sync.TaskServiceDeadlinesBaseSyncTest;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.subethamail.wiser.Wiser;
@@ -25,8 +28,13 @@ import org.subethamail.wiser.Wiser;
 public class TaskServiceDeadlinesLocalSyncTest extends TaskServiceDeadlinesBaseSyncTest {
 
 
-	@Override
-	protected void setUp() throws Exception {        
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+        setupJTADataSource();       
 		super.setUp();
 
 		setConf(new Properties());

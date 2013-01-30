@@ -16,6 +16,9 @@
 
 package org.jbpm.task.service.local.sync;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.jbpm.task.service.base.sync.IcalBaseSyncTest;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.kie.internal.utils.ChainedProperties;
@@ -24,8 +27,13 @@ import org.subethamail.wiser.Wiser;
 
 public class IcalLocalSyncTest extends IcalBaseSyncTest {
 
-	@Override
-	protected void setUp() throws Exception {
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+       setupJTADataSource();
 		super.setUp();
 
 		ChainedProperties props = new ChainedProperties("process.email.conf", ClassLoaderUtil.getClassLoader(null, getClass(), false) );

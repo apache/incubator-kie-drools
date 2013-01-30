@@ -19,6 +19,9 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.BaseTest;
@@ -42,7 +45,13 @@ public class EventPersistenceTest extends BaseTest {
     protected TaskService client;
     protected TaskEventsAdmin eventsAdmin;
     
-    public void setUp() throws Exception {
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task.local");
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+        setupJTADataSource();
         super.setUp();
         client = new LocalTaskService(taskService);
         eventsAdmin = taskService.createTaskEventsAdmin();
@@ -51,6 +60,7 @@ public class EventPersistenceTest extends BaseTest {
 
     public void tearDown() throws Exception {
         client.disconnect();
+        super.tearDown();
     }
 
    public void testPersistentEventHandlers() throws Exception {      
