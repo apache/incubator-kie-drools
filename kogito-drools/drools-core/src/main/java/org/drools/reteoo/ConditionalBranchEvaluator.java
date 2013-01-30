@@ -30,7 +30,7 @@ public class ConditionalBranchEvaluator implements Externalizable {
         this.conditionalExecution = new ConditionalExecution( partitionId, tupleSink, breaking );
     }
 
-    static class ConditionalExecution implements Externalizable {
+    public static class ConditionalExecution implements Externalizable {
         private LeftTupleSinkPropagator sink;
 
         private boolean breaking;

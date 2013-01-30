@@ -158,16 +158,17 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return;
         }
 
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
-            this.objectSource.updateSink( this,
-                                          propagationContext,
-                                          workingMemory );
-        }
+        // we don't call updateSink here yet, as the sink is not yet attached
+//        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
+//            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+//                                                                                      PropagationContext.RULE_ADDITION,
+//                                                                                      null,
+//                                                                                      null,
+//                                                                                      null );
+//            this.objectSource.updateSink( this,
+//                                          propagationContext,
+//                                          workingMemory );
+//        }
     }
 
     public void networkUpdated(UpdateContext updateContext) {

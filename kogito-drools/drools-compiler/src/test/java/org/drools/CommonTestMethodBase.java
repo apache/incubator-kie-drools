@@ -37,6 +37,8 @@ import org.kie.runtime.StatelessKnowledgeSession;
  * in drools-persistence-jpa.
  */
 public class CommonTestMethodBase extends Assert {
+    
+    private static LRUnlinkingOption preak = LRUnlinkingOption.DISABLED;
 
     // ***********************************************
     // METHODS TO BE REMOVED FOR 6.0.0
@@ -150,7 +152,7 @@ public class CommonTestMethodBase extends Assert {
         if ( kBaseConfig == null ) {
             kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        //kBaseConfig.setOption( LRUnlinkingOption.ENABLED );        
+        kBaseConfig.setOption( preak);        
 
         KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase( kBaseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -165,7 +167,7 @@ public class CommonTestMethodBase extends Assert {
         if ( kbaseConf == null ) {
             kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        //kbaseConf.setOption( LRUnlinkingOption.ENABLED );
+        kbaseConf.setOption( preak );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( knowledgePackages );
         return kbase;
@@ -183,7 +185,7 @@ public class CommonTestMethodBase extends Assert {
         if ( kbaseConf == null ) {
             kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        //kbaseConf.setOption( LRUnlinkingOption.ENABLED );
+        kbaseConf.setOption( preak );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( knowledgePackages );
         return kbase;

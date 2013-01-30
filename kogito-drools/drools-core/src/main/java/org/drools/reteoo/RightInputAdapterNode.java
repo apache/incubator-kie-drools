@@ -331,12 +331,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
-                            final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeObjectSink( (ObjectSink) node );
-        }
-
         if ( !this.isInUse() ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
                 RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
@@ -350,9 +345,13 @@ public class RightInputAdapterNode extends ObjectSource
                 workingMemory.clearNodeMemory( this );
             }
         }
-        this.tupleSource.remove( context,
-                                 builder,
-                                 workingMemories );
+        if ( !isInUse() ) {
+            tupleSource.removeTupleSink(this);
+        }
+    }
+
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        this.tupleSource.collectAncestors(nodeSet);
     }
 
     public boolean isLeftTupleMemoryEnabled() {

@@ -7,6 +7,8 @@ import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
+import org.drools.reteoo.ConditionalBranchNode;
+import org.drools.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
 import org.drools.reteoo.EvalConditionNode;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.FromNode;
@@ -92,7 +94,10 @@ public class SegmentUtilities {
             } else if ( tupleSource.getType() == NodeTypeEnums.EvalConditionNode ) {
                 EvalMemory evalMemory = ( EvalMemory ) smem.createNodeMemory( ( EvalConditionNode ) tupleSource, wm );
                 evalMemory.setSegmentMemory( smem );
-            } else if ( tupleSource.getType() == NodeTypeEnums.FromNode ) {
+            }  else if ( tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
+                ConditionalBranchMemory evalMemory = ( ConditionalBranchMemory ) smem.createNodeMemory( ( ConditionalBranchNode ) tupleSource, wm );
+                evalMemory.setSegmentMemory( smem );
+            }else if ( tupleSource.getType() == NodeTypeEnums.FromNode ) {
                 FromMemory fromMemory = ( FromMemory ) smem.createNodeMemory( ( FromNode ) tupleSource, wm );
                 fromMemory.getBetaMemory().setSegmentMemory( smem );
             }

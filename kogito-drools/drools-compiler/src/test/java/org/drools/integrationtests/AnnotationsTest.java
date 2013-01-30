@@ -29,6 +29,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.io.impl.ByteArrayResource;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,6 +38,7 @@ import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.conf.LRUnlinkingOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.conf.MBeansOption;
 import org.kie.definition.rule.Rule;
@@ -44,7 +46,7 @@ import org.kie.definition.type.Position;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
-public class AnnotationsTest {
+public class AnnotationsTest  extends CommonTestMethodBase {
 
     public static enum AnnPropEnum {
         ONE(
@@ -117,15 +119,8 @@ public class AnnotationsTest {
                      "  \n" +
                      " field : String @Annot \n" +
                      "end \n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( new ByteArrayResource( drl.getBytes() ),
-                      ResourceType.DRL );
-        assertEquals( 0,
-                      kbuilder.getErrors().size() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
 
         Class clazz = kbase.getFactType( "org.drools.test",
                                          "AnnotatedBean" ).getFactClass();
@@ -255,6 +250,7 @@ public class AnnotationsTest {
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
+        conf.setOption( LRUnlinkingOption.ENABLED );
 
         KnowledgeBase kbase = loadKnowledgeBase( "kb1",
                                                  drl,

@@ -13,7 +13,7 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
-public class NamedConsequencesTest extends CommonTestMethodBase {
+public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testNamedConsequences() {

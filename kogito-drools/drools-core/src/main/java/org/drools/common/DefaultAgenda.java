@@ -1410,6 +1410,7 @@ public class DefaultAgenda
             try {
                                
                 this.knowledgeHelper.setActivation( activation );
+                System.out.println( activation.getRule().getName() );
                 activation.getConsequence().evaluate( this.knowledgeHelper,
                                                       this.workingMemory );
                 this.knowledgeHelper.cancelRemainingPreviousLogicalDependencies();

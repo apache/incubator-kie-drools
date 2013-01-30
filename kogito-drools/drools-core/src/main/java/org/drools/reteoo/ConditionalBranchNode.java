@@ -64,6 +64,11 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         out.writeBoolean(tupleMemoryEnabled);
         out.writeObject(branchEvaluator);
     }
+    
+
+    public ConditionalBranchEvaluator getBranchEvaluator() {
+        return branchEvaluator;
+    }
 
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink(this, context);

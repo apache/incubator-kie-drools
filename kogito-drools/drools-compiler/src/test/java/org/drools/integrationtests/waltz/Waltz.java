@@ -139,7 +139,7 @@ public abstract class Waltz {
             
         }
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        //kconf.setOption( LRUnlinkingOption.ENABLED );        
+        kconf.setOption( LRUnlinkingOption.ENABLED );        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         
         kbase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
