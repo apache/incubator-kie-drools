@@ -29,6 +29,7 @@
           <swapMoveSelector>
             <cacheType>PHASE</cacheType>
             <selectionOrder>SHUFFLED</selectionOrder>
+            <filterClass>org.drools.planner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
           </swapMoveSelector>
           <moveListFactory>
             <cacheType>STEP</cacheType>
