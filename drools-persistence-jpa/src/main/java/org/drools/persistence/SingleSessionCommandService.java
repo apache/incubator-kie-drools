@@ -16,10 +16,7 @@
 package org.drools.persistence;
 
 import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.Date;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
@@ -167,9 +164,34 @@ public class SingleSessionCommandService
                                                           this.ksession,
                                                           null );
 
-        this.commandService = new DefaultCommandService(kContext);
+        initCommandService( kContext, 
+                            this.env );
 
         ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
+    }
+    
+    protected void initCommandService(KnowledgeCommandContext context, Environment env ) { 
+        this.commandService = new DefaultCommandService(context);
+        
+        Object interceptorObject = env.get( EnvironmentName.COMMAND_SERVICE_INTERCEPTOR );
+        
+        if( interceptorObject != null ) { 
+            List<Interceptor>  interceptorArray = null;
+            if( interceptorObject instanceof Interceptor ) { 
+                interceptorArray = new ArrayList<Interceptor>();
+                interceptorArray.add( (Interceptor) interceptorObject );
+            } else if( interceptorObject instanceof List<?>){ 
+                interceptorArray = ((List<Interceptor>) interceptorObject);
+            } else { 
+                throw new RuntimeException(EnvironmentName.COMMAND_SERVICE_INTERCEPTOR 
+                        + " is an unsupported class for this variable: " + interceptorObject.getClass().getName() );
+            }
+
+            for( Interceptor interceptor : interceptorArray ) { 
+                addInterceptor(interceptor);
+            }
+        }
+        
     }
     
     public SingleSessionCommandService(Integer sessionId,
@@ -272,7 +294,8 @@ public class SingleSessionCommandService
                                                               null );
         }
 
-        this.commandService = new DefaultCommandService(kContext);
+        initCommandService( kContext, 
+                            this.env);
     }
 
     public void initTransactionManager(Environment env) {
