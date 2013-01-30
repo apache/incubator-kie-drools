@@ -1,23 +1,5 @@
 package org.drools.integrationtests;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.ClockType;
 import org.drools.CommonTestMethodBase;
 import org.drools.OrderEvent;
@@ -45,17 +27,17 @@ import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
+import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
+import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.KieSessionConfiguration;
@@ -66,6 +48,24 @@ import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.SessionEntryPoint;
 import org.kie.time.SessionClock;
 import org.mockito.ArgumentCaptor;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class CepEspTest extends CommonTestMethodBase {
     
@@ -707,6 +707,83 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.insert( tick7 );
         clock.advanceTime( 2,
                            TimeUnit.MILLISECONDS );
+        ksession.insert( tick8 );
+
+        ArgumentCaptor<MatchCreatedEvent> arg = ArgumentCaptor.forClass( MatchCreatedEvent.class );
+        verify( ael ).matchCreated(arg.capture());
+        assertThat( arg.getValue().getMatch().getRule().getName(),
+                    is( "before" ) );
+
+        ksession.fireAllRules();
+
+        verify( ael ).afterMatchFired(any(AfterMatchFiredEvent.class));
+    }
+
+    @Test
+    public void testComplexOperator() throws Exception {
+        // read in the source
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_ComplexOperator.drl" );
+
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase, sconf );
+
+        final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
+        clock.setStartupTime( 1000 );
+
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        StockTickInterface tick1 = new StockTick( 1,
+                                                  "DROO",
+                                                  50,
+                                                  0,
+                                                  3 );
+        StockTickInterface tick2 = new StockTick( 2,
+                                                  "ACME",
+                                                  10,
+                                                  4,
+                                                  3 );
+        StockTickInterface tick3 = new StockTick( 3,
+                                                  "ACME",
+                                                  10,
+                                                  8,
+                                                  3 );
+        StockTickInterface tick4 = new StockTick( 4,
+                                                  "DROO",
+                                                  50,
+                                                  12,
+                                                  5 );
+        StockTickInterface tick5 = new StockTick( 5,
+                                                  "ACME",
+                                                  10,
+                                                  12,
+                                                  5 );
+        StockTickInterface tick6 = new StockTick( 6,
+                                                  "ACME",
+                                                  10,
+                                                  13,
+                                                  3 );
+        StockTickInterface tick7 = new StockTick( 7,
+                                                  "ACME",
+                                                  10,
+                                                  13,
+                                                  5 );
+        StockTickInterface tick8 = new StockTick( 8,
+                                                  "ACME",
+                                                  10,
+                                                  15,
+                                                  3 );
+
+        ksession.insert( tick1 );
+        ksession.insert( tick2 );
+        ksession.insert( tick3 );
+        ksession.insert( tick4 );
+        ksession.insert( tick5 );
+        ksession.insert( tick6 );
+        ksession.insert( tick7 );
         ksession.insert( tick8 );
 
         ArgumentCaptor<MatchCreatedEvent> arg = ArgumentCaptor.forClass( MatchCreatedEvent.class );

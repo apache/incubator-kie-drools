@@ -26,6 +26,8 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.time.Interval;
 
+import static org.drools.base.mvel.MVELCompilationUnit.getFactHandle;
+
 /**
  * An EvaluatorWrapper is used when executing MVEL expressions
  * that have operator calls rewritten as:
@@ -51,12 +53,26 @@ public class EvaluatorWrapper
     private InternalFactHandle                         leftHandle;
     private InternalFactHandle                         rightHandle;
 
+    private InternalReadAccessor                       leftExtractor;
+    private InternalReadAccessor                       rightExtractor;
+
+    private boolean                                    selfLeft;
+    private boolean                                    selfRight;
+
     public EvaluatorWrapper(Evaluator evaluator,
                             Declaration leftBinding,
                             Declaration rightBinding) {
         this.evaluator = evaluator;
         this.leftBinding = leftBinding;
         this.rightBinding = rightBinding;
+        init();
+    }
+
+    private void init() {
+        leftExtractor = leftBinding == null || leftBinding.isPatternDeclaration() ? extractor : leftBinding.getExtractor();
+        rightExtractor = rightBinding == null || rightBinding.isPatternDeclaration() ? extractor : rightBinding.getExtractor();
+        selfLeft = leftBinding == null || leftBinding.getIdentifier().equals("this");
+        selfRight = rightBinding == null || rightBinding.getIdentifier().equals("this");
     }
 
     /**
@@ -72,17 +88,10 @@ public class EvaluatorWrapper
      */
     public boolean evaluate(Object left,
                             Object right) {
-        //        if( leftBinding != null ) {
-        //            left = evaluator.prepareLeftObject( leftHandle ); 
-        //        }
-        //        if( rightBinding != null ) {
-        //            right = evaluator.prepareRightObject( rightHandle );
-        //        }
-
         return evaluator.evaluate( workingMemory,
-                                   extractor,
+                                   leftExtractor,
                                    leftHandle,
-                                   extractor,
+                                   rightExtractor,
                                    rightHandle );
     }
 
@@ -195,89 +204,14 @@ public class EvaluatorWrapper
         return evaluator.getInterval();
     }
 
-    /**
-     * @return the workingMemory
-     */
-    public InternalWorkingMemory getWorkingMemory() {
-        return workingMemory;
-    }
-
-    /**
-     * @param workingMemory the workingMemory to set
-     */
-    public EvaluatorWrapper setWorkingMemory(InternalWorkingMemory workingMemory) {
+    public void loadHandles(InternalWorkingMemory workingMemory, InternalFactHandle[] handles, Object rightObject) {
         this.workingMemory = workingMemory;
-        return this;
-    }
-
-    /**
-     * @return the leftHandle
-     */
-    public InternalFactHandle getLeftHandle() {
-        return leftHandle;
-    }
-
-    /**
-     * @param leftHandle the leftHandle to set
-     */
-    public EvaluatorWrapper setLeftHandle(InternalFactHandle leftHandle) {
-        this.leftHandle = leftHandle;
-        return this;
-    }
-
-    /**
-     * @return the rightHandle
-     */
-    public InternalFactHandle getRightHandle() {
-        return rightHandle;
-    }
-
-    /**
-     * @param rightHandle the rightHandle to set
-     */
-    public EvaluatorWrapper setRightHandle(InternalFactHandle rightHandle) {
-        this.rightHandle = rightHandle;
-        return this;
-    }
-
-    /**
-     * @return the leftBinding
-     */
-    public Declaration getLeftBinding() {
-        return leftBinding;
-    }
-
-    /**
-     * @param leftBinding the leftBinding to set
-     */
-    public void setLeftBinding(Declaration leftBinding) {
-        this.leftBinding = leftBinding;
-    }
-
-    /**
-     * @return the rightBinding
-     */
-    public Declaration getRightBinding() {
-        return rightBinding;
-    }
-
-    /**
-     * @param rightBinding the rightBinding to set
-     */
-    public void setRightBinding(Declaration rightBinding) {
-        this.rightBinding = rightBinding;
+        leftHandle = selfLeft ? (InternalFactHandle) workingMemory.getFactHandle(rightObject) : getFactHandle(leftBinding, handles);
+        rightHandle = selfRight ? (InternalFactHandle) workingMemory.getFactHandle(rightObject) : getFactHandle(rightBinding, handles);
     }
 
     @Override
     public String toString() {
         return this.evaluator.toString();
-    }
-
-    protected static SelfReferenceClassFieldReader getExtractor() {
-        return extractor;
-    }
-
-    protected Evaluator getEvaluator() {
-        return evaluator;
     }
 }
