@@ -22,11 +22,29 @@
 
       <para>Planner cannot automatically know which <literal>Solution</literal> is best for your business, so you need
       to tell it how to calculate the score of a given <literal>Solution</literal> according to your business needs.
-      There are multiple score techniques that you can use and combine.</para>
+      There are multiple score techniques that you can use and combine:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Maximize or minimize a constraint: score constraint signum (positive or negative)</para>
+        </listitem>
+
+        <listitem>
+          <para>Put a cost/profit on constraints: score constraint weight</para>
+        </listitem>
+
+        <listitem>
+          <para>Prioritize constraints: score level</para>
+        </listitem>
+
+        <listitem>
+          <para>Pareto scoring</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section>
-      <title>Positive and negative constraints</title>
+      <title>Score constraint signum (positive or negative)</title>
 
       <para>All score techniques are based on constraints. Such a constraint can be a simple pattern (such as
       <emphasis>Maximize the apple harvest in the solution</emphasis>) or a more complex pattern. A positive constraint
@@ -58,7 +76,7 @@
     </section>
 
     <section>
-      <title>Score constraint weighting</title>
+      <title>Score constraint weight</title>
 
       <para>Not all score constraints are equally important. If breaking one constraint is equally bad as breaking
       another constraint x times, then those 2 constraints have a different weight (but they are in the same score
@@ -154,6 +172,18 @@
         <literal>java.lang.Comparable</literal>'s method <literal>compareTo</literal>, but Planner's systems are
         <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this documentation.</para>
       </note>
+    </section>
+
+    <section>
+      <title>Combining score techniques</title>
+
+      <para>All the score techniques mentioned above, can be combined seamlessly:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreComposition.png"/>
+        </imageobject>
+      </mediaobject>
     </section>
 
     <section>
