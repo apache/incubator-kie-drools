@@ -227,9 +227,9 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public void invalidate() {
-        this.id = -1;
-        this.object = null;
-        this.entryPoint = null;
+        //this.id = -1;
+        //this.object = null;
+        //this.entryPoint = null;
     }
 
     public boolean isValid() {

@@ -598,9 +598,9 @@ public class AccumulateTest extends CommonTestMethodBase {
         wm.fireAllRules();
         // one fire, as per rule constraints
         assertEquals( 1,
-                             results.size() );
+                      results.size() );
         assertEquals( 3,
-                             ((List) results.get( results.size() - 1 )).size() );
+                      ((List) results.get( results.size() - 1 )).size() );
 
         // ---------------- 2nd scenario
         final int index = 1;
@@ -611,7 +611,8 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         // no fire
         assertEquals( 1,
-                             results.size() );
+                      results.size() );
+        System.out.println( results );
 
         // ---------------- 3rd scenario
         bob.setLikes( "brie" );

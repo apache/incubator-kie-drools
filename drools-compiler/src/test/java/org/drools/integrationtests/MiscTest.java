@@ -4370,9 +4370,10 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         DefaultFactHandle handle = (DefaultFactHandle) ksession.insert( "hello" );
+        ksession.fireAllRules();
         LeftTuple leftTuple = handle.getFirstLeftTuple();
         assertNotNull( leftTuple );
-        assertNotNull( leftTuple.getLeftParentNext() );
+        assertNotNull( leftTuple.getPeer() );
 
         kbase.removeRule( "org.drools",
                           "rule2" );

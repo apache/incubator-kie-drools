@@ -212,7 +212,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
     }
 
     public EvaluatorDefinition.Target getRightTarget( final InternalReadAccessor extractor ) {
-        return (extractor.isSelfReference() && !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) || Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? EvaluatorDefinition.Target.HANDLE : EvaluatorDefinition.Target.FACT;
+        return ( extractor.isSelfReference() && 
+                 !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) || 
+                         Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? EvaluatorDefinition.Target.HANDLE : EvaluatorDefinition.Target.FACT;
     }
 
     public Evaluator getEvaluator( final RuleBuildContext context,
