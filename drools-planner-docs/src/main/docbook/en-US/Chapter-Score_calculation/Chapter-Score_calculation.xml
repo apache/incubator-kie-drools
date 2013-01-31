@@ -201,6 +201,12 @@
       but you can implement a custom Score too. Most use cases will just use the build-in
       <literal>HardAndSoftScore</literal>.</para>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreClassDiagram.png"/>
+        </imageobject>
+      </mediaobject>
+
       <para>The <literal>Score</literal> implementation (for example <literal>DefaultHardAndSoftScore</literal>) must be
       the same throughout a <literal>Solver</literal> runtime. The <literal>Score</literal> implementation is configured
       in the solver configuration as a ScoreDefinition:</para>
@@ -209,6 +215,15 @@
     &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
+
+      <para>As for all calculations with a computer, choose the correct type. Don't use <literal>double</literal> for
+      financial data.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreWeightType.png"/>
+        </imageobject>
+      </mediaobject>
 
       <para>Based on your score constraints and score level requirements, you'll choose a certain
       <literal>ScoreDefinition</literal>:</para>
