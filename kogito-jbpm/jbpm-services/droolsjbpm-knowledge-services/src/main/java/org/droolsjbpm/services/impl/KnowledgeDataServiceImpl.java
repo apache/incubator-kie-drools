@@ -32,12 +32,14 @@ import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
+import org.jboss.seam.transaction.Transactional;
 
 /**
  *
  * @author salaboy
  */
 @ApplicationScoped
+@Transactional
 public class KnowledgeDataServiceImpl implements KnowledgeDataService {
 
     Map<String, SessionLocator> ksessionLocators = new HashMap<String, SessionLocator>();

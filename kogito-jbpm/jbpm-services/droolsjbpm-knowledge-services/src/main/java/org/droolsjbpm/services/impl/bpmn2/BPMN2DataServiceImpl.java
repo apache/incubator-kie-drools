@@ -180,7 +180,8 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
             for(KnowledgeBuilderError error: kbuilder.getErrors()){
                 System.out.println("Error: "+error.getMessage());
             }
-            throw new IllegalStateException("Process Cannot be Parsed! \n"+bpmn2Content);
+            System.out.println(">> Process Cannot be Parsed! \n"+bpmn2Content);
+            return "";
         }
         
         BPMN2ProcessFactory.setBPMN2ProcessProvider(originalProvider);
