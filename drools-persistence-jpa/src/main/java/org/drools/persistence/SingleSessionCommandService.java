@@ -16,10 +16,7 @@
 package org.drools.persistence;
 
 import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.Date;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
@@ -111,32 +108,9 @@ public class SingleSessionCommandService
 
         checkEnvironment( this.env );
 
-        this.sessionInfo = new SessionInfo();
-
         initTransactionManager( this.env );
-
-        // create session but bypass command service
-        this.ksession = kbase.newStatefulKnowledgeSession( conf,
-                                                           this.env );
-
-        this.kContext = new FixedKnowledgeCommandContext( null,
-                                                          null,
-                                                          null,
-                                                          this.ksession,
-                                                          null );
-
-        this.commandService = new DefaultCommandService( kContext );
-
-        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
-
-        this.marshallingHelper = new SessionMarshallingHelper( this.ksession,
-                                                               conf );
-        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
-        config.setMarshallProcessInstances( false );
-        config.setMarshallWorkItems( false );
-
-        this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
-        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        
+        initNewKnowledgeSession(kbase, conf);
 
         // Use the App scoped EntityManager if the user has provided it, and it is open.
         // - open the entity manager before the transaction begins. 
@@ -167,6 +141,59 @@ public class SingleSessionCommandService
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
     }
 
+    protected void initNewKnowledgeSession(KnowledgeBase kbase, KieSessionConfiguration conf) { 
+        this.sessionInfo = new SessionInfo();
+
+        // create session but bypass command service
+        this.ksession = kbase.newStatefulKnowledgeSession( conf,
+                                                           this.env );
+
+        this.marshallingHelper = new SessionMarshallingHelper( this.ksession, conf );
+        
+        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
+        config.setMarshallProcessInstances( false );
+        config.setMarshallWorkItems( false );
+
+        this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
+        
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        
+        this.kContext = new FixedKnowledgeCommandContext( null,
+                                                          null,
+                                                          null,
+                                                          this.ksession,
+                                                          null );
+
+        initCommandService( kContext, 
+                            this.env );
+
+        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
+    }
+    
+    protected void initCommandService(KnowledgeCommandContext context, Environment env ) { 
+        this.commandService = new DefaultCommandService(context);
+        
+        Object interceptorObject = env.get( EnvironmentName.COMMAND_SERVICE_INTERCEPTOR );
+        
+        if( interceptorObject != null ) { 
+            List<Interceptor>  interceptorArray = null;
+            if( interceptorObject instanceof Interceptor ) { 
+                interceptorArray = new ArrayList<Interceptor>();
+                interceptorArray.add( (Interceptor) interceptorObject );
+            } else if( interceptorObject instanceof List<?>){ 
+                interceptorArray = ((List<Interceptor>) interceptorObject);
+            } else { 
+                throw new RuntimeException(EnvironmentName.COMMAND_SERVICE_INTERCEPTOR 
+                        + " is an unsupported class for this variable: " + interceptorObject.getClass().getName() );
+            }
+
+            for( Interceptor interceptor : interceptorArray ) { 
+                addInterceptor(interceptor);
+            }
+        }
+        
+    }
+    
     public SingleSessionCommandService(Integer sessionId,
                                        KnowledgeBase kbase,
                                        KieSessionConfiguration conf,
@@ -191,7 +218,7 @@ public class SingleSessionCommandService
             registerRollbackSync();
 
             persistenceContext.joinTransaction();
-            initKsession( sessionId,
+            initExistingKnowledgeSession( sessionId,
                           kbase,
                           conf,
                           persistenceContext );
@@ -209,7 +236,7 @@ public class SingleSessionCommandService
         }
     }
 
-    protected void initKsession(Integer sessionId,
+    protected void initExistingKnowledgeSession(Integer sessionId,
                                 KnowledgeBase kbase,
                                 KieSessionConfiguration conf,
                                 PersistenceContext persistenceContext) {
@@ -267,8 +294,8 @@ public class SingleSessionCommandService
                                                               null );
         }
 
-        this.commandService = new DefaultCommandService( kContext );
-        this.commandService = new DefaultCommandService(kContext);
+        initCommandService( kContext, 
+                            this.env);
     }
 
     public void initTransactionManager(Environment env) {
@@ -354,7 +381,7 @@ public class SingleSessionCommandService
             transactionOwner = txm.begin();
 
             persistenceContext.joinTransaction();
-            initKsession( this.sessionInfo.getId(),
+            initExistingKnowledgeSession( this.sessionInfo.getId(),
                           this.marshallingHelper.getKbase(),
                           this.marshallingHelper.getConf(),
                           persistenceContext );
