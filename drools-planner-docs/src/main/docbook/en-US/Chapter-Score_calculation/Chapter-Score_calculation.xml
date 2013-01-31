@@ -120,6 +120,15 @@
       <para>Score levels often employ score weighting per level. In such case, the hard constraint level usually makes
       the solution feasible and the soft constraint level maximizes profit by weighting the constraints on price.</para>
 
+      <para>Don't use a big constraint weight when your business actually wants different score levels. That hack, known
+      as <emphasis>score folding</emphasis>, is broken:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreFoldingIsBroken.png"/>
+        </imageobject>
+      </mediaobject>
+
       <note>
         <para>Your business will probably tell you that your hard constraints all have the same weight, because they
         cannot be broken (so their weight does not matter). This is not true and it could create a <link
