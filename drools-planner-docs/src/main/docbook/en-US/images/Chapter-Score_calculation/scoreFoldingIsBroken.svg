@@ -246,17 +246,17 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.315"
-     inkscape:cx="471.82894"
+     inkscape:cx="367.64643"
      inkscape:cy="264.92596"
      inkscape:document-units="px"
-     inkscape:current-layer="layer6"
+     inkscape:current-layer="layer3"
      showgrid="true"
      width="800px"
      borderlayer="true"
      gridtolerance="10"
      inkscape:window-width="1680"
      inkscape:window-height="991"
-     inkscape:window-x="1680"
+     inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
@@ -283,7 +283,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -362,6 +362,58 @@
              width="54.318333"
              id="rect3228-2" /></flowRegion><flowPara
            id="flowPara3230-1">3</flowPara></flowRoot>    </g>
+    <g
+       id="g3994"
+       transform="translate(-50,-60.000038)"
+       style="fill:#ffffff;fill-opacity:1;stroke:none">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:none"
+         id="rect3996"
+         width="89"
+         height="29"
+         x="80.5"
+         y="692.86218"
+         rx="4.999999"
+         ry="5" />
+      <flowRoot
+         transform="matrix(1.6568991,0,0,1.6568991,-320.39408,571.72151)"
+         style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         id="flowRoot3998"
+         xml:space="preserve"><flowRegion
+           id="flowRegion4000"><rect
+             style="font-size:14.48488903px;fill:#ffffff;fill-opacity:1;stroke:none"
+             y="72.811119"
+             x="241.65266"
+             height="18.10611"
+             width="54.318333"
+             id="rect4002" /></flowRegion><flowPara
+           id="flowPara4004">3</flowPara></flowRoot>    </g>
+    <g
+       style="opacity:0.5"
+       transform="translate(-50,-60.000038)"
+       id="g4006">
+      <rect
+         ry="5"
+         rx="4.999999"
+         y="692.86218"
+         x="80.5"
+         height="29"
+         width="89"
+         id="rect4008"
+         style="fill:#729fcf;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+      <flowRoot
+         xml:space="preserve"
+         id="flowRoot4010"
+         style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         transform="matrix(1.6568991,0,0,1.6568991,-320.39408,571.72151)"><flowRegion
+           id="flowRegion4012"><rect
+             id="rect4014"
+             width="54.318333"
+             height="18.10611"
+             x="241.65266"
+             y="72.811119"
+             style="font-size:14.48488903px" /></flowRegion><flowPara
+           id="flowPara4016">3</flowPara></flowRoot>    </g>
     <rect
        style="fill:none;stroke:#000000;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect3324-7"
@@ -479,59 +531,7 @@
            height="23.781013"
            width="79.999847"
            id="rect3393" /></flowRegion><flowPara
-         id="flowPara3395">800 000 $</flowPara></flowRoot>    <g
-       id="g3994"
-       transform="translate(-50,-60.000038)"
-       style="fill:#ffffff;fill-opacity:1;stroke:none">
-      <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:none"
-         id="rect3996"
-         width="89"
-         height="29"
-         x="80.5"
-         y="692.86218"
-         rx="4.999999"
-         ry="5" />
-      <flowRoot
-         transform="matrix(1.6568991,0,0,1.6568991,-320.39408,571.72151)"
-         style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-         id="flowRoot3998"
-         xml:space="preserve"><flowRegion
-           id="flowRegion4000"><rect
-             style="font-size:14.48488903px;fill:#ffffff;fill-opacity:1;stroke:none"
-             y="72.811119"
-             x="241.65266"
-             height="18.10611"
-             width="54.318333"
-             id="rect4002" /></flowRegion><flowPara
-           id="flowPara4004">3</flowPara></flowRoot>    </g>
-    <g
-       style="opacity:0.5"
-       transform="translate(-50,-60.000038)"
-       id="g4006">
-      <rect
-         ry="5"
-         rx="4.999999"
-         y="692.86218"
-         x="80.5"
-         height="29"
-         width="89"
-         id="rect4008"
-         style="fill:#729fcf;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
-      <flowRoot
-         xml:space="preserve"
-         id="flowRoot4010"
-         style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-         transform="matrix(1.6568991,0,0,1.6568991,-320.39408,571.72151)"><flowRegion
-           id="flowRegion4012"><rect
-             id="rect4014"
-             width="54.318333"
-             height="18.10611"
-             x="241.65266"
-             y="72.811119"
-             style="font-size:14.48488903px" /></flowRegion><flowPara
-           id="flowPara4016">3</flowPara></flowRoot>    </g>
-    <flowRoot
+         id="flowPara3395">800 000 $</flowPara></flowRoot>    <flowRoot
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot3472-8"
        xml:space="preserve"
@@ -884,31 +884,31 @@
      inkscape:label="Trapped scoring result"
      style="display:inline">
     <rect
-       ry="5"
-       rx="4.9999986"
-       y="370.5"
-       x="450.50018"
-       height="29"
+       style="fill:none;stroke:#4e9a06;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;display:inline"
+       id="rect4131"
        width="99"
-       id="rect4129"
-       style="fill:none;stroke:#4e9a06;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+       height="29"
+       x="450.5"
+       y="220.5"
+       rx="4.9999986"
+       ry="5" />
     <flowRoot
-       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot3388"
+       transform="translate(706.90625,268.66089)"
        xml:space="preserve"
-       transform="translate(696.9139,412.44214)"><flowRegion
-         id="flowRegion3390"><rect
-           style="font-size:14px;text-align:center;text-anchor:middle;fill:#4e9a06"
-           y="-12.44168"
-           x="-276.9137"
-           height="20"
-           width="160"
-           id="rect3392" /></flowRegion><flowPara
-         id="flowPara3394">Highest score</flowPara></flowRoot>    <path
-       inkscape:connector-curvature="0"
-       id="path3619"
-       d="m 490.0012,320 10,-20 10,20"
-       style="color:#000000;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+       id="flowRoot4146"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+         id="flowRegion4148"><rect
+           id="rect4150"
+           width="100"
+           height="19.99954"
+           x="-256.90625"
+           y="-18.660431"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#4e9a06" /></flowRegion><flowPara
+         id="flowPara4152">Highest score</flowPara></flowRoot>    <path
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 490.001,300 10,20 10,-20"
+       id="path3670"
+       inkscape:connector-curvature="0" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -1019,31 +1019,31 @@
      inkscape:label="Good scoring result"
      style="display:inline">
     <rect
-       style="fill:none;stroke:#4e9a06;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-       id="rect4131"
-       width="159"
-       height="29"
+       ry="5"
+       rx="4.9999986"
+       y="370.5"
        x="610.5"
-       y="220.5"
-       rx="4.999999"
-       ry="5" />
+       height="29"
+       width="159"
+       id="rect4129"
+       style="fill:none;stroke:#4e9a06;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;display:inline" />
     <flowRoot
-       transform="translate(866.90625,268.66089)"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3388"
        xml:space="preserve"
-       id="flowRoot4146"
-       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
-         id="flowRegion4148"><rect
-           id="rect4150"
-           width="160"
+       transform="translate(856.91372,412.44214)"><flowRegion
+         id="flowRegion3390"><rect
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#4e9a06"
+           y="-12.44214"
+           x="-246.91373"
            height="20"
-           x="-256.90625"
-           y="-18.660431"
-           style="font-size:14px;text-align:center;text-anchor:middle;fill:#4e9a06" /></flowRegion><flowPara
-         id="flowPara4152">Highest score</flowPara></flowRoot>    <path
-       style="color:#000000;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="m 680.0007,300 10,20 10,-20"
-       id="path3670"
-       inkscape:connector-curvature="0" />
+           width="159.99997"
+           id="rect3392" /></flowRegion><flowPara
+         id="flowPara3394">Highest score</flowPara></flowRoot>    <path
+       inkscape:connector-curvature="0"
+       id="path3619"
+       d="m 680.001,320 10,-20 10,20"
+       style="color:#000000;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
   </g>
   <g
      inkscape:groupmode="layer"
