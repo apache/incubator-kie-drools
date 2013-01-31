@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,50 +14,50 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.hardandsoft;
+package org.drools.planner.core.score.buildin.hardsoftlong;
 
 import org.drools.planner.core.score.AbstractScore;
 
 /**
- * Default implementation of {@link HardAndSoftScore}.
+ * Default implementation of {@link HardSoftLongScore}.
  * <p/>
  * This class is immutable.
- * @see HardAndSoftScore
+ * @see HardSoftLongScore
  */
-public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScore>
-        implements HardAndSoftScore {
+public final class DefaultHardSoftLongScore extends AbstractScore<HardSoftLongScore>
+        implements HardSoftLongScore {
 
     private static final String HARD_LABEL = "hard";
     private static final String SOFT_LABEL = "soft";
 
-    public static DefaultHardAndSoftScore parseScore(String scoreString) {
+    public static DefaultHardSoftLongScore parseScore(String scoreString) {
         String[] levelStrings = parseLevelStrings(scoreString, HARD_LABEL, SOFT_LABEL);
-        int hardScore = Integer.parseInt(levelStrings[0]);
-        int softScore = Integer.parseInt(levelStrings[1]);
+        long hardScore = Long.parseLong(levelStrings[0]);
+        long softScore = Long.parseLong(levelStrings[1]);
         return valueOf(hardScore, softScore);
     }
 
-    public static DefaultHardAndSoftScore valueOf(int hardScore, int softScore) {
-        return new DefaultHardAndSoftScore(hardScore, softScore);
+    public static DefaultHardSoftLongScore valueOf(long hardScore, long softScore) {
+        return new DefaultHardSoftLongScore(hardScore, softScore);
     }
 
     // ************************************************************************
     // Fields
     // ************************************************************************
 
-    private final int hardScore;
-    private final int softScore;
+    private final long hardScore;
+    private final long softScore;
 
-    protected DefaultHardAndSoftScore(int hardScore, int softScore) {
+    protected DefaultHardSoftLongScore(long hardScore, long softScore) {
         this.hardScore = hardScore;
         this.softScore = softScore;
     }
 
-    public int getHardScore() {
+    public long getHardScore() {
         return hardScore;
     }
 
-    public int getSoftScore() {
+    public long getSoftScore() {
         return softScore;
     }
 
@@ -66,27 +66,27 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
     // ************************************************************************
 
     public boolean isFeasible() {
-        return getHardScore() >= 0;
+        return getHardScore() >= 0L;
     }
 
-    public HardAndSoftScore add(HardAndSoftScore augment) {
-        return new DefaultHardAndSoftScore(hardScore + augment.getHardScore(),
+    public HardSoftLongScore add(HardSoftLongScore augment) {
+        return new DefaultHardSoftLongScore(hardScore + augment.getHardScore(),
                 this.softScore + augment.getSoftScore());
     }
 
-    public HardAndSoftScore subtract(HardAndSoftScore subtrahend) {
-        return new DefaultHardAndSoftScore(hardScore - subtrahend.getHardScore(),
+    public HardSoftLongScore subtract(HardSoftLongScore subtrahend) {
+        return new DefaultHardSoftLongScore(hardScore - subtrahend.getHardScore(),
                 this.softScore - subtrahend.getSoftScore());
     }
 
-    public HardAndSoftScore multiply(double multiplicand) {
-        return new DefaultHardAndSoftScore((int) Math.floor(hardScore * multiplicand),
-                (int) Math.floor(this.softScore * multiplicand));
+    public HardSoftLongScore multiply(double multiplicand) {
+        return new DefaultHardSoftLongScore((long) Math.floor(hardScore * multiplicand),
+                (long) Math.floor(this.softScore * multiplicand));
     }
 
-    public HardAndSoftScore divide(double divisor) {
-        return new DefaultHardAndSoftScore((int) Math.floor(hardScore / divisor),
-                (int) Math.floor(this.softScore / divisor));
+    public HardSoftLongScore divide(double divisor) {
+        return new DefaultHardSoftLongScore((long) Math.floor(hardScore / divisor),
+                (long) Math.floor(this.softScore / divisor));
     }
 
     public double[] toDoubleLevels() {
@@ -97,8 +97,8 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
-        } else if (o instanceof HardAndSoftScore) {
-            HardAndSoftScore other = (HardAndSoftScore) o;
+        } else if (o instanceof HardSoftLongScore) {
+            HardSoftLongScore other = (HardSoftLongScore) o;
             return hardScore == other.getHardScore()
                     && softScore == other.getSoftScore();
         } else {
@@ -108,10 +108,10 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((17 * 37) + hardScore)) * 37 + softScore;
+        return (((17 * 37) + Long.valueOf(hardScore).hashCode())) * 37 + Long.valueOf(softScore).hashCode();
     }
 
-    public int compareTo(HardAndSoftScore other) {
+    public int compareTo(HardSoftLongScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (hardScore != other.getHardScore()) {
             if (hardScore < other.getHardScore()) {

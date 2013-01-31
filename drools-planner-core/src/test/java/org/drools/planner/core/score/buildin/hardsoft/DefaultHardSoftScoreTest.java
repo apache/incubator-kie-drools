@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.hardandsoft;
+package org.drools.planner.core.score.buildin.hardsoft;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DefaultHardAndSoftScoreTest {
+public class DefaultHardSoftScoreTest {
 
     @Test
     public void compareTo() {
-        Score a = DefaultHardAndSoftScore.valueOf(-1, -300);
-        Score b = DefaultHardAndSoftScore.valueOf(-20, -20);
-        Score c = DefaultHardAndSoftScore.valueOf(-20, Integer.MIN_VALUE);
+        Score a = DefaultHardSoftScore.valueOf(-1, -300);
+        Score b = DefaultHardSoftScore.valueOf(-20, -20);
+        Score c = DefaultHardSoftScore.valueOf(-20, Integer.MIN_VALUE);
         assertTrue(a.compareTo(b) > 0);
         assertTrue(b.compareTo(a) < 0);
         assertTrue(b.compareTo(c) > 0);
@@ -37,9 +36,9 @@ public class DefaultHardAndSoftScoreTest {
 
     @Test
     public void feasible() {
-        assertEquals(true, DefaultHardAndSoftScore.valueOf(0, -300).isFeasible());
-        assertEquals(false, DefaultHardAndSoftScore.valueOf(-5, -300).isFeasible());
-        assertEquals(true, DefaultHardAndSoftScore.valueOf(2, -300).isFeasible());
+        assertEquals(true, DefaultHardSoftScore.valueOf(0, -300).isFeasible());
+        assertEquals(false, DefaultHardSoftScore.valueOf(-5, -300).isFeasible());
+        assertEquals(true, DefaultHardSoftScore.valueOf(2, -300).isFeasible());
     }
 
 }

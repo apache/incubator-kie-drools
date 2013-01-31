@@ -18,14 +18,13 @@ package org.drools.planner.examples.machinereassignment.solver.score;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.drools.planner.core.score.buildin.hardandsoftlong.DefaultHardAndSoftLongScore;
-import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScore;
+import org.drools.planner.core.score.buildin.hardsoftlong.DefaultHardSoftLongScore;
+import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.drools.planner.core.score.director.incremental.IncrementalScoreCalculator;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
@@ -139,8 +138,8 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
         }
     }
 
-    public HardAndSoftLongScore calculateScore() {
-        return DefaultHardAndSoftLongScore.valueOf(hardScore, softScore);
+    public HardSoftLongScore calculateScore() {
+        return DefaultHardSoftLongScore.valueOf(hardScore, softScore);
     }
 
     private class MrServiceScorePart {

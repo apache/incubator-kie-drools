@@ -17,13 +17,13 @@
 package org.drools.planner.core.score.buildin.hardmediumsoft;
 
 import org.drools.planner.core.score.AbstractScore;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 
 /**
- * Default implementation of {@link HardAndSoftScore}.
+ * Default implementation of {@link HardSoftScore}.
  * <p/>
  * This class is immutable.
- * @see HardAndSoftScore
+ * @see HardSoftScore
  */
 public final class DefaultHardMediumSoftScore extends AbstractScore<HardMediumSoftScore>
         implements HardMediumSoftScore {

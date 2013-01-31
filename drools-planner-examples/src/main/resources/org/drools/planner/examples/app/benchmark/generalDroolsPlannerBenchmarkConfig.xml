@@ -18,7 +18,7 @@
       <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
@@ -58,7 +58,7 @@
       <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
       <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
@@ -103,7 +103,7 @@
       <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
       <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
@@ -147,7 +147,7 @@
       <solutionClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
       <planningEntityClass>org.drools.planner.examples.pas.domain.BedDesignation</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
@@ -180,7 +180,7 @@
       <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
       <planningEntityClass>org.drools.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
@@ -224,7 +224,7 @@
       <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
       <planningEntityClass>org.drools.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>

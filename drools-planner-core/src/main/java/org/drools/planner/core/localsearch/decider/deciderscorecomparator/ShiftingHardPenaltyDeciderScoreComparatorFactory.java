@@ -20,9 +20,9 @@ import java.util.Comparator;
 
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.comparator.FlatteningHardAndSoftScoreComparator;
+import org.drools.planner.core.score.comparator.FlatteningHardSoftScoreComparator;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 
 /**
@@ -84,9 +84,9 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
             successiveNoHardScoreChange = 0;
             shiftingPenaltyActive = false;
         } else {
-            HardAndSoftScore lastStepScore = (HardAndSoftScore) localSearchStepScope.getPhaseScope()
+            HardSoftScore lastStepScore = (HardSoftScore) localSearchStepScope.getPhaseScope()
                     .getLastCompletedStepScope().getScore();
-            HardAndSoftScore stepScore = (HardAndSoftScore) localSearchStepScope.getScore();
+            HardSoftScore stepScore = (HardSoftScore) localSearchStepScope.getScore();
             if (stepScore.getHardScore() >= hardScoreActivationThreshold
                     && lastStepScore.getHardScore() == stepScore.getHardScore()) {
                 successiveNoHardScoreChange++;
@@ -119,7 +119,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
 
     public Comparator<Score> createDeciderScoreComparator() {
         if (shiftingPenaltyActive) {
-            return new FlatteningHardAndSoftScoreComparator(hardWeight);
+            return new FlatteningHardSoftScoreComparator(hardWeight);
         } else {
             return naturalDeciderScoreComparator;
         }

@@ -25,14 +25,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
-import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScore;
+import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
 @PlanningSolution
 @XStreamAlias("MachineReassignment")
-public class MachineReassignment extends AbstractPersistable implements Solution<HardAndSoftLongScore> {
+public class MachineReassignment extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
     private MrGlobalPenaltyInfo globalPenaltyInfo;
     private List<MrResource> resourceList;
@@ -46,7 +46,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
 
     private List<MrProcessAssignment> processAssignmentList;
 
-    private HardAndSoftLongScore score;
+    private HardSoftLongScore score;
 
     public MrGlobalPenaltyInfo getGlobalPenaltyInfo() {
         return globalPenaltyInfo;
@@ -129,11 +129,11 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.processAssignmentList = processAssignmentList;
     }
 
-    public HardAndSoftLongScore getScore() {
+    public HardSoftLongScore getScore() {
         return score;
     }
 
-    public void setScore(HardAndSoftLongScore score) {
+    public void setScore(HardSoftLongScore score) {
         this.score = score;
     }
 

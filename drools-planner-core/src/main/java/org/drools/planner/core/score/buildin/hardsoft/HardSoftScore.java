@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.hardandsoft;
+package org.drools.planner.core.score.buildin.hardsoft;
 
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
@@ -25,9 +25,9 @@ import org.drools.planner.core.solution.Solution;
  * <p/>
  * Implementations must be immutable.
  * @see Score
- * @see DefaultHardAndSoftScore
+ * @see DefaultHardSoftScore
  */
-public interface HardAndSoftScore extends Score<HardAndSoftScore> {
+public interface HardSoftScore extends Score<HardSoftScore> {
 
     /**
      * The total of the broken negative hard constraints and fulfilled positive hard constraints.

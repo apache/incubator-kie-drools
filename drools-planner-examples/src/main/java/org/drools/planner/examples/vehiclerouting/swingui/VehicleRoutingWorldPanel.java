@@ -16,28 +16,16 @@
 
 package org.drools.planner.examples.vehiclerouting.swingui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.text.NumberFormat;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
-import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
-import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
-import org.drools.planner.examples.vehiclerouting.domain.VrpDepot;
-import org.drools.planner.examples.vehiclerouting.domain.VrpLocation;
 import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
-import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
 
 /**
  * TODO this code is highly unoptimized

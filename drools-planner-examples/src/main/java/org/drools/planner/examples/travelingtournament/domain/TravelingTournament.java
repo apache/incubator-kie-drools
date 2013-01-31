@@ -25,20 +25,20 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
 @XStreamAlias("TravelingTournament")
-public class TravelingTournament extends AbstractPersistable implements Solution<HardAndSoftScore> {
+public class TravelingTournament extends AbstractPersistable implements Solution<HardSoftScore> {
 
     private List<Day> dayList;
     private List<Team> teamList;
 
     private List<Match> matchList;
 
-    private HardAndSoftScore score;
+    private HardSoftScore score;
 
     public List<Day> getDayList() {
         return dayList;
@@ -65,11 +65,11 @@ public class TravelingTournament extends AbstractPersistable implements Solution
         this.matchList = matchSets;
     }
 
-    public HardAndSoftScore getScore() {
+    public HardSoftScore getScore() {
         return score;
     }
 
-    public void setScore(HardAndSoftScore score) {
+    public void setScore(HardSoftScore score) {
         this.score = score;
     }
 

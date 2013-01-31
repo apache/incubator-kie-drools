@@ -217,7 +217,7 @@
 
   &lt;!-- Score configuration --&gt;
   &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
     &lt;!--&lt;scoreDrl&gt;/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
   &lt;/scoreDirectorFactory&gt;
@@ -254,13 +254,13 @@
 
         <listitem>
           <para><emphasis role="bold">Score configuration</emphasis>: How should Planner optimize the planning
-          variables? Since we have hard and soft constraints, we use a <literal>HardAndSoftScore</literal>. But we also
+          variables? Since we have hard and soft constraints, we use a <literal>HardSoftScore</literal>. But we also
           need to tell Planner how to calculate such the score, depending on our business requirements. Further down, we
           'll look into 2 alternatives to calculate the score: using a simple Java implementation or using Drools
           DRL.</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
     &lt;!--&lt;scoreDrl&gt;/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
@@ -377,13 +377,13 @@ public class CloudProcess ... {
         <example>
           <title>CloudBalance.java</title>
 
-          <programlisting language="java">public class CloudBalance ... implements Solution&lt;HardAndSoftScore&gt; {
+          <programlisting language="java">public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
 
     private List&lt;CloudComputer&gt; computerList;
 
     private List&lt;CloudProcess&gt; processList;
 
-    private HardAndSoftScore score;
+    private HardSoftScore score;
 
     public List&lt;CloudComputer&gt; getComputerList() {
         return computerList;
@@ -396,11 +396,11 @@ public class CloudProcess ... {
 
     ...
 
-    public HardAndSoftScore getScore() {
+    public HardSoftScore getScore() {
         return score;
     }
 
-    public void setScore(HardAndSoftScore score) {
+    public void setScore(HardSoftScore score) {
         this.score = score;
     }
 
@@ -429,7 +429,7 @@ public class CloudProcess ... {
       <title>Score configuration</title>
 
       <para>Planner will search for the <literal>Solution</literal> with the highest <literal>Score</literal>. We're
-      using a <literal>HardAndSoftScore</literal>, which means Planner will look for the solution with no hard
+      using a <literal>HardSoftScore</literal>, which means Planner will look for the solution with no hard
       constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize
       maintenance cost).</para>
 
@@ -465,12 +465,12 @@ public class CloudProcess ... {
         in plain Java.</para>
 
         <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
         <para>Just implement the method <literal>calculateScore(Solution)</literal> to return a
-        <literal>DefaultHardAndSoftScore</literal> instance.</para>
+        <literal>DefaultHardSoftScore</literal> instance.</para>
 
         <example>
           <title>CloudBalancingSimpleScoreCalculator.java</title>
@@ -481,7 +481,7 @@ public class CloudProcess ... {
      * A very simple implementation. The double loop can easily be removed by using Maps as shown in
      * {@link CloudBalancingMapBasedSimpleScoreCalculator#calculateScore(CloudBalance)}.
      */
-    public HardAndSoftScore calculateScore(CloudBalance cloudBalance) {
+    public HardSoftScore calculateScore(CloudBalance cloudBalance) {
         int hardScore = 0;
         int softScore = 0;
         for (CloudComputer computer : cloudBalance.getComputerList()) {
@@ -519,7 +519,7 @@ public class CloudProcess ... {
                 softScore -= computer.getCost();
             }
         }
-        return DefaultHardAndSoftScore.valueOf(hardScore, softScore);
+        return DefaultHardSoftScore.valueOf(hardScore, softScore);
     }
 
 }</programlisting>
@@ -538,7 +538,7 @@ public class CloudProcess ... {
         the classpath:</para>
 
         <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
@@ -554,7 +554,7 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 
-global HardAndSoftScoreHolder scoreHolder;
+global HardSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints

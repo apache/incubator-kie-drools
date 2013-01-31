@@ -17,7 +17,7 @@
 package org.drools.planner.examples.curriculumcourse.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreHolder;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -32,7 +32,7 @@ import org.drools.planner.examples.curriculumcourse.domain.Teacher;
 import org.drools.planner.examples.curriculumcourse.domain.Timeslot;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
-global HardAndSoftScoreHolder scoreHolder;
+global HardSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints

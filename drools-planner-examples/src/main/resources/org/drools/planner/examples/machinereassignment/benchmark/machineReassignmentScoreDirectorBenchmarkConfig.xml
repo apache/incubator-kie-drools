@@ -25,7 +25,7 @@
       <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
 
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
       </scoreDirectorFactory>
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>

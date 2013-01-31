@@ -26,7 +26,7 @@ import java.text.NumberFormat;
 
 import javax.swing.ImageIcon;
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
@@ -174,7 +174,7 @@ public class VehicleRoutingSchedulePainter {
         g.drawString("Customer demand", 15, (int) height - 5);
         // Show soft score
         g.setColor(TangoColors.SCARLET_2);
-        HardAndSoftScore score = schedule.getScore();
+        HardSoftScore score = schedule.getScore();
         if (score != null) {
             String totalDistanceString;
             if (!score.isFeasible()) {

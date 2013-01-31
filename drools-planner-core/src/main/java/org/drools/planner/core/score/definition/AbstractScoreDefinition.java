@@ -19,12 +19,12 @@ package org.drools.planner.core.score.definition;
 import java.io.Serializable;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 
 /**
  * Abstract superclass for {@link ScoreDefinition}.
  * @see ScoreDefinition
- * @see HardAndSoftScoreDefinition
+ * @see HardSoftScoreDefinition
  */
 public abstract class AbstractScoreDefinition<S extends Score> implements ScoreDefinition<S>, Serializable {
 

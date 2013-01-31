@@ -25,14 +25,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 
 @PlanningSolution
 @XStreamAlias("PatientAdmissionSchedule")
-public class PatientAdmissionSchedule extends AbstractPersistable implements Solution<HardAndSoftScore> {
+public class PatientAdmissionSchedule extends AbstractPersistable implements Solution<HardSoftScore> {
 
     private List<Specialism> specialismList;
     private List<Equipment> equipmentList;
@@ -50,7 +50,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
 
     private List<BedDesignation> bedDesignationList;
 
-    private HardAndSoftScore score;
+    private HardSoftScore score;
 
     public List<Specialism> getSpecialismList() {
         return specialismList;
@@ -165,11 +165,11 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.bedDesignationList = bedDesignationList;
     }
 
-    public HardAndSoftScore getScore() {
+    public HardSoftScore getScore() {
         return score;
     }
 
-    public void setScore(HardAndSoftScore score) {
+    public void setScore(HardSoftScore score) {
         this.score = score;
     }
 

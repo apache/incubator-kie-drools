@@ -17,7 +17,7 @@
 package org.drools.planner.examples.machinereassignment.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScoreHolder;
+import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
 import org.drools.planner.core.score.constraint.LongConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -37,7 +37,7 @@ import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineUs
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
 
-global HardAndSoftLongScoreHolder scoreHolder;
+global HardSoftLongScoreHolder scoreHolder;
 
 rule "machineUsage"
         salience 1 // Do these rules first (optional, for performance)

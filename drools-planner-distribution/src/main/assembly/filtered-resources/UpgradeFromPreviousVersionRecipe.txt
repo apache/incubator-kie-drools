@@ -2639,3 +2639,55 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <valueSelector>
       <variableName>period</variableName>
     </valueSelector>
+
+[MAJOR] HardAndSoftScore has been renamed to HardSoftScore.
+Similarly, HardAndSoftLongScore has been renamed to HardSoftLongScore.
+The package, ScoreDefinitionType, *ScoreDefinition and *ScoreDefinition have been renamed accordingly.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+Before in *.java:
+    import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+    ...
+    public class CloudBalance ... implements Solution<HardAndSoftScore> {
+        ...
+        private HardAndSoftScore score;
+
+        public HardAndSoftScore getScore() {
+            return score;
+        }
+
+        public void setScore(HardAndSoftScore score) {
+            this.score = score;
+        }
+    }
+After in *.java:
+    import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
+    ...
+    public class CloudBalance ... implements Solution<HardSoftScore> {
+        ...
+        private HardSoftScore score;
+
+        public HardSoftScore getScore() {
+            return score;
+        }
+
+        public void setScore(HardSoftScore score) {
+            this.score = score;
+        }
+    }
+Before in *.drl:
+    import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+    global HardAndSoftScoreHolder scoreHolder;
+After in *.drl:
+    import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreHolder;
+    global HardSoftScoreHolder scoreHolder;
+Before in *ScoreCalculator.java:
+    public HardAndSoftScore calculateScore() {
+        return DefaultHardAndSoftScore.valueOf(hardScore, softScore);
+    }
+After in *ScoreCalculator.java:
+    public HardSoftScore calculateScore() {
+        return DefaultHardSoftScore.valueOf(hardScore, softScore);
+    }

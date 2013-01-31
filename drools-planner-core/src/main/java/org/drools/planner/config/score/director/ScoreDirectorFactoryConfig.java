@@ -34,8 +34,8 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
-import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScoreDefinition;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.drools.planner.core.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
@@ -200,10 +200,10 @@ public class ScoreDirectorFactoryConfig {
                     return new SimpleScoreDefinition();
                 case SIMPLE_DOUBLE:
                     return new SimpleDoubleScoreDefinition();
-                case HARD_AND_SOFT:
-                    return new HardAndSoftScoreDefinition();
-                case HARD_AND_SOFT_LONG:
-                    return new HardAndSoftLongScoreDefinition();
+                case HARD_SOFT:
+                    return new HardSoftScoreDefinition();
+                case HARD_SOFT_LONG:
+                    return new HardSoftLongScoreDefinition();
                 case HARD_MEDIUM_SOFT:
                     return new HardMediumSoftScoreDefinition();
                 default:
@@ -305,8 +305,8 @@ public class ScoreDirectorFactoryConfig {
     public static enum ScoreDefinitionType {
         SIMPLE,
         SIMPLE_DOUBLE,
-        HARD_AND_SOFT,
-        HARD_AND_SOFT_LONG,
+        HARD_SOFT,
+        HARD_SOFT_LONG,
         HARD_MEDIUM_SOFT,
     }
 

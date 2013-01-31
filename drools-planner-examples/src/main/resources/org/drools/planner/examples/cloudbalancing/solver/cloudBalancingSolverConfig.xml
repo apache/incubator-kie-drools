@@ -8,7 +8,7 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
     <!--<simpleScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator</simpleScoreCalculatorClass>-->
     <!--<simpleScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingMapBasedSimpleScoreCalculator</simpleScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->

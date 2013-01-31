@@ -26,7 +26,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.examination.domain.solver.TopicConflict;
@@ -34,7 +34,7 @@ import org.drools.planner.examples.examination.domain.solver.TopicConflict;
 @PlanningSolution()
 @XStreamAlias("Examination")
 public class Examination extends AbstractPersistable
-        implements Solution<HardAndSoftScore>, PlanningCloneable<Examination> {
+        implements Solution<HardSoftScore>, PlanningCloneable<Examination> {
 
     private InstitutionParametrization institutionParametrization;
 
@@ -48,7 +48,7 @@ public class Examination extends AbstractPersistable
 
     private List<Exam> examList;
 
-    private HardAndSoftScore score;
+    private HardSoftScore score;
 
     public InstitutionParametrization getInstitutionParametrization() {
         return institutionParametrization;
@@ -115,11 +115,11 @@ public class Examination extends AbstractPersistable
         this.examList = examList;
     }
 
-    public HardAndSoftScore getScore() {
+    public HardSoftScore getScore() {
         return score;
     }
 
-    public void setScore(HardAndSoftScore score) {
+    public void setScore(HardSoftScore score) {
         this.score = score;
     }
 

@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
@@ -38,7 +38,7 @@ import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 
 @PlanningSolution
 @XStreamAlias("NurseRoster")
-public class NurseRoster extends AbstractPersistable implements Solution<HardAndSoftScore> {
+public class NurseRoster extends AbstractPersistable implements Solution<HardSoftScore> {
 
     private String code;
 
@@ -61,7 +61,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
 
     private List<ShiftAssignment> shiftAssignmentList;
 
-    private HardAndSoftScore score;
+    private HardSoftScore score;
 
     public String getCode() {
         return code;
@@ -208,11 +208,11 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
         this.shiftAssignmentList = shiftAssignmentList;
     }
 
-    public HardAndSoftScore getScore() {
+    public HardSoftScore getScore() {
         return score;
     }
 
-    public void setScore(HardAndSoftScore score) {
+    public void setScore(HardSoftScore score) {
         this.score = score;
     }
 

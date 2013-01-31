@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
@@ -31,7 +31,7 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 
 public class CloudBalancingMapBasedSimpleScoreCalculator implements SimpleScoreCalculator<CloudBalance> {
 
-    public HardAndSoftScore calculateScore(CloudBalance cloudBalance) {
+    public HardSoftScore calculateScore(CloudBalance cloudBalance) {
         int computerListSize = cloudBalance.getComputerList().size();
         Map<CloudComputer, Integer> cpuPowerUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);
         Map<CloudComputer, Integer> memoryUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);
@@ -49,7 +49,7 @@ public class CloudBalancingMapBasedSimpleScoreCalculator implements SimpleScoreC
         int hardScore = sumHardScore(cpuPowerUsageMap, memoryUsageMap, networkBandwidthUsageMap);
         int softScore = sumSoftScore(usedComputerSet);
 
-        return DefaultHardAndSoftScore.valueOf(hardScore, softScore);
+        return DefaultHardSoftScore.valueOf(hardScore, softScore);
     }
 
     private void visitProcessList(Map<CloudComputer, Integer> cpuPowerUsageMap,

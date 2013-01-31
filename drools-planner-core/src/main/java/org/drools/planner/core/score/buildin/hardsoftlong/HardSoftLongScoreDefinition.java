@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.hardandsoftlong;
+package org.drools.planner.core.score.buildin.hardsoftlong;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.score.holder.ScoreHolder;
 import org.drools.planner.core.score.definition.AbstractScoreDefinition;
 
-public class HardAndSoftLongScoreDefinition extends AbstractScoreDefinition<HardAndSoftLongScore> {
+public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSoftLongScore> {
 
     private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
 
-    private HardAndSoftLongScore perfectMaximumScore = DefaultHardAndSoftLongScore.valueOf(0, 0);
-    private HardAndSoftLongScore perfectMinimumScore = DefaultHardAndSoftLongScore.valueOf(
+    private HardSoftLongScore perfectMaximumScore = DefaultHardSoftLongScore.valueOf(0, 0);
+    private HardSoftLongScore perfectMinimumScore = DefaultHardSoftLongScore.valueOf(
             Long.MIN_VALUE, Long.MIN_VALUE);
 
     /**
@@ -42,11 +41,11 @@ public class HardAndSoftLongScoreDefinition extends AbstractScoreDefinition<Hard
         }
     }
 
-    public void setPerfectMaximumScore(HardAndSoftLongScore perfectMaximumScore) {
+    public void setPerfectMaximumScore(HardSoftLongScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
     }
 
-    public void setPerfectMinimumScore(HardAndSoftLongScore perfectMinimumScore) {
+    public void setPerfectMinimumScore(HardSoftLongScore perfectMinimumScore) {
         this.perfectMinimumScore = perfectMinimumScore;
     }
 
@@ -55,21 +54,21 @@ public class HardAndSoftLongScoreDefinition extends AbstractScoreDefinition<Hard
     // ************************************************************************
 
     @Override
-    public HardAndSoftLongScore getPerfectMaximumScore() {
+    public HardSoftLongScore getPerfectMaximumScore() {
         return perfectMaximumScore;
     }
 
     @Override
-    public HardAndSoftLongScore getPerfectMinimumScore() {
+    public HardSoftLongScore getPerfectMinimumScore() {
         return perfectMinimumScore;
     }
 
     public Score parseScore(String scoreString) {
-        return DefaultHardAndSoftLongScore.parseScore(scoreString);
+        return DefaultHardSoftLongScore.parseScore(scoreString);
     }
 
-    public double calculateTimeGradient(HardAndSoftLongScore startScore, HardAndSoftLongScore endScore,
-            HardAndSoftLongScore score) {
+    public double calculateTimeGradient(HardSoftLongScore startScore, HardSoftLongScore endScore,
+            HardSoftLongScore score) {
         if (score.compareTo(endScore) > 0) {
             return 1.0;
         } else if (score.compareTo(startScore) < 0) {
@@ -99,7 +98,7 @@ public class HardAndSoftLongScoreDefinition extends AbstractScoreDefinition<Hard
     }
 
     public ScoreHolder buildScoreHolder() {
-        return new HardAndSoftLongScoreHolder();
+        return new HardSoftLongScoreHolder();
     }
 
 }

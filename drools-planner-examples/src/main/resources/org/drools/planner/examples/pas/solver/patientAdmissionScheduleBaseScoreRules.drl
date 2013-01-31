@@ -17,7 +17,7 @@
 package org.drools.planner.examples.pas.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreHolder;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -41,7 +41,7 @@ import org.drools.planner.examples.pas.domain.Specialism;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartSpecialismMissingInRoom;
 
-global HardAndSoftScoreHolder scoreHolder;
+global HardSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints

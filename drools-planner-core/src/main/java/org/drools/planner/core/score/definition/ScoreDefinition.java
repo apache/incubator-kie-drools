@@ -17,15 +17,15 @@
 package org.drools.planner.core.score.definition;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.drools.planner.core.score.holder.ScoreHolder;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
 
 /**
  * A ScoreDefinition knows how to compare scores and what the perfect maximum/minimum Score is.
  * @see AbstractScoreDefinition
- * @see HardAndSoftScoreDefinition
+ * @see HardSoftScoreDefinition
  */
 public interface ScoreDefinition<S extends Score> {
 

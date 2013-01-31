@@ -13,7 +13,7 @@
       <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
       <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
     </solver>

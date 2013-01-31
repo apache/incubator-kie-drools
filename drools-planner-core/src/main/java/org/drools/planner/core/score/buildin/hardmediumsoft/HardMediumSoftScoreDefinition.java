@@ -17,7 +17,6 @@
 package org.drools.planner.core.score.buildin.hardmediumsoft;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.score.definition.AbstractScoreDefinition;
 import org.drools.planner.core.score.holder.ScoreHolder;
 

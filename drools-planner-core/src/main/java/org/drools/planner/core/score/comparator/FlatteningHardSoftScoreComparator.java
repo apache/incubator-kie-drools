@@ -19,17 +19,17 @@ package org.drools.planner.core.score.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.Score;
 
 /**
- * Compares 2 HardAndSoftScore based on the calculation the hard multiplied by a weight to the soft.
+ * Compares 2 {@link HardSoftScore}s based on the calculation of the hard multiplied by a weight, summed with the soft.
  */
-public class FlatteningHardAndSoftScoreComparator implements Comparator<Score>, Serializable {
+public class FlatteningHardSoftScoreComparator implements Comparator<Score>, Serializable {
 
     private int hardWeight;
 
-    public FlatteningHardAndSoftScoreComparator(int hardWeight) {
+    public FlatteningHardSoftScoreComparator(int hardWeight) {
         this.hardWeight = hardWeight;
     }
 
@@ -38,8 +38,8 @@ public class FlatteningHardAndSoftScoreComparator implements Comparator<Score>, 
     }
 
     public int compare(Score s1, Score s2) {
-        HardAndSoftScore score1 = (HardAndSoftScore) s1;
-        HardAndSoftScore score2 = (HardAndSoftScore) s2;
+        HardSoftScore score1 = (HardSoftScore) s1;
+        HardSoftScore score2 = (HardSoftScore) s2;
         long score1Side = (long) score1.getHardScore() * (long) hardWeight + (long) score1.getSoftScore();
         long score2Side = (long) score2.getHardScore() * (long) hardWeight + (long) score2.getSoftScore();
         return score1Side < score2Side ? -1 : (score1Side == score2Side ? 0 : 1);

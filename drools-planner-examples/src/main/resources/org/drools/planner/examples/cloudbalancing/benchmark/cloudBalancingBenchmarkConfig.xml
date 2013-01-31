@@ -21,7 +21,7 @@
       <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
       <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>

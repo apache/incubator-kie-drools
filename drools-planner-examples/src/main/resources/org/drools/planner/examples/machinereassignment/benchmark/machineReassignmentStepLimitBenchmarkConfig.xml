@@ -14,7 +14,7 @@
       <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
 
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
+        <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
         <incrementalScoreCalculatorClass>org.drools.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
         <!--<scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
       </scoreDirectorFactory>

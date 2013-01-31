@@ -208,7 +208,7 @@
       <para>The <literal>Score</literal> implementation to use depends on your use case. Your score might not
       efficiently fit in a single <literal>double</literal> value. Planner has several build-in Score implementations,
       but you can implement a custom Score too. Most use cases will just use the build-in
-      <literal>HardAndSoftScore</literal>.</para>
+      <literal>HardSoftScore</literal>.</para>
 
       <mediaobject>
         <imageobject>
@@ -216,12 +216,12 @@
         </imageobject>
       </mediaobject>
 
-      <para>The <literal>Score</literal> implementation (for example <literal>DefaultHardAndSoftScore</literal>) must be
+      <para>The <literal>Score</literal> implementation (for example <literal>DefaultHardSoftScore</literal>) must be
       the same throughout a <literal>Solver</literal> runtime. The <literal>Score</literal> implementation is configured
       in the solver configuration as a ScoreDefinition:</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
@@ -266,15 +266,15 @@
     </section>
 
     <section>
-      <title>HardAndSoftScore (recommended)</title>
+      <title>HardSoftScore (recommended)</title>
 
-      <para>The <literal>HardAndSoftScoreDefinition</literal> defines the <literal>Score</literal> as a
-      <literal>HardAndSoftScore</literal> which has a hard <literal>int</literal> value and a soft
+      <para>The <literal>HardSoftScoreDefinition</literal> defines the <literal>Score</literal> as a
+      <literal>HardSoftScore</literal> which has a hard <literal>int</literal> value and a soft
       <literal>int</literal> value, for example <literal>-123hard/-456soft</literal>. It has 2 score levels (hard and
       soft).</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
@@ -282,9 +282,9 @@
 
       <itemizedlist>
         <listitem>
-          <para><literal>HardAndSoftLongScore</literal>: Uses <literal>long</literal> values instead of
+          <para><literal>HardSoftLongScore</literal>: Uses <literal>long</literal> values instead of
           <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
-          <literal>HARD_AND_SOFT_LONG</literal>.</para>
+          <literal>HARD_SOFT_LONG</literal>.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -310,7 +310,7 @@
 
       <para>To implement a custom Score, you'll also need to implement a custom <literal>ScoreDefinition</literal>.
       Extend <literal>AbstractScoreDefinition</literal> (preferable by copy pasting
-      <literal>HardAndSoftScoreDefinition</literal> or <literal>SimpleScoreDefinition</literal>) and start from
+      <literal>HardSoftScoreDefinition</literal> or <literal>SimpleScoreDefinition</literal>) and start from
       there.</para>
 
       <para>Then hook you custom <literal>ScoreDefinition</literal> in your
@@ -346,8 +346,8 @@
         </listitem>
       </itemizedlist>
 
-      <para>Every score calculation type can use any Score definition. For example, simple score calculation can output
-      a <literal>HardAndSoftScore</literal>.</para>
+      <para>Every score calculation type can use any Score definition. For example, simple Java score calculation can
+      output a <literal>HardSoftScore</literal>.</para>
 
       <para>All score calculation types are Object Orientated and can reuse existing Java code.</para>
     </section>

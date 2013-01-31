@@ -16,8 +16,8 @@
 
 package org.drools.planner.examples.cloudbalancing.solver.score;
 
-import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
@@ -29,7 +29,7 @@ public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculato
      * A very simple implementation. The double loop can easily be removed by using Maps as shown in
      * {@link CloudBalancingMapBasedSimpleScoreCalculator#calculateScore(CloudBalance)}.
      */
-    public HardAndSoftScore calculateScore(CloudBalance cloudBalance) {
+    public HardSoftScore calculateScore(CloudBalance cloudBalance) {
         int hardScore = 0;
         int softScore = 0;
         for (CloudComputer computer : cloudBalance.getComputerList()) {
@@ -67,7 +67,7 @@ public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculato
                 softScore -= computer.getCost();
             }
         }
-        return DefaultHardAndSoftScore.valueOf(hardScore, softScore);
+        return DefaultHardSoftScore.valueOf(hardScore, softScore);
     }
 
 }

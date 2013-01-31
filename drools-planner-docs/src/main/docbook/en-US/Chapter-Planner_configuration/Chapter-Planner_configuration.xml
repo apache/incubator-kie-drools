@@ -884,17 +884,17 @@ public class Visit ... implements Appearance {
     // ...
 }</programlisting>
 
-        <para>Most use cases use a <literal>HardAndSoftScore</literal> instead:</para>
+        <para>Most use cases use a <literal>HardSoftScore</literal> instead:</para>
 
-        <programlisting language="java">public class CurriculumCourseSchedule implements Solution&lt;HardAndSoftScore&gt; {
+        <programlisting language="java">public class CurriculumCourseSchedule implements Solution&lt;HardSoftScore&gt; {
 
-    private HardAndSoftScore score;
+    private HardSoftScore score;
 
-    public HardAndSoftScore getScore() {
+    public HardSoftScore getScore() {
         return score;
     }
 
-    public void setScore(HardAndSoftScore score) {
+    public void setScore(HardSoftScore score) {
         this.score = score;
     }
 

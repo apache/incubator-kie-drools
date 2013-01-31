@@ -17,7 +17,7 @@
 package org.drools.planner.examples.travelingtournament.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreHolder;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -26,7 +26,7 @@ import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 
-global HardAndSoftScoreHolder scoreHolder;
+global HardSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints

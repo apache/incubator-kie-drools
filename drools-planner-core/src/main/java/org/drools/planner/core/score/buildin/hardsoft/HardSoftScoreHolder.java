@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.hardandsoftlong;
+package org.drools.planner.core.score.buildin.hardsoft;
 
 import org.drools.common.AgendaItem;
 import org.drools.planner.core.score.Score;
@@ -24,24 +24,24 @@ import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.RuleContext;
 import org.kie.runtime.rule.Session;
 
-public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
+public class HardSoftScoreHolder extends AbstractScoreHolder {
 
-    protected long hardScore;
-    protected long softScore;
+    protected int hardScore;
+    protected int softScore;
 
-    public long getHardScore() {
+    public int getHardScore() {
         return hardScore;
     }
 
-    public void setHardScore(long hardScore) {
+    public void setHardScore(int hardScore) {
         this.hardScore = hardScore;
     }
 
-    public long getSoftScore() {
+    public int getSoftScore() {
         return softScore;
     }
 
-    public void setSoftScore(long softScore) {
+    public void setSoftScore(int softScore) {
         this.softScore = softScore;
     }
 
@@ -49,7 +49,7 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
     // Worker methods
     // ************************************************************************
 
-    public void addHardConstraintMatch(RuleContext kcontext, final long weight) {
+    public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
         hardScore += weight;
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         agendaItem.setActivationUnMatchListener(
@@ -61,7 +61,7 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
         );
     }
 
-    public void addSoftConstraintMatch(RuleContext kcontext, final long weight) {
+    public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
         softScore += weight;
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         agendaItem.setActivationUnMatchListener(
@@ -74,7 +74,7 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
     }
 
     public Score extractScore() {
-        return DefaultHardAndSoftLongScore.valueOf(hardScore, softScore);
+        return DefaultHardSoftScore.valueOf(hardScore, softScore);
     }
 
 }
