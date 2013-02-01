@@ -74,22 +74,18 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
         out.writeBoolean( this.typesafe );
     }
     
-    @Override
     public void setExecutableStatement(ExecutableStatement expression) {
         this.mvelExpression = expression;
     }
 
-    @Override
     public String getClassName() {
         return this.className;
     }
 
-    @Override
     public boolean isTypeSafe() {
         return this.typesafe;
     }
 
-    @Override
     public String getExpression() {
         return this.expr;
     }    

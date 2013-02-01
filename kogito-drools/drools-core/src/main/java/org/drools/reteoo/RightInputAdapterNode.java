@@ -508,7 +508,6 @@ public class RightInputAdapterNode extends ObjectSource
      
     }
 
-    @Override
     public long getLeftInferredMask() {
         throw new UnsupportedOperationException();
     }

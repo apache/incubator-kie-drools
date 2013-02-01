@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -84,7 +85,7 @@ public class FactHandleTest {
                       f0.hashCode() );
     }
 
-    @Test
+    @Test 
     public void testInvalidate() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 134,
                                                             "cheese" );
@@ -92,7 +93,8 @@ public class FactHandleTest {
                       f0.getId() );
 
         f0.invalidate();
-        assertEquals( -1,
+        // invalidate no longer sets the id to -1
+        assertEquals( 134,
                       f0.getId() );
     }
 
