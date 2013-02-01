@@ -16,6 +16,17 @@
 
 package org.drools.event.rule;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldReader;
@@ -32,33 +43,23 @@ import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.Consequence;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.definition.KnowledgePackage;
-import org.kie.event.rule.MatchCancelledCause;
-import org.kie.event.rule.MatchCancelledEvent;
-import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.AgendaGroupPoppedEvent;
 import org.kie.event.rule.AgendaGroupPushedEvent;
 import org.kie.event.rule.BeforeMatchFiredEvent;
+import org.kie.event.rule.MatchCancelledCause;
+import org.kie.event.rule.MatchCancelledEvent;
+import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 public class AgendaEventSupportTest {
 
@@ -230,7 +231,8 @@ public class AgendaEventSupportTest {
         assertEquals( 1,
                       agendaList.size() );
         cancelledEvent = (MatchCancelledEvent) agendaList.get( 0 );
-        assertNull( ((InternalFactHandle) cancelledEvent.getMatch().getFactHandles().toArray()[0]).getObject() );
+        // invalidated handles no longer set the object to null
+        assertNotNull( ((InternalFactHandle) cancelledEvent.getMatch().getFactHandles().toArray()[0]).getObject() );
 
         // re-assert the fact so we can test the agenda group events
         cheddarHandle = ksession.insert( cheddar );
