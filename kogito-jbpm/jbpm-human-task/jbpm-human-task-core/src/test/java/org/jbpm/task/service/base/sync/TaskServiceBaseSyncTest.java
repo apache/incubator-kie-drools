@@ -138,6 +138,30 @@ public abstract class TaskServiceBaseSyncTest extends BaseTest {
                 actual.size());
     }
 
+    public void testPotentialOwnerQueriesNoGroups() {
+    	System.out.println("testPotentialOwnerQueriesNoGroups");
+        Map<String, Object> vars = new HashMap();
+        vars.put("users", users);
+        vars.put("groups", groups);
+
+        //Reader reader;
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.TasksPotentialOwner));
+        List<Task> tasks = (List<Task>) eval(reader,
+                vars);
+        for (Task task : tasks) {
+
+            client.addTask(task, null);
+        }
+
+        // Test UK I18N  
+
+
+        List<TaskSummary> actual = client.getTasksAssignedAsPotentialOwner(users.get("nogroups").getId(), "en-UK");
+        System.out.println("Result = " + actual.size());
+        assertEquals(0,
+                actual.size());
+    }
+
     public void testPeopleAssignmentQueries() {
         Map vars = new HashMap();
         vars.put("users",

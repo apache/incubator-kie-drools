@@ -16,6 +16,7 @@ usersgroups = [ new User('Darth Vader') : [new Group( "Knights Templer" ),  new 
                 new User('krisv') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],          
                 new User('john') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
                 new User('mary') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],           
-                new User('sales-rep') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )]
+                new User('sales-rep') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('nogroups') : []
               ];       
 return usersgroups;

@@ -8,7 +8,7 @@ users = [ 'darth'  : new User('Darth Vader'),
           'luke'   : new User('Luke Cage'),      'admin'      : new User('Administrator'),
           'krisv'  : new User('krisv'),          'john'       : new User('john'),
           'mary'   : new User('mary'),           'sales'      : new User('sales-rep'),
-          'salaboy': new User('salaboy')
+          'salaboy': new User('salaboy'),        'nogroups'   : new User('nogroups')
         ];       
 
 return users;

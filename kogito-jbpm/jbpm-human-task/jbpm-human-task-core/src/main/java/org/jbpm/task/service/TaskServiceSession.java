@@ -804,12 +804,20 @@ public class TaskServiceSession {
         doCallbackUserOperation(userId);
         List<String> groupIds = doUserGroupCallbackOperation(userId, null);
         
-        HashMap<String, Object> params = addParametersToMap(
-                "userId", userId,
-                "groupIds", groupIds,
-                "language", language,
-                "status", status);
-        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatusWithGroups", params);
+        if (groupIds == null || groupIds.size() == 0) {
+	        HashMap<String, Object> params = addParametersToMap(
+	                "userId", userId,
+	                "language", language,
+	                "status", status);
+	        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatus", params);
+        } else {
+            HashMap<String, Object> params = addParametersToMap(
+                    "userId", userId,
+                    "groupIds", groupIds,
+                    "language", language,
+                    "status", status);
+            return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatusWithGroups", params);
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -818,16 +826,26 @@ public class TaskServiceSession {
         doCallbackUserOperation(userId);
         List<String> groupIds = doUserGroupCallbackOperation(userId, null);
         
-        HashMap<String, Object> params = addParametersToMap(
-                "userId", userId,
-                "groupIds", groupIds,
-                "language", language);
-        if(maxResults != -1) {
-            params.put(TaskPersistenceManager.FIRST_RESULT, firstResult);
-            params.put(TaskPersistenceManager.MAX_RESULTS, maxResults);
+        if (groupIds == null || groupIds.size() == 0) {
+            HashMap<String, Object> params = addParametersToMap(
+                    "userId", userId,
+                    "language", language);
+            if(maxResults != -1) {
+                params.put(TaskPersistenceManager.FIRST_RESULT, firstResult);
+                params.put(TaskPersistenceManager.MAX_RESULTS, maxResults);
+            }
+        	return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwner", params);
+        } else {
+            HashMap<String, Object> params = addParametersToMap(
+                    "userId", userId,
+                    "groupIds", groupIds,
+                    "language", language);
+            if(maxResults != -1) {
+                params.put(TaskPersistenceManager.FIRST_RESULT, firstResult);
+                params.put(TaskPersistenceManager.MAX_RESULTS, maxResults);
+            }
+        	return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerWithGroups", params);
         }
-
-        return (List<TaskSummary>) tpm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerWithGroups", params);
     }
 
     @Deprecated 
