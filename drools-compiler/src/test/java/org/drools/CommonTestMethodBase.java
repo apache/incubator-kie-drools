@@ -38,7 +38,7 @@ import org.kie.runtime.StatelessKnowledgeSession;
  */
 public class CommonTestMethodBase extends Assert {
     
-    private static LRUnlinkingOption preak = LRUnlinkingOption.DISABLED;
+    public static LRUnlinkingOption preak = LRUnlinkingOption.DISABLED;
 
     // ***********************************************
     // METHODS TO BE REMOVED FOR 6.0.0
@@ -124,21 +124,26 @@ public class CommonTestMethodBase extends Assert {
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( null, null, drlContentStrings );
+        return loadKnowledgeBaseFromString( null, null, LRUnlinkingOption.DISABLED, drlContentStrings );
+    }
+
+    protected KnowledgeBase loadKnowledgeBaseFromString(LRUnlinkingOption phreak, String... drlContentStrings) {
+        return loadKnowledgeBaseFromString( null, null, phreak, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config,
                                                         String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( config, null, drlContentStrings );
+        return loadKnowledgeBaseFromString( config, null, LRUnlinkingOption.DISABLED, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KieBaseConfiguration kBaseConfig,
                                                         String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( null, kBaseConfig, drlContentStrings );
+        return loadKnowledgeBaseFromString( null, kBaseConfig, LRUnlinkingOption.DISABLED, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config,
                                                         KieBaseConfiguration kBaseConfig,
+                                                        LRUnlinkingOption phreak, 
                                                         String... drlContentStrings) {
         KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder( config );
         for ( String drlContentString : drlContentStrings ) {
@@ -152,7 +157,7 @@ public class CommonTestMethodBase extends Assert {
         if ( kBaseConfig == null ) {
             kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        kBaseConfig.setOption( preak);        
+        kBaseConfig.setOption( phreak );        
 
         KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase( kBaseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

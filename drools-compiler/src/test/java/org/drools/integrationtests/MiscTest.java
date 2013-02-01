@@ -105,6 +105,7 @@ import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderErrors;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.conf.DefaultPackageNameOption;
+import org.kie.builder.conf.LRUnlinkingOption;
 import org.kie.builder.conf.LanguageLevelOption;
 import org.kie.command.CommandFactory;
 import org.kie.command.Setter;
@@ -2066,7 +2067,7 @@ public class MiscTest extends CommonTestMethodBase {
                       ((List) ksession.getGlobal( "list" )).size() );
 
         
-        final List array = (List) ((List) ksession.getGlobal( "list" )).get( 5 );
+        final List array = (List) ((List) ksession.getGlobal( "list" )).get( 0 );
         assertEquals( 3,
                       array.size() );
         final Person p = (Person) array.get( 0 );
@@ -2082,7 +2083,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( "y",
                       nested.get( 1 ) );
 
-        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 4 );
+        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 1 );
         assertEquals( 2,
                       map.keySet().size() );
 
@@ -2099,13 +2100,13 @@ public class MiscTest extends CommonTestMethodBase {
                       nestedMap.get( "key2" ) );
 
         assertEquals( new Integer( 42 ),
-                      ((List) ksession.getGlobal( "list" )).get( 3 ) );
-        assertEquals( "literal",
                       ((List) ksession.getGlobal( "list" )).get( 2 ) );
+        assertEquals( "literal",
+                      ((List) ksession.getGlobal( "list" )).get( 3 ) );
         assertEquals( bob,
-                      ((List) ksession.getGlobal( "list" )).get( 1 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 4 ) );
         assertEquals( globalObject,
-                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 5 ) );
     }
 
     @Test
@@ -4357,31 +4358,24 @@ public class MiscTest extends CommonTestMethodBase {
         str += "  Person() \n";
         str += "then \n";
         str += "end  \n";
-
         str += "rule rule2 \n";
         str += "when \n";
         str += "  String() \n";
         str += "  Cheese() \n";
         str += "then \n";
         str += "end  \n";
-
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( LRUnlinkingOption.ENABLED, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
         DefaultFactHandle handle = (DefaultFactHandle) ksession.insert( "hello" );
         ksession.fireAllRules();
         LeftTuple leftTuple = handle.getFirstLeftTuple();
         assertNotNull( leftTuple );
         assertNotNull( leftTuple.getPeer() );
-
         kbase.removeRule( "org.drools",
                           "rule2" );
-
         leftTuple = handle.getFirstLeftTuple();
         assertNotNull( leftTuple );
         assertNull( leftTuple.getLeftParentNext() );
-
     }
 
     // JBRULES-1808
@@ -5117,11 +5111,11 @@ public class MiscTest extends CommonTestMethodBase {
                       list.size() );
 
         assertEquals( "Message3",
-                      list.get( 2 ) );
+                      list.get( 0 ) );
         assertEquals( "Message2",
                       list.get( 1 ) );
         assertEquals( "Message1",
-                      list.get( 0 ) );
+                      list.get( 2 ) );
 
     }
 
