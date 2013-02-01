@@ -313,7 +313,7 @@
       <literal>HardSoftScoreDefinition</literal> or <literal>SimpleScoreDefinition</literal>) and start from
       there.</para>
 
-      <para>Then hook you custom <literal>ScoreDefinition</literal> in your
+      <para>Then hook your custom <literal>ScoreDefinition</literal> in your
       <filename>SolverConfig.xml</filename>:</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
