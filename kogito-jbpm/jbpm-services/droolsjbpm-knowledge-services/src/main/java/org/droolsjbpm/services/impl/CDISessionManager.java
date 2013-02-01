@@ -424,7 +424,6 @@ public class CDISessionManager implements SessionManager {
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
             Environment env = EnvironmentFactory.newEnvironment();
             env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, em.getEntityManagerFactory());
-            env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
             StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);            
             
             
