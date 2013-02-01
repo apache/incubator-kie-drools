@@ -6966,7 +6966,7 @@
       <employee reference="112"/>
     </ShiftAssignment>
   </shiftAssignmentList>
-  <score class="org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore" id="1143">
+  <score class="org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore" id="1143">
     <hardScore>0</hardScore>
     <softScore>-871</softScore>
   </score>

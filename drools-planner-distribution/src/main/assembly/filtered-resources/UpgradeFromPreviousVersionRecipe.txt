@@ -2691,6 +2691,15 @@ After in *ScoreCalculator.java:
     public HardSoftScore calculateScore() {
         return DefaultHardSoftScore.valueOf(hardScore, softScore);
     }
+If you store your solutions as XML and reused the example's XStream serialization technique,
+then you'll also need to change all those xml files which mention the score class.
+Here's a bash script to automate that:
+    for f in *.xml
+    do
+        sed 's/org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore/org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore/g' $f > $f.modifiedMigration
+        sed 's/org.drools.planner.core.score.buildin.hardandsoftlong.DefaultHardAndSoftLongScore/org.drools.planner.core.score.buildin.hardsoftlong.DefaultHardSoftLongScore/g' $f.modifiedMigration > $f
+        rm -f $f.modifiedMigration
+    done
 
 [MINOR] ScoreDefinition has a new method formatScore(Score).
 It's implemented by default by AbstractScoreDefinition to use Score.toString().
