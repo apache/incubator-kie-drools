@@ -29,9 +29,9 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.value.CompositePlanningValueRangeDescriptor;
-import org.drools.planner.core.domain.value.PlanningEntityPropertyPlanningValueRangeDescriptor;
+import org.drools.planner.core.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
+import org.drools.planner.core.domain.value.FromSolutionPropertyPlanningValueRangeDescriptor;
 import org.drools.planner.core.domain.value.PlanningValueRangeDescriptor;
-import org.drools.planner.core.domain.value.SolutionPropertyPlanningValueRangeDescriptor;
 import org.drools.planner.core.domain.value.UndefinedPlanningValueRangeDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
@@ -172,9 +172,9 @@ public class PlanningVariableDescriptor {
     private PlanningValueRangeDescriptor buildValueRangeDescriptor(ValueRange valueRangeAnnotation) {
         switch (valueRangeAnnotation.type()) {
             case FROM_SOLUTION_PROPERTY:
-                return new SolutionPropertyPlanningValueRangeDescriptor(this, valueRangeAnnotation);
+                return new FromSolutionPropertyPlanningValueRangeDescriptor(this, valueRangeAnnotation);
             case FROM_PLANNING_ENTITY_PROPERTY:
-                return new PlanningEntityPropertyPlanningValueRangeDescriptor(this, valueRangeAnnotation);
+                return new FromEntityPropertyPlanningValueRangeDescriptor(this, valueRangeAnnotation);
             case UNDEFINED:
                 return new UndefinedPlanningValueRangeDescriptor(this, valueRangeAnnotation);
             default:

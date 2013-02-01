@@ -26,11 +26,11 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.solution.Solution;
 
-public class PlanningEntityPropertyPlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
+public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
 
     private PropertyAccessor rangePropertyAccessor;
 
-    public PlanningEntityPropertyPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
+    public FromEntityPropertyPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
             ValueRange valueRangeAnnotation) {
         super(variableDescriptor);
         validate(valueRangeAnnotation);
