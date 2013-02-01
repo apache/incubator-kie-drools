@@ -26,7 +26,13 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
     
 
     public void beforeProcessStarted(ProcessStartedEvent event) {        
-        event.getKieRuntime().insert(event.getProcessInstance());
+        FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKieRuntime());
+        if (handle != null) {
+            event.getKieRuntime().update(handle, event.getProcessInstance());
+        } else {
+            event.getKieRuntime().insert(event.getProcessInstance());
+          
+        }
     }
 
     public void afterProcessStarted(ProcessStartedEvent event) {

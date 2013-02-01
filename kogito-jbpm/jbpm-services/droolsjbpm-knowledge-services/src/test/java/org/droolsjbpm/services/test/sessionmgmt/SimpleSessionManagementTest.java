@@ -140,8 +140,7 @@ public class SimpleSessionManagementTest {
     protected KnowledgeDataService dataService;
     @Inject
     protected KnowledgeAdminDataService adminDataService;
-    
-    
+
     @Inject
     private SessionManager sessionManager;
     
@@ -158,6 +157,7 @@ public class SimpleSessionManagementTest {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("customer", "Salaboy");
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)sessionManager.getKsessionsByName("supportKsession").get(firstSessionId).startProcess("support.process", params);
+        
         
         assertNotNull(processInstance);
         
@@ -180,7 +180,7 @@ public class SimpleSessionManagementTest {
         
         assertEquals(1, salaboysTasks.size());
         long processInstanceId = salaboysTasks.get(0).getProcessInstanceId();
-        
+        long taskIdSessionOne = salaboysTasks.get(0).getId();
         assertEquals(processInstance.getId(), processInstanceId);
         int sessionForProcessInstanceId = sessionManager.getSessionForProcessInstanceId(processInstanceId);
         
@@ -192,7 +192,39 @@ public class SimpleSessionManagementTest {
         
         assertEquals(1, processes.size());
         
+        params = new HashMap<String, Object>();
+        params.put("customer", "Salaboy2");
+        processInstance = (WorkflowProcessInstance)sessionManager.getKsessionById(secondSessionId).startProcess("support.process", params);
         
+        
+        
+        salaboysTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
+        assertEquals(2, salaboysTasks.size());
+        
+        processInstanceId = salaboysTasks.get(1).getProcessInstanceId();
+        long taskIdSessionTwo = salaboysTasks.get(1).getId();
+        assertEquals(processInstance.getId(), processInstanceId);
+        
+        Map<String, Object> params2 = new HashMap<String, Object>();
+        params2.put("customer", "Modified 2");
+        
+        Map<String, Object> params1 = new HashMap<String, Object>();
+        params2.put("customer", "Modified 1");
+        
+        taskService.start(taskIdSessionTwo, "salaboy");
+        taskService.complete(taskIdSessionTwo, "salaboy" , params2);
+        taskService.start(taskIdSessionOne, "salaboy");
+        taskService.complete(taskIdSessionOne, "salaboy" , params1);
+        
+        salaboysTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
+        
+        assertEquals(2, salaboysTasks.size());
+        
+        for(TaskSummary t : salaboysTasks){
+          System.out.println("Process Instance ID: "+ t.getProcessInstanceId());
+          System.out.println("Process Session ID: "+ t.getProcessSessionId());
+          System.out.println("Name: "+ t.getName());
+        }
         
    }
    

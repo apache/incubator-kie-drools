@@ -20,8 +20,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -32,7 +30,6 @@ import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.RulesNotificationService;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
-import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
 import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
@@ -40,13 +37,14 @@ import org.droolsjbpm.services.impl.model.RuleNotificationInstanceDesc;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.Test;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.QueryResults;
+import org.kie.runtime.rule.QueryResultsRow;
 
 public abstract class DomainKnowledgeServiceWithRulesBaseTest {
 
@@ -139,6 +137,11 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
 
         QueryResults queryResults = sessionManager.getKsessionsByName("myKsession").get(1).getQueryResults("getProcessInstances", new Object[]{});
 
+        for(QueryResultsRow r : queryResults){
+          WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl)r.get("$w");
+          System.out.println("PI "+pi);
+        }
+        
         assertEquals(2, queryResults.size());
 
         params = new HashMap<String, Object>();

@@ -1,7 +1,11 @@
 package org.jbpm.task.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import org.jbpm.process.core.impl.ProcessImpl;
+import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 
 import org.kie.KnowledgeBase;
 import org.kie.command.Command;
@@ -105,11 +109,18 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
     }
 
     public ProcessInstance getProcessInstance(long arg0) {
-        return null;
+        RuleFlowProcessInstance pi = new RuleFlowProcessInstance();
+        pi.setId(arg0);
+        ProcessImpl processImpl = new ProcessImpl();
+        processImpl.setId(""+arg0);
+        pi.setProcess(processImpl);
+        return pi;
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-        return null;
+      List<ProcessInstance> pis = new ArrayList<ProcessInstance>();
+      pis.add(new RuleFlowProcessInstance());
+      return pis;
     }
     private WorkItemManager workItemManager;
 

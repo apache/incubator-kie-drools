@@ -49,13 +49,13 @@ import java.util.Map;
 public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSession{
 
     private StatefulKnowledgeSession ksession;
-    private SessionManager domainStrategy;
+    private SessionManager sessionManager;
     private String name;
 
-    public StatefulKnowledgeSessionDelegate(String name, StatefulKnowledgeSession ksession, SessionManager domainStrategy) {
+    public StatefulKnowledgeSessionDelegate(String name, StatefulKnowledgeSession ksession, SessionManager sessionManager) {
         this.name = name;
         this.ksession = ksession;
-        this.domainStrategy = domainStrategy;
+        this.sessionManager = sessionManager;
     }
 
     public StatefulKnowledgeSession getKsession() {
@@ -213,29 +213,31 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
 
     @Override
     public ProcessInstance startProcess(String string) {
-        ProcessInstance processInstance = ksession.startProcess(string);
-        domainStrategy.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId());
+        ProcessInstance processInstance = ksession.createProcessInstance(string, null);
+        sessionManager.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId());
+        processInstance = ksession.startProcessInstance(processInstance.getId());
         return processInstance;
     }
 
     @Override
     public ProcessInstance startProcess(String string, Map<String, Object> map) {
-        ProcessInstance processInstance = ksession.startProcess(string, map);
-        domainStrategy.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId() );
+        ProcessInstance processInstance = ksession.createProcessInstance(string, map);
+        sessionManager.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId() );
+        processInstance = ksession.startProcessInstance(processInstance.getId());
         return processInstance;
     }
 
     @Override
     public ProcessInstance createProcessInstance(String string, Map<String, Object> map) {
         ProcessInstance processInstance = ksession.createProcessInstance(string, map);
-        domainStrategy.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId());
+        sessionManager.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId());
         return processInstance;
     }
 
     @Override
     public ProcessInstance startProcessInstance(long l) {
         ProcessInstance processInstance = ksession.startProcessInstance(l);
-        domainStrategy.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId());
+        sessionManager.addProcessInstanceIdKsession(ksession.getId(), processInstance.getId());
         return processInstance;
     }
 

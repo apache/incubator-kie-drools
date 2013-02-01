@@ -25,10 +25,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import org.drools.impl.EnvironmentFactory;
 
 import org.drools.impl.EnvironmentFactory;
 import org.droolsjbpm.services.api.Domain;
@@ -78,7 +78,7 @@ public class CDISessionManager implements SessionManager {
     
     @Inject
     private TaskServiceEntryPoint taskService;
-    @Inject
+    @Inject 
     private CDIHTWorkItemHandler handler;
     @Inject
     private CDIProcessEventListener processListener;
@@ -214,8 +214,8 @@ public class CDISessionManager implements SessionManager {
 
             KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 
-            handler.setSession(ksession);
-            handler.init();
+            handler.addSession(ksession);
+            
             // Register the same handler for all the ksessions
             ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
             // Register the configured handlers
@@ -431,6 +431,7 @@ public class CDISessionManager implements SessionManager {
               ProcessDesc processDesc = bpmn2Service.getProcessDesc(processId);
               processDesc.setSessionId(ksession.getId());
               processDesc.setDomainName(domain.getName());
+              
               em.persist(processDesc);
             }
             
@@ -440,8 +441,8 @@ public class CDISessionManager implements SessionManager {
 
             KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 
-            handler.setSession(ksession);
-            handler.init();
+            handler.addSession(ksession);
+            
             // Register the same handler for all the ksessions
             ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
             // Register the configured handlers
