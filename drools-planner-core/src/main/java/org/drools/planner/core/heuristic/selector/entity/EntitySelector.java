@@ -16,10 +16,6 @@
 
 package org.drools.planner.core.heuristic.selector.entity;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.heuristic.selector.Selector;

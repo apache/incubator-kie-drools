@@ -20,19 +20,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
-import org.drools.planner.core.solution.ProblemIO;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
-import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
+import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.persistence.xstream.XStreamProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.config.util.ConfigUtils;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.drools.planner.core.solution.ProblemIO;
+import org.drools.planner.persistence.xstream.XStreamProblemIO;
 
 @XStreamAlias("problemBenchmarks")
 public class ProblemBenchmarksConfig {

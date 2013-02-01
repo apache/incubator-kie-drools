@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.SwingUtilities;
 
 import org.drools.ClassObjectFilter;
@@ -40,7 +39,6 @@ import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.DefaultSolver;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
 import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;

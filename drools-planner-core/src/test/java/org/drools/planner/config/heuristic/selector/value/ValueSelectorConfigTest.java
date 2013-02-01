@@ -18,13 +18,11 @@ package org.drools.planner.config.heuristic.selector.value;
 
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
-import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
-import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
+import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.drools.planner.core.testdata.domain.TestdataSolution;

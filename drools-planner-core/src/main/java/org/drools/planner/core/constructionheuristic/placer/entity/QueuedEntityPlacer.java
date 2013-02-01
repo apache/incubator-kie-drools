@@ -4,14 +4,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.constructionheuristic.placer.AbstractPlacer;
+import org.drools.planner.core.constructionheuristic.placer.value.ValuePlacer;
 import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.drools.planner.core.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.drools.planner.core.constructionheuristic.placer.value.ValuePlacer;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.score.director.ScoreDirector;
 
 public class QueuedEntityPlacer extends AbstractPlacer implements EntityPlacer {
 

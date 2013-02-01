@@ -25,11 +25,11 @@ import java.util.Map;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
 import org.drools.planner.examples.vehiclerouting.domain.VrpDepot;
 import org.drools.planner.examples.vehiclerouting.domain.VrpLocation;
-import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
 import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
-import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
+import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
 
 public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter {
 

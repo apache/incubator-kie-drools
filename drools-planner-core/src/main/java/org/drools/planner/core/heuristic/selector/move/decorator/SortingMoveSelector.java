@@ -17,12 +17,9 @@
 package org.drools.planner.core.heuristic.selector.move.decorator;
 
 import java.util.Iterator;
-import java.util.ListIterator;
 
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorter;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.decorator.AbstractCachingEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;

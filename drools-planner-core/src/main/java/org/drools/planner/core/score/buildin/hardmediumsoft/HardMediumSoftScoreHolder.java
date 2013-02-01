@@ -16,7 +16,6 @@
 
 package org.drools.planner.core.score.buildin.hardmediumsoft;
 
-import org.drools.common.AgendaItem;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
 

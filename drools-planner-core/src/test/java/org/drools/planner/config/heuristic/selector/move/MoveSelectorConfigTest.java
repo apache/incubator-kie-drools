@@ -28,6 +28,7 @@ import org.drools.planner.core.move.DummyMove;
 import org.junit.Test;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
+import static org.drools.planner.core.testdata.util.PlannerAssert.assertSame;
 import static org.junit.Assert.assertEquals;
 
 public class MoveSelectorConfigTest {

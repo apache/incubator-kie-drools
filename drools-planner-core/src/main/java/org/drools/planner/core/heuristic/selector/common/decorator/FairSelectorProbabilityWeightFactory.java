@@ -18,7 +18,6 @@ package org.drools.planner.core.heuristic.selector.common.decorator;
 
 import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solution.Solution;
 
 public class FairSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Selector> {
 

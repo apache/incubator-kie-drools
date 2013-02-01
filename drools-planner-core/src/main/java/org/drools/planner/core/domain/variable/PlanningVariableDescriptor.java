@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.value.ValueRange;
 import org.drools.planner.api.domain.value.ValueRanges;
+import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;

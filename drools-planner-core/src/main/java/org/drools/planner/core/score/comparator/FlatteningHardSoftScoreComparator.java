@@ -19,8 +19,8 @@ package org.drools.planner.core.score.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 
 /**
  * Compares 2 {@link HardSoftScore}s based on the calculation of the hard multiplied by a weight, summed with the soft.

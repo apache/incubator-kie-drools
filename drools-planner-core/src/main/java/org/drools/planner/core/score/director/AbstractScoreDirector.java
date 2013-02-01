@@ -16,7 +16,6 @@
 
 package org.drools.planner.core.score.director;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;

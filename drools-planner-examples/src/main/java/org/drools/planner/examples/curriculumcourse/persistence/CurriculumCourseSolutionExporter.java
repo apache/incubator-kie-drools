@@ -18,10 +18,10 @@ package org.drools.planner.examples.curriculumcourse.persistence;
 
 import java.io.IOException;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
-import org.drools.planner.core.solution.Solution;
 
 public class CurriculumCourseSolutionExporter extends AbstractTxtSolutionExporter {
 

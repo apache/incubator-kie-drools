@@ -18,7 +18,6 @@ package org.drools.planner.core.score.director.simple;
 
 import org.drools.planner.core.score.director.AbstractScoreDirectorFactory;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
-import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
 
 /**
  * Simple implementation of {@link ScoreDirectorFactory}.

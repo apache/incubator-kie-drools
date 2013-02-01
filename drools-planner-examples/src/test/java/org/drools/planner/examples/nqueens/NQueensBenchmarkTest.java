@@ -18,7 +18,6 @@ package org.drools.planner.examples.nqueens;
 
 import java.io.File;
 
-import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.examples.common.app.PlannerBenchmarkTest;
 import org.junit.Test;
 

@@ -26,7 +26,6 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
-import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
 import org.drools.planner.examples.vehiclerouting.domain.VrpLocation;
 import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;

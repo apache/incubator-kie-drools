@@ -24,16 +24,13 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 
+import com.thoughtworks.xstream.XStream;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.config.XmlSolverFactory;
-
-import com.thoughtworks.xstream.XStream;
-
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 public class XmlPlannerBenchmarkFactory {
 

@@ -16,11 +16,7 @@
 
 package org.drools.planner.examples.nqueens.solver.score;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;

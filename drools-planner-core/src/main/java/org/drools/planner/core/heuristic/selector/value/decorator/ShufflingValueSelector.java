@@ -21,7 +21,6 @@ import java.util.Iterator;
 
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 
 public class ShufflingValueSelector extends AbstractCachingValueSelector implements EntityIndependentValueSelector {
 

@@ -18,7 +18,6 @@ package org.drools.planner.examples.common.swingui;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
-
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;

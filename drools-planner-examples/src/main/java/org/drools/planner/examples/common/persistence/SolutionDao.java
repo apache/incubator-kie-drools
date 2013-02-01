@@ -17,7 +17,6 @@
 package org.drools.planner.examples.common.persistence;
 
 import java.io.File;
-import java.io.InputStream;
 
 import org.drools.planner.core.solution.Solution;
 

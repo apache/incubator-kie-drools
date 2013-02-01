@@ -21,7 +21,6 @@ import java.util.Iterator;
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;

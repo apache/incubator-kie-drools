@@ -19,7 +19,6 @@ package org.drools.planner.core.score.director.incremental;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.score.director.AbstractScoreDirectorFactory;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
-import org.drools.planner.core.score.director.simple.SimpleScoreDirector;
 
 /**
  * Incremental implementation of {@link ScoreDirectorFactory}.

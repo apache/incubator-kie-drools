@@ -10,7 +10,6 @@ import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycle
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.value.AbstractValueSelector;
 import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
-import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 

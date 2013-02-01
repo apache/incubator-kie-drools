@@ -22,9 +22,9 @@ import java.util.Iterator;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
+import org.drools.planner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.generic.chained.ChainedSwapMove;
-import org.drools.planner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.drools.planner.core.move.Move;
 
 public class SwapMoveSelector extends GenericMoveSelector {

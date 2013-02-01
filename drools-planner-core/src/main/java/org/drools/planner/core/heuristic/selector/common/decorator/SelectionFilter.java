@@ -20,7 +20,6 @@ import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solution.Solution;
 
 /**
  * Decides on keeping or discarding a selection

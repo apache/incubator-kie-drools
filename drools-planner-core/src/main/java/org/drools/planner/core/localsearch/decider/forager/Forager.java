@@ -16,9 +16,9 @@
 
 package org.drools.planner.core.localsearch.decider.forager;
 
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 
 /**
  * A Forager collects the accepted moves and picks the next step from those for the Decider.

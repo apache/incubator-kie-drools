@@ -27,12 +27,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.tsp.domain.Appearance;
 import org.drools.planner.examples.tsp.domain.Domicile;
-import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
+import org.drools.planner.examples.tsp.domain.Visit;
 
 /**
  * TODO this code is highly unoptimized

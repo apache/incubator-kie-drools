@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
-import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.PropertyAccessor;

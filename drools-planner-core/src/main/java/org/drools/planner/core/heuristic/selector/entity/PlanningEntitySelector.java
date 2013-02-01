@@ -8,7 +8,6 @@ import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.entity.PlanningEntitySorter;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
-import org.drools.planner.core.score.director.ScoreDirector;
 
 /**
  * Determines the order in which the planning entities of 1 planning entity class are selected for an algorithm

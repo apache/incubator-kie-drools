@@ -36,7 +36,7 @@ import org.drools.planner.core.testdata.domain.chained.TestdataChainedObject;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class SelectorTestUtils {

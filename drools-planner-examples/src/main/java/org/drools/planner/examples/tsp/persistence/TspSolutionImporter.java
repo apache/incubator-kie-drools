@@ -25,8 +25,8 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.Domicile;
-import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
+import org.drools.planner.examples.tsp.domain.Visit;
 
 public class TspSolutionImporter extends AbstractTxtSolutionImporter {
 

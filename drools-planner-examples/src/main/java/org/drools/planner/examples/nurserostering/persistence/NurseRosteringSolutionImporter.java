@@ -33,14 +33,14 @@ import java.util.TimeZone;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionImporter;
-import org.drools.planner.examples.nurserostering.domain.NurseRosterInfo;
-import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
+import org.drools.planner.examples.nurserostering.domain.NurseRosterInfo;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
 import org.drools.planner.examples.nurserostering.domain.Shift;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
 import org.drools.planner.examples.nurserostering.domain.ShiftType2DaysPattern;

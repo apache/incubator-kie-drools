@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("ShiftDate")

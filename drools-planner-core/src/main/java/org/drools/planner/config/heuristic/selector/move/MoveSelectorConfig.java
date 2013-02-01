@@ -45,8 +45,6 @@ import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSort
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.decorator.SortingEntitySelector;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.FilteringMoveSelector;

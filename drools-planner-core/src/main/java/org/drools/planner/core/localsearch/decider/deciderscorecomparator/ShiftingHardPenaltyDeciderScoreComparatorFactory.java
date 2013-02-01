@@ -20,8 +20,8 @@ import java.util.Comparator;
 
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.comparator.FlatteningHardSoftScoreComparator;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 

@@ -24,14 +24,14 @@ import org.drools.planner.core.domain.solution.cloner.FieldAccessingSolutionClon
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+import org.drools.planner.core.testdata.domain.TestdataObject;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedSolution;
-import org.drools.planner.core.testdata.domain.TestdataObject;
 import org.junit.Test;
 
-import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;
-import static org.junit.Assert.*;
+import static org.drools.planner.core.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class AbstractScoreDirectorTest {

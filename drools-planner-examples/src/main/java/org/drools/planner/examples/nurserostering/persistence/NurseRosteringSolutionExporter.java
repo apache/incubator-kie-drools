@@ -20,9 +20,9 @@ import java.io.IOException;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionExporter;
-import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.jdom.Element;
 
 public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter {

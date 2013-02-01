@@ -17,7 +17,6 @@
 package org.drools.planner.core.heuristic.selector.move.factory;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 import org.drools.planner.config.EnvironmentMode;

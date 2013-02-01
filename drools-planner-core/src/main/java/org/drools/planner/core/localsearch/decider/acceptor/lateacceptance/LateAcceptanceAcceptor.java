@@ -16,10 +16,10 @@
 
 package org.drools.planner.core.localsearch.decider.acceptor.lateacceptance;
 
+import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
 
 public class LateAcceptanceAcceptor extends AbstractAcceptor {

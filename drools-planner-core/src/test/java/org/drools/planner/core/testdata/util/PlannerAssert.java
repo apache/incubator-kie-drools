@@ -29,8 +29,6 @@ import org.junit.Assert;
 import org.junit.ComparisonFailure;
 import org.mockito.Matchers;
 
-import static org.drools.planner.core.testdata.util.PlannerAssert.assertCode;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class PlannerAssert extends Assert {

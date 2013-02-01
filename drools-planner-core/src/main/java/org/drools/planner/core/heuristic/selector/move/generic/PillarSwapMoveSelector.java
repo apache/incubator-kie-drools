@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
-import org.drools.planner.core.heuristic.selector.entity.pillar.PillarSelector;
 import org.drools.planner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
+import org.drools.planner.core.heuristic.selector.entity.pillar.PillarSelector;
 import org.drools.planner.core.move.Move;
 
 public class PillarSwapMoveSelector extends GenericMoveSelector {

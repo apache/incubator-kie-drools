@@ -18,7 +18,6 @@ package org.drools.planner.examples.pas.domain.solver;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.domain.Room;

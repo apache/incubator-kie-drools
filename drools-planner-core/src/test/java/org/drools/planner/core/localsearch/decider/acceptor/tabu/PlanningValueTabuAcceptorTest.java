@@ -1,5 +1,8 @@
 package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
@@ -7,15 +10,10 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataValue;
-
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class PlanningValueTabuAcceptorTest {
 

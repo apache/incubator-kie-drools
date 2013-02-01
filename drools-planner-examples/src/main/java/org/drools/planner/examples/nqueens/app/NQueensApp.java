@@ -19,9 +19,7 @@ package org.drools.planner.examples.nqueens.app;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;

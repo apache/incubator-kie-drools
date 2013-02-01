@@ -20,9 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.iterators.IteratorChain;
+import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListener;
 import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
-import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListener;
 import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelector;
 
 /**

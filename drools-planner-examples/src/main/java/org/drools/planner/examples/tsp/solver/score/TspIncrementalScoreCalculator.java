@@ -16,9 +16,6 @@
 
 package org.drools.planner.examples.tsp.solver.score;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;

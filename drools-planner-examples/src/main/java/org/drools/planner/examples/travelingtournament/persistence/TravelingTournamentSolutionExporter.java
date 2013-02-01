@@ -18,12 +18,12 @@ package org.drools.planner.examples.travelingtournament.persistence;
 
 import java.io.IOException;
 
-import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
-import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.examples.travelingtournament.domain.Team;
-import org.drools.planner.examples.travelingtournament.domain.Match;
-import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
+import org.drools.planner.examples.travelingtournament.domain.Day;
+import org.drools.planner.examples.travelingtournament.domain.Match;
+import org.drools.planner.examples.travelingtournament.domain.Team;
+import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 
 public class TravelingTournamentSolutionExporter extends AbstractTxtSolutionExporter {
 

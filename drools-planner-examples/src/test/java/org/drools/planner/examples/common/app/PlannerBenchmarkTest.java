@@ -22,18 +22,9 @@ import java.util.List;
 
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.config.PlannerBenchmarkConfig;
-import org.drools.planner.benchmark.config.ProblemBenchmarksConfig;
 import org.drools.planner.benchmark.config.SolverBenchmarkConfig;
 import org.drools.planner.benchmark.config.XmlPlannerBenchmarkFactory;
-import org.drools.planner.config.EnvironmentMode;
-import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.termination.TerminationConfig;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.SolutionDao;
-
-import static org.junit.Assert.*;
 
 /**
  * Runs an example solver.

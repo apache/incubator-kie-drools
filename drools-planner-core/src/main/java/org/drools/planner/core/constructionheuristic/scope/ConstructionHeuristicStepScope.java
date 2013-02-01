@@ -16,7 +16,6 @@
 
 package org.drools.planner.core.constructionheuristic.scope;
 
-import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 

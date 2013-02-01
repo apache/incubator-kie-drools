@@ -17,8 +17,8 @@
 package org.drools.planner.examples.cloudbalancing.solver.move;
 
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 
 public class CloudBalancingMoveHelper {
 

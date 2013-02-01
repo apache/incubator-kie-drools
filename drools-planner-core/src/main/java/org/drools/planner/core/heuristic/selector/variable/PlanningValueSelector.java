@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.domain.variable.PlanningValueSorter;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.score.director.ScoreDirector;

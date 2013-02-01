@@ -20,10 +20,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
-import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.value.ValueRange;
 import org.drools.planner.api.domain.value.ValueRangeType;
 import org.drools.planner.api.domain.value.ValueRanges;
+import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator;
 

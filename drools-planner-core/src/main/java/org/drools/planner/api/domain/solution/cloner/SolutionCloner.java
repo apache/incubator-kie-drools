@@ -1,6 +1,5 @@
 package org.drools.planner.api.domain.solution.cloner;
 
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.solution.Solution;
 
 /**

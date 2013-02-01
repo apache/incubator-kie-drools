@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
 
 public class VrpCustomerDifficultyComparator implements Comparator<VrpCustomer>, Serializable {

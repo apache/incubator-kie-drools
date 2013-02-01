@@ -22,7 +22,6 @@ import java.util.concurrent.Future;
 
 import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.ProblemFactChange;

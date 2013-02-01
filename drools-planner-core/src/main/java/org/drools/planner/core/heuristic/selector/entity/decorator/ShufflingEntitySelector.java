@@ -22,7 +22,6 @@ import java.util.ListIterator;
 
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
 

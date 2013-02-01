@@ -23,11 +23,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 
 /**
  * Abstract superclass for all Tabu Acceptors.

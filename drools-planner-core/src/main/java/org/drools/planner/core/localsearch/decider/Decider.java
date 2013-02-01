@@ -17,9 +17,9 @@
 package org.drools.planner.core.localsearch.decider;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverAware;
-import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
+import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 
 /**
  * A decider decides the next step.

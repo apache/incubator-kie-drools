@@ -20,8 +20,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Shift;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 
 public class ShiftAssignmentDifficultyComparator implements Comparator<ShiftAssignment>, Serializable {
 

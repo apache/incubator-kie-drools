@@ -19,11 +19,11 @@ package org.drools.planner.examples.examination.persistence;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
-import org.drools.planner.core.solution.Solution;
 
 public class ExaminationSolutionExporter extends AbstractTxtSolutionExporter {
 

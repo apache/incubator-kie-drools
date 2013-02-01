@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

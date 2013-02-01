@@ -19,7 +19,6 @@ package org.drools.planner.examples.travelingtournament.solver.move.factory;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.move.generic.SwapMove;
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 
 public class InverseMatchSwapMoveFilter implements SelectionFilter<SwapMove> {

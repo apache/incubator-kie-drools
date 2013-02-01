@@ -16,6 +16,13 @@
 
 package org.drools.planner.benchmark.core;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.planner.benchmark.core.measurement.ScoreDifferencePercentage;
 import org.drools.planner.benchmark.core.ranking.SingleBenchmarkRankingComparator;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
@@ -25,13 +32,6 @@ import org.drools.planner.core.solution.ProblemIO;
 import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.

@@ -23,8 +23,8 @@ import java.util.ListIterator;
 import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudProcessSwapMove;
 
 public class CloudProcessSwapMoveFactory implements MoveListFactory {

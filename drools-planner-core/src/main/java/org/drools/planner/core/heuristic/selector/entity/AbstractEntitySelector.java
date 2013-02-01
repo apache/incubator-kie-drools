@@ -17,7 +17,6 @@
 package org.drools.planner.core.heuristic.selector.entity;
 
 import org.drools.planner.core.heuristic.selector.AbstractSelector;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 
 /**
  * Abstract superclass for {@link EntitySelector}.

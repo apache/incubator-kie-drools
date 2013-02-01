@@ -20,14 +20,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
-import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.value.ValueRange;
 import org.drools.planner.api.domain.value.ValueRangeType;
+import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
 import org.drools.planner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.drools.planner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
-import org.drools.planner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
 
 @PlanningEntity(difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class,
         movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class)

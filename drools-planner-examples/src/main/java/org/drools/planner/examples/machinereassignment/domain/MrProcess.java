@@ -17,7 +17,6 @@
 package org.drools.planner.examples.machinereassignment.domain;
 
 import java.util.List;
-import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;

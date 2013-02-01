@@ -16,9 +16,6 @@
 
 package org.drools.planner.benchmark.core.statistic;
 
-import java.io.File;
-
-import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.core.Solver;
 

@@ -17,8 +17,8 @@
 package org.drools.planner.config.bruteforce;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.core.bruteforce.BruteForceEntityWalker;
 import org.drools.planner.core.bruteforce.BruteForceSolverPhase;
 import org.drools.planner.core.bruteforce.DefaultBruteForceSolverPhase;

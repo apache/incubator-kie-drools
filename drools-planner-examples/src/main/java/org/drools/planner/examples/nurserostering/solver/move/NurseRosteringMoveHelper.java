@@ -17,8 +17,8 @@
 package org.drools.planner.examples.nurserostering.solver.move;
 
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 
 public class NurseRosteringMoveHelper {
 

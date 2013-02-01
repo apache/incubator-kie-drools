@@ -21,11 +21,11 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
-import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
-import org.drools.planner.examples.pas.domain.Patient;
-import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
+import org.drools.planner.examples.pas.domain.BedDesignation;
+import org.drools.planner.examples.pas.domain.Patient;
+import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 
 public class PatientAdmissionScheduleSolutionExporter extends AbstractTxtSolutionExporter {
 

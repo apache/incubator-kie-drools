@@ -17,9 +17,7 @@
 package org.drools.planner.examples.nurserostering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
 @XStreamAlias("NurseRosterInfo")
 public class NurseRosterInfo extends AbstractPersistable {

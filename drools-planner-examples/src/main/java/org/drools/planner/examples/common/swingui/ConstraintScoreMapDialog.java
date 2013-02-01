@@ -19,7 +19,6 @@ package org.drools.planner.examples.common.swingui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;

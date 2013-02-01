@@ -17,10 +17,7 @@
 package org.drools.planner.core.score.director.drools;
 
 import org.drools.RuleBase;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.score.director.AbstractScoreDirectorFactory;
-import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
 
 /**

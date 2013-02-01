@@ -27,8 +27,8 @@ import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
+import org.drools.planner.examples.tsp.domain.Visit;
 
 /**
  * TODO this code is highly unoptimized

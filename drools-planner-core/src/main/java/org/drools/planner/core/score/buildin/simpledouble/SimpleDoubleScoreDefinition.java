@@ -17,8 +17,8 @@
 package org.drools.planner.core.score.buildin.simpledouble;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.holder.ScoreHolder;
 import org.drools.planner.core.score.definition.AbstractScoreDefinition;
+import org.drools.planner.core.score.holder.ScoreHolder;
 
 public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleDoubleScore> {
 

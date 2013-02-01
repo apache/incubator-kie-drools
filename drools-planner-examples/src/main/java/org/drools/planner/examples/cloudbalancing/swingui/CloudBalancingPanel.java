@@ -24,7 +24,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
@@ -36,9 +35,9 @@ import org.apache.commons.lang.ObjectUtils;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.ProblemFactChange;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 

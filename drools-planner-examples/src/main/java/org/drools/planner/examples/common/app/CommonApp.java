@@ -16,6 +16,7 @@
 
 package org.drools.planner.examples.common.app;
 
+import java.awt.Component;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -30,8 +31,6 @@ import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.drools.planner.examples.nurserostering.swingui.NurseRosteringPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.*;
 
 public abstract class CommonApp extends LoggingMain {
 

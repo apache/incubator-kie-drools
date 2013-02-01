@@ -20,13 +20,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.testdata.domain.TestdataEntity;
+import org.drools.planner.core.testdata.domain.TestdataSolution;
+import org.drools.planner.core.testdata.domain.TestdataValue;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedObject;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedSolution;
-import org.drools.planner.core.testdata.domain.TestdataEntity;
-import org.drools.planner.core.testdata.domain.TestdataSolution;
-import org.drools.planner.core.testdata.domain.TestdataValue;
 import org.junit.Test;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;

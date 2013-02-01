@@ -16,7 +16,6 @@
 
 package org.drools.planner.core.constructionheuristic;
 
-import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
 

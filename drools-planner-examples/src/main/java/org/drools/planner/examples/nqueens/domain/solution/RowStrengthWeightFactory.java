@@ -18,9 +18,7 @@ package org.drools.planner.examples.nqueens.domain.solution;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.nqueens.domain.NQueens;
-import org.drools.planner.examples.nqueens.domain.Queen;
 import org.drools.planner.examples.nqueens.domain.Row;
 
 public class RowStrengthWeightFactory implements SelectionSorterWeightFactory<NQueens, Row> {

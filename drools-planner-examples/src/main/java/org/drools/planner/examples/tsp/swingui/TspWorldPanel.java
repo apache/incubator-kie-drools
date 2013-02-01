@@ -18,7 +18,6 @@ package org.drools.planner.examples.tsp.swingui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -34,8 +33,8 @@ import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.Domicile;
-import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
+import org.drools.planner.examples.tsp.domain.Visit;
 
 /**
  * TODO this code is highly unoptimized

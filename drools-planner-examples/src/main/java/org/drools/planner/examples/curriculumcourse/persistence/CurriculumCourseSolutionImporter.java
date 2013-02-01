@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.Curriculum;
@@ -35,7 +36,6 @@ import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.domain.Teacher;
 import org.drools.planner.examples.curriculumcourse.domain.Timeslot;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
-import org.drools.planner.core.solution.Solution;
 
 public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporter {
 

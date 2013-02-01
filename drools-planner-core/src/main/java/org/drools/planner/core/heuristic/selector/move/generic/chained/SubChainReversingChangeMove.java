@@ -16,11 +16,8 @@
 
 package org.drools.planner.core.heuristic.selector.move.generic.chained;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;

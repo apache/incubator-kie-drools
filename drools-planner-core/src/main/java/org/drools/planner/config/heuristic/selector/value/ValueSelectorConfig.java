@@ -28,10 +28,10 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
-import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
-import org.drools.planner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
+import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
+import org.drools.planner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.ShufflingValueSelector;
 
 @XStreamAlias("valueSelector")

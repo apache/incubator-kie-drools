@@ -19,13 +19,12 @@ package org.drools.planner.benchmark.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
-import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
+import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.config.solver.SolverConfig;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmarkConfig {

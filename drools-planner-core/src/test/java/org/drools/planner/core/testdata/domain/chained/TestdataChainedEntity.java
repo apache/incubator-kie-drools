@@ -1,14 +1,14 @@
 package org.drools.planner.core.testdata.domain.chained;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
-import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.value.ValueRange;
 import org.drools.planner.api.domain.value.ValueRangeType;
+import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.testdata.domain.TestdataObject;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @PlanningEntity
 public class TestdataChainedEntity extends TestdataObject implements TestdataChainedObject {

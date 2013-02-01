@@ -16,8 +16,6 @@
 
 package org.drools.planner.benchmark.core.statistic;
 
-import java.io.File;
-
 public abstract class AbstractSingleStatistic implements SingleStatistic {
 
     protected AbstractSingleStatistic() {

@@ -17,24 +17,24 @@
 package org.drools.planner.examples.pas.solver.move.factory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.CompositeMove;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
-import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.solver.move.BedChangeMove;
-import org.apache.commons.lang.builder.CompareToBuilder;
 
 public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory {
 

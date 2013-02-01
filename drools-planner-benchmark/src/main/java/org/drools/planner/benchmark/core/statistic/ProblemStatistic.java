@@ -16,12 +16,10 @@
 
 package org.drools.planner.benchmark.core.statistic;
 
-import java.io.File;
 import java.util.List;
 
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
-import org.drools.planner.core.Solver;
 
 /**
  * 1 statistic of {@link ProblemBenchmark}

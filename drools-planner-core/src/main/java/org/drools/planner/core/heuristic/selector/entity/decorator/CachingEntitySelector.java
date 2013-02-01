@@ -24,7 +24,6 @@ import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRand
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
-import org.drools.planner.core.move.Move;
 
 /**
  * A {@link EntitySelector} that caches the result of its child {@link EntitySelector}.

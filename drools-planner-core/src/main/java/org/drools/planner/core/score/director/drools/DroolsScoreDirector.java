@@ -27,10 +27,10 @@ import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.score.director.AbstractScoreDirector;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.score.holder.ScoreHolder;
-import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.solution.Solution;
 
 /**

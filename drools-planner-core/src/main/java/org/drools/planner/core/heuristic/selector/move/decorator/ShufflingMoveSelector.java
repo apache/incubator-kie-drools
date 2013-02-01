@@ -22,7 +22,6 @@ import java.util.Iterator;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class ShufflingMoveSelector extends AbstractCachingMoveSelector {
 
