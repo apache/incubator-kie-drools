@@ -17,20 +17,8 @@
 package org.drools.planner.examples.common.persistence;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.io.InputStream;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
-import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
-import org.drools.planner.benchmark.core.XStreamProblemIO;
+import org.drools.planner.persistence.xstream.XStreamProblemIO;
 import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

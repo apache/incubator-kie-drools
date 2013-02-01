@@ -38,4 +38,8 @@ public abstract class AbstractScoreDefinition<S extends Score> implements ScoreD
         return null;
     }
 
+    public String formatScore(Score score) {
+        return score.toString();
+    }
+
 }

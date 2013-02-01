@@ -23,36 +23,46 @@ import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
 
 /**
- * A ScoreDefinition knows how to compare scores and what the perfect maximum/minimum Score is.
+ * A ScoreDefinition knows how to compare {@link Score}s and what the perfect maximum/minimum {@link Score} is.
  * @see AbstractScoreDefinition
  * @see HardSoftScoreDefinition
  */
 public interface ScoreDefinition<S extends Score> {
 
     /**
-     * The perfect maximum score is the score of which there is no better in any problem instance.
+     * The perfect maximum {@link Score} is the {@link Score} of which there is no better in any problem instance.
      * This doesn't mean that the current problem instance, or any problem instance for that matter,
-     * could ever attain that score.
+     * could ever attain that {@link Score}.
      * </p>
-     * For example, most cases have a perfect maximum score of zero, as most use cases only have negative scores.
+     * For example, most cases have a perfect maximum {@link Score} of zero, as most use cases only have negative
+     * constraints.
      * @return null if not supported
      */
     S getPerfectMaximumScore();
 
     /**
-     * The perfect minimum score is the score of which there is no worser in any problem instance.
+     * The perfect minimum {@link Score} is the {@link Score} of which there is no worse in any problem instance.
      * This doesn't mean that the current problem instance, or any problem instance for that matter,
-     * could ever attain such a bad score.
+     * could ever attain such a bad {@link Score}.
      * </p>
-     * For example, most cases have a perfect minimum score of negative infinity.
+     * For example, most cases have a perfect minimum {@link Score} of negative infinity.
      * @return null if not supported
      */
     S getPerfectMinimumScore();
 
     /**
-     * Parses the String and returns a Score.
+     * Returns a {@link String} representation of the {@link Score}.
+     * @param score never null
+     * @return never null
+     * @see #parseScore(String)
+     */
+    String formatScore(Score score);
+
+    /**
+     * Parses the {@link String} and returns a {@link Score}.
      * @param scoreString never null
      * @return never null
+     * @see #formatScore(Score)
      */
     Score parseScore(String scoreString);
 

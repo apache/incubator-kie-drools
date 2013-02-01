@@ -26,7 +26,7 @@ import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.benchmark.core.XStreamProblemIO;
+import org.drools.planner.persistence.xstream.XStreamProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.config.util.ConfigUtils;

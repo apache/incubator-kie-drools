@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.core;
+package org.drools.planner.persistence.xstream;
 
 import java.io.File;
 import java.io.FileInputStream;
