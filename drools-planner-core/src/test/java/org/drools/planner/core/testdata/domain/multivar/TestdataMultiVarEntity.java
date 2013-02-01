@@ -18,8 +18,8 @@ package org.drools.planner.core.testdata.domain.multivar;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRange;
-import org.drools.planner.api.domain.variable.ValueRangeType;
+import org.drools.planner.api.domain.value.ValueRange;
+import org.drools.planner.api.domain.value.ValueRangeType;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.testdata.domain.TestdataObject;

@@ -2692,7 +2692,7 @@ After in *ScoreCalculator.java:
         return DefaultHardSoftScore.valueOf(hardScore, softScore);
     }
 If you store your solutions as XML and reused the example's XStream serialization technique,
-then you'll also need to change all those xml files which mention the score class.
+then you'll also need to change all those xml files which mention the full score class name.
 Here's a bash script to automate that:
     for f in *.xml
     do
@@ -2709,3 +2709,11 @@ Before in *.java:
     import org.drools.planner.benchmark.core.XStreamProblemIO;
 After in *.java:
     import org.drools.planner.persistence.xstream.XStreamProblemIO;
+
+[MAJOR] ValueRange and ValueRangeType have moved package
+Before in *.java:
+    import org.drools.planner.api.domain.variable.ValueRange;
+    import org.drools.planner.api.domain.variable.ValueRangeType;
+After in *.java:
+    import org.drools.planner.api.domain.value.ValueRange;
+    import org.drools.planner.api.domain.value.ValueRangeType;

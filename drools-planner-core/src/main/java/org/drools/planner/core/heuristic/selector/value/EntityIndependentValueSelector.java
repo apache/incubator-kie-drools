@@ -16,13 +16,6 @@
 
 package org.drools.planner.core.heuristic.selector.value;
 
-import java.util.Iterator;
-
-import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRange;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.Selector;
-
 /**
  * @see FromSolutionPropertyValueSelector
  */

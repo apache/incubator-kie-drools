@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.api.domain.variable;
+package org.drools.planner.api.domain.value;
 
 import org.drools.planner.core.solution.Solution;
 

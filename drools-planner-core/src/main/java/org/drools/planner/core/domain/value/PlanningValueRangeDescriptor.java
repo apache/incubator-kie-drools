@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.domain.variable;
+package org.drools.planner.core.domain.value;
 
 import java.util.Collection;
 

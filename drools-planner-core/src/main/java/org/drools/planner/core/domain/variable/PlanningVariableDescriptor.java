@@ -23,11 +23,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRange;
-import org.drools.planner.api.domain.variable.ValueRanges;
+import org.drools.planner.api.domain.value.ValueRange;
+import org.drools.planner.api.domain.value.ValueRanges;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.value.CompositePlanningValueRangeDescriptor;
+import org.drools.planner.core.domain.value.PlanningEntityPropertyPlanningValueRangeDescriptor;
+import org.drools.planner.core.domain.value.PlanningValueRangeDescriptor;
+import org.drools.planner.core.domain.value.SolutionPropertyPlanningValueRangeDescriptor;
+import org.drools.planner.core.domain.value.UndefinedPlanningValueRangeDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.core.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;

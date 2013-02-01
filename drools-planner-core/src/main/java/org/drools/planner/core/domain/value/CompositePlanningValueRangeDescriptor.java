@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.domain.variable;
+package org.drools.planner.core.domain.value;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.solution.Solution;
 
 public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {

@@ -17,7 +17,7 @@
 package org.drools.planner.config.heuristic.selector.value;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.api.domain.variable.ValueRange;
+import org.drools.planner.api.domain.value.ValueRange;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
