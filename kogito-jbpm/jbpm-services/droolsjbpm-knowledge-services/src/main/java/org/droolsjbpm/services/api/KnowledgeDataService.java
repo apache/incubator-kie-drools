@@ -43,7 +43,7 @@ public interface KnowledgeDataService {
 
     Collection<ProcessDesc> getProcesses();
     
-    ProcessInstanceDesc getProcessInstanceById(int sessionId, long processId);
+    ProcessInstanceDesc getProcessInstanceById(long processId);
     
     Collection<NodeInstanceDesc> getProcessInstanceHistory(int sessionId, long processId);
     

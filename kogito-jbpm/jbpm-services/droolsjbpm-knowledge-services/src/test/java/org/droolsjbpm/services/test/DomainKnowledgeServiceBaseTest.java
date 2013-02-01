@@ -297,7 +297,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         Collection<Process> processes = ksession.getKieBase().getProcesses();
 
         ProcessInstance processInstance = ksession.startProcess("org.jbpm.writedocument", null);
-        ProcessInstanceDesc processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
+        ProcessInstanceDesc processInstanceById = dataService.getProcessInstanceById(processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());
         Collection<ProcessInstanceDesc> processInstancesDesc = dataService.getProcessInstances();
         assertEquals(1, processInstancesDesc.size());
@@ -478,11 +478,11 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
 
         ProcessInstance processInstance = ksession.startProcess("org.jbpm.writedocument", null);
-        ProcessInstanceDesc processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
+        ProcessInstanceDesc processInstanceById = dataService.getProcessInstanceById(processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());
 
         processInstance = ksession.startProcess("org.jbpm.writedocument", null);
-        processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
+        processInstanceById = dataService.getProcessInstanceById(processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());
 
         Collection<ProcessInstanceDesc> processInstancesDesc = dataService.getProcessInstances();
@@ -536,12 +536,12 @@ public abstract class DomainKnowledgeServiceBaseTest {
         taskService.start(translatorTasks.get(0).getId(), "translator");
 
         taskService.complete(translatorTasks.get(0).getId(), "translator", null);
-        processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
+        processInstanceById = dataService.getProcessInstanceById(processInstance.getId());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstanceById.getState());
 
 
         processInstance = ksession.startProcess("org.jbpm.writedocument", null);
-        processInstanceById = dataService.getProcessInstanceById(0, processInstance.getId());
+        processInstanceById = dataService.getProcessInstanceById(processInstance.getId());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceById.getState());
         ProcessInstanceDesc next = dataService.getProcessInstances().iterator().next();
         assertTrue(next instanceof ProcessInstanceDesc);

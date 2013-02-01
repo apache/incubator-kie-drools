@@ -96,14 +96,13 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         return processInstances;
     }
     
-    public ProcessInstanceDesc getProcessInstanceById(int sessionId, long processId) {
-         List<ProcessInstanceDesc> processInstances = em.createQuery("select pid from ProcessInstanceDesc pid where pid.id=:processId AND pid.sessionId=:sessionId ORDER BY pid.pk DESC")
-                .setParameter("processId", processId)
-                .setParameter("sessionId", sessionId)
-                .setMaxResults(1).getResultList();
+    public ProcessInstanceDesc getProcessInstanceById(long processId) {
+        List<ProcessInstanceDesc> processInstances = em.createQuery("select pid from ProcessInstanceDesc pid where pid.id=:processId ORDER BY pid.pk DESC")
+               .setParameter("processId", processId)
+               .setMaxResults(1).getResultList();
 
-        return processInstances.get(0);
-    }
+       return processInstances.get(0);
+   }
 
     public Collection<NodeInstanceDesc> getProcessInstanceHistory(int sessionId, long processId) {
         return getProcessInstanceHistory(sessionId, processId, false);
