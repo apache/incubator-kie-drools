@@ -48,6 +48,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
     private static final Color HEADER_COLOR = TangoColors.BUTTER_1;
 
     private GridLayout gridLayout;
+    private TangoColors tangoColors;
 
     public CurriculumCoursePanel() {
         gridLayout = new GridLayout(0, 1);
@@ -60,6 +61,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
 
     public void resetPanel(Solution solution) {
         removeAll();
+        tangoColors = new TangoColors();
         CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
         gridLayout.setColumns(schedule.getRoomList().size() + 1);
         JLabel headerCornerLabel = new JLabel("Period         \\         Room");
@@ -116,6 +118,8 @@ public class CurriculumCoursePanel extends SolutionPanel {
 
         public void addLecture(Lecture lecture) {
             JButton button = new JButton(new ExamAction(lecture));
+            Color courseColor = tangoColors.pickColor(lecture.getCourse());
+            button.setBackground(courseColor);
             add(button);
         }
 

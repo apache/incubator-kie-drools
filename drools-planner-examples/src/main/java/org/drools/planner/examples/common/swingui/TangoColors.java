@@ -17,6 +17,8 @@
 package org.drools.planner.examples.common.swingui;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TangoColors {
 
@@ -63,5 +65,59 @@ public class TangoColors {
             TangoColors.CHAMELEON_3, TangoColors.BUTTER_3, TangoColors.SKY_BLUE_3, TangoColors.CHOCOLATE_3,
             TangoColors.PLUM_3
     };
+    
+    private Map<Object, Color> colorMap;
+    private int nextColorCount;
+
+    public TangoColors() {
+        colorMap = new HashMap<Object, Color>();
+        nextColorCount = 0;
+    }
+    
+    public Color pickColor(Object o) {
+        Color color = colorMap.get(o);
+        if (color == null) {
+            color = nextColor();
+            colorMap.put(o, color);
+        }
+        return color;
+    }
+
+    private Color nextColor() {
+        Color color;
+        int colorIndex = nextColorCount % SEQUENCE_1.length;
+        int shadeIndex = nextColorCount / SEQUENCE_1.length;
+        if (shadeIndex == 0) {
+            color = SEQUENCE_1[colorIndex];
+        } else if (shadeIndex == 1) {
+            color = SEQUENCE_2[colorIndex]; // TODO
+        } else if (shadeIndex == 2) {
+            color = SEQUENCE_3[colorIndex];
+        } else {
+            shadeIndex -= 3;
+            Color floorColor;
+            Color ceilColor;
+            if (shadeIndex % 2 == 0) {
+                floorColor = SEQUENCE_2[colorIndex];
+                ceilColor = SEQUENCE_1[colorIndex];
+            } else {
+                floorColor = SEQUENCE_3[colorIndex];
+                ceilColor = SEQUENCE_2[colorIndex];
+            }
+            int base = (shadeIndex / 2) + 1;
+            int divisor = 2;
+            while (base >= divisor) {
+                divisor *= 2;
+            }
+            base = (base * 2) - divisor + 1;
+            double shadePercentage = ((double) base) / (double) divisor;
+            color = new Color(
+                    floorColor.getRed() + (int) (shadePercentage * (ceilColor.getRed() - floorColor.getRed())),
+                    floorColor.getGreen() + (int) (shadePercentage * (ceilColor.getGreen() - floorColor.getGreen())),
+                    floorColor.getBlue() + (int) (shadePercentage * (ceilColor.getBlue() - floorColor.getBlue())));
+        }
+        nextColorCount++;
+        return color;
+    }
 
 }
