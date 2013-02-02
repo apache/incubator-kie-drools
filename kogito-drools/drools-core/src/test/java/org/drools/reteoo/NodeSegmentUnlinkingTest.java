@@ -13,6 +13,7 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.phreak.RuleNetworkEvaluator.PhreakNotNode;
 import org.drools.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
@@ -483,7 +484,7 @@ public class NodeSegmentUnlinkingTest {
         n3.assertObject( f1, context, wm );
                 
         // this doesn't unlink on the assertObject, as the node's memory must be processed. So use the helper method the main network evaluator uses.
-        RuleNetworkEvaluatorActivation.PhreakNotNode.unlinkNotNodeOnRightInsert( (NotNode) n3, bm, wm );
+        PhreakNotNode.unlinkNotNodeOnRightInsert( (NotNode) n3, bm, wm );
         assertFalse( bm.getSegmentMemory().isSegmentLinked() );                
 
         n3.retractRightTuple( f1.getFirstRightTuple(), context, wm );

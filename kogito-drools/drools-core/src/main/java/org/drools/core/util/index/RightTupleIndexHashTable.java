@@ -39,6 +39,8 @@ public class RightTupleIndexHashTable extends AbstractHashTable
     public static final int                           PRIME            = 31;
 
     private transient FieldIndexHashTableFullIterator tupleValueFullIterator;
+    
+    private transient FullFastIterator                fullFastIterator;
 
     private int                                       startResult;
 
@@ -154,7 +156,13 @@ public class RightTupleIndexHashTable extends AbstractHashTable
     }
 
     public FastIterator fullFastIterator() {
-        return new FullFastIterator( this.table );
+        if ( fullFastIterator == null ) {
+            fullFastIterator = new FullFastIterator( this.table );
+            
+        } else {
+            fullFastIterator.reset();
+        }
+        return fullFastIterator;
     }
     
     public FastIterator fullFastIterator(RightTuple rightTuple) {
@@ -227,7 +235,11 @@ public class RightTupleIndexHashTable extends AbstractHashTable
 
         public boolean isFullIterator() {
             return true;
-        }        
+        }  
+        
+        public void reset() {
+            this.row = 0;
+        }
     }
     
     public static class FieldIndexHashTableFullIterator

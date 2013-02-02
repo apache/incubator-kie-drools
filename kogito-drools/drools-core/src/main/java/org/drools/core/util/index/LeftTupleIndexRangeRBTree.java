@@ -25,6 +25,9 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
 
     private AbstractHashTable.FieldIndex descendingIndex;
     private IndexUtil.ConstraintType descendingConstraintType;
+    
+    
+    private transient LeftTupleFastIterator leftTupleFastIterator;
 
     private int size;
 
@@ -161,11 +164,17 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
     }
 
     public FastIterator fastIterator() {
-        return new LeftTupleFastIterator();
+        if ( leftTupleFastIterator == null ) {
+            leftTupleFastIterator = new LeftTupleFastIterator();
+        }
+        return leftTupleFastIterator;
     }
 
     public FastIterator fullFastIterator() {
-        return new LeftTupleFastIterator();
+        if ( leftTupleFastIterator == null ) {
+            leftTupleFastIterator = new LeftTupleFastIterator();
+        }
+        return leftTupleFastIterator;
     }
 
     public FastIterator fullFastIterator(LeftTuple leftTuple) {

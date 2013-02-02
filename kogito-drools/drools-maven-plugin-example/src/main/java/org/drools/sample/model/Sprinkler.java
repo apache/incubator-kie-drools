@@ -34,8 +34,8 @@ public class Sprinkler {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Sprinkler)) return false;
-        return room.equals(((Sprinkler)obj).getRoom());
+        if (!(obj instanceof Sprinkler)) { return false; }
+        return room.equals(((Sprinkler) obj).getRoom());
     }
 
     @Override

@@ -71,7 +71,7 @@ public interface Agenda extends org.kie.runtime.rule.Agenda {
 
     public AgendaGroup[] getStack();
     
-    public void unstageActivations();
+    public int unstageActivations();
 
     /**
      * Iterates all the <code>AgendGroup<code>s in the focus stack returning the total number of <code>Activation</code>s

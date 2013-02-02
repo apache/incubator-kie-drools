@@ -15,6 +15,7 @@
  */
 
 package org.drools.template.parser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
- *
  * Container for a set of templates (residing in one file). This class will
  * parse the template file.
  */
@@ -78,7 +77,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         inTemplate = true;
                         String quotedName = line.substring(8).trim();
                         quotedName = quotedName.substring(1, quotedName
-                                .length() - 1);
+                                                                     .length() - 1);
                         template = new RuleTemplate(quotedName, this);
                         addTemplate(template);
 
@@ -117,8 +116,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            if (templateStream != null)
-                closeStream(templateStream);
+            if (templateStream != null) { closeStream(templateStream); }
         }
     }
 
@@ -163,8 +161,8 @@ public class DefaultTemplateContainer implements TemplateContainer {
             stream.close();
         } catch (final Exception e) {
             System.err.print("WARNING: Wasn't able to "
-                    + "correctly close stream for decision table. "
-                    + e.getMessage());
+                             + "correctly close stream for decision table. "
+                             + e.getMessage());
         }
     }
 

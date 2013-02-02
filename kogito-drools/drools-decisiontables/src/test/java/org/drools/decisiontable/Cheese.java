@@ -23,6 +23,7 @@ public class Cheese {
     public Cheese() {
 
     }
+
     public Cheese(final String type,
                   final int price) {
         super();

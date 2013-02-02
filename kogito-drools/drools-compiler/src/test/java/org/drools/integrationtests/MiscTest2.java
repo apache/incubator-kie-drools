@@ -17,6 +17,7 @@
 package org.drools.integrationtests;
 
 import org.drools.Address;
+import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.Person;
 import org.drools.common.DefaultFactHandle;

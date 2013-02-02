@@ -8,7 +8,8 @@ import org.kie.runtime.KieSession;
 
 public class KProjectTest {
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testKJar() throws Exception {
         KieServices ks = KieServices.Factory.get();
         KieContainer kContainer = ks.getKieClasspathContainer();

@@ -85,8 +85,8 @@ public abstract class LeftTupleSource extends BaseNode
      * @param id
      */
     protected LeftTupleSource(final int id,
-                    final RuleBasePartitionId partitionId,
-                    final boolean partitionsEnabled) {
+                              final RuleBasePartitionId partitionId,
+                              final boolean partitionsEnabled) {
         super( id, partitionId, partitionsEnabled );
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
     }
@@ -357,4 +357,6 @@ public abstract class LeftTupleSource extends BaseNode
     public boolean isUnlinkingEnabled() {
         return false;
     }
+
+    public abstract boolean isLeftTupleMemoryEnabled();
 }

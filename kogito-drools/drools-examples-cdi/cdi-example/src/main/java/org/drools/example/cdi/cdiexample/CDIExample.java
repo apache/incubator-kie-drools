@@ -10,22 +10,23 @@ import java.io.PrintStream;
 
 public class CDIExample {
 
-    @Inject @KSession("ksession1")
+    @Inject
+    @KSession("ksession1")
     KieSession kSession;
-    
+
     public void go(PrintStream out) {
-        kSession.setGlobal( "out", out );
-        kSession.insert( new Message("Dave", "Hello, HAL. Do you read me, HAL?") );
+        kSession.setGlobal("out", out);
+        kSession.insert(new Message("Dave", "Hello, HAL. Do you read me, HAL?"));
         kSession.fireAllRules();
-    }    
-    
-    public static void main( String[] args ) {
+    }
+
+    public static void main(String[] args) {
         Weld w = new Weld();
-        
+
         WeldContainer wc = w.initialize();
         CDIExample bean = wc.instance().select(CDIExample.class).get();
-        bean.go( System.out );
-        
+        bean.go(System.out);
+
         w.shutdown();
     }
 

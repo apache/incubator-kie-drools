@@ -21,14 +21,13 @@ package org.drools.template.model;
  * They are all mushed together.
  */
 public class Consequence extends DRLElement
-    implements
-    DRLJavaEmitter {
+        implements
+        DRLJavaEmitter {
 
     private String _snippet;
 
     /**
-     * @param _snippet
-     *            The _snippet to set.
+     * @param _snippet The _snippet to set.
      */
     public void setSnippet(final String snippet) {
         this._snippet = snippet;
@@ -39,7 +38,7 @@ public class Consequence extends DRLElement
     }
 
     public void renderDRL(final DRLOutput out) {
-        out.writeLine( "\t\t" + this._snippet );
+        out.writeLine("\t\t" + this._snippet);
     }
 
 }

@@ -16,12 +16,6 @@
 
 package org.drools.verifier.redundancy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
@@ -33,6 +27,10 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
 
+import java.util.Collection;
+
+import static org.junit.Assert.*;
+
 public class RedundancyTest {
 
     @Test
@@ -42,22 +40,22 @@ public class RedundancyTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "RedundantRestrictions.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("RedundantRestrictions.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
-        Collection<Object> redundancyList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Redundancy.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
+        Collection<Object> redundancyList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Redundancy.class));
 
-        assertEquals( 2,
-                      subsumptionList.size() );
-        assertEquals( 1,
-                      redundancyList.size() );
+        assertEquals(2,
+                     subsumptionList.size());
+        assertEquals(1,
+                     redundancyList.size());
 
         verifier.dispose();
     }

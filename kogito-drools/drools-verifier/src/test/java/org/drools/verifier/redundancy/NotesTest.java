@@ -16,21 +16,11 @@
 
 package org.drools.verifier.redundancy;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
-import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.SubPattern;
-import org.drools.verifier.components.SubRule;
-import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.components.*;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Cause;
@@ -39,104 +29,110 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+import static org.junit.Assert.assertEquals;
+
 public class NotesTest extends TestBaseOld {
 
     @Test
     public void testRedundantRestrictionsInPatternPossibilities() throws Exception {
-        StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Notes.drl" ) );
+        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Notes.drl"));
 
-        session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "Find redundant restrictions from pattern possibilities" ) );
+        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Find redundant restrictions from pattern possibilities"));
 
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
         Collection<Object> objects = new ArrayList<Object>();
-        LiteralRestriction left = LiteralRestriction.createRestriction( pattern,
-                                                                        "" );
+        LiteralRestriction left = LiteralRestriction.createRestriction(pattern,
+                                                                       "");
 
-        LiteralRestriction right = LiteralRestriction.createRestriction( pattern,
-                                                                         "" );
+        LiteralRestriction right = LiteralRestriction.createRestriction(pattern,
+                                                                        "");
 
-        Redundancy redundancy = new Redundancy( left,
-                                                right );
+        Redundancy redundancy = new Redundancy(left,
+                                               right);
 
-        SubPattern possibility = new SubPattern( pattern,
-                                                 0 );
-        possibility.add( left );
-        possibility.add( right );
+        SubPattern possibility = new SubPattern(pattern,
+                                                0);
+        possibility.add(left);
+        possibility.add(right);
 
-        objects.add( left );
-        objects.add( right );
-        objects.add( redundancy );
-        objects.add( possibility );
+        objects.add(left);
+        objects.add(right);
+        objects.add(redundancy);
+        objects.add(possibility);
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
-        session.setGlobal( "result",
-                           result );
+        session.setGlobal("result",
+                          result);
 
-        session.executeWithResults( objects );
+        session.executeWithResults(objects);
 
-        Collection<VerifierMessageBase> notes = result.getBySeverity( Severity.NOTE );
+        Collection<VerifierMessageBase> notes = result.getBySeverity(Severity.NOTE);
 
         // Has at least one item.
-        assertEquals( 1,
-                      notes.size() );
+        assertEquals(1,
+                     notes.size());
 
         VerifierMessageBase note = notes.iterator().next();
         Iterator<Cause> causes = note.getCauses().iterator();
 
-        assertEquals( left,
-                      causes.next() );
-        assertEquals( right,
-                      causes.next() );
+        assertEquals(left,
+                     causes.next());
+        assertEquals(right,
+                     causes.next());
     }
 
     @Test
     public void testRedundantPatternPossibilitiesInRulePossibilities() throws Exception {
-        StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Notes.drl" ) );
+        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Notes.drl"));
 
-        session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "Find redundant pattern possibilities from rule possibilities" ) );
+        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Find redundant pattern possibilities from rule possibilities"));
 
         VerifierRule rule = VerifierComponentMockFactory.createRule1();
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
         Collection<Object> objects = new ArrayList<Object>();
-        SubPattern left = new SubPattern( pattern,
-                                          0 );
+        SubPattern left = new SubPattern(pattern,
+                                         0);
 
-        SubPattern right = new SubPattern( pattern,
-                                           1 );
+        SubPattern right = new SubPattern(pattern,
+                                          1);
 
-        Redundancy redundancy = new Redundancy( left,
-                                                right );
+        Redundancy redundancy = new Redundancy(left,
+                                               right);
 
-        SubRule possibility = new SubRule( rule,
-                                           0 );
-        possibility.add( left );
-        possibility.add( right );
+        SubRule possibility = new SubRule(rule,
+                                          0);
+        possibility.add(left);
+        possibility.add(right);
 
-        objects.add( left );
-        objects.add( right );
-        objects.add( redundancy );
-        objects.add( possibility );
+        objects.add(left);
+        objects.add(right);
+        objects.add(redundancy);
+        objects.add(possibility);
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
-        session.setGlobal( "result",
-                           result );
+        session.setGlobal("result",
+                          result);
 
-        session.executeWithResults( objects );
+        session.executeWithResults(objects);
 
-        Collection<VerifierMessageBase> notes = result.getBySeverity( Severity.NOTE );
+        Collection<VerifierMessageBase> notes = result.getBySeverity(Severity.NOTE);
 
         // Has at least one item.
-        assertEquals( 1,
-                      notes.size() );
+        assertEquals(1,
+                     notes.size());
 
         VerifierMessageBase note = notes.iterator().next();
         Iterator<Cause> causes = note.getCauses().iterator();
 
-        assertEquals( left,
-                      causes.next() );
-        assertEquals( right,
-                      causes.next() );
+        assertEquals(left,
+                     causes.next());
+        assertEquals(right,
+                     causes.next());
     }
 }

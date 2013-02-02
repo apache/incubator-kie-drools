@@ -16,89 +16,89 @@
 
 package org.drools.template.model;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class SnippetBuilderTest {
 
     @Test
     public void testBuildSnippet() {
         final String snippet = "something.param.getAnother().equals($param);";
-        final SnippetBuilder snip = new SnippetBuilder( snippet );
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String cellValue = "$42";
-        final String result = snip.build( cellValue );
-        assertNotNull( result );
+        final String result = snip.build(cellValue);
+        assertNotNull(result);
 
-        assertEquals( "something.param.getAnother().equals($42);",
-                      result );
+        assertEquals("something.param.getAnother().equals($42);",
+                     result);
     }
 
     @Test
     public void testBuildSnippetNoPlaceHolder() {
         final String snippet = "something.getAnother().equals(blah);";
-        final SnippetBuilder snip = new SnippetBuilder( snippet );
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String cellValue = "this is ignored...";
-        final String result = snip.build( cellValue );
+        final String result = snip.build(cellValue);
 
-        assertEquals( snippet,
-                      result );
+        assertEquals(snippet,
+                     result);
     }
 
     @Test
     public void testSingleParamMultipleTimes() {
         final String snippet = "something.param.getAnother($param).equals($param);";
-        final SnippetBuilder snip = new SnippetBuilder( snippet );
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String cellValue = "42";
-        final String result = snip.build( cellValue );
-        assertNotNull( result );
+        final String result = snip.build(cellValue);
+        assertNotNull(result);
 
-        assertEquals( "something.param.getAnother(42).equals(42);",
-                      result );
+        assertEquals("something.param.getAnother(42).equals(42);",
+                     result);
 
     }
 
     @Test
     public void testMultiPlaceHolder() {
         final String snippet = "something.getAnother($1,$2).equals($2, '$2');";
-        final SnippetBuilder snip = new SnippetBuilder( snippet );
-        final String result = snip.build( "x, y" );
-        assertEquals( "something.getAnother(x,y).equals(y, 'y');",
-                      result );
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("x, y");
+        assertEquals("something.getAnother(x,y).equals(y, 'y');",
+                     result);
 
     }
 
     @Test
     public void testMultiPlaceHolderSingle() {
         final String snippet = "something.getAnother($1).equals($1);";
-        final SnippetBuilder snip = new SnippetBuilder( snippet );
-        final String result = snip.build( "x" );
-        assertEquals( "something.getAnother(x).equals(x);",
-                      result );
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("x");
+        assertEquals("something.getAnother(x).equals(x);",
+                     result);
 
     }
-    
+
     @Test
     public void testStartWithParam() {
         final String snippet = "$1 goo $2";
-        final SnippetBuilder snip = new SnippetBuilder( snippet );
-        final String result = snip.build( "x, y" );
-        assertEquals( "x goo y",
-                      result );
-        
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("x, y");
+        assertEquals("x goo y",
+                     result);
+
     }
 
     @Test
     public void testMultiPlaceHolderEscapedComma() {
         final String snippet = "rulesOutputRouting.set( $1, $2, $3, $4, $5 );";
-        final SnippetBuilder snip = new SnippetBuilder( snippet );
-        final String result = snip.build( "\"80\",\"Department Manager\",toa.getPersonExpense().getEntityCode(\"Part Of\"\\,\"Office\"),10004,30" );
-        assertEquals( "rulesOutputRouting.set( \"80\", \"Department Manager\", toa.getPersonExpense().getEntityCode(\"Part Of\",\"Office\"), 10004, 30 );",
-                      result );
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("\"80\",\"Department Manager\",toa.getPersonExpense().getEntityCode(\"Part Of\"\\,\"Office\"),10004,30");
+        assertEquals("rulesOutputRouting.set( \"80\", \"Department Manager\", toa.getPersonExpense().getEntityCode(\"Part Of\",\"Office\"), 10004, 30 );",
+                     result);
 
     }
-    
+
     @Test
     public void testForAllAnd() {
         final String snippet = "forall(&&){something == $}";

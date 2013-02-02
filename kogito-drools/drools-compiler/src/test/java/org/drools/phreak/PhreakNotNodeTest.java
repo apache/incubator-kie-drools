@@ -3,7 +3,7 @@ package org.drools.phreak;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.phreak.RuleNetworkEvaluatorActivation.PhreakNotNode;
+import org.drools.phreak.RuleNetworkEvaluator.PhreakNotNode;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftTupleSink;

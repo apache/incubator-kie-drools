@@ -55,6 +55,7 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.TerminalNode;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
@@ -699,7 +700,7 @@ public class ProtobufInputMarshaller {
         public boolean accept(Activation activation,
                               PropagationContext context,
                               InternalWorkingMemory workingMemory,
-                              RuleTerminalNode rtn) {
+                              TerminalNode rtn) {
             ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
             // add the tuple to the cache for correlation
             this.tuplesCache.put( key, activation.getTuple() );

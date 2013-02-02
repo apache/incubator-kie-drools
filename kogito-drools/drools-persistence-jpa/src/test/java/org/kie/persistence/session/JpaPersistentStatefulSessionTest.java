@@ -26,9 +26,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.KieBase;
+import org.kie.KieServices;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KieFileSystem;
-import org.kie.KieServices;
 import org.kie.command.CommandFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
@@ -40,11 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
@@ -55,16 +51,16 @@ import static org.junit.Assert.assertSame;
 public class JpaPersistentStatefulSessionTest {
 
     private static Logger logger = LoggerFactory.getLogger(JpaPersistentStatefulSessionTest.class);
-    
+
     private HashMap<String, Object> context;
-    private Environment env;
+    private Environment             env;
 
     @Before
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
     }
-        
+
     @After
     public void tearDown() throws Exception {
         PersistenceUtil.tearDown(context);
@@ -87,49 +83,49 @@ public class JpaPersistentStatefulSessionTest {
 
         KieServices ks = KieServices.Factory.get();
 
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", str);
+        ks.newKieBuilder(kfs).buildAll();
 
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
-        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 
         List<?> list = new ArrayList<Object>();
 
-        ksession.setGlobal( "list",
-                            list );
+        ksession.setGlobal("list",
+                           list);
 
         AtomicInteger value = new AtomicInteger(4);
-        FactHandle atomicFH = ksession.insert( value );
+        FactHandle atomicFH = ksession.insert(value);
 
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertEquals(1,
+                     list.size());
 
         value.addAndGet(1);
         ksession.update(atomicFH, value);
         ksession.fireAllRules();
-        
-        assertEquals( 2,
-                list.size() );
+
+        assertEquals(2,
+                     list.size());
         String externalForm = atomicFH.toExternalForm();
-        
+
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
-        
+
         atomicFH = ksession.execute(CommandFactory.fromExternalFactHandleCommand(externalForm));
-        
+
         value.addAndGet(1);
         ksession.update(atomicFH, value);
-        
+
         ksession.fireAllRules();
-        
+
         list = (List<?>) ksession.getGlobal("list");
-        
-        assertEquals( 3,
-                list.size() );
-        
+
+        assertEquals(3,
+                     list.size());
+
     }
-    
+
     @Test
     public void testLocalTransactionPerStatement() {
         String str = "";
@@ -145,25 +141,25 @@ public class JpaPersistentStatefulSessionTest {
 
         KieServices ks = KieServices.Factory.get();
 
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", str);
+        ks.newKieBuilder(kfs).buildAll();
 
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
-        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 
         List<?> list = new ArrayList<Object>();
 
-        ksession.setGlobal( "list",
-                            list );
+        ksession.setGlobal("list",
+                           list);
 
-        ksession.insert( 1 );
-        ksession.insert( 2 );
-        ksession.insert( 3 );
+        ksession.insert(1);
+        ksession.insert(2);
+        ksession.insert(3);
 
         ksession.fireAllRules();
 
-        assertEquals( 3,
-                      list.size() );
+        assertEquals(3,
+                     list.size());
 
     }
 
@@ -182,74 +178,74 @@ public class JpaPersistentStatefulSessionTest {
 
         KieServices ks = KieServices.Factory.get();
 
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", str);
+        ks.newKieBuilder(kfs).buildAll();
 
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
 
-        UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
-        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
         ut.commit();
 
         List<?> list = new ArrayList<Object>();
 
         // insert and commit
-        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
-        ksession.setGlobal( "list",
-                            list );
-        ksession.insert( 1 );
-        ksession.insert( 2 );
+        ksession.setGlobal("list",
+                           list);
+        ksession.insert(1);
+        ksession.insert(2);
         ksession.fireAllRules();
         ut.commit();
 
         // insert and rollback
-        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
-        ksession.insert( 3 );
+        ksession.insert(3);
         ut.rollback();
 
         // check we rolled back the state changes from the 3rd insert
-        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
         ksession.fireAllRules();
         ut.commit();
-        assertEquals( 2,
-                      list.size() );
+        assertEquals(2,
+                     list.size());
 
         // insert and commit
-        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
-        ksession.insert( 3 );
-        ksession.insert( 4 );
+        ksession.insert(3);
+        ksession.insert(4);
         ut.commit();
 
         // rollback again, this is testing that we can do consecutive rollbacks and commits without issue
-        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
-        ksession.insert( 5 );
-        ksession.insert( 6 );
+        ksession.insert(5);
+        ksession.insert(6);
         ut.rollback();
 
         ksession.fireAllRules();
 
-        assertEquals( 4,
-                      list.size() );
-        
+        assertEquals(4,
+                     list.size());
+
         // now load the ksession
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksession.getId(), kbase, null, env );
-        
-        ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
+
+        ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
-        ksession.insert( 7 );
-        ksession.insert( 8 );
+        ksession.insert(7);
+        ksession.insert(8);
         ut.commit();
 
         ksession.fireAllRules();
 
-        assertEquals( 6,
-                      list.size() );
+        assertEquals(6,
+                     list.size());
     }
 
     @Test
@@ -267,24 +263,24 @@ public class JpaPersistentStatefulSessionTest {
 
         KieServices ks = KieServices.Factory.get();
 
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", str);
+        ks.newKieBuilder(kfs).buildAll();
 
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
 
-        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
         SingleSessionCommandService sscs = (SingleSessionCommandService)
-            ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+                ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
         sscs.addInterceptor(new LoggingInterceptor());
         sscs.addInterceptor(new FireAllRulesInterceptor());
         sscs.addInterceptor(new LoggingInterceptor());
         List<?> list = new ArrayList<Object>();
-        ksession.setGlobal( "list", list );
-        ksession.insert( 1 );
-        ksession.insert( 2 );
-        ksession.insert( 3 );
+        ksession.setGlobal("list", list);
+        ksession.insert(1);
+        ksession.insert(2);
+        ksession.insert(3);
         ksession.getWorkItemManager().completeWorkItem(0, null);
-        assertEquals( 3, list.size() );
+        assertEquals(3, list.size());
     }
 
     @Test
@@ -303,44 +299,44 @@ public class JpaPersistentStatefulSessionTest {
 
         KieServices ks = KieServices.Factory.get();
 
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        ks.newKieBuilder( kfs ).buildAll();
+        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", str);
+        ks.newKieBuilder(kfs).buildAll();
 
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
 
-        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
         List<?> list = new ArrayList<Object>();
-    
-        ksession.setGlobal( "list",
-                            list );
-    
-        ksession.insert( 1 );
-        ksession.insert( 2 );
-        ksession.insert( 3 );
+
+        ksession.setGlobal("list",
+                           list);
+
+        ksession.insert(1);
+        ksession.insert(2);
+        ksession.insert(3);
         ksession.getAgenda().getAgendaGroup("badfocus").setFocus();
-    
+
         ksession.fireAllRules();
-    
-        assertEquals( 3,
-                      list.size() );
+
+        assertEquals(3,
+                     list.size());
     }
-    
+
     @Test
     public void testSharedReferences() {
         KieServices ks = KieServices.Factory.get();
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
-        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 
-        Person x = new Person( "test" );
+        Person x = new Person("test");
         List test = new ArrayList();
         List test2 = new ArrayList();
-        test.add( x );
-        test2.add( x );
+        test.add(x);
+        test2.add(x);
 
-        assertSame( test.get( 0 ), test2.get( 0 ) );
+        assertSame(test.get(0), test2.get(0));
 
-        ksession.insert( test );
-        ksession.insert( test2 );
+        ksession.insert(test);
+        ksession.insert(test2);
         ksession.fireAllRules();
 
         KieSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
@@ -349,7 +345,7 @@ public class JpaPersistentStatefulSessionTest {
         List ref1 = (List) c.next();
         List ref2 = (List) c.next();
 
-        assertSame( ref1.get( 0 ), ref2.get( 0 ) );
+        assertSame(ref1.get(0), ref2.get(0));
 
     }
 
@@ -363,8 +359,8 @@ public class JpaPersistentStatefulSessionTest {
         properties.put("drools.processInstanceManagerFactory", "com.example.CustomJPAProcessInstanceManagerFactory");
         KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
 
-        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, config, env );
-        SessionConfiguration sessionConfig = (SessionConfiguration)ksession.getSessionConfiguration();
+        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
+        SessionConfiguration sessionConfig = (SessionConfiguration) ksession.getSessionConfiguration();
 
         assertEquals("com.example.CustomJPAProcessInstanceManagerFactory", sessionConfig.getProcessInstanceManagerFactory());
     }

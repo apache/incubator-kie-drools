@@ -106,8 +106,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.setGlobal( "list",
                             list );
         ksession.insert( "go1" );
-        FactHandle go2 = ksession.insert( "go2" );
+        FactHandle go2 = ksession.insert( "go2" );        
         ksession.fireAllRules();
+        
         assertEquals( 3,
                       list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
@@ -225,6 +226,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         ksession.update( go2,
                          "go2" );
+        ksession.fireAllRules();
         assertEquals( 1,
                       list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
@@ -266,6 +268,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         ksession.update( go1,
                          "go1" );
+        ksession.fireAllRules();
 
         assertEquals( 1,
                       list.size() );
@@ -541,6 +544,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         list.clear();
 
         ArrayList l = new ArrayList();
+        l.add( "rule0" );
+        FactHandle lh = ksession.insert( l );
+        
         ksession.update( rule0,
                          "rule0" );
         ksession.update( rule1,
@@ -548,42 +554,47 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.update( rule2,
                          "rule2" );
 
-        l.add( "rule0" );
-        FactHandle lh = ksession.insert( l );
-
         ksession.fireAllRules();
 
+        assertEquals( 4,
+                      list.size() );
+        assertTrue( list.contains( "block:rule0" ) );
+        assertTrue( list.contains( "rule1" ) );
+        assertTrue( list.contains( "rule2" ) );
+        assertFalse( list.contains( "rule0" ) );
+
+        list.clear();
+
+        ksession.update( rule0,
+                         "rule0" );
+        ksession.update( rule1,
+                         "rule1" );
+        ksession.update( rule2,
+                         "rule2" );
+        
+        ksession.fireAllRules();
+        
         assertEquals( 3,
                       list.size() );
         assertTrue( list.contains( "block:rule0" ) );
         assertTrue( list.contains( "rule1" ) );
         assertTrue( list.contains( "rule2" ) );
+        assertFalse( list.contains( "rule0" ) );
 
         list.clear();
-
-        ksession.update( rule0,
-                         "rule0" );
-        ksession.update( rule1,
-                         "rule1" );
-        ksession.update( rule2,
-                         "rule2" );
-        assertEquals( 1,
-                      list.size() );
-        assertTrue( list.contains( "block:rule0" ) );
-
-        list.clear();
-
+        
         l.set( 0,
                "rule1" );
         ksession.update( lh,
                          l );
+                
         ksession.fireAllRules();
 
-        assertEquals( 3,
+        System.out.println( list );
+        assertEquals( 2,
                       list.size() );
         assertTrue( list.contains( "rule0" ) );
         assertTrue( list.contains( "block:rule1" ) );
-        assertTrue( list.contains( "rule2" ) );
 
         list.clear();
 
@@ -593,9 +604,15 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                          "rule1" );
         ksession.update( rule2,
                          "rule2" );
-        assertEquals( 1,
+        
+        ksession.fireAllRules();
+        
+        assertEquals( 3,
                       list.size() );
         assertTrue( list.contains( "block:rule1" ) );
+        assertTrue( list.contains( "rule0" ) );
+        assertTrue( list.contains( "rule2" ) );
+        assertFalse( list.contains( "rule1" ) );
 
         list.clear();
 
@@ -605,9 +622,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                          l );
         ksession.fireAllRules();
 
-        assertEquals( 3,
+        assertEquals( 2,
                       list.size() );
-        assertTrue( list.contains( "rule0" ) );
         assertTrue( list.contains( "rule1" ) );
         assertTrue( list.contains( "block:rule2" ) );
     }
@@ -832,6 +848,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.update(fireRules, "fireRules");
         ksession.update(fireCancelRule, "fireCancelRule");
         ksession.fireAllRules();
+        
         assertEquals(2, list.size());
 
         ksession.dispose();

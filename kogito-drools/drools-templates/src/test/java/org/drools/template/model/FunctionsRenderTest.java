@@ -16,10 +16,9 @@
 
 package org.drools.template.model;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class FunctionsRenderTest {
 
@@ -28,17 +27,17 @@ public class FunctionsRenderTest {
         final Functions func = new Functions();
 
         DRLOutput out = new DRLOutput();
-        func.renderDRL( out );
+        func.renderDRL(out);
 
-        assertEquals( "",
-                      out.toString() );
+        assertEquals("",
+                     out.toString());
 
-        func.setFunctionsListing( "function myFunction() {}" );
+        func.setFunctionsListing("function myFunction() {}");
         out = new DRLOutput();
-        func.renderDRL( out );
+        func.renderDRL(out);
         final String s = out.toString();
-        assertEquals( "function myFunction() {}\n",
-                      s );
+        assertEquals("function myFunction() {}\n",
+                     s);
     }
 
 }

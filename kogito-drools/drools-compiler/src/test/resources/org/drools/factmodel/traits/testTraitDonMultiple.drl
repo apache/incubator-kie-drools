@@ -21,7 +21,7 @@ then
     insert( new Student() );
 end
 
-rule "React"
+rule "React" salience 100 // needed to ensure if fires before monkey_wonders
 when
     $x : SeniorStudent( $y : year )
 then

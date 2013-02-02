@@ -16,14 +16,14 @@
 
 package org.drools.decisiontable.parser;
 
-import java.io.InputStream;
-
 import org.drools.template.model.Package;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.io.InputStream;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
- *
  * A special test for parsing a large workbook, to see how it scales.
  */
 public class RuleWorksheetParseLargeTest {
@@ -38,7 +38,7 @@ public class RuleWorksheetParseLargeTest {
      * out this much XML as a string, so really should think of using a stream
      * in some cases... (tried StringWriter, but is still in memory, so doesn't
      * help).
-     *
+     * <p/>
      * Stream to a temp file would work: return a stream from that file
      * (decorate FileInputStream such that when you close it, it deletes the
      * temp file).... must be other options.
@@ -48,21 +48,21 @@ public class RuleWorksheetParseLargeTest {
     @Test
     public void testLargeWorkSheetParseToRuleset() throws Exception {
         //  Test removed until have streaming sorted in future. No one using Uber Tables just yet !
-        InputStream stream = RuleWorksheetParseLargeTest.class.getResourceAsStream( "/data/VeryLargeWorkbook.xls" );
+        InputStream stream = RuleWorksheetParseLargeTest.class.getResourceAsStream("/data/VeryLargeWorkbook.xls");
 
-        startTimer( );
-        RuleSheetListener listener = RuleWorksheetParseTest.getRuleSheetListener( stream );
-        stopTimer( );
+        startTimer();
+        RuleSheetListener listener = RuleWorksheetParseTest.getRuleSheetListener(stream);
+        stopTimer();
 
-        System.out.println( "Time to parse large table : " + getTime() + "ms" );
-        Package ruleset = listener.getRuleSet( );
-        assertNotNull( ruleset );
+        System.out.println("Time to parse large table : " + getTime() + "ms");
+        Package ruleset = listener.getRuleSet();
+        assertNotNull(ruleset);
 
-//        startTimer();
-//        String xml = ...;   // toXml() not in Package any more.
-//        System.out.println( xml );
-//        stopTimer();
-//        System.out.println("Time taken for rendering: " + getTime() + "ms");
+        //        startTimer();
+        //        String xml = ...;   // toXml() not in Package any more.
+        //        System.out.println( xml );
+        //        stopTimer();
+        //        System.out.println("Time taken for rendering: " + getTime() + "ms");
     }
 
     private void startTimer() {

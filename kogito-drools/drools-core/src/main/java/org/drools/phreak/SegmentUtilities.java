@@ -3,30 +3,34 @@ package org.drools.phreak;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
-import org.drools.reteoo.AccumulateNode;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.reteoo.*;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.ConditionalBranchNode;
 import org.drools.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
-import org.drools.reteoo.EvalConditionNode;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
-import org.drools.reteoo.FromNode;
 import org.drools.reteoo.FromNode.FromMemory;
-import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.LeftTupleSinkNode;
-import org.drools.reteoo.LeftTupleSinkPropagator;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.NodeTypeEnums;
-import org.drools.reteoo.NotNode;
-import org.drools.reteoo.RightInputAdapterNode;
+import org.drools.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
-import org.drools.reteoo.RuleMemory;
-import org.drools.reteoo.SegmentMemory;
+import org.drools.rule.constraint.QueryNameConstraint;
 
 public class SegmentUtilities {
+
+//    public static RightInputAdapterNode getOuterMostRiaNode(RightInputAdapterNode riaNode, LeftTupleSource startLTs) {
+//        if ( riaNode.getStartTupleSource() != startLTs ) {
+//            // This is a nested subnetwork, so we know there must be atleast one outer subnetwork
+//            LeftTupleSource lts = riaNode.getLeftTupleSource();
+//            while ( true ) {
+//                if ( NodeTypeEnums.isBetaNode(lts) && (( BetaNode )lts).isRightInputIsRiaNode() ) {
+//                    return getOuterMostRiaNode( ( RightInputAdapterNode ) ((BetaNode)lts).getRightInput(), startLTs );
+//                }
+//                lts = lts.getLeftTupleSource();
+//            }
+//        } else {
+//            return riaNode;
+//        }
+//    }
 
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
@@ -60,20 +64,36 @@ public class SegmentUtilities {
                 }
     
                 if ( betaNode.isRightInputIsRiaNode() ) {
-                    // we need to iterate to find correct pair, this happens if betaNode is rootNode.
-                    // As there may be more than one set of sub networks, due to sharing.
-                    LeftTupleSinkNode sinkNode = betaNode.getLeftTupleSource().getSinkPropagator().getFirstLeftTupleSink();
-                    while ( sinkNode.getNextLeftTupleSinkNode() != betaNode ) {
-                        sinkNode = sinkNode.getNextLeftTupleSinkNode();
+                    // Iterate to find outermost rianode
+                    RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
+                    //riaNode = getOuterMostRiaNode(riaNode, betaNode.getLeftTupleSource());
+
+                    // Iterat
+                    LeftTupleSource subnetworkLts = riaNode.getLeftTupleSource();
+                    while ( subnetworkLts.getLeftTupleSource() != riaNode.getStartTupleSource()) {
+                        subnetworkLts = subnetworkLts.getLeftTupleSource();
                     }
-                    
-                    Memory mem = wm.getNodeMemory( (MemoryFactory) sinkNode );
-                    SegmentMemory subNetworkSegmentMemory = mem.getSegmentMemory();
+
+                    Memory rootSubNetwokrMem = wm.getNodeMemory( (MemoryFactory)  subnetworkLts);
+                    SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
                     if ( subNetworkSegmentMemory == null ) {
                         // we need to stop recursion here
-                        subNetworkSegmentMemory = createSegmentMemory( ( LeftTupleSource ) sinkNode, wm );
+                        subNetworkSegmentMemory = createSegmentMemory( ( LeftTupleSource ) subnetworkLts, wm );
                     }
-                    betaMemory.setSubnetworkSegmentMemory( subNetworkSegmentMemory );
+
+                    RiaNodeMemory riaMem = ( RiaNodeMemory ) wm.getNodeMemory( (MemoryFactory) riaNode );
+                    // riaMem will be initialised as part of the subnetwork createSegmentMemory, if it does not already exist.
+                    betaMemory.setRiaRuleMemory(riaMem.getRiaPathMemory());
+
+//                    SegmentMemory subNetworkSegmentMemory = mem.getSegmentMemory();
+//                    if ( subNetworkSegmentMemory == null ) {
+//                        // we need to stop recursion here
+//                        subNetworkSegmentMemory = createSegmentMemory( ( LeftTupleSource ) riaNode.getLeftTupleSource(), wm );
+//                    }
+//                    betaMemory.setRiaRuleMemory( (RiaPathMemory) ((RiaNodeMemory) mem).getRiaPathMemory() );
+//                    if ( subNetworkSegmentMemory.getAllLinkedMaskTest() == 0 ) {
+//                        smem.linkNode( nodePosMask, wm );
+//                    }
                 }
                 
                 betaMemory.setSegmentMemory( smem );
@@ -97,9 +117,21 @@ public class SegmentUtilities {
             }  else if ( tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
                 ConditionalBranchMemory evalMemory = ( ConditionalBranchMemory ) smem.createNodeMemory( ( ConditionalBranchNode ) tupleSource, wm );
                 evalMemory.setSegmentMemory( smem );
-            }else if ( tupleSource.getType() == NodeTypeEnums.FromNode ) {
+            } else if ( tupleSource.getType() == NodeTypeEnums.FromNode ) {
                 FromMemory fromMemory = ( FromMemory ) smem.createNodeMemory( ( FromNode ) tupleSource, wm );
                 fromMemory.getBetaMemory().setSegmentMemory( smem );
+            } else if ( tupleSource.getType() == NodeTypeEnums.QueryElementNode ) {
+                // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
+                QueryElementNode queryNode = ( QueryElementNode ) tupleSource;
+                LeftInputAdapterNode liaNode = getQueryLiaNode(queryNode.getQueryElement().getQueryName(), getQueryOtn(segmentRoot));
+                LiaNodeMemory liam = ( LiaNodeMemory ) wm.getNodeMemory( (MemoryFactory) liaNode );                
+                SegmentMemory querySmem = liam.getSegmentMemory();
+                if (  querySmem == null ) {
+                    querySmem = createSegmentMemory( liaNode, wm );
+                }                               
+                QueryElementNodeMemory queryNodeMem = ( QueryElementNodeMemory ) smem.createNodeMemory( queryNode, wm );
+                queryNodeMem.setQuerySegmentMemory( querySmem );
+                queryNodeMem.setSegmentMemory( smem );                
             }
             
             LeftTupleSinkPropagator sink = tupleSource.getSinkPropagator();
@@ -114,10 +146,10 @@ public class SegmentUtilities {
                     // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
                     if ( firstSink.getType() == NodeTypeEnums.RightInputAdaterNode) {
                         RiaNodeMemory memory = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
-                        smem.getNodeMemories().add( memory.getRiaRuleMemory() );                        
-                        memory.getRiaRuleMemory().setSegmentMemory( smem );
+                        smem.getNodeMemories().add( memory.getRiaPathMemory() );
+                        memory.getRiaPathMemory().setSegmentMemory( smem );
                     } else if ( NodeTypeEnums.isTerminalNode( firstSink) ) {             
-                        RuleMemory rmem = ( RuleMemory ) wm.getNodeMemory( (MemoryFactory) firstSink );
+                        PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
                         smem.getNodeMemories().add( rmem );
                         rmem.setSegmentMemory( smem );
                     }                    
@@ -171,14 +203,15 @@ public class SegmentUtilities {
                 // RTNS and RiaNode's have their own segment, if they are the child of a split.
                 if ( memory.getSegmentMemory() == null ) {
                     SegmentMemory childSmem = new SegmentMemory(sink);
-                    RuleMemory rmem;
+                    PathMemory rmem;
                     if ( NodeTypeEnums.isTerminalNode( sink  ) ) {
-                        rmem = ( RuleMemory ) memory;
+                        rmem = (PathMemory) memory;
                     } else {
-                        rmem =  ((RiaNodeMemory) memory ).getRiaRuleMemory();
+                        rmem =  ((RiaNodeMemory) memory ).getRiaPathMemory();
                     }
                     rmem.getSegmentMemories()[ rmem.getSegmentMemories().length -1 ] = childSmem;
                     rmem.setSegmentMemory( childSmem );
+                    childSmem.getPathMemories().add( rmem );
                     
                     childSmem.setTipNode( sink );
                     childSmem.setSinkFactory( sink );                    
@@ -242,15 +275,22 @@ public class SegmentUtilities {
     	        // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
     	        if ( inSubNetwork( (RightInputAdapterNode)sink, originalLt ) ) {
     	            RiaNodeMemory riaMem = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) sink );
-    	            RuleMemory rmem = ( RuleMemory ) riaMem.getRiaRuleMemory();
-                    smem.getRuleMemories().add( rmem );
+    	            PathMemory rmem = (PathMemory) riaMem.getRiaPathMemory();
+                    smem.getPathMemories().add( rmem );
                     rmem.getSegmentMemories()[smem.getPos()] = smem;
+                    if ( smem.getAllLinkedMaskTest() != 0 & smem.isSegmentLinked() ) {
+                        // only happens for segments with only a 'not' node
+                        rmem.linkSegment(smem.getSegmentPosMaskBit(), wm);
+                    }
     	        }
     	    } else if ( NodeTypeEnums.isTerminalNode( sink) ) {    	        
-    	        RuleMemory rmem = ( RuleMemory ) wm.getNodeMemory( (MemoryFactory) sink );
-                smem.getRuleMemories().add( rmem );
+    	        PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) sink );
+                smem.getPathMemories().add( rmem );
                 rmem.getSegmentMemories()[smem.getPos()] = smem;
-    	        
+                if ( smem.getAllLinkedMaskTest() != 0 & smem.isSegmentLinked() ) {
+                    // only happens for segments with only a 'not' node
+                    rmem.linkSegment(smem.getSegmentPosMaskBit(), wm);
+                }
     	    }
         }
     }
@@ -266,6 +306,52 @@ public class SegmentUtilities {
         } else {        
             return false;
         }
+    }
+    
+    public static ObjectTypeNode getQueryOtn(LeftTupleSource lts) {
+        while ( !(lts instanceof LeftInputAdapterNode ) ) {
+            lts = lts.getLeftTupleSource();
+        }
+        
+        LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) lts;
+        ObjectSource os = liaNode.getObjectSource();
+        while ( !(os instanceof EntryPointNode) ) {
+            os = os.getParentObjectSource();
+        }
+        
+        return ((EntryPointNode)os).getQueryNode();
+    }
+    
+    public static LeftInputAdapterNode getQueryLiaNode(String queryName, ObjectTypeNode queryOtn) {
+        if ( queryOtn.getSinkPropagator() instanceof CompositeObjectSinkAdapter ) {
+            CompositeObjectSinkAdapter sink = ( CompositeObjectSinkAdapter ) queryOtn.getSinkPropagator();
+            if ( sink.getHashableSinks() != null ) {
+                for ( AlphaNode alphaNode = ( AlphaNode ) sink.getHashableSinks().getFirst(); alphaNode != null; alphaNode = ( AlphaNode ) alphaNode.getNextObjectSinkNode() ) {
+                    QueryNameConstraint nameConstraint = ( QueryNameConstraint ) alphaNode.getConstraint();
+                    if ( queryName.equals( nameConstraint.getQueryName() ) ) {
+                        return ( LeftInputAdapterNode ) alphaNode.getSinkPropagator().getSinks()[0];
+                    }
+                }
+            }
+            
+            Iterator it = sink.getHashedSinkMap().iterator();
+            for ( ObjectEntry entry = ( ObjectEntry ) it.next(); entry != null; entry = ( ObjectEntry ) it.next() ) {
+                AlphaNode alphaNode = ( AlphaNode ) entry.getValue();                
+                QueryNameConstraint nameConstraint = ( QueryNameConstraint ) alphaNode.getConstraint();
+                if ( queryName.equals( nameConstraint.getQueryName() ) ) {
+                    return ( LeftInputAdapterNode ) alphaNode.getSinkPropagator().getSinks()[0];
+                }                
+            }
+        } else {
+            AlphaNode alphaNode = ( AlphaNode ) queryOtn.getSinkPropagator().getSinks()[0];
+            QueryNameConstraint nameConstraint = ( QueryNameConstraint ) alphaNode.getConstraint();
+            if ( queryName.equals( nameConstraint.getQueryName() ) ) {
+                return ( LeftInputAdapterNode ) alphaNode.getSinkPropagator().getSinks()[0];
+            }
+            return ( LeftInputAdapterNode ) queryOtn.getSinkPropagator().getSinks()[0];
+        }
+        
+        throw new RuntimeException( "Unable to find query '" + queryName + "'" );        
     }
 
 }

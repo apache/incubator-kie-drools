@@ -5,39 +5,26 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.FactHandle;
 import org.drools.base.ClassObjectType;
-import org.drools.common.AgendaItem;
-import org.drools.common.DefaultAgenda;
-import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.integrationtests.SubNetworkLinkingTest.A;
 import org.drools.integrationtests.SubNetworkLinkingTest.B;
 import org.drools.integrationtests.SubNetworkLinkingTest.C;
-import org.drools.integrationtests.SubNetworkLinkingTest.D;
-import org.drools.integrationtests.SubNetworkLinkingTest.E;
-import org.drools.integrationtests.SubNetworkLinkingTest.F;
-import org.drools.integrationtests.SubNetworkLinkingTest.G;
-import org.drools.phreak.RuleNetworkEvaluatorActivation;
-import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.RuleMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.SegmentMemory;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
@@ -244,7 +231,7 @@ public class SegmentCreationTest {
         assertEquals( riaNode, bSmem.getTipNode() ); 
         
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( notNode );
-        assertEquals(bSmem, bm.getSubnetworkSegmentMemory()  ); // check subnetwork ref was made
+        assertEquals(bSmem, bm.getRiaRuleMemory().getSegmentMemory() ); // check subnetwork ref was made
     }        
 
     

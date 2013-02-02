@@ -17,7 +17,6 @@
 package org.drools.template.model;
 
 /**
- *
  * The LayerSupertype for this model/parse tree.
  */
 public abstract class DRLElement {
@@ -33,7 +32,7 @@ public abstract class DRLElement {
     }
 
     boolean isCommented() {
-        return (this._comment != null && !("".equals( this._comment )));
+        return (this._comment != null && !("".equals(this._comment)));
     }
 
 }

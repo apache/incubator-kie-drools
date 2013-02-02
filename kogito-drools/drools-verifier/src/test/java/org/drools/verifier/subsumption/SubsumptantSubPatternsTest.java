@@ -16,12 +16,6 @@
 
 package org.drools.verifier.subsumption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.VerifierBuilder;
@@ -36,6 +30,10 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
 
+import java.util.Collection;
+
+import static org.junit.Assert.*;
+
 public class SubsumptantSubPatternsTest {
 
     @Test
@@ -45,41 +43,42 @@ public class SubsumptantSubPatternsTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantSubPatterns1.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns1.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
-//        for ( VerifierError error : verifier.getMissingClasses() ) {
-//            System.out.println( error.getMessage() );
-//        }
+        //        for ( VerifierError error : verifier.getMissingClasses() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        if ( !noProblems ) {
-            for ( VerifierError error : verifier.getErrors() ) {
-                System.out.println( error.getMessage() );
+        if (!noProblems) {
+            for (VerifierError error : verifier.getErrors()) {
+                System.out.println(error.getMessage());
             }
         }
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         int count = 0;
-        for ( Object object : subsumptionList ) {
+        for (Object object : subsumptionList) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
+            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 //                System.out.println( " ** " + ((SubPattern) ((Subsumption) object).getLeft()).getItems() + " - " + ((SubPattern) ((Subsumption) object).getRight()).getItems() );
                 count++;
             }
         }
-        assertEquals( 1,
-                      count );
+        assertEquals(1,
+                     count);
 
         verifier.dispose();
     }
 
     /**
      * Empty pattern
+     *
      * @throws Exception
      */
     @Test
@@ -89,36 +88,37 @@ public class SubsumptantSubPatternsTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantSubPatterns2.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns2.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
-//        for ( VerifierError error : verifier.getMissingClasses() ) {
-//            System.out.println( error.getMessage() );
-//        }
+        //        for ( VerifierError error : verifier.getMissingClasses() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         int count = 0;
-        for ( Object object : subsumptionList ) {
+        for (Object object : subsumptionList) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
+            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 count++;
             }
         }
-        assertEquals( 1,
-                      count );
+        assertEquals(1,
+                     count);
 
         verifier.dispose();
     }
 
     /**
      * Different sources
+     *
      * @throws Exception
      */
     @Test
@@ -128,75 +128,78 @@ public class SubsumptantSubPatternsTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantSubPatterns3.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns3.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
-//        for ( VerifierError error : verifier.getMissingClasses() ) {
-//            System.out.println( error.getMessage() );
-//        }
+        //        for ( VerifierError error : verifier.getMissingClasses() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         int count = 0;
-        for ( Object object : subsumptionList ) {
+        for (Object object : subsumptionList) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
+            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 count++;
             }
         }
-        assertEquals( 1,
-                      count );
+        assertEquals(1,
+                     count);
 
         verifier.dispose();
     }
 
     /**
      * Patterns that use from
+     *
      * @throws Exception
      */
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testSubpatternSubsumption4() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantSubPatterns4.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns4.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
-//        for ( VerifierError error : verifier.getMissingClasses() ) {
-//            System.out.println( error.getMessage() );
-//        }
+        //        for ( VerifierError error : verifier.getMissingClasses() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         int count = 0;
-        for ( Object object : subsumptionList ) {
-//            System.out.println( " * " + ((Subsumption) object) );
-            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
+        for (Object object : subsumptionList) {
+            //            System.out.println( " * " + ((Subsumption) object) );
+            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 count++;
             }
         }
-        assertEquals( 1,
-                      count );
+        assertEquals(1,
+                     count);
 
         verifier.dispose();
     }
 
     /**
      * Different sources
+     *
      * @throws Exception
      */
     @Test
@@ -206,30 +209,30 @@ public class SubsumptantSubPatternsTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantSubPatterns5.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns5.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
-//        for ( VerifierError error : verifier.getMissingClasses() ) {
-//            System.out.println( error.getMessage() );
-//        }
+        //        for ( VerifierError error : verifier.getMissingClasses() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         int count = 0;
-        for ( Object object : subsumptionList ) {
+        for (Object object : subsumptionList) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if ( ((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
+            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 count++;
             }
         }
-        assertEquals( 8,
-                      count );
+        assertEquals(8,
+                     count);
 
         verifier.dispose();
     }

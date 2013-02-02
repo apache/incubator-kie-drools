@@ -1,12 +1,17 @@
 package org.drools.reteoo;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Pattern;
+import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -21,7 +26,7 @@ import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
-public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, Externalizable {
+public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, MemoryFactory, Externalizable {
 
     private LeftTupleSource tupleSource;
 
@@ -104,6 +109,48 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         LeftTupleSource.doModifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory,
                                            this, getLeftInputOtnId(), inferredMask);
     }
+    
+    public abstract Rule getRule();
+    
+
+    public Memory createMemory(RuleBaseConfiguration config) {
+        int segmentCount = 1; // always atleast one segment
+        
+        if ( getLeftTupleSource().getSinkPropagator().size() > 1 ) {
+            // it's shared, RTN is in it's own segment, so increase segmentCount
+            segmentCount++;
+        }
+        
+        int segmentPosMask = 1;
+        long allLinkedTestMask = 1;        
+        PathMemory rmem = new PathMemory(this);
+        LeftTupleSource tupleSource = getLeftTupleSource();
+        boolean updateBitInNewSegment = false; // this is so we can handle segments that don't have betanode's, as their bit will never be set
+        while ( tupleSource.getLeftTupleSource() != null ) {            
+            if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
+                updateBitInNewSegment = true;
+                segmentPosMask = segmentPosMask << 1;  
+                segmentCount++;
+            }
+            
+            if ( updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
+                updateBitInNewSegment = false;
+                allLinkedTestMask = allLinkedTestMask | segmentPosMask;
+            }
+            
+            tupleSource = tupleSource.getLeftTupleSource();            
+        }        
+        rmem.setAllLinkedMaskTest( allLinkedTestMask );
+        rmem.setSegmentMemories( new SegmentMemory[segmentCount] );
+        return rmem;
+    }
+
+    public LeftTuple createPeer(LeftTuple original) {
+        RuleTerminalNodeLeftTuple peer = new RuleTerminalNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
+    }      
 
     public LeftTupleSource getLeftTupleSource() {
         return this.tupleSource;

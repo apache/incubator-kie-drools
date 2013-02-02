@@ -26,7 +26,7 @@ import org.drools.template.model.Rule;
 
 import java.util.List;
 
-public class DeclaredTypesDRLEmitter extends AbstractDRLEmitter{
+public class DeclaredTypesDRLEmitter extends AbstractDRLEmitter {
 
     protected void addDeclaredTypeContents(PMML pmmlDocument, StringBuilder stringBuilder, Scorecard scorecard) {
         Characteristics characteristics = getCharacteristicsFromScorecard(scorecard);

@@ -1,10 +1,8 @@
 package org.drools.template.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ColumnFactoryTest {
 
@@ -22,7 +20,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("column: String[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
-        assertEquals("StringCell", ((ArrayColumn)column).getCellType());
+        assertEquals("StringCell", ((ArrayColumn) column).getCellType());
     }
 
     @Test
@@ -31,7 +29,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("column: Long[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
-        assertEquals("LongCell", ((ArrayColumn)column).getCellType());
+        assertEquals("LongCell", ((ArrayColumn) column).getCellType());
     }
 
     @Test
@@ -40,7 +38,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("column[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
-        assertEquals("StringCell", ((ArrayColumn)column).getCellType());
+        assertEquals("StringCell", ((ArrayColumn) column).getCellType());
     }
 
     @Test
@@ -77,7 +75,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("$column[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("$column", column.getName());
-        assertEquals("StringCell", ((ArrayColumn)column).getCellType());
+        assertEquals("StringCell", ((ArrayColumn) column).getCellType());
     }
 
     @Test
@@ -95,7 +93,7 @@ public class ColumnFactoryTest {
         Column column = f.getColumn("$column: Long[]");
         assertTrue(column instanceof ArrayColumn);
         assertEquals("$column", column.getName());
-        assertEquals("LongCell", ((ArrayColumn)column).getCellType());
+        assertEquals("LongCell", ((ArrayColumn) column).getCellType());
     }
 
 }

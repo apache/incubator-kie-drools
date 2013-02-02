@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 public class PartialScore extends BaselineScore implements Serializable {
     protected String reasoncode;
-    protected int position;
+    protected int    position;
 
     public PartialScore(String scorecardName, String characteristic, double score, String reasoncode, int position) {
         super(scorecardName, characteristic, score);

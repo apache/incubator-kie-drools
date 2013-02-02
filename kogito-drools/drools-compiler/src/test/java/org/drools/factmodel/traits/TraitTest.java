@@ -83,65 +83,69 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     private StatefulKnowledgeSession getSession( String... ruleFiles ) {
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for (String file : ruleFiles) {
-            knowledgeBuilder.add( ResourceFactory.newClassPathResource( file ),
-                                  ResourceType.DRL );
-        }
-        if (knowledgeBuilder.hasErrors()) {
-            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        return session;
+        return loadKnowledgeBase( ruleFiles ).newStatefulKnowledgeSession();
+//        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+//        for (String file : ruleFiles) {
+//            knowledgeBuilder.add( ResourceFactory.newClassPathResource( file ),
+//                                  ResourceType.DRL );
+//        }
+//        if (knowledgeBuilder.hasErrors()) {
+//            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
+//        }
+//
+//        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+//        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+//
+//        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+//        return session;
     }
 
     private StatefulKnowledgeSession getSessionFromString( String drl ) {
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
-                ResourceType.DRL );
-        if (knowledgeBuilder.hasErrors()) {
-            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        return session;
+        return loadKnowledgeBaseFromString( drl ).newStatefulKnowledgeSession();
+//        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+//        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
+//                ResourceType.DRL );
+//        if (knowledgeBuilder.hasErrors()) {
+//            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
+//        }
+//
+//        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+//        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+//
+//        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+//        return session;
     }
-
-    private KnowledgeBase getKnowledgeBaseFromString( String drl ) {
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
-                ResourceType.DRL );
-        if (knowledgeBuilder.hasErrors()) {
-            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
-
-        return kbase;
-    }
+//
+//    private KnowledgeBase getKnowledgeBaseFromString( String drl ) {
+//        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+//        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
+//                ResourceType.DRL );
+//        if (knowledgeBuilder.hasErrors()) {
+//            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
+//        }
+//
+//        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+//        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+//
+//        return kbase;
+//    }
 
     public void traitWrapGetAndSet( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource( source );
-        assertNotNull( res );
-        kbuilder.add( res,
-                      ResourceType.DRL );
-        if (kbuilder.hasErrors()) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-            TraitFactory.setMode( mode, kb );
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+//        Resource res = ResourceFactory.newClassPathResource( source );
+//        assertNotNull( res );
+//        kbuilder.add( res,
+//                      ResourceType.DRL );
+//        if (kbuilder.hasErrors()) {
+//            fail( kbuilder.getErrors().toString() );
+//        }
+//        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+//            TraitFactory.setMode( mode, kb );
+//        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kb = loadKnowledgeBase(source);
 
         TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
@@ -1164,13 +1168,6 @@ public class TraitTest extends CommonTestMethodBase {
         isA( TraitFactory.VirtualPropertyMode.MAP );
     }
 
-
-
-
-
-
-
-
     public void overrideType( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/factmodel/traits/testTraitOverride.drl";
 
@@ -1580,6 +1577,7 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
+        System.out.println( "list" + list );
         assertEquals( 1, list.size() );
         assertEquals( 0, list.get( 0 ) );
         assertFalse( list.contains( 1 ) );
@@ -1733,7 +1731,7 @@ public class TraitTest extends CommonTestMethodBase {
 
                 "            list.add(\"OK\");\n" +
                 "    end";
-        KnowledgeBase kb = getKnowledgeBaseFromString( source );
+        KnowledgeBase kb = loadKnowledgeBaseFromString( source );
         TraitFactory.setMode( mode, kb );
 
         StatelessKnowledgeSession ksession = kb.newStatelessKnowledgeSession();

@@ -15,6 +15,9 @@
  */
 
 package org.drools.template.parser;
+
+import org.drools.core.util.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -24,10 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.util.StringUtils;
-
 /**
- *
  * A rule template made up of a name, the decision table columns required, the
  * decision table columns that must be empty and the contents of the rule.
  */
@@ -72,7 +72,7 @@ public class RuleTemplate {
      */
     public String toString() {
         return "RuleTemplate[name," + this.name + "contents," + this.columns
-                + "columns";
+               + "columns";
     }
 
     /*
@@ -103,7 +103,7 @@ public class RuleTemplate {
                 newLine.append(StringUtils.repeat("@end{}", optCols));
                 newLine.append("\n");
             }
-//            logger.info("newLine: " + newLine);
+            //            logger.info("newLine: " + newLine);
             return newLine.toString();
 
         } catch (IOException e) {
@@ -113,7 +113,7 @@ public class RuleTemplate {
 
     private Collection<String> getColumnNames() {
         Collection<String> columnNames = new ArrayList<String>();
-        for ( TemplateColumn column : getColumns() ) {
+        for (TemplateColumn column : getColumns()) {
             columnNames.add(column.getName());
         }
         return columnNames;

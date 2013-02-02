@@ -21,12 +21,12 @@ public class DecisionTableParseException extends RuntimeException {
     private static final long serialVersionUID = 510l;
 
     public DecisionTableParseException(final String message) {
-        super( message );
+        super(message);
     }
 
     public DecisionTableParseException(final String message,
                                        final Throwable cause) {
-        super( message,
-               cause );
+        super(message,
+              cause);
     }
 }

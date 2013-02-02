@@ -16,19 +16,6 @@
  */
 package org.drools.persistence.jpa.marshaller;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Id;
-
 import org.drools.common.DroolsObjectInputStream;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
@@ -36,21 +23,29 @@ import org.kie.runtime.EnvironmentName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Id;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy {
     private static Logger log = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
     private Environment env;
-    
+
     public JPAPlaceholderResolverStrategy(Environment env) {
         this.env = env;
     }
-    
+
     public boolean accept(Object object) {
         return isEntity(object);
     }
 
     public void write(ObjectOutputStream os, Object object) throws IOException {
-            os.writeUTF(object.getClass().getCanonicalName());
-            os.writeObject(getClassIdValue(object));
+        os.writeUTF(object.getClass().getCanonicalName());
+        os.writeObject(getClassIdValue(object));
     }
 
     public Object read(ObjectInputStream is) throws IOException, ClassNotFoundException {
@@ -62,10 +57,10 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     }
 
     public byte[] marshal(Context context,
-                          ObjectOutputStream os, 
+                          ObjectOutputStream os,
                           Object object) throws IOException {
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream( buff );
+        ObjectOutputStream oos = new ObjectOutputStream(buff);
         oos.writeUTF(object.getClass().getCanonicalName());
         oos.writeObject(getClassIdValue(object));
         oos.close();
@@ -76,24 +71,24 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
                             ObjectInputStream ois,
                             byte[] object,
                             ClassLoader classloader) throws IOException,
-                                                    ClassNotFoundException {
-        DroolsObjectInputStream is = new DroolsObjectInputStream( new ByteArrayInputStream( object ), classloader );
+            ClassNotFoundException {
+        DroolsObjectInputStream is = new DroolsObjectInputStream(new ByteArrayInputStream(object), classloader);
         String canonicalName = is.readUTF();
         Object id = is.readObject();
         EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
         EntityManager em = emf.createEntityManager();
         return em.find(Class.forName(canonicalName), id);
     }
-    
+
     public Context createContext() {
         // no need for context
         return null;
     }
-    
-    public static Serializable getClassIdValue(Object o)  {
+
+    public static Serializable getClassIdValue(Object o) {
         Class<? extends Object> varClass = o.getClass();
         Serializable idValue = null;
-        try{
+        try {
             do {
                 Field[] fields = varClass.getDeclaredFields();
                 for (int i = 0; i < fields.length && idValue == null; i++) {
@@ -102,8 +97,8 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
                     if (id != null) {
                         try {
                             idValue = callIdMethod(o, "get"
-                                    + Character.toUpperCase(field.getName().charAt(0))
-                                    + field.getName().substring(1));
+                                                      + Character.toUpperCase(field.getName().charAt(0))
+                                                      + field.getName().substring(1));
                         } catch (NoSuchMethodException e) {
                             idValue = (Serializable) field.get(o);
                         }
@@ -123,8 +118,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
                     }
                 } while ((varClass = varClass.getSuperclass()) != null && idValue == null);
             }
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             log.error(ex.getMessage());
         }
         return idValue;
@@ -134,31 +128,31 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
             SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         return (Serializable) target.getClass().getMethod(methodName, (Class[]) null).invoke(target, new Object[]{});
     }
-    
-    private static boolean isEntity(Object o){
+
+    private static boolean isEntity(Object o) {
         Class<? extends Object> varClass = o.getClass();
         do {
-                Field[] fields = varClass.getDeclaredFields();
-                for (int i = 0; i < fields.length; i++) {
-                    Field field = fields[i];
-                    Id id = field.getAnnotation(Id.class);
-                    if (id != null) {
-                       return true;
-                    }
+            Field[] fields = varClass.getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+                Field field = fields[i];
+                Id id = field.getAnnotation(Id.class);
+                if (id != null) {
+                    return true;
                 }
+            }
         } while ((varClass = varClass.getSuperclass()) != null);
         varClass = o.getClass();
         do {
-                    Method[] methods = varClass.getMethods();
-                    for (int i = 0; i < methods.length; i++) {
-                        Method method = methods[i];
-                        Id id = method.getAnnotation(Id.class);
-                        if (id != null) {
-                            return true;
-                        }
-                    }
-        } while ((varClass = varClass.getSuperclass()) != null );
-        
+            Method[] methods = varClass.getMethods();
+            for (int i = 0; i < methods.length; i++) {
+                Method method = methods[i];
+                Id id = method.getAnnotation(Id.class);
+                if (id != null) {
+                    return true;
+                }
+            }
+        } while ((varClass = varClass.getSuperclass()) != null);
+
         return false;
     }
 

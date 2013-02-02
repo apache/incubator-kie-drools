@@ -164,6 +164,10 @@ public class BinaryHeapQueue
     public int size() {
         return this.size;
     }
+    
+    public Queueable peek() {
+        return this.elements[1];
+    }
 
     /**
      * Inserts an Queueable into queue.

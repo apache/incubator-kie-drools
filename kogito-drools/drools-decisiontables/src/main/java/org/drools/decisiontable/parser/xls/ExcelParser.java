@@ -58,7 +58,7 @@ public class ExcelParser
 
     public ExcelParser(final List<DataListener> sheetListeners) {
         this._listeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
-                sheetListeners );
+                             sheetListeners );
         this._useFirstSheet = true;
     }
 
@@ -66,7 +66,7 @@ public class ExcelParser
         List<DataListener> listeners = new ArrayList<DataListener>();
         listeners.add( listener );
         this._listeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
-                listeners );
+                             listeners );
         this._useFirstSheet = true;
     }
 
@@ -82,20 +82,20 @@ public class ExcelParser
                     Sheet sheet = workbook.getSheet( sheetName );
                     if (sheet == null) {
                         throw new IllegalStateException("Could not find the sheetName (" + sheetName
-                                + ") in the workbook sheetNames.");
+                                                        + ") in the workbook sheetNames.");
                     }
                     processSheet( sheet,
-                            _listeners.get( sheetName ) );
+                                  _listeners.get( sheetName ) );
 
                 }
             }
         } catch ( InvalidFormatException e ) {
             throw new DecisionTableParseException( "An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
-                    e );
+                                                   e );
 
         } catch ( IOException e ) {
             throw new DecisionTableParseException( "Failed to open Excel stream, " + "please check that the content is xls97 format.",
-                    e );
+                                                   e );
         }
 
     }
@@ -127,16 +127,16 @@ public class ExcelParser
                 double num = 0;
 
                 CellRangeAddress merged = getRangeIfMerged( cell,
-                        mergedRanges );
+                                                            mergedRanges );
 
                 if ( merged != null ) {
 
                     Cell topLeft = sheet.getRow(merged.getFirstRow()).getCell(merged.getFirstColumn());
                     newCell( listeners,
-                            i,
-                            cellNum,
-                            formatter.formatCellValue(topLeft),
-                            topLeft.getColumnIndex() );
+                             i,
+                             cellNum,
+                             formatter.formatCellValue(topLeft),
+                             topLeft.getColumnIndex() );
                 } else {
                     if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                         num = cell.getNumericCellValue();
@@ -145,10 +145,10 @@ public class ExcelParser
                         newCell(listeners, i, cellNum, String.valueOf(num), DataListener.NON_MERGED );
                     } else {
                         newCell( listeners,
-                                i,
-                                cellNum,
-                                formatter.formatCellValue(cell),
-                                DataListener.NON_MERGED );
+                                 i,
+                                 cellNum,
+                                 formatter.formatCellValue(cell),
+                                 DataListener.NON_MERGED );
                     }
                 }
             }
@@ -179,7 +179,7 @@ public class ExcelParser
                         int cols) {
         for ( DataListener listener : listeners ) {
             listener.newRow( row,
-                    cols );
+                             cols );
         }
     }
 
@@ -190,9 +190,9 @@ public class ExcelParser
                         int mergedColStart) {
         for ( DataListener listener : listeners ) {
             listener.newCell( row,
-                    column,
-                    value,
-                    mergedColStart );
+                              column,
+                              value,
+                              mergedColStart );
         }
     }
 

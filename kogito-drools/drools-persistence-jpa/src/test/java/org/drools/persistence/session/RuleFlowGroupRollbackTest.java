@@ -15,15 +15,6 @@
  */
 package org.drools.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
@@ -41,88 +32,96 @@ import org.kie.command.Context;
 import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 public class RuleFlowGroupRollbackTest {
-    
+
     private HashMap<String, Object> context;
 
     @Before
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
     }
-	
-	@After
-	public void tearDown() {
-		PersistenceUtil.tearDown(context);
-	}
 
-    @Test	
-	public void testRuleFlowGroupRollback() throws Exception {
-		
-		CommandBasedStatefulKnowledgeSession ksession = createSession();
-		
-		List<String> list = new ArrayList<String>();
-		list.add("Test");
-		
-		ksession.insert(list);
-		ksession.execute(new ActivateRuleFlowCommand("ruleflow-group"));
-		assertEquals(1, ksession.fireAllRules());
-		
-		try {
-			ksession.execute(new ExceptionCommand());
-			fail("Process must throw an exception");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		ksession.insert(list);
-		ksession.execute(new ActivateRuleFlowCommand("ruleflow-group"));
-		assertEquals(1, ksession.fireAllRules());
-		
-	}
-	
-	private CommandBasedStatefulKnowledgeSession createSession() {
-		
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( new ClassPathResource("ruleflowgroup_rollback.drl"), ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+    @After
+    public void tearDown() {
+        PersistenceUtil.tearDown(context);
+    }
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+    @Test
+    public void testRuleFlowGroupRollback() throws Exception {
+
+        CommandBasedStatefulKnowledgeSession ksession = createSession();
+
+        List<String> list = new ArrayList<String>();
+        list.add("Test");
+
+        ksession.insert(list);
+        ksession.execute(new ActivateRuleFlowCommand("ruleflow-group"));
+        assertEquals(1, ksession.fireAllRules());
+
+        try {
+            ksession.execute(new ExceptionCommand());
+            fail("Process must throw an exception");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        ksession.insert(list);
+        ksession.execute(new ActivateRuleFlowCommand("ruleflow-group"));
+        assertEquals(1, ksession.fireAllRules());
+
+    }
+
+    private CommandBasedStatefulKnowledgeSession createSession() {
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(new ClassPathResource("ruleflowgroup_rollback.drl"), ResourceType.DRL);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         Environment env = createEnvironment(context);
-        return (CommandBasedStatefulKnowledgeSession) JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-	}
-	
-	@SuppressWarnings("serial")
-	public class ActivateRuleFlowCommand implements GenericCommand<Object> {
-		
-		private String ruleFlowGroupName;
-		
-		public ActivateRuleFlowCommand(String ruleFlowGroupName){
-			this.ruleFlowGroupName = ruleFlowGroupName;
-		}
+        return (CommandBasedStatefulKnowledgeSession) JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+    }
 
-	    public Void execute(Context context) {
-	        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-	        ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup(ruleFlowGroupName);
-	        return null;
-	    }
+    @SuppressWarnings("serial")
+    public class ActivateRuleFlowCommand implements GenericCommand<Object> {
 
-	}
-	
-	@SuppressWarnings("serial")
-	public class ExceptionCommand implements GenericCommand<Object> {
+        private String ruleFlowGroupName;
 
-	    public Void execute(Context context) {
-	    	throw new RuntimeException();
-	    }
+        public ActivateRuleFlowCommand(String ruleFlowGroupName) {
+            this.ruleFlowGroupName = ruleFlowGroupName;
+        }
 
-	}
-	
+        public Void execute(Context context) {
+            StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+            ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup(ruleFlowGroupName);
+            return null;
+        }
+
+    }
+
+    @SuppressWarnings("serial")
+    public class ExceptionCommand implements GenericCommand<Object> {
+
+        public Void execute(Context context) {
+            throw new RuntimeException();
+        }
+
+    }
+
 }

@@ -227,9 +227,9 @@ public class AgendaTest extends DroolsTestCase {
                 final Cheese cheese = ( Cheese ) item.getTuple().getHandle().getObject();
                 final int oldPrice = cheese.getPrice();
                 cheese.setPrice( 100 );
-                
+
                 item.setActivationUnMatchListener( new ActivationUnMatchListener() {
-                    
+
                     public void unMatch(org.kie.runtime.rule.Session wm,
                                         Match activation) {
                         cheese.setPrice( oldPrice );

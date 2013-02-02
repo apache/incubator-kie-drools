@@ -15,31 +15,27 @@
  */
 
 package org.drools.template.parser;
+
+import org.mvel2.templates.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mvel2.templates.CompiledTemplate;
-import org.mvel2.templates.SimpleTemplateRegistry;
-import org.mvel2.templates.TemplateCompiler;
-import org.mvel2.templates.TemplateRegistry;
-import org.mvel2.templates.TemplateRuntime;
-
 /**
- *
  * Generate the rules for a decision table row from a rule template.
  */
 public class DefaultGenerator
-    implements
-    Generator {
+        implements
+        Generator {
 
     private Map<String, RuleTemplate> ruleTemplates;
 
-    private TemplateRegistry          registry = new SimpleTemplateRegistry();
+    private TemplateRegistry registry = new SimpleTemplateRegistry();
 
-    private List<String>              rules    = new ArrayList<String>();
+    private List<String> rules = new ArrayList<String>();
 
     public DefaultGenerator(final Map<String, RuleTemplate> t) {
         ruleTemplates = t;
@@ -54,34 +50,34 @@ public class DefaultGenerator
     public void generate(String templateName,
                          Row row) {
         try {
-            CompiledTemplate template = getTemplate( templateName );
+            CompiledTemplate template = getTemplate(templateName);
             Map<String, Object> vars = new HashMap<String, Object>();
-            vars.put( "row",
-                      row );
+            vars.put("row",
+                     row);
 
-            for ( Cell cell : row.getCells() ) {
-                cell.addValue( vars );
+            for (Cell cell : row.getCells()) {
+                cell.addValue(vars);
             }
 
-            String drl = String.valueOf( TemplateRuntime.execute( template,
-                                                                  vars,
-                                                                  registry ) );
+            String drl = String.valueOf(TemplateRuntime.execute(template,
+                                                                vars,
+                                                                registry));
 
-            rules.add( drl );
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
+            rules.add(drl);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     private CompiledTemplate getTemplate(String templateName) throws IOException {
         CompiledTemplate contents;
-        if ( !registry.contains( templateName ) ) {
-            RuleTemplate template = ruleTemplates.get( templateName );
-            contents = TemplateCompiler.compileTemplate( template.getContents() );
-            registry.addNamedTemplate( templateName,
-                                       contents );
+        if (!registry.contains(templateName)) {
+            RuleTemplate template = ruleTemplates.get(templateName);
+            contents = TemplateCompiler.compileTemplate(template.getContents());
+            registry.addNamedTemplate(templateName,
+                                      contents);
         } else {
-            contents = registry.getNamedTemplate( templateName );
+            contents = registry.getNamedTemplate(templateName);
         }
         return contents;
     }
@@ -93,8 +89,8 @@ public class DefaultGenerator
      */
     public String getDrl() {
         StringBuffer sb = new StringBuffer();
-        for ( String rule : rules ) {
-            sb.append( rule ).append( "\n" );
+        for (String rule : rules) {
+            sb.append(rule).append("\n");
         }
         return sb.toString();
     }

@@ -21,26 +21,27 @@ public class Person {
     private String likes;
     private int    age;
 
-    private char         sex;
+    private char sex;
 
-    private boolean      alive;
+    private boolean alive;
 
-    private String       status;
+    private String status;
 
     public Person() {
 
     }
+
     public Person(final String name) {
-        this( name,
-              "",
-              0 );
+        this(name,
+             "",
+             0);
     }
 
     public Person(final String name,
                   final String likes) {
-        this( name,
-              likes,
-              0 );
+        this(name,
+             likes,
+             0);
     }
 
     public Person(final String name,

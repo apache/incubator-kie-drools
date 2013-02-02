@@ -16,12 +16,12 @@
 
 package org.drools.scorecards;
 
+import org.drools.core.util.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.drools.core.util.StringUtils;
 
 public class StringUtil {
 
@@ -30,7 +30,7 @@ public class StringUtil {
         if (cs == null) {
             return false;
         }
-        String allowedCharsInNumeric="<>=- ";
+        String allowedCharsInNumeric = "<>=- ";
         int sz = cs.length();
         for (int i = 0; i < sz; i++) {
             char ch = cs.charAt(i);

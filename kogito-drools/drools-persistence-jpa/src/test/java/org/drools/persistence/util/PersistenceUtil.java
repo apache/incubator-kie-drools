@@ -15,25 +15,9 @@
  */
 package org.drools.persistence.util;
 
-import static org.drools.marshalling.util.MarshallingDBUtil.initializeTestDb;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-import static org.kie.runtime.EnvironmentName.GLOBALS;
-import static org.kie.runtime.EnvironmentName.TRANSACTION;
-import static org.kie.runtime.EnvironmentName.TRANSACTION_MANAGER;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Properties;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.transaction.UserTransaction;
-
+import bitronix.tm.BitronixTransactionManager;
+import bitronix.tm.TransactionManagerServices;
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.drools.base.MapGlobalResolver;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.util.EntityManagerFactoryProxy;
@@ -50,52 +34,62 @@ import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.transaction.UserTransaction;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Properties;
+
+import static org.drools.marshalling.util.MarshallingDBUtil.initializeTestDb;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.kie.runtime.EnvironmentName.*;
 
 public class PersistenceUtil {
 
-    private static Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
+    private static Logger logger = LoggerFactory.getLogger(PersistenceUtil.class);
 
     private static boolean TEST_MARSHALLING = true;
-    
+
     // Persistence and data source constants
     public static final String DROOLS_PERSISTENCE_UNIT_NAME = "org.drools.persistence.jpa";
-    public static final String JBPM_PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa";
-        
-    protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
-    private static TestH2Server h2Server = new TestH2Server();
-    
+    public static final String JBPM_PERSISTENCE_UNIT_NAME   = "org.jbpm.persistence.jpa";
+
+    protected static final String       DATASOURCE_PROPERTIES = "/datasource.properties";
+    private static         TestH2Server h2Server              = new TestH2Server();
+
     private static Properties defaultProperties = null;
-   
+
     // Setup and marshalling setup constants
     public static String DATASOURCE = "org.droolsjbpm.persistence.datasource";
 
     /**
-     * @see #setupWithPoolingDataSource(String, String, boolean)
      * @param persistenceUnitName The name of the persistence unit to be used.
      * @return test context
+     * @see #setupWithPoolingDataSource(String, String, boolean)
      */
     public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName) {
         return setupWithPoolingDataSource(persistenceUnitName, true);
     }
-    
+
     /**
-     * @see #setupWithPoolingDataSource(String, String, boolean)
      * @param persistenceUnitName The name of the persistence unit to be used.
      * @return test context
+     * @see #setupWithPoolingDataSource(String, String, boolean)
      */
     public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName, boolean testMarshalling) {
         return setupWithPoolingDataSource(persistenceUnitName, "jdbc/testDS1", testMarshalling);
     }
-    
+
     /**
      * This method does all of the setup for the test and returns a HashMap
      * containing the persistence objects that the test might need.
-     * 
-     * @param persistenceUnitName
-     *            The name of the persistence unit used by the test.
+     *
+     * @param persistenceUnitName The name of the persistence unit used by the test.
      * @return HashMap<String Object> with persistence objects, such as the
      *         EntityManagerFactory and DataSource
      */
@@ -108,40 +102,39 @@ public class PersistenceUtil {
         String driverClass = dsProps.getProperty("driverClassName");
 
         // only save marshalling data if the dialect is H2..
-        if( ! driverClass.startsWith("org.h2") ) { 
-           TEST_MARSHALLING = false; 
+        if (!driverClass.startsWith("org.h2")) {
+            TEST_MARSHALLING = false;
         }
-        Object testMarshallingProperty = dsProps.get("testMarshalling"); 
-        if( "true".equals(testMarshallingProperty) ) { 
+        Object testMarshallingProperty = dsProps.get("testMarshalling");
+        if ("true".equals(testMarshallingProperty)) {
             TEST_MARSHALLING = true;
-           if( !testMarshalling ) { 
-               TEST_MARSHALLING = false;
-           }
-        } 
-        else { 
+            if (!testMarshalling) {
+                TEST_MARSHALLING = false;
+            }
+        } else {
             TEST_MARSHALLING = false;
         }
 
-        if( TEST_MARSHALLING ) {
+        if (TEST_MARSHALLING) {
             Class<?> testClass = null;
-            StackTraceElement [] ste = Thread.currentThread().getStackTrace();
-                int i = 1;
-                do { 
-                    try {
-                        testClass = Class.forName(ste[i++].getClassName());
-                    } catch (ClassNotFoundException e) {
-                        // do nothing.. 
-                    }
-                } while ( PersistenceUtil.class.equals(testClass) && i < ste.length );
-                assertNotNull("Unable to resolve test class!", testClass);
-                
+            StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+            int i = 1;
+            do {
+                try {
+                    testClass = Class.forName(ste[i++].getClassName());
+                } catch (ClassNotFoundException e) {
+                    // do nothing..
+                }
+            } while (PersistenceUtil.class.equals(testClass) && i < ste.length);
+            assertNotNull("Unable to resolve test class!", testClass);
+
             jdbcUrl = initializeTestDb(dsProps, testClass);
         }
 
         // Setup the datasource
         PoolingDataSource ds1 = setupPoolingDataSource(dsProps, dataSourceName);
-        if( driverClass.startsWith("org.h2") ) { 
-            if( ! TEST_MARSHALLING ) { 
+        if (driverClass.startsWith("org.h2")) {
+            if (!TEST_MARSHALLING) {
                 jdbcUrl += "tcp://localhost/JPADroolsFlow";
             }
             ds1.getDriverProperties().setProperty("url", jdbcUrl);
@@ -156,44 +149,43 @@ public class PersistenceUtil {
             overrideProperties.setProperty("hibernate.connection.url", jdbcUrl);
             EntityManagerFactory realEmf = Persistence.createEntityManagerFactory(persistenceUnitName, overrideProperties);
             emf = (EntityManagerFactory) EntityManagerFactoryProxy.newInstance(realEmf);
-           
+
             UserTransaction ut = (UserTransaction) UserTransactionProxy.newInstance(realEmf);
             context.put(TRANSACTION, ut);
         } else {
             emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         }
-        
+
         context.put(ENTITY_MANAGER_FACTORY, emf);
 
         return context;
     }
 
     /**
-     * Please use {@link #cleanUp(HashMap)} because tearDown() ends up conflicting with Junit methods at times. 
+     * Please use {@link #cleanUp(HashMap)} because tearDown() ends up conflicting with Junit methods at times.
+     *
      * @see {@link PersistenceUtil#cleanUp(HashMap)}
      */
     @Deprecated
     public static void tearDown(HashMap<String, Object> context) {
-       cleanUp(context);     
+        cleanUp(context);
     }
-    
+
     /**
      * This method should be called in the @After method of a test to clean up
      * the persistence unit and datasource.
-     * 
-     * @param context
-     *            A HashMap generated by
-     *            {@link org.kie.persistence.util.PersistenceUtil setupWithPoolingDataSource(String)}
-     * 
+     *
+     * @param context A HashMap generated by
+     *                {@link org.kie.persistence.util.PersistenceUtil setupWithPoolingDataSource(String)}
      */
     public static void cleanUp(HashMap<String, Object> context) {
         if (context != null) {
-            
+
             BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
-            if( txm != null ) { 
+            if (txm != null) {
                 txm.shutdown();
             }
-            
+
             Object emfObject = context.remove(ENTITY_MANAGER_FACTORY);
             if (emfObject != null) {
                 try {
@@ -213,23 +205,24 @@ public class PersistenceUtil {
                     t.printStackTrace();
                 }
             }
-            
+
         }
-        
+
     }
-    
+
     /**
      * This method uses the "jdbc/testDS1" datasource, which is the default.
-     * @param dsProps The properties used to setup the data source. 
+     *
+     * @param dsProps The properties used to setup the data source.
      * @return a PoolingDataSource
      */
-    public static PoolingDataSource setupPoolingDataSource(Properties dsProps) { 
-       return setupPoolingDataSource(dsProps, "jdbc/testDS1");
+    public static PoolingDataSource setupPoolingDataSource(Properties dsProps) {
+        return setupPoolingDataSource(dsProps, "jdbc/testDS1");
     }
-    
+
     /**
      * This sets up a Bitronix PoolingDataSource.
-     * 
+     *
      * @return PoolingDataSource that has been set up but _not_ initialized.
      */
     public static PoolingDataSource setupPoolingDataSource(Properties dsProps, String datasourceName) {
@@ -242,17 +235,17 @@ public class PersistenceUtil {
 
         pds.setMaxPoolSize(Integer.parseInt(dsProps.getProperty("maxPoolSize")));
         pds.setAllowLocalTransactions(Boolean.parseBoolean(dsProps
-                .getProperty("allowLocalTransactions")));
-        for (String propertyName : new String[] { "user", "password" }) {
+                                                                   .getProperty("allowLocalTransactions")));
+        for (String propertyName : new String[]{"user", "password"}) {
             pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
         }
 
         String driverClass = dsProps.getProperty("driverClassName");
         if (driverClass.startsWith("org.h2")) {
-            if( ! TEST_MARSHALLING ) { 
+            if (!TEST_MARSHALLING) {
                 h2Server.start();
             }
-            for (String propertyName : new String[] { "url", "driverClassName" }) {
+            for (String propertyName : new String[]{"url", "driverClassName"}) {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
             }
         } else {
@@ -268,24 +261,24 @@ public class PersistenceUtil {
                 pds.getDriverProperties().put("serverName", dsProps.getProperty("serverName"));
                 pds.getDriverProperties().put("portNumber", dsProps.getProperty("portNumber"));
             } else if (driverClass.startsWith("com.microsoft")) {
-                for (String propertyName : new String[] { "serverName", "portNumber", "databaseName" }) {
+                for (String propertyName : new String[]{"serverName", "portNumber", "databaseName"}) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
                 pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
                 pds.getDriverProperties().put("selectMethod", "cursor");
                 pds.getDriverProperties().put("InstanceName", "MSSQL01");
             } else if (driverClass.startsWith("com.mysql")) {
-                for (String propertyName : new String[] { "databaseName", "serverName", "portNumber", "url" }) {
+                for (String propertyName : new String[]{"databaseName", "serverName", "portNumber", "url"}) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
             } else if (driverClass.startsWith("com.sybase")) {
-                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                for (String propertyName : new String[]{"databaseName", "portNumber", "serverName"}) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
                 pds.getDriverProperties().put("REQUEST_HA_SESSION", "false");
                 pds.getDriverProperties().put("networkProtocol", "Tds");
             } else if (driverClass.startsWith("org.postgresql")) {
-                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                for (String propertyName : new String[]{"databaseName", "portNumber", "serverName"}) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
             } else {
@@ -299,18 +292,18 @@ public class PersistenceUtil {
     /**
      * Return the default database/datasource properties - These properties use
      * an in-memory H2 database
-     * 
+     * <p/>
      * This is used when the developer is somehow running the tests but
      * bypassing the maven filtering that's been turned on in the pom.
-     * 
+     *
      * @return Properties containing the default properties
      */
     private static Properties getDefaultProperties() {
         if (defaultProperties == null) {
-            String[] keyArr = { "serverName", "portNumber", "databaseName", "url", "user", "password", "driverClassName",
-                    "className", "maxPoolSize", "allowLocalTransactions" };
-            String[] defaultPropArr = { "", "", "", "jdbc:h2:tcp://localhost/JPADroolsFlow", "sa", "", "org.h2.Driver",
-                    "bitronix.tm.resource.jdbc.lrc.LrcXADataSource", "16", "true" };
+            String[] keyArr = {"serverName", "portNumber", "databaseName", "url", "user", "password", "driverClassName",
+                               "className", "maxPoolSize", "allowLocalTransactions"};
+            String[] defaultPropArr = {"", "", "", "jdbc:h2:tcp://localhost/JPADroolsFlow", "sa", "", "org.h2.Driver",
+                                       "bitronix.tm.resource.jdbc.lrc.LrcXADataSource", "16", "true"};
             Assert.assertTrue("Unequal number of keys for default properties", keyArr.length == defaultPropArr.length);
             defaultProperties = new Properties();
             for (int i = 0; i < keyArr.length; ++i) {
@@ -324,16 +317,16 @@ public class PersistenceUtil {
     /**
      * This reads in the (maven filtered) datasource properties from the test
      * resource directory.
-     * 
+     *
      * @return Properties containing the datasource properties.
      */
-    public static Properties getDatasourceProperties() { 
+    public static Properties getDatasourceProperties() {
         String propertiesNotFoundMessage = "Unable to load datasource properties [" + DATASOURCE_PROPERTIES + "]";
         boolean propertiesNotFound = false;
 
         // Central place to set additional H2 properties
         System.setProperty("h2.lobInDatabase", "true");
-        
+
         InputStream propsInputStream = PersistenceUtil.class.getResourceAsStream(DATASOURCE_PROPERTIES);
         assertNotNull(propertiesNotFoundMessage, propsInputStream);
         Properties props = new Properties();
@@ -361,7 +354,7 @@ public class PersistenceUtil {
      * This method returns whether or not transactions should be used when
      * dealing with the SessionInfo object (or any other persisted entity that
      * contains @Lob's )
-     * 
+     *
      * @return boolean Whether or not to use transactions
      */
     public static boolean useTransactions() {
@@ -378,17 +371,15 @@ public class PersistenceUtil {
 
     /**
      * Reflection method when doing ugly hacks in tests.
-     * 
-     * @param fieldname
-     *            The name of the field to be retrieved.
-     * @param source
-     *            The object containing the field to be retrieved.
+     *
+     * @param fieldname The name of the field to be retrieved.
+     * @param source    The object containing the field to be retrieved.
      * @return The value (object instance) stored in the field requested from
      *         the given source object.
      */
     public static Object getValueOfField(String fieldname, Object source) {
         String sourceClassName = source.getClass().getSimpleName();
-    
+
         Field field = null;
         try {
             field = source.getClass().getDeclaredField(fieldname);
@@ -398,7 +389,7 @@ public class PersistenceUtil {
         } catch (NoSuchFieldException e) {
             fail("Unable to retrieve " + fieldname + " field from " + sourceClassName + ": " + e.getCause());
         }
-    
+
         assertNotNull("." + fieldname + " field is null!?!", field);
         Object fieldValue = null;
         try {
@@ -411,55 +402,55 @@ public class PersistenceUtil {
         return fieldValue;
     }
 
-    public static Environment createEnvironment(HashMap<String, Object> context) { 
+    public static Environment createEnvironment(HashMap<String, Object> context) {
         Environment env = EnvironmentFactory.newEnvironment();
-        
+
         UserTransaction ut = (UserTransaction) context.get(TRANSACTION);
-        if( ut != null ) { 
-            env.set( TRANSACTION, ut);
+        if (ut != null) {
+            env.set(TRANSACTION, ut);
         }
-        
-        env.set( ENTITY_MANAGER_FACTORY, context.get(ENTITY_MANAGER_FACTORY) );
-        env.set( TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
-        env.set( GLOBALS, new MapGlobalResolver() );
-        
+
+        env.set(ENTITY_MANAGER_FACTORY, context.get(ENTITY_MANAGER_FACTORY));
+        env.set(TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
+        env.set(GLOBALS, new MapGlobalResolver());
+
         return env;
     }
-    
-   /**
-    * An class responsible for starting and stopping the H2 database (tcp)
-    * server
-    */
-   private static class TestH2Server {
-       private Server realH2Server;
 
-       public void start() {
-           if (realH2Server == null || !realH2Server.isRunning(false)) {
-               try {
-                   DeleteDbFiles.execute("", "JPADroolsFlow", true);
-                   realH2Server = Server.createTcpServer(new String[0]);
-                   realH2Server.start();
-               } catch (SQLException e) {
-                   throw new RuntimeException("can't start h2 server db", e);
-               }
-           }
-       }
+    /**
+     * An class responsible for starting and stopping the H2 database (tcp)
+     * server
+     */
+    private static class TestH2Server {
+        private Server realH2Server;
 
-       @Override
-       protected void finalize() throws Throwable {
-           if (realH2Server != null) {
-               realH2Server.stop();
-           }
-           DeleteDbFiles.execute("", "JPADroolsFlow", true);
-           super.finalize();
-       }
+        public void start() {
+            if (realH2Server == null || !realH2Server.isRunning(false)) {
+                try {
+                    DeleteDbFiles.execute("", "JPADroolsFlow", true);
+                    realH2Server = Server.createTcpServer(new String[0]);
+                    realH2Server.start();
+                } catch (SQLException e) {
+                    throw new RuntimeException("can't start h2 server db", e);
+                }
+            }
+        }
 
-   }
+        @Override
+        protected void finalize() throws Throwable {
+            if (realH2Server != null) {
+                realH2Server.stop();
+            }
+            DeleteDbFiles.execute("", "JPADroolsFlow", true);
+            super.finalize();
+        }
 
-   public static StatefulKnowledgeSession createKnowledgeSessionFromKBase(KnowledgeBase kbase, HashMap<String, Object> context) { 
-       KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-       StatefulKnowledgeSession knowledgeSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
-       return knowledgeSession;
-   }
-   
+    }
+
+    public static StatefulKnowledgeSession createKnowledgeSessionFromKBase(KnowledgeBase kbase, HashMap<String, Object> context) {
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        StatefulKnowledgeSession knowledgeSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
+        return knowledgeSession;
+    }
+
 }

@@ -18,12 +18,12 @@ package org.drools.scorecards.pmml;
 
 public class PMMLOperators {
 
-    public static final String LESS_THAN = "lessThan";
-    public static final String GREATER_THAN = "greaterThan";
-    public static final String NOT_EQUAL = "notEqual";
-    public static final String EQUAL = "equal";
+    public static final String LESS_THAN        = "lessThan";
+    public static final String GREATER_THAN     = "greaterThan";
+    public static final String NOT_EQUAL        = "notEqual";
+    public static final String EQUAL            = "equal";
     public static final String GREATER_OR_EQUAL = "greaterOrEqual";
-    public static final String LESS_OR_EQUAL = "lessOrEqual";
-    public static final String IS_NOT_IN = "isNotIn";
-    public static final String IS_IN = "isIn";
+    public static final String LESS_OR_EQUAL    = "lessOrEqual";
+    public static final String IS_NOT_IN        = "isNotIn";
+    public static final String IS_IN            = "isIn";
 }

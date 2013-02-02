@@ -34,16 +34,16 @@ import org.slf4j.LoggerFactory;
 public abstract class MapPersistenceTest {
 
     private static Logger logger = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
-    
+
     @Test
     public void createPersistentSession() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        
-        StatefulKnowledgeSession crmPersistentSession = createSession( kbase );
+
+        StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
         crmPersistentSession.fireAllRules();
 
-        crmPersistentSession = createSession( kbase );
-        Assert.assertNotNull( crmPersistentSession );
+        crmPersistentSession = createSession(kbase);
+        Assert.assertNotNull(crmPersistentSession);
     }
 
 
@@ -61,44 +61,44 @@ public abstract class MapPersistenceTest {
         rule += "then\n";
         rule += "    System.out.println(\"buddy inserted\")";
         rule += "end\n";
-        kbuilder.add( new ByteArrayResource( rule.getBytes() ),
-                      ResourceType.DRL );
+        kbuilder.add(new ByteArrayResource(rule.getBytes()),
+                     ResourceType.DRL);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( errors != null && errors.size() > 0 ) {
-            for ( KnowledgeBuilderError error : errors ) {
-                logger.warn( "Error: " + error.getMessage() );
+        if (errors != null && errors.size() > 0) {
+            for (KnowledgeBuilderError error : errors) {
+                logger.warn("Error: " + error.getMessage());
             }
-            Assert.fail( "KnowledgeBase did not build" );
+            Assert.fail("KnowledgeBase did not build");
         }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ksession = createSession( kbase );
+        StatefulKnowledgeSession ksession = createSession(kbase);
 
-        FactHandle buddyFactHandle = ksession.insert( new Buddy() );
+        FactHandle buddyFactHandle = ksession.insert(new Buddy());
         ksession.fireAllRules();
 
-        Assert.assertEquals( 1,
-                             ksession.getObjects().size() );
+        Assert.assertEquals(1,
+                            ksession.getObjects().size());
 
-        ksession = disposeAndReloadSession( ksession,
-                                            kbase );
+        ksession = disposeAndReloadSession(ksession,
+                                           kbase);
 
-        Assert.assertNotNull( ksession );
+        Assert.assertNotNull(ksession);
 
-        Assert.assertEquals( 1,
-                             ksession.getObjects().size() );
+        Assert.assertEquals(1,
+                            ksession.getObjects().size());
 
-        Assert.assertNull( "An object can't be retrieved with a FactHandle from a disposed session",
-                           ksession.getObject( buddyFactHandle ) );
+        Assert.assertNull("An object can't be retrieved with a FactHandle from a disposed session",
+                          ksession.getObject(buddyFactHandle));
 
     }
 
     @Test
     public void dontCreateMoreSessionsThanNecessary() {
         long initialNumberOfSavedSessions = getSavedSessionsCount();
-        
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
@@ -125,7 +125,7 @@ public abstract class MapPersistenceTest {
     @Test
     public void insertObjectIntoKsessionAndRetrieve() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        
+
         StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
         Buddy bestBuddy = new Buddy("john");
         crmPersistentSession.insert(bestBuddy);
@@ -133,14 +133,14 @@ public abstract class MapPersistenceTest {
         crmPersistentSession = disposeAndReloadSession(crmPersistentSession, kbase);
         Object obtainedBuddy = crmPersistentSession
                 .getObjects().iterator().next();
-        Assert.assertNotSame( bestBuddy, obtainedBuddy );
+        Assert.assertNotSame(bestBuddy, obtainedBuddy);
         Assert.assertEquals(bestBuddy, obtainedBuddy);
 
         crmPersistentSession.dispose();
     }
 
     protected abstract StatefulKnowledgeSession createSession(KnowledgeBase kbase);
-    
+
     protected abstract StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession crmPersistentSession,
                                                                         KnowledgeBase kbase);
 

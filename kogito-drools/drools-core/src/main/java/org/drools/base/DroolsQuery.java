@@ -17,45 +17,66 @@
 package org.drools.base;
 
 import java.util.Arrays;
+import java.util.List;
 
+import org.drools.common.LeftTupleSets;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.index.RightTupleList;
+import org.drools.phreak.RuleNetworkEvaluator;
+import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.PathMemory;
 import org.drools.rule.Query;
 import org.kie.runtime.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
-    private final String                      name;
-    private InternalViewChangedEventListener  resultsCollector;
-    private Query                             query;
-    private boolean                           open;
-    
-    private Variable[]                        vars;
-    
-    private RightTupleList                    resultInsertRightTupleList;
-    private RightTupleList                    resultUpdateRightTupleList;
-    private RightTupleList                    resultRetractRightTupleList;
-    
-    private WorkingMemoryAction               action;
-    
-//    public DroolsQuery(DroolsQuery droolsQuery) {
-//        super( new Object[droolsQuery.getElements().length] );
-//
-//        this.name = droolsQuery.getName();
-//        this.resultsCollector = droolsQuery.getQueryResultCollector();
-//        this.open = droolsQuery.isOpen();
-//        final Object[] params = getElements();
-//        System.arraycopy( droolsQuery.getElements(), 0, params, 0, params.length );
-//        originalDroolsQuery = droolsQuery;
-//    }
+    private final String                           name;
+    private       InternalViewChangedEventListener resultsCollector;
+    private       Query                            query;
+    private       boolean                          open;
+
+    private Variable[] vars;
+
+    private RightTupleList resultInsertRightTupleList;
+    private RightTupleList resultUpdateRightTupleList;
+    private RightTupleList resultRetractRightTupleList;
+
+    private WorkingMemoryAction action;
+
+    private LeftTupleSets resultLeftTuples;
+
+    private List<PathMemory> rmems;
+
+    private RuleNetworkEvaluator.StackEntry stackEntry;
+
+    private LeftTupleSink sink;
+
+    //    public DroolsQuery(DroolsQuery droolsQuery) {
+    //        super( new Object[droolsQuery.getElements().length] );
+    //
+    //        this.name = droolsQuery.getName();
+    //        this.resultsCollector = droolsQuery.getQueryResultCollector();
+    //        this.open = droolsQuery.isOpen();
+    //        final Object[] params = getElements();
+    //        System.arraycopy( droolsQuery.getElements(), 0, params, 0, params.length );
+    //        originalDroolsQuery = droolsQuery;
+    //    }
 
     public DroolsQuery(final String name,
                        final Object[] params,
                        final InternalViewChangedEventListener resultsCollector,
-                       final boolean open ) {
-        setParameters( params );
+                       final boolean open,
+                       final RuleNetworkEvaluator.StackEntry stackEntry,
+                       final List<PathMemory> rmems,
+                       final LeftTupleSets resultLeftTuples,
+                       final LeftTupleSink sink) {
+        setParameters(params);
         this.name = name;
         this.resultsCollector = resultsCollector;
-        this.open = open;                
+        this.stackEntry = stackEntry;
+        this.open = open;
+        this.rmems = rmems;
+        this.resultLeftTuples = resultLeftTuples;
+        this.sink = sink;
     }
     
     public void setParameters(final Object[] params) {
@@ -78,8 +99,23 @@ public final class DroolsQuery extends ArrayElements {
     
     public Variable[] getVariables() {
         return this.vars;
-    }    
+    }  
     
+    public LeftTupleSets getResultLeftTupleSets() {
+        return resultLeftTuples;
+    }
+
+    public RuleNetworkEvaluator.StackEntry getStackEntry() {
+        return this.stackEntry;
+    }
+
+    public List<PathMemory> getRuleMemories() {
+        return this.rmems;
+    }
+
+    public LeftTupleSink getLeftTupleSink() {
+        return this.sink;
+    }
 
     public void setQuery(Query query) {
         // this is set later, as we don't yet know which Query will match this DroolsQuery propagation

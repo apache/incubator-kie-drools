@@ -16,6 +16,10 @@
 
 package org.drools.decisiontable.parser.csv;
 
+import org.drools.decisiontable.parser.DecisionTableParser;
+import org.drools.template.parser.DataListener;
+import org.drools.template.parser.DecisionTableParseException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,14 +27,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.decisiontable.parser.DecisionTableParser;
-import org.drools.template.parser.DataListener;
-import org.drools.template.parser.DecisionTableParseException;
-
 /**
  * Csv implementation. This implementation removes empty "cells" at the end of
  * each line. Different CSV tools may or may not put heaps of empty cells in.
- * 
+ * <p/>
  * Csv format is almost identical to XLS, with the one limitation: Merged cells
  * are not supported. To allow constraints to span across cells for the one
  * column, this is achieved by using "..." at the end of a cell value. If a cell
@@ -44,7 +44,7 @@ public class CsvParser implements DecisionTableParser {
     private CsvLineParser _lineParser;
 
     public CsvParser(final DataListener listener,
-            final CsvLineParser lineParser) {
+                     final CsvLineParser lineParser) {
         _listeners = new ArrayList<DataListener>();
         _listeners.add(listener);
         this._lineParser = lineParser;
@@ -69,26 +69,26 @@ public class CsvParser implements DecisionTableParser {
     }
 
     private void startSheet() {
-        for ( DataListener listener : _listeners ) {
+        for (DataListener listener : _listeners) {
             listener.startSheet("csv");
         }
     }
 
     private void finishSheet() {
-        for ( DataListener listener : _listeners ) {
+        for (DataListener listener : _listeners) {
             listener.finishSheet();
         }
     }
 
     private void newRow(final int row, final int numCells) {
-        for ( DataListener listener : _listeners ) {
+        for (DataListener listener : _listeners) {
             listener.newRow(row, numCells);
         }
     }
 
     private void newCell(final int row, final int column, final String value,
-            final int mergedColStart) {
-        for ( DataListener listener : _listeners ) {
+                         final int mergedColStart) {
+        for (DataListener listener : _listeners) {
             listener.newCell(row, column, value, mergedColStart);
         }
     }

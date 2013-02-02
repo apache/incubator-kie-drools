@@ -28,6 +28,8 @@ public class RightTupleIndexRangeRBTree implements RightTupleMemory, Externaliza
 
     private FieldIndex descendingIndex;
     private ConstraintType descendingConstraintType;
+    
+    private RightTupleBoundedFastIterator rightTupleBoundedFastIterator;
 
     private int size;
 
@@ -149,11 +151,17 @@ public class RightTupleIndexRangeRBTree implements RightTupleMemory, Externaliza
     }
 
     public FastIterator fastIterator() {
-        return new RightTupleBoundedFastIterator();
+        if ( rightTupleBoundedFastIterator != null ) {
+            rightTupleBoundedFastIterator = new RightTupleBoundedFastIterator();
+        }
+        return rightTupleBoundedFastIterator;
     }
 
     public FastIterator fullFastIterator() {
-        return new RightTupleBoundedFastIterator();
+        if ( rightTupleBoundedFastIterator != null ) {
+            rightTupleBoundedFastIterator = new RightTupleBoundedFastIterator();
+        }
+        return rightTupleBoundedFastIterator;
     }
 
     public FastIterator fullFastIterator(RightTuple tuple) {

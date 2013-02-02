@@ -182,7 +182,7 @@ public class EvalConditionNode extends LeftTupleSource
                     useLeftMemory = false;
                 }
             }
-
+            
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 context,
                                                 workingMemory,

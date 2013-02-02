@@ -289,5 +289,8 @@ public class RightTupleSets {
         
         return sbuilder.toString();
     }
-    
+
+    public boolean isEmpty() {
+        return getInsertFirst() == null && getDeleteFirst() == null && getUpdateFirst() == null;
+    }
 }

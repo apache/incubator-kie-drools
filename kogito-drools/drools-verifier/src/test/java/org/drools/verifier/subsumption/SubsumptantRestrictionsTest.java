@@ -16,12 +16,6 @@
 
 package org.drools.verifier.subsumption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
@@ -32,6 +26,10 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
 
+import java.util.Collection;
+
+import static org.junit.Assert.*;
+
 public class SubsumptantRestrictionsTest {
 
     @Test
@@ -41,23 +39,23 @@ public class SubsumptantRestrictionsTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantRestriction1.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantRestriction1.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
-        assertEquals( 9,
-                      subsumptionList.size() );
+        assertEquals(9,
+                     subsumptionList.size());
 
         verifier.dispose();
     }
@@ -69,23 +67,23 @@ public class SubsumptantRestrictionsTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantRestriction2.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantRestriction2.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
-        assertEquals( 9,
-                      subsumptionList.size() );
+        assertEquals(9,
+                     subsumptionList.size());
 
         verifier.dispose();
     }
@@ -97,23 +95,23 @@ public class SubsumptantRestrictionsTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantRestriction3.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantRestriction3.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
-        assertEquals( 6,
-                      subsumptionList.size() );
+        assertEquals(6,
+                     subsumptionList.size());
 
         verifier.dispose();
     }
@@ -125,27 +123,27 @@ public class SubsumptantRestrictionsTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "SubsumptantRestriction4.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantRestriction4.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {
         //            System.out.println( error.getMessage() );
         //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects( new ClassObjectFilter( Subsumption.class ) );
+        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
-//        for ( Object object : subsumptionList ) {
-//            System.out.println( object );
-//        }
+        //        for ( Object object : subsumptionList ) {
+        //            System.out.println( object );
+        //        }
 
-        assertEquals( 4,
-                      subsumptionList.size() );
+        assertEquals(4,
+                     subsumptionList.size());
 
         verifier.dispose();
     }

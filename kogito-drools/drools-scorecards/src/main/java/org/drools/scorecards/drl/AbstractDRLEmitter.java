@@ -121,7 +121,7 @@ public abstract class AbstractDRLEmitter {
         for (Object obj : pmml.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
             if (obj instanceof Scorecard) {
                 Scorecard scorecard = (Scorecard) obj;
-                stringBuilder.append("declare ").append(scorecard.getModelName().replaceAll(" ","")).append(" extends DroolsScorecard\n");
+                stringBuilder.append("declare ").append(scorecard.getModelName().replaceAll(" ", "")).append(" extends DroolsScorecard\n");
 
                 addDeclaredTypeContents(pmml, stringBuilder, scorecard);
 
@@ -141,7 +141,7 @@ public abstract class AbstractDRLEmitter {
                 for (org.dmg.pmml.pmml_4_1.descr.Characteristic c : characteristics.getCharacteristics()) {
                     int attributePosition = 0;
                     for (org.dmg.pmml.pmml_4_1.descr.Attribute scoreAttribute : c.getAttributes()) {
-                        String name = formRuleName(pmmlDocument, scorecard.getModelName().replaceAll(" ",""), c, scoreAttribute);
+                        String name = formRuleName(pmmlDocument, scorecard.getModelName().replaceAll(" ", ""), c, scoreAttribute);
                         Rule rule = new Rule(name, 99, 1);
                         String desc = ScorecardPMMLUtils.getExtensionValue(scoreAttribute.getExtensions(), "description");
                         if (desc != null) {
@@ -160,32 +160,32 @@ public abstract class AbstractDRLEmitter {
     }
 
     protected void createInitialRule(List<Rule> ruleList, Scorecard scorecard) {
-        if (scorecard.getInitialScore() > 0 || scorecard.isUseReasonCodes()){
+        if (scorecard.getInitialScore() > 0 || scorecard.isUseReasonCodes()) {
             String objectClass = scorecard.getModelName().replaceAll(" ", "");
-            String ruleName = objectClass+"_init";
+            String ruleName = objectClass + "_init";
             Rule rule = new Rule(ruleName, 999, 1);
             rule.setDescription("set the initial score");
 
             Condition condition = createInitialRuleCondition(scorecard, objectClass);
             rule.addCondition(condition);
-            if (scorecard.getInitialScore() > 0 ) {
+            if (scorecard.getInitialScore() > 0) {
                 Consequence consequence = new Consequence();
                 //consequence.setSnippet("$sc.setInitialScore(" + scorecard.getInitialScore() + ");");
-                consequence.setSnippet("insertLogical(new InitialScore(\"" + objectClass+"\","+scorecard.getInitialScore() +"));");
+                consequence.setSnippet("insertLogical(new InitialScore(\"" + objectClass + "\"," + scorecard.getInitialScore() + "));");
                 rule.addConsequence(consequence);
             }
-            if (scorecard.isUseReasonCodes() ) {
-                for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-                    if (obj instanceof Characteristics){
-                        Characteristics characteristics = (Characteristics)obj;
-                        for (Characteristic characteristic : characteristics.getCharacteristics()){
+            if (scorecard.isUseReasonCodes()) {
+                for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
+                    if (obj instanceof Characteristics) {
+                        Characteristics characteristics = (Characteristics) obj;
+                        for (Characteristic characteristic : characteristics.getCharacteristics()) {
                             String field = ScorecardPMMLUtils.extractFieldNameFromCharacteristic(characteristic);
                             Consequence consequence = new Consequence();
-                            if (characteristic.getBaselineScore() == null ||  characteristic.getBaselineScore() == 0 ) {
-                                consequence.setSnippet("insertLogical(new BaselineScore(\"" + objectClass+"\",\""+field + "\","+scorecard.getBaselineScore()+"));");
+                            if (characteristic.getBaselineScore() == null || characteristic.getBaselineScore() == 0) {
+                                consequence.setSnippet("insertLogical(new BaselineScore(\"" + objectClass + "\",\"" + field + "\"," + scorecard.getBaselineScore() + "));");
                                 //consequence.setSnippet("$sc.setBaselineScore(\"" + field + "\","+scorecard.getBaselineScore()+");");
                             } else {
-                                consequence.setSnippet("insertLogical(new BaselineScore(\"" + objectClass+"\",\""+field + "\","+characteristic.getBaselineScore()+"));");
+                                consequence.setSnippet("insertLogical(new BaselineScore(\"" + objectClass + "\",\"" + field + "\"," + characteristic.getBaselineScore() + "));");
                                 //consequence.setSnippet("$sc.setBaselineScore(\"" + field + "\","+characteristic.getBaselineScore()+");");
                             }
                             rule.addConsequence(consequence);
@@ -311,7 +311,7 @@ public abstract class AbstractDRLEmitter {
         String field = ScorecardPMMLUtils.extractFieldNameFromCharacteristic(c);
 
         stringBuilder.append(setter).append(objectClass).append("\",\"").append(field).append("\",").append(scoreAttribute.getPartialScore());
-        if (scorecard.isUseReasonCodes()){
+        if (scorecard.isUseReasonCodes()) {
             String reasonCode = scoreAttribute.getReasonCode();
             if (reasonCode == null || StringUtils.isEmpty(reasonCode)) {
                 reasonCode = c.getReasonCode();
@@ -325,7 +325,7 @@ public abstract class AbstractDRLEmitter {
 
     protected void createSummationRules(List<Rule> ruleList, Scorecard scorecard) {
         String objectClass = scorecard.getModelName().replaceAll(" ", "");
-        Rule calcTotalRule = new Rule(objectClass+"_calculateTotalScore",1,1);
+        Rule calcTotalRule = new Rule(objectClass + "_calculateTotalScore", 1, 1);
         StringBuilder stringBuilder = new StringBuilder();
         Condition condition = new Condition();
         stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), sum($partialScore))");
@@ -341,7 +341,7 @@ public abstract class AbstractDRLEmitter {
         ruleList.add(calcTotalRule);
 
         if (scorecard.isUseReasonCodes()) {
-            String ruleName = objectClass+"_collectReasonCodes";
+            String ruleName = objectClass + "_collectReasonCodes";
             Rule rule = new Rule(ruleName, 1, 1);
             rule.setDescription("collect and sort the reason codes as per the specified algorithm");
             condition = new Condition();
@@ -360,11 +360,18 @@ public abstract class AbstractDRLEmitter {
     }
 
     protected abstract void addDeclaredTypeContents(PMML pmmlDocument, StringBuilder stringBuilder, Scorecard scorecard);
+
     protected abstract void internalEmitDRL(PMML pmml, List<Rule> ruleList, Package aPackage);
+
     protected abstract void addLHSConditions(Rule rule, PMML pmmlDocument, Scorecard scorecard, Characteristic c, Attribute scoreAttribute);
+
     protected abstract void addAdditionalReasonCodeConsequence(Rule rule, Scorecard scorecard);
+
     protected abstract void addAdditionalReasonCodeCondition(Rule rule, Scorecard scorecard);
+
     protected abstract void addAdditionalSummationConsequence(Rule rule, Scorecard scorecard);
+
     protected abstract void addAdditionalSummationCondition(Rule rule, Scorecard scorecard);
+
     protected abstract Condition createInitialRuleCondition(Scorecard scorecard, String objectClass);
 }

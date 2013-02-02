@@ -22,6 +22,7 @@ import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.Queueable;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.TerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -63,7 +64,7 @@ public class AgendaItem
     private int                       sequenence;
 
     /** Rule terminal node, gives access to SubRule **/
-    private RuleTerminalNode          rtn;
+    private TerminalNode              rtn;
 
     /** The propagation context */
     private PropagationContext        context;
@@ -115,7 +116,7 @@ public class AgendaItem
                       final LeftTuple tuple,
                       final int salience,
                       final PropagationContext context,
-                      final RuleTerminalNode rtn) {
+                      final TerminalNode rtn) {
         this.tuple = tuple;
         this.context = context;
         this.salience = salience;
@@ -153,7 +154,7 @@ public class AgendaItem
     }
 
     public Consequence getConsequence() {
-        String consequenceName = rtn.getConsequenceName();
+        String consequenceName = ((RuleTerminalNode)rtn).getConsequenceName();
         return consequenceName.equals(Rule.DEFAULT_CONSEQUENCE_NAME) ? rtn.getRule().getConsequence() : rtn.getRule().getNamedConsequence(consequenceName);
     }
 
@@ -366,7 +367,7 @@ public class AgendaItem
         return this.rtn.getSubRule();
     }
     
-    public RuleTerminalNode getRuleTerminalNode() {
+    public TerminalNode getTerminalNode() {
         return this.rtn;
     }
         

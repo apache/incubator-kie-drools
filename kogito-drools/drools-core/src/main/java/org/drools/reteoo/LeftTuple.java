@@ -155,6 +155,8 @@ public interface LeftTuple
 
     void setParent(LeftTuple parent);
 
+    public LeftTuple getRootLeftTuple();
+
     public PropagationContext getPropagationContext();
 
     public void setPropagationContext(PropagationContext propagationContext);

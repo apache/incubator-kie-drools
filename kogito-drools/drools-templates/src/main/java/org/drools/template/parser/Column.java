@@ -17,7 +17,6 @@
 package org.drools.template.parser;
 
 /**
- *
  * A column in a decision table
  */
 public interface Column {

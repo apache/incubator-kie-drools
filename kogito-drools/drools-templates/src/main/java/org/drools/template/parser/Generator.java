@@ -15,6 +15,7 @@
  */
 
 package org.drools.template.parser;
+
 /**
  * <a href="stevearoonie@gmail.com">Steven Williams</a>
  * Generate the rules for a decision table

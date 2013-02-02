@@ -81,7 +81,7 @@ public class JoinNode extends BetaNode {
 
         for ( RightTuple rightTuple = getFirstRightTuple( leftTuple,
                                                           rightMemory,
-                                                          context,
+                                                          (InternalFactHandle) context.getFactHandle(),
                                                           it ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
             
             propagateFromLeft( rightTuple, leftTuple, contextEntry, useLeftMemory, context, workingMemory );
@@ -331,7 +331,7 @@ public class JoinNode extends BetaNode {
 
         RightTuple rightTuple = getFirstRightTuple( leftTuple,
                                                     rightMemory,
-                                                    context,
+                                                    (InternalFactHandle) context.getFactHandle(),
                                                     it );
         
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket

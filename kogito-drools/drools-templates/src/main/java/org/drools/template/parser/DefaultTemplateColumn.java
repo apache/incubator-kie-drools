@@ -15,17 +15,16 @@
  */
 
 package org.drools.template.parser;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.drools.core.util.StringUtils;
 import org.drools.template.model.Condition;
 import org.drools.template.model.Rule;
 import org.drools.template.model.SnippetBuilder;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
- * 
- *
  * The default column condition for a rule template to be generated. If the
  * conditon starts with "!" then the template will only be generated if the
  * column condition does not exist. If there is no condition string then the
@@ -49,9 +48,10 @@ class DefaultTemplateColumn implements TemplateColumn {
     DefaultTemplateColumn(TemplateContainer tc, String columnString) {
         templateContainer = tc;
         Matcher matcher = COLUMN_PATTERN.matcher(columnString);
-        if (!matcher.matches())
+        if (!matcher.matches()) {
             throw new IllegalArgumentException("column " + columnString
-                    + " is not valid");
+                                               + " is not valid");
+        }
         notCondition = !StringUtils.isEmpty(matcher.group(1));
         columnName = matcher.group(2);
         String indexString = matcher.group(4);

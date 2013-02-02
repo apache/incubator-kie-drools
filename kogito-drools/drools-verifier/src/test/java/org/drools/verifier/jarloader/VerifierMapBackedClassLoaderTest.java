@@ -1,7 +1,6 @@
 package org.drools.verifier.jarloader;
 
 import org.drools.verifier.Verifier;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.jar.JarInputStream;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

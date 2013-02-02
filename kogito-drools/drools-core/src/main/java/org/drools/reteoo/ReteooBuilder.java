@@ -59,7 +59,6 @@ import org.drools.spi.Salience;
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
  *
- * @see org.kie.rule.Package
  */
 public class ReteooBuilder
     implements
@@ -73,7 +72,7 @@ public class ReteooBuilder
     /** The RuleBase */
     private transient InternalRuleBase  ruleBase;
 
-    private Map<Rule, BaseNode[]>       rules;
+    private Map<String, BaseNode[]>       rules;
     
     private Map<String, WindowNode>     namedWindows;
 
@@ -97,7 +96,7 @@ public class ReteooBuilder
      */
     ReteooBuilder( final InternalRuleBase ruleBase ) {
         this.ruleBase = ruleBase;
-        this.rules = new HashMap<Rule, BaseNode[]>();
+        this.rules = new HashMap<String, BaseNode[]>();
         this.namedWindows = new HashMap<String, WindowNode>();
 
         //Set to 1 as Rete node is set to 0
@@ -125,7 +124,7 @@ public class ReteooBuilder
                                                                        this.ruleBase,
                                                                        this.idGenerator );
 
-        this.rules.put( rule,
+        this.rules.put( rule.getName(),
                         terminals.toArray( new BaseNode[terminals.size()] ) );
     }
     
@@ -246,10 +245,14 @@ public class ReteooBuilder
     }
 
     public synchronized BaseNode[] getTerminalNodes(final Rule rule) {
-        return this.rules.get( rule );
+        return this.rules.get( rule.getName() );
     }
 
-    public synchronized Map<Rule, BaseNode[]> getTerminalNodes() {
+    public synchronized BaseNode[] getTerminalNodes(final String ruleName) {
+        return this.rules.get( ruleName );
+    }
+
+    public synchronized Map<String, BaseNode[]> getTerminalNodes() {
         return this.rules;
     }
     
@@ -265,7 +268,7 @@ public class ReteooBuilder
             context.setUnlinkEnabled( false );
         }
         
-        final BaseNode[] nodes = this.rules.remove( rule );
+        final BaseNode[] nodes = this.rules.remove( rule.getName() );
 
         for (BaseNode node : nodes) {
             NodeSet nodeSet = new NodeSet();
@@ -462,7 +465,7 @@ public class ReteooBuilder
             droolsStream = new DroolsObjectInputStream( bytes );
         }
         
-        this.rules = (Map<Rule, BaseNode[]>) droolsStream.readObject();
+        this.rules = (Map<String, BaseNode[]>) droolsStream.readObject();
         this.namedWindows = (Map<String, WindowNode>) droolsStream.readObject();
         this.idGenerator = (IdGenerator) droolsStream.readObject();
         this.ordered = droolsStream.readBoolean();

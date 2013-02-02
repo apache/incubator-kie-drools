@@ -17,6 +17,7 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.SalienceInteger;
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.AgendaItem;
@@ -54,7 +55,7 @@ import java.util.Map;
  *
  * @see org.kie.rule.Rule
  */
-public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFactory {
+public class RuleTerminalNode extends AbstractTerminalNode {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -123,6 +124,9 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();
 
         setFireDirect( rule.getActivationListener().equals( "direct" ) );
+        if ( isFireDirect() ) {
+            rule.setSalience( new SalienceInteger(Integer.MAX_VALUE) );
+        }
 
         setDeclarations( this.subrule.getOuterDeclarations() );
 
@@ -270,7 +274,7 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
         }
     }
 
-    private PropagationContext findMostRecentPropagationContext(final LeftTuple leftTuple,
+    public static PropagationContext findMostRecentPropagationContext(final LeftTuple leftTuple,
                                                                 PropagationContext context) {
         // Find the most recent PropagationContext, as this caused this rule to elegible for firing
         LeftTuple lt = leftTuple;
@@ -614,45 +618,6 @@ public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFact
 
     protected ObjectTypeNode getObjectTypeNode() {
         return getLeftTupleSource().getObjectTypeNode();
-    }
-
-    public Memory createMemory(RuleBaseConfiguration config) {
-        int segmentCount = 1; // always atleast one segment
-        
-        if ( getLeftTupleSource().getSinkPropagator().size() > 1 ) {
-            // it's shared, RTN is in it's own segment, so increase segmentCount
-            segmentCount++;
-        }
-        
-        int segmentPosMask = 1;
-        long allLinkedTestMask = 1;        
-        RuleMemory rmem = new RuleMemory(this);
-        LeftTupleSource tupleSource = getLeftTupleSource();
-        boolean updateBitInNewSegment = false; // this is so we can handle segments that don't have betanode's, as their bit will never be set
-        while ( tupleSource.getLeftTupleSource() != null ) {            
-            if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
-                updateBitInNewSegment = true;
-                segmentPosMask = segmentPosMask << 1;  
-                segmentCount++;
-            }
-            
-            if ( updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
-                updateBitInNewSegment = false;
-                allLinkedTestMask = allLinkedTestMask | segmentPosMask;
-            }
-            
-            tupleSource = tupleSource.getLeftTupleSource();            
-        }        
-        rmem.setAllLinkedMaskTest( allLinkedTestMask );
-        rmem.setSegmentMemories( new SegmentMemory[segmentCount] );
-        return rmem;
-    }
-
-    public LeftTuple createPeer(LeftTuple original) {
-        RuleTerminalNodeLeftTuple peer = new RuleTerminalNodeLeftTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
-        original.setPeer( peer );
-        return peer;
-    }           
+    }         
 
 }

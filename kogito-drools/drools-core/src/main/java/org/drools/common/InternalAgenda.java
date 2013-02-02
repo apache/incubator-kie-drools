@@ -19,8 +19,8 @@ package org.drools.common;
 import org.drools.Agenda;
 import org.drools.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RuleMemory;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.PathMemory;
+import org.drools.reteoo.TerminalNode;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
@@ -48,23 +48,23 @@ public interface InternalAgenda
     public AgendaItem createAgendaItem(final LeftTuple tuple,
                                        final int salience,
                                        final PropagationContext context,
-                                       final RuleTerminalNode rtn);
+                                       final TerminalNode rtn);
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
-                                                         final RuleTerminalNode rtn);
+                                                         final TerminalNode rtn);
     
     public boolean createActivation(final LeftTuple tuple,
                                     final PropagationContext context,
                                     final InternalWorkingMemory workingMemory,
-                                    final RuleTerminalNode rtn,
+                                    final TerminalNode rtn,
                                     final boolean reuseActivation );        
 
     public void cancelActivation(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory,
                                  final Activation activation,
-                                 final RuleTerminalNode rtn );
+                                 final TerminalNode rtn );
 
     /**
      * Adds the activation to the agenda. Depending on the mode the agenda is running,
@@ -191,6 +191,6 @@ public interface InternalAgenda
     public ActivationsFilter getActivationsFilter();
         
     public RuleNetworkEvaluatorActivation createRuleNetworkEvaluatorActivation(final int salience,
-                                                       final RuleMemory rs,
-                                                       final RuleTerminalNode rtn);
+                                                                               final PathMemory rs,
+                                                                               final TerminalNode rtn);
 }

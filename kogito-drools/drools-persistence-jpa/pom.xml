@@ -2,238 +2,230 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>drools-multiproject</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-multiproject</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
 
-  <artifactId>drools-persistence-jpa</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+    <artifactId>drools-persistence-jpa</artifactId>
+    <packaging>bundle</packaging>
+    <!-- bundle = jar + OSGi metadata -->
 
-  <name>Drools :: Persistence :: JPA</name>
-  <description>JPA implementation for Drools</description>
+    <name>Drools :: Persistence :: JPA</name>
+    <description>JPA implementation for Drools</description>
 
-  <build>
-    <testResources>
-      <testResource>
-        <directory>src/test/resources</directory>
-        <filtering>false</filtering>
-      </testResource>
-      <testResource>
-        <directory>src/test/filtered-resources</directory>
-        <filtering>true</filtering>
-      </testResource>
-    </testResources>
-    
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <instructions>
-            <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}", org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,*</Import-Package>
-            <Export-Package>org.drools.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.drools.persistence.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <!--  ensure that db files are deleted before _any_ run 
-              otherwise we get tests failing because of leftover db's -->
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-         <filesets>
-            <fileset>
-              <directory>${basedir}</directory>
-              <includes>
-                <include>btm*</include>
-                <include>JPADroolsFlow.h2.db</include>
-              </includes>
-            </fileset>
-         </filesets>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/filtered-resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.0-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.javassist</groupId>
-      <artifactId>javassist</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.transaction</groupId>
-      <artifactId>jta</artifactId>
-    </dependency>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <_removeheaders>Ignore-Package</_removeheaders>
+                        <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}",
+                            org.drools.compiler;bundle-version="${drools.osgi.version}"
+                        </Require-Bundle>
+                        <Import-Package>!org.drools.*,*</Import-Package>
+                        <Export-Package>org.drools.*</Export-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Bundle-Activator>org.drools.persistence.osgi.Activator</Bundle-Activator>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!--  ensure that db files are deleted before _any_ run
+                      otherwise we get tests failing because of leftover db's -->
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${basedir}</directory>
+                            <includes>
+                                <include>btm*</include>
+                                <include>JPADroolsFlow.h2.db</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-    <!-- Hibernate -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- test -->
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.btm</groupId>
-      <artifactId>btm</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jdt.core.compiler</groupId>
-      <artifactId>ecj</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr-runtime</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Extra test -->
-   <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-embedded</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <!--
-     These are properties used in the database profiles. Some of them must be initialized
-     them to be empty so that Maven applies them via filtering to the resources. 
-     -->
-  <properties>
-    <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
-    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
-    <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
-    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
-    <maven.jdbc.db.name/>
-    <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/>     
-    <maven.jdbc.driver.jar/>
-    <maven.jdbc.username></maven.jdbc.username>
-    <maven.jdbc.password></maven.jdbc.password>
-    <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
-  </properties>
-
-  <profiles>
-    <profile>
-      <id>database</id>
-       
-      <dependencies>
-        <!--  Add the downloaded jdbc driver jar for the database to the classpath.
-              !: <groupId>, <artifactId> and <version> are just placeholders and DO NOT MATTER! -->
+    <dependencies>
         <dependency>
-           <groupId>org.jbpm</groupId>
-           <artifactId>downloaded-jdbc-driver-jar</artifactId>
-           <version>1.0</version>
-           <scope>system</scope>
-           <systemPath>${maven.jdbc.driver.jar}</systemPath>
-        </dependency>  
-      </dependencies>
-    </profile>
- </profiles>
-    
+            <groupId>org.kie</groupId>
+            <artifactId>kie-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+        </dependency>
+
+        <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.btm</groupId>
+            <artifactId>btm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt.core.compiler</groupId>
+            <artifactId>ecj</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-runtime</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Extra test -->
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-embedded</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!--
+       These are properties used in the database profiles. Some of them must be initialized
+       them to be empty so that Maven applies them via filtering to the resources.
+       -->
+    <properties>
+        <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
+        <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
+        <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
+        <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
+        <maven.jdbc.db.name/>
+        <maven.jdbc.db.port/>
+        <maven.jdbc.db.server/>
+        <maven.jdbc.driver.jar/>
+        <maven.jdbc.username></maven.jdbc.username>
+        <maven.jdbc.password></maven.jdbc.password>
+        <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>database</id>
+
+            <dependencies>
+                <!--  Add the downloaded jdbc driver jar for the database to the classpath.
+                      !: <groupId>, <artifactId> and <version> are just placeholders and DO NOT MATTER! -->
+                <dependency>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>downloaded-jdbc-driver-jar</artifactId>
+                    <version>1.0</version>
+                    <scope>system</scope>
+                    <systemPath>${maven.jdbc.driver.jar}</systemPath>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
 </project>

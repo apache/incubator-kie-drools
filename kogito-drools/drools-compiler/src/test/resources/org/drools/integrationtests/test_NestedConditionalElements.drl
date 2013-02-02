@@ -2,11 +2,13 @@ package org.drools;
 
 global java.util.List results
 
-rule "test nested CEs"
+rule "test nested CEs"  salience 100
     when
         not ( State( $state : state ) and
               not( Person( status == $state, $likes : likes ) and
                    Cheese( type == $likes ) ) )
     then
-        results.add("OK");
+        results.add("OK1");
 end
+
+

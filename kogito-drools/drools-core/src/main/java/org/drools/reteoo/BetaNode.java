@@ -45,6 +45,8 @@ import org.drools.rule.Pattern;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -75,10 +77,6 @@ public abstract class BetaNode extends LeftTupleSource
         RightTupleSink,
         MemoryFactory {
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
-    /** The right input <code>TupleSource</code>. */
     protected ObjectSource    rightInput;
 
     protected BetaConstraints constraints;
@@ -408,10 +406,10 @@ public abstract class BetaNode extends LeftTupleSource
 
     public RightTuple getFirstRightTuple(final LeftTuple leftTuple,
                                          final RightTupleMemory memory,
-                                         final PropagationContext context,
+                                         final InternalFactHandle factHandle,
                                          final FastIterator it) {
         if ( !this.indexedUnificationJoin ) {
-            return memory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle(), it );
+            return memory.getFirst( leftTuple, factHandle, it );
         } else {
             return (RightTuple) it.next( null );
         }

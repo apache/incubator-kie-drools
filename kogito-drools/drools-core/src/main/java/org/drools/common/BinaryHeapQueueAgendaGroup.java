@@ -98,6 +98,10 @@ public class BinaryHeapQueueAgendaGroup
     public Activation getNext() {
         return (Activation) this.queue.dequeue();
     }
+    
+    public Activation  peekNext() {
+        return this.queue.peek();
+    }
 
     public boolean isActive() {
         return this.active;

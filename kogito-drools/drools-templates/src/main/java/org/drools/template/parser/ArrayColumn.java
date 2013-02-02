@@ -17,8 +17,8 @@
 package org.drools.template.parser;
 
 import org.drools.core.util.StringUtils;
+
 /**
- *
  * A column in a decision table that represents an array (comma-delimited)
  * of values.
  */
@@ -51,9 +51,7 @@ public class ArrayColumn extends AbstractColumn {
             }
             conditionString.append(")");
             return conditionString.toString();
-        }
-        else
-        {
+        } else {
             return type.getCondition(condition, index);
         }
 

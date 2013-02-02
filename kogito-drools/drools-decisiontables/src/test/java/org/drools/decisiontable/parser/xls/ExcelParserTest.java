@@ -16,58 +16,125 @@
 
 package org.drools.decisiontable.parser.xls;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import jxl.Cell;
+import jxl.CellType;
+import jxl.Range;
+import jxl.format.CellFormat;
+import org.drools.template.parser.DataListener;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.drools.template.parser.DataListener;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
- *
  * Some unit tests for the corners of ExcelParser that are not explicitly
  * covered by integration tests.
  */
 public class ExcelParserTest {
-
-    private static final String LAST_CELL_VALUE = "last";
-    private static final String FIRST_CELL_CONTENT = "first";
-
     /**
-     * This should test to see if a cell is in a certain range or not. 
+     * This should test to see if a cell is in a certain range or not.
      * If it is in a merged range, then it should return the top left cell.
+     *
      * @throws Exception
      */
     @Test
     public void testCellMerge() throws Exception {
         ExcelParser parser = new ExcelParser((Map<String, List<DataListener>>) null);
 
-        CellRangeAddress[] ranges = new CellRangeAddress[1];
+        Range[] ranges = new Range[1];
 
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet();
-        Cell cell = sheet.createRow(2).createCell(2);
-        ranges[0] = new CellRangeAddress(2, 7, 2, 5);
-        cell.setCellValue(FIRST_CELL_CONTENT);
+        MockRange r1 = new MockRange();
+        ranges[0] = r1;
+        r1.topLeft = new MockCell();
+        r1.topLeft.row = 2;
+        r1.topLeft.column = 2;
+        r1.topLeft.contents = "first";
 
-        cell = sheet.createRow(7).createCell(5);
-        cell.setCellValue(LAST_CELL_VALUE);
 
-        cell = sheet.createRow(1).createCell(1);
+        r1.bottomRight = new MockCell();
+        r1.bottomRight.column = 5;
+        r1.bottomRight.row = 7;
+        r1.bottomRight.contents = "last";
+
+
+        MockCell cell = new MockCell();
+        cell.contents = "test";
+        cell.row = 1;
+        cell.column = 1;
+
         assertNull(parser.getRangeIfMerged(cell, ranges));
 
-        cell = sheet.getRow(2).createCell(5);
-        cell.setCellValue("wrong");
+        cell = new MockCell();
+        cell.contents = "wrong";
+        cell.row = 2;
+        cell.column = 5;
 
-        CellRangeAddress rangeIfMerged = parser.getRangeIfMerged(cell, ranges);
-        assertEquals(FIRST_CELL_CONTENT, sheet.getRow(rangeIfMerged.getFirstRow()).getCell(rangeIfMerged.getFirstColumn()).getStringCellValue());
+        assertEquals("first", parser.getRangeIfMerged(cell, ranges).getTopLeft().getContents());
+
+    }
+
+    static class MockCell<CellFeatures> implements Cell {
+
+        int    column;
+        int    row;
+        String contents;
+
+
+        public CellFormat getCellFormat() {
+            return null;
+        }
+
+        public int getColumn() {
+            return column;
+        }
+
+        public String getContents() {
+            return contents;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public CellType getType() {
+            return null;
+        }
+
+        public boolean isHidden() {
+            return false;
+        }
+
+        public jxl.CellFeatures getCellFeatures() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+    }
+
+    static class MockRange implements Range {
+
+        MockCell bottomRight;
+        MockCell topLeft;
+
+        public Cell getBottomRight() {
+            return bottomRight;
+        }
+
+        public int getFirstSheetIndex() {
+            return 0;
+        }
+
+        public int getLastSheetIndex() {
+            return 0;
+        }
+
+        public Cell getTopLeft() {
+            return topLeft;
+        }
+
     }
 
 }

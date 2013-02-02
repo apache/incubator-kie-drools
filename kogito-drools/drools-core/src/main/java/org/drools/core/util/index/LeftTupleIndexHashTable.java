@@ -40,6 +40,8 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     private int                                       startResult;
 
     private transient FieldIndexHashTableFullIterator tupleValueFullIterator;
+    
+    private transient FullFastIterator                fullFastIterator;
 
     private int                                       factSize;
 
@@ -121,7 +123,12 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     }
 
     public FastIterator fullFastIterator() {
-        return new FullFastIterator( this.table );
+        if ( fullFastIterator == null ) {
+            fullFastIterator = new FullFastIterator( this.table );
+        } else {
+            fullFastIterator.reset();
+        }
+        return fullFastIterator;
     }
     
     public FastIterator fullFastIterator(LeftTuple leftTuple) {
@@ -193,6 +200,10 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
 
         public boolean isFullIterator() {
             return true;
+        }
+        
+        public void reset() {
+            this.row = 0;
         }
 
     }

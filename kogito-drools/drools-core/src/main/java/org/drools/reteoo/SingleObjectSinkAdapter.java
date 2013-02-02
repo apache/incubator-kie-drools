@@ -94,9 +94,17 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
             bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, wm);
         } else {
             throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
-        }        
-        
-        bm.linkNode( wm );
+        }
+
+        if ( bm.getStagedRightTuples().isEmpty() ) {
+
+        }
+
+        if ( bm.getRightTupleMemory().size() == 0 && bm.getStagedRightTuples().isEmpty() ) {
+            bm.linkNode( wm );
+        } else if (  bm.getStagedRightTuples().isEmpty() ) {
+            bm.getSegmentMemory().notifyRuleLinkSegment( wm );
+        }
 
     }
     

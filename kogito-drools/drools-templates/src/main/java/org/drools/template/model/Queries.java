@@ -21,8 +21,8 @@ package org.drools.template.model;
  * formatting is contributed here.
  */
 public class Queries
-    implements
-    DRLJavaEmitter {
+        implements
+        DRLJavaEmitter {
 
     private String queriesListing;
 
@@ -31,8 +31,8 @@ public class Queries
     }
 
     public void renderDRL(final DRLOutput out) {
-        if ( this.queriesListing != null ) {
-            out.writeLine( this.queriesListing );
+        if (this.queriesListing != null) {
+            out.writeLine(this.queriesListing);
         }
     }
 

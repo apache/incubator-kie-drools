@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
-import org.drools.common.BaseNode;
+import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
@@ -58,12 +57,14 @@ public class RightInputAdapterNode extends ObjectSource
     
     private LeftTupleSource   startTupleSource;
 
-    protected boolean         tupleMemoryEnabled;
+    private boolean           tupleMemoryEnabled;
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
-    
-    protected boolean         unlinkingEnabled;       
+
+    private boolean           unlinkingEnabled;
+
+    private boolean           queryRule;
 
     public RightInputAdapterNode() {
     }
@@ -88,6 +89,15 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;        
         this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();
+        this.queryRule = isQuery( startTupleSource );
+    }
+
+    public static boolean isQuery(LeftTupleSource lts) {
+        while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+            lts = lts.getLeftTupleSource();
+        }
+
+        return lts.getObjectType().getValueType() == ValueType.QUERY_TYPE;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -98,7 +108,8 @@ public class RightInputAdapterNode extends ObjectSource
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         startTupleSource = ( LeftTupleSource ) in.readObject();
-        unlinkingEnabled = in.readBoolean();        
+        unlinkingEnabled = in.readBoolean();
+        this.queryRule = isQuery( startTupleSource );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -119,6 +130,10 @@ public class RightInputAdapterNode extends ObjectSource
         this.startTupleSource = startTupleSource;
     }
 
+    public boolean isQueryRule() {
+        return this.queryRule;
+    }
+
     /**
      * Creates and return the node memory
      */    
@@ -135,13 +150,12 @@ public class RightInputAdapterNode extends ObjectSource
             int segmentPosMask = 1;
             long allLinkedTestMask = 1; // set to one to cover current segment
             
-            RiaRuleMemory rmem = new RiaRuleMemory(this);
+            RiaPathMemory rmem = new RiaPathMemory(this);
             LeftTupleSource tupleSource = getLeftTupleSource();
             //int associationCount = tupleSource.getAssociations().size();        
             while ( tupleSource != null && tupleSource != getStartTupleSource() ) {
                 if ( tupleSource.getLeftTupleSource() !=  getStartTupleSource() &&
                         !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
-                    //associationCount = tupleSource.getAssociations().size();
                     segmentPosMask = segmentPosMask << 1;                
                     allLinkedTestMask = allLinkedTestMask | segmentPosMask;  
                     segmentCount++;
@@ -477,11 +491,11 @@ public class RightInputAdapterNode extends ObjectSource
     
     public static class RiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
         private ObjectHashMap map = new ObjectHashMap();
-        private RuleMemory ruleSegments;
-        
-        public RiaNodeMemory() {            
+        private RiaPathMemory pathMemory;
+
+        public RiaNodeMemory() {
         }
-        
+
         public ObjectHashMap getMap() {
             return map;
         }
@@ -490,22 +504,22 @@ public class RightInputAdapterNode extends ObjectSource
             this.map = map;
         }
 
-        public RuleMemory getRiaRuleMemory() {
-            return ruleSegments;
+        public RiaPathMemory getRiaPathMemory() {
+            return pathMemory;
         }
 
-        public void setRiaRuleMemory(RuleMemory ruleSegments) {
-            this.ruleSegments = ruleSegments;
+        public void setRiaRuleMemory(RiaPathMemory pathMemory) {
+            this.pathMemory = pathMemory;
         }
-        
+
         public SegmentMemory getSegmentMemory() {
-            return ruleSegments.getSegmentMemory();
-        }        
-        
+            return pathMemory.getSegmentMemory();
+        }
+
         public short getNodeType() {
             return NodeTypeEnums.RightInputAdaterNode;
         }
-     
+
     }
 
     public long getLeftInferredMask() {

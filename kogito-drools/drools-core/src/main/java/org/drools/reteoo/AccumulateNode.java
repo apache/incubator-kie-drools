@@ -178,7 +178,7 @@ public class AccumulateNode extends BetaNode {
 
         for ( RightTuple rightTuple = getFirstRightTuple( leftTuple,
                                                           rightMemory,
-                                                          context,
+                                                          (InternalFactHandle) context.getFactHandle(),
                                                           rightIt ); rightTuple != null; rightTuple = (RightTuple) rightIt.next( rightTuple ) ) {
             InternalFactHandle handle = rightTuple.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
@@ -372,7 +372,7 @@ public class AccumulateNode extends BetaNode {
 
         RightTuple rightTuple = getFirstRightTuple( leftTuple,
                                                     rightMemory,
-                                                    context,
+                                                    (InternalFactHandle) context.getFactHandle(),
                                                     rightIt );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket

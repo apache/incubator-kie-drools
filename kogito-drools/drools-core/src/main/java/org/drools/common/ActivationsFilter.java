@@ -1,6 +1,7 @@
 package org.drools.common;
 
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.TerminalNode;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
@@ -22,6 +23,6 @@ public interface ActivationsFilter {
     boolean accept(Activation activation,
                    PropagationContext context,
                    InternalWorkingMemory workingMemory,
-                   RuleTerminalNode rtn );
+                   TerminalNode rtn );
 
 }

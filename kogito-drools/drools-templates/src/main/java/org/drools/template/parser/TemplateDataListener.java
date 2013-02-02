@@ -16,76 +16,76 @@
 
 package org.drools.template.parser;
 
-import java.io.InputStream;
-
 import org.drools.StatefulSession;
 import org.drools.template.model.DRLOutput;
+
+import java.io.InputStream;
 
 /**
  * SheetListener for creating rules from a template
  */
 public class TemplateDataListener
-    implements
-    DataListener {
+        implements
+        DataListener {
 
-    private int               startRow      = -1;
+    private int startRow = -1;
 
-    private boolean           tableFinished = false;
+    private boolean tableFinished = false;
 
-    private Row               currentRow;
+    private Row currentRow;
 
-    private Column[]          columns;
+    private Column[] columns;
 
-    private StatefulSession   session;
+    private StatefulSession session;
 
     private TemplateContainer templateContainer;
 
-    private int               startCol;
+    private int startCol;
 
-    private Generator         generator;
+    private Generator generator;
 
     // private WorkingMemoryFileLogger logger;
 
     public TemplateDataListener(final TemplateContainer tc) {
-        this( 1,
-              1,
-              tc );
+        this(1,
+             1,
+             tc);
     }
 
     public TemplateDataListener(final int startRow,
                                 final int startCol,
                                 final String template) {
-        this( startRow,
-              startCol,
-              new DefaultTemplateContainer( template ) );
+        this(startRow,
+             startCol,
+             new DefaultTemplateContainer(template));
     }
 
     public TemplateDataListener(final int startRow,
                                 final int startCol,
                                 final InputStream templateStream) {
-        this( startRow,
-              startCol,
-              new DefaultTemplateContainer( templateStream ) );
+        this(startRow,
+             startCol,
+             new DefaultTemplateContainer(templateStream));
     }
 
     public TemplateDataListener(final int startRow,
                                 final int startCol,
                                 final TemplateContainer tc) {
-        this( startRow,
-              startCol,
-              tc,
-              new DefaultTemplateRuleBase( tc ) );
+        this(startRow,
+             startCol,
+             tc,
+             new DefaultTemplateRuleBase(tc));
     }
 
     public TemplateDataListener(final int startRow,
                                 final int startCol,
                                 final TemplateContainer tc,
                                 final TemplateRuleBase rb) {
-        this( startRow,
-              startCol,
-              tc,
-              rb,
-              new DefaultGenerator( tc.getTemplates() ) );
+        this(startRow,
+             startCol,
+             tc,
+             rb,
+             new DefaultGenerator(tc.getTemplates()));
     }
 
     public TemplateDataListener(final int startRow,
@@ -101,20 +101,20 @@ public class TemplateDataListener
         // logger = new WorkingMemoryFileLogger(session);
         // logger.setFileName("log/event");
         this.generator = generator;
-        session.setGlobal( "generator",
-                           generator );
+        session.setGlobal("generator",
+                          generator);
         assertColumns();
     }
 
     private void assertColumns() {
-        for ( int i = 0; i < columns.length; i++ ) {
-            session.insert( columns[i] );
+        for (int i = 0; i < columns.length; i++) {
+            session.insert(columns[i]);
         }
     }
 
     public void finishSheet() {
-        if ( currentRow != null ) {
-            session.insert( currentRow );
+        if (currentRow != null) {
+            session.insert(currentRow);
         }
         session.fireAllRules();
         // logger.writeToDisk();
@@ -125,27 +125,27 @@ public class TemplateDataListener
                         int column,
                         String value,
                         int mergedColStart) {
-        if ( currentRow != null && column >= startCol && value != null && value.trim().length() > 0 ) {
+        if (currentRow != null && column >= startCol && value != null && value.trim().length() > 0) {
 
             int columnIndex = column - startCol;
-            if ( columnIndex < columns.length ) {
-                Cell cell = currentRow.getCell( columnIndex );
-                cell.setValue( value );
-                cell.insert( session );
+            if (columnIndex < columns.length) {
+                Cell cell = currentRow.getCell(columnIndex);
+                cell.setValue(value);
+                cell.insert(session);
             }
         }
     }
 
     public void newRow(int rowNumber,
                        int columnCount) {
-        if ( !tableFinished && rowNumber >= startRow ) {
-            if ( currentRow != null && currentRow.isEmpty() ) {
+        if (!tableFinished && rowNumber >= startRow) {
+            if (currentRow != null && currentRow.isEmpty()) {
                 currentRow = null;
                 tableFinished = true;
             } else {
-                if ( currentRow != null ) session.insert( currentRow );
-                currentRow = new Row( rowNumber,
-                                      columns );
+                if (currentRow != null) { session.insert(currentRow); }
+                currentRow = new Row(rowNumber,
+                                     columns);
             }
         }
     }
@@ -156,9 +156,9 @@ public class TemplateDataListener
 
     public String renderDRL() {
         DRLOutput out = new DRLOutput();
-        out.writeLine( templateContainer.getHeader() );
+        out.writeLine(templateContainer.getHeader());
 
-        out.writeLine( generator.getDrl() );
+        out.writeLine(generator.getDrl());
         // System.err.println(out.getDRL());
         return out.getDRL();
     }

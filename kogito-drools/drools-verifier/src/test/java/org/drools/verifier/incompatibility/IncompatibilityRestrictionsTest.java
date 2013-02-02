@@ -52,13 +52,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Working pair
          */
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern1,
-                "10");
+                                                                     "10");
         r1.setOperator(Operator.EQUAL);
         r1.setFieldPath("0");
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern1,
-                "1");
+                                                                     "1");
         r2.setOperator(Operator.LESS);
         r2.setFieldPath("0");
         r2.setOrderNumber(2);
@@ -67,13 +67,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Pair that doesn't work.
          */
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern2,
-                "1");
+                                                                     "1");
         r3.setOperator(Operator.GREATER_OR_EQUAL);
         r3.setFieldPath("1");
         r3.setOrderNumber(0);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern2,
-                "10");
+                                                                     "10");
         r4.setOperator(Operator.EQUAL);
         r4.setFieldPath("1");
         r4.setOrderNumber(1);
@@ -86,13 +86,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         StatelessSessionResult sessionResult = session.executeWithResults(data);
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                sessionResult.iterateObjects());
+                                                              sessionResult.iterateObjects());
 
         assertTrue((TestBaseOld.causeMapContains(map,
-                r1,
-                r2) ^ TestBaseOld.causeMapContains(map,
-                r2,
-                r1)));
+                                                 r1,
+                                                 r2) ^ TestBaseOld.causeMapContains(map,
+                                                                                    r2,
+                                                                                    r1)));
 
         if (!map.isEmpty()) {
             fail("More incompatibilities than was expected.");
@@ -114,13 +114,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Working pair
          */
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern1,
-                "10");
+                                                                     "10");
         r1.setOperator(Operator.GREATER);
         r1.setFieldPath("0");
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern1,
-                "1");
+                                                                     "1");
         r2.setOperator(Operator.EQUAL);
         r2.setFieldPath("0");
         r2.setOrderNumber(1);
@@ -129,13 +129,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Pair that doesn't work.
          */
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern2,
-                "1");
+                                                                     "1");
         r3.setOperator(Operator.GREATER_OR_EQUAL);
         r3.setFieldPath("1");
         r3.setOrderNumber(0);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern2,
-                "10");
+                                                                     "10");
         r4.setOperator(Operator.EQUAL);
         r4.setFieldPath("1");
         r4.setOrderNumber(1);
@@ -148,13 +148,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         StatelessSessionResult sessionResult = session.executeWithResults(data);
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                sessionResult.iterateObjects());
+                                                              sessionResult.iterateObjects());
 
         assertTrue((TestBaseOld.causeMapContains(map,
-                r1,
-                r2) ^ TestBaseOld.causeMapContains(map,
-                r2,
-                r1)));
+                                                 r1,
+                                                 r2) ^ TestBaseOld.causeMapContains(map,
+                                                                                    r2,
+                                                                                    r1)));
 
         if (!map.isEmpty()) {
             fail("More incompatibilities than was expected.");
@@ -176,13 +176,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Working pair
          */
         LiteralRestriction r1 = LiteralRestriction.createRestriction(pattern1,
-                "10");
+                                                                     "10");
         r1.setOperator(Operator.GREATER);
         r1.setFieldPath("0");
         r1.setOrderNumber(0);
 
         LiteralRestriction r2 = LiteralRestriction.createRestriction(pattern1,
-                "10");
+                                                                     "10");
         r2.setOperator(Operator.LESS);
         r2.setFieldPath("0");
         r2.setOrderNumber(1);
@@ -191,13 +191,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
          * Pair that doesn't work.
          */
         LiteralRestriction r3 = LiteralRestriction.createRestriction(pattern2,
-                "1");
+                                                                     "1");
         r3.setOperator(Operator.GREATER_OR_EQUAL);
         r3.setFieldPath("1");
         r3.setOrderNumber(0);
 
         LiteralRestriction r4 = LiteralRestriction.createRestriction(pattern2,
-                "");
+                                                                     "");
         r4.setOperator(Operator.EQUAL);
         r4.setFieldPath("1");
         r4.setOrderNumber(1);
@@ -210,13 +210,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         StatelessSessionResult sessionResult = session.executeWithResults(data);
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                sessionResult.iterateObjects());
+                                                              sessionResult.iterateObjects());
 
         assertTrue((TestBaseOld.causeMapContains(map,
-                r1,
-                r2) ^ TestBaseOld.causeMapContains(map,
-                r2,
-                r1)));
+                                                 r1,
+                                                 r2) ^ TestBaseOld.causeMapContains(map,
+                                                                                    r2,
+                                                                                    r1)));
 
         if (!map.isEmpty()) {
             fail("More incompatibilities than was expected.");
@@ -287,13 +287,13 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         StatelessSessionResult sessionResult = session.executeWithResults(data);
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.RESTRICTION,
-                sessionResult.iterateObjects());
+                                                              sessionResult.iterateObjects());
 
         assertTrue((TestBaseOld.causeMapContains(map,
-                r1,
-                r2) ^ TestBaseOld.causeMapContains(map,
-                r2,
-                r1)));
+                                                 r1,
+                                                 r2) ^ TestBaseOld.causeMapContains(map,
+                                                                                    r2,
+                                                                                    r1)));
 
         if (!map.isEmpty()) {
             fail("More incompatibilities than was expected.");

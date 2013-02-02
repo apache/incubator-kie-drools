@@ -26,7 +26,7 @@ import org.drools.template.model.Rule;
 
 import java.util.List;
 
-public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
+public class ExternalModelDRLEmitter extends AbstractDRLEmitter {
 
     @Override
     protected void addDeclaredTypeContents(PMML pmmlDocument, StringBuilder stringBuilder, Scorecard scorecard) {
@@ -41,13 +41,13 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
     @Override
     protected void addLHSConditions(Rule rule, PMML pmmlDocument, Scorecard scorecard, Characteristic c, Attribute scoreAttribute) {
         Extension extension = null;
-        for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof MiningSchema ) {
-                MiningSchema miningSchema = (MiningSchema)obj;
+        for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
+            if (obj instanceof MiningSchema) {
+                MiningSchema miningSchema = (MiningSchema) obj;
                 String fieldName = ScorecardPMMLUtils.extractFieldNameFromCharacteristic(c);
-                for (MiningField miningField : miningSchema.getMiningFields() ){
-                    if ( miningField.getName().equalsIgnoreCase(fieldName)) {
-                        if (miningField.getExtensions().size() > 0 ) {
+                for (MiningField miningField : miningSchema.getMiningFields()) {
+                    if (miningField.getName().equalsIgnoreCase(fieldName)) {
+                        if (miningField.getExtensions().size() > 0) {
                             extension = miningField.getExtensions().get(0);
                         }
                     }
@@ -55,7 +55,7 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
             }
         }
         //Extension extension =  ScorecardPMMLUtils.getExtension(c.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_EXTERNAL_CLASS);
-        if ( extension != null ) {
+        if (extension != null) {
             Condition condition = new Condition();
             StringBuilder stringBuilder = new StringBuilder("$");
             stringBuilder.append(c.getName()).append(" : ").append(extension.getValue());
@@ -70,13 +70,13 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
         if (!scorecard.isUseReasonCodes()) {
             return;
         }
-        String externalClassName =  null;
+        String externalClassName = null;
         String reasonCodesField = null;
-        String fieldName =  null;
+        String fieldName = null;
 
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+        for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
+            if (obj instanceof Output) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
                 final OutputField outputField = outputFields.get(0);
                 externalClassName = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS).getValue();
@@ -88,7 +88,7 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
                 break;
             }
         }
-        if ( reasonCodesField != null && externalClassName != null && fieldName != null) {
+        if (reasonCodesField != null && externalClassName != null && fieldName != null) {
             Consequence consequence = new Consequence();
             StringBuilder stringBuilder = new StringBuilder("$");
             stringBuilder.append(fieldName).append("Var").append(".set").append(Character.toUpperCase(reasonCodesField.charAt(0))).append(reasonCodesField.substring(1));
@@ -104,13 +104,13 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
         if (!scorecard.isUseReasonCodes()) {
             return;
         }
-        String externalClassName =  null;
+        String externalClassName = null;
         String reasonCodesField = null;
-        String fieldName =  null;
+        String fieldName = null;
 
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+        for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
+            if (obj instanceof Output) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
                 final OutputField outputField = outputFields.get(0);
                 externalClassName = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS).getValue();
@@ -122,7 +122,7 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
                 break;
             }
         }
-        if ( reasonCodesField != null && externalClassName != null && fieldName != null) {
+        if (reasonCodesField != null && externalClassName != null && fieldName != null) {
             Condition condition = new Condition();
             StringBuilder stringBuilder = new StringBuilder("$");
             stringBuilder.append(fieldName).append("Var : ").append(externalClassName).append("()");
@@ -134,11 +134,11 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
 
     @Override
     protected void addAdditionalSummationConsequence(Rule calcTotalRule, Scorecard scorecard) {
-        String externalClassName =  null;
-        String fieldName =  null;
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+        String externalClassName = null;
+        String fieldName = null;
+        for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
+            if (obj instanceof Output) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
                 final OutputField outputField = outputFields.get(0);
                 fieldName = outputField.getName();
@@ -146,11 +146,11 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
                 break;
             }
         }
-        if ( fieldName != null && externalClassName != null) {
+        if (fieldName != null && externalClassName != null) {
             Consequence consequence = new Consequence();
             StringBuilder stringBuilder = new StringBuilder("$");
             stringBuilder.append(fieldName).append("Var").append(".set").append(Character.toUpperCase(fieldName.charAt(0))).append(fieldName.substring(1));
-            if (scorecard.getInitialScore() > 0 ) {
+            if (scorecard.getInitialScore() > 0) {
                 stringBuilder.append("($calculatedScore+$initialScore);");
             } else {
                 stringBuilder.append("($calculatedScore);");
@@ -163,11 +163,11 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
 
     @Override
     protected void addAdditionalSummationCondition(Rule calcTotalRule, Scorecard scorecard) {
-        String externalClassName =  null;
-        String fieldName =  null;
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+        String externalClassName = null;
+        String fieldName = null;
+        for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
+            if (obj instanceof Output) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
                 final OutputField outputField = outputFields.get(0);
                 fieldName = outputField.getName();
@@ -175,7 +175,7 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
                 break;
             }
         }
-        if ( fieldName != null && externalClassName != null) {
+        if (fieldName != null && externalClassName != null) {
             Condition condition = new Condition();
             StringBuilder stringBuilder = new StringBuilder("$");
             stringBuilder.append(fieldName).append("Var : ").append(externalClassName).append("()");
@@ -185,19 +185,19 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
     }
 
     protected Condition createInitialRuleCondition(Scorecard scorecard, String objectClass) {
-        String externalClassName =  null;
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+        String externalClassName = null;
+        for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
+            if (obj instanceof Output) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
                 final OutputField outputField = outputFields.get(0);
                 externalClassName = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS).getValue();
                 break;
             }
         }
-        if ( externalClassName != null) {
+        if (externalClassName != null) {
             Condition condition = new Condition();
-            condition.setSnippet(externalClassName+"()");
+            condition.setSnippet(externalClassName + "()");
             return condition;
         }
         return null;

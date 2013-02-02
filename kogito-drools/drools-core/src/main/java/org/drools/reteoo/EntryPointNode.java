@@ -31,6 +31,8 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -60,6 +62,8 @@ public class EntryPointNode extends ObjectSource
     // ------------------------------------------------------------
 
     private static final long               serialVersionUID = 510l;
+
+    protected static transient Logger log = LoggerFactory.getLogger(EntryPointNode.class);
 
     /**
      * The entry point ID for this node
@@ -186,7 +190,14 @@ public class EntryPointNode extends ObjectSource
              this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
              modifyPreviousTuples.retractTuples( context, workingMemory );
          }       
-     }   
+     } 
+    
+    public ObjectTypeNode getQueryNode() {
+        if ( queryNode == null ) {
+            this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
+        }        
+        return this.queryNode;
+    }
     
     public void assertActivation(final InternalFactHandle factHandle,
                             final PropagationContext context,
@@ -237,6 +248,10 @@ public class EntryPointNode extends ObjectSource
                              final PropagationContext context,
                              final ObjectTypeConf objectTypeConf,
                              final InternalWorkingMemory workingMemory) {
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Insert {}", handle.toString()  );
+        }
+
         // checks if shadow is enabled
         if ( objectTypeConf.isShadowEnabled() ) {
             // the user has implemented the ShadowProxy interface, let their implementation
@@ -257,6 +272,10 @@ public class EntryPointNode extends ObjectSource
                              final PropagationContext context,
                              final ObjectTypeConf objectTypeConf,
                              final InternalWorkingMemory wm) {
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Update {}", handle.toString()  );
+        }
+
         // checks if shadow is enabled
         if ( objectTypeConf.isShadowEnabled() ) {
             // the user has implemented the ShadowProxy interface, let their implementation
@@ -318,7 +337,7 @@ public class EntryPointNode extends ObjectSource
                     if ( unlinkingEnabled ) {
                         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
                         LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
-                        LeftInputAdapterNode.doDeleteObject( leftTuple, context, lm.getSegmentMemory(), wm, liaNode, lm );
+                        LeftInputAdapterNode.doDeleteObject( leftTuple, context, lm.getSegmentMemory(), wm, liaNode, true, lm );
                     } else {
                         leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                                      context,
@@ -372,6 +391,10 @@ public class EntryPointNode extends ObjectSource
                               final PropagationContext context,
                               final ObjectTypeConf objectTypeConf,
                               final InternalWorkingMemory workingMemory) {
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Delete {}", handle.toString()  );
+        }
+
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {

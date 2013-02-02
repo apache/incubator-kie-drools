@@ -26,6 +26,8 @@ public interface InternalAgendaGroup extends AgendaGroup {
     
     public void setActive(boolean activate);
     
+    public Activation  peekNext();
+    
     public void clear();
     
     public Activation[] getAndClear();

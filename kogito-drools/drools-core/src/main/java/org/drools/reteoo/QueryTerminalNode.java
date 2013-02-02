@@ -110,7 +110,12 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         out.writeObject( subrule );
         out.writeInt(subruleIndex);
     }
+   
     
+    public Query getQuery() {
+        return query;
+    }
+
     public Rule getRule() {
         return this.query;
     }
@@ -130,13 +135,8 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        LeftTuple entry = leftTuple;
-
         // find the DroolsQuery object
-        while ( entry.getParent() != null ) {
-            entry = entry.getParent();
-        }
-        
+        LeftTuple entry = leftTuple.getRootLeftTuple();
         
         DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
         query.setQuery( this.query );
@@ -151,12 +151,10 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        LeftTuple entry = leftTuple;
-
         // find the DroolsQuery object
-        while ( entry.getParent() != null ) {
-            entry = entry.getParent();
-        }
+
+        LeftTuple entry = leftTuple.getRootLeftTuple();
+
         DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
         query.setQuery( this.query );
 
@@ -170,12 +168,9 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        LeftTuple entry = leftTuple;
-
         // find the DroolsQuery object
-        while ( entry.getParent() != null ) {
-            entry = entry.getParent();
-        }
+        LeftTuple entry = leftTuple.getRootLeftTuple();
+
         DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
         query.setQuery( this.query );
 
@@ -240,9 +235,14 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     /**
      * @return the subrule
      */
-    public GroupElement getSubrule() {
+    public GroupElement getSubRule() {
         return this.subrule;
     }
+    
+    @Override
+    public boolean isFireDirect() {
+        return false;
+    }    
     
     public Declaration[] getDeclarations() {     
         if ( declarations == null ) {
@@ -339,4 +339,25 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public LeftTuple createPeer(LeftTuple original) {
         return null;
     }
+
+    @Override
+    public Declaration[] getSalienceDeclarations() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getSequence() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Declaration[] getTimerPeriodDeclarations() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Declaration[] getTimerDelayDeclarations() {
+        throw new UnsupportedOperationException();
+    }
+
 }
