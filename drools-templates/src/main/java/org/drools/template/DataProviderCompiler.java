@@ -15,15 +15,14 @@
  */
 package org.drools.template;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateContainer;
 import org.drools.template.parser.TemplateDataListener;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An object of this class acts as a template compiler, inserting spreadsheet
@@ -34,68 +33,71 @@ public class DataProviderCompiler {
 
     /**
      * Generates DRL from a data provider for the spreadsheet data and templates.
+     *
      * @param dataProvider the data provider for the spreadsheet data
-     * @param template the string containing the template resource name
+     * @param template     the string containing the template resource name
      * @return the generated DRL text as a String
      */
     public String compile(final DataProvider dataProvider,
                           final String template) {
-        final InputStream templateStream = this.getClass().getResourceAsStream( template );
-        return compile( dataProvider,
-                        templateStream );
+        final InputStream templateStream = this.getClass().getResourceAsStream(template);
+        return compile(dataProvider,
+                       templateStream);
     }
 
     /**
      * Generates DRL from a data provider for the spreadsheet data and templates.
-     * @param dataProvider the data provider for the spreadsheet data
+     *
+     * @param dataProvider   the data provider for the spreadsheet data
      * @param templateStream the InputStream for reading the templates
      * @return the generated DRL text as a String
      */
     public String compile(final DataProvider dataProvider,
                           final InputStream templateStream) {
-        TemplateContainer tc = new DefaultTemplateContainer( templateStream );
-        closeStream( templateStream );
-        return compile( dataProvider,
-                        new TemplateDataListener( tc ) );
+        TemplateContainer tc = new DefaultTemplateContainer(templateStream);
+        closeStream(templateStream);
+        return compile(dataProvider,
+                       new TemplateDataListener(tc));
     }
 
     /**
      * Generates DRL from a data provider for the spreadsheet data and templates.
+     *
      * @param dataProvider the data provider for the spreadsheet data
-     * @param listener a template data listener
+     * @param listener     a template data listener
      * @return the generated DRL text as a String
      */
     public String compile(final DataProvider dataProvider,
                           final TemplateDataListener listener) {
         List<DataListener> listeners = new ArrayList<DataListener>();
-        listeners.add( listener );
-        processData( dataProvider,
-                     listeners );
+        listeners.add(listener);
+        processData(dataProvider,
+                    listeners);
         return listener.renderDRL();
     }
 
     private void processData(final DataProvider dataProvider,
                              List<DataListener> listeners) {
-        for ( int i = 0; dataProvider.hasNext(); i++ ) {
+        for (int i = 0; dataProvider.hasNext(); i++) {
             String[] row = dataProvider.next();
-            newRow( listeners,
-                    i,
-                    row.length );
-            for ( int cellNum = 0; cellNum < row.length; cellNum++ ) {
+            newRow(listeners,
+                   i,
+                   row.length);
+            for (int cellNum = 0; cellNum < row.length; cellNum++) {
                 String cell = row[cellNum];
 
-                newCell( listeners,
-                         i,
-                         cellNum,
-                         cell,
-                         DataListener.NON_MERGED );
+                newCell(listeners,
+                        i,
+                        cellNum,
+                        cell,
+                        DataListener.NON_MERGED);
             }
         }
-        finishData( listeners );
+        finishData(listeners);
     }
 
     private void finishData(List<DataListener> listeners) {
-        for ( DataListener listener : listeners ) {
+        for (DataListener listener : listeners) {
             listener.finishSheet();
         }
     }
@@ -103,9 +105,9 @@ public class DataProviderCompiler {
     private void newRow(List<DataListener> listeners,
                         int row,
                         int cols) {
-        for ( DataListener listener : listeners ) {
-            listener.newRow( row,
-                             cols );
+        for (DataListener listener : listeners) {
+            listener.newRow(row,
+                            cols);
         }
     }
 
@@ -114,19 +116,19 @@ public class DataProviderCompiler {
                         int column,
                         String value,
                         int mergedColStart) {
-        for ( DataListener listener : listeners ) {
-            listener.newCell( row,
-                              column,
-                              value,
-                              mergedColStart );
+        for (DataListener listener : listeners) {
+            listener.newCell(row,
+                             column,
+                             value,
+                             mergedColStart);
         }
     }
 
     protected void closeStream(final InputStream stream) {
         try {
             stream.close();
-        } catch ( final Exception e ) {
-            System.err.print( "WARNING: Wasn't able to correctly close stream for rule template. " + e.getMessage() );
+        } catch (final Exception e) {
+            System.err.print("WARNING: Wasn't able to correctly close stream for rule template. " + e.getMessage());
         }
     }
 

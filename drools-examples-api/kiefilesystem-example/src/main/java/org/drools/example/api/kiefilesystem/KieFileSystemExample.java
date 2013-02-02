@@ -12,34 +12,35 @@ import java.io.PrintStream;
 
 
 public class KieFileSystemExample {
-    
+
     public void go(PrintStream out) {
         KieServices ks = KieServices.Factory.get();
         KieRepository kr = ks.getRepository();
         KieFileSystem kfs = ks.newKieFileSystem();
-        
-        kfs.write( "src/main/resources/org/kie/example5/HAL5.drl", getRule() );
- 
-        KieBuilder kb = ks.newKieBuilder( kfs );
-        
+
+        kfs.write("src/main/resources/org/kie/example5/HAL5.drl", getRule());
+
+        KieBuilder kb = ks.newKieBuilder(kfs);
+
         kb.buildAll(); // kieModule is automatically deployed to KieRepository if successfully built.
-        if ( kb.getResults().hasMessages( Level.ERROR ) ) {
-            throw new RuntimeException( "Build Errors:\n" + kb.getResults().toString() );
+        if (kb.getResults().hasMessages(Level.ERROR)) {
+            throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
         }
 
-        KieContainer kContainer = ks.newKieContainer( kr.getDefaultReleaseId() );
+        KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
 
         KieSession kSession = kContainer.newKieSession();
-        kSession.setGlobal( "out", out );
-                
-        kSession.insert( new Message( "Dave", "Hello, HAL. Do you read me, HAL?") );
-        kSession.fireAllRules();            
+        kSession.setGlobal("out", out);
+
+        kSession.insert(new Message("Dave", "Hello, HAL. Do you read me, HAL?"));
+        kSession.fireAllRules();
     }
-    public static void main( String[] args ) {
-        new KieFileSystemExample().go( System.out );
+
+    public static void main(String[] args) {
+        new KieFileSystemExample().go(System.out);
     }
-   
-    
+
+
     private static String getRule() {
         String s = "" +
                    "package org.drools.example.api.kiefilesystem \n\n" +
@@ -58,5 +59,5 @@ public class KieFileSystemExample {
 
         return s;
     }
-  
+
 }

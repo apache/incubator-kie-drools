@@ -6,15 +6,13 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.PropagationContextImpl;
 import org.drools.common.LeftTupleSets;
 import org.drools.common.RightTupleSets;
 import org.drools.core.util.FastIterator;
-import org.drools.phreak.RuleNetworkEvaluatorActivation.PhreakJoinNode;
-import org.drools.phreak.RuleNetworkEvaluatorActivation.PhreakNotNode;
-import org.drools.phreak.RuleNetworkEvaluatorActivation.PhreakExistsNode;
+import org.drools.phreak.RuleNetworkEvaluator.PhreakJoinNode;
+import org.drools.phreak.RuleNetworkEvaluator.PhreakNotNode;
+import org.drools.phreak.RuleNetworkEvaluator.PhreakExistsNode;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ExistsNode;

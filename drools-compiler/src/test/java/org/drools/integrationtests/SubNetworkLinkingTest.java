@@ -15,19 +15,10 @@ import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.phreak.SegmentUtilities;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.ExistsNode;
-import org.drools.reteoo.JoinNode;
-import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.reteoo.*;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
-import org.drools.reteoo.RuleMemory;
-import org.drools.reteoo.RuleTerminalNode;
-import org.junit.Ignore;
+import org.drools.reteoo.PathMemory;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
@@ -343,9 +334,9 @@ public class SubNetworkLinkingTest {
         assertEquals(2, bm5.getNodePosMaskBit() );           
         assertSame( bm4.getSegmentMemory(), bm5.getSegmentMemory() );      
         
-        RuleMemory rs1 = ( RuleMemory ) wm.getNodeMemory( rtn1 );
-        RuleMemory rs2 = ( RuleMemory )  wm.getNodeMemory( rtn2 );
-        RuleMemory rs3 = ( RuleMemory )  wm.getNodeMemory( rtn3 );
+        PathMemory rs1 = (PathMemory) wm.getNodeMemory( rtn1 );
+        PathMemory rs2 = (PathMemory)  wm.getNodeMemory( rtn2 );
+        PathMemory rs3 = (PathMemory)  wm.getNodeMemory( rtn3 );
         
         assertTrue( rs1.isRuleLinked() );
         assertTrue( rs2.isRuleLinked() );
@@ -434,7 +425,7 @@ public class SubNetworkLinkingTest {
         wm.retract( fhd );
         assertEquals( 0, existsBm.getSegmentMemory().getLinkedNodeMask() );
         
-        RuleMemory rs = ( RuleMemory) wm.getNodeMemory( rtn );
+        PathMemory rs = (PathMemory) wm.getNodeMemory( rtn );
         assertFalse( rs.isRuleLinked() );               
 
         wm.insert(  new A() );
@@ -522,7 +513,7 @@ public class SubNetworkLinkingTest {
         wm.insert(  new F() );
         wm.insert(  new G() );
         
-        RuleMemory rs = ( RuleMemory) wm.getNodeMemory( rtn );
+        PathMemory rs = (PathMemory) wm.getNodeMemory( rtn );
         assertFalse( rs.isRuleLinked() );  
         
         FactHandle fhE1 = wm.insert(  new E() );
@@ -610,7 +601,7 @@ public class SubNetworkLinkingTest {
         RiaNodeMemory riaMem1 = ( RiaNodeMemory ) wm.getNodeMemory( riaNode1 );
         RiaNodeMemory riaMem2 = ( RiaNodeMemory ) wm.getNodeMemory( riaNode2 );        
         
-        RuleMemory rs = ( RuleMemory) wm.getNodeMemory( rtn );
+        PathMemory rs = (PathMemory) wm.getNodeMemory( rtn );
         
         assertFalse( rs.isRuleLinked() ); //E and F are not inserted yet, so rule is unlinked
         
@@ -633,33 +624,33 @@ public class SubNetworkLinkingTest {
         // assert c, d are in the same segment, and that this is the only segment in ria1 memory
         assertSame( dMem.getSegmentMemory(), cMem.getSegmentMemory() ); 
         assertSame(  exists2Mem.getSegmentMemory(), dMem.getSegmentMemory() );
-        assertEquals( 2, riaMem1.getRiaRuleMemory().getSegmentMemories().length );
-        assertEquals( null, riaMem1.getRiaRuleMemory().getSegmentMemories()[0] ); // only needs to know about segments in the subnetwork
-        assertEquals( dMem.getSegmentMemory(), riaMem1.getRiaRuleMemory().getSegmentMemories()[1] );        
-        assertEquals( 1, dMem.getSegmentMemory().getRuleMemories().size() );
-        assertSame( riaMem1.getRiaRuleMemory(), cMem.getSegmentMemory().getRuleMemories().get(0) );
+        assertEquals( 2, riaMem1.getRiaPathMemory().getSegmentMemories().length );
+        assertEquals( null, riaMem1.getRiaPathMemory().getSegmentMemories()[0] ); // only needs to know about segments in the subnetwork
+        assertEquals( dMem.getSegmentMemory(), riaMem1.getRiaPathMemory().getSegmentMemories()[1] );
+        assertEquals( 1, dMem.getSegmentMemory().getPathMemories().size() );
+        assertSame( riaMem1.getRiaPathMemory(), cMem.getSegmentMemory().getPathMemories().get(0) );
         
         assertEquals( 7, cMem.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 3, cMem.getSegmentMemory().getLinkedNodeMask() ); // E and F is not yet inserted, so bit is not set
         assertEquals( 1, cMem.getNodePosMaskBit() );
         assertEquals( 2, dMem.getNodePosMaskBit() );
         assertEquals( 4, exists2Mem.getNodePosMaskBit() );
-        assertEquals( 2, riaMem1.getRiaRuleMemory().getAllLinkedMaskTest() ); // only cares that the segment for c, e and exists1 are set, ignores the outer first segment
-        assertEquals( 0, riaMem1.getRiaRuleMemory().getLinkedSegmentMask() ); // E and F is not yet inserted, so bit is not set
+        assertEquals( 2, riaMem1.getRiaPathMemory().getAllLinkedMaskTest() ); // only cares that the segment for c, e and exists1 are set, ignores the outer first segment
+        assertEquals( 0, riaMem1.getRiaPathMemory().getLinkedSegmentMask() ); // E and F is not yet inserted, so bit is not set
         
         // assert e, f are in the same segment, and that this is the only segment in ria2 memory
         assertNotNull( null, eMem.getSegmentMemory() ); //subnetworks are recursively created, so segment already exists
         assertSame( fMem.getSegmentMemory(), eMem.getSegmentMemory() );
         
-        assertEquals( 3, riaMem2.getRiaRuleMemory().getSegmentMemories().length );
-        assertEquals( null, riaMem2.getRiaRuleMemory().getSegmentMemories()[0] ); // only needs to know about segments in the subnetwork
-        assertEquals( null, riaMem2.getRiaRuleMemory().getSegmentMemories()[1] ); // only needs to know about segments in the subnetwork
-        assertEquals( fMem.getSegmentMemory(), riaMem2.getRiaRuleMemory().getSegmentMemories()[2] );        
-        assertSame( riaMem2.getRiaRuleMemory(), eMem.getSegmentMemory().getRuleMemories().get(0) );        
+        assertEquals( 3, riaMem2.getRiaPathMemory().getSegmentMemories().length );
+        assertEquals( null, riaMem2.getRiaPathMemory().getSegmentMemories()[0] ); // only needs to know about segments in the subnetwork
+        assertEquals( null, riaMem2.getRiaPathMemory().getSegmentMemories()[1] ); // only needs to know about segments in the subnetwork
+        assertEquals( fMem.getSegmentMemory(), riaMem2.getRiaPathMemory().getSegmentMemories()[2] );
+        assertSame( riaMem2.getRiaPathMemory(), eMem.getSegmentMemory().getPathMemories().get(0) );
         assertEquals( 3, eMem.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 0, eMem.getSegmentMemory().getLinkedNodeMask() );
-        assertEquals( 4, riaMem2.getRiaRuleMemory().getAllLinkedMaskTest() ); // only cares that the segment for e and f set, ignores the outer two segment
-        assertEquals( 0, riaMem2.getRiaRuleMemory().getLinkedSegmentMask() ); // E and F is not yet inserted, so bit is not set
+        assertEquals( 4, riaMem2.getRiaPathMemory().getAllLinkedMaskTest() ); // only cares that the segment for e and f set, ignores the outer two segment
+        assertEquals( 0, riaMem2.getRiaPathMemory().getLinkedSegmentMask() ); // E and F is not yet inserted, so bit is not set
         
         FactHandle fhE1 = wm.insert(  new E() );
         wm.insert(  new F() );
@@ -671,13 +662,13 @@ public class SubNetworkLinkingTest {
         // retest bits
         assertEquals( 7, cMem.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 7, cMem.getSegmentMemory().getLinkedNodeMask() );
-        assertEquals( 2, riaMem1.getRiaRuleMemory().getAllLinkedMaskTest() ); 
-        assertEquals( 2, riaMem1.getRiaRuleMemory().getLinkedSegmentMask() ); 
+        assertEquals( 2, riaMem1.getRiaPathMemory().getAllLinkedMaskTest() );
+        assertEquals( 2, riaMem1.getRiaPathMemory().getLinkedSegmentMask() );
         
         assertEquals( 3, eMem.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 3, eMem.getSegmentMemory().getLinkedNodeMask() );
-        assertEquals( 4, riaMem2.getRiaRuleMemory().getAllLinkedMaskTest() );
-        assertEquals( 4, riaMem2.getRiaRuleMemory().getLinkedSegmentMask() );        
+        assertEquals( 4, riaMem2.getRiaPathMemory().getAllLinkedMaskTest() );
+        assertEquals( 4, riaMem2.getRiaPathMemory().getLinkedSegmentMask() );
         
         wm.delete( fhE1 );
         
@@ -685,10 +676,10 @@ public class SubNetworkLinkingTest {
         assertFalse( rs.isRuleLinked() );
                 
         assertEquals( 3, cMem.getSegmentMemory().getLinkedNodeMask() );       
-        assertEquals( 0, riaMem1.getRiaRuleMemory().getLinkedSegmentMask() ); 
+        assertEquals( 0, riaMem1.getRiaPathMemory().getLinkedSegmentMask() );
         
         assertEquals( 2, eMem.getSegmentMemory().getLinkedNodeMask() );
-        assertEquals( 0, riaMem2.getRiaRuleMemory().getLinkedSegmentMask() );               
+        assertEquals( 0, riaMem2.getRiaPathMemory().getLinkedSegmentMask() );
     }       
     
     public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {

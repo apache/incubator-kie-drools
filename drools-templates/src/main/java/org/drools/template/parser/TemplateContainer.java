@@ -15,6 +15,7 @@
  */
 
 package org.drools.template.parser;
+
 import java.util.Map;
 
 public interface TemplateContainer {

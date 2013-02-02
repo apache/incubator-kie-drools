@@ -5,8 +5,8 @@ import org.drools.template.DataProvider;
 public class ArrayDataProvider implements DataProvider {
 
     private String[][] rows;
-    private int currRow;
-    private int rowsCount;
+    private int        currRow;
+    private int        rowsCount;
 
     public ArrayDataProvider(String[][] rows) {
         if (rows == null) {

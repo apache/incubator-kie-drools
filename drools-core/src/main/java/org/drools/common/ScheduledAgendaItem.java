@@ -20,6 +20,7 @@ import org.drools.core.util.Entry;
 import org.drools.core.util.LinkedListNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.TerminalNode;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.time.JobHandle;
@@ -52,7 +53,7 @@ public class ScheduledAgendaItem extends AgendaItem
                                final LeftTuple tuple,
                                final InternalAgenda agenda,
                                final PropagationContext context,
-                               final RuleTerminalNode rtn) {
+                               final TerminalNode rtn) {
         super(activationNumber, tuple, 0, context, rtn );
         this.agenda = agenda;
         this.enqueued = false;

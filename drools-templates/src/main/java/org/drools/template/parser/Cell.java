@@ -16,12 +16,11 @@
 
 package org.drools.template.parser;
 
-import java.util.Map;
-
 import org.drools.StatefulSession;
 
+import java.util.Map;
+
 /**
- *
  * A cell in a decision table
  */
 public interface Cell {

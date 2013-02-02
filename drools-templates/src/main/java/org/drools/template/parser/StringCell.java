@@ -16,13 +16,12 @@
 
 package org.drools.template.parser;
 
-import java.util.Map;
-
 import org.drools.StatefulSession;
 import org.drools.core.util.StringUtils;
 
+import java.util.Map;
+
 /**
- *
  * A cell in a decision table containing a String value
  */
 public class StringCell implements Cell {
@@ -37,6 +36,7 @@ public class StringCell implements Cell {
     public StringCell() {
 
     }
+
     StringCell(Row r, Column c) {
         row = r;
         column = c;
@@ -61,18 +61,23 @@ public class StringCell implements Cell {
     public void addValue(Map<String, Object> vars) {
         vars.put(column.getName(), value);
     }
+
     public int getIndex() {
         return index;
     }
+
     public void insert(StatefulSession session) {
         session.insert(this);
     }
+
     public void setIndex(int i) {
         index = i;
     }
+
     public void setValue(String v) {
         value = v;
     }
+
     public boolean isEmpty() {
         return StringUtils.isEmpty(value);
     }

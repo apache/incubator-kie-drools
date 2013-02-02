@@ -4,10 +4,10 @@ import org.drools.command.impl.GenericCommand;
 import org.kie.command.Context;
 
 public class JDKCallableJobCommand
-    implements
-    GenericCommand<Void> {
+        implements
+        GenericCommand<Void> {
 
-    private static final long   serialVersionUID = 4L;
+    private static final long serialVersionUID = 4L;
 
     private JpaTimerJobInstance job;
 
@@ -18,7 +18,7 @@ public class JDKCallableJobCommand
     public Void execute(Context context) {
         try {
             return job.internalCall();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

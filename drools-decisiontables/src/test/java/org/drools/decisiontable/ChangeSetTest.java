@@ -1,15 +1,5 @@
 package org.drools.decisiontable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.drools.core.util.FileManager;
 import org.junit.After;
@@ -27,10 +17,17 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 public class ChangeSetTest {
-    
+
     FileManager fileManager;
-    
+
     @Before
     public void setUp() throws Exception {
         fileManager = new FileManager();
@@ -41,7 +38,7 @@ public class ChangeSetTest {
         ResourceFactory.getResourceChangeNotifierService().start();
         ResourceFactory.getResourceChangeScannerService().start();
     }
-    
+
 
     @After
     public void tearDown() throws Exception {
@@ -49,62 +46,62 @@ public class ChangeSetTest {
         ResourceFactory.getResourceChangeNotifierService().stop();
         ResourceFactory.getResourceChangeScannerService().stop();
     }
-    
+
     @Test
     public void testIntegration() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml", getClass()), ResourceType.CHANGE_SET );
-        assertFalse( kbuilder.hasErrors() );
+        kbuilder.add(ResourceFactory.newClassPathResource("changeset1Test.xml", getClass()), ResourceType.CHANGE_SET);
+        assertFalse(kbuilder.hasErrors());
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        
-        ksession.insert( new Cheese( "cheddar",
-                                    42 ) );
-        ksession.insert( new Person( "michael",
-                                    "stilton",
-                                    25 ) );
-        
+        ksession.setGlobal("list", list);
+
+        ksession.insert(new Cheese("cheddar",
+                                   42));
+        ksession.insert(new Person("michael",
+                                   "stilton",
+                                   25));
+
         ksession.fireAllRules();
         ksession.dispose();
-        
-        assertEquals( 3, list.size() );
-  
-        assertEquals( "Young man cheddar",
-                      list.get( 0 ) );
-        
-        assertEquals( "rule1",
-                      list.get( 1 ) );
-        assertEquals( "rule2",
-                      list.get( 2 ) );
+
+        assertEquals(3, list.size());
+
+        assertEquals("Young man cheddar",
+                     list.get(0));
+
+        assertEquals("rule1",
+                     list.get(1));
+        assertEquals("rule2",
+                     list.get(2));
     }
 
     @Test
     public void multipleSheets() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "multipleSheetsChangeSet.xml", getClass()), ResourceType.CHANGE_SET );
-        assertFalse( kbuilder.hasErrors() );
+        kbuilder.add(ResourceFactory.newClassPathResource("multipleSheetsChangeSet.xml", getClass()), ResourceType.CHANGE_SET);
+        assertFalse(kbuilder.hasErrors());
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal("list", list);
 
-        ksession.insert( new Cheese( "cheddar",
-                                    42 ) );
-        ksession.insert( new Person( "michael",
-                                    "stilton",
-                                    25 ) );
-        ksession.insert( new Person( "Jane",
-                                    "stilton",
-                                    55 ) );
+        ksession.insert(new Cheese("cheddar",
+                                   42));
+        ksession.insert(new Person("michael",
+                                   "stilton",
+                                   25));
+        ksession.insert(new Person("Jane",
+                                   "stilton",
+                                   55));
 
         ksession.fireAllRules();
         ksession.dispose();
 
-        assertEquals( 2, list.size() );
+        assertEquals(2, list.size());
 
         assertTrue(list.contains("Young man cheddar"));
         assertTrue(list.contains("Jane eats cheddar"));
@@ -113,25 +110,27 @@ public class ChangeSetTest {
     @Test
     public void testCSV() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "changeSetTestCSV.xml", getClass()), ResourceType.CHANGE_SET );
-        assertFalse( kbuilder.hasErrors() );
+        kbuilder.add(ResourceFactory.newClassPathResource("changeSetTestCSV.xml", getClass()), ResourceType.CHANGE_SET);
+        assertFalse(kbuilder.hasErrors());
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         assertEquals(1, kbase.getKnowledgePackages().size());
         assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testCSVByKnowledgeAgent() {
         KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("csv agent");
         kagent.applyChangeSet(ResourceFactory.newClassPathResource("changeSetTestCSV.xml", getClass()));
         KnowledgeBase kbase = kagent.getKnowledgeBase();
-        
+
         assertEquals(1, kbase.getKnowledgePackages().size());
         assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testCSVByKnowledgeAgentWithFileReader() throws IOException {
 
         try {
@@ -147,9 +146,9 @@ public class ChangeSetTest {
             assertEquals(1, kbase.getKnowledgePackages().size());
             assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
 
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace();
-            fail( t.getMessage() );
+            fail(t.getMessage());
         } finally {
         }
     }

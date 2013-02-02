@@ -112,10 +112,10 @@ public final class Scheduler {
             if ( item.getTuple().getParent() != null ) {
                 LeftTuple lt = item.getTuple();
                 if ( lt.getRightParent() != null ) {
-                    postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getLeftParent(), item.getTuple().getRightParent(), null, null, item.getTuple().getSink(), true );                  
+                    postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getLeftParent(), item.getTuple().getRightParent(), null, null, item.getTuple().getSink(), true );                  
                 } else {
                     // eval nodes have no right parent
-                    postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), true );
+                    postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), true );
                 }
 //              
 //                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), false );
@@ -124,14 +124,14 @@ public final class Scheduler {
 //                item.getTuple().getRightParent().getFactHandle().addLastLeftTuple( postponedTuple );
 
             } else {
-                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getHandle(), item.getTuple().getSink(), true );
+                postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getHandle(), item.getTuple().getSink(), true );
 //                item.getTuple().getHandle().addLastLeftTuple( postponedTuple );
             }
 
             ((DefaultAgenda) agenda).createPostponedActivation( postponedTuple,
                                                                 item.getPropagationContext(),
                                                                 (InternalWorkingMemory) agenda.getWorkingMemory(),
-                                                                item.getRuleTerminalNode() );
+                                                                item.getTerminalNode() );
             agenda.addActivation( (AgendaItem) postponedTuple.getObject() );
             
         }

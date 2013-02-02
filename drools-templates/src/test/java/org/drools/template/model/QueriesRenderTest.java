@@ -16,11 +16,9 @@
 
 package org.drools.template.model;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class QueriesRenderTest {
 
@@ -29,17 +27,17 @@ public class QueriesRenderTest {
         final Queries queries = new Queries();
 
         DRLOutput out = new DRLOutput();
-        queries.renderDRL( out );
+        queries.renderDRL(out);
 
-        assertEquals( "",
-                      out.toString() );
+        assertEquals("",
+                     out.toString());
 
-        queries.setQueriesListing( "query myQuery(String value) Person() end" );
+        queries.setQueriesListing("query myQuery(String value) Person() end");
         out = new DRLOutput();
-        queries.renderDRL( out );
+        queries.renderDRL(out);
         final String s = out.toString();
-        assertEquals( "query myQuery(String value) Person() end\n",
-                      s );
+        assertEquals("query myQuery(String value) Person() end\n",
+                     s);
     }
 
 }

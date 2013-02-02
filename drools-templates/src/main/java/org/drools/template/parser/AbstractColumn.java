@@ -19,7 +19,6 @@ package org.drools.template.parser;
 import org.drools.core.util.StringUtils;
 
 /**
- *
  * Base column of in a decision table
  */
 public abstract class AbstractColumn implements Column {

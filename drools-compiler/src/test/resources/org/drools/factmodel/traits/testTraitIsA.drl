@@ -45,7 +45,7 @@ then
     insert( ind );
 end
 
-rule "Trait"
+rule "Trait" salience 100
 no-loop
 when
     $core: Imp( "adam", "skool" ;)
@@ -95,9 +95,6 @@ then
 end
 
 
-
-
-
 rule "Worker Students v2"
 when
     $x1 := Worker( this isA Student )
@@ -127,7 +124,7 @@ then
     list.add( "8" );
 end
 
-rule "Worker Students v6"
+rule "Worker Students v6" salience 100
 when
     $x2 := Student(  )
     $x1 := Worker( core != $x2.core, this isA $x2 )

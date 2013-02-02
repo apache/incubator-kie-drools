@@ -108,7 +108,7 @@ public class NotNode extends BetaNode {
                                           leftTuple );
         FastIterator it = getRightIterator(rightMemory);
         
-        for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
+        for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, (InternalFactHandle) context.getFactHandle(), it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
             if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                        rightTuple.getFactHandle() ) ) {
                 leftTuple.setBlocker( rightTuple );
@@ -260,7 +260,7 @@ public class NotNode extends BetaNode {
                                               leftTuple );
 
             if (useComparisonIndex) {
-                rootBlocker = getFirstRightTuple( leftTuple, memory.getRightTupleMemory(), context, rightIt );
+                rootBlocker = getFirstRightTuple( leftTuple, memory.getRightTupleMemory(), (InternalFactHandle) context.getFactHandle(), rightIt );
             }
 
             // we know that older tuples have been checked so continue next
@@ -315,7 +315,7 @@ public class NotNode extends BetaNode {
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
         
         FastIterator rightIt = getRightIterator( rightMemory );         
-        RightTuple firstRightTuple = getFirstRightTuple(leftTuple, rightMemory, context, rightIt);
+        RightTuple firstRightTuple = getFirstRightTuple(leftTuple, rightMemory, (InternalFactHandle) context.getFactHandle(), rightIt);
         
         // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
         RightTuple blocker = leftTuple.getBlocker();
@@ -475,7 +475,7 @@ public class NotNode extends BetaNode {
                                                   leftTuple );
 
                 if (useComparisonIndex) {
-                    rootBlocker = getFirstRightTuple( leftTuple, memory.getRightTupleMemory(), context, rightIt );
+                    rootBlocker = getFirstRightTuple( leftTuple, memory.getRightTupleMemory(), (InternalFactHandle) context.getFactHandle(), rightIt );
                 }
 
                 // we know that older tuples have been checked so continue next

@@ -39,15 +39,15 @@ public class MissingEqualityTest extends TestBaseOld {
     @Test
     public void testMissingEqualityInLiteralRestrictions() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-                .getResourceAsStream("MissingEquality.drl"));
+                                                           .getResourceAsStream("MissingEquality.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
                 "Missing restriction in LiteralRestrictions"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-                .getResourceAsStream("MissingEqualityTest.drl"), result
-                .getVerifierData());
+                                                                .getResourceAsStream("MissingEqualityTest.drl"), result
+                                                                    .getVerifierData());
 
         session.setGlobal("result", result);
 
@@ -80,25 +80,25 @@ public class MissingEqualityTest extends TestBaseOld {
     @Test
     public void testMissingEqualityInVariableRestrictions() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-                .getResourceAsStream("MissingEquality.drl"));
+                                                           .getResourceAsStream("MissingEquality.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
                 "Missing restriction in VariableRestrictions, equal operator"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-                .getResourceAsStream("MissingEqualityTest.drl"), result
-                .getVerifierData());
+                                                                .getResourceAsStream("MissingEqualityTest.drl"), result
+                                                                    .getVerifierData());
 
         session.setGlobal("result", result);
 
-//        for (Object o : testData) {
-//            if (o instanceof VariableRestriction) {
-//                System.out.println(o);
-//                VariableRestriction variableRestriction = (VariableRestriction) o;
-//                System.out.println(variableRestriction.getOperator());
-//            }
-//        }
+        //        for (Object o : testData) {
+        //            if (o instanceof VariableRestriction) {
+        //                System.out.println(o);
+        //                VariableRestriction variableRestriction = (VariableRestriction) o;
+        //                System.out.println(variableRestriction.getOperator());
+        //            }
+        //        }
 
         session.executeWithResults(testData);
 
@@ -128,25 +128,25 @@ public class MissingEqualityTest extends TestBaseOld {
     @Test
     public void testMissingEqualityInVariableRestrictions2() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-                .getResourceAsStream("MissingEquality.drl"));
+                                                           .getResourceAsStream("MissingEquality.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
                 "Missing restriction in VariableRestrictions, unequal operator"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-                .getResourceAsStream("MissingEqualityTest.drl"), result
-                .getVerifierData());
+                                                                .getResourceAsStream("MissingEqualityTest.drl"), result
+                                                                    .getVerifierData());
 
         session.setGlobal("result", result);
 
-//        for (Object o : testData) {
-//            if (o instanceof VariableRestriction) {
-//                System.out.println(o);
-//                VariableRestriction variableRestriction = (VariableRestriction) o;
-//                System.out.println(variableRestriction.getOperator());
-//            }
-//        }
+        //        for (Object o : testData) {
+        //            if (o instanceof VariableRestriction) {
+        //                System.out.println(o);
+        //                VariableRestriction variableRestriction = (VariableRestriction) o;
+        //                System.out.println(variableRestriction.getOperator());
+        //            }
+        //        }
 
         session.executeWithResults(testData);
 
@@ -176,25 +176,25 @@ public class MissingEqualityTest extends TestBaseOld {
     @Test
     public void testMissingEqualityInVariableRestrictions3() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-                .getResourceAsStream("MissingEquality.drl"));
+                                                           .getResourceAsStream("MissingEquality.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
                 "Missing restriction in VariableRestrictions, custom operator"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-                .getResourceAsStream("MissingEqualityTest.drl"), result
-                .getVerifierData());
+                                                                .getResourceAsStream("MissingEqualityTest.drl"), result
+                                                                    .getVerifierData());
 
         session.setGlobal("result", result);
 
-//        for (Object o : testData) {
-//            if (o instanceof VariableRestriction) {
-//                System.out.println(o);
-//                VariableRestriction variableRestriction = (VariableRestriction) o;
-//                System.out.println(variableRestriction.getOperator());
-//            }
-//        }
+        //        for (Object o : testData) {
+        //            if (o instanceof VariableRestriction) {
+        //                System.out.println(o);
+        //                VariableRestriction variableRestriction = (VariableRestriction) o;
+        //                System.out.println(variableRestriction.getOperator());
+        //            }
+        //        }
 
         session.executeWithResults(testData);
 

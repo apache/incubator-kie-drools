@@ -16,12 +16,6 @@
 
 package org.drools.verifier.equivalence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
@@ -34,6 +28,10 @@ import org.junit.Test;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
+import java.util.Collection;
+
+import static org.junit.Assert.*;
+
 public class EquivalentRulesTest {
 
     @Test
@@ -44,35 +42,35 @@ public class EquivalentRulesTest {
 
         Verifier verifier = vBuilder.newVerifier();
 
-        verifier.addResourcesToVerify( ResourceFactory.newClassPathResource( "EquivalentRules.drl",
-                                                                             getClass() ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("EquivalentRules.drl",
+                                                                           getClass()),
+                                      ResourceType.DRL);
 
-//        for ( VerifierError error : verifier.getMissingClasses() ) {
-//            System.out.println( error.getMessage() );
-//        }
+        //        for ( VerifierError error : verifier.getMissingClasses() ) {
+        //            System.out.println( error.getMessage() );
+        //        }
 
-        assertFalse( verifier.hasErrors() );
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        assertTrue( noProblems );
+        assertTrue(noProblems);
 
         VerifierReport result = verifier.getResult();
 
-        Collection<VerifierMessageBase> warnings = result.getBySeverity( Severity.WARNING );
+        Collection<VerifierMessageBase> warnings = result.getBySeverity(Severity.WARNING);
 
         int counter = 0;
-        for ( VerifierMessageBase message : warnings ) {
+        for (VerifierMessageBase message : warnings) {
             //            System.out.println( message );
-            if ( message.getMessageType().equals( MessageType.EQUIVALANCE ) ) {
-//                                System.out.println( message );
+            if (message.getMessageType().equals(MessageType.EQUIVALANCE)) {
+                //                                System.out.println( message );
                 counter++;
             }
         }
 
         // Has at least one item.
-        assertEquals( 1,
-                      counter );
+        assertEquals(1,
+                     counter);
 
         verifier.dispose();
     }

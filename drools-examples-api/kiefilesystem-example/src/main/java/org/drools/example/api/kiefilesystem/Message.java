@@ -3,7 +3,7 @@ package org.drools.example.api.kiefilesystem;
 public class Message {
     private String name;
     private String text;
-    
+
     public Message(String name, String text) {
         this.text = text;
         this.name = name;
@@ -15,8 +15,8 @@ public class Message {
 
     public void setText(String text) {
         this.text = text;
-    }       
-    
+    }
+
     public String getName() {
         return name;
     }
@@ -40,17 +40,17 @@ public class Message {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if (this == obj) { return true; }
+        if (obj == null) { return false; }
+        if (getClass() != obj.getClass()) { return false; }
         Message other = (Message) obj;
-        if ( name == null ) {
-            if ( other.name != null ) return false;
-        } else if ( !name.equals( other.name ) ) return false;
-        if ( text == null ) {
-            if ( other.text != null ) return false;
-        } else if ( !text.equals( other.text ) ) return false;
+        if (name == null) {
+            if (other.name != null) { return false; }
+        } else if (!name.equals(other.name)) { return false; }
+        if (text == null) {
+            if (other.text != null) { return false; }
+        } else if (!text.equals(other.text)) { return false; }
         return true;
     }
-    
+
 }

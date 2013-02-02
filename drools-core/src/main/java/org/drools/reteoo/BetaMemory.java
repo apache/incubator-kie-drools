@@ -20,7 +20,6 @@ import org.drools.common.Memory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RightTupleSets;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.index.RightTupleList;
 import org.drools.rule.ContextEntry;
 
 public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
@@ -29,23 +28,23 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
 
     private static final long serialVersionUID = 510l;
 
-    private LeftTupleMemory   leftTupleMemory;
-    private RightTupleMemory  rightTupleMemory;
+    private LeftTupleMemory  leftTupleMemory;
+    private RightTupleMemory rightTupleMemory;
 
     private RightTupleSets stagedRightTuples;
-    
-    private ContextEntry[]    context;
+
+    private ContextEntry[] context;
 
     // the node type this memory belongs to
-    private short             nodeType;
+    private short nodeType;
 
-    private SegmentMemory     segmentMemory;
+    private SegmentMemory segmentMemory;
 
-    private long              nodePosMaskBit;
+    private long nodePosMaskBit;
 
-    private int               counter;
-    
-    private SegmentMemory     subnetworkSegmentMemory;
+    private int counter;
+
+    private RiaPathMemory riaRuleMemory;
 
     public BetaMemory() {
     }
@@ -60,7 +59,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         this.context = context;
         this.nodeType = nodeType;
     }
-    
+
     public RightTupleSets getStagedRightTuples() {
         return stagedRightTuples;
     }
@@ -68,21 +67,21 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
     public void setStagedRightTuples(RightTupleSets stagedRightTuples) {
         this.stagedRightTuples = stagedRightTuples;
     }
-    
+
     public RightTupleMemory getRightTupleMemory() {
         return this.rightTupleMemory;
     }
 
     public LeftTupleMemory getLeftTupleMemory() {
         return this.leftTupleMemory;
-    }    
-
-    public SegmentMemory getSubnetworkSegmentMemory() {
-        return subnetworkSegmentMemory;
     }
 
-    public void setSubnetworkSegmentMemory(SegmentMemory subnetworkSegmentMemory) {
-        this.subnetworkSegmentMemory = subnetworkSegmentMemory;
+    public RiaPathMemory getRiaRuleMemory() {
+        return riaRuleMemory;
+    }
+
+    public void setRiaRuleMemory(RiaPathMemory riaRuleMemory) {
+        this.riaRuleMemory = riaRuleMemory;
     }
 
     /**

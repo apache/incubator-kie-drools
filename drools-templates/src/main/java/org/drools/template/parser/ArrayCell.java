@@ -20,10 +20,10 @@
  */
 package org.drools.template.parser;
 
-import java.util.Map;
-
 import org.drools.StatefulSession;
 import org.drools.core.util.StringUtils;
+
+import java.util.Map;
 
 public class ArrayCell implements Cell {
     Row row;

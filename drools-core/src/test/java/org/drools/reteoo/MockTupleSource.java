@@ -75,6 +75,11 @@ public class MockTupleSource extends LeftTupleSource {
     }
 
     @Override
+    public boolean isLeftTupleMemoryEnabled() {
+        return true;
+    }
+
+    @Override
     public LeftTuple createPeer(LeftTuple original) {
         return null;
     }

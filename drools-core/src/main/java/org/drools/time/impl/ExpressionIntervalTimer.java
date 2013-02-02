@@ -140,7 +140,7 @@ public class ExpressionIntervalTimer
     }
 
     private long evalPeriod( Activation item, WorkingMemory wm ) {
-        Object p = this.period.getValue( item, ((AgendaItem)item).getRuleTerminalNode().getTimerPeriodDeclarations(),
+        Object p = this.period.getValue( item, ((AgendaItem)item).getTerminalNode().getTimerPeriodDeclarations(),
                                          item.getRule(), wm );
         if ( p instanceof Number ) {
             return ((Number) p).longValue();
@@ -150,7 +150,7 @@ public class ExpressionIntervalTimer
     }
 
     private long evalDelay(Activation item, WorkingMemory wm) {
-        Object d = this.delay.getValue( item,  ((AgendaItem)item).getRuleTerminalNode().getTimerDelayDeclarations(), 
+        Object d = this.delay.getValue( item,  ((AgendaItem)item).getTerminalNode().getTimerDelayDeclarations(), 
                                         item.getRule(), wm );
         if ( d instanceof Number ) {
             return ((Number) d).longValue();

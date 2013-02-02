@@ -1,12 +1,11 @@
 package org.drools.template.parser;
 
+import org.junit.Test;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DefaultTemplateContainerTest {
@@ -28,7 +27,7 @@ public class DefaultTemplateContainerTest {
         assertEquals("name", column.getName());
         String contents = template.getContents();
         assertTrue(contents
-                .startsWith("rule \"How cool is @{name} @{row.rowNumber}\""));
+                           .startsWith("rule \"How cool is @{name} @{row.rowNumber}\""));
         assertTrue(contents.endsWith("then\nend\n"));
     }
 
@@ -51,7 +50,7 @@ public class DefaultTemplateContainerTest {
         assertEquals("== \"name1\"", templateColumn.getCondition());
         String contents = template.getContents();
         assertTrue(contents
-                .startsWith("rule \"How cool is @{name} @{row.rowNumber}\""));
+                           .startsWith("rule \"How cool is @{name} @{row.rowNumber}\""));
         assertTrue(contents.endsWith("then\nend\n"));
     }
 
@@ -147,7 +146,7 @@ public class DefaultTemplateContainerTest {
 
         String contents = template.getContents();
         assertTrue(contents
-                .startsWith("rule \"How cool is @{first_name} @{row.rowNumber}\""));
+                           .startsWith("rule \"How cool is @{first_name} @{row.rowNumber}\""));
         assertTrue(contents.endsWith("then\nend\n"));
 
         template = (RuleTemplate) templates.get("template2");
@@ -160,7 +159,7 @@ public class DefaultTemplateContainerTest {
         assertEquals("last_name", column2.getName());
         contents = template.getContents();
         assertTrue(contents
-                .startsWith("rule \"How uncool is @{first_name} @{row.rowNumber}\""));
+                           .startsWith("rule \"How uncool is @{first_name} @{row.rowNumber}\""));
         assertTrue(contents.endsWith("then\nend\n"));
 
 

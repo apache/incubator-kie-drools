@@ -1,19 +1,18 @@
 package org.drools.template.jdbc;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.drools.RuleBase;
-import org.drools.WorkingMemory;
 import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
+import org.junit.Test;
 
-import java.sql.*;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.util.List;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -45,7 +44,7 @@ public class ResultSetGeneratorTest {
 
         Statement sta = conn.createStatement();
         ResultSet rs = sta.executeQuery("SELECT persons_age, cheese_type, log " +
-                " FROM cheese_rules");
+                                        " FROM cheese_rules");
 
         final ResultSetGenerator converter = new ResultSetGenerator();
         final String drl = converter.compile(rs, getRulesStream());
@@ -61,13 +60,13 @@ public class ResultSetGeneratorTest {
 
         //now create some test data
         wm.insert(new Cheese("stilton",
-                42));
+                             42));
         wm.insert(new Person("michael",
-                "stilton",
-                42));
+                             "stilton",
+                             42));
         final List<String> list = new ArrayList<String>();
         wm.setGlobal("list",
-                list);
+                     list);
 
         wm.fireAllRules();
 

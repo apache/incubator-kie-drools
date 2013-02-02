@@ -161,56 +161,68 @@ public class LeftTupleSets {
     }    
     
     public void addAllInserts(LeftTupleSets tupleSets) {
-        if ( insertFirst == null ) {
-            insertFirst = tupleSets.getInsertFirst();
-            insertSize = tupleSets.insertSize;
-        } else {
-            LeftTuple current = insertFirst;
-            LeftTuple last = null;
-            while ( current != null ) {
-                last = current;
-                current = current.getStagedNext();
+        if ( tupleSets.getInsertFirst() != null ) {
+            if ( insertFirst == null ) {
+                insertFirst = tupleSets.getInsertFirst();
+                insertSize = tupleSets.insertSize;
+            } else {
+                LeftTuple current = insertFirst;
+                LeftTuple last = null;
+                while ( current != null ) {
+                    last = current;
+                    current = current.getStagedNext();
+                }
+                LeftTuple leftTuple = tupleSets.getInsertFirst();
+                last.setStagedNext( leftTuple );
+                leftTuple.setStagePrevious( leftTuple );
+                insertSize = insertSize + tupleSets.insertSize();
             }
-            LeftTuple leftTuple = tupleSets.getInsertFirst(); 
-            last.setStagedNext( leftTuple );
-            leftTuple.setStagePrevious( leftTuple );
-            insertSize = insertSize + tupleSets.insertSize();
+            tupleSets.insertSize = 0;
+            tupleSets.insertFirst = null;
         }
-    }   
+    }
     
     public void addAllDeletes(LeftTupleSets tupleSets) {
-        if ( deleteFirst == null ) {
-            deleteFirst = tupleSets.getDeleteFirst();
-            deleteSize = tupleSets.deleteSize;
-        } else {
-            LeftTuple current = deleteFirst;
-            LeftTuple last = null;
-            while ( current != null ) {
-                last = current;
-                current = current.getStagedNext();
+        if ( tupleSets.getDeleteFirst() != null ) {
+            if ( deleteFirst == null ) {
+                deleteFirst = tupleSets.getDeleteFirst();
+                deleteSize = tupleSets.deleteSize;
+            } else {
+                LeftTuple current = deleteFirst;
+                LeftTuple last = null;
+                while ( current != null ) {
+                    last = current;
+                    current = current.getStagedNext();
+                }
+                LeftTuple leftTuple = tupleSets.getDeleteFirst();
+                last.setStagedNext( leftTuple );
+                leftTuple.setStagePrevious( leftTuple );
+                deleteSize = deleteSize + tupleSets.deleteSize();
             }
-            LeftTuple leftTuple = tupleSets.getDeleteFirst(); 
-            last.setStagedNext( leftTuple );
-            leftTuple.setStagePrevious( leftTuple );
-            deleteSize = deleteSize + tupleSets.deleteSize();
+            tupleSets.deleteFirst = null;
+            tupleSets.deleteSize = 0;
         }
     }      
 
     public void addAllUpdates(LeftTupleSets tupleSets) {
-        if ( updateFirst == null ) {
-            updateFirst = tupleSets.getUpdateFirst();
-            updateSize = tupleSets.updateSize;
-        } else {
-            LeftTuple current = updateFirst;
-            LeftTuple last = null;
-            while ( current != null ) {
-                last = current;
-                current = current.getStagedNext();
+        if ( tupleSets.getUpdateFirst() != null ) {
+            if ( updateFirst == null ) {
+                updateFirst = tupleSets.getUpdateFirst();
+                updateSize = tupleSets.updateSize;
+            } else {
+                LeftTuple current = updateFirst;
+                LeftTuple last = null;
+                while ( current != null ) {
+                    last = current;
+                    current = current.getStagedNext();
+                }
+                LeftTuple leftTuple = tupleSets.getUpdateFirst();
+                last.setStagedNext( leftTuple );
+                leftTuple.setStagePrevious( leftTuple );
+                updateSize = updateSize + tupleSets.updateSize();
             }
-            LeftTuple leftTuple = tupleSets.getUpdateFirst(); 
-            last.setStagedNext( leftTuple );
-            leftTuple.setStagePrevious( leftTuple );
-            updateSize = updateSize + tupleSets.updateSize();
+            tupleSets.updateFirst = null;
+            tupleSets.updateSize = 0;
         }
     }  
     
@@ -265,7 +277,11 @@ public class LeftTupleSets {
         }
 
         resetAll();        
-    }        
+    }
+
+    public boolean isEmpty() {
+        return getInsertFirst() == null && getDeleteFirst() == null && getUpdateFirst() == null;
+    }
     
     public String toStringSizes() {
         return "TupleSets[insertSize=" + insertSize + ", deleteSize=" + deleteSize + ", updateSize=" + updateSize + "]";

@@ -23,20 +23,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ManualTransactionManager
-    implements
-    TransactionManager {
-    
-    private Logger logger = LoggerFactory.getLogger( getClass() );
+        implements
+        TransactionManager {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private NonTransactionalPersistentSession session;
-    private KnowledgeSessionStorage storage;
-    private TransactionSynchronization transactionSynchronization;
-    
+    private KnowledgeSessionStorage           storage;
+    private TransactionSynchronization        transactionSynchronization;
+
     public ManualTransactionManager(NonTransactionalPersistentSession session,
                                     KnowledgeSessionStorage storage) {
         this.session = session;
         this.storage = storage;
     }
-    
+
     public int getStatus() {
         return 0;
     }
@@ -50,19 +50,19 @@ public class ManualTransactionManager
     public void commit(boolean transactionOwner) {
         // Do not check if the caller is the transactionOwner 
         //  because there's no need to "wait" for a commit
-        try{
-            for(SessionInfo sessionInfo : session.getStoredKnowledgeSessions()){
+        try {
+            for (SessionInfo sessionInfo : session.getStoredKnowledgeSessions()) {
                 sessionInfo.update();
                 storage.saveOrUpdate(sessionInfo);
             }
-            
-            for(WorkItemInfo workItemInfo : session.getStoredWorkItems()){
+
+            for (WorkItemInfo workItemInfo : session.getStoredWorkItems()) {
                 workItemInfo.update();
-                storage.saveOrUpdate( workItemInfo );
+                storage.saveOrUpdate(workItemInfo);
             }
-            try{
+            try {
                 transactionSynchronization.afterCompletion(TransactionManager.STATUS_COMMITTED);
-            } catch (RuntimeException re){
+            } catch (RuntimeException re) {
                 logger.warn("Unable to synchronize transaction after commit, see cause.", re);
             }
         } catch (RuntimeException re) {

@@ -58,7 +58,7 @@ public class NamedEntryPoint
     WorkingMemoryEntryPoint,
     PropertyChangeListener  {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(NamedEntryPoint.class);
+    protected static transient Logger log = LoggerFactory.getLogger(NamedEntryPoint.class);
     
     protected static final Class<?>[]       ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
     
@@ -650,17 +650,17 @@ public class NamedEntryPoint
                 dynamicFacts.add( handle );
             }
         } catch ( final NoSuchMethodException e ) {
-            logger.error( "Warning: Method addPropertyChangeListener not found" + " on the class " + object.getClass() + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
+            log.error( "Warning: Method addPropertyChangeListener not found" + " on the class " + object.getClass() + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
         } catch ( final IllegalArgumentException e ) {
-            logger.error( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " does not take" + " a simple PropertyChangeListener argument" + " so Drools will be unable to process JavaBean"
+            log.error( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " does not take" + " a simple PropertyChangeListener argument" + " so Drools will be unable to process JavaBean"
                                 + " PropertyChangeEvents on the asserted Object" );
         } catch ( final IllegalAccessException e ) {
-            logger.error( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " is not public" + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
+            log.error( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " is not public" + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
         } catch ( final InvocationTargetException e ) {
-            logger.error( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " threw an InvocationTargetException" + " so Drools will be unable to process JavaBean"
+            log.error( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " threw an InvocationTargetException" + " so Drools will be unable to process JavaBean"
                                 + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
         } catch ( final SecurityException e ) {
-            logger.error( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a" + " addPropertyChangeListener method" + " so Drools will be unable to process JavaBean"
+            log.error( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a" + " addPropertyChangeListener method" + " so Drools will be unable to process JavaBean"
                                 + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
         }
     }

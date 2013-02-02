@@ -17,6 +17,9 @@
 package org.drools.reteoo;
 
 import org.drools.common.NetworkNode;
+import org.drools.rule.Declaration;
+import org.drools.rule.GroupElement;
+import org.drools.rule.Rule;
 
 /**
  * A markup interface for terminal nodes
@@ -40,5 +43,21 @@ public interface TerminalNode
     public long getNegativeMask();
     
     public void setNegativeMask(long mask);
+    
+    public Rule getRule();
+
+    GroupElement getSubRule();
+
+    boolean isFireDirect();
+
+    Declaration[] getDeclarations();
+
+    Declaration[] getSalienceDeclarations();
+
+    int getSequence();
+
+    Declaration[] getTimerPeriodDeclarations();
+
+    Declaration[] getTimerDelayDeclarations();
     
 }

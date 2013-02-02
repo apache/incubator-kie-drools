@@ -1637,7 +1637,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(2, rules);
     }
 
-    @Test //(timeout = 5000)
+    @Test (timeout = 5000)
     public void testNoConstraint() throws Exception {
         String rule = "package org.drools\n" +
                 "import org.drools.integrationtests.PropertySpecificTest.Cell\n" +

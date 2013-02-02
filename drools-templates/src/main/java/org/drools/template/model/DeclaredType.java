@@ -21,8 +21,8 @@ package org.drools.template.model;
  * appropriate style, no formatting is contributed here.
  */
 public class DeclaredType
-    implements
-    DRLJavaEmitter {
+        implements
+        DRLJavaEmitter {
 
     private String declaredTypeListing;
 
@@ -31,8 +31,8 @@ public class DeclaredType
     }
 
     public void renderDRL(final DRLOutput out) {
-        if ( this.declaredTypeListing != null ) {
-            out.writeLine( this.declaredTypeListing );
+        if (this.declaredTypeListing != null) {
+            out.writeLine(this.declaredTypeListing);
         }
     }
 

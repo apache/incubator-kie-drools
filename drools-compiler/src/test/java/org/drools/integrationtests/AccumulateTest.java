@@ -25,6 +25,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.compiler.PackageBuilder;
+import org.drools.reteoo.*;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -45,7 +46,7 @@ import org.mockito.Mockito;
 
 public class AccumulateTest extends CommonTestMethodBase {
 
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateModify() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateModify.drl" );
@@ -112,7 +113,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test   (timeout = 10000)
     public void testAccumulate() throws Exception {
 
         // read in the source
@@ -149,7 +150,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 210, results.get( 4 ) );
     }
 
-    @Test
+    @Test  (timeout = 10000)
     public void testMVELAccumulate() throws Exception {
 
         // read in the source
@@ -180,7 +181,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 210, results.get( 4 ) );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateModifyMVEL() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateModifyMVEL.drl"  );
@@ -247,7 +248,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateReverseModify() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModify.drl"  );
@@ -316,7 +317,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateReverseModify2() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModify2.drl"  );
@@ -386,7 +387,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
     
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateReverseModifyInsertLogical2() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModifyInsertLogical2.drl"  );
@@ -429,7 +430,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 30, ((Number) results.get( results.size() - 1 )).intValue() );
     }    
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateReverseModifyMVEL() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModifyMVEL.drl"  );
@@ -496,7 +497,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateReverseModifyMVEL2() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModifyMVEL2.drl"  );
@@ -563,7 +564,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateWithFromChaining() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateWithFromChaining.drl"  );
@@ -638,7 +639,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testMVELAccumulate2WM() throws Exception {
 
         // read in the source
@@ -696,7 +697,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 210, results2.get( 4 ) );
     }
 
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateInnerClass() throws Exception {
 
         // read in the source
@@ -715,7 +716,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 15, results.get( 0 ) );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateReturningNull() throws Exception {
 
         // read in the source
@@ -730,112 +731,112 @@ public class AccumulateTest extends CommonTestMethodBase {
                                10 ) );
     }
 
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateSumJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateSum.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateSumMVEL() throws Exception {
         execTestAccumulateSum( "test_AccumulateSumMVEL.drl" );
     }
 
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateMultiPatternWithFunctionJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateMultiPatternFunctionJava.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMultiPatternWithFunctionMVEL() throws Exception {
         execTestAccumulateSum( "test_AccumulateMultiPatternFunctionMVEL.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateCountJava() throws Exception {
         execTestAccumulateCount( "test_AccumulateCount.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateCountMVEL() throws Exception {
         execTestAccumulateCount( "test_AccumulateCountMVEL.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateAverageJava() throws Exception {
         execTestAccumulateAverage( "test_AccumulateAverage.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateAverageMVEL() throws Exception {
         execTestAccumulateAverage( "test_AccumulateAverageMVEL.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMinJava() throws Exception {
         execTestAccumulateMin( "test_AccumulateMin.drl" );
     }
 
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateMinMVEL() throws Exception {
         execTestAccumulateMin( "test_AccumulateMinMVEL.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMaxJava() throws Exception {
         execTestAccumulateMax( "test_AccumulateMax.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMaxMVEL() throws Exception {
         execTestAccumulateMax( "test_AccumulateMaxMVEL.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMultiPatternJava() throws Exception {
         execTestAccumulateReverseModifyMultiPattern( "test_AccumulateMultiPattern.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMultiPatternMVEL() throws Exception {
         execTestAccumulateReverseModifyMultiPattern( "test_AccumulateMultiPatternMVEL.drl" );
     }
 
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateCollectListJava() throws Exception {
         execTestAccumulateCollectList( "test_AccumulateCollectList.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateCollectListMVEL() throws Exception {
         execTestAccumulateCollectList( "test_AccumulateCollectListMVEL.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateCollectSetJava() throws Exception {
         execTestAccumulateCollectSet( "test_AccumulateCollectSet.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateCollectSetMVEL() throws Exception {
         execTestAccumulateCollectSet( "test_AccumulateCollectSetMVEL.drl" );
     }
 
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateMultipleFunctionsJava() throws Exception {
         execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctions.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMultipleFunctionsMVEL() throws Exception {
         execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctionsMVEL.drl" );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMultipleFunctionsConstraint() throws Exception {
         execTestAccumulateMultipleFunctionsConstraint( "test_AccumulateMultipleFunctionsConstraint.drl" );
     }
     
-    @Test 
+    @Test  (timeout = 10000)
     public void testAccumulateWithAndOrCombinations() throws Exception {
         // JBRULES-3482
         // once this compils, update it to actually assert on correct outputs.
@@ -860,7 +861,61 @@ public class AccumulateTest extends CommonTestMethodBase {
         wm.insert( new Cheese( "stilton", 10 ) );
         wm.insert( new Person( "Alice", "brie" ) );
         wm.insert( new Person( "Bob", "stilton" ) );
-    }    
+    }
+
+    @Test (timeout = 10000)
+    public void testAccumulateWithSameSubnetwork() throws Exception {
+        String rule = "package org.drools.test;\n" +
+                "import org.drools.Cheese;\n" +
+                "import org.drools.Person;\n" +
+                "global java.util.List list; \n" +
+                "rule r1 salience 100 \n" +
+                "    when\n" +
+                "        $person      : Person( name == 'Alice', $likes : likes )\n" +
+                "        $total       : Number() from accumulate( $p : Person(likes != $likes, $l : likes) and $c : Cheese( type == $l ),\n" +
+                "                                                min($c.getPrice()) )\n" +
+                "    then\n" +
+                "        list.add( 'r1' + ':' + $total);\n" +
+                "end\n" +
+                "rule r2 \n" +
+                "    when\n" +
+                "        $person      : Person( name == 'Alice', $likes : likes )\n" +
+                "        $total       : Number() from accumulate( $p : Person(likes != $likes, $l : likes) and $c : Cheese( type == $l ),\n" +
+                "                                                max($c.getPrice()) )\n" +
+                "    then\n" +
+                "        list.add( 'r2' + ':' + $total);\n" +
+                "end\n" +
+
+                "";
+        // read in the source
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+
+        List list = new ArrayList();
+        wm.setGlobal("list", list);
+
+        // Check the network formation, to ensure the RiaNode is shared.
+        ObjectTypeNode cheeseOtn = LinkingTest.getObjectTypeNode(kbase, Cheese.class);
+        ObjectSink[] oSinks = cheeseOtn.getSinkPropagator().getSinks();
+        assertEquals( 1, oSinks.length );
+
+        JoinNode cheeseJoin = ( JoinNode ) oSinks[0];
+        LeftTupleSink[] ltSinks = cheeseJoin.getSinkPropagator().getSinks();
+
+        assertEquals( 1, ltSinks.length );
+        RightInputAdapterNode rian = ( RightInputAdapterNode ) ltSinks[0];
+        assertEquals( 2, rian.getSinkPropagator().size() );   //  RiaNode is shared, if this has two outputs
+
+        wm.insert(new Cheese("stilton", 10));
+        wm.insert( new Person( "Alice", "brie" ) );
+        wm.insert( new Person( "Bob", "stilton" ) );
+
+        wm.fireAllRules();
+
+        assertEquals(2, list.size() );
+        assertEquals( "r1:10.0", list.get(0));
+        assertEquals( "r2:10.0", list.get(1));
+    }
 
     public void execTestAccumulateSum( String fileName ) throws Exception {
         // read in the source
@@ -1407,7 +1462,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateWithPreviouslyBoundVariables() throws Exception {
 
         // read in the source
@@ -1435,7 +1490,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                       results.get( 0 ) );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMVELWithModify() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateMVELwithModify.drl"  );
@@ -1473,7 +1528,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                       0.0 );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateGlobals() throws Exception {
 
         // read in the source
@@ -1503,7 +1558,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                       results.get( 0 ) );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateNonExistingFunction() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
@@ -1520,7 +1575,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateZeroParams() {
         String rule = "rule fromIt\n" +
                       "when\n" +
@@ -1721,7 +1776,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         public List< ? >    results;
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateMinMax() throws Exception {
         String drl = "package org.drools.test \n" +
                      "import org.drools.Cheese \n" +
@@ -1768,7 +1823,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                       17 );
     }
     
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateCE() throws Exception {
         String drl = "package org.drools\n" +
         		     "global java.util.List results\n" +
@@ -1816,7 +1871,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test  (timeout = 10000)
     public void testAccumulateAndRetract() {
 
         String drl = "package org.drools;\n" +
@@ -1882,7 +1937,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateWithNull() {
         String drl = "rule foo\n" +
                 "when\n" +
@@ -1919,7 +1974,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateWithBoundExpression() {
         String drl = "package org.drools;\n" +
                 "import org.drools.integrationtests.AccumulateTest.MyObj;\n" +
@@ -2017,7 +2072,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateWithVarsOutOfHashOrder() throws Exception {
         // JBRULES-3494
         String rule = "package com.sample;\n" +
@@ -2063,7 +2118,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 1, ((List) o).size() );
     }
 
-    @Test
+    @Test (timeout = 10000)
     public void testAccumulateWithWindow() {
         String str = "global java.util.Map map;\n" +
                 " \n" +
@@ -2099,7 +2154,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         }
     }
 
-    @Test 
+    @Test  (timeout = 10000)
     public void testAccumulateWithEntryPoint() {
         String str = "global java.util.Map map;\n" +
                 " \n" +
@@ -2131,7 +2186,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         }
     }
 
-    @Test 
+    @Test  (timeout = 10000)
     public void testAccumulateWithWindowAndEntryPoint() {
         String str = "global java.util.Map map;\n" +
                 " \n" +
@@ -2167,7 +2222,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test  (timeout = 10000)
     public void test2AccumulatesWithOr() throws Exception {
         // JBRULES-3538
         String str =

@@ -1,21 +1,6 @@
 package org.drools.template.parser;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.drools.Agenda;
-import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.QueryResults;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemoryEntryPoint;
+import org.drools.*;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.WorkingMemoryEventListener;
@@ -31,6 +16,10 @@ import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.time.SessionClock;
 
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+
 public class ExternalSheetListenerTest {
 
     private TemplateDataListener esl;
@@ -42,7 +31,7 @@ public class ExternalSheetListenerTest {
     @Before
     public void setUp() throws Exception {
         esl = new TemplateDataListener(2, 2, new TestTemplateContainer(),
-                new TestTemplateRuleBase(), new TestGenerator());
+                                       new TestTemplateRuleBase(), new TestGenerator());
 
     }
 
@@ -68,12 +57,12 @@ public class ExternalSheetListenerTest {
         esl.newCell(2, 2, "row2col2", 0);
         esl.finishSheet();
         assertEquals(2, assertedRows.size());
-        for ( Map.Entry<Row, List<StringCell>> entry : assertedRows.entrySet() ) {
+        for (Map.Entry<Row, List<StringCell>> entry : assertedRows.entrySet()) {
             Row row = entry.getKey();
             List<StringCell> cells = entry.getValue();
             // first column is not part of the decision table
             int i = 1;
-            for ( StringCell cell : cells ) {
+            for (StringCell cell : cells) {
                 assertEquals("row" + row.getRowNumber() + "col" + i, cell.getValue());
                 assertEquals("Pattern " + i, cell.getColumn().getName());
                 i++;
@@ -260,23 +249,23 @@ public class ExternalSheetListenerTest {
 
                 public QueryResults getQueryResults(String query,
                                                     Object[] arguments) {
-                    
+
                     return null;
                 }
 
                 public void modifyInsert(FactHandle factHandle,
                                          Object object) {
-                    
+
 
                 }
 
                 public void modifyRetract(FactHandle factHandle) {
-                    
+
 
                 }
 
                 public void halt() {
-                    
+
 
                 }
 
@@ -285,57 +274,57 @@ public class ExternalSheetListenerTest {
                 }
 
                 public int fireAllRules(AgendaFilter agendaFilter,
-                                         int fireLimit) throws FactException {
+                                        int fireLimit) throws FactException {
 
                     return 0;
                 }
 
-                
+
                 public GlobalResolver getGlobalResolver() {
-                    
+
                     return null;
                 }
 
                 @SuppressWarnings("unchecked")
                 public List getRuleFlowEventListeners() {
-                    
+
                     return null;
                 }
 
                 public void clearActivationGroup(String group) {
-                    
+
 
                 }
 
                 public void clearRuleFlowGroup(String group) {
-                    
+
 
                 }
 
                 public void addEventListener(RuleBaseEventListener listener) {
-                    
+
 
                 }
 
                 @SuppressWarnings("unchecked")
                 public List getRuleBaseEventListeners() {
-                    
+
                     return null;
                 }
 
                 public void removeEventListener(RuleBaseEventListener listener) {
-                    
+
 
                 }
 
                 @SuppressWarnings("unchecked")
                 public List getRuleBaseUpdateListeners() {
-                    
+
                     return null;
                 }
 
                 public ProcessInstance getProcessInstance(long id) {
-                    
+
                     return null;
                 }
 
@@ -345,31 +334,32 @@ public class ExternalSheetListenerTest {
                 }
 
                 public WorkItemManager getWorkItemManager() {
-                    
+
                     return null;
                 }
 
                 @SuppressWarnings("unchecked")
                 public Collection getProcessInstances() {
-                    
+
                     return null;
                 }
 
                 public ProcessInstance startProcess(String processId,
-                        Map<String, Object> parameters) {
-                    
+                                                    Map<String, Object> parameters) {
+
                     return null;
                 }
 
                 public FactHandle getFactHandleByIdentity(Object object) {
-                    
+
                     return null;
                 }
 
                 public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String id) {
-                    
+
                     return null;
                 }
+
                 public SessionClock getSessionClock() {
                     return null;
                 }
@@ -394,22 +384,22 @@ public class ExternalSheetListenerTest {
                     return null;
                 }
 
-                public Collection< ? extends org.kie.runtime.rule.FactHandle> getFactHandles() {
+                public Collection<? extends org.kie.runtime.rule.FactHandle> getFactHandles() {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public Collection< ? extends org.kie.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
+                public Collection<? extends org.kie.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public Collection< Object> getObjects() {
+                public Collection<Object> getObjects() {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public Collection< Object> getObjects(ObjectFilter filter) {
+                public Collection<Object> getObjects(ObjectFilter filter) {
                     // TODO Auto-generated method stub
                     return null;
                 }
@@ -448,8 +438,8 @@ public class ExternalSheetListenerTest {
         }
 
         public Column[] getColumns() {
-            return new Column[] { new StringColumn("Pattern 1"),
-                    new StringColumn("Pattern 2"), new StringColumn("Pattern 3") };
+            return new Column[]{new StringColumn("Pattern 1"),
+                                new StringColumn("Pattern 2"), new StringColumn("Pattern 3")};
         }
 
         public String getHeader() {

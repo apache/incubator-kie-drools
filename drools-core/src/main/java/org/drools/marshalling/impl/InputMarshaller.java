@@ -155,7 +155,6 @@ public class InputMarshaller {
      * Create a new session into which to read the stream data
      * @param context
      * @param id
-     * @param executor
      * @return
      * @throws IOException
      * @throws ClassNotFoundException
@@ -811,6 +810,10 @@ public class InputMarshaller {
                                          handle );
                     node.createDroolsQuery( parentLeftTuple,
                                             handle,
+                                            null,
+                                            null,
+                                            null,
+                                            null, // @TODO this should probably pass correct arguments (mdp)
                                             context.wm );
                     readLeftTuples( context );
                 } else {

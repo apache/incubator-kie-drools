@@ -149,6 +149,8 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         this.otherSinks.add( (ObjectSinkNode) sink );
     }
+    
+    
 
     public void removeObjectSink(final ObjectSink sink) {
         if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {

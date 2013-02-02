@@ -16,19 +16,6 @@
 
 package org.drools.verifier.visitor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
@@ -43,21 +30,31 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.builder.conf.LanguageLevelOption;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.*;
+
 public class PackageDescrVisitorTest {
 
-    private VerifierData verifierData;
+    private VerifierData        verifierData;
     private PackageDescrVisitor packageDescrVisitor;
 
     @Before
     public void setUp() throws Exception {
         verifierData = VerifierReportFactory.newVerifierData();
         packageDescrVisitor = new PackageDescrVisitor(verifierData,
-                Collections.EMPTY_LIST);
+                                                      Collections.EMPTY_LIST);
     }
 
 
     @Test
-//    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
+    //    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testVisit() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(Verifier.class.getResourceAsStream("Misc3.drl"));
@@ -72,12 +69,11 @@ public class PackageDescrVisitorTest {
         for (VerifierComponent verifierComponent : all) {
             String path = verifierComponent.getPath();
 
-                        System.out.println( "-" + verifierComponent);
-                        if(verifierComponent.getDescr()!=null)
-                        System.out.println(" \n\t\t => " + verifierComponent.getDescr().getLine() + ":" + + verifierComponent.getDescr().getEndLine() + " " + verifierComponent.getDescr().getText());
-                        else
-                          System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName());
-                        
+            System.out.println("-" + verifierComponent);
+            if (verifierComponent.getDescr() != null) {
+                System.out.println(" \n\t\t => " + verifierComponent.getDescr().getLine() + ":" + +verifierComponent.getDescr().getEndLine() + " " + verifierComponent.getDescr().getText());
+            } else { System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName()); }
+
             if (names.contains(path)) {
                 fail("Dublicate path " + path);
             } else {
@@ -87,7 +83,7 @@ public class PackageDescrVisitorTest {
 
         assertNotNull(all);
         assertEquals(45,
-                all.size());
+                     all.size());
 
     }
 
@@ -112,13 +108,12 @@ public class PackageDescrVisitorTest {
         for (VerifierComponent verifierComponent : all) {
             //            System.out.println( verifierComponent );
 
-          System.out.println( "-" + verifierComponent);
-          if(verifierComponent.getDescr()!=null)
-          System.out.println(" \n\t\t => " + verifierComponent.getDescr().getLine() + ":" + + verifierComponent.getDescr().getEndLine() + " " + verifierComponent.getDescr().getText());
-          else
-            System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName());
+            System.out.println("-" + verifierComponent);
+            if (verifierComponent.getDescr() != null) {
+                System.out.println(" \n\t\t => " + verifierComponent.getDescr().getLine() + ":" + +verifierComponent.getDescr().getEndLine() + " " + verifierComponent.getDescr().getText());
+            } else { System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName()); }
 
-          
+
             if (verifierComponent.getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 SubPattern subPattern = (SubPattern) verifierComponent;
                 if ("Test 1".equals(subPattern.getRuleName())) {
@@ -143,16 +138,16 @@ public class PackageDescrVisitorTest {
 
         assertNotNull(test1SubPattern);
         assertEquals(3,
-                test1SubPattern.getItems().size());
+                     test1SubPattern.getItems().size());
         assertNotNull(test2SubPattern);
         assertEquals(3,
-                test2SubPattern.getItems().size());
+                     test2SubPattern.getItems().size());
         assertNotNull(test1SubRule);
         assertEquals(1,
-                test1SubRule.getItems().size());
+                     test1SubRule.getItems().size());
         assertNotNull(test2SubRule);
         assertEquals(1,
-                test2SubRule.getItems().size());
+                     test2SubRule.getItems().size());
 
     }
 

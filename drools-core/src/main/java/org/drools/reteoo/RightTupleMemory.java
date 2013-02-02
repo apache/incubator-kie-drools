@@ -55,8 +55,17 @@ public interface RightTupleMemory {
     
     FastIterator fastIterator();
     
+    /**
+     * Iterates the entire data structure, regardless of whether TupleMemory is hashed or not.
+     * @return
+     */
     FastIterator fullFastIterator();
     
+    /**
+     * Iterator that resumes from the current RightTuple, regardless of whether the TupleMemory is hashed or not 
+     * @param rightTuple
+     * @return
+     */
     FastIterator fullFastIterator(RightTuple rightTuple);
 
     boolean isIndexed();

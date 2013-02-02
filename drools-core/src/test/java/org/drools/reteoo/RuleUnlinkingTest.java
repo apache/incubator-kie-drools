@@ -160,15 +160,15 @@ public class RuleUnlinkingTest {
         kconf.setOption( LRUnlinkingOption.ENABLED );        
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
-        RuleMemory rs = (RuleMemory) wm.getNodeMemory( rtn1 );
+        PathMemory rs = (PathMemory) wm.getNodeMemory( rtn1 );
         assertFalse( rs.isRuleLinked() );
         assertEquals( 1, rs.getAllLinkedMaskTest() );
 
-        rs = (RuleMemory) wm.getNodeMemory( rtn2 );
+        rs = (PathMemory) wm.getNodeMemory( rtn2 );
         assertFalse( rs.isRuleLinked() );
         assertEquals( 3, rs.getAllLinkedMaskTest() );
 
-        rs = (RuleMemory) wm.getNodeMemory( rtn3 );
+        rs = (PathMemory) wm.getNodeMemory( rtn3 );
         assertFalse( rs.isRuleLinked() );
         assertEquals( 7, rs.getAllLinkedMaskTest() );
     }
@@ -182,18 +182,18 @@ public class RuleUnlinkingTest {
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
         BetaMemory bm = null;
-        List<RuleMemory> list;
+        List<PathMemory> list;
 
-        RuleMemory rtn1Rs = (RuleMemory) wm.getNodeMemory( rtn1 );
-        RuleMemory rtn2Rs = (RuleMemory) wm.getNodeMemory( rtn2 );
-        RuleMemory rtn3Rs = (RuleMemory) wm.getNodeMemory( rtn3 );
+        PathMemory rtn1Rs = (PathMemory) wm.getNodeMemory( rtn1 );
+        PathMemory rtn2Rs = (PathMemory) wm.getNodeMemory( rtn2 );
+        PathMemory rtn3Rs = (PathMemory) wm.getNodeMemory( rtn3 );
 
         // n1
         bm = createSegmentMemory( n1, wm );
         assertEquals( 2, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 1, bm.getSegmentMemory().getSegmentPosMaskBit() );
-        list = bm.getSegmentMemory().getRuleMemories();
+        list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 3, list.size() );
         assertTrue( list.contains( rtn1Rs ) );
         assertTrue( list.contains( rtn2Rs ) );
@@ -204,7 +204,7 @@ public class RuleUnlinkingTest {
         assertEquals( 4, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 1, bm.getSegmentMemory().getSegmentPosMaskBit() );
-        list = bm.getSegmentMemory().getRuleMemories();
+        list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 3, list.size() );
         assertTrue( list.contains( rtn1Rs ) );
         assertTrue( list.contains( rtn2Rs ) );
@@ -215,7 +215,7 @@ public class RuleUnlinkingTest {
         assertEquals( 8, bm.getNodePosMaskBit() );
         assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 1, bm.getSegmentMemory().getSegmentPosMaskBit() );
-        list = bm.getSegmentMemory().getRuleMemories();
+        list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 3, list.size() );
         assertTrue( list.contains( rtn1Rs ) );
         assertTrue( list.contains( rtn2Rs ) );
@@ -226,7 +226,7 @@ public class RuleUnlinkingTest {
         assertEquals( 1, bm.getNodePosMaskBit() );
         assertEquals( 3, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 2, bm.getSegmentMemory().getSegmentPosMaskBit() );
-        list = bm.getSegmentMemory().getRuleMemories();
+        list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 2, list.size() );
         assertTrue( list.contains( rtn2Rs ) );
         assertTrue( list.contains( rtn3Rs ) );
@@ -236,7 +236,7 @@ public class RuleUnlinkingTest {
         assertEquals( 2, bm.getNodePosMaskBit() );
         assertEquals( 3, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 2, bm.getSegmentMemory().getSegmentPosMaskBit() );
-        list = bm.getSegmentMemory().getRuleMemories();
+        list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 2, list.size() );
         assertTrue( list.contains( rtn2Rs ) );
         assertTrue( list.contains( rtn3Rs ) );
@@ -246,7 +246,7 @@ public class RuleUnlinkingTest {
         assertEquals( 1, bm.getNodePosMaskBit() );
         assertEquals( 7, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 4, bm.getSegmentMemory().getSegmentPosMaskBit() );
-        list = bm.getSegmentMemory().getRuleMemories();
+        list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 1, list.size() );
         assertTrue( list.contains( rtn3Rs ) );
 
@@ -255,7 +255,7 @@ public class RuleUnlinkingTest {
         assertEquals( 2, bm.getNodePosMaskBit() );
         assertEquals( 7, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 4, bm.getSegmentMemory().getSegmentPosMaskBit() );
-        list = bm.getSegmentMemory().getRuleMemories();
+        list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 1, list.size() );
         assertTrue( list.contains( rtn3Rs ) );
 
@@ -264,7 +264,7 @@ public class RuleUnlinkingTest {
         assertEquals( 4, bm.getNodePosMaskBit() );
         assertEquals( 7, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 4, bm.getSegmentMemory().getSegmentPosMaskBit() );
-        list = bm.getSegmentMemory().getRuleMemories();
+        list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 1, list.size() );
         assertTrue( list.contains( rtn3Rs ) );
     }
@@ -278,11 +278,11 @@ public class RuleUnlinkingTest {
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
         BetaMemory bm = null;
-        List<RuleMemory> list;
+        List<PathMemory> list;
 
-        RuleMemory rtn1Rs = (RuleMemory) wm.getNodeMemory( rtn1 );
-        RuleMemory rtn2Rs = (RuleMemory) wm.getNodeMemory( rtn2 );
-        RuleMemory rtn3Rs = (RuleMemory) wm.getNodeMemory( rtn3 );
+        PathMemory rtn1Rs = (PathMemory) wm.getNodeMemory( rtn1 );
+        PathMemory rtn2Rs = (PathMemory) wm.getNodeMemory( rtn2 );
+        PathMemory rtn3Rs = (PathMemory) wm.getNodeMemory( rtn3 );
 
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
 

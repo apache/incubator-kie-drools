@@ -16,14 +16,11 @@
 
 package org.drools.decisiontable.parser;
 
-import java.util.Properties;
-
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
 import org.drools.template.model.Package;
 import org.drools.template.parser.DataListener;
 
 /**
- *
  * SheetListener used for creating rules
  */
 public interface RuleSheetListener extends DataListener {

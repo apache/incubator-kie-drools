@@ -33,18 +33,8 @@ import org.drools.base.InternalViewChangedEventListener;
 import org.drools.base.NonCloningQueryViewListener;
 import org.drools.base.QueryRowWithSubruleIndex;
 import org.drools.base.StandardQueryViewChangedEventListener;
-import org.drools.common.AbstractWorkingMemory;
-import org.drools.common.BaseNode;
-import org.drools.common.EventFactHandle;
-import org.drools.common.InternalAgenda;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.PropagationContextImpl;
-import org.drools.common.TupleStartEqualsConstraint;
+import org.drools.common.*;
 import org.drools.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
-import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.event.AgendaEventSupport;
@@ -57,9 +47,12 @@ import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert;
+import org.drools.phreak.RuleNetworkEvaluatorActivation;
+import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.AccumulateNode.ActivitySource;
+import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
@@ -169,14 +162,18 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             DroolsQuery queryObject = new DroolsQuery( queryName,
                                                        arguments,
                                                        getQueryListenerInstance(),
-                                                       false );
+                                                       false ,
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       null );
 
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           null,
                                                                           this,
                                                                           this );
 
-            final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
+            final PropagationContext pCtx = new PropagationContextImpl( getNextPropagationIdCounter(),
                                                                                       PropagationContext.INSERTION,
                                                                                       null,
                                                                                       null,
@@ -185,26 +182,18 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                                                                       agenda.getDormantActivations(),
                                                                                       getEntryPoint() );
 
-            getEntryPointNode().assertQuery( handle,
-                                             propagationContext,
-                                             this );
 
-            propagationContext.evaluateActionQueue( this );
-
-            this.handleFactory.destroyFactHandle( handle );
-
-            BaseNode[] nodes = this.ruleBase.getReteooBuilder().getTerminalNodes( queryObject.getQuery() );
-
+            BaseNode[] tnodes = evalQuery(queryName, queryObject, handle, pCtx);
+            
             List<Map<String, Declaration>> decls = new ArrayList<Map<String, Declaration>>();
-            if ( nodes != null ) {
-                for ( BaseNode node : nodes ) {
-                    decls.add( ((QueryTerminalNode) node).getSubrule().getOuterDeclarations() );
-                }
+            for ( BaseNode node : tnodes ) {
+                decls.add( ((QueryTerminalNode) node).getSubRule().getOuterDeclarations() );
             }
 
             executeQueuedActions();
             
-
+            this.handleFactory.destroyFactHandle( handle );
+            
             return new QueryResults( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
                                      decls.toArray( new Map[decls.size()] ),
                                      this,
@@ -241,13 +230,17 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             DroolsQuery queryObject = new DroolsQuery( query,
                                                        arguments,
                                                        new OpenQueryViewChangedEventListenerAdapter( listener ),
-                                                       true );
+                                                       true,
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       null );
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           null,
                                                                           this,
                                                                           this );
 
-            final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
+            final PropagationContext pCtx = new PropagationContextImpl( getNextPropagationIdCounter(),
                                                                                       PropagationContext.INSERTION,
                                                                                       null,
                                                                                       null,
@@ -256,11 +249,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                                                                       agenda.getDormantActivations(),
                                                                                       getEntryPoint() );
 
-            getEntryPointNode().assertQuery( handle,
-                                             propagationContext,
-                                             this );
-
-            propagationContext.evaluateActionQueue( this );
+            BaseNode[] tnodes = evalQuery(queryObject.getName(), queryObject, handle, pCtx);
 
             executeQueuedActions();
 
@@ -273,6 +262,44 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
     }
 
+    private BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
+        BaseNode[] tnodes = ( BaseNode[] ) ruleBase.getReteooBuilder().getTerminalNodes(queryName);
+        if ( this.ruleBase.getConfiguration().isUnlinkingEnabled() ) {
+            if ( tnodes == null ) {
+                throw new RuntimeException( "Query '" + queryName + "' does not exist");
+            }
+
+            QueryTerminalNode tnode = ( QueryTerminalNode )  tnodes[0];
+            LeftTupleSource lts = tnode.getLeftTupleSource();
+            while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+                lts = lts.getLeftTupleSource();
+            }
+            LeftInputAdapterNode lian = ( LeftInputAdapterNode ) lts;
+            LiaNodeMemory lmem = (LiaNodeMemory) getNodeMemory( (MemoryFactory) lts);
+            SegmentMemory lsmem = lmem.getSegmentMemory();
+            if ( lsmem == null ) {
+                lsmem = SegmentUtilities.createSegmentMemory(lts, this);
+            }
+            LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
+
+            List<PathMemory> rmems =  lmem.getSegmentMemory().getPathMemories();
+            for ( int i = 0, length = rmems.size(); i < length; i++ ) {
+                PathMemory rm = rmems.get( i );
+
+                RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm, rm.getRuleTerminalNode() );
+                evaluator.evaluateNetwork(this);
+            }
+        } else {
+            // no need to call retract, as no leftmemory used.
+            getEntryPointNode().assertQuery( handle,
+                                             pCtx,
+                                             this );
+
+            pCtx.evaluateActionQueue( this );
+        }
+        return tnodes;
+    }
+
     public void closeLiveQuery(final InternalFactHandle factHandle) {
 
         try {
@@ -280,7 +307,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             this.ruleBase.readLock();
             this.lock.lock();
 
-            final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
+            final PropagationContext pCtx = new PropagationContextImpl( getNextPropagationIdCounter(),
                                                                                       PropagationContext.INSERTION,
                                                                                       null,
                                                                                       null,
@@ -289,11 +316,28 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                                                                       agenda.getDormantActivations(),
                                                                                       getEntryPoint() );
 
-            getEntryPointNode().retractQuery( factHandle,
-                                              propagationContext,
-                                              this );
+            if ( this.ruleBase.getConfiguration().isUnlinkingEnabled() ) {
+                LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getLeftTupleSink().getLeftTupleSource();
+                LiaNodeMemory lmem = (LiaNodeMemory) getNodeMemory( (MemoryFactory) lian);
+                SegmentMemory lsmem = lmem.getSegmentMemory();
 
-            propagationContext.evaluateActionQueue( this );
+                LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
+                LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, this, lian, false, lmem );
+
+                List<PathMemory> rmems =  lmem.getSegmentMemory().getPathMemories();
+                for ( int i = 0, length = rmems.size(); i < length; i++ ) {
+                    PathMemory rm = rmems.get( i );
+
+                    RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm, rm.getRuleTerminalNode() );
+                    evaluator.evaluateNetwork(this);
+                }
+            } else {
+                getEntryPointNode().retractQuery( factHandle,
+                                                  pCtx,
+                                                  this );
+
+                pCtx.evaluateActionQueue( this );
+            }
             
             getFactHandleFactory().destroyFactHandle( factHandle );
 

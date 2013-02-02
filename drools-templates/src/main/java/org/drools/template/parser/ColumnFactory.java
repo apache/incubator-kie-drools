@@ -22,58 +22,59 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * Factory to produce a column of the correct type based on its declaration.
  * [] indicates a column that represents an array (comma-delimited) of values.
  */
 public class ColumnFactory {
-    private final static Pattern PATTERN = Pattern.compile( "((\\$)*([a-zA-Z0-9_]*))(\\[\\])?(:\\s*([a-zA-Z]*)(\\[\\])?)?" );
+    private final static Pattern PATTERN = Pattern.compile("((\\$)*([a-zA-Z0-9_]*))(\\[\\])?(:\\s*([a-zA-Z]*)(\\[\\])?)?");
 
     public Column getColumn(String value) {
-        Matcher m = PATTERN.matcher( value );
-        if ( !m.matches() ) throw new IllegalArgumentException( "value " + value + " is not a valid column definition" );
-
-        String name = m.group( 1 );
-        String type = m.group( 6 );
-        type = type == null ? "String" : type;
-        boolean array = (m.group( 4 ) != null) || (m.group( 7 ) != null);
-        if ( array ) {
-            return new ArrayColumn( name,
-                                    createColumn( name,
-                                                  type ) );
+        Matcher m = PATTERN.matcher(value);
+        if (!m.matches()) {
+            throw new IllegalArgumentException("value " + value + " is not a valid column definition");
         }
-        return createColumn( name,
-                             type );
+
+        String name = m.group(1);
+        String type = m.group(6);
+        type = type == null ? "String" : type;
+        boolean array = (m.group(4) != null) || (m.group(7) != null);
+        if (array) {
+            return new ArrayColumn(name,
+                                   createColumn(name,
+                                                type));
+        }
+        return createColumn(name,
+                            type);
     }
 
     @SuppressWarnings("unchecked")
     private Column createColumn(String name,
                                 String type) {
         try {
-            Class<Column> klass = (Class<Column>) Class.forName( this.getClass().getPackage().getName() + "." + type + "Column" );
-            Constructor<Column> constructor = klass.getConstructor( new Class[]{String.class} );
-            return constructor.newInstance( new Object[]{name} );
-        } catch ( SecurityException e ) {
+            Class<Column> klass = (Class<Column>) Class.forName(this.getClass().getPackage().getName() + "." + type + "Column");
+            Constructor<Column> constructor = klass.getConstructor(new Class[]{String.class});
+            return constructor.newInstance(new Object[]{name});
+        } catch (SecurityException e) {
             e.printStackTrace();
-            throw new RuntimeException( e );
-        } catch ( NoSuchMethodException e ) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            throw new RuntimeException( e );
-        } catch ( ClassNotFoundException e ) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new RuntimeException( e );
-        } catch ( IllegalArgumentException e ) {
+            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            throw new RuntimeException( e );
-        } catch ( InstantiationException e ) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
             e.printStackTrace();
-            throw new RuntimeException( e );
-        } catch ( IllegalAccessException e ) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new RuntimeException( e );
-        } catch ( InvocationTargetException e ) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
     }
 }

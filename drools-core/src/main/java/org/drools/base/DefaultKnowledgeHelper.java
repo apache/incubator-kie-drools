@@ -414,7 +414,7 @@ public class DefaultKnowledgeHelper
     }
 
     public Declaration getDeclaration(final String identifier) {
-        return (Declaration) ((AgendaItem)this.activation).getRuleTerminalNode().getSubRule().getOuterDeclarations().get( identifier );
+        return (Declaration) ((AgendaItem)this.activation).getTerminalNode().getSubRule().getOuterDeclarations().get( identifier );
     }
 
     public void halt() {

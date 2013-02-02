@@ -10,28 +10,27 @@ import java.io.File;
 
 @Ignore
 public class BuildMojoTest extends AbstractMojoTestCase {
-    
-        @Before
-        protected void setUp() throws Exception {
-            super.setUp();
-        }
 
-        @After
-        protected void tearDown() throws Exception {
-            super.tearDown();
-        }
+    @Before
+    protected void setUp() throws Exception {
+        super.setUp();
+    }
 
-        @Test
-        public void testSomething()
-            throws Exception
-        {
-            File pom = getTestFile( "src/test/resources/unit/project-to-test/pom.xml" );
-            assertNotNull( pom );
-            assertTrue( pom.exists() );
+    @After
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-            BuildMojo myMojo = (BuildMojo) lookupMojo( "touch", pom );
-            assertNotNull( myMojo );
-            myMojo.execute();
-        }
-    }    
+    @Test
+    public void testSomething()
+            throws Exception {
+        File pom = getTestFile("src/test/resources/unit/project-to-test/pom.xml");
+        assertNotNull(pom);
+        assertTrue(pom.exists());
+
+        BuildMojo myMojo = (BuildMojo) lookupMojo("touch", pom);
+        assertNotNull(myMojo);
+        myMojo.execute();
+    }
+}
     

@@ -27,15 +27,17 @@ public class DRLOutput {
 
     public void writeLine(final String line) {
         final StringBuffer buf = this.writer.getBuffer();
-        buf.append( line );
-        buf.append( '\n' );
+        buf.append(line);
+        buf.append('\n');
     }
 
     public DRLOutput() {
         this.writer = new StringWriter();
     }
 
-    /** Return the rendered DRL so far */
+    /**
+     * Return the rendered DRL so far
+     */
     public String getDRL() {
         return this.writer.toString();
     }

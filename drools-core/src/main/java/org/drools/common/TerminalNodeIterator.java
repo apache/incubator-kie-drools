@@ -24,9 +24,8 @@ public class TerminalNodeIterator
 
     private TerminalNodeIterator(KieBase kbase) {
         this.ruleBase = (ReteooRuleBase) ((KnowledgeBaseImpl)kbase).ruleBase;
-        Map<Rule, BaseNode[]> rules = ruleBase.getReteooBuilder().getTerminalNodes();
+        Map<String, BaseNode[]> rules = ruleBase.getReteooBuilder().getTerminalNodes();
         nodes = rules.values().toArray( new BaseNode[rules.size()][] );
-
     }
     
     public static Iterator iterator(KieBase kbase) {

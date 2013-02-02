@@ -816,6 +816,18 @@ public class BaseLeftTuple
     public LeftTuple getParent() {
         return parent;
     }
+
+    public LeftTuple getRootLeftTuple() {
+        if ( parent == null ) {
+            return this;
+        }
+
+        LeftTuple currentLt = parent;
+        while (currentLt.getParent() != null ) {
+            currentLt = currentLt.getParent();
+        }
+        return currentLt;
+    }
     
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#toTupleTree(int)

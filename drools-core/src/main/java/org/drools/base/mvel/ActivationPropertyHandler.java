@@ -28,7 +28,7 @@ public class ActivationPropertyHandler implements PropertyHandler {
             return vr.getValue();
         }
                 
-        Declaration declr = item.getRuleTerminalNode().getSubRule().getOuterDeclarations().get( name );
+        Declaration declr = item.getTerminalNode().getSubRule().getOuterDeclarations().get( name );
         if ( declr != null ) {
             return declr.getValue( null, item.getTuple().get( declr ).getObject() );
         } else {

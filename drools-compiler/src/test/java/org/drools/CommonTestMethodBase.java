@@ -9,6 +9,8 @@ import org.drools.common.InternalAgenda;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.conf.KnowledgeBaseConfigurationTest;
+import org.drools.conf.KnowledgeSessionConfigurationTest;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.runtime.rule.impl.AgendaImpl;
@@ -28,6 +30,7 @@ import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.runtime.conf.KieSessionOption;
 
 /**
  * This contains methods common to many of the tests in drools-compiler. 
@@ -36,9 +39,8 @@ import org.kie.runtime.StatelessKnowledgeSession;
  * common so that tests in drools-compiler can be reused (with persistence)
  * in drools-persistence-jpa.
  */
-public class CommonTestMethodBase extends Assert {
-    
-    public static LRUnlinkingOption preak = LRUnlinkingOption.DISABLED;
+public class CommonTestMethodBase extends Assert {    
+    private static LRUnlinkingOption preak = LRUnlinkingOption.ENABLED;
 
     // ***********************************************
     // METHODS TO BE REMOVED FOR 6.0.0
@@ -108,6 +110,12 @@ public class CommonTestMethodBase extends Assert {
         return kbase.newStatefulKnowledgeSession();
     }
 
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionOption option) {
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( option );
+        return kbase.newStatefulKnowledgeSession( ksconf, null );
+    }
+    
     protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase,
                                                               KieSessionConfiguration ksconf) {
         return kbase.newStatefulKnowledgeSession( ksconf, null );
@@ -124,7 +132,7 @@ public class CommonTestMethodBase extends Assert {
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( null, null, LRUnlinkingOption.DISABLED, drlContentStrings );
+        return loadKnowledgeBaseFromString( null, null, preak, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(LRUnlinkingOption phreak, String... drlContentStrings) {
@@ -133,12 +141,12 @@ public class CommonTestMethodBase extends Assert {
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config,
                                                         String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( config, null, LRUnlinkingOption.DISABLED, drlContentStrings );
+        return loadKnowledgeBaseFromString( config, null, preak, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KieBaseConfiguration kBaseConfig,
                                                         String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( null, kBaseConfig, LRUnlinkingOption.DISABLED, drlContentStrings );
+        return loadKnowledgeBaseFromString( null, kBaseConfig, preak, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config,
@@ -158,7 +166,6 @@ public class CommonTestMethodBase extends Assert {
             kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
         kBaseConfig.setOption( phreak );        
-
         KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase( kBaseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;

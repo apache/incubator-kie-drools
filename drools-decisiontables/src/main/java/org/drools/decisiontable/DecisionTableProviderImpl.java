@@ -1,24 +1,24 @@
 package org.drools.decisiontable;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-
 import org.drools.compiler.DecisionTableProvider;
 import org.drools.core.util.StringUtils;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.KnowledgeBuilderFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+
 public class DecisionTableProviderImpl
-    implements
-    DecisionTableProvider {
+        implements
+        DecisionTableProvider {
 
     public String loadFromInputStream(InputStream is,
                                       DecisionTableConfiguration configuration) {
 
-        return compileStream( is,
-                              configuration );
+        return compileStream(is,
+                             configuration);
     }
 
     private String compileStream(InputStream is,
@@ -26,24 +26,24 @@ public class DecisionTableProviderImpl
         SpreadsheetCompiler compiler = new SpreadsheetCompiler();
 
         //JBRULES-3005: Sensible default when DecisionTableConfiguration is not provided
-        if ( configuration == null ) {
+        if (configuration == null) {
             configuration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-            configuration.setInputType( DecisionTableInputType.XLS );
+            configuration.setInputType(DecisionTableInputType.XLS);
         }
 
-        switch ( configuration.getInputType() ) {
-            case XLS : {
-                if ( StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
-                    return compiler.compile( is,
-                                             InputType.XLS );
+        switch (configuration.getInputType()) {
+            case XLS: {
+                if (StringUtils.isEmpty(configuration.getWorksheetName())) {
+                    return compiler.compile(is,
+                                            InputType.XLS);
                 } else {
-                    return compiler.compile( is,
-                                             configuration.getWorksheetName() );
+                    return compiler.compile(is,
+                                            configuration.getWorksheetName());
                 }
             }
-            case CSV : {
-                return compiler.compile( is,
-                                         InputType.CSV );
+            case CSV: {
+                return compiler.compile(is,
+                                        InputType.CSV);
             }
         }
 
@@ -56,21 +56,22 @@ public class DecisionTableProviderImpl
      */
     public static class ReaderInputStream extends InputStream {
 
-        /** Source Reader */
+        /**
+         * Source Reader
+         */
         private Reader in;
 
-        private String encoding = System.getProperty( "file.encoding" );
+        private String encoding = System.getProperty("file.encoding");
 
         private byte[] slack;
 
-        private int    begin;
+        private int begin;
 
         /**
          * Construct a <CODE>ReaderInputStream</CODE> for the specified
          * <CODE>Reader</CODE>.
-         * 
-         * @param reader
-         *            <CODE>Reader</CODE>. Must not be <code>null</code>.
+         *
+         * @param reader <CODE>Reader</CODE>. Must not be <code>null</code>.
          */
         public ReaderInputStream(Reader reader) {
             in = reader;
@@ -79,17 +80,15 @@ public class DecisionTableProviderImpl
         /**
          * Construct a <CODE>ReaderInputStream</CODE> for the specified
          * <CODE>Reader</CODE>, with the specified encoding.
-         * 
-         * @param reader
-         *            non-null <CODE>Reader</CODE>.
-         * @param encoding
-         *            non-null <CODE>String</CODE> encoding.
+         *
+         * @param reader   non-null <CODE>Reader</CODE>.
+         * @param encoding non-null <CODE>String</CODE> encoding.
          */
         public ReaderInputStream(Reader reader,
                                  String encoding) {
-            this( reader );
-            if ( encoding == null ) {
-                throw new IllegalArgumentException( "encoding must not be null" );
+            this(reader);
+            if (encoding == null) {
+                throw new IllegalArgumentException("encoding must not be null");
             } else {
                 this.encoding = encoding;
             }
@@ -97,34 +96,32 @@ public class DecisionTableProviderImpl
 
         /**
          * Reads from the <CODE>Reader</CODE>, returning the same value.
-         * 
+         *
          * @return the value of the next character in the <CODE>Reader</CODE>.
-         * 
-         * @exception IOException
-         *                if the original <code>Reader</code> fails to be read
+         * @throws IOException if the original <code>Reader</code> fails to be read
          */
         public synchronized int read() throws IOException {
-            if ( in == null ) {
-                throw new IOException( "Stream Closed" );
+            if (in == null) {
+                throw new IOException("Stream Closed");
             }
 
             byte result;
-            if ( slack != null && begin < slack.length ) {
+            if (slack != null && begin < slack.length) {
                 result = slack[begin];
-                if ( ++begin == slack.length ) {
+                if (++begin == slack.length) {
                     slack = null;
                 }
             } else {
                 byte[] buf = new byte[1];
-                if ( read( buf,
-                           0,
-                           1 ) <= 0 ) {
+                if (read(buf,
+                         0,
+                         1) <= 0) {
                     result = -1;
                 }
                 result = buf[0];
             }
 
-            if ( result < -1 ) {
+            if (result < -1) {
                 result += 256;
             }
 
@@ -133,50 +130,46 @@ public class DecisionTableProviderImpl
 
         /**
          * Reads from the <code>Reader</code> into a byte array
-         * 
-         * @param b
-         *            the byte array to read into
-         * @param off
-         *            the offset in the byte array
-         * @param len
-         *            the length in the byte array to fill
+         *
+         * @param b   the byte array to read into
+         * @param off the offset in the byte array
+         * @param len the length in the byte array to fill
          * @return the actual number read into the byte array, -1 at the end of
          *         the stream
-         * @exception IOException
-         *                if an error occurs
+         * @throws IOException if an error occurs
          */
         public synchronized int read(byte[] b,
                                      int off,
                                      int len) throws IOException {
-            if ( in == null ) {
-                throw new IOException( "Stream Closed" );
+            if (in == null) {
+                throw new IOException("Stream Closed");
             }
 
-            while ( slack == null ) {
+            while (slack == null) {
                 char[] buf = new char[len]; // might read too much
-                int n = in.read( buf );
-                if ( n == -1 ) {
+                int n = in.read(buf);
+                if (n == -1) {
                     return -1;
                 }
-                if ( n > 0 ) {
-                    slack = new String( buf,
-                                        0,
-                                        n ).getBytes( encoding );
+                if (n > 0) {
+                    slack = new String(buf,
+                                       0,
+                                       n).getBytes(encoding);
                     begin = 0;
                 }
             }
 
-            if ( len > slack.length - begin ) {
+            if (len > slack.length - begin) {
                 len = slack.length - begin;
             }
 
-            System.arraycopy( slack,
-                              begin,
-                              b,
-                              off,
-                              len );
+            System.arraycopy(slack,
+                             begin,
+                             b,
+                             off,
+                             len);
 
-            if ( (begin += len) >= slack.length ) {
+            if ((begin += len) >= slack.length) {
                 slack = null;
             }
 
@@ -185,32 +178,30 @@ public class DecisionTableProviderImpl
 
         /**
          * Marks the read limit of the StringReader.
-         * 
-         * @param limit
-         *            the maximum limit of bytes that can be read before the
-         *            mark position becomes invalid
+         *
+         * @param limit the maximum limit of bytes that can be read before the
+         *              mark position becomes invalid
          */
         public synchronized void mark(final int limit) {
             try {
-                in.mark( limit );
-            } catch ( IOException ioe ) {
-                throw new RuntimeException( ioe.getMessage() );
+                in.mark(limit);
+            } catch (IOException ioe) {
+                throw new RuntimeException(ioe.getMessage());
             }
         }
 
         /**
          * @return the current number of bytes ready for reading
-         * @exception IOException
-         *                if an error occurs
+         * @throws IOException if an error occurs
          */
         public synchronized int available() throws IOException {
-            if ( in == null ) {
-                throw new IOException( "Stream Closed" );
+            if (in == null) {
+                throw new IOException("Stream Closed");
             }
-            if ( slack != null ) {
+            if (slack != null) {
                 return slack.length - begin;
             }
-            if ( in.ready() ) {
+            if (in.ready()) {
                 return 1;
             } else {
                 return 0;
@@ -226,13 +217,12 @@ public class DecisionTableProviderImpl
 
         /**
          * Resets the StringReader.
-         * 
-         * @exception IOException
-         *                if the StringReader fails to be reset
+         *
+         * @throws IOException if the StringReader fails to be reset
          */
         public synchronized void reset() throws IOException {
-            if ( in == null ) {
-                throw new IOException( "Stream Closed" );
+            if (in == null) {
+                throw new IOException("Stream Closed");
             }
             slack = null;
             in.reset();
@@ -240,12 +230,11 @@ public class DecisionTableProviderImpl
 
         /**
          * Closes the Stringreader.
-         * 
-         * @exception IOException
-         *                if the original StringReader fails to be closed
+         *
+         * @throws IOException if the original StringReader fails to be closed
          */
         public synchronized void close() throws IOException {
-            if ( in != null ) {
+            if (in != null) {
                 in.close();
                 slack = null;
                 in = null;

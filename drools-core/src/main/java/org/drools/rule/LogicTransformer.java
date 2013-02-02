@@ -162,7 +162,7 @@ public class LogicTransformer {
                 Declaration[] decl = constraint.getRequiredDeclarations();
                 for (int i = 0; i < decl.length; i++) {
                     Declaration resolved = resolver.getDeclaration(null,
-                            decl[i].getIdentifier());
+                                                                   decl[i].getIdentifier());
 
                     if (constraint instanceof MvelConstraint && ((MvelConstraint) constraint).isUnification()) {
                         if (ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(resolved.getPattern().getObjectType())) {
@@ -175,17 +175,15 @@ public class LogicTransformer {
 
                     if (resolved != null && resolved != decl[i] && resolved.getPattern() != pattern) {
                         constraint.replaceDeclaration(decl[i],
-                                resolved);
+                                                      resolved);
                     } else if (resolved == null) {
                         // it is probably an implicit declaration, so find the corresponding pattern
                         Pattern old = decl[i].getPattern();
                         Pattern current = resolver.findPatternByIndex(old.getIndex());
                         if (current != null && old != current) {
-                            resolved = new Declaration(decl[i].getIdentifier(),
-                                    decl[i].getExtractor(),
-                                    current);
-                            constraint.replaceDeclaration(decl[i],
-                                    resolved);
+                            resolved = new Declaration(decl[i].getIdentifier(), decl[i].getExtractor(),
+                                                       current);
+                            constraint.replaceDeclaration(decl[i], resolved);
                         }
                     }
                 }

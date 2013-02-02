@@ -78,7 +78,7 @@ public class MVELSalienceExpression
     public int getValue(final KnowledgeHelper khelper,
                         final Rule rule,
                         final WorkingMemory workingMemory) {
-        VariableResolverFactory factory = unit.getFactory( khelper,  ((AgendaItem)khelper.getMatch()).getRuleTerminalNode().getSalienceDeclarations(), 
+        VariableResolverFactory factory = unit.getFactory( khelper,  ((AgendaItem)khelper.getMatch()).getTerminalNode().getSalienceDeclarations(), 
                                                            rule, null, (LeftTuple) khelper.getMatch().getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver() );
         
         // do we have any functions for this namespace?

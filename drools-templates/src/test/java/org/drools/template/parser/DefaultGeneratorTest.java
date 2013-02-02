@@ -1,12 +1,12 @@
 package org.drools.template.parser;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DefaultGeneratorTest {
     private DefaultGenerator g;
@@ -46,7 +46,7 @@ public class DefaultGeneratorTest {
         t.put("rt3", rt3);
         g = new DefaultGenerator(t);
     }
-    
+
     @Test
     public void testSelectTemplate() {
         g.generate("rt2", new Row());
@@ -68,9 +68,9 @@ public class DefaultGeneratorTest {
         Row r = new Row(1, columns);
         r.getCell(0).setValue("value1");
         r.getCell(1).setValue("value2");
-//        Row r = new Row(1);
-//        r.addCell(new StringCell(r, new StringColumn("col1"), "value1"));
-//        r.addCell(new StringCell(r, new StringColumn("col2"), "value2"));
+        //        Row r = new Row(1);
+        //        r.addCell(new StringCell(r, new StringColumn("col1"), "value1"));
+        //        r.addCell(new StringCell(r, new StringColumn("col2"), "value2"));
         g.generate("rt3", r);
         String drl = g.getDrl();
         assertEquals("1 value1 value2\n\n", drl);

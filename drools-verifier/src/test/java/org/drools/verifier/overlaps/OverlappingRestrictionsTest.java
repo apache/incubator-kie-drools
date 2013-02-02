@@ -16,12 +16,6 @@
 
 package org.drools.verifier.overlaps;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
@@ -34,10 +28,15 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
 
+import java.util.Collection;
+
+import static org.junit.Assert.*;
+
 public class OverlappingRestrictionsTest extends TestBaseOld {
 
     // TODO: Add this feature
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testOverlap() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 

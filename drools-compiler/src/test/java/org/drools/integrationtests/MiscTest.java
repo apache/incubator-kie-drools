@@ -1978,13 +1978,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testBasicFrom() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_From.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBase("test_From.drl"  );
         kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -2083,7 +2077,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( "y",
                       nested.get( 1 ) );
 
-        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 1 );
+        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 5 );
         assertEquals( 2,
                       map.keySet().size() );
 
@@ -2100,13 +2094,13 @@ public class MiscTest extends CommonTestMethodBase {
                       nestedMap.get( "key2" ) );
 
         assertEquals( new Integer( 42 ),
-                      ((List) ksession.getGlobal( "list" )).get( 2 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 4 ) );
         assertEquals( "literal",
                       ((List) ksession.getGlobal( "list" )).get( 3 ) );
         assertEquals( bob,
-                      ((List) ksession.getGlobal( "list" )).get( 4 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 2 ) );
         assertEquals( globalObject,
-                      ((List) ksession.getGlobal( "list" )).get( 5 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 1 ) );
     }
 
     @Test

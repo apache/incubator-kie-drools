@@ -3,9 +3,9 @@ package org.drools;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.kie.KieServices;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
-import org.kie.KieServices;
 import org.kie.builder.Message;
 import org.kie.builder.impl.KieContainerImpl;
 import org.kie.builder.impl.KieProject;
@@ -21,7 +21,6 @@ import java.util.List;
  * This goal builds the drools file belonging to the kproject.
  *
  * @goal build
- *
  * @phase compile
  */
 public class BuildMojo extends AbstractMojo {
@@ -45,7 +44,7 @@ public class BuildMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         URLClassLoader projectClassLoader = null;
         try {
-            projectClassLoader = new URLClassLoader( new URL[] { outputDirectory.toURI().toURL() } );
+            projectClassLoader = new URLClassLoader(new URL[]{outputDirectory.toURI().toURL()});
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -57,8 +56,8 @@ public class BuildMojo extends AbstractMojo {
 
         try {
             KieRepository kr = ks.getRepository();
-            KieModule kModule = kr.addKieModule( ks.getResources().newFileSystemResource( sourceFolder ) );
-            KieContainerImpl kContainer = (KieContainerImpl)ks.newKieContainer(kModule.getReleaseId());
+            KieModule kModule = kr.addKieModule(ks.getResources().newFileSystemResource(sourceFolder));
+            KieContainerImpl kContainer = (KieContainerImpl) ks.newKieContainer(kModule.getReleaseId());
 
             KieProject kieProject = kContainer.getKieProject();
             ResultsImpl messages = kieProject.verify();

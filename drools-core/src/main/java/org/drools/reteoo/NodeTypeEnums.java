@@ -53,7 +53,7 @@ public class NodeTypeEnums {
     public static final short EvalConditionNode       = 131;
     public static final short QueryRiaFixerNode       = 141;
     public static final short FromNode                = 151;
-    public static final short UnificationNode         = 161;
+    public static final short UnificationNode         = 165; // these two need to be merged
     public static final short QueryElementNode        = 165;
     public static final short ConditionalBranchNode   = 167;
 

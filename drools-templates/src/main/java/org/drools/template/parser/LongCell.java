@@ -16,12 +16,11 @@
 
 package org.drools.template.parser;
 
-import java.util.Map;
-
 import org.drools.StatefulSession;
 
+import java.util.Map;
+
 /**
- *
  * A cell in a decision table containing a long value
  */
 public class LongCell implements Cell {
@@ -36,6 +35,7 @@ public class LongCell implements Cell {
     public LongCell() {
 
     }
+
     LongCell(Row r, Column c) {
         row = r;
         column = c;
@@ -60,18 +60,23 @@ public class LongCell implements Cell {
     public void addValue(Map<String, Object> vars) {
         vars.put(column.getName(), value);
     }
+
     public void insert(StatefulSession session) {
         session.insert(this);
     }
+
     public void setIndex(int i) {
         index = i;
     }
+
     public int getIndex() {
         return index;
     }
+
     public void setValue(String v) {
         value = new Long(v);
     }
+
     public boolean isEmpty() {
         return value == null;
     }

@@ -15,45 +15,41 @@
  */
 
 package org.drools.template.parser;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.drools.template.model.Condition;
-import org.drools.template.model.Consequence;
-import org.drools.template.model.DRLOutput;
-import org.drools.template.model.Global;
-import org.drools.template.model.Import;
-import org.drools.template.model.Rule;
+import org.drools.template.model.*;
+
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.rule.Package;
 
 /**
- * 
- *
- * Create a rule base for the set of rule templates in the 
+ * Create a rule base for the set of rule templates in the
  * TemplateContainer. These rules are used internally by the
  * engine to generate the actual decision table rules based on
  * which columns have been filled in.
- * 
- * Basically, if a rule template requires columns A and B then 
+ * <p/>
+ * Basically, if a rule template requires columns A and B then
  * the template rule base will generate a rule with columns A and B
  * as the LHS and a RHS which triggers the rule to be generated.
  * ie.
  * rule "template1"
- *   when
- *     r : Row()
- *     column1 : Column(name == "column1")
- *     Cell(row == r, column == column1)
- *     column2 : Column(name == "column2")
- *     Cell(row == r, column == column2, value == "xyz")
- *   then
- *     generator.generate( "template1", r);
- *   end
+ * when
+ * r : Row()
+ * column1 : Column(name == "column1")
+ * Cell(row == r, column == column1)
+ * column2 : Column(name == "column2")
+ * Cell(row == r, column == column2, value == "xyz")
+ * then
+ * generator.generate( "template1", r);
+ * end
  */
 public class DefaultTemplateRuleBase implements TemplateRuleBase {
     private RuleBase ruleBase;
@@ -68,8 +64,8 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
     public StatefulSession newStatefulSession() {
         return ruleBase.newStatefulSession();
     }
+
     /**
-     *
      * @param templates
      * @return
      */
@@ -79,7 +75,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
         addImports(p);
         addGlobals(p);
         int i = 1;
-        for ( RuleTemplate template : templates.values() ) {
+        for (RuleTemplate template : templates.values()) {
             createTemplateRule(p, i++, template);
         }
         DRLOutput out = new DRLOutput();
@@ -99,7 +95,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
     }
 
     private void createColumnConditions(RuleTemplate template, Rule rule) {
-        for ( TemplateColumn column : template.getColumns() ) {
+        for (TemplateColumn column : template.getColumns()) {
             column.addCondition(rule);
         }
     }
@@ -132,7 +128,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
 
     private RuleBase readRule(String drl) {
         try {
-//            logger.info(drl);
+            //            logger.info(drl);
             // read in the source
             Reader source = new StringReader(drl);
             PackageBuilder builder = new PackageBuilder();

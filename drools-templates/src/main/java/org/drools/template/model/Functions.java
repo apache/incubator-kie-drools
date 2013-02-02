@@ -17,12 +17,12 @@
 package org.drools.template.model;
 
 /**
- * Wrapper for functions. Functions must be written in the appropriate style, no 
+ * Wrapper for functions. Functions must be written in the appropriate style, no
  * formatting is contributed here.
  */
 public class Functions
-    implements
-    DRLJavaEmitter {
+        implements
+        DRLJavaEmitter {
 
     private String functionsListing;
 
@@ -31,8 +31,8 @@ public class Functions
     }
 
     public void renderDRL(final DRLOutput out) {
-        if ( this.functionsListing != null ) {
-            out.writeLine( this.functionsListing );
+        if (this.functionsListing != null) {
+            out.writeLine(this.functionsListing);
         }
     }
 

@@ -15,6 +15,7 @@
  */
 
 package org.drools.template.parser;
+
 import org.drools.StatefulSession;
 
 public interface TemplateRuleBase {

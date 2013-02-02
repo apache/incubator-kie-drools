@@ -18,29 +18,29 @@ package org.drools.scorecards.parser.xls;
 
 public interface XLSKeywords {
 
-    public static final String SCORECARD_NAME = "Scorecard Name";
-    public static final String SCORECARD_RESULTANT_SCORE_CLASS = "Resultant Score Class";
-    public static final String SCORECARD_RESULTANT_SCORE_FIELD = "Resultant Score Field";
-    public static final String SCORECARD_RESULTANT_REASONCODES_FIELD = "Resultant Reasoncodes Field";
+    public static final String SCORECARD_NAME                          = "Scorecard Name";
+    public static final String SCORECARD_RESULTANT_SCORE_CLASS         = "Resultant Score Class";
+    public static final String SCORECARD_RESULTANT_SCORE_FIELD         = "Resultant Score Field";
+    public static final String SCORECARD_RESULTANT_REASONCODES_FIELD   = "Resultant Reasoncodes Field";
     public static final String SCORECARD_CHARACTERISTIC_EXTERNAL_CLASS = "Full Class Name";
 
-    public static final String SCORECARD_BASE_SCORE = "Initial Score";
-    public static final String SCORECARD_IMPORTS = "imports";
-    public static final String SCORECARD_PACKAGE = "package";
-    public static final String SCORECARD_USE_REASONCODES = "Use Reason Codes";
-    public static final String SCORECARD_REASONCODE = "Reason Code";
+    public static final String SCORECARD_BASE_SCORE           = "Initial Score";
+    public static final String SCORECARD_IMPORTS              = "imports";
+    public static final String SCORECARD_PACKAGE              = "package";
+    public static final String SCORECARD_USE_REASONCODES      = "Use Reason Codes";
+    public static final String SCORECARD_REASONCODE           = "Reason Code";
     public static final String SCORECARD_REASONCODE_ALGORITHM = "Reason Code Algorithm";
 
-    public static final String SCORECARD_CHARACTERISTIC_NAME = "Name";
-    public static final String SCORECARD_CHARACTERISTIC_DATATYPE = "Data Type";
+    public static final String SCORECARD_CHARACTERISTIC_NAME           = "Name";
+    public static final String SCORECARD_CHARACTERISTIC_DATATYPE       = "Data Type";
     public static final String SCORECARD_CHARACTERISTIC_BASELINE_SCORE = "Baseline Score";
 
-    public static final String SCORECARD_CHARACTERISTIC_BIN_ATTRIBUTE = "Characteristic";
-    public static final String SCORECARD_CHARACTERISTIC_BIN_OPERATOR = "Operator";
-    public static final String SCORECARD_CHARACTERISTIC_BIN_LABEL = "Value";
+    public static final String SCORECARD_CHARACTERISTIC_BIN_ATTRIBUTE    = "Characteristic";
+    public static final String SCORECARD_CHARACTERISTIC_BIN_OPERATOR     = "Operator";
+    public static final String SCORECARD_CHARACTERISTIC_BIN_LABEL        = "Value";
     public static final String SCORECARD_CHARACTERISTIC_BIN_INITIALSCORE = "Partial Score";
-    public static final String SCORECARD_CHARACTERISTIC_BIN_DESC = "Description";
-    public static final String DATATYPE_NUMBER = "Number";
-    public static final String DATATYPE_TEXT = "Text";
-    public static final String DATATYPE_BOOLEAN = "Boolean";
+    public static final String SCORECARD_CHARACTERISTIC_BIN_DESC         = "Description";
+    public static final String DATATYPE_NUMBER                           = "Number";
+    public static final String DATATYPE_TEXT                             = "Text";
+    public static final String DATATYPE_BOOLEAN                          = "Boolean";
 }

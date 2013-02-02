@@ -233,6 +233,10 @@ public class ArrayAgendaGroup
     public long getClearedForRecency() {
         return this.clearedForRecency;
     }
+    @Override
+    public Activation peekNext() {
+        throw new UnsupportedOperationException();
+    }
     
     
 }

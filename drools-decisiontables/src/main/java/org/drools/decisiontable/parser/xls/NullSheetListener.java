@@ -19,12 +19,11 @@ package org.drools.decisiontable.parser.xls;
 import org.drools.template.parser.DataListener;
 
 /**
- *
  * Null listner.
  */
 public class NullSheetListener
-    implements
-    DataListener {
+        implements
+        DataListener {
 
     public void startSheet(final String name) {
     }
