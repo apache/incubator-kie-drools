@@ -45,7 +45,7 @@ import org.drools.planner.examples.curriculumcourse.solver.move.RoomChangeMove;
  */
 public class CurriculumCoursePanel extends SolutionPanel {
 
-    private static final Color HEADER_COLOR = TangoColors.BUTTER_1;
+    private static final Color HEADER_COLOR = TangoColors.ALUMINIUM_2;
 
     private GridLayout gridLayout;
     private TangoColors tangoColors;
