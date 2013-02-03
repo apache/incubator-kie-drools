@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
-import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.common.swingui.TangoColorFactory;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
@@ -45,10 +45,10 @@ import org.drools.planner.examples.curriculumcourse.solver.move.RoomChangeMove;
  */
 public class CurriculumCoursePanel extends SolutionPanel {
 
-    private static final Color HEADER_COLOR = TangoColors.ALUMINIUM_2;
+    private static final Color HEADER_COLOR = TangoColorFactory.ALUMINIUM_2;
 
     private GridLayout gridLayout;
-    private TangoColors tangoColors;
+    private TangoColorFactory tangoColorFactory;
 
     public CurriculumCoursePanel() {
         gridLayout = new GridLayout(0, 1);
@@ -61,7 +61,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
 
     public void resetPanel(Solution solution) {
         removeAll();
-        tangoColors = new TangoColors();
+        tangoColorFactory = new TangoColorFactory();
         CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
         gridLayout.setColumns(schedule.getRoomList().size() + 1);
         JLabel headerCornerLabel = new JLabel("Period         \\         Room");
@@ -118,7 +118,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
 
         public void addLecture(Lecture lecture) {
             JButton button = new JButton(new ExamAction(lecture));
-            Color courseColor = tangoColors.pickColor(lecture.getCourse());
+            Color courseColor = tangoColorFactory.pickColor(lecture.getCourse());
             button.setBackground(courseColor);
             add(button);
         }

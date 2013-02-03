@@ -29,7 +29,7 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.common.swingui.TangoColorFactory;
 import org.drools.planner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.Domicile;
@@ -93,7 +93,7 @@ public class TspWorldPanel extends JPanel {
             g.drawImage(europaBackground.getImage(), 0, 0, translator.getImageWidth(), translator.getImageHeight(), this);
         }
         g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
-        g.setColor(TangoColors.PLUM_2);
+        g.setColor(TangoColorFactory.PLUM_2);
         for (Visit visit : travelingSalesmanTour.getVisitList()) {
             City city = visit.getCity();
             int x = translator.translateLongitudeToX(city.getLongitude());
@@ -103,7 +103,7 @@ public class TspWorldPanel extends JPanel {
                 g.drawString(city.getName(), x + 3, y - 3);
             }
         }
-        g.setColor(TangoColors.ALUMINIUM_4);
+        g.setColor(TangoColorFactory.ALUMINIUM_4);
         for (Domicile domicile : travelingSalesmanTour.getDomicileList()) {
             City city = domicile.getCity();
             int x = translator.translateLongitudeToX(city.getLongitude());
@@ -119,7 +119,7 @@ public class TspWorldPanel extends JPanel {
                 needsBackToDomicileLineSet.remove(trailingVisit.getPreviousAppearance());
             }
         }
-        g.setColor(TangoColors.CHOCOLATE_1);
+        g.setColor(TangoColorFactory.CHOCOLATE_1);
         for (Visit visit : travelingSalesmanTour.getVisitList()) {
             if (visit.getPreviousAppearance() != null) {
                 City previousCity = visit.getPreviousAppearance().getCity();
@@ -141,13 +141,13 @@ public class TspWorldPanel extends JPanel {
             }
         }
         // Legend
-        g.setColor(TangoColors.ALUMINIUM_4);
+        g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(5, (int) height - 20, 5, 5);
         g.drawString("Domicile", 15, (int) height - 15);
-        g.setColor(TangoColors.PLUM_2);
+        g.setColor(TangoColorFactory.PLUM_2);
         g.fillRect(6, (int) height - 9, 3, 3);
         g.drawString("Visit", 15, (int) height - 5);
-        g.setColor(TangoColors.ALUMINIUM_5);
+        g.setColor(TangoColorFactory.ALUMINIUM_5);
         String clickString = "Click anywhere in the map to add a visit.";
         g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString),(int) height - 5);
         repaint();

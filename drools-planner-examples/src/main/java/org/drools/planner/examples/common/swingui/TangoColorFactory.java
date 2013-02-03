@@ -20,7 +20,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TangoColors {
+public class TangoColorFactory {
 
     public static final Color CHAMELEON_1 = new Color(138, 226, 52);
     public static final Color CHAMELEON_2 = new Color(115, 210, 22);
@@ -54,22 +54,22 @@ public class TangoColors {
 
     // Scarlet and orange are reserved for hard and soft constraints
     public static final Color[] SEQUENCE_1 = {
-            TangoColors.CHAMELEON_1, TangoColors.BUTTER_1, TangoColors.SKY_BLUE_1, TangoColors.CHOCOLATE_1,
-            TangoColors.PLUM_1
+            TangoColorFactory.CHAMELEON_1, TangoColorFactory.BUTTER_1, TangoColorFactory.SKY_BLUE_1, TangoColorFactory.CHOCOLATE_1,
+            TangoColorFactory.PLUM_1
     };
     public static final Color[] SEQUENCE_2 = {
-            TangoColors.CHAMELEON_2, TangoColors.BUTTER_2, TangoColors.SKY_BLUE_2, TangoColors.CHOCOLATE_2,
-            TangoColors.PLUM_2
+            TangoColorFactory.CHAMELEON_2, TangoColorFactory.BUTTER_2, TangoColorFactory.SKY_BLUE_2, TangoColorFactory.CHOCOLATE_2,
+            TangoColorFactory.PLUM_2
     };
     public static final Color[] SEQUENCE_3 = {
-            TangoColors.CHAMELEON_3, TangoColors.BUTTER_3, TangoColors.SKY_BLUE_3, TangoColors.CHOCOLATE_3,
-            TangoColors.PLUM_3
+            TangoColorFactory.CHAMELEON_3, TangoColorFactory.BUTTER_3, TangoColorFactory.SKY_BLUE_3, TangoColorFactory.CHOCOLATE_3,
+            TangoColorFactory.PLUM_3
     };
     
     private Map<Object, Color> colorMap;
     private int nextColorCount;
 
-    public TangoColors() {
+    public TangoColorFactory() {
         colorMap = new HashMap<Object, Color>();
         nextColorCount = 0;
     }

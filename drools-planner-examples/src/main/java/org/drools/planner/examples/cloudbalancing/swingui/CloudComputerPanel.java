@@ -36,7 +36,7 @@ import javax.swing.JTextField;
 
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
-import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.common.swingui.TangoColorFactory;
 
 public class CloudComputerPanel extends JPanel {
 
@@ -177,7 +177,7 @@ public class CloudComputerPanel extends JPanel {
             memoryBar.addProcessValue(process.getRequiredMemory());
             usedNetworkBandwidth += process.getRequiredNetworkBandwidth();
             networkBandwidthBar.addProcessValue(process.getRequiredNetworkBandwidth());
-            colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_1.length;
+            colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.length;
         }
         boolean used = processList.size() > 0;
         updateTotals(usedCpuPower, usedMemory, usedNetworkBandwidth, used);
@@ -187,14 +187,14 @@ public class CloudComputerPanel extends JPanel {
     private void updateTotals(int usedCpuPower, int usedMemory, int usedNetworkBandwidth, boolean used) {
         computerLabel.setEnabled(used);
         cpuPowerField.setText(usedCpuPower + " GHz / " + getComputerCpuPower() + " GHz");
-        cpuPowerField.setForeground(usedCpuPower > getComputerCpuPower() ? TangoColors.SCARLET_3 : Color.BLACK);
+        cpuPowerField.setForeground(usedCpuPower > getComputerCpuPower() ? TangoColorFactory.SCARLET_3 : Color.BLACK);
         cpuPowerField.setEnabled(used);
         memoryField.setText(usedMemory + " GB / " + getComputerMemory() + " GB");
-        memoryField.setForeground(usedMemory > getComputerMemory() ? TangoColors.SCARLET_3 : Color.BLACK);
+        memoryField.setForeground(usedMemory > getComputerMemory() ? TangoColorFactory.SCARLET_3 : Color.BLACK);
         memoryField.setEnabled(used);
         networkBandwidthField.setText(usedNetworkBandwidth + " GB / " + getComputerNetworkBandwidth() + " GB");
         networkBandwidthField.setForeground(usedNetworkBandwidth > getComputerNetworkBandwidth()
-                ? TangoColors.SCARLET_3 : Color.BLACK);
+                ? TangoColorFactory.SCARLET_3 : Color.BLACK);
         networkBandwidthField.setEnabled(used);
         costField.setEnabled(used);
     }
@@ -238,7 +238,7 @@ public class CloudComputerPanel extends JPanel {
 
             int maximumComputerWidth = size.width - 10;
             if (maximumComputerWidth <= 10) {
-                g.setColor(TangoColors.ALUMINIUM_6);
+                g.setColor(TangoColorFactory.ALUMINIUM_6);
                 g.drawString("?", 2, 2);
                 return;
             }
@@ -254,13 +254,13 @@ public class CloudComputerPanel extends JPanel {
                 int offset = (int) ((double) offsetValue * pixelsPerValue);
                 int processWidth = (int) ((double) processValue * pixelsPerValue) + 1;
                 processWidth = Math.max(processWidth, 1);
-                g.setColor(TangoColors.SEQUENCE_1[colorIndex]);
+                g.setColor(TangoColorFactory.SEQUENCE_1[colorIndex]);
                 g.fillRect(offset, 0, processWidth, size.height);
                 offsetValue += processValue;
-                colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_1.length;
+                colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.length;
             }
             if (this.computerValue > 0) {
-                g.setColor(isEnabled() ? Color.BLACK : TangoColors.ALUMINIUM_5);
+                g.setColor(isEnabled() ? Color.BLACK : TangoColorFactory.ALUMINIUM_5);
                 g.drawRect(0, 0, computerWidth, size.height - 1);
             }
         }
@@ -309,7 +309,7 @@ public class CloudComputerPanel extends JPanel {
             int colorIndex = 0;
             for (CloudProcess process : processList) {
                 JLabel processLabel = new JLabel(process.getLabel());
-                processLabel.setForeground(TangoColors.SEQUENCE_1[colorIndex]);
+                processLabel.setForeground(TangoColorFactory.SEQUENCE_1[colorIndex]);
                 assignmentsPanel.add(processLabel);
 
                 JTextField cpuPowerField = new JTextField(process.getRequiredCpuPower() + " GHz");
@@ -323,7 +323,7 @@ public class CloudComputerPanel extends JPanel {
                 assignmentsPanel.add(networkBandwidthField);
                 assignmentsPanel.add(new JLabel(""));
 
-                colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_1.length;
+                colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.length;
             }
             return assignmentsPanel;
         }

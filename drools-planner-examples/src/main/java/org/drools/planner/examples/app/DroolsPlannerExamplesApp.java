@@ -37,7 +37,7 @@ import javax.swing.border.TitledBorder;
 import org.drools.planner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.drools.planner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.drools.planner.examples.common.app.CommonApp;
-import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.common.swingui.TangoColorFactory;
 import org.drools.planner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.drools.planner.examples.examination.app.ExaminationApp;
 import org.drools.planner.examples.machinereassignment.app.MachineReassignmentApp;
@@ -110,7 +110,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
     private JPanel createToyExamplesPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Toy examples");
-        titledBorder.setTitleColor(TangoColors.CHAMELEON_3);
+        titledBorder.setTitleColor(TangoColorFactory.CHAMELEON_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         panel.add(createExampleButton("N queens",
@@ -153,7 +153,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
     private JPanel createRealExamplesPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Real examples");
-        titledBorder.setTitleColor(TangoColors.BUTTER_3);
+        titledBorder.setTitleColor(TangoColorFactory.BUTTER_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         panel.add(createExampleButton("Course timetabling",
@@ -194,7 +194,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
     private JPanel createDifficultExamplesPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Difficult examples");
-        titledBorder.setTitleColor(TangoColors.SCARLET_3);
+        titledBorder.setTitleColor(TangoColorFactory.SCARLET_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         panel.add(createExampleButton("Exam timetabling",

@@ -35,7 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.common.swingui.TangoColorFactory;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
 import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
@@ -169,8 +169,8 @@ public class MrMachinePanel extends JPanel {
                 usedTotal += processAssignment.getProcess().getProcessRequirement(resource).getUsage();
             }
             resourceField.setText(usedTotal + " / " + maximumCapacity);
-            resourceField.setForeground(usedTotal > maximumCapacity? TangoColors.SCARLET_3 :
-                    (usedTotal > safetyCapacity ? TangoColors.ORANGE_3 : Color.BLACK));
+            resourceField.setForeground(usedTotal > maximumCapacity? TangoColorFactory.SCARLET_3 :
+                    (usedTotal > safetyCapacity ? TangoColorFactory.ORANGE_3 : Color.BLACK));
             resourceField.setEnabled(used);
         }
         numberOfProcessesLabel.setText(processAssignmentList.size() + " processes ");
@@ -198,7 +198,7 @@ public class MrMachinePanel extends JPanel {
             int colorIndex = 0;
             for (MrProcessAssignment processAssignment : processAssignmentList) {
                 JLabel processAssignmentLabel = new JLabel(processAssignment.getLabel());
-                processAssignmentLabel.setForeground(TangoColors.SEQUENCE_1[colorIndex]);
+                processAssignmentLabel.setForeground(TangoColorFactory.SEQUENCE_1[colorIndex]);
                 assignmentsPanel.add(processAssignmentLabel);
 
                 for (MrResource resource : resourceList) {
@@ -208,7 +208,7 @@ public class MrMachinePanel extends JPanel {
                     assignmentsPanel.add(resourceField);
                 }
 
-                colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_1.length;
+                colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.length;
             }
             return assignmentsPanel;
         }

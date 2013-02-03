@@ -35,7 +35,7 @@ import javax.swing.JPanel;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
-import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.common.swingui.TangoColorFactory;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
 import org.drools.planner.examples.nqueens.domain.Row;
@@ -88,9 +88,9 @@ public class NQueensPanel extends SolutionPanel {
                 } else {
                     JPanel panel = new JPanel();
                     panel.setBorder(BorderFactory.createCompoundBorder(
-                            BorderFactory.createLineBorder(TangoColors.ALUMINIUM_6),
+                            BorderFactory.createLineBorder(TangoColorFactory.ALUMINIUM_6),
                             BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-                    Color background = (((row + column) % 2) == 0) ? Color.WHITE : TangoColors.ALUMINIUM_3;
+                    Color background = (((row + column) % 2) == 0) ? Color.WHITE : TangoColorFactory.ALUMINIUM_3;
                     panel.setBackground(background);
                     panel.setToolTipText(toolTipText);
                     add(panel);

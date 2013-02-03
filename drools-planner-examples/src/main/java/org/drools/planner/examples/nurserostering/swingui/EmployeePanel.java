@@ -35,7 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.common.swingui.TangoColorFactory;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
@@ -123,12 +123,12 @@ public class EmployeePanel extends JPanel {
         for (ShiftDate shiftDate : shiftDateList) {
             JPanel shiftDatePanel = new JPanel(new GridLayout(1, 0));
             Color backgroundColor = weekendDefinition.isWeekend(shiftDate.getDayOfWeek())
-                    ? TangoColors.ALUMINIUM_2 : shiftDatePanel.getBackground();
+                    ? TangoColorFactory.ALUMINIUM_2 : shiftDatePanel.getBackground();
             if (employee != null) {
                 if (employee.getDayOffRequestMap().containsKey(shiftDate)) {
-                    backgroundColor = TangoColors.ALUMINIUM_4;
+                    backgroundColor = TangoColorFactory.ALUMINIUM_4;
                 } else if (employee.getDayOnRequestMap().containsKey(shiftDate)) {
-                    backgroundColor = TangoColors.SCARLET_1;
+                    backgroundColor = TangoColorFactory.SCARLET_1;
                 }
             }
             shiftDatePanel.setBackground(backgroundColor);
@@ -136,7 +136,7 @@ public class EmployeePanel extends JPanel {
                     .isInPlanningWindow(shiftDate);
             shiftDatePanel.setEnabled(inPlanningWindow);
             shiftDatePanel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(inPlanningWindow ? TangoColors.ALUMINIUM_6 : TangoColors.ALUMINIUM_3),
+                    BorderFactory.createLineBorder(inPlanningWindow ? TangoColorFactory.ALUMINIUM_6 : TangoColorFactory.ALUMINIUM_3),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
             shiftDatePanelMap.put(shiftDate, shiftDatePanel);
             if (employee == null) {
@@ -160,9 +160,9 @@ public class EmployeePanel extends JPanel {
             Color backgroundColor = shiftDatePanel.getBackground();
             if (employee != null) {
                 if (employee.getShiftOffRequestMap().containsKey(shift)) {
-                    backgroundColor = TangoColors.ALUMINIUM_4;
+                    backgroundColor = TangoColorFactory.ALUMINIUM_4;
                 } else if (employee.getShiftOnRequestMap().containsKey(shift)) {
-                    backgroundColor = TangoColors.SCARLET_1;
+                    backgroundColor = TangoColorFactory.SCARLET_1;
                 }
             }
             shiftPanel.setBackground(backgroundColor);
@@ -183,11 +183,11 @@ public class EmployeePanel extends JPanel {
         if (employee != null) {
             if (employee.getDayOffRequestMap().containsKey(shift.getShiftDate())
                     || employee.getShiftOffRequestMap().containsKey(shift)) {
-                shiftAssignmentButton.setForeground(TangoColors.SCARLET_1);
+                shiftAssignmentButton.setForeground(TangoColorFactory.SCARLET_1);
             }
         }
-        int colorIndex = shift.getShiftType().getIndex() % TangoColors.SEQUENCE_1.length;
-        shiftAssignmentButton.setBackground(TangoColors.SEQUENCE_1[colorIndex]);
+        int colorIndex = shift.getShiftType().getIndex() % TangoColorFactory.SEQUENCE_1.length;
+        shiftAssignmentButton.setBackground(TangoColorFactory.SEQUENCE_1[colorIndex]);
         shiftAssignmentButton.setToolTipText((employee == null ? "Unassigned" : employee.getLabel())
                 + " on " + shift.getLabel());
         shiftPanel.add(shiftAssignmentButton);

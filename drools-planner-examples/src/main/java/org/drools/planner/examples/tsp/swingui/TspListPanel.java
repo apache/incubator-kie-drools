@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.common.swingui.TangoColorFactory;
 import org.drools.planner.examples.tsp.domain.Appearance;
 import org.drools.planner.examples.tsp.domain.Domicile;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
@@ -38,7 +38,7 @@ import org.drools.planner.examples.tsp.domain.Visit;
  */
 public class TspListPanel extends JPanel {
 
-    private static final Color HEADER_COLOR = TangoColors.BUTTER_1;
+    private static final Color HEADER_COLOR = TangoColorFactory.BUTTER_1;
 
     private final TspPanel tspPanel;
 
