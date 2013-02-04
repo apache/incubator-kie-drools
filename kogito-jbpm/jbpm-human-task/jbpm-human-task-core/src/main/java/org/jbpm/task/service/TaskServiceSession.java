@@ -525,6 +525,7 @@ public class TaskServiceSession {
     }
 
     private void taskClaimOperation(final Task task) {
+    	task.getTaskData().setClaimTime(new Date());
         // Task was reserved so owner should get icals
         SendIcal.getInstance().sendIcalForTask(task, service.getUserinfo());
     }

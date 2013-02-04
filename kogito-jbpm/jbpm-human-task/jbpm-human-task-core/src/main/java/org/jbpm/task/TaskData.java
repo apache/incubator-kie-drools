@@ -57,9 +57,11 @@ public class TaskData
 
     private Date completedOn;
     
-    private Date activationTime;
+//    private Date activationTime;
 
     private Date expirationTime;
+    
+    private Date claimTime;
 
     private boolean skipable;
 
@@ -149,6 +151,13 @@ public class TaskData
         if (expirationTime != null) {
             out.writeBoolean(true);
             out.writeLong(expirationTime.getTime());
+        } else {
+            out.writeBoolean(false);
+        }
+
+        if (claimTime != null) {
+            out.writeBoolean(true);
+            out.writeLong(claimTime.getTime());
         } else {
             out.writeBoolean(false);
         }
@@ -309,6 +318,10 @@ public class TaskData
 
         if (in.readBoolean()) {
             expirationTime = new Date(in.readLong());
+        }
+
+        if (in.readBoolean()) {
+            claimTime = new Date(in.readLong());
         }
 
         skipable = in.readBoolean();
@@ -510,7 +523,7 @@ public class TaskData
         this.completedOn = completedOn;
     }
     
-    Date getActivationTime() {
+    public Date getActivationTime() {
         return activationTime;
     }
 
@@ -524,6 +537,14 @@ public class TaskData
 
     public void setExpirationTime(Date expirationTime) {
         this.expirationTime = expirationTime;
+    }
+
+    public Date getClaimTime() {
+        return claimTime;
+    }
+
+    public void setClaimTime(Date claimTime) {
+        this.claimTime = claimTime;
     }
 
     public boolean isSkipable() {
@@ -792,6 +813,7 @@ public class TaskData
         result = prime * result + ((createdOn == null) ? 0 : createdOn.hashCode());
         result = prime * result + ((completedOn == null) ? 0 : completedOn.hashCode());
         result = prime * result + ((expirationTime == null) ? 0 : expirationTime.hashCode());
+        result = prime * result + ((claimTime == null) ? 0 : claimTime.hashCode());
         result = prime * result + (skipable ? 1231 : 1237);
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         result = prime * result + ((previousStatus == null) ? 0 : previousStatus.hashCode());
@@ -828,6 +850,9 @@ public class TaskData
         if (expirationTime == null) {
             if (other.expirationTime != null) return false;
         } else if (expirationTime.getTime() != other.expirationTime.getTime()) return false;
+        if (claimTime == null) {
+            if (other.claimTime != null) return false;
+        } else if (claimTime.getTime() != other.claimTime.getTime()) return false;
         if (skipable != other.skipable) return false;
         if (workItemId != other.workItemId) return false;
         if (status == null) {
