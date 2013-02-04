@@ -1017,6 +1017,17 @@ where
     t.archived = 0 and
     t.taskData.workItemId = :workItemId
           </query>
+      </named-query>
+      <named-query name="TasksByProcessInstanceId">
+          <query>
+select
+    t.id
+from
+    Task t
+where
+    t.archived = 0 and
+    t.taskData.processInstanceId = :processInstanceId
+          </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
 </entity-mappings>

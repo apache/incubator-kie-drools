@@ -83,6 +83,8 @@ public interface TaskService {
 
     Task getTaskByWorkItemId(long workItemId);
 
+    List<Long> getTasksByProcessInstanceId(long processInstanceId);
+
     List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language);
 
     List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId, String language);

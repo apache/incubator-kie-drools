@@ -96,6 +96,9 @@ public enum CommandName {
     QueryTaskByWorkItemId,
     QueryTaskByWorkItemIdResponse,
 
+    QueryTasksByProcessInstanceId,
+    QueryTasksByProcessInstanceIdResponse,
+
     QueryTasksByStatusByProcessId,
     QueryTasksByStatusByProcessIdByTaskName,
         

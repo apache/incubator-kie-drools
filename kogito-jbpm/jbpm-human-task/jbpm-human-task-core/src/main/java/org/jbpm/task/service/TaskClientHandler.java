@@ -191,6 +191,18 @@ public class TaskClientHandler {
                 }
                 break;
             }
+            case QueryTasksByProcessInstanceIdResponse: {
+                GetIdsResponseHandler responseHandler = (GetIdsResponseHandler) responseHandlers.remove(cmd.getId());
+                if (responseHandler != null) {
+                    if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
+                        responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
+                    } else {
+                        List<Long> result = (List<Long>) cmd.getArguments().get(0);
+                        responseHandler.execute(result);
+                    }
+                }
+                break;
+            }
             case EventTriggerResponse: {
                 EventResponseHandler responseHandler = (EventResponseHandler) responseHandlers.get(cmd.getId());
                 if (responseHandler != null) {
@@ -225,6 +237,12 @@ public class TaskClientHandler {
             extends
             ResponseHandler {
         public void execute(Task task);
+    }
+
+    public static interface GetIdsResponseHandler
+    		extends
+    		ResponseHandler {
+    	public void execute(List<Long> ids);
     }
 
     public static interface AddTaskResponseHandler

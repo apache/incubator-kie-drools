@@ -27,6 +27,7 @@ import org.jbpm.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.DeleteAttachmentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.DeleteCommentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
+import org.jbpm.task.service.TaskClientHandler.GetIdsResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.QueryGenericResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.SetDocumentResponseHandler;
@@ -89,6 +90,8 @@ public interface AsyncTaskService {
     void getTask(long taskId, GetTaskResponseHandler responseHandler);
 
     void getTaskByWorkItemId(long workItemId, GetTaskResponseHandler responseHandler);
+
+    void getTasksByProcessInstanceId(long processInstanceId, GetIdsResponseHandler responseHandler);
 
     void getTasksAssignedAsBusinessAdministrator(String userId, String language, TaskSummaryResponseHandler responseHandler);
 

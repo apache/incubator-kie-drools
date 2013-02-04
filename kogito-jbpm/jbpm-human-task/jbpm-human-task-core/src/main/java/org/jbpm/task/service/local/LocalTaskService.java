@@ -208,6 +208,13 @@ public class LocalTaskService implements TaskService {
         
         return result;
     }
+    
+    public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
+    	TaskServiceSession session = service.createSession();
+        List<Long> result = session.getTasksByProcessInstanceId(processInstanceId);
+        session.dispose();
+        return result;
+    }
 
     public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language) {
         TaskServiceSession session = service.createSession();

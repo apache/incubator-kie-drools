@@ -34,6 +34,7 @@ import org.jbpm.task.service.responsehandlers.BlockingAddCommentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingDeleteAttachmentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingDeleteCommentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingGetIdsResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingQueryGenericResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingSetContentResponseHandler;
@@ -366,6 +367,19 @@ public class SyncTaskServiceWrapper implements TaskService {
             }
         }
         return responseHandler.getTask();
+    }
+
+    public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
+        BlockingGetIdsResponseHandler responseHandler = new BlockingGetIdsResponseHandler();
+        taskService.getTasksByProcessInstanceId(processInstanceId, responseHandler);
+        try {
+            responseHandler.waitTillDone(timeout);
+        } catch (Exception e) {
+            if (responseHandler.getError() != null) {
+                throw responseHandler.getError();
+            }
+        }
+        return responseHandler.getIds();
     }
 
     public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language) {

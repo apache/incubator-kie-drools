@@ -768,6 +768,11 @@ public class TaskServiceSession {
         return (Task) taskObject;
     }
 
+    public List<Long> getTasksByProcessInstanceId(final long processInstanceId) {
+        HashMap<String, Object> params = addParametersToMap("processInstanceId", processInstanceId);
+        return (List<Long>) tpm.queryWithParametersInTransaction("TasksByProcessInstanceId", params, false);
+    }
+
     public List<TaskSummary> getTasksOwned(final String userId, final String language) {
         doCallbackUserOperation(userId);
         return tpm.queryTasksWithUserIdAndLanguage("TasksOwned", userId, language);

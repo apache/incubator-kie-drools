@@ -78,6 +78,10 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
         assertEquals(10, task.getProcessInstanceId());
+        
+        List<Long> taskIds = client.getTasksByProcessInstanceId(10);
+        assertEquals(1, taskIds.size());
+        assertEquals(task.getId(), (long) taskIds.get(0));
 
         client.start(task.getId(), "Darth Vader");
         client.complete(task.getId(), "Darth Vader", null);

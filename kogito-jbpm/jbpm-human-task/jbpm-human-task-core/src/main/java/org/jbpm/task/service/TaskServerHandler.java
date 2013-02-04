@@ -290,6 +290,30 @@ public class TaskServerHandler {
 
                     break;
                 }
+                case QueryTasksByProcessInstanceId: {
+                    // prepare
+                    response = CommandName.QueryTasksByProcessInstanceIdResponse;
+                    
+                    final long processInstanceId = (Long) cmd.getArguments().get(0);
+
+                    taskSession.doOperationInTransaction(new TransactedOperation() {
+                        public void doOperation() {
+                            // execute
+                            List<Long> results = taskSession.getTasksByProcessInstanceId(processInstanceId);
+
+                            List args = Arrays.asList((new List[] {results}));
+                            // return
+                            Command resultsCmnd = new Command(cmd.getId(), CommandName.QueryTasksByProcessInstanceIdResponse, args);
+                            try {
+                                session.write(resultsCmnd);
+                            } catch(IOException ioe) { 
+                                throw new IllegalTaskStateException("Could not serialize ids.", ioe); 
+                            }
+                        }
+                    });
+
+                    break;
+                }
                 case QueryTasksOwned: {
                     // prepare
                     response = CommandName.QueryTaskSummaryResponse;
