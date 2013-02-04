@@ -1,16 +1,10 @@
 package org.drools.phreak;
 
-import static org.drools.phreak.A.a;
-import static org.drools.phreak.B.b;
-import static org.drools.phreak.Pair.t;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.LeftTupleSets;
 import org.drools.phreak.RuleNetworkEvaluatorActivation.PhreakJoinNode;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
@@ -21,6 +15,10 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Rule;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.drools.phreak.A.a;
+import static org.drools.phreak.B.b;
+import static org.drools.phreak.Pair.t;
 
 public class SegmentPropagationTest {
     
@@ -102,7 +100,7 @@ public class SegmentPropagationTest {
     B b3 = b( 3 );
     B b4 = b( 4 );    
     
-    @Test
+    @Test @Ignore
     public void test1() {
         setupJoinNode();
         

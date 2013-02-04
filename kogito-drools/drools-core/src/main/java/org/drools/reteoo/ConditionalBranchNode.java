@@ -1,6 +1,7 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.DroolsQuery;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
@@ -105,10 +106,19 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         ConditionalExecution conditionalExecution = branchEvaluator.evaluate( leftTuple, workingMemory, memory.context );
 
         if ( conditionalExecution != null ) {
+            boolean useLeftMemory = true;
+            if ( !this.tupleMemoryEnabled ) {
+                // This is a hack, to not add closed DroolsQuery objects
+                Object object = leftTuple.get( 0 ).getObject();
+                if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
+                    useLeftMemory = false;
+                }
+            }
+
             conditionalExecution.getSink().propagateAssertLeftTuple( leftTuple,
                                                                      context,
                                                                      workingMemory,
-                                                                     this.tupleMemoryEnabled );
+                                                                     useLeftMemory );
             breaking = conditionalExecution.isBreaking();
         }
 
