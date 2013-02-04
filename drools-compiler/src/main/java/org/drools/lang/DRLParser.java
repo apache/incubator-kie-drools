@@ -13,11 +13,6 @@
  */
 package org.drools.lang;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.MismatchedTokenException;
 import org.antlr.runtime.MissingTokenException;
@@ -61,18 +56,15 @@ import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.EnumDeclarationDescr;
 import org.drools.lang.descr.EntryPointDeclarationDescr;
-import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.EnumDeclarationDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.NamedConsequenceDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -80,6 +72,11 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.WindowDeclarationDescr;
 import org.drools.rule.TypeDeclaration;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 public class DRLParser {
 
@@ -2212,7 +2209,7 @@ public class DRLParser {
      *           | lhsForall
      *           | lhsAccumulate
      *           | LEFT_PAREN lhsOr RIGHT_PAREN namedConsequence?
-     *           | lhsPatternBind consequenceInvocation?
+     *           | lhsPatternBind consequenceInvocation*
      *           ) 
      *           SEMICOLON?
      * 
@@ -2244,7 +2241,7 @@ public class DRLParser {
         } else if ( input.LA( 1 ) == DRLLexer.ID || input.LA( 1 ) == DRLLexer.QUESTION ) {
             result = lhsPatternBind( ce,
                                      allowOr );
-            consequenceInvocation( ce );
+            for (BaseDescr i = consequenceInvocation( ce ); i != null; i = consequenceInvocation( ce ));
         } else {
             failMismatchedTokenException();
         }

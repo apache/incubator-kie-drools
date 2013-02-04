@@ -35,6 +35,12 @@ public class ConditionalBranchBuilder implements RuleConditionBuilder {
     private Pattern getLastPattern(RuleBuildContext context) {
         GroupElement ge = (GroupElement)context.getBuildStack().peek();
         List<RuleConditionElement> siblings = ge.getChildren();
-        return (Pattern) siblings.get(siblings.size()-1);
+        for (int i = siblings.size()-1; i >= 0; i--) {
+            RuleConditionElement element = siblings.get(i);
+            if (element instanceof Pattern) {
+                return (Pattern) element;
+            }
+        }
+        throw new RuntimeException("Cannot find a Pattern in the RuleBuildContext");
     }
 }
