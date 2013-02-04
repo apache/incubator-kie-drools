@@ -190,7 +190,7 @@ public class SimpleSessionManagementTest {
         assertEquals(1, sessionsNames.size());
         Collection<ProcessDesc> processes = dataService.getProcesses();
         
-        assertEquals(1, processes.size());
+        assertEquals(2, processes.size());
         
         params = new HashMap<String, Object>();
         params.put("customer", "Salaboy2");
