@@ -57,7 +57,7 @@ public class TaskData
 
     private Date completedOn;
     
-//    private Date activationTime;
+    private Date activationTime;
 
     private Date expirationTime;
     
