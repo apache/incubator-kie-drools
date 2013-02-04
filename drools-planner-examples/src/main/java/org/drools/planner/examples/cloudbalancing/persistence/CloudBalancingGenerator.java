@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.io.FilenameUtils;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
@@ -118,12 +119,13 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private void writeCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
-        File outputFile = determineOutputFile(cloudComputerListSize, cloudProcessListSize);
-        CloudBalance cloudBalance = createCloudBalance(cloudComputerListSize, cloudProcessListSize);
+        String inputId = determineInputId(cloudComputerListSize, cloudProcessListSize);
+        File outputFile = new File(outputDir, inputId + ".xml");
+        CloudBalance cloudBalance = createCloudBalance(inputId, cloudComputerListSize, cloudProcessListSize);
         solutionDao.writeSolution(cloudBalance, outputFile);
     }
 
-    private File determineOutputFile(int cloudComputerListSize, int cloudProcessListSize) {
+    private String determineInputId(int cloudComputerListSize, int cloudProcessListSize) {
         String cloudComputerListSizeString = Integer.toString(cloudComputerListSize);
         if (cloudComputerListSizeString.length() < 4) {
             cloudComputerListSizeString = "0000".substring(0, 4 - cloudComputerListSizeString.length()) + cloudComputerListSizeString;
@@ -132,23 +134,27 @@ public class CloudBalancingGenerator extends LoggingMain {
         if (cloudProcessListSizeString.length() < 4) {
             cloudProcessListSizeString = "0000".substring(0, 4 - cloudProcessListSizeString.length()) + cloudProcessListSizeString;
         }
-        String outputFileName = "cb-" + cloudComputerListSizeString + "comp-" + cloudProcessListSizeString + "proc.xml";
-        return new File(outputDir, outputFileName);
+        return "cb-" + cloudComputerListSizeString + "comp-" + cloudProcessListSizeString + "proc";
     }
 
     public CloudBalance createCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
+        return createCloudBalance(determineInputId(cloudComputerListSize, cloudProcessListSize),
+                cloudComputerListSize, cloudProcessListSize);
+    }
+
+    public CloudBalance createCloudBalance(String inputId, int cloudComputerListSize, int cloudProcessListSize) {
         random = new Random(47);
         CloudBalance cloudBalance = new CloudBalance();
         cloudBalance.setId(0L);
-        createCloudComputerList(cloudBalance,cloudComputerListSize);
+        createCloudComputerList(cloudBalance, cloudComputerListSize);
         createCloudProcessList(cloudBalance, cloudProcessListSize);
-        logger.info("CloudBalance {} with {} computers and {} processes.",
-                cloudBalance.getComputerList().size(), cloudBalance.getProcessList().size());
         BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getComputerList().size()).pow(
                 cloudBalance.getProcessList().size());
         String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-        logger.info("CloudBalance with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
-                flooredPossibleSolutionSize, possibleSolutionSize);
+        logger.info("CloudBalance {} has {} computers and {} processes with a search space of {}.",
+                inputId, cloudComputerListSize, cloudProcessListSize,
+                possibleSolutionSize.compareTo(BigInteger.valueOf(1000L)) < 0
+                        ? possibleSolutionSize : flooredPossibleSolutionSize);
         return cloudBalance;
     }
 
@@ -166,7 +172,7 @@ public class CloudBalancingGenerator extends LoggingMain {
             int cost = CPU_POWER_PRICES[cpuPowerPricesIndex].getCost()
                     + MEMORY_PRICES[memoryPricesIndex].getCost()
                     + NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getCost();
-            logger.debug("Created cloudComputer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
+            logger.trace("Created cloudComputer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
                     + " networkBandwidthPricesIndex({}).",
                     cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex);
             cloudComputer.setCost(cost);
@@ -202,7 +208,7 @@ public class CloudBalancingGenerator extends LoggingMain {
             cloudProcess.setRequiredMemory(requiredMemory);
             int requiredNetworkBandwidth = generateRandom(MAXIMUM_REQUIRED_NETWORK_BANDWIDTH);
             cloudProcess.setRequiredNetworkBandwidth(requiredNetworkBandwidth);
-            logger.debug("Created CloudProcess with requiredCpuPower ({}), requiredMemory({}),"
+            logger.trace("Created CloudProcess with requiredCpuPower ({}), requiredMemory({}),"
                     + " requiredNetworkBandwidth({}).",
                     requiredCpuPower, requiredMemory, requiredNetworkBandwidth);
             // Notice that we leave the PlanningVariable properties on null

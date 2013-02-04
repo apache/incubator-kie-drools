@@ -57,6 +57,10 @@
                 <listitem>
                   <para>1 entity class</para>
                 </listitem>
+
+                <listitem>
+                  <para>1 variable</para>
+                </listitem>
               </itemizedlist></entry>
 
             <entry>&lt;= <literal>256</literal></entry>
@@ -81,11 +85,11 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry/>
+            <entry>&lt;= <literal>2400</literal></entry>
 
-            <entry/>
+            <entry>&lt;= <literal>800</literal></entry>
 
-            <entry/>
+            <entry>&lt;= <literal>10^6967</literal></entry>
 
             <entry>No</entry>
           </row>

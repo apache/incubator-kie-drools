@@ -77,6 +77,18 @@
     </section>
 
     <section>
+      <title>Problem size</title>
+
+      <programlisting>cb-0002comp-0006proc has   2 computers and    6 processes with a search space of      64.
+cb-0003comp-0009proc has   3 computers and    9 processes with a search space of    10^4.
+cb-0004comp-0012proc has   4 computers and   12 processes with a search space of    10^7.
+cb-0100comp-0300proc has 100 computers and  300 processes with a search space of  10^600.
+cb-0200comp-0600proc has 200 computers and  600 processes with a search space of 10^1380.
+cb-0400comp-1200proc has 400 computers and 1200 processes with a search space of 10^3122.
+cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of 10^6967.</programlisting>
+    </section>
+
+    <section>
       <title>Domain model diagram</title>
 
       <para>Let's start by taking a look at the domain model. It's pretty simple:</para>
@@ -429,9 +441,9 @@ public class CloudProcess ... {
       <title>Score configuration</title>
 
       <para>Planner will search for the <literal>Solution</literal> with the highest <literal>Score</literal>. We're
-      using a <literal>HardSoftScore</literal>, which means Planner will look for the solution with no hard
-      constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize
-      maintenance cost).</para>
+      using a <literal>HardSoftScore</literal>, which means Planner will look for the solution with no hard constraints
+      broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize maintenance
+      cost).</para>
 
       <mediaobject>
         <imageobject>
