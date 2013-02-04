@@ -116,10 +116,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             createShiftAssignmentList(nurseRoster);
 
             BigInteger possibleSolutionSize = BigInteger.valueOf(nurseRoster.getEmployeeList().size()).pow(
-                    nurseRoster.getShiftList().size());
+                    nurseRoster.getShiftAssignmentList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
             logger.info("NurseRoster {} has {} skills, {} shiftTypes, {} patterns, {} contracts, {} employees," +
-                    " {} shiftDates, {} shifts and {} requests with a search space of {}.",
+                    " {} shiftDates, {} shiftAssignments and {} requests with a search space of {}.",
                     getInputId(),
                     nurseRoster.getSkillList().size(),
                     nurseRoster.getShiftTypeList().size(),
@@ -127,7 +127,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     nurseRoster.getContractList().size(),
                     nurseRoster.getEmployeeList().size(),
                     nurseRoster.getShiftDateList().size(),
-                    nurseRoster.getShiftList().size(),
+                    nurseRoster.getShiftAssignmentList().size(),
                     nurseRoster.getDayOffRequestList().size() + nurseRoster.getDayOnRequestList().size()
                             + nurseRoster.getShiftOffRequestList().size() + nurseRoster.getShiftOnRequestList().size(),
                     flooredPossibleSolutionSize);
