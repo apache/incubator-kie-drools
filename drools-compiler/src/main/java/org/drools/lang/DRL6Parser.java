@@ -2140,7 +2140,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *           | lhsForall
      *           | lhsAccumulate
      *           | LEFT_PAREN lhsOr RIGHT_PAREN namedConsequence?
-     *           | lhsPatternBind consequenceInvocation?
+     *           | lhsPatternBind consequenceInvocation*
      *           )
      *           SEMICOLON?
      *
@@ -2172,7 +2172,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         } else if ( input.LA( 1 ) == DRL6Lexer.ID || input.LA( 1 ) == DRL6Lexer.QUESTION ) {
             result = lhsPatternBind( ce,
                                      allowOr );
-            consequenceInvocation( ce );
+            for (BaseDescr i = consequenceInvocation( ce ); i != null; i = consequenceInvocation( ce ));
         } else {
             failMismatchedTokenException();
         }
