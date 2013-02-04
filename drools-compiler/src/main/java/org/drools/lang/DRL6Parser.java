@@ -2134,8 +2134,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
     /**
      * lhsUnary :=
-     *           ( lhsExists
-     *           | lhsNot
+     *           ( lhsExists namedConsequence?
+     *           | lhsNot namedConsequence?
      *           | lhsEval
      *           | lhsForall
      *           | lhsAccumulate
@@ -2153,9 +2153,15 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXISTS ) ) {
             result = lhsExists( ce,
                                 allowOr );
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.DO ) ) {
+                namedConsequence( ce, null );
+            }
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.NOT ) ) {
             result = lhsNot( ce,
                              allowOr );
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.DO ) ) {
+                namedConsequence( ce, null );
+            }
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.EVAL ) ) {
             result = lhsEval( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FORALL ) ) {
