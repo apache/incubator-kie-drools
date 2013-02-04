@@ -8,7 +8,6 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -524,5 +523,93 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "end\n";
 
         List<String> results = executeTestWithDRL(str);
+    }
+
+    @Test
+    public void testNamedConsequenceAfterNotPattern() {
+        // DROOLS-5
+        String str = "import org.drools.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $a: Cheese ( type == \"stilton\" )\n" +
+                "    not Cheese ( type == \"brie\" )\n" +
+                "    do[t1]\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "then\n" +
+                "    results.add( $b.getType() );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.getType() );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal( "results", results );
+
+        ksession.insert( new Cheese( "stilton", 5 ) );
+        ksession.insert( new Cheese("cheddar", 7 ) );
+
+        ksession.fireAllRules();
+
+        assertTrue(results.contains("stilton"));
+        assertTrue(results.contains("cheddar"));
+    }
+
+    @Test
+    public void testMultipleIfElseInARow() {
+        // DROOLS-26
+        String str =
+                "global java.util.List results;" +
+                        "declare UnBlocker end \n" +
+                        "\n" +
+                        "declare Car\n" +
+                        "  colour\t: String \n" +
+                        "  price \t: int\n" +
+                        "  horsepower \t: int\n" +
+                        "  abs \t\t: boolean\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Init\" \n" +
+                        "when \n" +
+                        "then \n" +
+                        "  insert( \n" +
+                        "\tnew Car( \"red\", 1200, 170, true ) \n" +
+                        "  ); \n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Car\" \n" +
+                        "when \n" +
+                        "  $car: Car( abs == true ) \n" +
+                        "  if ( colour == \"red\" ) do[red] " +
+                        "  else if ( colour != \"red\" ) do[notRed]\n" +
+                        "  if ( price < 1000 ) do[cheap] " +
+                        "  else do[notCheap]\n" +
+                        " UnBlocker() \n" +
+                        "then\n" +
+                        "  results.add( \"Found a Car\" ); \n" +
+                        "then[red]\n" +
+                        "  results.add( \"Car is red\" ); " +
+                        "  insert( new UnBlocker() ); \n" +
+                        "then[notRed]\n" +
+                        "  results.add( \"Car is NOT red\" ); \n" +
+                        "then[cheap]\n" +
+                        "  results.add( \"Car is cheap\" ); \n" +
+                        "then[notCheap]\n" +
+                        "  results.add( \"Car is NOT cheap\" ); \n" +
+                        "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal("results", results);
+        ksession.fireAllRules();
+
+        assertEquals(3, results.size());
+        assertTrue(results.contains("Found a Car"));
+        assertTrue(results.contains("Car is red"));
+        assertTrue(results.contains("Car is NOT cheap"));
     }
 }
