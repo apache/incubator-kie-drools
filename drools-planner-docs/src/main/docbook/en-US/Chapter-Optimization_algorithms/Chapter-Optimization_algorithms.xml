@@ -8,7 +8,7 @@
   <title>Optimization algorithms</title>
 
   <section>
-    <title>The size of real world problems</title>
+    <title>Search space size in the real world</title>
 
     <para>The number of possible solutions for a planning problem can be mind blowing. For example:</para>
 
@@ -50,7 +50,43 @@
   </section>
 
   <section>
-    <title>The secret sauce of Drools Planner</title>
+    <title>Does Planner find the optimal solution?</title>
+
+    <para>The business wants the optimal solution, but they also have other requirements:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Scale out: Large production datasets must not crash and have good results too.</para>
+      </listitem>
+
+      <listitem>
+        <para>Optimize the right problem: The constraints must match the actual business needs.</para>
+      </listitem>
+
+      <listitem>
+        <para>Available time: The solution must be found in time, before it becomes useless to execute.</para>
+      </listitem>
+
+      <listitem>
+        <para>Reliability: Every dataset must have at least a decent result (better than a human planner).</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Given these requirements, and despite the promises of some salesmen, it's usually impossible for anyone or
+    anything to find the optimal solution. Therefore, Planner focuses on finding the best solution in available time. In
+    <link linkend="examplesOverview">realistic, independent competitions</link>, Planner often comes out as the best
+    <emphasis>reusable</emphasis> software.</para>
+
+    <para>The nature of NP-complete problems make scaling a prime concern. <emphasis role="bold">The result quality of a
+    small dataset guarantees nothing about the result quality of a large dataset.</emphasis> Scaling problems cannot be
+    mitigated by hardware purchases. Start testing with a production sized dataset as soon as possible. Don't asses
+    quality on small datasets (unless production encounters such datasets). Instead, solve a production sized dataset
+    and compare with the results of longer execution, different algorithms and - if available - the human
+    planner.</para>
+  </section>
+
+  <section>
+    <title>Architecture overview</title>
 
     <para>Drools Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score
     calculation by a rule engine such as Drools Expert. This combination turns out to be a very efficient,
@@ -76,7 +112,6 @@
         <imagedata fileref="images/Chapter-Optimization_algorithms/architectureOverview.png"/>
       </imageobject>
     </mediaobject>
-
   </section>
 
   <section>
@@ -86,27 +121,37 @@
       <title>Optimization algorithms overview</title>
 
       <tgroup cols="6">
-        <colspec align="center"/>
+        <colspec align="left" colnum="1" colwidth="4*"/>
+
+        <colspec align="center" colnum="2" colwidth="1*"/>
+
+        <colspec align="center" colnum="3" colwidth="1*"/>
+
+        <colspec align="center" colnum="4" colwidth="1*"/>
+
+        <colspec align="center" colnum="5" colwidth="1*"/>
+
+        <colspec align="center" colnum="6" colwidth="1*"/>
 
         <thead>
           <row>
-            <entry align="left">Algorithm</entry>
+            <entry>Algorithm</entry>
 
-            <entry align="center">Scalable?</entry>
+            <entry>Scalable?</entry>
 
-            <entry align="center">Optimal solution?</entry>
+            <entry>Optimal?</entry>
 
-            <entry align="center">Needs little configuration?</entry>
+            <entry>Easy to use?</entry>
 
-            <entry align="center">Highly configurable?</entry>
+            <entry>Tweakable?</entry>
 
-            <entry align="center">Requires initialized solution?</entry>
+            <entry>Requires CH?</entry>
           </row>
         </thead>
 
         <tbody>
           <row>
-            <entry align="left"><emphasis role="bold">Exact algorithms</emphasis></entry>
+            <entry><emphasis role="bold">Exact algorithms</emphasis></entry>
 
             <entry/>
 
@@ -120,11 +165,11 @@
           </row>
 
           <row>
-            <entry align="left">  Brute force</entry>
+            <entry>  Brute force</entry>
 
             <entry>0/5</entry>
 
-            <entry>5/5 - Guaranteed</entry>
+            <entry>5/5</entry>
 
             <entry>5/5</entry>
 
@@ -134,11 +179,11 @@
           </row>
 
           <row>
-            <entry align="left">  Branch and bound</entry>
+            <entry>  Branch and bound</entry>
 
             <entry>0/5</entry>
 
-            <entry>5/5 - Guaranteed</entry>
+            <entry>5/5</entry>
 
             <entry>4/5</entry>
 
@@ -148,7 +193,7 @@
           </row>
 
           <row>
-            <entry align="left"><emphasis role="bold">Construction heuristics</emphasis></entry>
+            <entry><emphasis role="bold">Construction heuristics (CH)</emphasis></entry>
 
             <entry/>
 
@@ -162,11 +207,11 @@
           </row>
 
           <row>
-            <entry align="left">  First Fit</entry>
+            <entry>  First Fit</entry>
 
             <entry>5/5</entry>
 
-            <entry>1/5 - Stops after initialization</entry>
+            <entry>1/5</entry>
 
             <entry>5/5</entry>
 
@@ -176,11 +221,11 @@
           </row>
 
           <row>
-            <entry align="left">  First Fit Decreasing</entry>
+            <entry>  First Fit Decreasing</entry>
 
             <entry>5/5</entry>
 
-            <entry>2/5 - Stops after initialization</entry>
+            <entry>2/5</entry>
 
             <entry>4/5</entry>
 
@@ -190,11 +235,11 @@
           </row>
 
           <row>
-            <entry align="left">  Best Fit</entry>
+            <entry>  Best Fit</entry>
 
             <entry>5/5</entry>
 
-            <entry>2/5 - Stops after initialization</entry>
+            <entry>2/5</entry>
 
             <entry>4/5</entry>
 
@@ -204,11 +249,11 @@
           </row>
 
           <row>
-            <entry align="left">  Best Fit Decreasing</entry>
+            <entry>  Best Fit Decreasing</entry>
 
             <entry>5/5</entry>
 
-            <entry>2/5 - Stops after initialization</entry>
+            <entry>2/5</entry>
 
             <entry>4/5</entry>
 
@@ -218,11 +263,11 @@
           </row>
 
           <row>
-            <entry align="left">  Cheapest Insertion</entry>
+            <entry>  Cheapest Insertion</entry>
 
             <entry>3/5</entry>
 
-            <entry>2/5 - Stops after initialization</entry>
+            <entry>2/5</entry>
 
             <entry>5/5</entry>
 
@@ -232,7 +277,7 @@
           </row>
 
           <row>
-            <entry align="left"><emphasis role="bold">Metaheuristics</emphasis></entry>
+            <entry><emphasis role="bold">Metaheuristics (MH)</emphasis></entry>
 
             <entry/>
 
@@ -246,7 +291,7 @@
           </row>
 
           <row>
-            <entry align="left">  Local search</entry>
+            <entry>  Local search</entry>
 
             <entry/>
 
@@ -260,13 +305,13 @@
           </row>
 
           <row>
-            <entry align="left">    Hill-climbing</entry>
+            <entry>    Hill-climbing</entry>
+
+            <entry>5/5</entry>
+
+            <entry>2/5</entry>
 
             <entry>4/5</entry>
-
-            <entry>2/5 - Gets stuck in local optima</entry>
-
-            <entry>3/5</entry>
 
             <entry>3/5</entry>
 
@@ -274,9 +319,9 @@
           </row>
 
           <row>
-            <entry align="left">    Tabu search</entry>
+            <entry>    Tabu search</entry>
 
-            <entry>4/5</entry>
+            <entry>5/5</entry>
 
             <entry>4/5</entry>
 
@@ -288,9 +333,9 @@
           </row>
 
           <row>
-            <entry align="left">    Simulated annealing</entry>
+            <entry>    Simulated annealing</entry>
 
-            <entry>4/5</entry>
+            <entry>5/5</entry>
 
             <entry>4/5</entry>
 
@@ -302,13 +347,13 @@
           </row>
 
           <row>
-            <entry align="left">    Late acceptance</entry>
+            <entry>    Late acceptance</entry>
+
+            <entry>5/5</entry>
 
             <entry>4/5</entry>
 
-            <entry>4/5</entry>
-
-            <entry>2/5</entry>
+            <entry>3/5</entry>
 
             <entry>5/5</entry>
 
@@ -316,7 +361,7 @@
           </row>
 
           <row>
-            <entry align="left">  Evolutionary algorithms</entry>
+            <entry>  Evolutionary algorithms</entry>
 
             <entry/>
 
@@ -330,11 +375,11 @@
           </row>
 
           <row>
-            <entry align="left">    Evolutionary strategies</entry>
+            <entry>    Evolutionary strategies</entry>
 
             <entry>4/5</entry>
 
-            <entry>?/5</entry>
+            <entry>3/5</entry>
 
             <entry>?/5</entry>
 
@@ -344,11 +389,11 @@
           </row>
 
           <row>
-            <entry align="left">    Genetic algorithms</entry>
+            <entry>    Genetic algorithms</entry>
 
             <entry>4/5</entry>
 
-            <entry>?/5</entry>
+            <entry>3/5</entry>
 
             <entry>?/5</entry>
 
