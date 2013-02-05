@@ -5,12 +5,12 @@ import javax.persistence.Persistence;
 
 import org.kie.KnowledgeBase;
 
-public class NewSessionSessionManagerFactory implements SessionManagerFactory {
+public class SessionPerContextSessionManagerFactory implements SessionManagerFactory {
 
 	private EntityManagerFactory emf;
 	private StatefulKnowledgeSessionFactory factory;
 	
-	public NewSessionSessionManagerFactory(KnowledgeBase kbase) {
+	public SessionPerContextSessionManagerFactory(KnowledgeBase kbase) {
 		// TODO: make persistenceUnitName configurable
 		// TODO inject emf or em
 		// Make sure this is easy to use in spring
@@ -21,12 +21,12 @@ public class NewSessionSessionManagerFactory implements SessionManagerFactory {
 	}
 	
 	public SessionManager getSessionManager() {
-		return new NewSessionSessionManager(factory);
-	}
-	
-	public SessionManager getSessionManager(String context) {
 		throw new UnsupportedOperationException(
-			"When using a new session per request, no context object is required, use getSessionManager().");
+			"When using a session per context, a context object is required, use getSessionManager(context).");
+	}
+
+	public SessionManager getSessionManager(String context) {
+		return new NewSessionSessionManager(factory);
 	}
 
 	public void dispose() throws Exception {

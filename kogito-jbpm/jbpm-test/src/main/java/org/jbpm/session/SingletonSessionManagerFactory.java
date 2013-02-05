@@ -26,6 +26,11 @@ public class SingletonSessionManagerFactory implements SessionManagerFactory {
 		return new SingletonSessionManager(sessionEnvironment);
 	}
 
+	public SessionManager getSessionManager(String context) {
+		throw new UnsupportedOperationException(
+			"When using one singleton session, no context object is required, use getSessionManager().");
+	}
+
 	// TODO: this should not throw an Exception
 	public void dispose() throws Exception {
 		sessionEnvironment.dispose();
