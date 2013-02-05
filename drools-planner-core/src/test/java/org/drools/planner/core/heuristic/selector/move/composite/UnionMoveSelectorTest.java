@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
 import org.drools.planner.core.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.move.MoveSelector;
@@ -67,7 +66,7 @@ public class UnionMoveSelectorTest {
     @Test
     public void randomSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
-        Map<Selector, Double> fixedProbabilityWeightMap = new HashMap<Selector, Double>();
+        Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<MoveSelector, Double>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
         fixedProbabilityWeightMap.put(childMoveSelectorList.get(0), 1000.0);

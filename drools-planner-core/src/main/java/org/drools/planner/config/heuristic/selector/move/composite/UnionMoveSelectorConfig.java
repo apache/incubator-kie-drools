@@ -28,7 +28,6 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -82,7 +81,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
             selectorProbabilityWeightFactory = ConfigUtils.newInstance(this,
                     "selectorProbabilityWeightFactoryClass", selectorProbabilityWeightFactoryClass);
         } else if (randomSelection) {
-            Map<Selector, Double> fixedProbabilityWeightMap = new HashMap<Selector, Double>(
+            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<MoveSelector, Double>(
                     moveSelectorConfigList.size());
             for (int i = 0; i < moveSelectorConfigList.size(); i++) {
                 MoveSelectorConfig moveSelectorConfig = moveSelectorConfigList.get(i);
