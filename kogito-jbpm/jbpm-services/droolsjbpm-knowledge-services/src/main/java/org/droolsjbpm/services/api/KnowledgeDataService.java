@@ -40,6 +40,8 @@ public interface KnowledgeDataService {
     Collection<ProcessInstanceDesc> getProcessInstancesBySessionId(String sessionId);
 
     Collection<ProcessDesc> getProcessesByDomainName(String sessionId);
+    
+    Collection<ProcessDesc> getProcessesByFilter(String filter);
 
     Collection<ProcessDesc> getProcesses();
     
