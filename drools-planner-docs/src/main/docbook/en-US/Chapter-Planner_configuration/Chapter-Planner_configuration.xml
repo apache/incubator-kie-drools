@@ -531,11 +531,6 @@ public class Queen {
         <section xml:id="valueRangeFromPlanningEntity">
           <title><literal>ValueRange</literal> from planning entity</title>
 
-          <important>
-            <para><emphasis role="bold">ValueRange from planning entity is currently not yet supported by the new
-            MoveSelectors. Do not use it for now.</emphasis></para>
-          </important>
-
           <para>Each planning entity has its own set of possible planning values for a planning variable. For example,
           if a teacher can <emphasis role="bold">never</emphasis> teach in a room that does not belong to his
           department, lectures of that teacher can limit their room value range to the rooms of his department.</para>
@@ -559,18 +554,21 @@ public class Queen {
             <para>By limiting the value range specifically of 1 planning entity, you are effectively making a
             <emphasis>build-in hard constraint</emphasis>. This can be a very good thing, as the number of possible
             solutions is severely lowered. But this can also be a bad thing because it takes away the freedom of the
-            optimization algorithms to temporarily break such a hard constraint.</para>
+            optimization algorithms to temporarily break that constraint in order to escape a local optima.</para>
           </note>
 
           <para>A planning entity should <emphasis>not</emphasis> use other planning entities to determinate its value
           range. That would only try to make it solve the planning problem itself and interfere with the optimization
           algorithms.</para>
+
+          <para>This value range is not compatible with a <link linkend="chainedPlanningVariable">chained</link>
+          variable.</para>
         </section>
 
         <section>
           <title><literal>ValueRange</literal> undefined</title>
 
-          <para>Leaves the value range undefined. Some optimization algorithms do not support this value range.</para>
+          <para>Leaves the value range undefined. Most optimization algorithms do not support this value range.</para>
 
           <programlisting language="java">    @PlanningVariable
     @ValueRange(type = ValueRangeType.UNDEFINED)

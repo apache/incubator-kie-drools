@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.heuristic.selector.Selector;
+import org.drools.planner.core.heuristic.selector.IterableSelector;
+import org.drools.planner.core.heuristic.selector.ListIterableSelector;
 import org.drools.planner.core.heuristic.selector.common.iterator.ListIterable;
 import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
 
@@ -29,26 +30,11 @@ import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
  * Selects a {@link List} of somehow related entities that are moved together.
  * @see EntitySelector
  */
-public interface PillarSelector extends Selector, ListIterable<List<Object>> {
+public interface PillarSelector extends ListIterableSelector<List<Object>> {
 
     /**
      * @return never null
      */
     PlanningEntityDescriptor getEntityDescriptor();
-
-    /**
-     * See {@link List#listIterator()}
-     *
-     * @return never null, see {@link List#listIterator()}.
-     */
-    ListIterator<List<Object>> listIterator();
-
-    /**
-     * See {@link List#listIterator()}
-     *
-     * @param index lower than {@link #getSize()}, see {@link List#listIterator(int)}.
-     * @return never null, see {@link List#listIterator(int)}.
-     */
-    ListIterator<List<Object>> listIterator(int index);
 
 }

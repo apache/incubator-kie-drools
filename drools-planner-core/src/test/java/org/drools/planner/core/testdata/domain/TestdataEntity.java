@@ -13,14 +13,8 @@ import static org.mockito.Mockito.*;
 public class TestdataEntity extends TestdataObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
-        return buildEntityDescriptor(mock(SolutionDescriptor.class));
-    }
-
-    public static PlanningEntityDescriptor buildEntityDescriptor(SolutionDescriptor solutionDescriptor) {
-        PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
-                solutionDescriptor, TestdataEntity.class);
-        entityDescriptor.processAnnotations();
-        return entityDescriptor;
+        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        return solutionDescriptor.getPlanningEntityDescriptor(TestdataEntity.class);
     }
 
     private TestdataValue value;
@@ -38,7 +32,7 @@ public class TestdataEntity extends TestdataObject {
     }
 
     @PlanningVariable
-    @ValueRange(type = ValueRangeType.UNDEFINED)
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueList")
     public TestdataValue getValue() {
         return value;
     }

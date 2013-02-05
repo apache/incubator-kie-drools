@@ -87,25 +87,29 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
         }
     }
 
-    public Collection<?> extractAllValues(Solution solution) {
+    public boolean isEntityDependent() {
+        return true;
+    }
+
+    public Collection<?> extractAllValuesWithFiltering(Solution solution) {
         Set<Object> valueSet = new LinkedHashSet<Object>();
         for (Object entity : variableDescriptor.getPlanningEntityDescriptor().extractEntities(solution)) {
-            valueSet.addAll(extractValues(solution, entity));
+            valueSet.addAll(extractValuesWithFiltering(solution, entity));
         }
         return valueSet;
     }
 
-    public Collection<?> extractValues(Solution solution, Object planningEntity) {
-        Collection<?> values = extractValuesWithoutFiltering(planningEntity);
+    public Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity) {
+        Collection<?> values = extractValues(planningEntity);
         return applyFiltering(values);
     }
 
-    private Collection<?> extractValuesWithoutFiltering(Object planningEntity) {
-        return (Collection<?>) rangePropertyAccessor.executeGetter(planningEntity);
+    public Collection<Object> extractValues(Object entity) {
+        return (Collection<Object>) rangePropertyAccessor.executeGetter(entity);
     }
 
     public long getProblemScale(Solution solution, Object planningEntity) {
-        return extractValuesWithoutFiltering(planningEntity).size();
+        return extractValues(planningEntity).size();
     }
 
 }

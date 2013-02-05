@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.value;
+package org.drools.planner.core.heuristic.selector;
 
-import org.drools.planner.core.heuristic.selector.IterableSelector;
+import org.drools.planner.core.heuristic.selector.common.iterator.ListIterable;
 
-/**
- * @see FromSolutionPropertyValueSelector
- */
-public interface EntityIndependentValueSelector extends ValueSelector, IterableSelector<Object> {
+public interface ListIterableSelector<T> extends IterableSelector<T>, ListIterable<T> {
 
 }

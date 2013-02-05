@@ -17,10 +17,12 @@
 package org.drools.planner.core.heuristic.selector.value.chained;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.heuristic.selector.IterableSelector;
+import org.drools.planner.core.heuristic.selector.ListIterableSelector;
 import org.drools.planner.core.heuristic.selector.Selector;
 import org.drools.planner.core.heuristic.selector.common.iterator.ListIterable;
 
-public interface SubChainSelector extends Selector, ListIterable<SubChain> {
+public interface SubChainSelector extends ListIterableSelector<SubChain> {
 
     /**
      * @return never null

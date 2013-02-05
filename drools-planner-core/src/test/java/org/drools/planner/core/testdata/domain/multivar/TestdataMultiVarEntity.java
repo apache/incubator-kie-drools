@@ -23,6 +23,7 @@ import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.testdata.domain.TestdataObject;
+import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.drools.planner.core.testdata.domain.TestdataValue;
 
 import static org.mockito.Mockito.*;
@@ -31,14 +32,8 @@ import static org.mockito.Mockito.*;
 public class TestdataMultiVarEntity extends TestdataObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
-        return buildEntityDescriptor(mock(SolutionDescriptor.class));
-    }
-
-    public static PlanningEntityDescriptor buildEntityDescriptor(SolutionDescriptor solutionDescriptor) {
-        PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
-                solutionDescriptor, TestdataMultiVarEntity.class);
-        entityDescriptor.processAnnotations();
-        return entityDescriptor;
+        SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
+        return solutionDescriptor.getPlanningEntityDescriptor(TestdataMultiVarEntity.class);
     }
 
     private TestdataValue primaryValue;
@@ -62,7 +57,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
     }
 
     @PlanningVariable
-    @ValueRange(type = ValueRangeType.UNDEFINED)
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueList")
     public TestdataValue getPrimaryValue() {
         return primaryValue;
     }
@@ -72,7 +67,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
     }
 
     @PlanningVariable()
-    @ValueRange(type = ValueRangeType.UNDEFINED)
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueList")
     public TestdataValue getSecondaryValue() {
         return secondaryValue;
     }
@@ -82,7 +77,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
     }
 
     @PlanningVariable(nullable = true)
-    @ValueRange(type = ValueRangeType.UNDEFINED)
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "otherValueList")
     public TestdataOtherValue getNullableOtherValue() {
         return nullableOtherValue;
     }

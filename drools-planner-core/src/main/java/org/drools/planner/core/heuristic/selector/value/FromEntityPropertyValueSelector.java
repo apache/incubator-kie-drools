@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,62 +21,37 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.planner.core.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.iterator.CachedListRandomIterator;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
 /**
  * This is the common {@link ValueSelector} implementation.
  */
-public class FromSolutionPropertyValueSelector extends AbstractValueSelector
-        implements EntityIndependentValueSelector, SelectionCacheLifecycleListener {
+public class FromEntityPropertyValueSelector extends AbstractValueSelector {
 
     protected final PlanningVariableDescriptor variableDescriptor;
-    protected final SelectionCacheType cacheType;
+    protected final FromEntityPropertyPlanningValueRangeDescriptor valueRangeDescriptor;
     protected final boolean randomSelection;
 
-    protected List<Object> cachedValueList = null;
-
-    public FromSolutionPropertyValueSelector(PlanningVariableDescriptor variableDescriptor,
+    public FromEntityPropertyValueSelector(FromEntityPropertyPlanningValueRangeDescriptor valueRangeDescriptor,
             SelectionCacheType cacheType, boolean randomSelection) {
-        this.variableDescriptor = variableDescriptor;
-        this.cacheType = cacheType;
+        this.variableDescriptor = valueRangeDescriptor.getVariableDescriptor();
+        this.valueRangeDescriptor = valueRangeDescriptor;
         this.randomSelection = randomSelection;
-        if (cacheType.isNotCached()) {
+        if (cacheType.isCached()) {
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
-        solverPhaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(cacheType, this));
     }
 
     public PlanningVariableDescriptor getVariableDescriptor() {
         return variableDescriptor;
-    }
-
-    @Override
-    public SelectionCacheType getCacheType() {
-        return cacheType;
-    }
-
-    // ************************************************************************
-    // Cache lifecycle methods
-    // ************************************************************************
-
-    public void constructCache(DefaultSolverScope solverScope) {
-        // TODO FIXME extractAllPlanningValues filters out uninitialized entities of another variable
-        Collection<?> planningValues = variableDescriptor.extractAllPlanningValues(solverScope.getWorkingSolution());
-        cachedValueList = new ArrayList<Object>(planningValues.size() + 1);
-        cachedValueList.addAll(planningValues);
-        if (variableDescriptor.isNullable()) {
-            cachedValueList.add(null);
-        }
-    }
-
-    public void disposeCache(DefaultSolverScope solverScope) {
-        cachedValueList = null;
     }
 
     // ************************************************************************
@@ -92,22 +67,25 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     }
 
     public long getSize(Object entity) {
-        return getSize();
-    }
-
-    public long getSize() {
-        return (long) cachedValueList.size();
+        Collection<?> values = valueRangeDescriptor.extractValues(entity);
+        long size = (long) values.size();
+        if (variableDescriptor.isNullable()) {
+            size++;
+        }
+        return size;
     }
 
     public Iterator<Object> iterator(Object entity) {
-        return iterator();
-    }
-
-    public Iterator<Object> iterator() {
+        Collection<Object> values = valueRangeDescriptor.extractValues(entity);
+        List<Object> valueList = new ArrayList<Object>(values.size() + 1);
+        valueList.addAll(values);
+        if (variableDescriptor.isNullable()) {
+            valueList.add(null);
+        }
         if (!randomSelection) {
-            return cachedValueList.iterator();
+            return valueList.iterator();
         } else {
-            return new CachedListRandomIterator<Object>(cachedValueList, workingRandom);
+            return new CachedListRandomIterator<Object>(valueList, workingRandom);
         }
     }
 

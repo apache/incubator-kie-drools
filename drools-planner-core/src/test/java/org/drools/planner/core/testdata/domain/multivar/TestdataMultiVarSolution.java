@@ -26,16 +26,15 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.testdata.domain.TestdataObject;
+import org.drools.planner.core.testdata.domain.TestdataUtil;
 import org.drools.planner.core.testdata.domain.TestdataValue;
+import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
 
 @PlanningSolution
 public class TestdataMultiVarSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        SolutionDescriptor solutionDescriptor = new SolutionDescriptor(TestdataMultiVarSolution.class);
-        solutionDescriptor.processAnnotations();
-        solutionDescriptor.addPlanningEntityDescriptor(TestdataMultiVarEntity.buildEntityDescriptor(solutionDescriptor));
-        return solutionDescriptor;
+        return TestdataUtil.buildSolutionDescriptor(TestdataMultiVarSolution.class, TestdataMultiVarEntity.class);
     }
 
     private List<TestdataValue> valueList;

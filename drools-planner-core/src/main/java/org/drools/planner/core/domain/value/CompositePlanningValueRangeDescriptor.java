@@ -20,31 +20,53 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.planner.api.domain.value.ValueRange;
+import org.drools.planner.api.domain.value.ValueRangeType;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.solution.Solution;
 
 public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
 
-    private final List<PlanningValueRangeDescriptor> valueRangeDescriptorList;
+    protected final List<PlanningValueRangeDescriptor> valueRangeDescriptorList;
+    protected boolean entityDepentent;
 
     public CompositePlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
             List<PlanningValueRangeDescriptor> valueRangeDescriptorList) {
         super(variableDescriptor);
         this.valueRangeDescriptorList = valueRangeDescriptorList;
+        entityDepentent = false;
+        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
+            if (valueRangeDescriptor instanceof UndefinedPlanningValueRangeDescriptor) {
+                throw new IllegalArgumentException("The planningEntityClass ("
+                        + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                        + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
+                        + ") with multiple " + ValueRange.class.getSimpleName() + " annotations,"
+                        + " including one of type (" + ValueRangeType.UNDEFINED + ").");
+            } else if (valueRangeDescriptor instanceof FromEntityPropertyPlanningValueRangeDescriptor) {
+                entityDepentent = true;
+            } else if (!(valueRangeDescriptor instanceof FromSolutionPropertyPlanningValueRangeDescriptor)) {
+                throw new IllegalStateException("The valueRangeDescriptorClass ("
+                        + valueRangeDescriptor.getClass() + ") is not implemented.");
+            }
+        }
     }
 
-    public Collection<?> extractAllValues(Solution solution) {
+    public boolean isEntityDependent() {
+        return entityDepentent;
+    }
+
+    public Collection<?> extractAllValuesWithFiltering(Solution solution) {
         Collection<Object> values = new ArrayList<Object>(0);
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            values.addAll(valueRangeDescriptor.extractAllValues(solution));
+            values.addAll(valueRangeDescriptor.extractAllValuesWithFiltering(solution));
         }
         return values;
     }
 
-    public Collection<?> extractValues(Solution solution, Object planningEntity) {
+    public Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity) {
         Collection<Object> values = new ArrayList<Object>(0);
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            values.addAll(valueRangeDescriptor.extractValues(solution, planningEntity));
+            values.addAll(valueRangeDescriptor.extractValuesWithFiltering(solution, planningEntity));
         }
         return values;
     }

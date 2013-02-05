@@ -35,6 +35,10 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
         this.variableDescriptor = variableDescriptor;
     }
 
+    public PlanningVariableDescriptor getVariableDescriptor() {
+        return variableDescriptor;
+    }
+
     protected void processExcludeUninitializedPlanningEntity(ValueRange valueRangeAnnotation) {
         excludeUninitializedPlanningEntity = valueRangeAnnotation.excludeUninitializedPlanningEntity();
         if (excludeUninitializedPlanningEntity) {
@@ -87,6 +91,11 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
 
     public boolean isValuesCacheable() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + variableDescriptor.getVariableName() + ")";
     }
 
 }

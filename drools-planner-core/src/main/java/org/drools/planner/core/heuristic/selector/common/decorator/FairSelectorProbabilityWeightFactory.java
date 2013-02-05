@@ -16,12 +16,12 @@
 
 package org.drools.planner.core.heuristic.selector.common.decorator;
 
-import org.drools.planner.core.heuristic.selector.Selector;
+import org.drools.planner.core.heuristic.selector.IterableSelector;
 import org.drools.planner.core.score.director.ScoreDirector;
 
-public class FairSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<Selector> {
+public class FairSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<IterableSelector> {
 
-    public double createProbabilityWeight(ScoreDirector scoreDirector, Selector selector) {
+    public double createProbabilityWeight(ScoreDirector scoreDirector, IterableSelector selector) {
         return (double) selector.getSize();
     }
 

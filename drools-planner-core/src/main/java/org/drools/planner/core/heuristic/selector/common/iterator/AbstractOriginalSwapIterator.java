@@ -19,11 +19,13 @@ package org.drools.planner.core.heuristic.selector.common.iterator;
 import java.util.ListIterator;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.drools.planner.core.heuristic.selector.IterableSelector;
+import org.drools.planner.core.heuristic.selector.ListIterableSelector;
 import org.drools.planner.core.heuristic.selector.Selector;
 
 public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSelectionIterator<S> {
 
-    public static <SubS> long getSize(Selector leftSubSelector, Selector rightSubSelector) {
+    public static <SubS> long getSize(ListIterableSelector leftSubSelector, ListIterableSelector rightSubSelector) {
         if (leftSubSelector != rightSubSelector) {
             return leftSubSelector.getSize() * rightSubSelector.getSize();
         } else {

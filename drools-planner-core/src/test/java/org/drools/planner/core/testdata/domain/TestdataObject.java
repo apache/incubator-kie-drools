@@ -1,8 +1,11 @@
 package org.drools.planner.core.testdata.domain;
 
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.testdata.util.CodeAssertable;
 
-public class TestdataObject implements CodeAssertable{
+public class TestdataObject implements CodeAssertable {
 
     protected String code;
 

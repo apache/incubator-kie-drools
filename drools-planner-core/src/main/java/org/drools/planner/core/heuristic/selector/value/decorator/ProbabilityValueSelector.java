@@ -32,7 +32,8 @@ import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.util.RandomUtils;
 
-public class ProbabilityValueSelector extends AbstractValueSelector implements EntityIndependentValueSelector, SelectionCacheLifecycleListener  {
+public class ProbabilityValueSelector extends AbstractValueSelector
+        implements EntityIndependentValueSelector, SelectionCacheLifecycleListener  {
 
     protected final EntityIndependentValueSelector childValueSelector;
     protected final SelectionCacheType cacheType;
@@ -96,6 +97,10 @@ public class ProbabilityValueSelector extends AbstractValueSelector implements E
 
     public boolean isNeverEnding() {
         return false;
+    }
+
+    public long getSize(Object entity) {
+        return getSize();
     }
 
     public long getSize() {

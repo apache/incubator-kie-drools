@@ -21,19 +21,18 @@ import java.util.List;
 
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.testdata.domain.TestdataObject;
+import org.drools.planner.core.testdata.domain.TestdataUtil;
 
 @PlanningSolution
 public class TestdataChainedSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        SolutionDescriptor solutionDescriptor = new SolutionDescriptor(TestdataChainedSolution.class);
-        solutionDescriptor.processAnnotations();
-        solutionDescriptor.addPlanningEntityDescriptor(TestdataChainedEntity.buildEntityDescriptor(solutionDescriptor));
-        return solutionDescriptor;
+        return TestdataUtil.buildSolutionDescriptor(TestdataChainedSolution.class, TestdataChainedEntity.class);
     }
 
     private List<TestdataChainedAnchor> chainedAnchorList;

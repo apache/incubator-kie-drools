@@ -60,7 +60,8 @@ public class ValueSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertEquals(SelectionCacheType.STEP, valueSelector.getCacheType());
+        // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
+        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
     }
 
     @Test
@@ -105,7 +106,8 @@ public class ValueSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertEquals(SelectionCacheType.STEP, valueSelector.getCacheType());
+        // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
+        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
     }
 
     @Test

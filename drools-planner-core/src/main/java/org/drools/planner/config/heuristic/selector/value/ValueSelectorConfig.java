@@ -24,10 +24,13 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
+import org.drools.planner.core.domain.value.PlanningValueRangeDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
+import org.drools.planner.core.heuristic.selector.value.FromEntityPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
@@ -110,7 +113,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
         ValueSelector valueSelector = buildBaseValueSelector(environmentMode, variableDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                determineBaseRandomSelection(resolvedCacheType, resolvedSelectionOrder));
+                determineBaseRandomSelection(variableDescriptor, resolvedCacheType, resolvedSelectionOrder));
 
 //        valueSelector = applyFiltering(variableDescriptor, resolvedCacheType, resolvedSelectionOrder, valueSelector);
 //        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
@@ -120,7 +123,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         return valueSelector;
     }
 
-    protected boolean determineBaseRandomSelection(
+    protected boolean determineBaseRandomSelection(PlanningVariableDescriptor variableDescriptor,
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
         switch (resolvedSelectionOrder) {
             case ORIGINAL:
@@ -132,33 +135,40 @@ public class ValueSelectorConfig extends SelectorConfig {
                 return false;
             case RANDOM:
                 // Predict if caching will occur
-                return resolvedCacheType.isNotCached() || (isBaseInherentlyCached() && !hasFiltering());
+                return resolvedCacheType.isNotCached() || (isBaseInherentlyCached(variableDescriptor) && !hasFiltering());
             default:
                 throw new IllegalStateException("The selectionOrder (" + resolvedSelectionOrder
                         + ") is not implemented.");
         }
     }
 
-    protected boolean isBaseInherentlyCached() {
-        return true;
+    protected boolean isBaseInherentlyCached(PlanningVariableDescriptor variableDescriptor) {
+        return !variableDescriptor.getValueRangeDescriptor().isEntityDependent();
     }
 
     private ValueSelector buildBaseValueSelector(
             EnvironmentMode environmentMode, PlanningVariableDescriptor variableDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
-        if (variableDescriptor.isPlanningValuesCacheable()) {
-            if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
-                // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
-                minimumCacheType = SelectionCacheType.PHASE;
-            }
+        if (variableDescriptor.getValueRangeDescriptor().isEntityDependent()) {
+            FromEntityPropertyPlanningValueRangeDescriptor valueRangeDescriptor
+                    = (FromEntityPropertyPlanningValueRangeDescriptor) variableDescriptor.getValueRangeDescriptor();
+            // TODO should we ignore the minimumCacheType so it can be cached on changeMoves too?
+            return new FromEntityPropertyValueSelector(valueRangeDescriptor, minimumCacheType, randomSelection);
         } else {
-            if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
-                // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
-                minimumCacheType = SelectionCacheType.STEP;
+            // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
+            if (variableDescriptor.isPlanningValuesCacheable()) {
+                if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
+                    // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
+                    minimumCacheType = SelectionCacheType.PHASE;
+                }
+            } else {
+                if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
+                    // TODO we probably want to default this to SelectionCacheType.JUST_IN_TIME
+                    minimumCacheType = SelectionCacheType.STEP;
+                }
             }
+            return new FromSolutionPropertyValueSelector(variableDescriptor, minimumCacheType, randomSelection);
         }
-        return new FromSolutionPropertyValueSelector(variableDescriptor, minimumCacheType, randomSelection);
     }
 
     private boolean hasFiltering() {

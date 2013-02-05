@@ -121,7 +121,7 @@ public class SelectorTestUtils {
         });
         when(valueSelector.isContinuous()).thenReturn(false);
         when(valueSelector.isNeverEnding()).thenReturn(false);
-        when(valueSelector.getSize()).thenReturn((long) valueList.size());
+        when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
         return valueSelector;
     }
 
@@ -148,6 +148,7 @@ public class SelectorTestUtils {
         });
         when(valueSelector.isContinuous()).thenReturn(false);
         when(valueSelector.isNeverEnding()).thenReturn(false);
+        when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
         when(valueSelector.getSize()).thenReturn((long) valueList.size());
         return valueSelector;
     }

@@ -3,10 +3,12 @@ package org.drools.planner.core.testdata.domain.chained;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.value.ValueRange;
 import org.drools.planner.api.domain.value.ValueRangeType;
+import org.drools.planner.api.domain.value.ValueRanges;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.testdata.domain.TestdataObject;
+import org.drools.planner.core.testdata.domain.multivar.TestdataMultiVarSolution;
 
 import static org.mockito.Mockito.*;
 
@@ -14,14 +16,8 @@ import static org.mockito.Mockito.*;
 public class TestdataChainedEntity extends TestdataObject implements TestdataChainedObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
-        return buildEntityDescriptor(mock(SolutionDescriptor.class));
-    }
-
-    public static PlanningEntityDescriptor buildEntityDescriptor(SolutionDescriptor solutionDescriptor) {
-        PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
-                solutionDescriptor, TestdataChainedEntity.class);
-        entityDescriptor.processAnnotations();
-        return entityDescriptor;
+        SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
+        return solutionDescriptor.getPlanningEntityDescriptor(TestdataChainedEntity.class);
     }
 
     private TestdataChainedObject chainedObject;
@@ -39,7 +35,10 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
     }
 
     @PlanningVariable(chained = true)
-    @ValueRange(type = ValueRangeType.UNDEFINED)
+    @ValueRanges({
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "chainedAnchorList"),
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "chainedEntityList",
+                    excludeUninitializedPlanningEntity = true)})
     public TestdataChainedObject getChainedObject() {
         return chainedObject;
     }

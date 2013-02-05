@@ -18,7 +18,8 @@ package org.drools.planner.core.heuristic.selector.entity;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.heuristic.selector.Selector;
+import org.drools.planner.core.heuristic.selector.IterableSelector;
+import org.drools.planner.core.heuristic.selector.ListIterableSelector;
 import org.drools.planner.core.heuristic.selector.common.iterator.ListIterable;
 
 /**
@@ -26,7 +27,7 @@ import org.drools.planner.core.heuristic.selector.common.iterator.ListIterable;
  * @see AbstractEntitySelector
  * @see FromSolutionEntitySelector
  */
-public interface EntitySelector extends Selector, ListIterable<Object> {
+public interface EntitySelector extends ListIterableSelector<Object> {
 
     /**
      * @return never null

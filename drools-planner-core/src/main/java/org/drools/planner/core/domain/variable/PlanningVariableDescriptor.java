@@ -216,36 +216,40 @@ public class PlanningVariableDescriptor {
         return nullable;
     }
 
+    public PlanningValueRangeDescriptor getValueRangeDescriptor() {
+        return valueRangeDescriptor;
+    }
+
     /**
      * A {@link PlanningVariable#nullable()} value is always considered initialized, but it can still be reinitialized
      * with {@link PlanningVariable#reinitializeVariableEntityFilter()}.
-     * @param planningEntity never null
-     * @return true if the variable on that planningEntity is initialized
+     * @param entity never null
+     * @return true if the variable on that entity is initialized
      */
-    public boolean isInitialized(Object planningEntity) {
+    public boolean isInitialized(Object entity) {
         if (nullable) {
             return true;
         }
-        Object variable = getValue(planningEntity);
+        Object variable = getValue(entity);
         return variable != null;
     }
 
-    public Object getValue(Object planningEntity) {
-        return variablePropertyAccessor.executeGetter(planningEntity);
+    public Object getValue(Object entity) {
+        return variablePropertyAccessor.executeGetter(entity);
     }
 
-    public void setValue(Object planningEntity, Object value) {
-        variablePropertyAccessor.executeSetter(planningEntity, value);
+    public void setValue(Object entity, Object value) {
+        variablePropertyAccessor.executeSetter(entity, value);
     }
 
     public Collection<?> extractAllPlanningValues(Solution solution) {
         // TODO this does not include null if nullable, currently FromSolutionPropertyValueSelector does that
-        return valueRangeDescriptor.extractAllValues(solution);
+        return valueRangeDescriptor.extractAllValuesWithFiltering(solution);
     }
 
-    public Collection<?> extractPlanningValues(Solution solution, Object planningEntity) {
+    public Collection<?> extractPlanningValues(Solution solution, Object entity) {
         // TODO this does not include null if nullable, currently FromSolutionPropertyValueSelector does that
-        return valueRangeDescriptor.extractValues(solution, planningEntity);
+        return valueRangeDescriptor.extractValuesWithFiltering(solution, entity);
     }
 
     @Deprecated
@@ -258,8 +262,8 @@ public class PlanningVariableDescriptor {
         return valueSorter;
     }
 
-    public long getProblemScale(Solution solution, Object planningEntity) {
-        return valueRangeDescriptor.getProblemScale(solution, planningEntity);
+    public long getProblemScale(Solution solution, Object entity) {
+        return valueRangeDescriptor.getProblemScale(solution, entity);
     }
 
     @Override

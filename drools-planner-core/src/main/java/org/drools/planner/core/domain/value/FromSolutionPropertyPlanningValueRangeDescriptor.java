@@ -90,13 +90,17 @@ public class FromSolutionPropertyPlanningValueRangeDescriptor extends AbstractPl
         }
     }
 
-    public Collection<?> extractAllValues(Solution solution) {
+    public boolean isEntityDependent() {
+        return false;
+    }
+
+    public Collection<?> extractAllValuesWithFiltering(Solution solution) {
         Collection<?> values = extractValuesWithoutFiltering(solution);
         return applyFiltering(values);
     }
 
-    public Collection<?> extractValues(Solution solution, Object planningEntity) {
-        return extractAllValues(solution);
+    public Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity) {
+        return extractAllValuesWithFiltering(solution);
     }
 
     private Collection<?> extractValuesWithoutFiltering(Solution solution) {

@@ -13,7 +13,8 @@ import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSe
 import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 
-public abstract class AbstractCachingValueSelector extends AbstractValueSelector implements SelectionCacheLifecycleListener {
+public abstract class AbstractCachingValueSelector extends AbstractValueSelector
+        implements SelectionCacheLifecycleListener {
 
     protected final EntityIndependentValueSelector childValueSelector;
     protected final SelectionCacheType cacheType;
@@ -74,6 +75,10 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
 
     public boolean isContinuous() {
         return false;
+    }
+
+    public long getSize(Object entity) {
+        return getSize();
     }
 
     public long getSize() {
