@@ -20,7 +20,7 @@ import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ public class LateAcceptanceAcceptorTest {
         acceptor.setLateAcceptanceSize(3);
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(DefaultSimpleScore.valueOf(-1000));
+        solverScope.setBestScore(SimpleScore.valueOf(-1000));
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -136,7 +136,7 @@ public class LateAcceptanceAcceptorTest {
         LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
         Move move = mock(Move.class);
         moveScope.setMove(move);
-        moveScope.setScore(DefaultSimpleScore.valueOf(score));
+        moveScope.setScore(SimpleScore.valueOf(score));
         return moveScope;
     }
 

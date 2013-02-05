@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.drools.planner.core.score.buildin.hardsoftlong.DefaultHardSoftLongScore;
 import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.drools.planner.core.score.director.incremental.IncrementalScoreCalculator;
@@ -139,7 +138,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
     }
 
     public HardSoftLongScore calculateScore() {
-        return DefaultHardSoftLongScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.valueOf(hardScore, softScore);
     }
 
     private class MrServiceScorePart {

@@ -26,21 +26,21 @@ public class HardSoftScoreTest extends AbstractScoreTest {
     @Test
     public void compareTo() {
         assertScoreOrder(
-                DefaultHardSoftScore.valueOf(-20, Integer.MIN_VALUE),
-                DefaultHardSoftScore.valueOf(-20, -20),
-                DefaultHardSoftScore.valueOf(-1, -300),
-                DefaultHardSoftScore.valueOf(-1, 4000),
-                DefaultHardSoftScore.valueOf(0, -1),
-                DefaultHardSoftScore.valueOf(0, 0),
-                DefaultHardSoftScore.valueOf(0, 1)
+                HardSoftScore.valueOf(-20, Integer.MIN_VALUE),
+                HardSoftScore.valueOf(-20, -20),
+                HardSoftScore.valueOf(-1, -300),
+                HardSoftScore.valueOf(-1, 4000),
+                HardSoftScore.valueOf(0, -1),
+                HardSoftScore.valueOf(0, 0),
+                HardSoftScore.valueOf(0, 1)
         );
     }
 
     @Test
     public void feasible() {
-        assertEquals(true, DefaultHardSoftScore.valueOf(0, -300).isFeasible());
-        assertEquals(false, DefaultHardSoftScore.valueOf(-5, -300).isFeasible());
-        assertEquals(true, DefaultHardSoftScore.valueOf(2, -300).isFeasible());
+        assertEquals(true, HardSoftScore.valueOf(0, -300).isFeasible());
+        assertEquals(false, HardSoftScore.valueOf(-5, -300).isFeasible());
+        assertEquals(true, HardSoftScore.valueOf(2, -300).isFeasible());
     }
 
 }

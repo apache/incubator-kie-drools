@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.score;
 
-import org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 
 /**
  * A Score is result of the score function (AKA fitness function) on a single possible solution.
@@ -26,7 +26,7 @@ import org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore;
  * Implementations are allowed to optionally implement Pareto comparison
  * and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.
  * @see AbstractScore
- * @see DefaultHardSoftScore
+ * @see HardSoftScore
  */
 public interface Score<S extends Score> extends Comparable<S> {
 

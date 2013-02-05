@@ -23,7 +23,7 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.testdata.domain.TestdataObject;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
@@ -60,7 +60,7 @@ public class AbstractScoreDirectorTest {
         AbstractScoreDirector scoreDirector = new AbstractScoreDirector<AbstractScoreDirectorFactory>(
                 scoreDirectorFactory) {
             public Score calculateScore() {
-                return DefaultSimpleScore.valueOf(-100);
+                return SimpleScore.valueOf(-100);
             }
         };
         FieldAccessingSolutionCloner<TestdataChainedSolution> cloner

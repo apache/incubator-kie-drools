@@ -74,7 +74,7 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder {
     }
 
     public Score extractScore() {
-        return DefaultHardSoftLongScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.valueOf(hardScore, softScore);
     }
 
 }

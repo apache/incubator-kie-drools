@@ -16,7 +16,6 @@
 
 package org.drools.planner.examples.tsp.solver.score;
 
-import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.drools.planner.examples.tsp.domain.Appearance;
@@ -95,7 +94,7 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
     }
 
     public SimpleScore calculateScore() {
-        return DefaultSimpleScore.valueOf(score);
+        return SimpleScore.valueOf(score);
     }
 
 }

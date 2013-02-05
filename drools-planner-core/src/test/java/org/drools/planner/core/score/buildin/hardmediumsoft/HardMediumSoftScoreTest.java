@@ -18,7 +18,7 @@ package org.drools.planner.core.score.buildin.hardmediumsoft;
 
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
-import org.drools.planner.core.score.buildin.hardmediumsoft.DefaultHardMediumSoftScore;
+import org.drools.planner.core.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,29 +28,29 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
     @Test
     public void compareTo() {
         assertScoreOrder(
-                DefaultHardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, Integer.MIN_VALUE),
-                DefaultHardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, -20),
-                DefaultHardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, 1),
-                DefaultHardMediumSoftScore.valueOf(-20, -300, -4000),
-                DefaultHardMediumSoftScore.valueOf(-20, -300, -300),
-                DefaultHardMediumSoftScore.valueOf(-20, -300, -20),
-                DefaultHardMediumSoftScore.valueOf(-20, -300, 300),
-                DefaultHardMediumSoftScore.valueOf(-20, -20, -300),
-                DefaultHardMediumSoftScore.valueOf(-20, -20, 0),
-                DefaultHardMediumSoftScore.valueOf(-20, -20, 1),
-                DefaultHardMediumSoftScore.valueOf(-1, -300, -4000),
-                DefaultHardMediumSoftScore.valueOf(-1, -300, -20),
-                DefaultHardMediumSoftScore.valueOf(-1, -20, -300),
-                DefaultHardMediumSoftScore.valueOf(1, Integer.MIN_VALUE, -20),
-                DefaultHardMediumSoftScore.valueOf(1, -20, Integer.MIN_VALUE)
+                HardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, Integer.MIN_VALUE),
+                HardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, -20),
+                HardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, 1),
+                HardMediumSoftScore.valueOf(-20, -300, -4000),
+                HardMediumSoftScore.valueOf(-20, -300, -300),
+                HardMediumSoftScore.valueOf(-20, -300, -20),
+                HardMediumSoftScore.valueOf(-20, -300, 300),
+                HardMediumSoftScore.valueOf(-20, -20, -300),
+                HardMediumSoftScore.valueOf(-20, -20, 0),
+                HardMediumSoftScore.valueOf(-20, -20, 1),
+                HardMediumSoftScore.valueOf(-1, -300, -4000),
+                HardMediumSoftScore.valueOf(-1, -300, -20),
+                HardMediumSoftScore.valueOf(-1, -20, -300),
+                HardMediumSoftScore.valueOf(1, Integer.MIN_VALUE, -20),
+                HardMediumSoftScore.valueOf(1, -20, Integer.MIN_VALUE)
         );
     }
 
     @Test
     public void feasible() {
-        assertEquals(true, DefaultHardMediumSoftScore.valueOf(0, -300, -4000).isFeasible());
-        assertEquals(false, DefaultHardMediumSoftScore.valueOf(-5, -300, -4000).isFeasible());
-        assertEquals(true, DefaultHardMediumSoftScore.valueOf(2, -300, -4000).isFeasible());
+        assertEquals(true, HardMediumSoftScore.valueOf(0, -300, -4000).isFeasible());
+        assertEquals(false, HardMediumSoftScore.valueOf(-5, -300, -4000).isFeasible());
+        assertEquals(true, HardMediumSoftScore.valueOf(2, -300, -4000).isFeasible());
     }
 
 }

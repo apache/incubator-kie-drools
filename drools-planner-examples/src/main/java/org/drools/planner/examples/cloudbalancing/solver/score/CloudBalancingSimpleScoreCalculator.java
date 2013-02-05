@@ -16,7 +16,7 @@
 
 package org.drools.planner.examples.cloudbalancing.solver.score;
 
-import org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
@@ -67,7 +67,7 @@ public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculato
                 softScore -= computer.getCost();
             }
         }
-        return DefaultHardSoftScore.valueOf(hardScore, softScore);
+        return HardSoftScore.valueOf(hardScore, softScore);
     }
 
 }

@@ -16,19 +16,48 @@
 
 package org.drools.planner.core.score.buildin.hardmediumsoft;
 
+import org.drools.planner.core.score.AbstractScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
 /**
- * This is a Score based on hard, medium and soft int constraints.
- * Hard constraints have priority over medium constraints.
- * Medium constraints have priority over soft constraints.
+ * This {@link Score} is based on 3 levels of int constraints: hard, medium and soft.
+ * Hard constraints have priority over soft constraints.
  * <p/>
- * Implementations must be immutable.
+ * This class is immutable.
  * @see Score
- * @see DefaultHardMediumSoftScore
  */
-public interface HardMediumSoftScore extends Score<HardMediumSoftScore> {
+public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore> {
+
+    private static final String HARD_LABEL = "hard";
+    private static final String MEDIUM_LABEL = "medium";
+    private static final String SOFT_LABEL = "soft";
+
+    public static HardMediumSoftScore parseScore(String scoreString) {
+        String[] levelStrings = parseLevelStrings(scoreString, HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
+        int hardScore = Integer.parseInt(levelStrings[0]);
+        int mediumScore = Integer.parseInt(levelStrings[1]);
+        int softScore = Integer.parseInt(levelStrings[2]);
+        return valueOf(hardScore, mediumScore, softScore);
+    }
+
+    public static HardMediumSoftScore valueOf(int hardScore, int mediumScore, int softScore) {
+        return new HardMediumSoftScore(hardScore, mediumScore, softScore);
+    }
+
+    // ************************************************************************
+    // Fields
+    // ************************************************************************
+
+    private final int hardScore;
+    private final int mediumScore;
+    private final int softScore;
+
+    private HardMediumSoftScore(int hardScore, int mediumScore, int softScore) {
+        this.hardScore = hardScore;
+        this.mediumScore = mediumScore;
+        this.softScore = softScore;
+    }
 
     /**
      * The total of the broken negative hard constraints and fulfilled positive hard constraints.
@@ -36,7 +65,9 @@ public interface HardMediumSoftScore extends Score<HardMediumSoftScore> {
      * The hard score is usually a negative number because most use cases only have negative constraints.
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
-    int getHardScore();
+    public int getHardScore() {
+        return hardScore;
+    }
 
     /**
      * The total of the broken negative medium constraints and fulfilled positive medium constraints.
@@ -46,7 +77,9 @@ public interface HardMediumSoftScore extends Score<HardMediumSoftScore> {
      * In a normal score comparison, the medium score is irrelevant if the 2 scores don't have the same score.
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
-    int getMediumScore();
+    public int getMediumScore() {
+        return mediumScore;
+    }
 
     /**
      * The total of the broken negative soft constraints and fulfilled positive soft constraints.
@@ -56,12 +89,102 @@ public interface HardMediumSoftScore extends Score<HardMediumSoftScore> {
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard and medium score.
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
-    int getSoftScore();
+    public int getSoftScore() {
+        return softScore;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    public boolean isFeasible() {
+        return getHardScore() >= 0;
+    }
 
     /**
      * A {@link Solution} is feasible if it has no broken hard constraints.
      * @return true if the {@link #getHardScore()} is 0 or higher
      */
-    boolean isFeasible();
+    public HardMediumSoftScore add(HardMediumSoftScore augment) {
+        return new HardMediumSoftScore(
+                hardScore + augment.getHardScore(),
+                mediumScore + augment.getMediumScore(),
+                softScore + augment.getSoftScore());
+    }
+
+    public HardMediumSoftScore subtract(HardMediumSoftScore subtrahend) {
+        return new HardMediumSoftScore(
+                hardScore - subtrahend.getHardScore(),
+                mediumScore - subtrahend.getMediumScore(),
+                softScore - subtrahend.getSoftScore());
+    }
+
+    public HardMediumSoftScore multiply(double multiplicand) {
+        return new HardMediumSoftScore(
+                (int) Math.floor(hardScore * multiplicand),
+                (int) Math.floor(mediumScore * multiplicand),
+                (int) Math.floor(softScore * multiplicand));
+    }
+
+    public HardMediumSoftScore divide(double divisor) {
+        return new HardMediumSoftScore(
+                (int) Math.floor(hardScore / divisor),
+                (int) Math.floor(mediumScore / divisor),
+                (int) Math.floor(softScore / divisor));
+    }
+
+    public double[] toDoubleLevels() {
+        return new double[]{hardScore, mediumScore, softScore};
+    }
+
+    public boolean equals(Object o) {
+        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
+        if (this == o) {
+            return true;
+        } else if (o instanceof HardMediumSoftScore) {
+            HardMediumSoftScore other = (HardMediumSoftScore) o;
+            return hardScore == other.getHardScore()
+                    && mediumScore == other.getMediumScore()
+                    && softScore == other.getSoftScore();
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
+        return ((((17 * 37) + hardScore)) * 37 + mediumScore) * 37 + softScore;
+    }
+
+    public int compareTo(HardMediumSoftScore other) {
+        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
+        if (hardScore != other.getHardScore()) {
+            if (hardScore < other.getHardScore()) {
+                return -1;
+            } else {
+                return 1;
+            }
+        } else {
+            if (mediumScore != other.getMediumScore()) {
+                if (mediumScore < other.getMediumScore()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            } else {
+                if (softScore < other.getSoftScore()) {
+                    return -1;
+                } else if (softScore > other.getSoftScore()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+
+    public String toString() {
+        return hardScore + HARD_LABEL + "/" + mediumScore + MEDIUM_LABEL + "/" + softScore + SOFT_LABEL;
+    }
 
 }

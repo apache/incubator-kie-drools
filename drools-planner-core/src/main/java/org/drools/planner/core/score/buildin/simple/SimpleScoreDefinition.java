@@ -22,8 +22,8 @@ import org.drools.planner.core.score.holder.ScoreHolder;
 
 public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> {
 
-    private SimpleScore perfectMaximumScore = DefaultSimpleScore.valueOf(0);
-    private SimpleScore perfectMinimumScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
+    private SimpleScore perfectMaximumScore = SimpleScore.valueOf(0);
+    private SimpleScore perfectMinimumScore = SimpleScore.valueOf(Integer.MIN_VALUE);
 
     public void setPerfectMaximumScore(SimpleScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
@@ -48,7 +48,7 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     }
 
     public Score parseScore(String scoreString) {
-        return DefaultSimpleScore.parseScore(scoreString);
+        return SimpleScore.parseScore(scoreString);
     }
 
     public double calculateTimeGradient(SimpleScore startScore, SimpleScore endScore, SimpleScore score) {

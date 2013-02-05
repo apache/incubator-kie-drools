@@ -53,7 +53,7 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
     }
 
     public Score extractScore() {
-        return DefaultSimpleScore.valueOf(score);
+        return SimpleScore.valueOf(score);
     }
 
 }

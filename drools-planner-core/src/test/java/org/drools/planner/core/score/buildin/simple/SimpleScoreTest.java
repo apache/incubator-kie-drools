@@ -26,11 +26,11 @@ public class SimpleScoreTest extends AbstractScoreTest {
     @Test
     public void compareTo() {
         assertScoreOrder(
-                DefaultSimpleScore.valueOf(-300),
-                DefaultSimpleScore.valueOf(-20),
-                DefaultSimpleScore.valueOf(-1),
-                DefaultSimpleScore.valueOf(0),
-                DefaultSimpleScore.valueOf(1)
+                SimpleScore.valueOf(-300),
+                SimpleScore.valueOf(-20),
+                SimpleScore.valueOf(-1),
+                SimpleScore.valueOf(0),
+                SimpleScore.valueOf(1)
         );
     }
 

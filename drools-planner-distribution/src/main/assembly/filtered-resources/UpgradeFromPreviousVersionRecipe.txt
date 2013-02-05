@@ -2717,3 +2717,18 @@ Before in *.java:
 After in *.java:
     import org.drools.planner.api.domain.value.ValueRange;
     import org.drools.planner.api.domain.value.ValueRangeType;
+
+[MINOR] The Default*Score classes have been removed: they have been merged into their *Score interface.
+Before in *.java:
+    ... DefaultSimpleScore.valueOf(...)
+    ... DefaultSimpleDoubleScore.valueOf(...)
+    ... DefaultHardSoftScore.valueOf(...)
+    ... DefaultHardSoftLongScore.valueOf(...)
+    ... DefaultHardMediumSoftScore.valueOf(...)
+After in *.java:
+    ... SimpleScore.valueOf(...)
+    ... SimpleDoubleScore.valueOf(...)
+    ... HardSoftScore.valueOf(...)
+    ... HardSoftLongScore.valueOf(...)
+    ... HardMediumSoftScore.valueOf(...)
+TODO changes in data

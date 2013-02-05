@@ -482,7 +482,7 @@ public class CloudProcess ... {
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
         <para>Just implement the method <literal>calculateScore(Solution)</literal> to return a
-        <literal>DefaultHardSoftScore</literal> instance.</para>
+        <literal>HardSoftScore</literal> instance.</para>
 
         <example>
           <title>CloudBalancingSimpleScoreCalculator.java</title>
@@ -531,7 +531,7 @@ public class CloudProcess ... {
                 softScore -= computer.getCost();
             }
         }
-        return DefaultHardSoftScore.valueOf(hardScore, softScore);
+        return HardSoftScore.valueOf(hardScore, softScore);
     }
 
 }</programlisting>

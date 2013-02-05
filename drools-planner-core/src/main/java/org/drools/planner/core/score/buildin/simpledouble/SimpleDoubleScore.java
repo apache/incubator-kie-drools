@@ -16,23 +16,99 @@
 
 package org.drools.planner.core.score.buildin.simpledouble;
 
+import org.drools.planner.core.score.AbstractScore;
 import org.drools.planner.core.score.Score;
 
 /**
- * A SimpleScore is a Score based on double constraints.
+ * This {@link Score} is based on 1 level of double constraints.
  * <p/>
- * Implementations must be immutable.
+ * This class is immutable.
  * @see Score
- * @see DefaultDoubleSimpleScore
  */
-public interface SimpleDoubleScore extends Score<SimpleDoubleScore> {
+public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
+
+    public static SimpleDoubleScore parseScore(String scoreString) {
+        return valueOf(Double.parseDouble(scoreString));
+    }
+
+    public static SimpleDoubleScore valueOf(double score) {
+        return new SimpleDoubleScore(score);
+    }
+
+    // ************************************************************************
+    // Fields
+    // ************************************************************************
+
+    private final double score;
+
+    private SimpleDoubleScore(double score) {
+        this.score = score;
+    }
 
     /**
-     * The total of the broken negative constraints and fulfilled postive hard constraints.
+     * The total of the broken negative constraints and fulfilled positive hard constraints.
      * Their weight is included in the total.
      * The score is usually a negative number because most use cases only have negative constraints.
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
-    double getScore();
+    public double getScore() {
+        return score;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    public SimpleDoubleScore add(SimpleDoubleScore augment) {
+        return new SimpleDoubleScore(score + augment.getScore());
+    }
+
+    public SimpleDoubleScore subtract(SimpleDoubleScore subtrahend) {
+        return new SimpleDoubleScore(score - subtrahend.getScore());
+    }
+
+    public SimpleDoubleScore multiply(double multiplicand) {
+        return new SimpleDoubleScore(Math.floor(score * multiplicand));
+    }
+
+    public SimpleDoubleScore divide(double divisor) {
+        return new SimpleDoubleScore(Math.floor(score / divisor));
+    }
+
+    public double[] toDoubleLevels() {
+        return new double[]{score};
+    }
+
+    public boolean equals(Object o) {
+        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
+        if (this == o) {
+            return true;
+        } else if (o instanceof SimpleDoubleScore) {
+            SimpleDoubleScore other = (SimpleDoubleScore) o;
+            return score == other.getScore();
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
+        return (17 * 37) + Double.valueOf(score).hashCode();
+    }
+
+    public int compareTo(SimpleDoubleScore other) {
+        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
+        if (score < other.getScore()) {
+            return -1;
+        } else if (score > other.getScore()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public String toString() {
+        return Double.toString(score);
+    }
 
 }

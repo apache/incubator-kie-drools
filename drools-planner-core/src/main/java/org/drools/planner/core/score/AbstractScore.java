@@ -18,14 +18,14 @@ package org.drools.planner.core.score;
 
 import java.io.Serializable;
 
-import org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 
 /**
  * Abstract superclass for {@link Score}.
  * <p/>
  * Subclasses must be immutable.
  * @see Score
- * @see DefaultHardSoftScore
+ * @see HardSoftScore
  */
 public abstract class AbstractScore<S extends Score>
         implements Score<S>, Serializable {

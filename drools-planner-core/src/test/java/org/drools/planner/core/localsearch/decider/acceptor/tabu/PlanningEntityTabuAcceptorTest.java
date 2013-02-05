@@ -7,7 +7,7 @@ import org.drools.planner.core.localsearch.scope.LocalSearchMoveScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.scope.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.solver.scope.DefaultSolverScope;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class PlanningEntityTabuAcceptorTest {
         TestdataEntity e4 = new TestdataEntity("e4");
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(DefaultSimpleScore.valueOf(0));
+        solverScope.setBestScore(SimpleScore.valueOf(0));
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -110,7 +110,7 @@ public class PlanningEntityTabuAcceptorTest {
         TestdataEntity e4 = new TestdataEntity("e4");
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(DefaultSimpleScore.valueOf(0));
+        solverScope.setBestScore(SimpleScore.valueOf(0));
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -207,7 +207,7 @@ public class PlanningEntityTabuAcceptorTest {
         TestdataEntity e1 = new TestdataEntity("e1");
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(DefaultSimpleScore.valueOf(-100));
+        solverScope.setBestScore(SimpleScore.valueOf(-100));
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -239,7 +239,7 @@ public class PlanningEntityTabuAcceptorTest {
         Move move = mock(Move.class);
         when(move.getPlanningEntities()).thenReturn((Collection) Arrays.asList(entities));
         moveScope.setMove(move);
-        moveScope.setScore(DefaultSimpleScore.valueOf(score));
+        moveScope.setScore(SimpleScore.valueOf(score));
         return moveScope;
     }
 

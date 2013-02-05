@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.drools.planner.examples.nqueens.domain.NQueens;
@@ -120,7 +120,7 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
     }
 
     public SimpleScore calculateScore() {
-        return DefaultSimpleScore.valueOf(score);
+        return SimpleScore.valueOf(score);
     }
 
 }

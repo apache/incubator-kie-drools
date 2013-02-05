@@ -216,7 +216,7 @@
         </imageobject>
       </mediaobject>
 
-      <para>The <literal>Score</literal> implementation (for example <literal>DefaultHardSoftScore</literal>) must be
+      <para>The <literal>Score</literal> implementation (for example <literal>HardSoftScore</literal>) must be
       the same throughout a <literal>Solver</literal> runtime. The <literal>Score</literal> implementation is configured
       in the solver configuration as a ScoreDefinition:</para>
 
@@ -424,7 +424,7 @@
                 }
             }
         }
-        return DefaultSimpleScore.valueOf(score);
+        return SimpleScore.valueOf(score);
     }
 
 }</programlisting>
@@ -617,7 +617,7 @@
     }
 
     public SimpleScore calculateScore() {
-        return DefaultSimpleScore.valueOf(score);
+        return SimpleScore.valueOf(score);
     }
 
 }</programlisting>

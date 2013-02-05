@@ -20,15 +20,15 @@ import java.util.List;
 
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.measurement.ScoreDifferencePercentage;
-import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 
 public abstract class AbstractRankingComparatorTest {
 
     protected void addSingleBenchmark(List<SingleBenchmark> singleBenchmarkList, int score, int bestScore, int worstScore) {
         SingleBenchmark singleBenchmark = new SingleBenchmark(null, null);
-        DefaultSimpleScore scoreObject = DefaultSimpleScore.valueOf(score);
-        DefaultSimpleScore bestScoreObject = DefaultSimpleScore.valueOf(bestScore);
-        DefaultSimpleScore worstScoreObject = DefaultSimpleScore.valueOf(worstScore);
+        SimpleScore scoreObject = SimpleScore.valueOf(score);
+        SimpleScore bestScoreObject = SimpleScore.valueOf(bestScore);
+        SimpleScore worstScoreObject = SimpleScore.valueOf(worstScore);
         singleBenchmark.setScore(scoreObject);
         singleBenchmark.setWinningScoreDifference(scoreObject.subtract(bestScoreObject));
         singleBenchmark.setWorstScoreDifferencePercentage(

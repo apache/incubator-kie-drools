@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.manners2009.domain.Guest;
@@ -47,7 +47,7 @@ public class Manners2009SolutionInitializer implements CustomSolverPhaseCommand 
         // Assign one guest at a time
         List<Seat> undesignatedSeatList = manners2009.getSeatList();
         for (SeatDesignation seatDesignation : seatDesignationList) {
-            Score bestScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
+            Score bestScore = SimpleScore.valueOf(Integer.MIN_VALUE);
             Seat bestSeat = null;
 
             boolean added = false;

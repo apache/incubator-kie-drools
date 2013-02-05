@@ -26,21 +26,21 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
     @Test
     public void compareTo() {
         assertScoreOrder(
-                DefaultHardSoftLongScore.valueOf(-20L, Long.MIN_VALUE),
-                DefaultHardSoftLongScore.valueOf(-20L, -20L),
-                DefaultHardSoftLongScore.valueOf(-1L, -300L),
-                DefaultHardSoftLongScore.valueOf(-1L, 4000L),
-                DefaultHardSoftLongScore.valueOf(0L, -1L),
-                DefaultHardSoftLongScore.valueOf(0L, 0L),
-                DefaultHardSoftLongScore.valueOf(0L, 1L)
+                HardSoftLongScore.valueOf(-20L, Long.MIN_VALUE),
+                HardSoftLongScore.valueOf(-20L, -20L),
+                HardSoftLongScore.valueOf(-1L, -300L),
+                HardSoftLongScore.valueOf(-1L, 4000L),
+                HardSoftLongScore.valueOf(0L, -1L),
+                HardSoftLongScore.valueOf(0L, 0L),
+                HardSoftLongScore.valueOf(0L, 1L)
         );
     }
 
     @Test
     public void feasible() {
-        assertEquals(true, DefaultHardSoftLongScore.valueOf(0L, -300L).isFeasible());
-        assertEquals(false, DefaultHardSoftLongScore.valueOf(-5L, -300L).isFeasible());
-        assertEquals(true, DefaultHardSoftLongScore.valueOf(2L, -300L).isFeasible());
+        assertEquals(true, HardSoftLongScore.valueOf(0L, -300L).isFeasible());
+        assertEquals(false, HardSoftLongScore.valueOf(-5L, -300L).isFeasible());
+        assertEquals(true, HardSoftLongScore.valueOf(2L, -300L).isFeasible());
     }
 
 }

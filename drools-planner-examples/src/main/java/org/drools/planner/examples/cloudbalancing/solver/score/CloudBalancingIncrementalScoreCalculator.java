@@ -19,7 +19,7 @@ package org.drools.planner.examples.cloudbalancing.solver.score;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
@@ -162,7 +162,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
     }
 
     public HardSoftScore calculateScore() {
-        return DefaultHardSoftScore.valueOf(hardScore, softScore);
+        return HardSoftScore.valueOf(hardScore, softScore);
     }
 
 }

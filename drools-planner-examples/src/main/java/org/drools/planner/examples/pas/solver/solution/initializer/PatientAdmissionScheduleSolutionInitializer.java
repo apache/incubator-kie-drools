@@ -26,7 +26,7 @@ import java.util.Set;
 
 import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.pas.domain.AdmissionPart;
@@ -65,7 +65,7 @@ public class PatientAdmissionScheduleSolutionInitializer implements CustomSolver
             int firstNightIndex = bedDesignation.getAdmissionPart().getFirstNight().getIndex();
             int lastNightIndex = bedDesignation.getAdmissionPart().getLastNight().getIndex();
             boolean perfectMatch = false;
-            Score bestScore = DefaultHardSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
+            Score bestScore = HardSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
             Bed bestBed = null;
 
             boolean added = false;

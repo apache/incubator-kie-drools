@@ -24,8 +24,8 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
 
     private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
 
-    private HardSoftLongScore perfectMaximumScore = DefaultHardSoftLongScore.valueOf(0, 0);
-    private HardSoftLongScore perfectMinimumScore = DefaultHardSoftLongScore.valueOf(
+    private HardSoftLongScore perfectMaximumScore = HardSoftLongScore.valueOf(0, 0);
+    private HardSoftLongScore perfectMinimumScore = HardSoftLongScore.valueOf(
             Long.MIN_VALUE, Long.MIN_VALUE);
 
     /**
@@ -64,7 +64,7 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
     }
 
     public Score parseScore(String scoreString) {
-        return DefaultHardSoftLongScore.parseScore(scoreString);
+        return HardSoftLongScore.parseScore(scoreString);
     }
 
     public double calculateTimeGradient(HardSoftLongScore startScore, HardSoftLongScore endScore,

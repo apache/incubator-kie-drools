@@ -19,7 +19,7 @@ package org.drools.planner.examples.nqueens.solver.score;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.drools.planner.examples.nqueens.domain.NQueens;
@@ -108,7 +108,7 @@ public class NQueensBasicIncrementalScoreCalculator extends AbstractIncrementalS
     }
 
     public SimpleScore calculateScore() {
-        return DefaultSimpleScore.valueOf(score);
+        return SimpleScore.valueOf(score);
     }
 
 }

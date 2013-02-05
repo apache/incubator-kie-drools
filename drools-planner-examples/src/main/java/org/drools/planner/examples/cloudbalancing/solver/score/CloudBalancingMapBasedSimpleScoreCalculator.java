@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
@@ -49,7 +49,7 @@ public class CloudBalancingMapBasedSimpleScoreCalculator implements SimpleScoreC
         int hardScore = sumHardScore(cpuPowerUsageMap, memoryUsageMap, networkBandwidthUsageMap);
         int softScore = sumSoftScore(usedComputerSet);
 
-        return DefaultHardSoftScore.valueOf(hardScore, softScore);
+        return HardSoftScore.valueOf(hardScore, softScore);
     }
 
     private void visitProcessList(Map<CloudComputer, Integer> cpuPowerUsageMap,

@@ -54,7 +54,7 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
     // ************************************************************************
 
     public Score extractScore() {
-        return DefaultHardMediumSoftScore.valueOf(hardScore, mediumScore, softScore);
+        return HardMediumSoftScore.valueOf(hardScore, mediumScore, softScore);
     }
 
 }

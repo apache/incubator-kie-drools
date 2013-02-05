@@ -30,57 +30,57 @@ public class HardSoftScoreDefinitionTest {
         // Normal cases
         // Smack in the middle
         assertEquals(0.6, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-14, -340)), 0.0);
+                HardSoftScore.valueOf(-20, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-14, -340)), 0.0);
         // No hard broken, total soft broken
         assertEquals(0.75, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-10, -400)), 0.0);
+                HardSoftScore.valueOf(-20, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-10, -400)), 0.0);
         // Total hard broken, no soft broken
         assertEquals(0.25, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-20, -300)), 0.0);
+                HardSoftScore.valueOf(-20, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-20, -300)), 0.0);
         // No hard broken, more than total soft broken
         assertEquals(0.75, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-10, -900)), 0.0);
+                HardSoftScore.valueOf(-20, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-10, -900)), 0.0);
         // More than total hard broken, no soft broken
         assertEquals(0.0, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-90, -300)), 0.0);
+                HardSoftScore.valueOf(-20, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-90, -300)), 0.0);
 
         // Perfect min/max cases
         assertEquals(1.0, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-10, -300), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-10, -300)), 0.0);
+                HardSoftScore.valueOf(-10, -300), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-10, -300)), 0.0);
         assertEquals(0.0, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-20, -400)), 0.0);
+                HardSoftScore.valueOf(-20, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-20, -400)), 0.0);
         assertEquals(1.0, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-10, -300)), 0.0);
+                HardSoftScore.valueOf(-20, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-10, -300)), 0.0);
 
         // Hard total delta is 0
         assertEquals(0.75 + (0.6 * 0.25), scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-10, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-10, -340)), 0.0);
+                HardSoftScore.valueOf(-10, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-10, -340)), 0.0);
         assertEquals(0.0, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-10, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-20, -340)), 0.0);
+                HardSoftScore.valueOf(-10, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-20, -340)), 0.0);
         assertEquals(1.0, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-10, -400), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-0, -340)), 0.0);
+                HardSoftScore.valueOf(-10, -400), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-0, -340)), 0.0);
 
         // Soft total delta is 0
         assertEquals((0.6 * 0.75) + 0.25, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -300), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-14, -300)), 0.0);
+                HardSoftScore.valueOf(-20, -300), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-14, -300)), 0.0);
         assertEquals(0.6 * 0.75, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -300), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-14, -400)), 0.0);
+                HardSoftScore.valueOf(-20, -300), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-14, -400)), 0.0);
         assertEquals((0.6 * 0.75) + 0.25, scoreDefinition.calculateTimeGradient(
-                DefaultHardSoftScore.valueOf(-20, -300), DefaultHardSoftScore.valueOf(-10, -300),
-                DefaultHardSoftScore.valueOf(-14, -0)), 0.0);
+                HardSoftScore.valueOf(-20, -300), HardSoftScore.valueOf(-10, -300),
+                HardSoftScore.valueOf(-14, -0)), 0.0);
     }
 
 }
