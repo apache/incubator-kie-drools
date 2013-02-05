@@ -39,7 +39,6 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.impl.AgendaImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -344,6 +343,27 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
     @Test
+    public void testMVELForLoop() throws Exception {
+        // JBRULES-3717
+        String str = "rule demo\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "   for ( int i = 1; i <= 3; i++ ) {\n" +
+                "       insert( \"foo\" + i );\n" +
+                "   }\n" +
+                "end";
+
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL);
+
+        if ( builder.hasErrors() ) {
+            throw new RuntimeException(builder.getErrors().toString());
+        }
+    }
+
+    @Test
     public void testBigDecimalComparison() throws Exception {
         // JBRULES-3715
         String str = "import org.drools.Person;\n" +
@@ -608,7 +628,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(2.0, ksession.getQueryResults( "getNeuron" ).iterator().next().get( "$value" ));
     }
 
-    @Test @Ignore("fixed with mvel 2.1.4")
+    @Test
     public void testMvelAssignmentToPublicField() {
         String str =
                 "import org.drools.integrationtests.MiscTest2.Foo\n" +
@@ -642,7 +662,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore("fixed with mvel 2.1.4")
+    @Test
     public void testMvelInvokeAsList() {
         String str =
                 "import java.util.List;\n" +
@@ -912,7 +932,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore("fixed with mvel 2.1.4")
+    @Test
     public void testMvelResolvingGenericVariableDeclaredInParentClass() {
         // JBRULES-3684
         String str =
@@ -938,7 +958,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         public StringConcrete() { this.foo = new String(); }
     }
 
-    @Test @Ignore("fixed with mvel 2.1.4")
+    @Test
     public void testMvelParsingParenthesisInString() {
         // JBRULES-3698
         String str =
@@ -957,7 +977,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         public Answer getAnswer() { return Answer.YES; }
     }
 
-    @Test @Ignore("fixed with mvel 2.1.4")
+    @Test
     public void testCompilationMustFailComparingAClassLiteral() {
         // DROOLS-20
         String str =

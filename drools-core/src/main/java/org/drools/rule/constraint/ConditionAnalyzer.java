@@ -1,17 +1,23 @@
 package org.drools.rule.constraint;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.regex.Pattern;
-
 import org.drools.rule.Declaration;
 import org.mvel2.Operator;
 import org.mvel2.ParserContext;
-import org.mvel2.ast.*;
+import org.mvel2.ast.ASTNode;
+import org.mvel2.ast.And;
+import org.mvel2.ast.BinaryOperation;
+import org.mvel2.ast.BooleanNode;
+import org.mvel2.ast.Contains;
+import org.mvel2.ast.Instance;
+import org.mvel2.ast.LiteralNode;
+import org.mvel2.ast.Negation;
+import org.mvel2.ast.NewObjectNode;
+import org.mvel2.ast.Or;
+import org.mvel2.ast.RegExMatch;
+import org.mvel2.ast.Soundslike;
+import org.mvel2.ast.Substatement;
+import org.mvel2.ast.TypeCast;
+import org.mvel2.ast.Union;
 import org.mvel2.compiler.Accessor;
 import org.mvel2.compiler.AccessorNode;
 import org.mvel2.compiler.CompiledExpression;
@@ -38,10 +44,17 @@ import org.mvel2.optimizers.impl.refl.nodes.StaticVarAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ThisValueAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.VariableAccessor;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 
@@ -114,8 +127,7 @@ public class ConditionAnalyzer {
             if (pattern != null) {
                 condition.right = new FixedExpression(String.class, pattern.pattern());
             } else {
-                ExecutableStatement regExStmt = (ExecutableStatement)getFieldValue(RegExMatch.class, "patternStmt", regExNode);
-                condition.right = analyzeNode(((ExecutableAccessor)regExStmt).getNode());
+                condition.right = analyzeNode(((ExecutableAccessor)regExNode.getPatternStatement()).getNode());
             }
         } else if (node instanceof Contains) {
             condition.left = analyzeNode(((Contains)node).getFirstStatement());
@@ -181,7 +193,7 @@ public class ConditionAnalyzer {
             EvaluatedExpression expression = new EvaluatedExpression();
             expression.firstExpression = analyzeNode(main);
             if (accessor instanceof DynamicGetAccessor) {
-                AccessorNode accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getAccessor();
+                AccessorNode accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getSafeAccessor();
                 expression.addInvocation(analyzeAccessor(accessorNode, null));
             } else if (accessor instanceof AccessorNode) {
                 AccessorNode accessorNode = (AccessorNode)accessor;
@@ -253,7 +265,7 @@ public class ConditionAnalyzer {
     private Expression analyzeAccessor(Accessor accessor) {
         AccessorNode accessorNode;
         if (accessor instanceof DynamicGetAccessor) {
-            accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getAccessor();
+            accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getSafeAccessor();
         } else if (accessor instanceof AccessorNode) {
             accessorNode = (AccessorNode)accessor;
         } else if (accessor instanceof CompiledExpression) {
