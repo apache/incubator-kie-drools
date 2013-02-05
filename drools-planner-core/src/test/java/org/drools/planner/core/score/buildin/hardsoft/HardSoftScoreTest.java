@@ -16,13 +16,12 @@
 
 package org.drools.planner.core.score.buildin.hardsoft;
 
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DefaultHardSoftScoreTest extends AbstractScoreTest {
+public class HardSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {

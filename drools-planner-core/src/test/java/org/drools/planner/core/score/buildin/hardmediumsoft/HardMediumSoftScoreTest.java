@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DefaultHardMediumSoftScoreTest extends AbstractScoreTest {
+public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
