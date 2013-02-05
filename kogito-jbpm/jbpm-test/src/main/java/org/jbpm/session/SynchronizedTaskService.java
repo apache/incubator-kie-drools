@@ -187,6 +187,12 @@ public class SynchronizedTaskService implements TaskService {
 		}
 	}
 	
+	public List<Long> getTasksByProcessInstanceId(long arg0) {
+		synchronized (ksession) {
+			return taskService.getTasksByProcessInstanceId(arg0);
+		}
+	}
+	
 	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(
 			String arg0, String arg1) {
 		synchronized (ksession) {
