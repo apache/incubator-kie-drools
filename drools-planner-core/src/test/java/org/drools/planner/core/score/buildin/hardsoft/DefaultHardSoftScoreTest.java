@@ -17,21 +17,24 @@
 package org.drools.planner.core.score.buildin.hardsoft;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DefaultHardSoftScoreTest {
+public class DefaultHardSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        Score a = DefaultHardSoftScore.valueOf(-1, -300);
-        Score b = DefaultHardSoftScore.valueOf(-20, -20);
-        Score c = DefaultHardSoftScore.valueOf(-20, Integer.MIN_VALUE);
-        assertTrue(a.compareTo(b) > 0);
-        assertTrue(b.compareTo(a) < 0);
-        assertTrue(b.compareTo(c) > 0);
-        assertTrue(c.compareTo(b) < 0);
+        assertScoreOrder(
+                DefaultHardSoftScore.valueOf(-20, Integer.MIN_VALUE),
+                DefaultHardSoftScore.valueOf(-20, -20),
+                DefaultHardSoftScore.valueOf(-1, -300),
+                DefaultHardSoftScore.valueOf(-1, 4000),
+                DefaultHardSoftScore.valueOf(0, -1),
+                DefaultHardSoftScore.valueOf(0, 0),
+                DefaultHardSoftScore.valueOf(0, 1)
+        );
     }
 
     @Test
