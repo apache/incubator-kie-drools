@@ -1018,4 +1018,27 @@ public class MiscTest2 extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
         assertTrue( kbuilder.hasErrors() );
     }
+
+    @Test
+    public void testDeclaredTypeExtendingImportedDeclareType() {
+        // DROOLS-27
+        String str =
+                "import org.drools.Person\n" +
+                "declare Person end\n"+
+                "declare Student extends Person end\n"+
+                "rule Init when\n" +
+                "then\n" +
+                "    Student s = new Student();\n" +
+                "    s.setName( \"Mark\" );\n" +
+                "    insert( s );\n" +
+                "end\n" +
+                "rule Check when\n" +
+                "    Person( name == \"Mark\")\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        assertEquals(2, ksession.fireAllRules());
+    }
 }
