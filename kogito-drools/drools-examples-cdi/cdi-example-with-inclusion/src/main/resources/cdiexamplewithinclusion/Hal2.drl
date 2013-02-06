@@ -1,0 +1,9 @@
+package org.kie.example2
+
+import org.drools.example.cdi.cdiexample.Message
+
+rule "rule 3" when
+    Message( text == "Open the pod bay doors, HAL." )
+then
+    insert( new Message("HAL", "I'm sorry, Dave. I'm afraid I can't do that." ) );
+end

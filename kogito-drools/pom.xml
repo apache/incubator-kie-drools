@@ -58,6 +58,7 @@
     <module>drools-maven-plugin</module>
     <module>kie-ci</module>
     <module>drools-examples-api</module>
+    <module>drools-examples-cdi</module>
   </modules>
 
   <profiles>
