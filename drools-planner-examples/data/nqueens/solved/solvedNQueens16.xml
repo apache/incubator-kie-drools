@@ -215,7 +215,7 @@
       <row reference="27"/>
     </Queen>
   </queenList>
-  <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" id="53">
+  <score id="53">
     <score>0</score>
   </score>
 </NQueens>

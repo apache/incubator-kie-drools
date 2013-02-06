@@ -23572,8 +23572,5 @@
       <bed reference="880"/>
     </BedDesignation>
   </bedDesignationList>
-  <score class="org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore" id="4958">
-    <hardScore>0</hardScore>
-    <softScore>-9674</softScore>
-  </score>
+  <score id="4958">0hard/-9674soft</score>
 </PatientAdmissionSchedule>

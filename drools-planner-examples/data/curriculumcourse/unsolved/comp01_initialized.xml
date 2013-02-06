@@ -2122,8 +2122,5 @@
       <room reference="153"/>
     </Lecture>
   </lectureList>
-  <score class="org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore" id="369">
-    <hardScore>0</hardScore>
-    <softScore>-1228</softScore>
-  </score>
+  <score id="369">0hard/-1228soft</score>
 </CurriculumCourseSchedule>

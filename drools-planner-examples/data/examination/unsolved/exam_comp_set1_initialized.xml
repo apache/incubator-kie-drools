@@ -64537,8 +64537,5 @@
       <room reference="9162"/>
     </Exam>
   </examList>
-  <score class="org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore" id="9787">
-    <hardScore>0</hardScore>
-    <softScore>-8154</softScore>
-  </score>
+  <score id="9787">0hard/-8154soft</score>
 </Examination>

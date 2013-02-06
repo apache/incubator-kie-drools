@@ -63,23 +63,23 @@
       <machineMoveCostMap id="18">
         <entry>
           <MrMachine id="19">
-            <id>1</id>
+            <id>3</id>
             <neighborhood reference="7"/>
-            <location reference="10"/>
+            <location reference="12"/>
             <machineCapacityList id="20">
               <MrMachineCapacity id="21">
-                <id>2</id>
+                <id>6</id>
                 <machine reference="19"/>
                 <resource reference="4"/>
-                <maximumCapacity>2887359</maximumCapacity>
-                <safetyCapacity>2717004</safetyCapacity>
+                <maximumCapacity>3972793</maximumCapacity>
+                <safetyCapacity>3591404</safetyCapacity>
               </MrMachineCapacity>
               <MrMachineCapacity id="22">
-                <id>3</id>
+                <id>7</id>
                 <machine reference="19"/>
                 <resource reference="5"/>
-                <maximumCapacity>3105813</maximumCapacity>
-                <safetyCapacity>2323148</safetyCapacity>
+                <maximumCapacity>5353724</maximumCapacity>
+                <safetyCapacity>4320455</safetyCapacity>
               </MrMachineCapacity>
             </machineCapacityList>
             <machineMoveCostMap id="23">
@@ -88,28 +88,24 @@
                 <int>0</int>
               </entry>
               <entry>
-                <MrMachine reference="14"/>
-                <int>1</int>
-              </entry>
-              <entry>
                 <MrMachine id="24">
-                  <id>2</id>
+                  <id>1</id>
                   <neighborhood reference="7"/>
-                  <location reference="11"/>
+                  <location reference="10"/>
                   <machineCapacityList id="25">
                     <MrMachineCapacity id="26">
-                      <id>4</id>
+                      <id>2</id>
                       <machine reference="24"/>
                       <resource reference="4"/>
-                      <maximumCapacity>3212243</maximumCapacity>
-                      <safetyCapacity>2277480</safetyCapacity>
+                      <maximumCapacity>2887359</maximumCapacity>
+                      <safetyCapacity>2717004</safetyCapacity>
                     </MrMachineCapacity>
                     <MrMachineCapacity id="27">
-                      <id>5</id>
+                      <id>3</id>
                       <machine reference="24"/>
                       <resource reference="5"/>
-                      <maximumCapacity>4633050</maximumCapacity>
-                      <safetyCapacity>3836165</safetyCapacity>
+                      <maximumCapacity>3105813</maximumCapacity>
+                      <safetyCapacity>2323148</safetyCapacity>
                     </MrMachineCapacity>
                   </machineCapacityList>
                   <machineMoveCostMap id="28">
@@ -118,32 +114,32 @@
                       <int>1</int>
                     </entry>
                     <entry>
-                      <MrMachine reference="14"/>
-                      <int>1</int>
-                    </entry>
-                    <entry>
                       <MrMachine reference="24"/>
                       <int>0</int>
                     </entry>
                     <entry>
+                      <MrMachine reference="14"/>
+                      <int>1</int>
+                    </entry>
+                    <entry>
                       <MrMachine id="29">
-                        <id>3</id>
+                        <id>2</id>
                         <neighborhood reference="7"/>
-                        <location reference="12"/>
+                        <location reference="11"/>
                         <machineCapacityList id="30">
                           <MrMachineCapacity id="31">
-                            <id>6</id>
+                            <id>4</id>
                             <machine reference="29"/>
                             <resource reference="4"/>
-                            <maximumCapacity>3972793</maximumCapacity>
-                            <safetyCapacity>3591404</safetyCapacity>
+                            <maximumCapacity>3212243</maximumCapacity>
+                            <safetyCapacity>2277480</safetyCapacity>
                           </MrMachineCapacity>
                           <MrMachineCapacity id="32">
-                            <id>7</id>
+                            <id>5</id>
                             <machine reference="29"/>
                             <resource reference="5"/>
-                            <maximumCapacity>5353724</maximumCapacity>
-                            <safetyCapacity>4320455</safetyCapacity>
+                            <maximumCapacity>4633050</maximumCapacity>
+                            <safetyCapacity>3836165</safetyCapacity>
                           </MrMachineCapacity>
                         </machineCapacityList>
                         <machineMoveCostMap id="33">
@@ -152,11 +148,11 @@
                             <int>1</int>
                           </entry>
                           <entry>
-                            <MrMachine reference="14"/>
+                            <MrMachine reference="24"/>
                             <int>1</int>
                           </entry>
                           <entry>
-                            <MrMachine reference="24"/>
+                            <MrMachine reference="14"/>
                             <int>1</int>
                           </entry>
                           <entry>
@@ -172,6 +168,10 @@
                 <int>1</int>
               </entry>
               <entry>
+                <MrMachine reference="14"/>
+                <int>1</int>
+              </entry>
+              <entry>
                 <MrMachine reference="29"/>
                 <int>1</int>
               </entry>
@@ -180,12 +180,12 @@
           <int>1</int>
         </entry>
         <entry>
-          <MrMachine reference="14"/>
-          <int>0</int>
-        </entry>
-        <entry>
           <MrMachine reference="24"/>
           <int>1</int>
+        </entry>
+        <entry>
+          <MrMachine reference="14"/>
+          <int>0</int>
         </entry>
         <entry>
           <MrMachine reference="29"/>
@@ -193,19 +193,19 @@
         </entry>
       </machineMoveCostMap>
     </MrMachine>
-    <MrMachine reference="19"/>
     <MrMachine reference="24"/>
     <MrMachine reference="29"/>
+    <MrMachine reference="19"/>
   </machineList>
   <machineCapacityList id="34">
     <MrMachineCapacity reference="16"/>
     <MrMachineCapacity reference="17"/>
-    <MrMachineCapacity reference="21"/>
-    <MrMachineCapacity reference="22"/>
     <MrMachineCapacity reference="26"/>
     <MrMachineCapacity reference="27"/>
     <MrMachineCapacity reference="31"/>
     <MrMachineCapacity reference="32"/>
+    <MrMachineCapacity reference="21"/>
+    <MrMachineCapacity reference="22"/>
   </machineCapacityList>
   <serviceList id="35">
     <MrService id="36">
@@ -2613,42 +2613,42 @@
     <MrProcessAssignment id="680">
       <id>3</id>
       <process reference="286"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="681">
       <id>4</id>
       <process reference="290"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="682">
       <id>5</id>
       <process reference="294"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="683">
       <id>6</id>
       <process reference="298"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="684">
       <id>7</id>
       <process reference="302"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="685">
       <id>8</id>
       <process reference="306"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="686">
       <id>9</id>
       <process reference="310"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="687">
       <id>10</id>
       <process reference="314"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="688">
       <id>11</id>
@@ -2663,22 +2663,22 @@
     <MrProcessAssignment id="690">
       <id>13</id>
       <process reference="326"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="691">
       <id>14</id>
       <process reference="330"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="692">
       <id>15</id>
       <process reference="334"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="693">
       <id>16</id>
       <process reference="338"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="694">
       <id>17</id>
@@ -2693,27 +2693,27 @@
     <MrProcessAssignment id="696">
       <id>19</id>
       <process reference="350"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="697">
       <id>20</id>
       <process reference="354"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="698">
       <id>21</id>
       <process reference="358"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="699">
       <id>22</id>
       <process reference="362"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="700">
       <id>23</id>
       <process reference="366"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="701">
       <id>24</id>
@@ -2723,17 +2723,17 @@
     <MrProcessAssignment id="702">
       <id>25</id>
       <process reference="374"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="703">
       <id>26</id>
       <process reference="378"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="704">
       <id>27</id>
       <process reference="382"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="705">
       <id>28</id>
@@ -2743,17 +2743,17 @@
     <MrProcessAssignment id="706">
       <id>29</id>
       <process reference="390"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="707">
       <id>30</id>
       <process reference="394"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="708">
       <id>31</id>
       <process reference="398"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="709">
       <id>32</id>
@@ -2763,12 +2763,12 @@
     <MrProcessAssignment id="710">
       <id>33</id>
       <process reference="406"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="711">
       <id>34</id>
       <process reference="410"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="712">
       <id>35</id>
@@ -2783,7 +2783,7 @@
     <MrProcessAssignment id="714">
       <id>37</id>
       <process reference="422"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="715">
       <id>38</id>
@@ -2793,7 +2793,7 @@
     <MrProcessAssignment id="716">
       <id>39</id>
       <process reference="430"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="717">
       <id>40</id>
@@ -2808,22 +2808,22 @@
     <MrProcessAssignment id="719">
       <id>42</id>
       <process reference="442"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="720">
       <id>43</id>
       <process reference="446"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="721">
       <id>44</id>
       <process reference="450"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="722">
       <id>45</id>
       <process reference="454"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="723">
       <id>46</id>
@@ -2833,17 +2833,17 @@
     <MrProcessAssignment id="724">
       <id>47</id>
       <process reference="462"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="725">
       <id>48</id>
       <process reference="466"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="726">
       <id>49</id>
       <process reference="470"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="727">
       <id>50</id>
@@ -2853,7 +2853,7 @@
     <MrProcessAssignment id="728">
       <id>51</id>
       <process reference="478"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="729">
       <id>52</id>
@@ -2863,12 +2863,12 @@
     <MrProcessAssignment id="730">
       <id>53</id>
       <process reference="486"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="731">
       <id>54</id>
       <process reference="490"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="732">
       <id>55</id>
@@ -2878,17 +2878,17 @@
     <MrProcessAssignment id="733">
       <id>56</id>
       <process reference="498"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="734">
       <id>57</id>
       <process reference="502"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="735">
       <id>58</id>
       <process reference="506"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="736">
       <id>59</id>
@@ -2903,17 +2903,17 @@
     <MrProcessAssignment id="738">
       <id>61</id>
       <process reference="518"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="739">
       <id>62</id>
       <process reference="522"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="740">
       <id>63</id>
       <process reference="526"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="741">
       <id>64</id>
@@ -2923,22 +2923,22 @@
     <MrProcessAssignment id="742">
       <id>65</id>
       <process reference="534"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="743">
       <id>66</id>
       <process reference="538"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="744">
       <id>67</id>
       <process reference="542"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="745">
       <id>68</id>
       <process reference="546"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="746">
       <id>69</id>
@@ -2953,7 +2953,7 @@
     <MrProcessAssignment id="748">
       <id>71</id>
       <process reference="558"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="749">
       <id>72</id>
@@ -2968,7 +2968,7 @@
     <MrProcessAssignment id="751">
       <id>74</id>
       <process reference="570"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="752">
       <id>75</id>
@@ -2978,7 +2978,7 @@
     <MrProcessAssignment id="753">
       <id>76</id>
       <process reference="578"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="754">
       <id>77</id>
@@ -2988,22 +2988,22 @@
     <MrProcessAssignment id="755">
       <id>78</id>
       <process reference="586"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="756">
       <id>79</id>
       <process reference="590"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="757">
       <id>80</id>
       <process reference="594"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="758">
       <id>81</id>
       <process reference="598"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="759">
       <id>82</id>
@@ -3023,7 +3023,7 @@
     <MrProcessAssignment id="762">
       <id>85</id>
       <process reference="614"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="763">
       <id>86</id>
@@ -3043,7 +3043,7 @@
     <MrProcessAssignment id="766">
       <id>89</id>
       <process reference="630"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="767">
       <id>90</id>
@@ -3053,51 +3053,47 @@
     <MrProcessAssignment id="768">
       <id>91</id>
       <process reference="638"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="769">
       <id>92</id>
       <process reference="642"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="770">
       <id>93</id>
       <process reference="646"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="771">
       <id>94</id>
       <process reference="650"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="772">
       <id>95</id>
       <process reference="654"/>
-      <originalMachine reference="29"/>
+      <originalMachine reference="19"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="773">
       <id>96</id>
       <process reference="658"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="774">
       <id>97</id>
       <process reference="662"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="775">
       <id>98</id>
       <process reference="666"/>
-      <originalMachine reference="19"/>
+      <originalMachine reference="24"/>
     </MrProcessAssignment>
     <MrProcessAssignment id="776">
       <id>99</id>
       <process reference="670"/>
-      <originalMachine reference="24"/>
+      <originalMachine reference="29"/>
     </MrProcessAssignment>
   </processAssignmentList>
-  <score class="org.drools.planner.core.score.buildin.hardsoftlong.DefaultHardSoftLongScore" id="777">
-    <hardScore>-8</hardScore>
-    <softScore>-115689480</softScore>
-  </score>
 </MachineReassignment>

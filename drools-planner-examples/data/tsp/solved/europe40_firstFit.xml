@@ -446,7 +446,5 @@
     <Visit reference="75"/>
     <Visit reference="81"/>
   </visitList>
-  <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" id="85">
-    <score>-254965</score>
-  </score>
+  <score id="85">-254965</score>
 </TravelingSalesmanTour>
