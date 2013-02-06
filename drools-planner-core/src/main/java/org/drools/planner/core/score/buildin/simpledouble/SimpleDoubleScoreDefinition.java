@@ -17,6 +17,7 @@
 package org.drools.planner.core.score.buildin.simpledouble;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.score.definition.AbstractScoreDefinition;
 import org.drools.planner.core.score.holder.ScoreHolder;
 
@@ -45,6 +46,10 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     @Override
     public SimpleDoubleScore getPerfectMinimumScore() {
         return perfectMinimumScore;
+    }
+
+    public Class<SimpleDoubleScore> getScoreClass() {
+        return SimpleDoubleScore.class;
     }
 
     public Score parseScore(String scoreString) {

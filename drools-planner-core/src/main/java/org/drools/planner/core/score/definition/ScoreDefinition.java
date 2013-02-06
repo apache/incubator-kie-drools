@@ -51,6 +51,12 @@ public interface ScoreDefinition<S extends Score> {
     S getPerfectMinimumScore();
 
     /**
+     * Returns the {@link Class} of the actual {@link Score} implementation
+     * @return never null
+     */
+    Class<S> getScoreClass();
+
+    /**
      * Returns a {@link String} representation of the {@link Score}.
      * @param score never null
      * @return never null

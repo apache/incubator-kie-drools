@@ -2300,6 +2300,11 @@ After in *BenchmarkConfig.xml:
 From 5.5.0.Final to 6.0.0.Beta1
 -------------------------------
 
+[README] Starting from 6.1.0.Final, planner will have a backwards compatible API.
+As preparation for that, every part of the API is being reviewed.
+
+[README] ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY now works. The regression in 5.5 from 5.4 has been fixed.
+
 [RECOMMENDED] Planning variables can now have a null value when initialized.
 If you have any custom hacks for that, take a look at the reference manual how to replace them with a nullable variable.
 
@@ -2691,17 +2696,63 @@ After in *ScoreCalculator.java:
     public HardSoftScore calculateScore() {
         return DefaultHardSoftScore.valueOf(hardScore, softScore);
     }
-If you store your solutions as XML and reused the example's XStream serialization technique,
+
+[MAJOR] The Default*Score classes have been removed: they have been merged into their *Score interface.
+Before in *.java:
+    ... DefaultSimpleScore.valueOf(...)
+    ... DefaultSimpleDoubleScore.valueOf(...)
+    ... DefaultHardSoftScore.valueOf(...)
+    ... DefaultHardSoftLongScore.valueOf(...)
+    ... DefaultHardMediumSoftScore.valueOf(...)
+After in *.java:
+    ... SimpleScore.valueOf(...)
+    ... SimpleDoubleScore.valueOf(...)
+    ... HardSoftScore.valueOf(...)
+    ... HardSoftLongScore.valueOf(...)
+    ... HardMediumSoftScore.valueOf(...)
+
+[RECOMMENDED] If you store your solutions as XML and reused the example's XStream serialization technique,
+you probably want to have a score serialized as such:
+    <score>0hard/-130870soft</score>
+instead of the current way (which writes the full classname of the Score implementation in the XML).
+Before in *.java:
+    public class CloudBalance ... implements Solution<SimpleScore> {
+        ...
+        private SimpleScore score;
+        ...
+    }
+After in *.java:
+    public class NQueens ... implements Solution<SimpleScore> {
+        ...
+        @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleScoreDefinition.class})
+        private SimpleScore score;
+        ...
+    }
+Before in *.java:
+    public class CloudBalance ... implements Solution<HardSoftScore> {
+        ...
+        private HardSoftScore score;
+        ...
+    }
+After in *.java:
+    public class CloudBalance ... implements Solution<HardSoftScore> {
+        ...
+        @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
+        private HardSoftScore score;
+        ...
+    }
+
+[MAJOR] If you store your solutions as XML and reused the example's XStream serialization technique,
 then you'll also need to change all those xml files which mention the full score class name.
 Here's a bash script to automate that:
     for f in *.xml
     do
         sed 's/org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore/org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore/g' $f > $f.modifiedMigration
-        sed 's/org.drools.planner.core.score.buildin.hardandsoftlong.DefaultHardAndSoftLongScore/org.drools.planner.core.score.buildin.hardsoftlong.DefaultHardSoftLongScore/g' $f.modifiedMigration > $f
+        sed 's/org.drools.planner.core.score.buildin.hardandsoftlong.DefaultHardAndSoftLongScore/org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScore/g' $f.modifiedMigration > $f
         rm -f $f.modifiedMigration
     done
 
-[MINOR] ScoreDefinition has a new method formatScore(Score).
+[MINOR] Interface ScoreDefinition has a new method formatScore(Score).
 It's implemented by default by AbstractScoreDefinition to use Score.toString().
 
 [MINOR] XStreamProblemIO has moved package
@@ -2718,17 +2769,8 @@ After in *.java:
     import org.drools.planner.api.domain.value.ValueRange;
     import org.drools.planner.api.domain.value.ValueRangeType;
 
-[MINOR] The Default*Score classes have been removed: they have been merged into their *Score interface.
-Before in *.java:
-    ... DefaultSimpleScore.valueOf(...)
-    ... DefaultSimpleDoubleScore.valueOf(...)
-    ... DefaultHardSoftScore.valueOf(...)
-    ... DefaultHardSoftLongScore.valueOf(...)
-    ... DefaultHardMediumSoftScore.valueOf(...)
-After in *.java:
-    ... SimpleScore.valueOf(...)
-    ... SimpleDoubleScore.valueOf(...)
-    ... HardSoftScore.valueOf(...)
-    ... HardSoftLongScore.valueOf(...)
-    ... HardMediumSoftScore.valueOf(...)
-TODO changes in data
+[MAJOR] Interface ScoreDefinition has a new method getScoreClass().
+After in *ScoreDefinition.java:
+    public Class<HardSoftScore> getScoreClass() {
+        return HardSoftScore.class;
+    }

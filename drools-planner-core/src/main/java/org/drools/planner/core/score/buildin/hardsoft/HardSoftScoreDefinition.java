@@ -17,6 +17,7 @@
 package org.drools.planner.core.score.buildin.hardsoft;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.drools.planner.core.score.definition.AbstractScoreDefinition;
 import org.drools.planner.core.score.holder.ScoreHolder;
 
@@ -61,6 +62,10 @@ public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftSco
     @Override
     public HardSoftScore getPerfectMinimumScore() {
         return perfectMinimumScore;
+    }
+
+    public Class<HardSoftScore> getScoreClass() {
+        return HardSoftScore.class;
     }
 
     public Score parseScore(String scoreString) {

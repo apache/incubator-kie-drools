@@ -22,10 +22,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
@@ -35,6 +37,7 @@ import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
+import org.drools.planner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("NurseRoster")
@@ -61,6 +64,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
 
     private List<ShiftAssignment> shiftAssignmentList;
 
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     private HardSoftScore score;
 
     public String getCode() {

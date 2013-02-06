@@ -78,6 +78,10 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
         return perfectMinimumScore;
     }
 
+    public Class<HardMediumSoftScore> getScoreClass() {
+        return HardMediumSoftScore.class;
+    }
+
     public Score parseScore(String scoreString) {
         return HardMediumSoftScore.parseScore(scoreString);
     }

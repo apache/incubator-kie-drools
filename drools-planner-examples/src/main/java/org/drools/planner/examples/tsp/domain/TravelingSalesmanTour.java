@@ -22,12 +22,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.drools.planner.core.score.buildin.simple.SimpleScore;
+import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("TravelingSalesmanTour")
@@ -39,6 +43,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
 
     private List<Visit> visitList;
 
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleScoreDefinition.class})
     private SimpleScore score;
 
     public String getName() {

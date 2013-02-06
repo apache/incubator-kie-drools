@@ -22,13 +22,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
+import org.drools.planner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("PatientAdmissionSchedule")
@@ -50,6 +53,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
 
     private List<BedDesignation> bedDesignationList;
 
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     private HardSoftScore score;
 
     public List<Specialism> getSpecialismList() {
