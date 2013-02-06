@@ -144,31 +144,31 @@
       </modules>
     </profile>
 
-  <profile>
-    <id>database</id>
-    <build>
-      <plugins>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <additionalClasspathElements>
-              <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
-            </additionalClasspathElements>
-            <useSystemClassLoader>true</useSystemClassLoader>
-            <includes>
-              <include>**/*Test.java</include>
-            </includes>
-            <excludes>
-              <exclude>**/*AbstractTest.java</exclude>
-              <exclude>**/*JMS*Test.java</exclude>
-            </excludes>
-            <argLine>-Xmx1024m -XX:MaxPermSize=128m</argLine>
-          </configuration>
-        </plugin>
-      </plugins>
-    </build>
-  </profile>
-    
+    <profile>
+      <id>database</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <additionalClasspathElements>
+                <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
+              </additionalClasspathElements>
+              <useSystemClassLoader>true</useSystemClassLoader>
+              <includes>
+                <include>**/*Test.java</include>
+              </includes>
+              <excludes>
+                <exclude>**/*AbstractTest.java</exclude>
+                <exclude>**/*JMS*Test.java</exclude>
+              </excludes>
+              <argLine>-Xmx1024m -XX:MaxPermSize=128m</argLine>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
     
 </project>

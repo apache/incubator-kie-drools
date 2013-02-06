@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+             xmlns="http://java.sun.com/xml/ns/persistence" 
+             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd 
+                      http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
+
+  <persistence-unit name="org.jbpm.executor" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <mapping-file>META-INF/Executor-orm.xml</mapping-file>
+    <class>org.jbpm.executor.entities.ErrorInfo</class>
+    <class>org.jbpm.executor.entities.RequestInfo</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+ 
+    <properties>
+      <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
+      <property name="hibernate.connection.autocommit" value="false" />
+
+      <property name="hibernate.max_fetch_depth" value="3" />
+      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+      <property name="hibernate.show_sql" value="false" />
+
+      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
+      <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
+      <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
+      <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+
+      <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
+      <property name="hibernate.id.new_generator_mappings" value="false" />            
+
+      <!-- needed for JTA testing 
+      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+        -->
+    </properties>
+  </persistence-unit>
+
+ 
+  
+</persistence>
