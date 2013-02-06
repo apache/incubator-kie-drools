@@ -2298,8 +2298,8 @@ After in *BenchmarkConfig.xml:
     </problemBenchmarks>
 
 
-From 5.5.0.Final to 6.0.0.Beta1
--------------------------------
+From 5.5.0.Final to 6.0.0.Alpha7
+--------------------------------
 
 [README] Starting from 6.1.0.Final, planner will have a backwards compatible API.
 As preparation for that, every part of the API is being reviewed.
