@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,22 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
     @Override
     public boolean acceptInputFile(File inputFile) {
         return super.acceptInputFile(inputFile) && inputFile.getName().startsWith("model_");
+    }
+
+    @Override
+    public boolean acceptInputFileDuringBulkConvert(File inputFile) {
+        // Blacklist: too big to write as XML
+        return !Arrays.asList(
+                "model_b_1.txt",
+                "model_b_2.txt",
+                "model_b_3.txt",
+                "model_b_4.txt",
+                "model_b_5.txt",
+                "model_b_6.txt",
+                "model_b_7.txt",
+                "model_b_8.txt",
+                "model_b_9.txt",
+                "model_b_10.txt").contains(inputFile.getName());
     }
 
     public TxtInputBuilder createTxtInputBuilder() {

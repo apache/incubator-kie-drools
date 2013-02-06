@@ -16,9 +16,11 @@
 
 package org.drools.planner.examples.tsp.persistence;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.planner.core.solution.Solution;
@@ -43,6 +45,12 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
     @Override
     public String getInputFileSuffix() {
         return INPUT_FILE_SUFFIX;
+    }
+
+    @Override
+    public boolean acceptInputFileDuringBulkConvert(File inputFile) {
+        // Blacklist: too slow to write as XML
+        return !Arrays.asList("ch71009.tsp").contains(inputFile.getName());
     }
 
     public TxtInputBuilder createTxtInputBuilder() {

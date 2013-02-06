@@ -56,7 +56,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
         }
         Arrays.sort(inputFiles);
         for (File inputFile : inputFiles) {
-            if (acceptInputFile(inputFile)) {
+            if (acceptInputFile(inputFile) && acceptInputFileDuringBulkConvert(inputFile)) {
                 Solution solution = readSolution(inputFile);
                 String inputFileName = inputFile.getName();
                 String outputFileName = inputFileName.substring(0,
@@ -70,6 +70,15 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
 
     public boolean acceptInputFile(File inputFile) {
         return inputFile.getName().endsWith(getInputFileSuffix());
+    }
+
+    /**
+     * Some files are to big to be serialized to XML or take too long.
+     * @param inputFile never null
+     * @return true if accepted
+     */
+    public boolean acceptInputFileDuringBulkConvert(File inputFile) {
+        return true;
     }
 
     public abstract Solution readSolution(File inputFile);
