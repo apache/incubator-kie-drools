@@ -183,14 +183,10 @@ public class ObjectTypeNode extends ObjectSource
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (o == null || !(o instanceof Id)) return false;
 
-            Id id1 = (Id) o;
-
-            if (id != id1.id) return false;
-            if (!clazz.equals(id1.clazz)) return false;
-
-            return true;
+            Id otherId = (Id) o;
+            return id == otherId.id && clazz == otherId.clazz;
         }
 
         @Override
@@ -201,7 +197,7 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         public boolean before(Id otherId) {
-            return otherId != null && this.id < otherId.id;
+            return otherId != null && clazz == otherId.clazz && this.id < otherId.id;
         }
 
         public Class<?> getTypeNodeClass() {
