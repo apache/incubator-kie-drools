@@ -4,6 +4,7 @@
  */
 package org.jbpm.task.api;
 
+import java.util.Date;
 import java.util.List;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
@@ -39,6 +40,8 @@ public interface TaskQueryService {
     List<TaskSummary> getTasksOwned(String userId);
 
     List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language);
+    
+    List<TaskSummary> getTasksOwnedByExpirationDate(String userId, List<Status> status, Date expirationDate);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String salaboy, List<Status> status, String language);
 
@@ -57,4 +60,6 @@ public interface TaskQueryService {
     List<TaskSummary> getTasksAssignedByGroup(String groupId, String language);
     
     List<TaskSummary> getTasksAssignedByGroups(List<String> groupsId, String language);
+    
+    List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate);
 }

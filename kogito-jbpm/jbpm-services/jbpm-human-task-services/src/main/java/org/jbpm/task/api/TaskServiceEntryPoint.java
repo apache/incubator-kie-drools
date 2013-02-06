@@ -144,6 +144,10 @@ public interface TaskServiceEntryPoint {
 
     List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language);
 
+    List<TaskSummary> getTasksOwnedByExpirationDate(String userId, List<Status> statuses, Date expirationDate);
+    
+    List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate);
+    
     User getUserById(String userId);
 
     List<User> getUsers();

@@ -6,6 +6,7 @@ package org.jbpm.task.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -64,6 +65,37 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 .getResultList();
     }
 
+    
+    public List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate) {
+
+        List tasksByGroups = em.createNamedQuery("TasksAssignedAsPotentialOwnerByGroupsByExpirationDate")
+                .setParameter("groupIds", groupIds)
+                .setParameter("expirationDate", expirationDate)
+                .getResultList();
+        Set<Long> tasksIds = Collections.synchronizedSet(new HashSet<Long>());
+        Map<Long, List<String>> potentialOwners = Collections.synchronizedMap(new HashMap<Long, List<String>>());
+        for (Object o : tasksByGroups) {
+            Object[] get = (Object[]) o;
+            tasksIds.add((Long) get[0]);
+            if (potentialOwners.get((Long) get[0]) == null) {
+                potentialOwners.put((Long) get[0], new ArrayList<String>());
+            }
+            potentialOwners.get((Long) get[0]).add((String) get[1]);
+        }
+        if (!tasksIds.isEmpty()) {
+            List<TaskSummary> tasks = em.createNamedQuery("TaskSummariesByIds")
+                    .setParameter("taskIds", tasksIds)
+                    .setParameter("language", language)
+                    .getResultList();
+
+            for (TaskSummary ts : tasks) {
+                ts.setPotentialOwners(potentialOwners.get(ts.getId()));
+            }
+            return tasks;
+        }
+        return new ArrayList<TaskSummary>();
+    }        
+            
     public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language) {
 
         List tasksByGroups = em.createNamedQuery("TasksAssignedAsPotentialOwnerByGroups")
@@ -120,6 +152,19 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         return taskOwned;
 
     }
+    
+    public List<TaskSummary> getTasksOwnedByExpirationDate(String userId,  List<Status> status, Date expirationDate) {
+
+        List<TaskSummary> taskOwned = em.createNamedQuery("TasksOwnedWithParticularStatusByExpirationDate")
+                .setParameter("userId", userId)
+                .setParameter("status", status)
+                .setParameter("expirationDate", expirationDate)
+                .setParameter("language", "en-UK").getResultList();
+
+        return taskOwned;
+
+    }
+    
 
     public List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language) {
 
