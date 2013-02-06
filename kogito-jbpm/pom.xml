@@ -85,7 +85,7 @@
     <module>jbpm-workitems</module>
     <module>jbpm-human-task</module>
     <module>jbpm-services</module>
-    <module>jbpm-gwt</module>
+    <!--module>jbpm-gwt</module-->
     <module>jbpm-test</module>
     <module>jbpm-examples</module>
   </modules>

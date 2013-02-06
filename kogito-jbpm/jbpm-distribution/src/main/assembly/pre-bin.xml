@@ -18,6 +18,12 @@
         <include>org.jbpm:jbpm-human-task-hornetq</include>
         <include>org.jbpm:jbpm-human-task-jms</include>
         <include>org.jbpm:jbpm-workitems</include>
+        <include>org.jbpm:droolsjbpm-knowledge-services</include>
+        <include>org.jbpm:executor-services</include>
+        <include>org.jbpm:form-services</include>
+        <include>org.jbpm:jbpm-human-task-services</include>
+        <include>org.jbpm:jbpm-human-task-workitems</include>
+        <include>org.jbpm:jbpm-shared-services</include>
         <include>org.jbpm:jbpm-test</include>
       </includes>
       <excludes>
@@ -37,6 +43,13 @@
         <exclude>org.jbpm:jbpm-human-task-hornetq</exclude>
         <exclude>org.jbpm:jbpm-human-task-jms</exclude>
         <exclude>org.jbpm:jbpm-workitems</exclude>
+        <exclude>org.jbpm:droolsjbpm-knowledge-services</exclude>
+        <exclude>org.jbpm:executor-services</exclude>
+        <exclude>org.jbpm:form-services</exclude>
+        <exclude>org.jbpm:jbpm-human-task-services</exclude>
+        <exclude>org.jbpm:jbpm-human-task-workitems</exclude>
+        <exclude>org.jbpm:jbpm-shared-services</exclude>
+        <exclude>org.jbpm:jbpm-test</exclude>
         <!-- Exclude docs -->
         <exclude>org.jbpm:jbpm-docs</exclude>
         <exclude>org.jbpm:jbpm-examples</exclude>

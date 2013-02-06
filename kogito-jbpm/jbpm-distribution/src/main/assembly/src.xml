@@ -18,10 +18,11 @@
         <include>jbpm-examples/**</include>
         <include>jbpm-flow/**</include>
         <include>jbpm-flow-builder/**</include>		
-        <include>jbpm-gwt/**</include>
+        <!--include>jbpm-gwt/**</include-->
         <include>jbpm-human-task/**</include>
         <include>jbpm-installer/**</include>
         <include>jbpm-persistence-jpa/**</include>
+        <include>jbpm-services/**</include>
         <include>jbpm-test/**</include>
         <include>jbpm-workitems/**</include>
         <include>*.xml</include>

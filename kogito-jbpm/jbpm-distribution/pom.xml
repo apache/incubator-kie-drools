@@ -64,7 +64,7 @@
                 <descriptor>src/main/assembly/installer.xml</descriptor>
                 <descriptor>src/main/assembly/examples.xml</descriptor>
                 <!-- war zips -->
-                <descriptor>src/main/assembly/gwt-console.xml</descriptor>
+                <!--descriptor>src/main/assembly/gwt-console.xml</descriptor-->
                 <descriptor>src/main/assembly/human-task-war.xml</descriptor>
                 <!--descriptor>src/main/assembly/form-builder.xml</descriptor-->
               </descriptors>
@@ -174,6 +174,60 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-workitems</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>droolsjbpm-knowledge-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>droolsjbpm-knowledge-services</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>executor-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>executor-services</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>form-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>form-services</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-services</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-workitems</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-workitems</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-shared-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-shared-services</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
