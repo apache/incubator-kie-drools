@@ -2237,7 +2237,8 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
         <topSize>...</topSize>
       </selector>
 
-TODO custom Selector
+[MINOR] If you were using a custom, old style Selector, you 'll have to rewrite it in the new Selector architecture.
+For more information, ask on the user mailing list.
 
 [MINOR] partialTabu has been renamed to fadingTabu
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
@@ -2744,11 +2745,11 @@ After in *.java:
 
 [MAJOR] If you store your solutions as XML and reused the example's XStream serialization technique,
 then you'll also need to change all those xml files which mention the full score class name.
-Here's a bash script to automate that:
+Here's a bash script to automate that change to the new @XStreamConverter way in the recommended change above:
     for f in *.xml
     do
-        sed 's/org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore/org.drools.planner.core.score.buildin.hardsoft.DefaultHardSoftScore/g' $f > $f.modifiedMigration
-        sed 's/org.drools.planner.core.score.buildin.hardandsoftlong.DefaultHardAndSoftLongScore/org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScore/g' $f.modifiedMigration > $f
+        sed 's/<score class="[^"]*Score"/<score/g' $f > $f.modifiedMigration
+        sed ':a;N;$!ba;s/>\n *<hardScore>/>/g' $f.modifiedMigration | sed ':a;N;$!ba;s/<\/hardScore>\n *<softScore>/hard\//g' | sed ':a;N;$!ba;s/<\/softScore>\n *<\/score>/soft<\/score>/g' > $f
         rm -f $f.modifiedMigration
     done
 

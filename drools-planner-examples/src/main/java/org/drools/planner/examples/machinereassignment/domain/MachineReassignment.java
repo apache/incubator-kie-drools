@@ -28,6 +28,7 @@ import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
@@ -49,7 +50,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
 
     private List<MrProcessAssignment> processAssignmentList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
     private HardSoftLongScore score;
 
     public MrGlobalPenaltyInfo getGlobalPenaltyInfo() {
