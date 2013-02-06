@@ -274,8 +274,8 @@ public class Pattern
         List<MvelConstraint> combinableConstraints = new ArrayList<MvelConstraint>();
         for (Constraint constraint : constraints) {
             if (constraint instanceof MvelConstraint &&
-                    !((MvelConstraint)constraint).isUnification() &&
-                    // at the moment it is not possible to determine the exact type of node which this
+                    !((MvelConstraint)constraint).isUnification() && !((MvelConstraint)constraint).isDynamic() &&
+            // at the moment it is not possible to determine the exact type of node which this
                     // constraint belongs to so use ExistsNode being the less restrictive in terms of index usage
                     !((MvelConstraint)constraint).isIndexable(NodeTypeEnums.ExistsNode) &&
                     // don't combine alpha nodes to allow nodes sharing

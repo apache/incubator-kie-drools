@@ -128,6 +128,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return expression;
     }
 
+    public boolean isDynamic() {
+        return isDynamic;
+    }
+
     public boolean isUnification() {
         return isUnification;
     }
