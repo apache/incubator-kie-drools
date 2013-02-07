@@ -15,9 +15,6 @@
  */
 package org.droolsjbpm.services.test;
 
-import bitronix.tm.Configuration;
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -36,12 +33,12 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.task.TaskDef;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
  *
@@ -96,38 +93,8 @@ public class BPMN2DataServicesTest {
     @Inject
     private BPMN2DataService bpmn2Service;
 
-    
-    private static PoolingDataSource ds;
-    
+       
     public BPMN2DataServicesTest() {
-    }
-
-   
-    @BeforeClass
-    public static void setUp() {
-       
-      
-        ds = new PoolingDataSource();
-        ds.setUniqueName("jdbc/testDS1");
-        
-        
-        //NON XA CONFIGS
-        ds.setClassName("org.h2.jdbcx.JdbcDataSource");
-        ds.setMaxPoolSize(3);
-        ds.setAllowLocalTransactions(true);
-        ds.getDriverProperties().put("user", "sa");
-        ds.getDriverProperties().put("password", "sasa");
-        ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");
-         
-        ds.init();
-        
-        
-       
-    }
-
-    @AfterClass
-    public static void tearDown() {
-      ds.close();
     }
 
     @Test

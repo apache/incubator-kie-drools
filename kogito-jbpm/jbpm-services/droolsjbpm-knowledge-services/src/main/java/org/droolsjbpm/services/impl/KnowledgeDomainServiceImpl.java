@@ -36,6 +36,7 @@ import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
 import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
+import org.droolsjbpm.services.impl.util.Startup;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.commons.io.IOService;
@@ -49,6 +50,7 @@ import org.kie.runtime.process.WorkItemManager;
  * @author salaboy
  */
 @ApplicationScoped
+@Startup
 public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
     private Map<String, StatefulKnowledgeSession> ksessions = new HashMap<String, StatefulKnowledgeSession>();
@@ -91,7 +93,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         
     }
 
-    //@PostConstruct
+    @PostConstruct
     public void createDomain() {
         // TODO: Do this based on configuration and use the new CDI approach
        // domain.clear();

@@ -7,16 +7,10 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 @RunWith(Arquillian.class)
 public class KnowledgeDataServiceCDITest extends KnowledgeDataServiceBaseTest {
-
-    private static PoolingDataSource ds = new PoolingDataSource();
     
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -60,25 +54,7 @@ public class KnowledgeDataServiceCDITest extends KnowledgeDataServiceBaseTest {
                 .addAsManifestResource("META-INF/services/org.kie.commons.java.nio.file.spi.FileSystemProvider", ArchivePaths.create("org.kie.commons.java.nio.file.spi.FileSystemProvider"));
 
     }
-   
-    
-    @BeforeClass
-    public static void setUp(){
-      
-          ds.setUniqueName("jdbc/testDS1");
-          
-          //NON XA CONFIGS
-          ds.setClassName("org.h2.jdbcx.JdbcDataSource");
-          ds.setMaxPoolSize(3);
-          ds.setAllowLocalTransactions(true);
-          ds.getDriverProperties().put("user", "sa");
-          ds.getDriverProperties().put("password", "sasa");
-          ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");
 
-          ds.init();
-        
-    }
-    
     @After
     public void tearDown() throws Exception {
         super.teardown();
@@ -87,10 +63,5 @@ public class KnowledgeDataServiceCDITest extends KnowledgeDataServiceBaseTest {
         System.out.println(" --> Removed Tasks = "+removedTasks + " - ");
         System.out.println(" --> Removed Logs = "+removedLogs + " - ");
         
-    }
-    
-    @AfterClass
-    public static void afterClass(){
-        ds.close();
     }
 }

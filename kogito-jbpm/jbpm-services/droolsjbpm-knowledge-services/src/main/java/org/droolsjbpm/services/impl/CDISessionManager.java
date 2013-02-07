@@ -15,7 +15,6 @@
  */
 package org.droolsjbpm.services.impl;
 
-import bitronix.tm.TransactionManagerServices;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,11 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.New;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.UserTransaction;
 
 import org.drools.impl.EnvironmentFactory;
 import org.droolsjbpm.services.api.Domain;
@@ -37,7 +40,6 @@ import org.droolsjbpm.services.api.WorkItemHandlerProducer;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.BAM;
 import org.droolsjbpm.services.impl.event.listeners.CDIBAMProcessEventListener;
-
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
 import org.droolsjbpm.services.impl.helpers.StatefulKnowledgeSessionDelegate;
@@ -75,6 +77,9 @@ public class CDISessionManager implements SessionManager {
 
     @Inject
     private EntityManager em; 
+    
+    @Inject
+    private EntityManagerFactory emf;
     
     @Inject
     private TaskServiceEntryPoint taskService;
@@ -205,7 +210,7 @@ public class CDISessionManager implements SessionManager {
             
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
             Environment env = EnvironmentFactory.newEnvironment();
-            env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, em.getEntityManagerFactory());
+            UserTransaction ut = setupEnvironment(env);
             StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);            
 
             ksession.addEventListener(processListener);
@@ -237,6 +242,7 @@ public class CDISessionManager implements SessionManager {
             ksessionIds.put(sessionName, new ArrayList<Integer>());
           }
           ksessionIds.get(sessionName).add(ksession.getId());
+          completeOperation(ut, null);
        }
     }
 
@@ -343,7 +349,7 @@ public class CDISessionManager implements SessionManager {
   @Override
   public int buildSession(String sessionName, String path, boolean streamMode) {
         getDomain().addKsessionRepositoryRoot(sessionName, path);
-        
+       
         Iterable<Path> loadProcessFiles = null;
         Iterable<Path> loadRulesFiles = null;
         try {
@@ -423,16 +429,17 @@ public class CDISessionManager implements SessionManager {
             
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
             Environment env = EnvironmentFactory.newEnvironment();
-            env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, em.getEntityManagerFactory());
+            UserTransaction ut = setupEnvironment(env);
             StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);            
             
+            EntityManager entityManager = getEntityManager();
             
             for(String processId : processDefinitionNamesBySession.get(sessionName)){
               ProcessDesc processDesc = bpmn2Service.getProcessDesc(processId);
               processDesc.setSessionId(ksession.getId());
               processDesc.setDomainName(domain.getName());
               
-              em.persist(processDesc);
+              entityManager.persist(processDesc);
             }
             
             ksession.addEventListener(processListener);
@@ -464,9 +471,60 @@ public class CDISessionManager implements SessionManager {
               ksessionIds.put(sessionName, new ArrayList<Integer>());
             }
             ksessionIds.get(sessionName).add(ksession.getId());
-
+            completeOperation(ut, entityManager);
             return ksession.getId();
         
+  }
+
+  /*
+   * following are supporting methods to allow execution on application startup
+   * as at that time RequestScoped entity manager cannot be used so instead
+   * use EntityMnagerFactory and manage transaction manually
+   */
+  protected EntityManager getEntityManager() {
+      try {
+          this.em.toString();          
+          return this.em;
+      } catch (ContextNotActiveException e) {
+          EntityManager em = this.emf.createEntityManager();
+          return em;
+      }
+  }
+  
+  protected UserTransaction setupEnvironment(Environment environment) {
+      UserTransaction ut = null;
+      try {
+          this.em.toString();
+          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, this.em.getEntityManagerFactory());
+      } catch (ContextNotActiveException e) {
+          try {
+              ut = InitialContext.doLookup("java:comp/UserTransaction");
+          } catch (Exception ex) {
+              try {
+                  ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
+                  ut.begin();
+                  environment.set(EnvironmentName.TRANSACTION, InitialContext.doLookup("java:jboss/UserTransaction"));
+              } catch (Exception e1) {
+                  throw new RuntimeException("Cannot find UserTransaction", e1);
+              }
+          }
+          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, this.emf);
+      }
+      
+      return ut;
+  }
+  protected void completeOperation(UserTransaction ut, EntityManager entityManager) {
+      if (ut != null) {
+          try {
+              ut.commit();
+              if (entityManager != null) {
+                  entityManager.clear();
+                  entityManager.close();
+              }
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+      }
   }
 
 }
