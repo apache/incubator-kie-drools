@@ -16,7 +16,7 @@ public class DefaultKieSessionFromFileExample {
         KieServices ks = KieServices.Factory.get();
         KieRepository kr = ks.getRepository();
         
-        KieModule kModule = kr.addKieModule( ks.getResources().newFileSystemResource( getFile("drools-examples-api/default-kiesession") ) );
+        KieModule kModule = kr.addKieModule( ks.getResources().newFileSystemResource( getFile("default-kiesession") ) );
                 
         KieContainer kContainer = ks.newKieContainer( kModule.getReleaseId() );
         
@@ -44,7 +44,7 @@ public class DefaultKieSessionFromFileExample {
     }
     
     public static File getFile(String exampleName) {
-        File folder = new File( "." ).getAbsoluteFile();
+        File folder = new File( "drools-examples-api" ).getAbsoluteFile();
         File exampleFolder = null;
         while ( folder != null ) {
             exampleFolder = new File( folder,
