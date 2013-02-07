@@ -208,8 +208,8 @@ public class ProtobufInputMarshaller {
     private static ProtobufMessages.KnowledgeSession loadAndParseSession(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
         ExtensionRegistry registry = PersisterHelper.buildRegistry( context, processMarshaller );
 
-        ProtobufMessages.Header _header = PersisterHelper.readFromStreamWithHeader( context, registry );
-        
+        ProtobufMessages.Header _header = PersisterHelper.readFromStreamWithHeaderPreloaded(context, registry);
+ 
         return ProtobufMessages.KnowledgeSession.parseFrom( _header.getPayload(), registry );
     }
 
