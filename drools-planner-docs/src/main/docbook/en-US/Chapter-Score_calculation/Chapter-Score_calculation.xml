@@ -258,9 +258,19 @@
 
       <itemizedlist>
         <listitem>
+          <para><literal>SimpleLongScore</literal>: Uses a <literal>long</literal> value instead of an
+          <literal>int</literal> value. Configure it with <literal>scoreDefinitionType</literal>
+          <literal>SIMPLE_LONG</literal>.</para>
+        </listitem>
+        <listitem>
           <para><literal>SimpleDoubleScore</literal>: Uses a <literal>double</literal> value instead of an
           <literal>int</literal> value. Configure it with <literal>scoreDefinitionType</literal>
           <literal>SIMPLE_DOUBLE</literal>.</para>
+        </listitem>
+        <listitem>
+          <para><literal>SimpleBigDecimalScore</literal>: Uses a <literal>BigDecimal</literal> value instead of an
+          <literal>int</literal> value. Configure it with <literal>scoreDefinitionType</literal>
+          <literal>SIMPLE_BIG_DECIMAL</literal>.</para>
         </listitem>
       </itemizedlist>
     </section>
