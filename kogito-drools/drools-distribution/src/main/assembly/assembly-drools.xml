@@ -111,7 +111,7 @@
     <!-- Reference manual -->
     <dependencySet>
       <includes>
-        <include>org.drools:droolsjbpm-introduction-docs:jdocbook</include>
+        <include>org.kie:droolsjbpm-introduction-docs:jdocbook</include>
       </includes>
       <outputDirectory>reference_manual/droolsjbpm-introduction-docs</outputDirectory>
       <unpack>true</unpack>
