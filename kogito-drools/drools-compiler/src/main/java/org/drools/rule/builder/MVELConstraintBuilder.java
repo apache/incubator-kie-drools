@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.rule.builder.PatternBuilder.buildAnalysis;
 import static org.drools.rule.builder.PatternBuilder.getUsedDeclarations;
 import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
@@ -354,17 +355,13 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             if (c1 == String.class || c2 == String.class) {
                 return true;
             }
-            if (c1.isAssignableFrom(c2) || c2.isAssignableFrom(c1)) {
+            Class boxed1 = convertFromPrimitiveType(c1);
+            Class boxed2 = convertFromPrimitiveType(c2);
+            if (boxed1.isAssignableFrom(boxed2) || boxed2.isAssignableFrom(boxed1)) {
                 return true;
             }
-            if (isBoxedNumber(c1) && isBoxedNumber(c2)) {
+            if (Number.class.isAssignableFrom(boxed1) && Number.class.isAssignableFrom(boxed2)) {
                 return true;
-            }
-            if (c1.isPrimitive()) {
-                return c2.isPrimitive() || arePrimitiveCompatible(c1, c2);
-            }
-            if (c2.isPrimitive()) {
-                return arePrimitiveCompatible(c2, c1);
             }
             return !Modifier.isFinal(c1.getModifiers()) && !Modifier.isFinal(c2.getModifiers());
         }
@@ -374,7 +371,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
 
         private boolean isBoxedNumber(Class<?> c) {
-            return Number.class.isAssignableFrom(c) || c == Character.class || c == Byte.class || c == Short.class;
+            return Number.class.isAssignableFrom(c) || c == Character.class;
         }
 
         @Override

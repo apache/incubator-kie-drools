@@ -1041,4 +1041,34 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals(2, ksession.fireAllRules());
     }
+
+    @Test
+    public void testAllowEqualityBetweenObjectAndPrimitiveInt() {
+        // DROOLS-20
+        String str =
+                "declare Bean\n" +
+                "  items : int\n" +
+                "end\n" +
+                "\n" +
+                "rule \"O\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Bean( 2 ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"X\"\n" +
+                "when\n" +
+                "   Bean( $num : items ) \n" +
+                "   accumulate( $o : Object(),\n" +
+                "     $list : collectList( $o );\n" +
+                "     $list.size == $num" +
+                "   )\n" +
+                "then\n" +
+                "   System.out.println( \"Success!\" );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        assertEquals( 2, ksession.fireAllRules() );
+    }
 }
