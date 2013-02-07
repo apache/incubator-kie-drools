@@ -255,7 +255,7 @@ $ runExamples.bat</programlisting>
       </note>
     </section>
 
-    <section>
+    <section xml:id="runTheExamplesInAnIDE">
       <title>Run the examples in an IDE (IntelliJ, Eclipse, NetBeans)</title>
 
       <para>To run the examples in your favorite IDE, first configure your IDE:</para>
@@ -302,7 +302,7 @@ $ runExamples.bat</programlisting>
       </itemizedlist>
     </section>
 
-    <section>
+    <section xml:id="useWithMavenGradleEtc">
       <title>Use Drools Planner with maven, gradle, ivy, buildr or ANT</title>
 
       <para>The Drools Planner jars are available in <link
@@ -335,7 +335,7 @@ $ runExamples.bat</programlisting>
       </note>
     </section>
 
-    <section>
+    <section xml:id="buildFromSource">
       <title>Build Drools Planner from source</title>
 
       <para>You can also easily build Drools Planner from source yourself.</para>
