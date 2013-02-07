@@ -546,6 +546,75 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
     }
     
+    public void testTaskWithCreatedBy() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("CreatedBy", "john");
+        workItem.setProcessInstanceId(10);
+        handler.executeWorkItem(workItem, manager);
+
+        
+        List<TaskSummary> tasks = client.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        assertEquals("TaskName", task.getName());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescription());
+        assertEquals(Status.Reserved, task.getStatus());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals("john", task.getCreatedBy().getId());
+        assertEquals(10, task.getProcessInstanceId());
+        
+        List<Long> taskIds = client.getTasksByProcessInstanceId(10);
+        assertEquals(1, taskIds.size());
+        assertEquals(task.getId(), (long) taskIds.get(0));
+
+        client.start(task.getId(), "Darth Vader");
+        client.complete(task.getId(), "Darth Vader", null);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+    }
+    
+    public void testTaskWithoutCreatedBy() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setProcessInstanceId(10);
+        handler.executeWorkItem(workItem, manager);
+
+        
+        List<TaskSummary> tasks = client.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        assertEquals("TaskName", task.getName());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescription());
+        assertEquals(Status.Reserved, task.getStatus());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals("Darth Vader", task.getCreatedBy().getId());
+        assertEquals(10, task.getProcessInstanceId());
+        
+        List<Long> taskIds = client.getTasksByProcessInstanceId(10);
+        assertEquals(1, taskIds.size());
+        assertEquals(task.getId(), (long) taskIds.get(0));
+
+        client.start(task.getId(), "Darth Vader");
+        client.complete(task.getId(), "Darth Vader", null);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+    }
+    
     public void TODOtestOnAllSubTasksEndParentEndStrategy() throws Exception {
 
         TestWorkItemManager manager = new TestWorkItemManager();

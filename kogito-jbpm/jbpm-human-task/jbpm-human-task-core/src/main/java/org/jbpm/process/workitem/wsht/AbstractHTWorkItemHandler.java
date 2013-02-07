@@ -28,6 +28,7 @@ import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.SubTasksStrategyFactory;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
+import org.jbpm.task.User;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.utils.ContentMarshallerHelper;
@@ -122,6 +123,11 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             }
             task.setSubTaskStrategies(strategies);
         }        
+        
+        String createdBy = (String) workItem.getParameter("CreatedBy");
+        if (createdBy != null && createdBy.trim().length() > 0) {
+            taskData.setCreatedBy(new User(createdBy));
+        }
         
         task.setTaskData(taskData);
         

@@ -509,6 +509,69 @@ public abstract class HTWorkItemHandlerBaseTest {
 //        }
 //    }
 //
+    
+    @Test
+    public void testTaskWithCreatedBy() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("CreatedBy", "john");
+        workItem.setProcessInstanceId(10);
+        handler.executeWorkItem(workItem, manager);
+
+        
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        assertEquals("TaskName", task.getName());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescription());
+        assertEquals(Status.Reserved, task.getStatus());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals("john", task.getCreatedBy().getId());
+        assertEquals(10, task.getProcessInstanceId());
+
+        taskService.start(task.getId(), "Darth Vader");
+        taskService.complete(task.getId(), "Darth Vader", null);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+    }
+    
+    @Test
+    public void testTaskWithoutCreatedBy() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setProcessInstanceId(10);
+        handler.executeWorkItem(workItem, manager);
+
+        
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        assertEquals("TaskName", task.getName());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescription());
+        assertEquals(Status.Reserved, task.getStatus());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals("Darth Vader", task.getCreatedBy().getId());
+        assertEquals(10, task.getProcessInstanceId());
+
+        taskService.start(task.getId(), "Darth Vader");
+        taskService.complete(task.getId(), "Darth Vader", null);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+    }
 
     public void setHandler(WorkItemHandler handler) {
         this.handler = handler;
