@@ -16,7 +16,9 @@
 
 package org.drools.marshalling.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -230,9 +232,7 @@ public class PersisterHelper {
         }
     }
     
-    public static ProtobufMessages.Header readFromStreamWithHeader( MarshallerReaderContext context, ExtensionRegistry registry ) throws IOException, ClassNotFoundException {
-        ProtobufMessages.Header _header = ProtobufMessages.Header.parseFrom( context.stream, registry );
-
+    private static ProtobufMessages.Header loadStrategiesCheckSignature(MarshallerReaderContext context, ProtobufMessages.Header _header) throws ClassNotFoundException, IOException {
         loadStrategiesIndex( context, _header );
 
         byte[] sessionbuff = _header.getPayload().toByteArray();
@@ -241,10 +241,33 @@ public class PersisterHelper {
         checkSignature( _header, sessionbuff );
         
         return _header;
+    }
 
+    public static ProtobufMessages.Header readFromStreamWithHeaderPreloaded( MarshallerReaderContext context, ExtensionRegistry registry ) throws IOException, ClassNotFoundException {
+        // we preload the stream into a byte[] to overcome a message size limit
+        // imposed by protobuf as per https://issues.jboss.org/browse/DROOLS-25
+        byte[] preloaded = preload(context.stream);
+        ProtobufMessages.Header _header = ProtobufMessages.Header.parseFrom( preloaded, registry );
+
+        return loadStrategiesCheckSignature(context, _header);
     }
     
-    private static void loadStrategiesIndex(MarshallerReaderContext context,
+    /* Method that preloads the source stream into a byte array to bypass the message size limitations in Protobuf unmarshalling.
+       (Protobuf does not enforce a message size limit when unmarshalling from a byte array)
+    */
+    private static byte[] preload(InputStream stream) throws IOException {
+        byte[] buf = new byte[4096];
+        ByteArrayOutputStream preloaded = new ByteArrayOutputStream();
+
+        int read;
+        while((read = stream.read(buf)) != -1) {
+            preloaded.write(buf, 0, read);
+        }
+
+        return preloaded.toByteArray();
+    }
+
+	private static void loadStrategiesIndex(MarshallerReaderContext context,
                                             ProtobufMessages.Header _header) throws IOException, ClassNotFoundException {
         for ( ProtobufMessages.Header.StrategyIndex _entry : _header.getStrategyList() ) {
             ObjectMarshallingStrategy strategyObject = context.resolverStrategyFactory.getStrategyObject( _entry.getName() );
