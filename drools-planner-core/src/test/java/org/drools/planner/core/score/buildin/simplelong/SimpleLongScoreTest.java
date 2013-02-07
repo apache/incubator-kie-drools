@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.simpledouble;
+package org.drools.planner.core.score.buildin.simplelong;
 
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
-public class SimpleDoubleScoreTest extends AbstractScoreTest {
+public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
         assertScoreOrder(
-                SimpleDoubleScore.valueOf(-300.5),
-                SimpleDoubleScore.valueOf(-300.0),
-                SimpleDoubleScore.valueOf(-20.06),
-                SimpleDoubleScore.valueOf(-20.007),
-                SimpleDoubleScore.valueOf(-20.0),
-                SimpleDoubleScore.valueOf(-1.0),
-                SimpleDoubleScore.valueOf(0.0),
-                SimpleDoubleScore.valueOf(1.0)
+                SimpleLongScore.valueOf(((long) Integer.MIN_VALUE) - 4000L),
+                SimpleLongScore.valueOf(-300L),
+                SimpleLongScore.valueOf(-20L),
+                SimpleLongScore.valueOf(-1L),
+                SimpleLongScore.valueOf(0L),
+                SimpleLongScore.valueOf(1L),
+                SimpleLongScore.valueOf(((long) Integer.MAX_VALUE) + 4000L)
         );
     }
 

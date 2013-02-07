@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.simpledouble;
+package org.drools.planner.core.score.buildin.simplebigdecimal;
+
+import java.math.BigDecimal;
 
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
-public class SimpleDoubleScoreTest extends AbstractScoreTest {
+public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
         assertScoreOrder(
-                SimpleDoubleScore.valueOf(-300.5),
-                SimpleDoubleScore.valueOf(-300.0),
-                SimpleDoubleScore.valueOf(-20.06),
-                SimpleDoubleScore.valueOf(-20.007),
-                SimpleDoubleScore.valueOf(-20.0),
-                SimpleDoubleScore.valueOf(-1.0),
-                SimpleDoubleScore.valueOf(0.0),
-                SimpleDoubleScore.valueOf(1.0)
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-300.5")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-300")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-20.067")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-20.007")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-20")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-1")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("0")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("1"))
         );
     }
 
