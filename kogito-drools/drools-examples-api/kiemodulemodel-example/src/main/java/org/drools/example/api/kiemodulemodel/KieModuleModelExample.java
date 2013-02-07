@@ -19,15 +19,15 @@ public class KieModuleModelExample {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
         
-        Resource ex1Res = ks.getResources().newFileSystemResource( getFile("kie-api-example1") ) ;
-        Resource ex2Res = ks.getResources().newFileSystemResource( getFile("kie-api-example2") ) ;
+        Resource ex1Res = ks.getResources().newFileSystemResource( getFile("named-kiesession") ) ;
+        Resource ex2Res = ks.getResources().newFileSystemResource( getFile("kiebase-inclusion") ) ;
         
         ReleaseId rid = ks.newReleaseId(  "org.drools", "kiemodulemodel-example", "6.0.0-SNAPSHOT" );
         kfs.generateAndWritePomXML( rid );
         
         KieModuleModel kModuleModel = ks.newKieModuleModel();
         kModuleModel.newKieBaseModel( "kiemodulemodel" )
-                    .addInclude( "kiebaseinclusion" )
+                    .addInclude( "namedkiesession" )
                     .addInclude( "kiebaseinclusion")
                     .newKieSessionModel( "ksession6" );
         
@@ -89,7 +89,7 @@ public class KieModuleModelExample {
     }
     
     public static File getFile(String exampleName) {
-        File folder = new File( "." ).getAbsoluteFile();
+        File folder = new File( "drools-examples-api" ).getAbsoluteFile();
         File exampleFolder = null;
         while ( folder != null ) {
             exampleFolder = new File( folder,
