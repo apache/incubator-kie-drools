@@ -1020,12 +1020,12 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
     @Test
-    public void testDeclaredTypeExtendingImportedDeclareType() {
+    public void testDeclaredTypeExtendingInnerClass() {
         // DROOLS-27
         String str =
-                "import org.drools.Person\n" +
-                "declare Person end\n"+
-                "declare Student extends Person end\n"+
+                "import org.drools.integrationtests.MiscTest2.StaticPerson\n" +
+                "declare StaticPerson end\n"+
+                "declare Student extends StaticPerson end\n"+
                 "rule Init when\n" +
                 "then\n" +
                 "    Student s = new Student();\n" +
@@ -1033,13 +1033,25 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "    insert( s );\n" +
                 "end\n" +
                 "rule Check when\n" +
-                "    Person( name == \"Mark\")\n" +
+                "    StaticPerson( name == \"Mark\")\n" +
                 "then\n" +
                 "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    public static class StaticPerson {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
     @Test
