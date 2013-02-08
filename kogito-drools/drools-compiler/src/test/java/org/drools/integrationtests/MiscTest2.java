@@ -1020,12 +1020,12 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
     @Test
-    public void testDeclaredTypeExtendingImportedDeclareType() {
+    public void testDeclaredTypeExtendingInnerClass() {
         // DROOLS-27
         String str =
-                "import org.drools.Person\n" +
-                "declare Person end\n"+
-                "declare Student extends Person end\n"+
+                "import org.drools.integrationtests.MiscTest2.StaticPerson\n" +
+                "declare StaticPerson end\n"+
+                "declare Student extends StaticPerson end\n"+
                 "rule Init when\n" +
                 "then\n" +
                 "    Student s = new Student();\n" +
@@ -1033,13 +1033,25 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "    insert( s );\n" +
                 "end\n" +
                 "rule Check when\n" +
-                "    Person( name == \"Mark\")\n" +
+                "    StaticPerson( name == \"Mark\")\n" +
                 "then\n" +
                 "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    public static class StaticPerson {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
     @Test
@@ -1070,5 +1082,51 @@ public class MiscTest2 extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testJitConstraintWithOperationOnBigDecimal() {
+        // DROOLS-32
+        String str =
+                "import org.drools.integrationtests.MiscTest2.Model;\n" +
+                "import java.math.BigDecimal;\n" +
+                "\n" +
+                "rule \"minCost\" dialect \"mvel\" \n" +
+                "when\n" +
+                "    $product : Model(price < (cost + 0.10B))\n" +
+                "then\n" +
+                "    modify ($product) { price = $product.cost + 0.10B }\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+
+        final Model model = new Model();
+        model.setCost(new BigDecimal("2.43"));
+        model.setPrice(new BigDecimal("2.43"));
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert(model);
+
+        int fired = ksession.fireAllRules(2);
+        if (fired > 1)
+            throw new RuntimeException("loop");
+    }
+
+    public static class Model {
+        private BigDecimal cost;
+        private BigDecimal price;
+
+        public BigDecimal getCost() {
+            return cost;
+        }
+        public void setCost(BigDecimal cost) {
+            this.cost = cost;
+        }
+        public BigDecimal getPrice() {
+            return price;
+        }
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
     }
 }
