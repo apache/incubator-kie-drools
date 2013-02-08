@@ -35,38 +35,17 @@ public class HardSoftScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void equalsAndHashCode() {
-        assertScoresEqualsAndHashCode(
-                HardSoftScore.valueOf(-10, -20),
-                HardSoftScore.valueOf(-10, -20)
-        );
-    }
-
-    @Test
-    public void compareTo() {
-        assertScoreCompareToOrder(
-                HardSoftScore.valueOf(-20, Integer.MIN_VALUE),
-                HardSoftScore.valueOf(-20, -20),
-                HardSoftScore.valueOf(-1, -300),
-                HardSoftScore.valueOf(-1, 4000),
-                HardSoftScore.valueOf(0, -1),
-                HardSoftScore.valueOf(0, 0),
-                HardSoftScore.valueOf(0, 1)
-        );
-    }
-
-    @Test
     public void add() {
         assertEquals(HardSoftScore.valueOf(19, -320),
                 HardSoftScore.valueOf(20, -20).add(
-                HardSoftScore.valueOf(-1, -300)));
+                        HardSoftScore.valueOf(-1, -300)));
     }
 
     @Test
     public void subtract() {
         assertEquals(HardSoftScore.valueOf(21, 280),
                 HardSoftScore.valueOf(20, -20).subtract(
-                HardSoftScore.valueOf(-1, -300)));
+                        HardSoftScore.valueOf(-1, -300)));
     }
 
     @Test
@@ -87,6 +66,27 @@ public class HardSoftScoreTest extends AbstractScoreTest {
                 HardSoftScore.valueOf(21, -21).divide(5.0));
         assertEquals(HardSoftScore.valueOf(4, -5),
                 HardSoftScore.valueOf(24, -24).divide(5.0));
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                HardSoftScore.valueOf(-10, -20),
+                HardSoftScore.valueOf(-10, -20)
+        );
+    }
+
+    @Test
+    public void compareTo() {
+        assertScoreCompareToOrder(
+                HardSoftScore.valueOf(-20, Integer.MIN_VALUE),
+                HardSoftScore.valueOf(-20, -20),
+                HardSoftScore.valueOf(-1, -300),
+                HardSoftScore.valueOf(-1, 4000),
+                HardSoftScore.valueOf(0, -1),
+                HardSoftScore.valueOf(0, 0),
+                HardSoftScore.valueOf(0, 1)
+        );
     }
 
 }

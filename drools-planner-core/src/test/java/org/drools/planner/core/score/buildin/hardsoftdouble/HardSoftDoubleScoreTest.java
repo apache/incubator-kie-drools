@@ -19,6 +19,8 @@ package org.drools.planner.core.score.buildin.hardsoftdouble;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
     @Test
@@ -33,6 +35,40 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
                 HardSoftDoubleScore.valueOf(0.0, -300.0),
                 HardSoftDoubleScore.valueOf(2.0, -300.0)
         );
+    }
+
+    @Test
+    public void add() {
+        assertEquals(HardSoftDoubleScore.valueOf(19.0, -320.0),
+                HardSoftDoubleScore.valueOf(20.0, -20.0).add(
+                        HardSoftDoubleScore.valueOf(-1.0, -300.0)));
+    }
+
+    @Test
+    public void subtract() {
+        assertEquals(HardSoftDoubleScore.valueOf(21.0, 280.0),
+                HardSoftDoubleScore.valueOf(20.0, -20.0).subtract(
+                        HardSoftDoubleScore.valueOf(-1.0, -300.0)));
+    }
+
+    @Test
+    public void multiply() {
+        assertEquals(HardSoftDoubleScore.valueOf(6.0, -6.0),
+                HardSoftDoubleScore.valueOf(5.0, -5.0).multiply(1.2));
+        assertEquals(HardSoftDoubleScore.valueOf(1.2, -1.2),
+                HardSoftDoubleScore.valueOf(1.0, -1.0).multiply(1.2));
+        assertEquals(HardSoftDoubleScore.valueOf(4.8, -4.8),
+                HardSoftDoubleScore.valueOf(4.0, -4.0).multiply(1.2));
+    }
+
+    @Test
+    public void divide() {
+        assertEquals(HardSoftDoubleScore.valueOf(5.0, -5.0),
+                HardSoftDoubleScore.valueOf(25.0, -25.0).divide(5.0));
+        assertEquals(HardSoftDoubleScore.valueOf(4.2, -4.2),
+                HardSoftDoubleScore.valueOf(21.0, -21.0).divide(5.0));
+        assertEquals(HardSoftDoubleScore.valueOf(4.8, -4.8),
+                HardSoftDoubleScore.valueOf(24.0, -24.0).divide(5.0));
     }
 
     @Test

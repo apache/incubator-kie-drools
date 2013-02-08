@@ -31,6 +31,40 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void add() {
+        assertEquals(HardSoftLongScore.valueOf(19L, -320L),
+                HardSoftLongScore.valueOf(20L, -20L).add(
+                        HardSoftLongScore.valueOf(-1L, -300L)));
+    }
+
+    @Test
+    public void subtract() {
+        assertEquals(HardSoftLongScore.valueOf(21L, 280L),
+                HardSoftLongScore.valueOf(20L, -20L).subtract(
+                        HardSoftLongScore.valueOf(-1L, -300L)));
+    }
+
+    @Test
+    public void multiply() {
+        assertEquals(HardSoftLongScore.valueOf(6L, -6L),
+                HardSoftLongScore.valueOf(5L, -5L).multiply(1.2));
+        assertEquals(HardSoftLongScore.valueOf(1L, -2L),
+                HardSoftLongScore.valueOf(1L, -1L).multiply(1.2));
+        assertEquals(HardSoftLongScore.valueOf(4L, -5L),
+                HardSoftLongScore.valueOf(4L, -4L).multiply(1.2));
+    }
+
+    @Test
+    public void divide() {
+        assertEquals(HardSoftLongScore.valueOf(5L, -5L),
+                HardSoftLongScore.valueOf(25L, -25L).divide(5.0));
+        assertEquals(HardSoftLongScore.valueOf(4L, -5L),
+                HardSoftLongScore.valueOf(21L, -21L).divide(5.0));
+        assertEquals(HardSoftLongScore.valueOf(4L, -5L),
+                HardSoftLongScore.valueOf(24L, -24L).divide(5.0));
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 HardSoftLongScore.valueOf(-10L, -20L),
