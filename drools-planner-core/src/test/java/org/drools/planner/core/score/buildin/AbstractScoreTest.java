@@ -16,7 +16,9 @@
 
 package org.drools.planner.core.score.buildin;
 
+import org.drools.planner.core.score.FeasibilityScore;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 
 import static org.junit.Assert.*;
 
@@ -37,6 +39,18 @@ public abstract class AbstractScoreTest {
             for (int j = i + 1; j < scores.length; j++) {
                 assertLesser(scores[i], scores[j]);
             }
+        }
+    }
+
+    public static void assertScoreNotFeasible(FeasibilityScore... scores) {
+        for (FeasibilityScore score : scores) {
+            assertEquals(false, score.isFeasible());
+        }
+    }
+
+    public static void assertScoreFeasible(FeasibilityScore ... scores) {
+        for (FeasibilityScore score : scores) {
+            assertEquals(true, score.isFeasible());
         }
     }
 

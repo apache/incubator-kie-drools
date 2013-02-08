@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,44 +14,46 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.hardsoftlong;
+package org.drools.planner.core.score.buildin.hardsoftbigdecimal;
+
+import java.math.BigDecimal;
 
 import org.drools.planner.core.score.AbstractScore;
 import org.drools.planner.core.score.FeasibilityScore;
 import org.drools.planner.core.score.Score;
 
 /**
- * This {@link Score} is based on 2 levels of long constraints: hard and soft.
+ * This {@link Score} is based on 2 levels of {@link BigDecimal} constraints: hard and soft.
  * Hard constraints have priority over soft constraints.
  * <p/>
  * This class is immutable.
  * @see Score
  */
-public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
-        implements FeasibilityScore<HardSoftLongScore> {
+public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDecimalScore>
+        implements FeasibilityScore<HardSoftBigDecimalScore> {
 
     private static final String HARD_LABEL = "hard";
     private static final String SOFT_LABEL = "soft";
 
-    public static HardSoftLongScore parseScore(String scoreString) {
+    public static HardSoftBigDecimalScore parseScore(String scoreString) {
         String[] levelStrings = parseLevelStrings(scoreString, HARD_LABEL, SOFT_LABEL);
-        long hardScore = Long.parseLong(levelStrings[0]);
-        long softScore = Long.parseLong(levelStrings[1]);
+        BigDecimal hardScore = new BigDecimal(levelStrings[0]);
+        BigDecimal softScore = new BigDecimal(levelStrings[1]);
         return valueOf(hardScore, softScore);
     }
 
-    public static HardSoftLongScore valueOf(long hardScore, long softScore) {
-        return new HardSoftLongScore(hardScore, softScore);
+    public static HardSoftBigDecimalScore valueOf(BigDecimal hardScore, BigDecimal softScore) {
+        return new HardSoftBigDecimalScore(hardScore, softScore);
     }
 
     // ************************************************************************
     // Fields
     // ************************************************************************
 
-    private final long hardScore;
-    private final long softScore;
+    private final BigDecimal hardScore;
+    private final BigDecimal softScore;
 
-    private HardSoftLongScore(long hardScore, long softScore) {
+    private HardSoftBigDecimalScore(BigDecimal hardScore, BigDecimal softScore) {
         this.hardScore = hardScore;
         this.softScore = softScore;
     }
@@ -62,7 +64,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
      * The hard score is usually a negative number because most use cases only have negative constraints.
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
-    public long getHardScore() {
+    public BigDecimal getHardScore() {
         return hardScore;
     }
 
@@ -74,7 +76,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard score.
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
-    public long getSoftScore() {
+    public BigDecimal getSoftScore() {
         return softScore;
     }
 
@@ -83,41 +85,41 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
     // ************************************************************************
 
     public boolean isFeasible() {
-        return getHardScore() >= 0L;
+        return getHardScore().compareTo(BigDecimal.ZERO) >= 0;
     }
 
-    public HardSoftLongScore add(HardSoftLongScore augment) {
-        return new HardSoftLongScore(hardScore + augment.getHardScore(),
-                softScore + augment.getSoftScore());
+    public HardSoftBigDecimalScore add(HardSoftBigDecimalScore augment) {
+        return new HardSoftBigDecimalScore(hardScore.add(augment.getHardScore()),
+                softScore.add(augment.getSoftScore()));
     }
 
-    public HardSoftLongScore subtract(HardSoftLongScore subtrahend) {
-        return new HardSoftLongScore(hardScore - subtrahend.getHardScore(),
-                softScore - subtrahend.getSoftScore());
+    public HardSoftBigDecimalScore subtract(HardSoftBigDecimalScore subtrahend) {
+        return new HardSoftBigDecimalScore(hardScore.subtract(subtrahend.getHardScore()),
+                softScore.subtract(subtrahend.getSoftScore()));
     }
 
-    public HardSoftLongScore multiply(double multiplicand) {
-        return new HardSoftLongScore((long) Math.floor(hardScore * multiplicand),
-                (long) Math.floor(softScore * multiplicand));
+    public HardSoftBigDecimalScore multiply(double multiplicand) {
+        return new HardSoftBigDecimalScore(hardScore.multiply(BigDecimal.valueOf(multiplicand)),
+                softScore.multiply(BigDecimal.valueOf(multiplicand)));
     }
 
-    public HardSoftLongScore divide(double divisor) {
-        return new HardSoftLongScore((long) Math.floor(hardScore / divisor),
-                (long) Math.floor(softScore / divisor));
+    public HardSoftBigDecimalScore divide(double divisor) {
+        return new HardSoftBigDecimalScore(hardScore.divide(BigDecimal.valueOf(divisor)),
+                softScore.divide(BigDecimal.valueOf(divisor)));
     }
 
     public double[] toDoubleLevels() {
-        return new double[]{hardScore, softScore};
+        return new double[]{hardScore.doubleValue(), softScore.doubleValue()};
     }
 
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
-        } else if (o instanceof HardSoftLongScore) {
-            HardSoftLongScore other = (HardSoftLongScore) o;
-            return hardScore == other.getHardScore()
-                    && softScore == other.getSoftScore();
+        } else if (o instanceof HardSoftBigDecimalScore) {
+            HardSoftBigDecimalScore other = (HardSoftBigDecimalScore) o;
+            return hardScore.equals(other.getHardScore())
+                    && softScore.equals(other.getSoftScore());
         } else {
             return false;
         }
@@ -125,21 +127,21 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((17 * 37) + Long.valueOf(hardScore).hashCode())) * 37 + Long.valueOf(softScore).hashCode();
+        return (((17 * 37) + hardScore.hashCode())) * 37 + softScore.hashCode();
     }
 
-    public int compareTo(HardSoftLongScore other) {
+    public int compareTo(HardSoftBigDecimalScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
-        if (hardScore != other.getHardScore()) {
-            if (hardScore < other.getHardScore()) {
+        if (hardScore.compareTo(other.getHardScore()) != 0) {
+            if (hardScore.compareTo(other.getHardScore()) < 0) {
                 return -1;
             } else {
                 return 1;
             }
         } else {
-            if (softScore < other.getSoftScore()) {
+            if (softScore.compareTo(other.getSoftScore()) < 0) {
                 return -1;
-            } else if (softScore > other.getSoftScore()) {
+            } else if (softScore.compareTo(other.getSoftScore()) > 0) {
                 return 1;
             } else {
                 return 0;

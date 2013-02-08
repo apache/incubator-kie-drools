@@ -17,6 +17,7 @@
 package org.drools.planner.core.score.buildin.hardsoft;
 
 import org.drools.planner.core.score.AbstractScore;
+import org.drools.planner.core.score.FeasibilityScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
@@ -27,7 +28,7 @@ import org.drools.planner.core.solution.Solution;
  * This class is immutable.
  * @see Score
  */
-public final class HardSoftScore extends AbstractScore<HardSoftScore> {
+public final class HardSoftScore extends AbstractScore<HardSoftScore> implements FeasibilityScore<HardSoftScore> {
 
     private static final String HARD_LABEL = "hard";
     private static final String SOFT_LABEL = "soft";
@@ -81,32 +82,28 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> {
     // Worker methods
     // ************************************************************************
 
-    /**
-     * A {@link Solution} is feasible if it has no broken hard constraints.
-     * @return true if the {@link #getHardScore()} is 0 or higher
-     */
     public boolean isFeasible() {
         return getHardScore() >= 0;
     }
 
     public HardSoftScore add(HardSoftScore augment) {
         return new HardSoftScore(hardScore + augment.getHardScore(),
-                this.softScore + augment.getSoftScore());
+                softScore + augment.getSoftScore());
     }
 
     public HardSoftScore subtract(HardSoftScore subtrahend) {
         return new HardSoftScore(hardScore - subtrahend.getHardScore(),
-                this.softScore - subtrahend.getSoftScore());
+                softScore - subtrahend.getSoftScore());
     }
 
     public HardSoftScore multiply(double multiplicand) {
         return new HardSoftScore((int) Math.floor(hardScore * multiplicand),
-                (int) Math.floor(this.softScore * multiplicand));
+                (int) Math.floor(softScore * multiplicand));
     }
 
     public HardSoftScore divide(double divisor) {
         return new HardSoftScore((int) Math.floor(hardScore / divisor),
-                (int) Math.floor(this.softScore / divisor));
+                (int) Math.floor(softScore / divisor));
     }
 
     public double[] toDoubleLevels() {

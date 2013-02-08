@@ -17,6 +17,7 @@
 package org.drools.planner.core.score.buildin.hardmediumsoft;
 
 import org.drools.planner.core.score.AbstractScore;
+import org.drools.planner.core.score.FeasibilityScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
@@ -27,7 +28,8 @@ import org.drools.planner.core.solution.Solution;
  * This class is immutable.
  * @see Score
  */
-public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore> {
+public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore>
+        implements FeasibilityScore<HardMediumSoftScore> {
 
     private static final String HARD_LABEL = "hard";
     private static final String MEDIUM_LABEL = "medium";

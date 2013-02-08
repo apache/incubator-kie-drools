@@ -48,9 +48,13 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void feasible() {
-        assertEquals(true, HardMediumSoftScore.valueOf(0, -300, -4000).isFeasible());
-        assertEquals(false, HardMediumSoftScore.valueOf(-5, -300, -4000).isFeasible());
-        assertEquals(true, HardMediumSoftScore.valueOf(2, -300, -4000).isFeasible());
+        assertScoreNotFeasible(
+                HardMediumSoftScore.valueOf(-5, -300, -4000)
+        );
+        assertScoreFeasible(
+                HardMediumSoftScore.valueOf(0, -300, -4000),
+                HardMediumSoftScore.valueOf(2, -300, -4000)
+        );
     }
 
 }

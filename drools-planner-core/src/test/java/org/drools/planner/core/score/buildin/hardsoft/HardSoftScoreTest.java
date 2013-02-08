@@ -38,9 +38,13 @@ public class HardSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void feasible() {
-        assertEquals(true, HardSoftScore.valueOf(0, -300).isFeasible());
-        assertEquals(false, HardSoftScore.valueOf(-5, -300).isFeasible());
-        assertEquals(true, HardSoftScore.valueOf(2, -300).isFeasible());
+        assertScoreNotFeasible(
+                HardSoftScore.valueOf(-5, -300)
+        );
+        assertScoreFeasible(
+                HardSoftScore.valueOf(0, -300),
+                HardSoftScore.valueOf(2, -300)
+        );
     }
 
 }
