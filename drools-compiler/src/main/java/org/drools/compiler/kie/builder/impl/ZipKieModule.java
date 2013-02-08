@@ -1,8 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.core.util.IoUtils;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
+import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +8,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 
-import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
+import org.drools.core.util.IoUtils;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 
 public class ZipKieModule extends AbstractKieModule implements InternalKieModule {
     private final File             file;    

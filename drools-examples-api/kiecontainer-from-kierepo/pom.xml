@@ -17,6 +17,12 @@
             <groupId>org.kie</groupId>
             <artifactId>kie-ci</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 

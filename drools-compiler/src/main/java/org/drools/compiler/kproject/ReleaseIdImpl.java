@@ -47,7 +47,11 @@ public class ReleaseIdImpl implements ReleaseId {
 
     public String getPomPropertiesPath() {
         return "META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties";
-    }    
+    }   
+    
+    public String getCompilationCachePathPrefix() { 
+        return "META-INF/maven/" + groupId + "/" + artifactId + "/";
+    }
     
     public static ReleaseId fromPropertiesString(String string) {
         Properties props = new Properties();

@@ -25,6 +25,12 @@
             <groupId>org.jboss.weld.se</groupId>
             <artifactId>weld-se-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 </project>

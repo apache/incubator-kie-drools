@@ -1,18 +1,11 @@
 package org.drools.compiler.compiler.io.memory;
 
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.compiler.compiler.io.File;
-import org.drools.compiler.compiler.io.FileSystem;
-import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Path;
-import org.drools.compiler.compiler.io.Resource;
-import org.drools.core.util.FileManager;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -21,10 +14,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+
+import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.compiler.compiler.io.File;
+import org.drools.compiler.compiler.io.FileSystem;
+import org.drools.compiler.compiler.io.Folder;
+import org.drools.compiler.compiler.io.Path;
+import org.drools.compiler.compiler.io.Resource;
+import org.drools.core.util.FileManager;
+import org.drools.core.util.StringUtils;
 
 public class MemoryFileSystem
     implements
@@ -394,26 +399,16 @@ public class MemoryFileSystem
 
     private void writeJarEntries(Folder f,
                                  ZipOutputStream out) throws IOException {
-        byte[] buf = new byte[1024];
         for ( Resource rs : f.getMembers() ) {
             if ( rs instanceof Folder ) {
                 writeJarEntries( (Folder) rs,
                                  out );
             } else {
-                out.putNextEntry( new ZipEntry( rs.getPath().toPortableString() ) );
+                ZipEntry entry = new ZipEntry( rs.getPath().toPortableString() );
+                out.putNextEntry( entry );
 
                 byte[] contents = getFileContents( (MemoryFile) rs );
-
-                ByteArrayInputStream bais = new ByteArrayInputStream( contents );
-
-                int len;
-                while ( (len = bais.read( buf )) > 0 ) {
-                    out.write( buf,
-                               0,
-                               len );
-                }
-
-                bais.close();
+                out.write( contents );
                 out.closeEntry();
             }
         }
@@ -449,4 +444,46 @@ public class MemoryFileSystem
         }
         return mfs;
     }
+    
+    public static MemoryFileSystem readFromJar(byte[] jarFile) {
+        return readFromJar( new ByteArrayInputStream( jarFile ) );
+    }
+    
+    public static MemoryFileSystem readFromJar(InputStream jarFile) {
+        MemoryFileSystem mfs = new MemoryFileSystem();
+        JarInputStream zipFile = null;
+        try {
+            zipFile = new JarInputStream( jarFile );
+            ZipEntry entry = null;
+            while ( (entry = zipFile.getNextEntry()) != null ) {
+                // entry.getSize() is not accurate according to documentation, so have to read bytes until -1 is found
+                ByteArrayOutputStream content = new ByteArrayOutputStream();
+                int b = -1;
+                while( (b = zipFile.read()) != -1 ) {
+                    content.write( b );
+                }
+                mfs.write( entry.getName(), content.toByteArray(), true );
+            }
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        } finally {
+            if ( zipFile != null ) {
+                try {
+                    zipFile.close();
+                } catch ( IOException e ) { }
+            }
+        }
+        return mfs;
+    }
+    
+    public String findPomProperties() {
+        for( Entry<String, byte[]> content : fileContents.entrySet() ) {
+            if ( content.getKey().endsWith( "pom.properties" ) && content.getKey().startsWith( "META-INF/maven/" ) ) {
+                return StringUtils.readFileAsString( new InputStreamReader( new ByteArrayInputStream( content.getValue() ) ) );
+            }
+        }
+        return null;
+    }
+
+    
 }
