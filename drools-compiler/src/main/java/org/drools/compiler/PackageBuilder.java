@@ -1636,8 +1636,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      * @param packageDescr
      *            the descriptor of the package the class is declared in
      */
-    private void fillSuperType( TypeDeclarationDescr typeDescr,
-            PackageDescr packageDescr ) {
+    private void fillSuperType( TypeDeclarationDescr typeDescr, PackageDescr packageDescr ) {
 
         for ( QualifiedName qname : typeDescr.getSuperTypes() ) {
             String declaredSuperType = qname.getFullName();
@@ -1651,6 +1650,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                         resolveType( declaredSuperType,
                                                      packageDescr,
                                                      this.pkgRegistryMap.get( typeDescr.getNamespace() ) );
+
+                    declaredSuperType = typeName2ClassName( declaredSuperType );
 
                     // sets supertype name and supertype package
                     separator = declaredSuperType.lastIndexOf( "." );
@@ -1667,6 +1668,24 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 }
             }
         }
+    }
+
+    private String typeName2ClassName( String type ) {
+        Class cls = null;
+        String superType = type;
+        while (true) {
+            try {
+                cls = Class.forName( superType, true, this.rootClassLoader );
+                break;
+            } catch (ClassNotFoundException e) {
+            }
+            int separator = superType.lastIndexOf('.');
+            if (separator < 0) {
+                break;
+            }
+            superType = superType.substring(0, separator) +  "$" + superType.substring(separator + 1);
+        }
+        return cls != null ? cls.getName() : type;
     }
 
     private void fillFieldTypes( AbstractClassTypeDeclarationDescr typeDescr,
@@ -1946,45 +1965,14 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     }
                 }
             }
-            String qName = typeDescr.getType().getFullName();
 
+            String qName = typeDescr.getType().getFullName();
             int dotPos = qName.lastIndexOf( '.' );
             if (dotPos >= 0) {
-                // see if this overwrites an existing bean, which also could be a nested class.
-                Class cls = null;
-                try {
-                    cls = Class.forName( typeDescr.getTypeName(),
-                                         true,
-                                         this.rootClassLoader );
-                } catch (ClassNotFoundException e) {
-                }
-
-                String qualifiedClass = qName;
-                int lastIndex;
-                while (cls == null && ( lastIndex = qualifiedClass.lastIndexOf( '.' ) ) != -1) {
-                    try {
-
-                        qualifiedClass = qualifiedClass.substring( 0,
-                                                                   lastIndex ) + "$" +
-                                         qualifiedClass.substring( lastIndex + 1 );
-                        cls = Class.forName( qualifiedClass,
-                                             true,
-                                             this.rootClassLoader );
-                    } catch (final ClassNotFoundException e) {
-                        cls = null;
-                    }
-                }
-
-                if (cls != null) {
-                    String str = ClassUtils.getPackage( cls );
-                    typeDescr.setNamespace( str );
-                    dotPos = cls.getName().lastIndexOf( '.' ); // reget dotPos, incase there were nested classes
-                    typeDescr.setTypeName( cls.getName().substring( dotPos + 1 ) );
-                } else {
-                    typeDescr.setNamespace( qName.substring( 0,
-                                                             dotPos ) );
-                    typeDescr.setTypeName( qName.substring( dotPos + 1 ) );
-                }
+                String className = typeName2ClassName(qName);
+                dotPos = className.lastIndexOf( '.' );
+                typeDescr.setNamespace( className.substring( 0, dotPos ) );
+                typeDescr.setTypeName( className.substring( dotPos + 1 ) );
             }
 
             if ( isEmpty( typeDescr.getNamespace() ) && typeDescr.getFields().isEmpty() ) {
