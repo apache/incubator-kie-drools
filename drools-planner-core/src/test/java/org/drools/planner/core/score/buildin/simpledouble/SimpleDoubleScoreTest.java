@@ -19,7 +19,43 @@ package org.drools.planner.core.score.buildin.simpledouble;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class SimpleDoubleScoreTest extends AbstractScoreTest {
+
+    @Test
+    public void add() {
+        assertEquals(SimpleDoubleScore.valueOf(19.0),
+                SimpleDoubleScore.valueOf(20.0).add(
+                        SimpleDoubleScore.valueOf(-1.0)));
+    }
+
+    @Test
+    public void subtract() {
+        assertEquals(SimpleDoubleScore.valueOf(21.0),
+                SimpleDoubleScore.valueOf(20.0).subtract(
+                        SimpleDoubleScore.valueOf(-1.0)));
+    }
+
+    @Test
+    public void multiply() {
+        assertEquals(SimpleDoubleScore.valueOf(6.0),
+                SimpleDoubleScore.valueOf(5.0).multiply(1.2));
+        assertEquals(SimpleDoubleScore.valueOf(1.2),
+                SimpleDoubleScore.valueOf(1.0).multiply(1.2));
+        assertEquals(SimpleDoubleScore.valueOf(4.8),
+                SimpleDoubleScore.valueOf(4.0).multiply(1.2));
+    }
+
+    @Test
+    public void divide() {
+        assertEquals(SimpleDoubleScore.valueOf(5.0),
+                SimpleDoubleScore.valueOf(25.0).divide(5.0));
+        assertEquals(SimpleDoubleScore.valueOf(4.2),
+                SimpleDoubleScore.valueOf(21.0).divide(5.0));
+        assertEquals(SimpleDoubleScore.valueOf(4.8),
+                SimpleDoubleScore.valueOf(24.0).divide(5.0));
+    }
 
     @Test
     public void equalsAndHashCode() {

@@ -17,6 +17,8 @@
 package org.drools.planner.core.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 import org.drools.planner.core.score.AbstractScore;
 import org.drools.planner.core.score.FeasibilityScore;
@@ -99,13 +101,23 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     public HardSoftBigDecimalScore multiply(double multiplicand) {
-        return new HardSoftBigDecimalScore(hardScore.multiply(BigDecimal.valueOf(multiplicand)),
-                softScore.multiply(BigDecimal.valueOf(multiplicand)));
+        // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
+        // because together with the floor rounding it gives unwanted behaviour
+        BigDecimal multiplicandBigDecimal = BigDecimal.valueOf(multiplicand);
+        // The (unspecified) scale/precision of the multiplicand should have no impact on the returned scale/precision
+        return new HardSoftBigDecimalScore(
+                hardScore.multiply(multiplicandBigDecimal).setScale(hardScore.scale(), RoundingMode.FLOOR),
+                softScore.multiply(multiplicandBigDecimal).setScale(softScore.scale(), RoundingMode.FLOOR));
     }
 
     public HardSoftBigDecimalScore divide(double divisor) {
-        return new HardSoftBigDecimalScore(hardScore.divide(BigDecimal.valueOf(divisor)),
-                softScore.divide(BigDecimal.valueOf(divisor)));
+        // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
+        // because together with the floor rounding it gives unwanted behaviour
+        BigDecimal divisorBigDecimal = BigDecimal.valueOf(divisor);
+        // The (unspecified) scale/precision of the divisor should have no impact on the returned scale/precision
+        return new HardSoftBigDecimalScore(
+                hardScore.divide(divisorBigDecimal, hardScore.scale(), RoundingMode.FLOOR),
+                softScore.divide(divisorBigDecimal, softScore.scale(), RoundingMode.FLOOR));
     }
 
     public double[] toDoubleLevels() {

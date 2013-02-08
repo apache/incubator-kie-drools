@@ -19,7 +19,43 @@ package org.drools.planner.core.score.buildin.simple;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class SimpleScoreTest extends AbstractScoreTest {
+
+    @Test
+    public void add() {
+        assertEquals(SimpleScore.valueOf(19),
+                SimpleScore.valueOf(20).add(
+                        SimpleScore.valueOf(-1)));
+    }
+
+    @Test
+    public void subtract() {
+        assertEquals(SimpleScore.valueOf(21),
+                SimpleScore.valueOf(20).subtract(
+                        SimpleScore.valueOf(-1)));
+    }
+
+    @Test
+    public void multiply() {
+        assertEquals(SimpleScore.valueOf(6),
+                SimpleScore.valueOf(5).multiply(1.2));
+        assertEquals(SimpleScore.valueOf(1),
+                SimpleScore.valueOf(1).multiply(1.2));
+        assertEquals(SimpleScore.valueOf(4),
+                SimpleScore.valueOf(4).multiply(1.2));
+    }
+
+    @Test
+    public void divide() {
+        assertEquals(SimpleScore.valueOf(5),
+                SimpleScore.valueOf(25).divide(5.0));
+        assertEquals(SimpleScore.valueOf(4),
+                SimpleScore.valueOf(21).divide(5.0));
+        assertEquals(SimpleScore.valueOf(4),
+                SimpleScore.valueOf(24).divide(5.0));
+    }
 
     @Test
     public void equalsAndHashCode() {

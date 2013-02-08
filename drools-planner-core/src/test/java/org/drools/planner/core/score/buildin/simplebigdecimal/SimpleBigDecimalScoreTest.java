@@ -21,7 +21,43 @@ import java.math.BigDecimal;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
+
+    @Test
+    public void add() {
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("19")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("20")).add(
+                        SimpleBigDecimalScore.valueOf(new BigDecimal("-1"))));
+    }
+
+    @Test
+    public void subtract() {
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("21")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("20")).subtract(
+                        SimpleBigDecimalScore.valueOf(new BigDecimal("-1"))));
+    }
+
+    @Test
+    public void multiply() {
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("6.0")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("5.0")).multiply(1.2));
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("1.2")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("1.0")).multiply(1.2));
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("4.8")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("4.0")).multiply(1.2));
+    }
+
+    @Test
+    public void divide() {
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("5.0")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("25.0")).divide(5.0));
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("4.2")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("21.0")).divide(5.0));
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("4.8")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("24.0")).divide(5.0));
+    }
 
     @Test
     public void equalsAndHashCode() {

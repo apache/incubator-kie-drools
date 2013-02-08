@@ -54,7 +54,7 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
                         HardSoftBigDecimalScore.valueOf(new BigDecimal("-1"), new BigDecimal("-300"))));
     }
 
-    @Test @Ignore("broken precision")
+    @Test
     public void multiply() {
         assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("6.0"), new BigDecimal("-6.0")),
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("5.0"), new BigDecimal("-5.0")).multiply(1.2));
@@ -64,7 +64,7 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("4.0"), new BigDecimal("-4.0")).multiply(1.2));
     }
 
-    @Test @Ignore("broken precision")
+    @Test
     public void divide() {
         assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("5.0"), new BigDecimal("-5.0")),
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("25.0"), new BigDecimal("-25.0")).divide(5.0));

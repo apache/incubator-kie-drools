@@ -17,6 +17,8 @@
 package org.drools.planner.core.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 import org.drools.planner.core.score.AbstractScore;
 import org.drools.planner.core.score.Score;
@@ -70,11 +72,21 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     }
 
     public SimpleBigDecimalScore multiply(double multiplicand) {
-        return new SimpleBigDecimalScore(score.multiply(BigDecimal.valueOf(multiplicand)));
+        // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
+        // because together with the floor rounding it gives unwanted behaviour
+        BigDecimal multiplicandBigDecimal = BigDecimal.valueOf(multiplicand);
+        // The (unspecified) scale/precision of the multiplicand should have no impact on the returned scale/precision
+        return new SimpleBigDecimalScore(
+                score.multiply(multiplicandBigDecimal).setScale(score.scale(), RoundingMode.FLOOR));
     }
 
     public SimpleBigDecimalScore divide(double divisor) {
-        return new SimpleBigDecimalScore(score.divide(BigDecimal.valueOf(divisor)));
+        // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
+        // because together with the floor rounding it gives unwanted behaviour
+        BigDecimal divisorBigDecimal = BigDecimal.valueOf(divisor);
+        // The (unspecified) scale/precision of the divisor should have no impact on the returned scale/precision
+        return new SimpleBigDecimalScore(
+                score.divide(divisorBigDecimal, score.scale(), RoundingMode.FLOOR));
     }
 
     public double[] toDoubleLevels() {
