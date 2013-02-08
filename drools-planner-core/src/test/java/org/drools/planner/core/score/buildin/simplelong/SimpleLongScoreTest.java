@@ -22,8 +22,16 @@ import org.junit.Test;
 public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                SimpleLongScore.valueOf(-10L),
+                SimpleLongScore.valueOf(-10L)
+        );
+    }
+
+    @Test
     public void compareTo() {
-        assertScoreOrder(
+        assertScoreCompareToOrder(
                 SimpleLongScore.valueOf(((long) Integer.MIN_VALUE) - 4000L),
                 SimpleLongScore.valueOf(-300L),
                 SimpleLongScore.valueOf(-20L),

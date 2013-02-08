@@ -24,8 +24,23 @@ import static org.junit.Assert.*;
 public class HardSoftLongScoreTest extends AbstractScoreTest {
 
     @Test
+    public void feasible() {
+        assertEquals(true, HardSoftLongScore.valueOf(0L, -300L).isFeasible());
+        assertEquals(false, HardSoftLongScore.valueOf(-5L, -300L).isFeasible());
+        assertEquals(true, HardSoftLongScore.valueOf(2L, -300L).isFeasible());
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                HardSoftLongScore.valueOf(-10L, -20L),
+                HardSoftLongScore.valueOf(-10L, -20L)
+        );
+    }
+
+    @Test
     public void compareTo() {
-        assertScoreOrder(
+        assertScoreCompareToOrder(
                 HardSoftLongScore.valueOf(-20L, Long.MIN_VALUE),
                 HardSoftLongScore.valueOf(-20L, -20L),
                 HardSoftLongScore.valueOf(-1L, -300L),
@@ -34,13 +49,6 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
                 HardSoftLongScore.valueOf(0L, 0L),
                 HardSoftLongScore.valueOf(0L, 1L)
         );
-    }
-
-    @Test
-    public void feasible() {
-        assertEquals(true, HardSoftLongScore.valueOf(0L, -300L).isFeasible());
-        assertEquals(false, HardSoftLongScore.valueOf(-5L, -300L).isFeasible());
-        assertEquals(true, HardSoftLongScore.valueOf(2L, -300L).isFeasible());
     }
 
 }

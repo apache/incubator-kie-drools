@@ -24,8 +24,16 @@ import org.junit.Test;
 public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-10")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-10"))
+        );
+    }
+
+    @Test
     public void compareTo() {
-        assertScoreOrder(
+        assertScoreCompareToOrder(
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-300.5")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-300")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-20.067")),

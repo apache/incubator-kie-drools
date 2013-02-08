@@ -19,13 +19,19 @@ package org.drools.planner.core.score.buildin.simple;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                SimpleScore.valueOf(-10),
+                SimpleScore.valueOf(-10)
+        );
+    }
+
+    @Test
     public void compareTo() {
-        assertScoreOrder(
+        assertScoreCompareToOrder(
                 SimpleScore.valueOf(-300),
                 SimpleScore.valueOf(-20),
                 SimpleScore.valueOf(-1),

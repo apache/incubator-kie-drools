@@ -34,10 +34,20 @@ public abstract class AbstractScoreTest {
         assertTrue("Score (" + b + ") must be lesser than score (" + a + ").", b.compareTo(a) < 0);
     }
 
-    public static void assertScoreOrder(Score ... scores) {
+    public static void assertScoreCompareToOrder(Score... scores) {
         for (int i = 0; i < scores.length; i++) {
             for (int j = i + 1; j < scores.length; j++) {
                 assertLesser(scores[i], scores[j]);
+            }
+        }
+    }
+
+    public static void assertScoresEqualsAndHashCode(Score... scores) {
+        for (int i = 0; i < scores.length; i++) {
+            for (int j = i + 1; j < scores.length; j++) {
+                assertEquals(scores[i], scores[j]);
+                assertEquals(scores[i].hashCode(), scores[j].hashCode());
+                assertEquals(0, scores[i].compareTo(scores[j]));
             }
         }
     }

@@ -21,25 +21,7 @@ import java.math.BigDecimal;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
-
-    @Test
-    public void compareTo() {
-        assertScoreOrder(
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20.06"), new BigDecimal("-20")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20.007"), new BigDecimal("-20")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20"), new BigDecimal("-20.06")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20"), new BigDecimal("-20.007")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20"), new BigDecimal("-20")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-1"), new BigDecimal("-300")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-1"), new BigDecimal("4000")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("0"), new BigDecimal("-1")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("0"), new BigDecimal("0")),
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("0"), new BigDecimal("1"))
-        );
-    }
 
     @Test
     public void feasible() {
@@ -52,6 +34,30 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("0"), new BigDecimal("-300.007")),
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("0"), new BigDecimal("-300")),
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("2"), new BigDecimal("-300"))
+        );
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-10"), new BigDecimal("-20")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-10"), new BigDecimal("-20"))
+        );
+    }
+
+    @Test
+    public void compareTo() {
+        assertScoreCompareToOrder(
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20.06"), new BigDecimal("-20")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20.007"), new BigDecimal("-20")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20"), new BigDecimal("-20.06")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20"), new BigDecimal("-20.007")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-20"), new BigDecimal("-20")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-1"), new BigDecimal("-300")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-1"), new BigDecimal("4000")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("0"), new BigDecimal("-1")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("0"), new BigDecimal("0")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("0"), new BigDecimal("1"))
         );
     }
 

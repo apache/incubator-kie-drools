@@ -24,8 +24,27 @@ import static org.junit.Assert.*;
 public class HardSoftScoreTest extends AbstractScoreTest {
 
     @Test
+    public void feasible() {
+        assertScoreNotFeasible(
+                HardSoftScore.valueOf(-5, -300)
+        );
+        assertScoreFeasible(
+                HardSoftScore.valueOf(0, -300),
+                HardSoftScore.valueOf(2, -300)
+        );
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                HardSoftScore.valueOf(-10, -20),
+                HardSoftScore.valueOf(-10, -20)
+        );
+    }
+
+    @Test
     public void compareTo() {
-        assertScoreOrder(
+        assertScoreCompareToOrder(
                 HardSoftScore.valueOf(-20, Integer.MIN_VALUE),
                 HardSoftScore.valueOf(-20, -20),
                 HardSoftScore.valueOf(-1, -300),
@@ -37,14 +56,37 @@ public class HardSoftScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    public void feasible() {
-        assertScoreNotFeasible(
-                HardSoftScore.valueOf(-5, -300)
-        );
-        assertScoreFeasible(
-                HardSoftScore.valueOf(0, -300),
-                HardSoftScore.valueOf(2, -300)
-        );
+    public void add() {
+        assertEquals(HardSoftScore.valueOf(19, -320),
+                HardSoftScore.valueOf(20, -20).add(
+                HardSoftScore.valueOf(-1, -300)));
+    }
+
+    @Test
+    public void subtract() {
+        assertEquals(HardSoftScore.valueOf(21, 280),
+                HardSoftScore.valueOf(20, -20).subtract(
+                HardSoftScore.valueOf(-1, -300)));
+    }
+
+    @Test
+    public void multiply() {
+        assertEquals(HardSoftScore.valueOf(6, -6),
+                HardSoftScore.valueOf(5, -5).multiply(1.2));
+        assertEquals(HardSoftScore.valueOf(1, -2),
+                HardSoftScore.valueOf(1, -1).multiply(1.2));
+        assertEquals(HardSoftScore.valueOf(4, -5),
+                HardSoftScore.valueOf(4, -4).multiply(1.2));
+    }
+
+    @Test
+    public void divide() {
+        assertEquals(HardSoftScore.valueOf(5, -5),
+                HardSoftScore.valueOf(25, -25).divide(5.0));
+        assertEquals(HardSoftScore.valueOf(4, -5),
+                HardSoftScore.valueOf(21, -21).divide(5.0));
+        assertEquals(HardSoftScore.valueOf(4, -5),
+                HardSoftScore.valueOf(24, -24).divide(5.0));
     }
 
 }

@@ -22,8 +22,16 @@ import org.junit.Test;
 public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                SimpleDoubleScore.valueOf(-10.0),
+                SimpleDoubleScore.valueOf(-10.0)
+        );
+    }
+
+    @Test
     public void compareTo() {
-        assertScoreOrder(
+        assertScoreCompareToOrder(
                 SimpleDoubleScore.valueOf(-300.5),
                 SimpleDoubleScore.valueOf(-300.0),
                 SimpleDoubleScore.valueOf(-20.06),

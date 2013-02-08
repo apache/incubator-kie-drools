@@ -16,18 +16,33 @@
 
 package org.drools.planner.core.score.buildin.hardmediumsoft;
 
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
-import org.drools.planner.core.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
+    public void feasible() {
+        assertScoreNotFeasible(
+                HardMediumSoftScore.valueOf(-5, -300, -4000)
+        );
+        assertScoreFeasible(
+                HardMediumSoftScore.valueOf(0, -300, -4000),
+                HardMediumSoftScore.valueOf(2, -300, -4000)
+        );
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                HardMediumSoftScore.valueOf(-10, -20, -30),
+                HardMediumSoftScore.valueOf(-10, -20, -30)
+        );
+    }
+
+    @Test
     public void compareTo() {
-        assertScoreOrder(
+        assertScoreCompareToOrder(
                 HardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, Integer.MIN_VALUE),
                 HardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, -20),
                 HardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, 1),
@@ -43,17 +58,6 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
                 HardMediumSoftScore.valueOf(-1, -20, -300),
                 HardMediumSoftScore.valueOf(1, Integer.MIN_VALUE, -20),
                 HardMediumSoftScore.valueOf(1, -20, Integer.MIN_VALUE)
-        );
-    }
-
-    @Test
-    public void feasible() {
-        assertScoreNotFeasible(
-                HardMediumSoftScore.valueOf(-5, -300, -4000)
-        );
-        assertScoreFeasible(
-                HardMediumSoftScore.valueOf(0, -300, -4000),
-                HardMediumSoftScore.valueOf(2, -300, -4000)
         );
     }
 

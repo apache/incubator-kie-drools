@@ -19,26 +19,7 @@ package org.drools.planner.core.score.buildin.hardsoftdouble;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class HardSoftDoubleScoreTest extends AbstractScoreTest {
-
-    @Test
-    public void compareTo() {
-        assertScoreOrder(
-                HardSoftDoubleScore.valueOf(-20.06, -20.0),
-                HardSoftDoubleScore.valueOf(-20.007, -20.0),
-                HardSoftDoubleScore.valueOf(-20.0, -Double.MAX_VALUE),
-                HardSoftDoubleScore.valueOf(-20.0, -20.06),
-                HardSoftDoubleScore.valueOf(-20.0, -20.007),
-                HardSoftDoubleScore.valueOf(-20.0, -20.0),
-                HardSoftDoubleScore.valueOf(-1.0, -300.0),
-                HardSoftDoubleScore.valueOf(-1.0, 4000.0),
-                HardSoftDoubleScore.valueOf(0.0, -1.0),
-                HardSoftDoubleScore.valueOf(0.0, 0.0),
-                HardSoftDoubleScore.valueOf(0.0, 1.0)
-        );
-    }
 
     @Test
     public void feasible() {
@@ -51,6 +32,31 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
                 HardSoftDoubleScore.valueOf(0.0, -300.007),
                 HardSoftDoubleScore.valueOf(0.0, -300.0),
                 HardSoftDoubleScore.valueOf(2.0, -300.0)
+        );
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                HardSoftDoubleScore.valueOf(-10.0, -20.0),
+                HardSoftDoubleScore.valueOf(-10.0, -20.0)
+        );
+    }
+
+    @Test
+    public void compareTo() {
+        assertScoreCompareToOrder(
+                HardSoftDoubleScore.valueOf(-20.06, -20.0),
+                HardSoftDoubleScore.valueOf(-20.007, -20.0),
+                HardSoftDoubleScore.valueOf(-20.0, -Double.MAX_VALUE),
+                HardSoftDoubleScore.valueOf(-20.0, -20.06),
+                HardSoftDoubleScore.valueOf(-20.0, -20.007),
+                HardSoftDoubleScore.valueOf(-20.0, -20.0),
+                HardSoftDoubleScore.valueOf(-1.0, -300.0),
+                HardSoftDoubleScore.valueOf(-1.0, 4000.0),
+                HardSoftDoubleScore.valueOf(0.0, -1.0),
+                HardSoftDoubleScore.valueOf(0.0, 0.0),
+                HardSoftDoubleScore.valueOf(0.0, 1.0)
         );
     }
 
