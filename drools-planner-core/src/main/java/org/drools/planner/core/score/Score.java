@@ -47,6 +47,9 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * Returns a Score whose value is (this * multiplicand).
      * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
+     * <p>/>
+     * If the implementation has a scale/precision, then the unspecified scale/precision of the double multiplicand
+     * should have no impact on the returned scale/precision.
      * @param multiplicand value to be multiplied by this Score.
      * @return this * multiplicand
      */
@@ -55,6 +58,9 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * Returns a Score whose value is (this / divisor).
      * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
+     * <p>/>
+     * If the implementation has a scale/precision, then the unspecified scale/precision of the double divisor
+     * should have no impact on the returned scale/precision.
      * @param divisor value by which this Score is to be divided
      * @return this / divisor
      */

@@ -19,11 +19,55 @@ package org.drools.planner.core.score.buildin.simplelong;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
+    public void add() {
+        assertEquals(SimpleLongScore.valueOf(19L),
+                SimpleLongScore.valueOf(20L).add(
+                        SimpleLongScore.valueOf(-1L)));
+    }
+
+    @Test
+    public void subtract() {
+        assertEquals(SimpleLongScore.valueOf(21L),
+                SimpleLongScore.valueOf(20L).subtract(
+                        SimpleLongScore.valueOf(-1L)));
+    }
+
+    @Test
+    public void multiply() {
+        assertEquals(SimpleLongScore.valueOf(6L),
+                SimpleLongScore.valueOf(5L).multiply(1.2));
+        assertEquals(SimpleLongScore.valueOf(1L),
+                SimpleLongScore.valueOf(1L).multiply(1.2));
+        assertEquals(SimpleLongScore.valueOf(4L),
+                SimpleLongScore.valueOf(4L).multiply(1.2));
+    }
+
+    @Test
+    public void divide() {
+        assertEquals(SimpleLongScore.valueOf(5L),
+                SimpleLongScore.valueOf(25L).divide(5.0));
+        assertEquals(SimpleLongScore.valueOf(4L),
+                SimpleLongScore.valueOf(21L).divide(5.0));
+        assertEquals(SimpleLongScore.valueOf(4L),
+                SimpleLongScore.valueOf(24L).divide(5.0));
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                SimpleLongScore.valueOf(-10L),
+                SimpleLongScore.valueOf(-10L)
+        );
+    }
+
+    @Test
     public void compareTo() {
-        assertScoreOrder(
+        assertScoreCompareToOrder(
                 SimpleLongScore.valueOf(((long) Integer.MIN_VALUE) - 4000L),
                 SimpleLongScore.valueOf(-300L),
                 SimpleLongScore.valueOf(-20L),

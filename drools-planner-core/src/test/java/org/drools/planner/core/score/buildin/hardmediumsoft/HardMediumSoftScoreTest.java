@@ -16,18 +16,69 @@
 
 package org.drools.planner.core.score.buildin.hardmediumsoft;
 
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.AbstractScoreTest;
-import org.drools.planner.core.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
+    public void feasible() {
+        assertScoreNotFeasible(
+                HardMediumSoftScore.valueOf(-5, -300, -4000)
+        );
+        assertScoreFeasible(
+                HardMediumSoftScore.valueOf(0, -300, -4000),
+                HardMediumSoftScore.valueOf(2, -300, -4000)
+        );
+    }
+
+    @Test
+    public void add() {
+        assertEquals(HardMediumSoftScore.valueOf(19, -320, 0),
+                HardMediumSoftScore.valueOf(20, -20, -4000).add(
+                        HardMediumSoftScore.valueOf(-1, -300, 4000)));
+    }
+
+    @Test
+    public void subtract() {
+        assertEquals(HardMediumSoftScore.valueOf(21, 280, -8000),
+                HardMediumSoftScore.valueOf(20, -20, -4000).subtract(
+                        HardMediumSoftScore.valueOf(-1, -300, 4000)));
+    }
+
+    @Test
+    public void multiply() {
+        assertEquals(HardMediumSoftScore.valueOf(6, -6, 6),
+                HardMediumSoftScore.valueOf(5, -5, 5).multiply(1.2));
+        assertEquals(HardMediumSoftScore.valueOf(1, -2, 1),
+                HardMediumSoftScore.valueOf(1, -1, 1).multiply(1.2));
+        assertEquals(HardMediumSoftScore.valueOf(4, -5, 4),
+                HardMediumSoftScore.valueOf(4, -4, 4).multiply(1.2));
+    }
+
+    @Test
+    public void divide() {
+        assertEquals(HardMediumSoftScore.valueOf(5, -5, 5),
+                HardMediumSoftScore.valueOf(25, -25, 25).divide(5.0));
+        assertEquals(HardMediumSoftScore.valueOf(4, -5, 4),
+                HardMediumSoftScore.valueOf(21, -21, 21).divide(5.0));
+        assertEquals(HardMediumSoftScore.valueOf(4, -5, 4),
+                HardMediumSoftScore.valueOf(24, -24, 24).divide(5.0));
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        assertScoresEqualsAndHashCode(
+                HardMediumSoftScore.valueOf(-10, -20, -30),
+                HardMediumSoftScore.valueOf(-10, -20, -30)
+        );
+    }
+
+    @Test
     public void compareTo() {
-        assertScoreOrder(
+        assertScoreCompareToOrder(
                 HardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, Integer.MIN_VALUE),
                 HardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, -20),
                 HardMediumSoftScore.valueOf(-20, Integer.MIN_VALUE, 1),
@@ -44,13 +95,6 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
                 HardMediumSoftScore.valueOf(1, Integer.MIN_VALUE, -20),
                 HardMediumSoftScore.valueOf(1, -20, Integer.MIN_VALUE)
         );
-    }
-
-    @Test
-    public void feasible() {
-        assertEquals(true, HardMediumSoftScore.valueOf(0, -300, -4000).isFeasible());
-        assertEquals(false, HardMediumSoftScore.valueOf(-5, -300, -4000).isFeasible());
-        assertEquals(true, HardMediumSoftScore.valueOf(2, -300, -4000).isFeasible());
     }
 
 }

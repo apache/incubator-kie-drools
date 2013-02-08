@@ -36,9 +36,13 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.drools.planner.core.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreDefinition;
+import org.drools.planner.core.score.buildin.hardsoftdouble.HardSoftDoubleScoreDefinition;
 import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
+import org.drools.planner.core.score.buildin.simplebigdecimal.SimpleBigDecimalScoreDefinition;
 import org.drools.planner.core.score.buildin.simpledouble.SimpleDoubleScoreDefinition;
+import org.drools.planner.core.score.buildin.simplelong.SimpleLongScoreDefinition;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.score.director.AbstractScoreDirectorFactory;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
@@ -198,12 +202,20 @@ public class ScoreDirectorFactoryConfig {
             switch (scoreDefinitionType) {
                 case SIMPLE:
                     return new SimpleScoreDefinition();
+                case SIMPLE_LONG:
+                    return new SimpleLongScoreDefinition();
                 case SIMPLE_DOUBLE:
                     return new SimpleDoubleScoreDefinition();
+                case SIMPLE_BIG_DECIMAL:
+                    return new SimpleBigDecimalScoreDefinition();
                 case HARD_SOFT:
                     return new HardSoftScoreDefinition();
                 case HARD_SOFT_LONG:
                     return new HardSoftLongScoreDefinition();
+                case HARD_SOFT_DOUBLE:
+                    return new HardSoftDoubleScoreDefinition();
+                case HARD_SOFT_BIG_DECIMAL:
+                    return new HardSoftBigDecimalScoreDefinition();
                 case HARD_MEDIUM_SOFT:
                     return new HardMediumSoftScoreDefinition();
                 default:
@@ -304,9 +316,13 @@ public class ScoreDirectorFactoryConfig {
 
     public static enum ScoreDefinitionType {
         SIMPLE,
+        SIMPLE_LONG,
         SIMPLE_DOUBLE,
+        SIMPLE_BIG_DECIMAL,
         HARD_SOFT,
         HARD_SOFT_LONG,
+        HARD_SOFT_DOUBLE,
+        HARD_SOFT_BIG_DECIMAL,
         HARD_MEDIUM_SOFT,
     }
 

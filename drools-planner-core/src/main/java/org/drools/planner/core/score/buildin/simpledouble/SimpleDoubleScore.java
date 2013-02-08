@@ -68,11 +68,11 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
     }
 
     public SimpleDoubleScore multiply(double multiplicand) {
-        return new SimpleDoubleScore(Math.floor(score * multiplicand));
+        return new SimpleDoubleScore(score * multiplicand);
     }
 
     public SimpleDoubleScore divide(double divisor) {
-        return new SimpleDoubleScore(Math.floor(score / divisor));
+        return new SimpleDoubleScore(score / divisor);
     }
 
     public double[] toDoubleLevels() {
