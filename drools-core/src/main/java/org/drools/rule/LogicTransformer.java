@@ -168,7 +168,7 @@ public class LogicTransformer {
                         if (ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(resolved.getPattern().getObjectType())) {
                             Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), ((MvelConstraint) constraint).getFieldExtractor(), pattern, false);
                             pattern.addDeclaration(redeclaredDeclr);
-                        } else {
+                        } else if ( resolved.getPattern() != pattern ) {
                             ((MvelConstraint) constraint).unsetUnification();
                         }
                     }
