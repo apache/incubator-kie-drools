@@ -164,10 +164,11 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
     @Override
-    public String findProcessId(final String bpmn2Content) {
+    public ProcessDesc findProcessId(final String bpmn2Content) {
         if (bpmn2Content == null || "".equals(bpmn2Content)) {
-            return "";
+            return null;
         }
+        
         BPMN2ProcessProvider originalProvider = BPMN2ProcessFactory.getBPMN2ProcessProvider();
         if (originalProvider != provider) {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
@@ -181,12 +182,16 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
                 System.out.println("Error: "+error.getMessage());
             }
             System.out.println(">> Process Cannot be Parsed! \n"+bpmn2Content);
-            return "";
+            return null;
         }
         
         BPMN2ProcessFactory.setBPMN2ProcessProvider(originalProvider);
         
         KnowledgePackage pckg = kbuilder.getKnowledgePackages().iterator().next();
-        return pckg.getProcesses().iterator().next().getId();
+        
+        org.kie.definition.process.Process process = pckg.getProcesses().iterator().next();
+        return new ProcessDesc(process.getId(), process.getName(), process.getVersion()
+                , process.getPackageName(), process.getType(), process.getKnowledgeType().name(),
+                process.getNamespace(), null);
     }
 }

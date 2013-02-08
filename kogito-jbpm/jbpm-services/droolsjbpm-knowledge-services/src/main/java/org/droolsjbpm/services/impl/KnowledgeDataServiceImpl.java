@@ -227,4 +227,11 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         processInstances = query.getResultList();
         return processInstances;
     }
+
+    @Override
+    public Collection<ProcessDesc> getProcessesBySessionName(String sessionName) {
+        List<ProcessDesc> processes = em.createQuery("select pd from ProcessDesc pd where pd.sessionName=:sessionName GROUP BY pd.id ORDER BY pd.dataTimeStamp DESC")
+                .setParameter("sessionName", sessionName).getResultList();
+        return processes;
+    }
 }

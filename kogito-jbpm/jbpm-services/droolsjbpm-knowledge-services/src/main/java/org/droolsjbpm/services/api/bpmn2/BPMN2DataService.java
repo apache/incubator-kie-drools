@@ -36,5 +36,5 @@ public interface BPMN2DataService {
     Map<String, String> getTaskInputMappings(String processId, String taskName);
     Map<String, String> getTaskOutputMappings(String processId, String taskName);
     Collection<String> getReusableSubProcesses(String processId);
-    String findProcessId(String bpmn2Content);
+    ProcessDesc findProcessId(String bpmn2Content);
 }

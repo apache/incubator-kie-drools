@@ -149,7 +149,7 @@ public class SimpleSessionManagementTest {
         
         supportSessionsIds = sessionManager.getSessionIdsByName("supportKsession");
         
-        assertEquals(2, supportSessionsIds.size());
+        assertEquals(1, supportSessionsIds.size());
         
         
         List<TaskSummary> salaboysTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
@@ -166,7 +166,7 @@ public class SimpleSessionManagementTest {
         assertEquals(1, sessionsNames.size());
         Collection<ProcessDesc> processes = dataService.getProcesses();
         
-        assertEquals(2, processes.size());
+        assertEquals(1, processes.size());
         
         params = new HashMap<String, Object>();
         params.put("customer", "Salaboy2");
