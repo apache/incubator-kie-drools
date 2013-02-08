@@ -593,12 +593,18 @@ public class ASMConditionEvaluatorJitter {
         private Class<?> jitAritmeticExpression(AritmeticExpression aritmeticExpression) {
             if (aritmeticExpression.isStringConcat()) {
                 jitStringConcat(aritmeticExpression.left, aritmeticExpression.right);
+                return String.class;
+            }
+
+            Class<?> operationType = aritmeticExpression.getType();
+            if (operationType == BigDecimal.class || operationType == BigInteger.class) {
+                jitExpression(aritmeticExpression.left, operationType);
+                jitExpression(aritmeticExpression.right, operationType);
             } else {
-                Class<?> operationType = aritmeticExpression.getType();
                 jitExpressionToPrimitiveType(aritmeticExpression.left, operationType);
                 jitExpressionToPrimitiveType(aritmeticExpression.right, aritmeticExpression.operator.isBitwiseOperation() ? int.class : operationType);
-                jitAritmeticOperation(operationType, aritmeticExpression.operator);
             }
+            jitAritmeticOperation(operationType, aritmeticExpression.operator);
             return aritmeticExpression.getType();
         }
 
@@ -671,7 +677,7 @@ public class ASMConditionEvaluatorJitter {
                         mv.visitInsn(LREM);
                         break;
                 }
-            } else {
+            } else if (operationType == double.class) {
                 switch(operator) {
                     case ADD:
                         mv.visitInsn(DADD);
@@ -689,6 +695,27 @@ public class ASMConditionEvaluatorJitter {
                         mv.visitInsn(DREM);
                         break;
                 }
+            } else if (operationType == BigDecimal.class || operationType == BigInteger.class) {
+                try {
+                    switch(operator) {
+                        case ADD:
+                            invoke(operationType.getMethod("add", operationType));
+                            break;
+                        case SUB:
+                            invoke(operationType.getMethod("subtract", operationType));
+                            break;
+                        case MUL:
+                            invoke(operationType.getMethod("multiply", operationType));
+                            break;
+                        case DIV:
+                            invoke(operationType.getMethod("divide", operationType));
+                            break;
+                    }
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                throw new RuntimeException("Unknown operation type" + operationType);
             }
         }
 

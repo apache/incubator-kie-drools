@@ -1083,4 +1083,50 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals( 2, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testJitConstraintWithOperationOnBigDecimal() {
+        // DROOLS-32
+        String str =
+                "import org.drools.integrationtests.MiscTest2.Model;\n" +
+                "import java.math.BigDecimal;\n" +
+                "\n" +
+                "rule \"minCost\" dialect \"mvel\" \n" +
+                "when\n" +
+                "    $product : Model(price < (cost + 0.10B))\n" +
+                "then\n" +
+                "    modify ($product) { price = $product.cost + 0.10B }\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+
+        final Model model = new Model();
+        model.setCost(new BigDecimal("2.43"));
+        model.setPrice(new BigDecimal("2.43"));
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert(model);
+
+        int fired = ksession.fireAllRules(2);
+        if (fired > 1)
+            throw new RuntimeException("loop");
+    }
+
+    public static class Model {
+        private BigDecimal cost;
+        private BigDecimal price;
+
+        public BigDecimal getCost() {
+            return cost;
+        }
+        public void setCost(BigDecimal cost) {
+            this.cost = cost;
+        }
+        public BigDecimal getPrice() {
+            return price;
+        }
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+    }
 }
