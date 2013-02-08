@@ -16,14 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.RuntimeDroolsException;
-import org.drools.core.util.KeyStoreHelper;
-import org.drools.core.util.StringUtils;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.Wireable;
-import org.kie.internal.utils.CompositeClassLoader;
-import org.kie.internal.utils.FastClassLoader;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -49,6 +41,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.Wireable;
+import org.drools.core.util.KeyStoreHelper;
+import org.drools.core.util.StringUtils;
+import org.kie.internal.utils.CompositeClassLoader;
+import org.kie.internal.utils.FastClassLoader;
 
 public class JavaDialectRuntimeData
                                    implements

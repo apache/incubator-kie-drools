@@ -1,0 +1,62 @@
+package org.drools.compiler.kie.builder.impl;
+
+option java_package = "org.drools.compiler.kie.builder.impl";
+option java_outer_classname = "KieModuleCache";
+
+// WARNING: Before changing this file, make sure you know what you
+// are doing by reading the protobuf documentation at
+//
+// http://code.google.com/apis/protocolbuffers/
+//
+// in special, please node that to keep backward compatibility
+// you need to comply to a set of practices that are listed on the
+// documentation and quoted here:
+//
+// * you must not change the tag numbers of any existing fields.
+// * you must not add or delete any required fields. At this moment,
+//   as a best practice we are not using required fields at all.
+// * you may delete optional or repeated fields. The best practice
+//   though is to rename the field by prepending it with the prefix
+//   OBSOLETE_
+// * you may add new optional or repeated fields but you must use
+//   fresh tag numbers (i.e. tag numbers that were never used in
+//   this protocol buffer, not even by deleted fields).
+
+message Header {
+    extensions 100 to 199;
+
+    // Drools version for which this message was created
+    optional Version version = 1;
+
+    // Signature to prevent security concerns
+    optional Signature signature = 4;
+
+    // byte blobs
+    optional bytes payload = 10;
+}
+
+message Version {
+    optional int32 version_major = 1;
+    optional int32 version_minor = 2;
+    optional int32 version_revision = 3;
+}
+
+message Signature {
+    optional string key_alias = 1;
+    optional bytes signature = 2;
+}
+
+message KModuleCache {
+    repeated CompilationData compilation_data = 1;
+}
+
+message CompilationData {
+    optional string dialect = 1;
+    repeated CompDataEntry entry = 2;
+}
+
+message CompDataEntry {
+    optional string id = 1;
+    optional bytes data = 2;
+}
+

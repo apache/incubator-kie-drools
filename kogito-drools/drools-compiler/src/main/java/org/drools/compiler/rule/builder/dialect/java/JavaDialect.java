@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
@@ -18,34 +21,12 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.PackageBuilder.ErrorHandler;
 import org.drools.compiler.compiler.PackageBuilder.FunctionErrorHandler;
 import org.drools.compiler.compiler.PackageBuilder.RuleErrorHandler;
 import org.drools.compiler.compiler.PackageBuilder.RuleInvokerErrorHandler;
 import org.drools.compiler.compiler.PackageBuilder.SrcErrorHandler;
-import org.drools.compiler.rule.builder.AccumulateBuilder;
-import org.drools.compiler.rule.builder.ConditionalBranchBuilder;
-import org.drools.compiler.rule.builder.ConsequenceBuilder;
-import org.drools.compiler.rule.builder.EnabledBuilder;
-import org.drools.compiler.rule.builder.EngineElementBuilder;
-import org.drools.compiler.rule.builder.EntryPointBuilder;
-import org.drools.compiler.rule.builder.FromBuilder;
-import org.drools.compiler.rule.builder.FunctionBuilder;
-import org.drools.compiler.rule.builder.GroupElementBuilder;
-import org.drools.compiler.rule.builder.QueryBuilder;
-import org.drools.compiler.rule.builder.ReturnValueBuilder;
-import org.drools.compiler.rule.builder.RuleClassBuilder;
-import org.drools.compiler.rule.builder.WindowReferenceBuilder;
-import org.drools.compiler.rule.builder.dialect.DialectUtil;
-import org.drools.compiler.rule.builder.dialect.asm.ASMConsequenceStubBuilder;
-import org.drools.compiler.rule.builder.dialect.asm.ASMEvalStubBuilder;
-import org.drools.compiler.rule.builder.dialect.asm.ASMPredicateStubBuilder;
-import org.drools.compiler.rule.builder.dialect.asm.ASMReturnValueStubBuilder;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELEnabledBuilder;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELSalienceBuilder;
-import org.drools.core.util.StringUtils;
-import org.drools.core.io.internal.InternalResource;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -66,23 +47,46 @@ import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
+import org.drools.compiler.rule.builder.AccumulateBuilder;
+import org.drools.compiler.rule.builder.CollectBuilder;
+import org.drools.compiler.rule.builder.ConditionalBranchBuilder;
+import org.drools.compiler.rule.builder.ConsequenceBuilder;
+import org.drools.compiler.rule.builder.EnabledBuilder;
+import org.drools.compiler.rule.builder.EngineElementBuilder;
+import org.drools.compiler.rule.builder.EntryPointBuilder;
+import org.drools.compiler.rule.builder.ForallBuilder;
+import org.drools.compiler.rule.builder.FromBuilder;
+import org.drools.compiler.rule.builder.FunctionBuilder;
+import org.drools.compiler.rule.builder.GroupElementBuilder;
+import org.drools.compiler.rule.builder.NamedConsequenceBuilder;
+import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.compiler.rule.builder.PatternBuilder;
+import org.drools.compiler.rule.builder.PredicateBuilder;
+import org.drools.compiler.rule.builder.QueryBuilder;
+import org.drools.compiler.rule.builder.ReturnValueBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleClassBuilder;
+import org.drools.compiler.rule.builder.RuleConditionBuilder;
+import org.drools.compiler.rule.builder.SalienceBuilder;
+import org.drools.compiler.rule.builder.WindowReferenceBuilder;
+import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.compiler.rule.builder.dialect.asm.ASMConsequenceStubBuilder;
+import org.drools.compiler.rule.builder.dialect.asm.ASMEvalStubBuilder;
+import org.drools.compiler.rule.builder.dialect.asm.ASMPredicateStubBuilder;
+import org.drools.compiler.rule.builder.dialect.asm.ASMReturnValueStubBuilder;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELEnabledBuilder;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELFromBuilder;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELSalienceBuilder;
+import org.drools.core.base.TypeResolver;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.LineMappings;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
-import org.drools.compiler.rule.builder.CollectBuilder;
-import org.drools.compiler.rule.builder.ForallBuilder;
-import org.drools.compiler.rule.builder.NamedConsequenceBuilder;
-import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.compiler.rule.builder.PatternBuilder;
-import org.drools.compiler.rule.builder.PredicateBuilder;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.compiler.rule.builder.SalienceBuilder;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELFromBuilder;
-import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public class JavaDialect
     implements
@@ -589,12 +593,11 @@ public class JavaDialect
      * The ErrorHandler is required to map the errors back to the
      * element that caused it.
      */
-    public void addClassCompileTask(final String className,
+    public void addClassCompileTask( final String className,
                                      final BaseDescr descr,
                                      final String text,
                                      final MemoryResourceReader src,
                                      final ErrorHandler handler) {
-
         final String fileName = className.replace( '.',
                                                    '/' ) + ".java";
 
@@ -613,7 +616,25 @@ public class JavaDialect
     }
 
     public void addClassName(final String className) {
-        this.generatedClassList.add( className );
+        boolean found = false;
+        if( packageBuilder.getPackageBuilderConfiguration().isPreCompiled() ) {
+            // recover bytecode from cache 
+            Map<String, byte[]> cache = packageBuilder.getPackageBuilderConfiguration().getCompilationCache().get( ID );
+            if( cache != null ) {
+                String resourceName = className.replace( ".java", ".class" );
+                byte[] bytecode = cache.get( resourceName );
+                if( bytecode != null ) {
+//                    System.out.println("Found in cache = "+className);
+                    this.packageStoreWrapper.write( resourceName, bytecode );
+                    found = true;
+                }
+            }
+        }
+        if( ! found ) {
+            // compile as usual
+//            System.out.println("compiling = "+className);
+            this.generatedClassList.add( className );
+        }
     }
 
     private void loadCompiler() {

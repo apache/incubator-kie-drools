@@ -1,18 +1,5 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.core.io.internal.InternalResource;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.KieScanner;
-import org.kie.internal.utils.ServiceRegistryImpl;
-import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -29,6 +16,21 @@ import java.util.Properties;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.io.internal.InternalResource;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.KieScanner;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieContainer;
+import org.kie.internal.utils.ServiceRegistryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KieRepositoryImpl
     implements
@@ -150,19 +152,30 @@ public class KieRepositoryImpl
     public KieModule getKieModule(Resource resource) {
         InternalResource res = (InternalResource) resource;
         try {
+            KieModule kModule = null;
             // find kmodule.xml
-            String urlPath = res.getURL().toExternalForm();
-            if (res.isDirectory() ) {
-                if ( !urlPath.endsWith( "/" ) ) {
-                    urlPath = urlPath + "/";
+            if( res.hasURL() ) {
+                String urlPath = res.getURL().toExternalForm();
+                if (res.isDirectory() ) {
+                    if ( !urlPath.endsWith( "/" ) ) {
+                        urlPath = urlPath + "/";
+                    }
+                    urlPath = urlPath  + KieModuleModelImpl.KMODULE_JAR_PATH;
+                    
+                } else {
+                    urlPath = "jar:"+ urlPath  + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH;              
                 }
-                urlPath = urlPath  + KieModuleModelImpl.KMODULE_JAR_PATH;
-                
+                kModule = ClasspathKieProject.fetchKModule( new URL( urlPath )  );
+                log.debug( "fetched KieModule from resource :" + resource  );
             } else {
-                urlPath = "jar:"+ urlPath  + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH;              
+                // might be a byte[] resource
+                MemoryFileSystem mfs = MemoryFileSystem.readFromJar( res.getInputStream() );
+                byte[] bytes = mfs.getBytes( KieModuleModelImpl.KMODULE_JAR_PATH );
+                KieModuleModel kieProject = KieModuleModelImpl.fromXML( new ByteArrayInputStream( bytes ) );
+                String pomProperties = mfs.findPomProperties();
+                ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString(pomProperties);
+                kModule = new MemoryKieModule( releaseId, kieProject, mfs );
             }
-            KieModule kModule = ClasspathKieProject.fetchKModule( new URL( urlPath )  );
-            log.debug( "fetched KieModule from resource :" + resource  );
             return kModule;
         } catch ( Exception e ) {
             throw new RuntimeException("Unable to fetch module from resource :" + res, e);

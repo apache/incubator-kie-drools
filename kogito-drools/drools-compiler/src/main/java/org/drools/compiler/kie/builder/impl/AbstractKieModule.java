@@ -1,24 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.core.util.StringUtils;
-import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.Results;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.CompositeClassLoader;
-import org.kie.api.io.ResourceConfiguration;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.io.ResourceTypeImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -29,7 +11,31 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
+import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
+import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
+import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.util.StringUtils;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.io.ResourceTypeImpl;
+import org.kie.internal.utils.CompositeClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.protobuf.ExtensionRegistry;
 
 public abstract class AbstractKieModule
     implements
@@ -47,6 +53,8 @@ public abstract class AbstractKieModule
 
     private Map<ReleaseId, InternalKieModule>               dependencies;
     
+    // this is a { KBASE_NAME -> DIALECT -> ( RESOURCE, BYTECODE ) } cache
+    protected Map<String, Map<String, Map<String, byte[]>>> compilationCache  = new HashMap<String, Map<String,Map<String,byte[]>>>();
 
     public AbstractKieModule(ReleaseId releaseId, KieModuleModel kModuleModel) {
         this.releaseId = releaseId;
@@ -111,6 +119,10 @@ public abstract class AbstractKieModule
 
         PackageBuilderConfiguration pconf = new PackageBuilderConfiguration( null,
                                                                              cl.clone() );
+        
+        AbstractKieModule kModule = (AbstractKieModule) kieProject.getKieModuleForKBase( kBaseModel.getName() );
+        
+        pconf.setCompilationCache( kModule.getCompilationCache( kBaseModel.getName() ) );
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
@@ -132,7 +144,6 @@ public abstract class AbstractKieModule
             }
         }
 
-        InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
         addFiles( ckbuilder,
                   kBaseModel,
                   kModule );
@@ -199,4 +210,32 @@ public abstract class AbstractKieModule
         }
         return conf;
     }
+    
+    protected Map<String, Map<String, byte[]>> getCompilationCache( String kbaseName ) {
+        Map<String, Map<String, byte[]>> cache = compilationCache.get( kbaseName );
+        if( cache == null ) {
+            byte[] fileContents = getBytes( KieBuilderImpl.getCompilationCachePath( releaseId, kbaseName ) );
+            if( fileContents != null) {
+                ExtensionRegistry registry = KieModuleCacheHelper.buildRegistry();
+                try {
+                    Header _header = KieModuleCacheHelper.readFromStreamWithHeaderPreloaded( new ByteArrayInputStream( fileContents ), registry );
+                    KModuleCache _cache = KModuleCache.parseFrom( _header.getPayload() );
+                    
+                    cache = new HashMap<String, Map<String,byte[]>>();
+                    for( CompilationData _data : _cache.getCompilationDataList() ) {
+                        Map<String,byte[]> bytecode = new HashMap<String, byte[]>();
+                        cache.put( _data.getDialect(), bytecode );
+                        for( CompDataEntry _entry : _data.getEntryList() ) {
+                            bytecode.put( _entry.getId(), _entry.getData().toByteArray() );
+                        }
+                    }
+                    compilationCache.put( kbaseName, cache );
+                } catch (Exception e ) {
+                    log.error( "Unable to load compilation cache... ", e );
+                }
+            }
+        }
+        return cache;
+    }
+    
 }
