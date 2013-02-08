@@ -36,6 +36,8 @@ import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.drools.planner.core.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreDefinition;
+import org.drools.planner.core.score.buildin.hardsoftdouble.HardSoftDoubleScoreDefinition;
 import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
 import org.drools.planner.core.score.buildin.simplebigdecimal.SimpleBigDecimalScoreDefinition;
@@ -210,6 +212,10 @@ public class ScoreDirectorFactoryConfig {
                     return new HardSoftScoreDefinition();
                 case HARD_SOFT_LONG:
                     return new HardSoftLongScoreDefinition();
+                case HARD_SOFT_DOUBLE:
+                    return new HardSoftDoubleScoreDefinition();
+                case HARD_SOFT_BIG_DECIMAL:
+                    return new HardSoftBigDecimalScoreDefinition();
                 case HARD_MEDIUM_SOFT:
                     return new HardMediumSoftScoreDefinition();
                 default:
@@ -315,6 +321,8 @@ public class ScoreDirectorFactoryConfig {
         SIMPLE_BIG_DECIMAL,
         HARD_SOFT,
         HARD_SOFT_LONG,
+        HARD_SOFT_DOUBLE,
+        HARD_SOFT_BIG_DECIMAL,
         HARD_MEDIUM_SOFT,
     }
 

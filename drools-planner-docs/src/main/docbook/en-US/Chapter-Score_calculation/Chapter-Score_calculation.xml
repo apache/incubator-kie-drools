@@ -296,6 +296,16 @@
           <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
           <literal>HARD_SOFT_LONG</literal>.</para>
         </listitem>
+        <listitem>
+          <para><literal>HardSoftDoubleScore</literal>: Uses <literal>double</literal> values instead of
+          <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
+          <literal>HARD_SOFT_DOUBLE</literal>.</para>
+        </listitem>
+        <listitem>
+          <para><literal>HardSoftBigDecimalScore</literal>: Uses <literal>BigDecimal</literal> values instead of
+          <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
+          <literal>HARD_SOFT_BIG_DECIMAL</literal>.</para>
+        </listitem>
       </itemizedlist>
     </section>
 
