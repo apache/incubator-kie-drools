@@ -50,6 +50,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -753,6 +755,14 @@ public class ConditionAnalyzer {
 
             if (left.getType().isPrimitive() && left.getType() == right.getType()) {
                 return left.getType();
+            }
+
+            if (left.getType() == BigDecimal.class || right.getType() == BigDecimal.class) {
+                return BigDecimal.class;
+            }
+
+            if (left.getType() == BigInteger.class || right.getType() == BigInteger.class) {
+                return BigInteger.class;
             }
 
             Class<?> primitiveLeft = convertToPrimitiveType(left.getType());
