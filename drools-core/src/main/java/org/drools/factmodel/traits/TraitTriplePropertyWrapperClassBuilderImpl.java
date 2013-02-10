@@ -42,12 +42,15 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
     private transient ClassDefinition trait;
 
+    private transient TraitRegistry traitRegistry;
+
     protected ClassDefinition getTrait() {
         return trait;
     }
 
-    public void init( ClassDefinition trait ) {
+    public void init( ClassDefinition trait, TraitRegistry traitRegistry ) {
         this.trait = trait;
+        this.traitRegistry = traitRegistry;
     }
 
     
@@ -71,7 +74,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         MethodVisitor mv;
 
         // get the method bitmask
-        long mask = TraitRegistry.getInstance().getFieldMask(trait.getName(), core.getDefinedClass().getName());
+        long mask = traitRegistry.getFieldMask(trait.getName(), core.getDefinedClass().getName());
 
         String name = TraitFactory.getPropertyWrapperName( trait, core );
         String masterName = TraitFactory.getProxyName(trait, core);

@@ -61,13 +61,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     private Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
 
     private transient AbstractRuleBase ruleBase;
-
     
-    public static void reset() {
-//        factoryCache.clear();
-//        wrapperCache.clear();
-    }
-
+    
     public static void setMode( VirtualPropertyMode newMode, KnowledgeBase kBase ) {
         RuleBase ruleBase = ((KnowledgeBaseImpl) kBase).getRuleBase();
         ReteooComponentFactory rcf = ((AbstractRuleBase) ruleBase).getConfiguration().getComponentFactory();
@@ -90,8 +85,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
 
-    public TraitFactory( ) {
-
+    public TraitFactory() {        
     }
 
 
@@ -152,8 +146,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         return ruleBase;
     }
 
-    public void setRuleBase(AbstractRuleBase ruleBase) {
-        this.ruleBase = ruleBase;
+    public void setRuleBase( AbstractRuleBase ruleBase ) {
+        this.ruleBase = ruleBase;        
     }
 
 
@@ -202,8 +196,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
         // get the trait classDef
-        ClassDefinition tdef = TraitRegistry.getInstance().getTrait( trait.getName() );
-        ClassDefinition cdef = TraitRegistry.getInstance().getTraitable( coreKlass.getName() );
+        ClassDefinition tdef = ruleBase.getTraitRegistry().getTrait( trait.getName() );
+        ClassDefinition cdef = ruleBase.getTraitRegistry().getTraitable( coreKlass.getName() );
 
         String proxyName = getProxyName( tdef, cdef );
         String wrapperName = getPropertyWrapperName( tdef, cdef );
@@ -225,7 +219,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 //                break;
 //            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
 //        }
-        propWrapperBuilder.init( tdef );
+        propWrapperBuilder.init( tdef, ruleBase.getTraitRegistry() );
         try {
             byte[] propWrapper = propWrapperBuilder.buildClass( cdef );
             ruleBase.registerAndLoadTypeDefinition( wrapperName, propWrapper );
@@ -247,7 +241,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 //                break;
 //            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
 //        }
-        proxyBuilder.init( tdef, rcf.getBaseTraitProxyClass() );
+        proxyBuilder.init( tdef, rcf.getBaseTraitProxyClass(), ruleBase.getTraitRegistry() );
         try {
             byte[] proxy = proxyBuilder.buildClass( cdef );
             ruleBase.registerAndLoadTypeDefinition( proxyName, proxy );
@@ -263,7 +257,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 //        data.onBeforeExecute();
 
         try {
-            long mask = TraitRegistry.getInstance().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
+            long mask = ruleBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
             Class<T> proxyClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( proxyName, true );
             bindAccessors( proxyClass, tdef, cdef, mask );
             Class<T> wrapperClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( wrapperName, true );
@@ -364,7 +358,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         }
 
         try {
-            TraitRegistry.getInstance().addTraitable( buildWrapperClassDefinition( coreKlazz, wrapperClass ) );
+            ruleBase.getTraitRegistry().addTraitable( buildWrapperClassDefinition( coreKlazz, wrapperClass ) );
             return wrapperClass != null ? wrapperClass.newInstance() : null;
         } catch (InstantiationException e) {
             return null;

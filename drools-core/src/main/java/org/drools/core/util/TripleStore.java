@@ -16,6 +16,7 @@
 
 package org.drools.core.util;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -27,7 +28,7 @@ import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.runtime.rule.Variable;
 
 
-public class TripleStore extends AbstractHashTable {
+public class TripleStore extends AbstractHashTable implements Externalizable {
 
 
     public static final String TYPE = "rdfs:type";
@@ -56,6 +57,42 @@ public class TripleStore extends AbstractHashTable {
                        final Entry[] table) {
         super( loadFactor, table );
         this.comparator = new TripleKeyComparator();
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+
+        rebuildTable();
+        id = (String) in.readObject();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(id);
+    }
+
+
+    private void rebuildTable() {
+        // After a deserialization, the triples are still indexed and placed in slots according
+        // to the OLD subject hashcode, which has changed...
+        // TODO is there a better way to do this?
+        Triple[] tabs = new Triple[size];
+        int k = 0;
+        for ( int j = 0; j < table.length; j++ ) {
+            Triple t = (Triple) table[ j ];
+            while ( t != null ) {
+                tabs[ k++ ] = t;
+                t = (Triple) t.getNext();
+            }
+        }
+
+        table = new Entry[size];
+        size = 0;
+        for ( int j = 0 ; j < tabs.length; j++ ) {
+            put( tabs[ j ], false );
+        }
     }
 
     public String getId() {
@@ -248,13 +285,13 @@ public class TripleStore extends AbstractHashTable {
     public static class TripleKeyComparator implements ObjectComparator {
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            throw new UnsupportedOperationException();
+//            throw new UnsupportedOperationException();
 
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                 ClassNotFoundException {
-            throw new UnsupportedOperationException();
+//            throw new UnsupportedOperationException();
         }
 
         public int hashCodeOf(Object object) {
@@ -275,8 +312,21 @@ public class TripleStore extends AbstractHashTable {
             Triple t1 = ( Triple ) object1;
             Triple t2 = ( Triple ) object2;
 
-            if ( t1.getInstance() != Variable.v && t1.getInstance() != t2.getInstance() ) return false;
-            if ( t1.getProperty() != Variable.v && ! t1.getProperty().equals( t2.getProperty() ) ) return false;
+            if ( t1.getInstance() != Variable.v ) {
+                if ( t1.getInstance() == null ) {
+                    return false;
+                } else if ( t1.getInstance() instanceof String ) {
+                    if ( ! t1.getInstance().equals( t2.getInstance() ) ) {
+                        return false;
+                    }
+                } else if ( t1.getInstance() != t2.getInstance() ) {
+                    return false;
+                }
+            }
+
+            if ( t1.getProperty() != Variable.v && ! t1.getProperty().equals( t2.getProperty() ) ) {
+                return false;
+            }
             if ( t1.getValue() != Variable.v ) {
                 if ( t1.getValue() == null ) {
                     return t2.getValue() == null;

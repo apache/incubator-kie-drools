@@ -49,11 +49,6 @@ public class TripleBasedTraitsTest {
         System.out.println("TIME : "+  (new Date().getTime()-t0));
     }
 
-    @Before
-    public void reset() {
-        TraitRegistry.reset();
-        TraitFactory.reset();
-    }
 
     @Test
     public void testHasTypes() {

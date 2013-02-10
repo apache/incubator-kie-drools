@@ -36,6 +36,7 @@ import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactType;
+import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.io.Resource;
 
@@ -90,6 +91,8 @@ public class Package
     private Map<String, WindowDeclaration> windowDeclarations;
 
     private ClassFieldAccessorStore        classFieldAccessorStore;
+
+    private TraitRegistry                  traitRegistry;
 
     /**
      * This is to indicate the the package has no errors during the
@@ -175,6 +178,7 @@ public class Package
         out.writeObject( this.classFieldAccessorStore );
         out.writeObject( this.entryPointsIds );
         out.writeObject( this.windowDeclarations );
+        out.writeObject( this.traitRegistry );
         // writing the whole stream as a byte array
         if (!isDroolsStream) {
             bytes.flush();
@@ -220,6 +224,7 @@ public class Package
         this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
         this.entryPointsIds = (Set<String>) in.readObject();
         this.windowDeclarations = (Map<String, WindowDeclaration>) in.readObject();
+        this.traitRegistry = (TraitRegistry) in.readObject();
         if (!isDroolsStream) {
             in.close();
         }
@@ -564,6 +569,13 @@ public class Package
 
     public void setWindowDeclarations( Map<String, WindowDeclaration> windowDeclarations ) {
         this.windowDeclarations = windowDeclarations;
+    }
+
+    public TraitRegistry getTraitRegistry() {
+        if ( traitRegistry == null ) {
+            traitRegistry = new TraitRegistry();
+        }
+        return traitRegistry;
     }
 
     public void removeObjectsGeneratedFromResource(Resource resource) {

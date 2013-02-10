@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
+import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.io.Resource;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.rule.DialectRuntimeRegistry;
@@ -104,5 +105,9 @@ public class PackageRegistry {
 
     public void removeObjectsGeneratedFromResource(Resource resource) {
         pkg.removeObjectsGeneratedFromResource(resource);
+    }
+
+    public TraitRegistry getTraitRegistry() {
+        return pkg.getTraitRegistry();
     }
 }
