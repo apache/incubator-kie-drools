@@ -214,4 +214,49 @@ public class EvaluatorWrapper
     public String toString() {
         return this.evaluator.toString();
     }
+
+
+    public static SelfReferenceClassFieldReader getExtractor() {
+        return extractor;
+    }
+
+    public Evaluator getEvaluator() {
+        return evaluator;
+    }
+
+    public InternalWorkingMemory getWorkingMemory() {
+        return workingMemory;
+    }
+
+    public Declaration getLeftBinding() {
+        return leftBinding;
+    }
+
+    public Declaration getRightBinding() {
+        return rightBinding;
+    }
+
+    public InternalFactHandle getLeftHandle() {
+        return leftHandle;
+    }
+
+    public InternalFactHandle getRightHandle() {
+        return rightHandle;
+    }
+
+    public InternalReadAccessor getLeftExtractor() {
+        return leftExtractor;
+    }
+
+    public InternalReadAccessor getRightExtractor() {
+        return rightExtractor;
+    }
+
+    public boolean isSelfLeft() {
+        return selfLeft;
+    }
+
+    public boolean isSelfRight() {
+        return selfRight;
+    }
 }

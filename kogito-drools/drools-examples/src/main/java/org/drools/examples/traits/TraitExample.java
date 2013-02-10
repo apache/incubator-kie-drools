@@ -50,8 +50,6 @@ public class TraitExample {
 
     public static void run( String demo ) {
 
-        TraitFactory.reset();
-
         StatefulKnowledgeSession kSession = getSession( demo );
 
         kSession.fireAllRules();

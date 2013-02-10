@@ -153,7 +153,7 @@ public class JpaPersistenceTraitTest {
             }
         }
         assertNotNull( core );
-        assertEquals(2, core.getDynamicProperties().size());
+        assertEquals( 2, core.getDynamicProperties().size() );
         assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak" ) );

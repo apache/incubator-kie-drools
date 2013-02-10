@@ -16,6 +16,35 @@
 
 package org.drools.common;
 
+import org.drools.PackageIntegrationException;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuntimeDroolsException;
+import org.drools.SessionConfiguration;
+import org.drools.StatefulSession;
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.util.ObjectHashSet;
+import org.drools.core.util.TripleStore;
+import org.drools.event.RuleBaseEventListener;
+import org.drools.event.RuleBaseEventSupport;
+import org.drools.factmodel.traits.TraitRegistry;
+import org.drools.impl.EnvironmentFactory;
+import org.drools.management.DroolsManagementAgent;
+import org.drools.rule.DialectRuntimeRegistry;
+import org.drools.rule.Function;
+import org.drools.rule.ImportDeclaration;
+import org.drools.rule.InvalidPatternException;
+import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.rule.Package;
+import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
+import org.drools.rule.WindowDeclaration;
+import org.drools.spi.FactHandleFactory;
+import org.kie.definition.process.Process;
+import org.kie.definition.type.FactType;
+import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.internal.utils.CompositeClassLoader;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -35,35 +64,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.drools.PackageIntegrationException;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuntimeDroolsException;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.core.util.ObjectHashSet;
-import org.drools.core.util.TripleStore;
-import org.drools.event.RuleBaseEventListener;
-import org.drools.event.RuleBaseEventSupport;
-import org.drools.factmodel.traits.TripleStoreRegistry;
-import org.drools.impl.EnvironmentFactory;
-import org.drools.management.DroolsManagementAgent;
-import org.drools.rule.DialectRuntimeRegistry;
-import org.drools.rule.Function;
-import org.drools.rule.ImportDeclaration;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.JavaDialectRuntimeData;
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
-import org.drools.rule.TypeDeclaration;
-import org.drools.rule.WindowDeclaration;
-import org.drools.spi.FactHandleFactory;
-import org.kie.definition.process.Process;
-import org.kie.definition.type.FactType;
-import org.kie.internal.utils.ClassLoaderUtil;
-import org.kie.internal.utils.CompositeClassLoader;
 
 import static org.drools.core.util.BitMaskUtil.isSet;
 
@@ -127,6 +127,7 @@ abstract public class AbstractRuleBase
 
     private ClassFieldAccessorCache                       classFieldAccessorCache;
 
+
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
      * will result in an invalid state for the instance.
@@ -183,6 +184,8 @@ abstract public class AbstractRuleBase
         this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
 
         this.getConfiguration().getComponentFactory().getTraitFactory().setRuleBase( this );
+        this.getConfiguration().getComponentFactory().getTripleStore().setId( id );
+
     }
 
     private void createRulebaseId( final String id ) {
@@ -516,6 +519,8 @@ abstract public class AbstractRuleBase
                 this.additionsSinceLock++;
                 this.eventSupport.fireBeforePackageAdded( newPkg );
 
+                getTraitRegistry().merge( newPkg.getTraitRegistry() );
+
                 Package pkg = this.pkgs.get( newPkg.getName() );
                 if ( pkg == null ) {
                     pkg = new Package( newPkg.getName() );
@@ -530,6 +535,7 @@ abstract public class AbstractRuleBase
                 pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(),
                                                        this.rootClassLoader,
                                                        true );
+
             }
 
 
@@ -1344,7 +1350,11 @@ abstract public class AbstractRuleBase
     }
 
     public TripleStore getTripleStore() {
-        return TripleStoreRegistry.getRegistry( id );
+        return this.getConfiguration().getComponentFactory().getTripleStore();
+    }
+
+    public TraitRegistry getTraitRegistry() {
+        return this.getConfiguration().getComponentFactory().getTraitRegistry();
     }
 
 }

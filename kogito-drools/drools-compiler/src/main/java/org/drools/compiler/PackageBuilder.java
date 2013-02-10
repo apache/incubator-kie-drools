@@ -388,11 +388,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         thingType.setTypeClass( Thing.class );
         builtinTypes.put( Thing.class.getCanonicalName(),
                           thingType );
-        ClassDefinition def = new ClassDefinition();
-        def.setClassName( thingType.getTypeClass().getName() );
-        def.setDefinedClass( Thing.class );
-        TraitRegistry.getInstance().addTrait( def );
-
     }
 
     private ProcessBuilder createProcessBuilder() {
@@ -2599,7 +2594,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                        ClassDefinition def ) {
 
         if ( typeDescr.getAnnotation( Traitable.class.getSimpleName() ) != null
-                || ( ! type.getKind().equals( TypeDeclaration.Kind.TRAIT ) && TraitRegistry.getInstance().getTraitables().containsKey( def.getSuperClass() ) ) ) {
+                || ( ! type.getKind().equals( TypeDeclaration.Kind.TRAIT ) &&
+                        pkgRegistryMap.containsKey( def.getSuperClass() ) &&
+                        pkgRegistryMap.get( def.getSuperClass() ).getTraitRegistry().getTraitables().containsKey( def.getSuperClass() )
+                ) ) {
             if (!isNovelClass( typeDescr )) {
                 try {
                     PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
@@ -2611,7 +2609,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     // we already know the class exists
                 }
             }
-            TraitRegistry.getInstance().addTraitable( def );
+            pkgRegistry.getTraitRegistry().addTraitable( def );
         } else if ( type.getKind().equals( TypeDeclaration.Kind.TRAIT )
                     || typeDescr.getAnnotation( Trait.class.getSimpleName() ) != null ) {
 
@@ -2670,18 +2668,18 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     } else {
                         updateTraitDefinition( type,
                                                resolvedType );
-                        TraitRegistry.getInstance().addTrait( def );
+                        pkgRegistry.getTraitRegistry().addTrait( def );
                     }
                 } catch (ClassNotFoundException cnfe) {
                     // we already know the class exists
                 }
             } else {
                 if (def.getClassName().endsWith( "_Trait__Extension" )) {
-                    TraitRegistry.getInstance().addTrait( def.getClassName().replace( "_Trait__Extension",
+                    pkgRegistry.getTraitRegistry().addTrait( def.getClassName().replace( "_Trait__Extension",
                                                                                       "" ),
                                                           def );
                 } else {
-                    TraitRegistry.getInstance().addTrait( def );
+                    pkgRegistry.getTraitRegistry().addTrait( def );
                 }
             }
 

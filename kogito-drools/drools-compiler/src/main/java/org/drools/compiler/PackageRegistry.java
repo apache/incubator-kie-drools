@@ -3,6 +3,7 @@ package org.drools.compiler;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
+import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.ImportDeclaration;
@@ -104,5 +105,9 @@ public class PackageRegistry {
 
     public boolean removeObjectsGeneratedFromResource(Resource resource) {
         return pkg.removeObjectsGeneratedFromResource(resource);
+    }
+
+    public TraitRegistry getTraitRegistry() {
+        return pkg.getTraitRegistry();
     }
 }

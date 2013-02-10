@@ -27,23 +27,10 @@ public class TripleBasedBean extends TripleBasedStruct {
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-
-        int N = getTriplesForSubject( getObject() ).size();
-        out.writeInt( N );
-        for ( Triple t : getTriplesForSubject( getObject() ) ) {
-            out.writeObject( tripleFactory.newTriple( null, t.getProperty(), t.getValue() ) );
-        }
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal( in );
-
-        int N = in.readInt( );
-        for ( int j = 0; j < N; j++ ) {
-            Triple t = (Triple) in.readObject();
-            ((TripleImpl) t).setInstance( getObject() );
-            store.put( t, false );
-        }
     }
 
     public Object getObject() {
@@ -54,7 +41,10 @@ public class TripleBasedBean extends TripleBasedStruct {
         this.object = object;
     }
 
+    @Override
     public String toString() {
-        return "TBB " + storeId;
+        return "TripleBasedBean{" +
+                "object=" + object +
+                '}';
     }
 }

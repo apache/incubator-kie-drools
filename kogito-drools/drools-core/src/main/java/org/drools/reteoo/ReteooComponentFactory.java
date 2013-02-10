@@ -24,9 +24,11 @@ import org.drools.common.AgendaFactory;
 import org.drools.common.DefaultAgendaFactory;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
+import org.drools.core.util.TripleStore;
 import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.factmodel.traits.TraitProxy;
+import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.reteoo.builder.DefaultNodeFactory;
 import org.drools.reteoo.builder.NodeFactory;
 import org.drools.rule.DefaultLogicTransformerFactory;
@@ -219,6 +221,43 @@ public class ReteooComponentFactory implements Serializable {
 
     public static TraitFactory getDefaultTraitFactory() {
         return new TraitFactory();
+    }
+
+    private TraitRegistry traitRegistry = new TraitRegistry();
+
+    public TraitRegistry getTraitRegistry() {
+        return traitRegistry;
+    }
+
+    public void setTraitFactory( TraitRegistry tr ) {
+        traitRegistry = tr;
+    }
+
+    public void setDefaultTraitRegistry() {
+        traitRegistry = new TraitRegistry();
+    }
+
+    public static TraitRegistry getDefaultTraitRegistry() {
+        return new TraitRegistry();
+    }
+
+
+    private TripleStore tripleStore = new TripleStore();
+
+    public TripleStore getTripleStore() {
+        return tripleStore;
+    }
+
+    public void setTraitFactory( TripleStore tr ) {
+        tripleStore = tr;
+    }
+
+    public void setDefaultTripleStore() {
+        tripleStore = new TripleStore();
+    }
+
+    public static TripleStore getDefaultTripleStore() {
+        return new TripleStore();
     }
 
 

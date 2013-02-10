@@ -41,8 +41,11 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
     
     private transient ClassDefinition trait;
 
-    public void init( ClassDefinition trait ) {
+    private transient TraitRegistry traitRegistry;
+
+    public void init( ClassDefinition trait, TraitRegistry traitRegistry ) {
         this.trait = trait;
+        this.traitRegistry = traitRegistry;
     }
 
 
@@ -63,7 +66,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         MethodVisitor mv;
 
         // get the method bitmask
-        long mask = TraitRegistry.getInstance().getFieldMask( trait.getName(), core.getDefinedClass().getName() );
+        long mask = traitRegistry.getFieldMask( trait.getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactory.getPropertyWrapperName(trait, core);
 

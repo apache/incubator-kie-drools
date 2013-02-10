@@ -18,26 +18,15 @@ package org.drools.factmodel.traits;
 
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
+import org.drools.rule.TypeDeclaration;
 import org.kie.definition.type.FactField;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TraitRegistry {
+public class TraitRegistry implements Externalizable {
 
-    private static TraitRegistry instance;
-
-    public static TraitRegistry getInstance() {
-        if ( instance == null ) {
-            instance = new TraitRegistry();
-        }
-        return instance;
-    }
-
-    public static void reset() {
-        instance = null;
-    }
 
     private Map<String, ClassDefinition> traits;
     private Map<String, ClassDefinition> traitables;
@@ -45,16 +34,46 @@ public class TraitRegistry {
     private Map<String, Long> masks;
 
 
-    private TraitRegistry() {
+    public TraitRegistry() {
+
+        TypeDeclaration thingType = new TypeDeclaration( Thing.class.getName() );
+        thingType.setKind( TypeDeclaration.Kind.TRAIT );
+        thingType.setTypeClass( Thing.class );
+        ClassDefinition def = new ClassDefinition();
+        def.setClassName( thingType.getTypeClass().getName() );
+        def.setDefinedClass( Thing.class );
+        addTrait( def );
+
         ClassDefinition individualDef = new ClassDefinition();
         individualDef.setClassName( Entity.class.getName() );
-        individualDef.setDefinedClass(Entity.class);
+        individualDef.setDefinedClass( Entity.class );
         individualDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName() } );
         individualDef.setTraitable( true );
         addTraitable( individualDef );
-
     }
 
+    public void merge( TraitRegistry other ) {
+        if ( traits == null ) {
+            traits = new HashMap<String, ClassDefinition>();
+        }
+        if ( other.traits != null ) {
+            this.traits.putAll( other.traits );
+        }
+
+        if ( traitables == null ) {
+            traitables = new HashMap<String, ClassDefinition>();
+        }
+        if ( other.traitables != null ) {
+            this.traitables.putAll( other.traitables );
+        }
+
+        if ( masks == null ) {
+            masks = new HashMap<String, Long>();
+        }
+        if ( other.masks != null ) {
+            this.masks.putAll( other.masks );
+        }
+    }
 
     public Map<String, ClassDefinition> getTraits() {
         return traits;
@@ -147,6 +166,15 @@ public class TraitRegistry {
     }
 
 
+    public void writeExternal(ObjectOutput objectOutput) throws IOException {
+        objectOutput.writeObject( traits );
+        objectOutput.writeObject( traitables );
+        objectOutput.writeObject( masks );
+    }
 
-
+    public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
+        traits = (Map<String, ClassDefinition>) objectInput.readObject();
+        traitables = (Map<String, ClassDefinition>) objectInput.readObject();
+        masks = (Map<String, Long>) objectInput.readObject();
+    }
 }

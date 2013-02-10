@@ -1,14 +1,24 @@
 package org.drools.factmodel.traits;
 
-import java.io.Serializable;
-import java.util.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collection;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 
-public class VetoableTypedMap<T extends String, K extends Thing> implements Map<String, Thing>, Serializable {
+//TODO Remove and replace with TMS?
+public class VetoableTypedMap<T extends String, K extends Thing> implements Map<String, Thing>, Externalizable {
 
     private Map<String,Thing> innerMap;
 
     private PriorityQueue<Perm> vetos;
+
+    public VetoableTypedMap() {
+    }
 
     public VetoableTypedMap(Map map) {
         innerMap = map;
@@ -117,7 +127,17 @@ public class VetoableTypedMap<T extends String, K extends Thing> implements Map<
                 '}';
     }
 
-    private static class Perm implements Comparable<Perm>, Serializable {
+    public void writeExternal(ObjectOutput objectOutput) throws IOException {
+        objectOutput.writeObject( innerMap );
+        objectOutput.writeObject( vetos );
+    }
+
+    public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
+        innerMap = (Map<String, Thing>) objectInput.readObject();
+        vetos = (PriorityQueue<Perm>) objectInput.readObject();
+    }
+
+    private static class Perm implements Comparable<Perm>, Externalizable {
         private Class<? extends Thing> type;
         private boolean ward;
         private int depth;
@@ -199,6 +219,18 @@ public class VetoableTypedMap<T extends String, K extends Thing> implements Map<
                     ", ward=" + ward +
                     ", depth=" + depth +
                     '}';
+        }
+
+        public void writeExternal(ObjectOutput objectOutput) throws IOException {
+            objectOutput.writeObject( type );
+            objectOutput.writeBoolean( ward );
+            objectOutput.writeInt( depth );
+        }
+
+        public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
+            type = (Class<? extends Thing>) objectInput.readObject();
+            ward = objectInput.readBoolean();
+            depth = objectInput.readInt();
         }
     }
 }
