@@ -47,13 +47,16 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
     
     private transient Class<?> proxyBaseClass;
 
+    private transient TraitRegistry traitRegistry;
+
     protected ClassDefinition getTrait() {
         return trait;
     }
 
-    public void init( ClassDefinition trait, Class<?> baseClass ) {
+    public void init( ClassDefinition trait, Class<?> baseClass, TraitRegistry traitRegistry ) {
         this.trait = trait;
         this.proxyBaseClass = baseClass;
+        this.traitRegistry = traitRegistry;
     }
 
 
@@ -78,7 +81,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         MethodVisitor mv;
 
         // get the method bitmask
-        long mask = TraitRegistry.getInstance().getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
+        long mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactory.getPropertyWrapperName( getTrait(), core );
         String masterName = TraitFactory.getProxyName( getTrait(), core );
