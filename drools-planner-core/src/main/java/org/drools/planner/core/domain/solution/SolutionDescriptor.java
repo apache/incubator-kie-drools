@@ -35,6 +35,7 @@ import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.PropertyAccessor;
+import org.drools.planner.core.domain.common.ReflectionPropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.drools.planner.core.domain.solution.cloner.PlanningCloneableSolutionCloner;
@@ -101,7 +102,7 @@ public class SolutionDescriptor {
     private void processPropertyAnnotations() {
         boolean noPlanningEntityPropertyAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
-            PropertyAccessor propertyAccessor = new PropertyAccessor(propertyDescriptor);
+            ReflectionPropertyAccessor propertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
             propertyAccessorMap.put(propertyAccessor.getName(), propertyAccessor);
             Method propertyGetter = propertyAccessor.getReadMethod();
             if (propertyGetter != null) {

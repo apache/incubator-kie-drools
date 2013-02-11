@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.domain.variable;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import org.drools.planner.api.domain.value.ValueRanges;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.common.PropertyAccessor;
+import org.drools.planner.core.domain.common.ReflectionPropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.value.CompositePlanningValueRangeDescriptor;
 import org.drools.planner.core.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
@@ -51,9 +53,9 @@ public class PlanningVariableDescriptor {
     private PlanningValueSorter valueSorter;
 
     public PlanningVariableDescriptor(PlanningEntityDescriptor planningEntityDescriptor,
-            PropertyAccessor variablePropertyAccessor) {
+            PropertyDescriptor propertyDescriptor) {
         this.planningEntityDescriptor = planningEntityDescriptor;
-        this.variablePropertyAccessor = variablePropertyAccessor;
+        variablePropertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
     }
 
     public void processAnnotations() {

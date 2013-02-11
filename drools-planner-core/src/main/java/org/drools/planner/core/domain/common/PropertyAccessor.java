@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,71 +16,19 @@
 
 package org.drools.planner.core.domain.common;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Wraps {@link PropertyDescriptor} for faster and easier access.
- */
-public final class PropertyAccessor {
+public interface PropertyAccessor {
 
-    private final PropertyDescriptor propertyDescriptor;
-    private final Method readMethod;
-    private final Method writeMethod;
+    String getName();
 
-    public PropertyAccessor(PropertyDescriptor propertyDescriptor) {
-        this.propertyDescriptor = propertyDescriptor;
-        readMethod = propertyDescriptor.getReadMethod();
-        if (readMethod != null) {
-            readMethod.setAccessible(true); // Performance hack by avoiding security checks
-        }
-        writeMethod = propertyDescriptor.getWriteMethod();
-        if (writeMethod != null) {
-            writeMethod.setAccessible(true); // Performance hack by avoiding security checks
-        }
-    }
+    Class<?> getPropertyType();
 
-    public Method getReadMethod() {
-        return readMethod;
-    }
+    Method getReadMethod();
 
-    public Method getWriteMethod() {
-        return writeMethod;
-    }
+    Method getWriteMethod();
 
-    public String getName() {
-        return propertyDescriptor.getName();
-    }
+    Object executeGetter(Object bean);
 
-    public Class<?> getPropertyType() {
-        return propertyDescriptor.getPropertyType();
-    }
-
-    public Object executeGetter(Object bean) {
-        try {
-            return readMethod.invoke(bean);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Cannot call property (" + propertyDescriptor.getName()
-                    + ") getter on bean of class (" + bean.getClass() + ").", e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalStateException("The property (" + propertyDescriptor.getName()
-                    + ") getter on bean of class (" + bean.getClass() + ") throws an exception.",
-                    e.getCause());
-        }
-    }
-
-    public void executeSetter(Object bean, Object value) {
-        try {
-            writeMethod.invoke(bean, value);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Cannot call property (" + propertyDescriptor.getName()
-                    + ") setter on bean of class (" + bean.getClass() + ").", e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalStateException("The property (" + propertyDescriptor.getName()
-                    + ") setter on bean of class (" + bean.getClass() + ") throws an exception.",
-                    e.getCause());
-        }
-    }
-
+    void executeSetter(Object bean, Object value);
 }
