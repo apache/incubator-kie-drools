@@ -20,11 +20,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp> {
+public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBean<Imp,CoreWrapper<Imp>> {
 
     private Imp core;
     private Map<String,Object> __$$dynamic_properties_map$$;
-    private Map<String,Thing> __$$dynamic_traits_map$$;
+    private Map<String,Thing<Imp>> __$$dynamic_traits_map$$;
 
     public Map<String, Object> getDynamicProperties() {
         if ( __$$dynamic_properties_map$$ == null ) {
@@ -38,19 +38,21 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp> {
     }
 
 
-    public Map<String,Thing> getTraitMap() {
+    public Map<String,Thing<Imp>> getTraitMap() {
         if ( __$$dynamic_traits_map$$ == null ) {
-            __$$dynamic_traits_map$$ = new VetoableTypedMap( new HashMap<String, Thing>() );
+            __$$dynamic_traits_map$$ = new VetoableTypedMap( new HashMap<String, Thing<Imp>>() );
         }
         return __$$dynamic_traits_map$$;
     }
 
-    public void setTraitMap(Map map) {
-        this.__$$dynamic_traits_map$$ = map;
+    public void addTrait(String type, Thing<Imp> proxy) throws LogicalTypeInconsistencyException {
+        getTraitMap().put( type, proxy );
     }
 
-    public void addTrait(String type, Thing<Imp> proxy) {
-        getTraitMap().put(type, proxy);
+
+
+    public void setTraitMap(Map map) {
+        this.__$$dynamic_traits_map$$ = map;
     }
 
     public Thing<Imp> getTrait(String type) {
@@ -89,6 +91,10 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp> {
         this.core = core;
     }
 
+
+    public Map<String, Object> getFields() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
     public Imp getCore() {
         return core;

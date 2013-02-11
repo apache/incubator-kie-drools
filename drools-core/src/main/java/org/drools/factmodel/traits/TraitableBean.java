@@ -19,7 +19,7 @@ package org.drools.factmodel.traits;
 import java.util.Collection;
 import java.util.Map;
 
-public interface TraitableBean<K> {
+public interface TraitableBean<K, X extends TraitableBean> {
 
     public static final String MAP_FIELD_NAME = "__$$dynamic_properties_map$$";
     public String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
@@ -28,9 +28,9 @@ public interface TraitableBean<K> {
 
     public void setDynamicProperties( Map<String,Object> map );
 
-    public Map<String,Thing> getTraitMap();
+    public Map<String,Thing<K>> getTraitMap();
 
-    public void setTraitMap( Map<String,Thing> map );
+    public void setTraitMap( Map<String,Thing<K>> map );
 
 
     public void addTrait(String type, Thing<K> proxy) throws LogicalTypeInconsistencyException;

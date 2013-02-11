@@ -143,9 +143,9 @@ public interface KnowledgeHelper
 
     <T, K> T don( Thing<K> core, Class<T> trait );
 
-    <T,K> Thing<K> shed( Thing<K> thing, Class<T> trait );
+    <T, K> Thing<K> shed( Thing<K> thing, Class<T> trait );
 
-    <T,K> Thing<K> shed( TraitableBean<K> core, Class<T> trait );
+    <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait );
 
     <T, K> Thing<K> ward( Thing<K> core, Class<T> trait );
 

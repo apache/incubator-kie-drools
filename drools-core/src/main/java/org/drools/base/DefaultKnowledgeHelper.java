@@ -512,7 +512,11 @@ public class DefaultKnowledgeHelper
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
         try {
             T thing = applyTrait( core, trait, logical );
-            return doInsertTrait( thing, logical );
+            if ( thing == core ) {
+                return thing;
+            } else {
+                return doInsertTrait( thing, logical );
+            }
         } catch ( LogicalTypeInconsistencyException ltie ) {
             ltie.printStackTrace();
             return null;
@@ -580,7 +584,7 @@ public class DefaultKnowledgeHelper
 
         boolean needsWrapping = ! ( core instanceof TraitableBean );
 
-        TraitableBean inner = needsWrapping ? asTraitable( core, builder ) : (TraitableBean) core;
+        TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? asTraitable( core, builder ) : (TraitableBean<K,? extends TraitableBean>) core;
         if ( needsWrapping ) {
             InternalFactHandle h = (InternalFactHandle) getFactHandle( core );
             InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint) h.getEntryPoint();
@@ -597,7 +601,7 @@ public class DefaultKnowledgeHelper
         return processTraits( core, trait, builder, needsWrapping, inner, logical );
     }
 
-    protected <K> TraitableBean asTraitable( K core, TraitFactory builder ) {
+    protected <K> TraitableBean<K,CoreWrapper<K>> asTraitable( K core, TraitFactory builder ) {
         CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass() );
         if ( wrapper == null ) {
             throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() );
@@ -607,10 +611,18 @@ public class DefaultKnowledgeHelper
     }
     
     
-    protected <T,K> T processTraits( K core, Class<T> trait, TraitFactory builder, boolean needsUpdate, TraitableBean inner, boolean logical ) throws LogicalTypeInconsistencyException {
-
+    protected <T,K> T processTraits( K core,
+                                     Class<T> trait,
+                                     TraitFactory builder,
+                                     boolean needsUpdate,
+                                     TraitableBean<K,? extends TraitableBean> inner,
+                                     boolean logical ) throws LogicalTypeInconsistencyException {
         T thing;
-        if ( inner.hasTrait( trait.getName() ) ) {
+        if ( trait.isAssignableFrom( inner.getClass() ) ) {
+            thing = (T) inner;
+            inner.addTrait( trait.getName(), (Thing<K>) core );
+            needsUpdate = true;
+        } else if ( inner.hasTrait( trait.getName() ) ) {
             return (T) inner.getTrait( trait.getName() );
         } else {
             thing = (T) builder.getProxy( inner, trait );
@@ -640,19 +652,25 @@ public class DefaultKnowledgeHelper
     }
 
     public <T,K> Thing<K> shed( Thing<K> thing, Class<T> trait ) {
-        return shed((TraitableBean<K>) thing.getCore(), trait);
+        return shed( (TraitableBean<K,? extends TraitableBean>) thing.getCore(), trait );
     }
 
-    public <T,K> Thing<K> shed( TraitableBean<K> core, Class<T> trait ) {
-        retract( core.removeTrait( trait.getName() ) );
-        Thing thing = core.getTrait( Thing.class.getName() );
-        update( thing );
-        return thing;
+    public <T,K,X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait ) {
+        if ( trait.isAssignableFrom( core.getClass() ) ) {
+            core.removeTrait( trait.getName() );
+            update( core );
+            return (Thing<K>) core;
+        } else {
+            retract( core.removeTrait( trait.getName() ) );
+            Thing<K> thing = core.getTrait( Thing.class.getName() );
+            update( thing );
+            return thing;
+        }
     }
 
     public <T,K> Thing<K> ward( Thing<K> thing, Class<T> trait ) {
         try {
-            ((TraitableBean<K>) thing.getCore()).denyTrait( trait );
+            ( (TraitableBean<K,? extends TraitableBean>) thing.getCore() ).denyTrait( trait );
             return thing;
         } catch (LogicalTypeInconsistencyException e) {
             e.printStackTrace();
@@ -661,24 +679,23 @@ public class DefaultKnowledgeHelper
     }
 
     public <T,K> Thing<K> ward( K core, Class<T> trait ) {
-        Thing thing = don(core, Thing.class);
+        Thing<K> thing = don( core, Thing.class );
         try {
-            ((TraitableBean<K>) thing.getCore()).denyTrait( trait );
+            ( (TraitableBean<K,? extends TraitableBean>) thing.getCore() ).denyTrait( trait );
             return thing;
-        } catch (LogicalTypeInconsistencyException e) {
-//            e.printStackTrace();
+        } catch ( LogicalTypeInconsistencyException e ) {
             return null;
         }
     }
 
     public <T,K> Thing<K> grant( Thing<K> thing, Class<T> trait ) {
-        ( (TraitableBean<K>) thing.getCore() ).allowTrait(trait);
+        ( (TraitableBean<K,? extends TraitableBean>) thing.getCore() ).allowTrait( trait );
         return thing;
     }
 
     public <T,K> Thing<K> grant( K core, Class<T> trait ) {
         Thing thing = don( core, Thing.class );
-        ( (TraitableBean<K>) thing.getCore() ).allowTrait(trait);
+        ( (TraitableBean<K,? extends TraitableBean>) thing.getCore() ).allowTrait( trait );
         return thing;
     }
 

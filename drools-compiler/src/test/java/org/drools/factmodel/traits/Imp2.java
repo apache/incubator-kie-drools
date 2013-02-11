@@ -22,14 +22,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Imp2 {
+public class Imp2 implements TraitableBean<Imp2,Imp2> {
 
     private String name;
     private String school;
 
 
     private Map<String,Object> __$$dynamic_properties_map$$ = new HashMap<String,Object>();
-    private Map<String,Thing> __$$dynamic_traits_map$$;
+    private Map<String,Thing<Imp2>> __$$dynamic_traits_map$$;
 
     public Map<String,Object> getDynamicProperties() {
         return __$$dynamic_properties_map$$;
@@ -47,9 +47,9 @@ public class Imp2 {
     }
 
 
-    public Map<String, Thing> getTraitMap() {
+    public Map<String, Thing<Imp2>> getTraitMap() {
         if ( __$$dynamic_traits_map$$ == null ) {
-            __$$dynamic_traits_map$$ = new HashMap<String, Thing>();
+            __$$dynamic_traits_map$$ = new HashMap<String, Thing<Imp2>>();
         }
         return __$$dynamic_traits_map$$;
     }
@@ -74,12 +74,13 @@ public class Imp2 {
         return getTraitMap().keySet();
     }
 
+    public void denyTrait(Class trait) throws LogicalTypeInconsistencyException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 
-
-
-
-
-
+    public void allowTrait(Class trait) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 
 
     private Set field;
