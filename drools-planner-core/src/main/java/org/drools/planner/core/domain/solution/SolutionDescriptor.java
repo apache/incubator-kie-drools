@@ -102,7 +102,7 @@ public class SolutionDescriptor {
     private void processPropertyAnnotations() {
         boolean noPlanningEntityPropertyAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
-            ReflectionPropertyAccessor propertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
+            PropertyAccessor propertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
             propertyAccessorMap.put(propertyAccessor.getName(), propertyAccessor);
             Method propertyGetter = propertyAccessor.getReadMethod();
             if (propertyGetter != null) {

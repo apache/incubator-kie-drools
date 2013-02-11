@@ -49,17 +49,14 @@ public final class ReflectionPropertyAccessor implements PropertyAccessor {
         return writeMethod;
     }
 
-    @Override
     public String getName() {
         return propertyDescriptor.getName();
     }
 
-    @Override
     public Class<?> getPropertyType() {
         return propertyDescriptor.getPropertyType();
     }
 
-    @Override
     public Object executeGetter(Object bean) {
         try {
             return readMethod.invoke(bean);
@@ -73,7 +70,6 @@ public final class ReflectionPropertyAccessor implements PropertyAccessor {
         }
     }
 
-    @Override
     public void executeSetter(Object bean, Object value) {
         try {
             writeMethod.invoke(bean, value);
