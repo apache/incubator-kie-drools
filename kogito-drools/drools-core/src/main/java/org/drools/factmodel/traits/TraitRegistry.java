@@ -83,7 +83,11 @@ public class TraitRegistry implements Externalizable {
         if ( key.endsWith(  TraitFactory.SUFFIX ) ) {
             key = key.replace(  TraitFactory.SUFFIX , "" );
         }
-        return traits != null ? traits.get( key ) : null;
+        ClassDefinition traitDef = traits != null ? traits.get( key ) : null;
+        if ( traitDef == null ) {
+
+        }
+        return traitDef;
     }
 
     public Map<String, ClassDefinition> getTraitables() {

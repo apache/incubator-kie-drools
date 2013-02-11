@@ -17,7 +17,7 @@
 package org.drools.factmodel.traits;
 
 @Trait
-public interface IPerson<K> extends Thing<K> {
+public interface IPerson<K extends TraitableBean> extends Thing<K> {
 
     public String getName();
     public void setName( String name );

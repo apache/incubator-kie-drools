@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -283,6 +284,15 @@ public class TraitTest extends CommonTestMethodBase {
         Assert.assertTrue( info.contains( "DON" ) );
         Assert.assertTrue( info.contains( "SHED" ) );
 
+        Iterator it = wm.iterator();
+        Object x = it.next();
+        if ( x instanceof String ) {
+            x = it.next();
+        }
+
+        System.out.println( x.getClass() );
+        System.out.println( x.getClass().getSuperclass() );
+        System.out.println( Arrays.asList(x.getClass().getInterfaces() ));
     }
 
     @Test
@@ -2370,6 +2380,93 @@ public class TraitTest extends CommonTestMethodBase {
     public void testTraitsBeanWrapperDataStructuresMap() {
         traitsLegacyWrapperCoherence( TraitFactory.VirtualPropertyMode.MAP );
     }
+
+
+
+
+
+
+
+
+    public void traitRedundancy( TraitFactory.VirtualPropertyMode mode ) {
+        String str = "package org.drools.factmodel.traits; \n" +
+                "global java.util.List list; \n" +
+                "" +
+                "declare trait IStudent end \n" +
+                "" +
+                "declare org.drools.factmodel.traits.IPerson @typesafe(false) end \n" +
+                "" +
+                "rule \"Students\" \n" +
+                "salience -10" +
+                "when \n" +
+                "   $s : IStudent() \n" +
+                "then \n" +
+                "   System.out.println( \"Student in \" + $s ); \n" +
+                "end \n" +
+                "" +
+                "rule \"Don\" \n" +
+                "no-loop  \n" +
+                "when \n" +
+                "  $p : IPerson( age < 30 ) \n" +
+                "then \n" +
+                "   System.out.println( \"Candidate student \" + $p ); \n" +
+                "   don( $p, IStudent.class );\n" +
+                "end \n" +
+                "" +
+                "rule \"Check\" \n" +
+                "no-loop \n" +
+                "when \n" +
+                "  $p : IPerson( this isA IStudent ) \n" +
+                "then \n" +
+                "   System.out.println( \"Known student \" + $p ); " +
+                "   modify ($p) { setAge( 37 ); } \n" +
+                "   shed( $p, IStudent.class );\n" +
+                "end \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        List<?> list = new ArrayList<Object>();
+
+        ksession.setGlobal("list",
+                list);
+
+        ksession.insert( new StudentImpl( "skool", "john", 27 ) );
+
+
+        assertEquals( 3, ksession.fireAllRules() );
+
+        for ( Object o : ksession.getObjects() ) {
+            System.err.println( o );
+        }
+
+    }
+
+
+    @Test
+    public void testTraitRedundancyTriples() {
+        traitRedundancy(TraitFactory.VirtualPropertyMode.TRIPLES);
+    }
+
+    @Test
+    public void testTraitRedundancyMap() {
+        traitRedundancy(TraitFactory.VirtualPropertyMode.MAP);
+    }
+
+
+
+
+
 
 
 }

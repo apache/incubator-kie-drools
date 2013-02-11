@@ -191,7 +191,7 @@ public class SequentialKnowledgeHelper
         return null;
     }
 
-    public <T, K> Thing<K> shed( TraitableBean<K> core, Class<T> trait) {
+    public <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

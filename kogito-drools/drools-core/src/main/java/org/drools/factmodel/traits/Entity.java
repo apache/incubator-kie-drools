@@ -24,13 +24,13 @@ import java.util.Map;
 import java.util.UUID;
 
 @Traitable
-public class Entity implements TraitableBean, Serializable {
+public class Entity implements TraitableBean<Entity,Entity>, Serializable {
 
 
     private String id;
 
     private Map<String,Object> __$$dynamic_properties_map$$;
-    private Map<String,Thing> __$$dynamic_traits_map$$;
+    private Map<String,Thing<Entity>> __$$dynamic_traits_map$$;
 
     public Entity() {
         id = UUID.randomUUID().toString();
@@ -66,7 +66,7 @@ public class Entity implements TraitableBean, Serializable {
     }
 
 
-    public Map<String, Thing> getTraitMap() {
+    public Map<String, Thing<Entity>> getTraitMap() {
 //        if ( __$$dynamic_traits_map$$ == null ) {
 //            __$$dynamic_traits_map$$ = new VetoableTypedMap( new HashMap<String, Thing>(5) );
 //        }

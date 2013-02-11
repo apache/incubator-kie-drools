@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.RuleBase;
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.common.AbstractRuleBase;
@@ -200,6 +201,13 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         // get the trait classDef
         ClassDefinition tdef = ruleBase.getTraitRegistry().getTrait( trait.getName() );
         ClassDefinition cdef = ruleBase.getTraitRegistry().getTraitable( coreKlass.getName() );
+
+        if ( tdef == null ) {
+            throw new RuntimeDroolsException( "Unable to find Trait definition for class " + trait.getName() + ". It should have been DECLARED as a trait" );
+        }
+        if ( cdef == null ) {
+            throw new RuntimeDroolsException( "Unable to find Core class definition for class " + coreKlass.getName() + ". It should have been DECLARED as a trait" );
+        }
 
         String proxyName = getProxyName( tdef, cdef );
         String wrapperName = getPropertyWrapperName( tdef, cdef );
@@ -382,7 +390,6 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
             ruleBase.getPackagesMap().put( pack, traitPackage );
         }
         ClassFieldAccessorStore store = traitPackage.getClassFieldAccessorStore();
-//        ClassFieldAccessorStore store = ((JavaDialectRuntimeData.TypeDeclarationClassLoader) ruleBase.getTypeDeclarationClassLoader()).getAccessorStore();
 
         String className = coreKlazz.getName() + "Wrapper";
         String superClass = coreKlazz.getName();
