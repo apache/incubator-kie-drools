@@ -30,8 +30,6 @@ import java.util.Map;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.common.PropertyAccessor;
-import org.drools.planner.core.domain.common.ReflectionPropertyAccessor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
