@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.drools.planner.api.domain.value.ValueRange;
 import org.drools.planner.core.domain.common.PropertyAccessor;
+import org.drools.planner.core.domain.common.ReflectionPropertyAccessor;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.solution.Solution;
@@ -62,7 +63,8 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
     private void processPlanningEntityProperty(ValueRange valueRangeAnnotation) {
         String planningEntityProperty = valueRangeAnnotation.planningEntityProperty();
         PlanningEntityDescriptor planningEntityDescriptor = variableDescriptor.getPlanningEntityDescriptor();
-        rangePropertyAccessor = planningEntityDescriptor.getPropertyAccessor(planningEntityProperty);
+        rangePropertyAccessor = new ReflectionPropertyAccessor(
+                planningEntityDescriptor.getPropertyDescriptor(planningEntityProperty));
         if (rangePropertyAccessor == null) {
             String exceptionMessage = "The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()

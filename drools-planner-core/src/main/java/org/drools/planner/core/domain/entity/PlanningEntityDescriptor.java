@@ -169,10 +169,10 @@ public class PlanningEntityDescriptor {
         return planningEntitySorter;
     }
 
-    public PropertyAccessor getPropertyAccessor(String propertyName) {
+    public PropertyDescriptor getPropertyDescriptor(String propertyName) {
         for (PropertyDescriptor propertyDescriptor : planningEntityBeanInfo.getPropertyDescriptors()) {
             if (propertyDescriptor.getName().equals(propertyName)) {
-                return new ReflectionPropertyAccessor(propertyDescriptor);
+                return propertyDescriptor;
             }
         }
         return null;
