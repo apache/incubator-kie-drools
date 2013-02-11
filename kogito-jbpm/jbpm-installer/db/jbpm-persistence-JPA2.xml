@@ -5,27 +5,60 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
 
-  <persistence-unit name="org.jbpm.persistence.jpa.ddl" transaction-type="JTA">
+  <persistence-unit name="org.jbpm.domain" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <mapping-file>META-INF/JBPMorm-JPA2.xml</mapping-file>
-    <mapping-file>META-INF/ProcessInstanceInfoMapping-JPA2.xml</mapping-file>
+    <jta-data-source>java:jboss/datasources/jbpmDS</jta-data-source>
+    <mapping-file>META-INF/Taskorm.xml</mapping-file>
+    <mapping-file>META-INF/JBPMorm.xml</mapping-file>
+    <mapping-file>META-INF/Executor-orm.xml</mapping-file>
+
+    <class>org.jbpm.task.Attachment</class>
+    <class>org.jbpm.task.Content</class>
+    <class>org.jbpm.task.BooleanExpression</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Delegation</class>
+    <class>org.jbpm.task.Escalation</class>
+    <class>org.jbpm.task.Group</class>
+    <class>org.jbpm.task.I18NText</class>
+    <class>org.jbpm.task.Notification</class>
+    <class>org.jbpm.task.EmailNotification</class>
+    <class>org.jbpm.task.EmailNotificationHeader</class>
+    <class>org.jbpm.task.PeopleAssignments</class>
+    <class>org.jbpm.task.Reassignment</class>
+    <class>org.jbpm.task.Status</class>
+    <class>org.jbpm.task.Task</class>
+    <class>org.jbpm.task.TaskDef</class>
+    <class>org.jbpm.task.TaskData</class>
+    <class>org.jbpm.task.SubTasksStrategy</class>
+    <class>org.jbpm.task.User</class>
+    <class>org.droolsjbpm.services.impl.model.ProcessDesc</class>
+    <class>org.droolsjbpm.services.impl.model.ProcessInstanceDesc</class>
+    <class>org.droolsjbpm.services.impl.model.NodeInstanceDesc</class>
+    <class>org.droolsjbpm.services.impl.model.VariableStateDesc</class>
+    <class>org.droolsjbpm.services.impl.model.ProcessInputDesc</class>
+    <class>org.droolsjbpm.services.impl.model.RuleNotificationInstanceDesc</class>
+    <class>org.droolsjbpm.services.impl.model.BAMProcessSummary</class>
+    <class>org.droolsjbpm.services.impl.model.BAMTaskSummary</class>
 
     <class>org.drools.persistence.info.SessionInfo</class>
-    <class>org.drools.persistence.info.WorkItemInfo</class>    
-    <class>org.jbpm.process.audit.ProcessInstanceLog</class>
-    <class>org.jbpm.process.audit.NodeInstanceLog</class>
-    <class>org.jbpm.process.audit.VariableInstanceLog</class>
+    <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
+    <class>org.drools.persistence.info.WorkItemInfo</class>
+    <class>org.jbpm.executor.entities.ErrorInfo</class>
+    <class>org.jbpm.executor.entities.RequestInfo</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+
       <property name="hibernate.max_fetch_depth" value="3" />
       <property name="hibernate.hbm2ddl.auto" value="update" />
-      <property name="hibernate.show_sql" value="false" />
-      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" />
-      
-      <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
+      <property name="hibernate.show_sql" value="false" />      
+      <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
       <property name="hibernate.id.new_generator_mappings" value="false" />
+      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
     </properties>
-
   </persistence-unit>
+
 </persistence>

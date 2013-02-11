@@ -70,12 +70,6 @@
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
-            <logger category="org.apache.jackrabbit">
-                <level name="ERROR"/>
-            </logger>
-            <logger category="org.jboss.resteasy">
-                <level name="ERROR"/>
-            </logger>
             <logger category="org.apache.tomcat.util.modeler">
                 <level name="WARN"/>
             </logger>
@@ -108,6 +102,25 @@
                     </security>
                 </datasource>
                 <datasource jta="true" jndi-name="java:jboss/datasources/jbpmDS" pool-name="H2DS" enabled="true" use-java-context="true" use-ccm="true">
+                    <connection-url>jdbc:h2:~/jbpm</connection-url>
+                    <driver>h2</driver>
+                    <pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>4</max-pool-size>
+                        <prefill>false</prefill>
+                        <use-strict-min>false</use-strict-min>
+                        <flush-strategy>FailingConnectionOnly</flush-strategy>
+                    </pool>
+                    <security>
+                        <user-name>sa</user-name>
+                    </security>
+                    <validation>
+                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>false</background-validation>
+                    </validation>
+                </datasource>
+                <datasource jta="true" jndi-name="java:jboss/datasources/BamAppDS" pool-name="BamAppDS" enabled="true" use-java-context="true" use-ccm="true">
                     <connection-url>jdbc:h2:~/jbpm</connection-url>
                     <driver>h2</driver>
                     <pool>
@@ -258,6 +271,14 @@
                         </login-module>
                     </authentication>
                 </security-domain>
+                <security-domain name="drools-guvnor" cache-type="default">
+                    <authentication>
+                        <login-module code="UsersRoles" flag="required">
+                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
+                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
                 <security-domain name="jboss-web-policy" cache-type="default">
                     <authorization>
                         <policy-module code="Delegating" flag="required"/>
@@ -267,30 +288,6 @@
                     <authorization>
                         <policy-module code="Delegating" flag="required"/>
                     </authorization>
-                </security-domain>
-                <security-domain name="drools-guvnor" cache-type="default">
-                    <authentication>
-                        <login-module code="UsersRoles" flag="required">
-                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
-                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
-                        </login-module>
-                    </authentication>
-                </security-domain>
-                <security-domain name="jbpm-console" cache-type="default">
-                    <authentication>
-                        <login-module code="UsersRoles" flag="required">
-                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
-                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
-                        </login-module>
-                    </authentication>
-                </security-domain>
-                <security-domain name="jbpm-form-builder" cache-type="default">
-                    <authentication>
-                        <login-module code="UsersRoles" flag="required">
-                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
-                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
-                        </login-module>
-                    </authentication>
                 </security-domain>
             </security-domains>
         </subsystem>

@@ -3,15 +3,25 @@ package com.sample;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.KnowledgeBase;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
+import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.identity.UserGroupCallbackManager;
+import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.local.LocalTaskService;
+import org.jbpm.task.utils.OnErrorAction;
+import org.jbpm.test.JBPMHelper;
+import org.kie.KieBase;
+import org.kie.SystemEventListenerFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.ResourceType;
 import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
 
 /**
  * This is a sample file to launch a process.
@@ -21,7 +31,7 @@ public class ProcessTest {
 	public static final void main(String[] args) {
 		try {
 			// load up the knowledge base
-			KnowledgeBase kbase = readKnowledgeBase();
+			KieBase kbase = readKnowledgeBase();
 			StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
 			// start a new process instance
@@ -36,17 +46,24 @@ public class ProcessTest {
 		}
 	}
 
-	private static KnowledgeBase readKnowledgeBase() throws Exception {
+	private static KieBase readKnowledgeBase() throws Exception {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newClassPathResource("Evaluation.bpmn"), ResourceType.BPMN2);
 		return kbuilder.newKnowledgeBase();
 	}
 	
-	private static StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		HornetQHTWorkItemHandler humanTaskHandler = new HornetQHTWorkItemHandler(ksession);
-		humanTaskHandler.setIpAddress("127.0.0.1");
-		humanTaskHandler.setPort(5153);
+	private static StatefulKnowledgeSession createKnowledgeSession(KieBase kbase) {
+		StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) kbase.newKieSession();
+		UserGroupCallbackManager.getInstance().setCallback(
+			new DefaultUserGroupCallbackImpl("classpath:/usergroups.properties"));
+		JBPMHelper.setupDataSource();
+		JBPMHelper.startH2Server();
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
+		TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+		LocalTaskService localTaskService = new LocalTaskService(taskService);
+		LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler(
+			localTaskService, ksession, OnErrorAction.RETHROW);
+		humanTaskHandler.connect();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
 		return ksession;
 	}
