@@ -16,13 +16,12 @@
 
 package org.drools.command.impl;
 
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.command.Context;
 import org.kie.command.World;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.SessionEntryPoint;
 
@@ -32,27 +31,27 @@ public class FixedKnowledgeCommandContext
 
     private Context                  context;
     private KnowledgeBuilder         kbuilder;
-    private KnowledgeBase            kbase;
-    private StatefulKnowledgeSession statefulKsession;
-    private SessionEntryPoint  workingMemoryEntryPoint;
+    private KieBase                  kbase;
+    private KieSession               kSession;
+    private SessionEntryPoint        workingMemoryEntryPoint;
     private ExecutionResults         kresults;
 
     public FixedKnowledgeCommandContext(Context context,
                                         KnowledgeBuilder kbuilder,
-                                        KnowledgeBase kbase,
-                                        StatefulKnowledgeSession statefulKsession,
+                                        KieBase kbase,
+                                        KieSession statefulKsession,
                                         ExecutionResults kresults) {
         this.context = context;
         this.kbuilder = kbuilder;
         this.kbase = kbase;
-        this.statefulKsession = statefulKsession;
+        this.kSession = statefulKsession;
         this.kresults = kresults;
     }
 
     public FixedKnowledgeCommandContext(Context context,
                                         KnowledgeBuilder kbuilder,
-                                        KnowledgeBase kbase,
-                                        StatefulKnowledgeSession statefulKsession,
+                                        KieBase kbase,
+                                        KieSession statefulKsession,
                                         SessionEntryPoint workingMemoryEntryPoint,
                                         ExecutionResults kresults) {
         this( context,
@@ -67,16 +66,16 @@ public class FixedKnowledgeCommandContext
         return kbuilder;
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public KieBase getKieBase() {
         return this.kbase;
     }
 
-    public StatefulKnowledgeSession getStatefulKnowledgesession() {
-        return statefulKsession;
+    public KieSession getKieSession() {
+        return kSession;
     }
 
     public WorkItemManager getWorkItemManager() {
-        return statefulKsession.getWorkItemManager();
+        return kSession.getWorkItemManager();
     }
 
     public ExecutionResults getExecutionResults() {
@@ -95,20 +94,8 @@ public class FixedKnowledgeCommandContext
         this.kbuilder = kbuilder;
     }
 
-    public KnowledgeBase getKbase() {
-        return kbase;
-    }
-
-    public void setKbase(KnowledgeBase kbase) {
+    public void setKbase(KieBase kbase) {
         this.kbase = kbase;
-    }
-
-    public StatefulKnowledgeSession getStatefulKsession() {
-        return statefulKsession;
-    }
-
-    public void setStatefulKsession(StatefulKnowledgeSession statefulKsession) {
-        this.statefulKsession = statefulKsession;
     }
 
     public World getContextManager() {

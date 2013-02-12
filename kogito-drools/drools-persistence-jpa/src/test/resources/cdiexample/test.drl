@@ -1,0 +1,10 @@
+package org.kie.test
+
+global java.util.List list
+
+rule rule1
+when
+  Integer(intValue > 0)
+then
+  list.add( 1 );
+end

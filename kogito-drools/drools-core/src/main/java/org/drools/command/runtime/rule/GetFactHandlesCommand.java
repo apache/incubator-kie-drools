@@ -21,11 +21,10 @@ import java.util.Collection;
 
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.kie.command.Context;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 
 public class GetFactHandlesCommand
@@ -50,7 +49,7 @@ public class GetFactHandlesCommand
     }
 
     public Collection<FactHandle> execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         Collection<FactHandle> disconnectedFactHandles = new ArrayList<FactHandle>();
         if ( filter != null ) {
             Collection<InternalFactHandle> factHandles = ksession.getFactHandles( this.filter );

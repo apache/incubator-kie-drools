@@ -30,7 +30,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.Variable;
 
@@ -88,7 +88,7 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
     }
 
     public QueryResults execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
         if ( this.arguments == null || this.arguments.isEmpty() ) {
             this.arguments = Collections.emptyList();

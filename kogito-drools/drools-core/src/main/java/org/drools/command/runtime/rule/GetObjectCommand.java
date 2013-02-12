@@ -26,7 +26,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -67,7 +67,7 @@ public class GetObjectCommand
     }
 
     public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
         Object object = ksession.getObject( factHandle );
         

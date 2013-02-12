@@ -19,14 +19,14 @@ package org.drools.command.runtime.rule;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class HaltCommand
     implements
     GenericCommand<Void> {
 
     public Void execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         ksession.halt();
         return null;
     }

@@ -18,18 +18,15 @@ package org.drools.command.runtime;
 
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.AgendaFilter;
+import org.kie.runtime.KieSession;
 
 public class DisposeCommand
     implements
     GenericCommand<Void> {
 
     public Void execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         ksession.dispose();
         return null;
     }

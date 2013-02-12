@@ -19,7 +19,7 @@ package org.drools.command.runtime.process;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.process.ProcessInstance;
 
 public class StartProcessInstanceCommand implements GenericCommand<ProcessInstance> {
@@ -42,7 +42,7 @@ public class StartProcessInstanceCommand implements GenericCommand<ProcessInstan
     }
 
     public ProcessInstance execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         ProcessInstance processInstance = (ProcessInstance) ksession.startProcessInstance(processInstanceId);
         return processInstance;
     }

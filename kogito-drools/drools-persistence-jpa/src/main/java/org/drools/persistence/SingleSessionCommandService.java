@@ -40,7 +40,7 @@ import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.time.AcceptsTimerJobFactoryManager;
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 import org.kie.command.BatchExecutionCommand;
 import org.kie.command.Command;
 import org.kie.command.Context;
@@ -61,7 +61,7 @@ public class SingleSessionCommandService
     private SessionInfo                sessionInfo;
     private SessionMarshallingHelper   marshallingHelper;
 
-    private StatefulKnowledgeSession   ksession;
+    private KieSession                 ksession;
     private Environment                env;
     private KnowledgeCommandContext    kContext;
     private CommandService             commandService;
@@ -101,7 +101,7 @@ public class SingleSessionCommandService
               env );
     }
 
-    public SingleSessionCommandService(KnowledgeBase kbase,
+    public SingleSessionCommandService(KieBase kbase,
                                        KieSessionConfiguration conf,
                                        Environment env) {
         if ( conf == null ) {
@@ -116,8 +116,8 @@ public class SingleSessionCommandService
         initTransactionManager( this.env );
 
         // create session but bypass command service
-        this.ksession = kbase.newStatefulKnowledgeSession( conf,
-                                                           this.env );
+        this.ksession = kbase.newKieSession( conf,
+                                             this.env );
 
         this.kContext = new FixedKnowledgeCommandContext( null,
                                                           null,
@@ -168,7 +168,7 @@ public class SingleSessionCommandService
     }
 
     public SingleSessionCommandService(Integer sessionId,
-                                       KnowledgeBase kbase,
+                                       KieBase kbase,
                                        KieSessionConfiguration conf,
                                        Environment env) {
         if ( conf == null ) {
@@ -210,7 +210,7 @@ public class SingleSessionCommandService
     }
 
     protected void initKsession(Integer sessionId,
-                                KnowledgeBase kbase,
+                                KieBase kbase,
                                 KieSessionConfiguration conf,
                                 PersistenceContext persistenceContext) {
         if ( !doRollback && this.ksession != null ) {
@@ -449,7 +449,7 @@ public class SingleSessionCommandService
             
             this.service.jpm.endCommandScopedEntityManager();
 
-            StatefulKnowledgeSession ksession = this.service.ksession;
+            KieSession ksession = this.service.ksession;
             // clean up cached process and work item instances
             if ( ksession != null ) {
                 InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
@@ -471,7 +471,7 @@ public class SingleSessionCommandService
 
     }
 
-    public StatefulKnowledgeSession getStatefulKnowledgeSession() {
+    public KieSession getKieSession() {
         return this.ksession;
     }
 

@@ -21,7 +21,7 @@ import java.util.Collection;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.SessionEntryPoint;
 
 public class GetEntryPointsCommand
@@ -32,7 +32,7 @@ public class GetEntryPointsCommand
     }
 
     public Collection< ? extends SessionEntryPoint> execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         return ksession.getEntryPoints();
     }
 

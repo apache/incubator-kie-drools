@@ -20,18 +20,16 @@ import java.util.Collection;
 
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.kie.command.Context;
-import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class GetAgendaEventListenersCommand
     implements
     GenericCommand<Collection<AgendaEventListener>> {
 
     public Collection<AgendaEventListener> execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         return ksession.getAgendaEventListeners();
     }
 

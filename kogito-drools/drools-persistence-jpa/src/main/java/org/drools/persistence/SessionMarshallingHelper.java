@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.kie.KnowledgeBase;
+import org.kie.KieBase;
 import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
@@ -12,12 +12,11 @@ import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class SessionMarshallingHelper {
 
-    private KnowledgeBase                 kbase;
-    private KieSessionConfiguration conf;
+    private KieBase kbase;
+    private KieSessionConfiguration       conf;
     private KieSession      			  ksession;
     private Marshaller                    marshaller;
     private Environment                   env;
@@ -25,9 +24,9 @@ public class SessionMarshallingHelper {
     /**
      * Exist Info, so load session from here
      */
-    public SessionMarshallingHelper(KnowledgeBase kbase,
-                                       KieSessionConfiguration conf,
-                                       Environment env) {
+    public SessionMarshallingHelper( KieBase kbase,
+                                     KieSessionConfiguration conf,
+                                     Environment env) {
         this.kbase = kbase;
         this.conf = conf;
         this.env = env;
@@ -43,8 +42,8 @@ public class SessionMarshallingHelper {
     /** 
      * new session, don't write now as info will request it on update callback
      */
-    public SessionMarshallingHelper(StatefulKnowledgeSession ksession,
-                                       KieSessionConfiguration conf) {
+    public SessionMarshallingHelper( KieSession ksession,
+                                     KieSessionConfiguration conf) {
         this.ksession = ksession;
         this.kbase = ksession.getKieBase();
         this.conf = conf;
@@ -97,7 +96,7 @@ public class SessionMarshallingHelper {
         return ksession;
     }
 
-    public KnowledgeBase getKbase() {
+    public KieBase getKbase() {
         return kbase;
     }
 

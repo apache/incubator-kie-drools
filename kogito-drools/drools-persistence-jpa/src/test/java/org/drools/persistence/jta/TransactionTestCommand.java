@@ -33,6 +33,7 @@ import org.kie.command.Context;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 import bitronix.tm.TransactionManagerServices;
@@ -84,11 +85,11 @@ public class TransactionTestCommand implements GenericCommand<Void> {
         em.persist(mainObject);
 
         if( subObject != null ) { 
-            StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+            KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
   
             // THe following 3 lines are the important ones! (See below for an explanation)
             KnowledgeBase cleanKBase = KnowledgeBaseFactory.newKnowledgeBase();
-            cleanKBase.addKnowledgePackages(ksession.getKieBase().getKnowledgePackages());
+            cleanKBase.addKnowledgePackages(((KnowledgeBase)ksession.getKieBase()).getKnowledgePackages());
             StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( cleanKBase, null, initializeEnvironment() );
 
             /**

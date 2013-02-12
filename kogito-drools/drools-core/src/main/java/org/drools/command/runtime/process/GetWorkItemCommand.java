@@ -22,7 +22,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class GetWorkItemCommand implements GenericCommand<WorkItem> {
 
@@ -44,7 +44,7 @@ public class GetWorkItemCommand implements GenericCommand<WorkItem> {
     }
 
     public WorkItem execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         return ((WorkItemManager) ksession.getWorkItemManager()).getWorkItem(workItemId);
     }
 

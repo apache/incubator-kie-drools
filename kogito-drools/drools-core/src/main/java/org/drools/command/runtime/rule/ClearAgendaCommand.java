@@ -18,16 +18,13 @@ package org.drools.command.runtime.rule;
 
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.common.InternalAgenda;
-import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.runtime.rule.impl.AgendaImpl;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class ClearAgendaCommand implements GenericCommand<Object> {
 
     public Void execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         ksession.getAgenda().clear();
         return null;
     }

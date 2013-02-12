@@ -33,7 +33,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.xml.jaxb.util.JaxbCollectionAdapter;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.SessionEntryPoint;
 
@@ -79,7 +79,7 @@ public class InsertElementsCommand
     }
 
     public Collection<FactHandle> execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         List<FactHandle> handles = new ArrayList<FactHandle>();
         
         SessionEntryPoint wmep;

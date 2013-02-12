@@ -147,7 +147,7 @@ public abstract class WorkingMemoryLogger
             ((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
             ReteooWorkingMemoryInterface eventManager =
-                ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getStatefulKnowledgesession()).session;
+                ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getKieSession()).session;
             eventManager.addEventListener( (WorkingMemoryEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
             InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();

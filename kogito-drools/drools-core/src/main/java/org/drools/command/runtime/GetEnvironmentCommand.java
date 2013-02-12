@@ -18,17 +18,16 @@ package org.drools.command.runtime;
 
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.kie.command.Context;
 import org.kie.runtime.Environment;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class GetEnvironmentCommand
     implements
     GenericCommand<Environment> {
 
     public Environment execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         return ksession.getEnvironment();
     }
 

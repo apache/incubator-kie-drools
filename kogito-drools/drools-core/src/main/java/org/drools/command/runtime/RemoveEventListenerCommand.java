@@ -22,7 +22,7 @@ import org.kie.command.Context;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class RemoveEventListenerCommand
     implements
@@ -45,7 +45,7 @@ public class RemoveEventListenerCommand
     }
 
     public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         if ( workingMemoryEventListener != null ) {
             ksession.removeEventListener( workingMemoryEventListener );
         } else if ( agendaEventListener != null ) {

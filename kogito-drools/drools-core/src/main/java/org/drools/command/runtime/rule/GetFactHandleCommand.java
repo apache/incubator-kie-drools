@@ -20,7 +20,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalFactHandle;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 
 public class GetFactHandleCommand
@@ -41,7 +41,7 @@ public class GetFactHandleCommand
     }
 
     public FactHandle execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         InternalFactHandle factHandle = (InternalFactHandle) ksession.getFactHandle( object );
         if ( factHandle != null ){
             InternalFactHandle handle = factHandle.clone();

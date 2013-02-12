@@ -27,11 +27,11 @@ public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext
         context.set( KnowledgeBuilder.class.getName(), kbuilder );
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public KnowledgeBase getKieBase() {
         return ( KnowledgeBase ) context.get( KnowledgeBase.class.getName() );
     }
 
-    public StatefulKnowledgeSession getStatefulKnowledgesession() {
+    public StatefulKnowledgeSession getKieSession() {
         return ( StatefulKnowledgeSession ) context.get( StatefulKnowledgeSession.class.getName() );
     }
 

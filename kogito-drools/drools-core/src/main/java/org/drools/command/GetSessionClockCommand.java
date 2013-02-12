@@ -19,7 +19,7 @@ package org.drools.command;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.time.SessionClock;
 
 public class GetSessionClockCommand
@@ -27,7 +27,7 @@ public class GetSessionClockCommand
     GenericCommand<SessionClock> {
 
     public SessionClock execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         return ksession.<SessionClock>getSessionClock();
     }
 
