@@ -16,11 +16,6 @@
 
 package org.drools.common;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.LinkedList;
-
 import org.drools.FactHandle;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -31,6 +26,11 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.LinkedList;
 
 public class PropagationContextImpl
     implements
@@ -74,7 +74,7 @@ public class PropagationContextImpl
     
     // this field is only set for propagations happening during 
     // the deserialization of a session
-    private MarshallerReaderContext readerContext;
+    private transient MarshallerReaderContext readerContext;
 
     public PropagationContextImpl() {
 
@@ -219,6 +219,10 @@ public class PropagationContextImpl
         return this.propagationNumber;
     }
 
+    public void cleanReaderContext() {
+        readerContext = null;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -338,14 +342,10 @@ public class PropagationContextImpl
     }   
     
     public void evaluateActionQueue(InternalWorkingMemory workingMemory) {
-        if ( queue1 == null && queue2 == null ) {
-            return;
-        }
-        
         boolean repeat = true;
         while(repeat) {
             synchronized (queue1) {
-                WorkingMemoryAction action = null;                
+                WorkingMemoryAction action;
                 while ( (action = (!queue1.isEmpty()) ? queue1.removeFirst() : null ) != null ) {
                     action.execute( workingMemory );
                 }
@@ -353,11 +353,11 @@ public class PropagationContextImpl
             
             repeat = false;
             if ( this.queue2 != null ) {
-                WorkingMemoryAction action = null;
-                
-                while ( (action = (!queue2.isEmpty()) ? queue2.removeFirst() : null ) != null ) {
+                WorkingMemoryAction action;
+
+                while ( (action = (!queue2.isEmpty()) ? queue2.removeFirst() : null) != null ) {
                     action.execute( workingMemory );
-                    if ( this.queue1 != null && !this.queue1.isEmpty() ) {
+                    if ( !this.queue1.isEmpty() ) {
                         // Queue1 always takes priority and it's contents should be evaluated first
                         repeat = true;
                         break;
