@@ -198,52 +198,58 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         protected void process(Unprocessed unprocessed) {
             Object cloneValue;
             if (unprocessed.originalValue instanceof Collection) {
-                cloneValue = cloneCollection((Collection) unprocessed.originalValue);
+                cloneValue = cloneCollection(unprocessed.field.getType(), (Collection<?>) unprocessed.originalValue);
             } else if (unprocessed.originalValue instanceof Map) {
-                cloneValue = cloneMap((Map) unprocessed.originalValue);
+                cloneValue = cloneMap(unprocessed.field.getType(), (Map<?,?>) unprocessed.originalValue);
             } else {
                 cloneValue = clone(unprocessed.originalValue);
             }
             setFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
         }
 
-        protected Collection cloneCollection(Collection originalCollection) {
-            Collection cloneCollection = constructCloneCollection(originalCollection);
-            for (Object originalEntity : originalCollection) {
-                Object cloneElement = clone(originalEntity);
+        protected <E> Collection<E> cloneCollection(Class<?> expectedType, Collection<E> originalCollection) {
+            Collection<E> cloneCollection = constructCloneCollection(originalCollection);
+            if (!expectedType.isInstance(cloneCollection)) {
+                throw new IllegalStateException("The cloneCollectionClass (" + cloneCollection.getClass()
+                        + ") created for originalCollectionClass (" + originalCollection.getClass()
+                        + ") is not assignable to the field's type (" + expectedType + ")."
+                        + " Consider replacing the default " + SolutionCloner.class.getSimpleName() + ".");
+            }
+            for (E originalElement : originalCollection) {
+                E cloneElement = clone(originalElement);
                 cloneCollection.add(cloneElement);
             }
             return cloneCollection;
         }
 
-        protected Collection constructCloneCollection(Collection originalCollection) {
+        protected <E> Collection<E> constructCloneCollection(Collection<E> originalCollection) {
             if (originalCollection instanceof List) {
                 if (originalCollection instanceof ArrayList) {
-                    return new ArrayList(originalCollection.size());
+                    return new ArrayList<E>(originalCollection.size());
                 } else if (originalCollection instanceof LinkedList) {
-                    return new LinkedList();
+                    return new LinkedList<E>();
                 } else { // Default List
-                    return new ArrayList(originalCollection.size());
+                    return new ArrayList<E>(originalCollection.size());
                 }
             } if (originalCollection instanceof Set) {
                 if (originalCollection instanceof SortedSet) {
                     Comparator setComparator = ((SortedSet) originalCollection).comparator();
-                    return new TreeSet(setComparator);
+                    return new TreeSet<E>(setComparator);
                 } else if (originalCollection instanceof LinkedHashSet) {
-                    return new LinkedHashSet(originalCollection.size());
+                    return new LinkedHashSet<E>(originalCollection.size());
                 } else if (originalCollection instanceof HashSet) {
-                    return new HashSet(originalCollection.size());
+                    return new HashSet<E>(originalCollection.size());
                 } else { // Default Set
                     // Default to a LinkedHashSet to respect order
-                    return new LinkedHashSet(originalCollection.size());
+                    return new LinkedHashSet<E>(originalCollection.size());
                 }
             } else { // Default collection
-                return new ArrayList(originalCollection.size());
+                return new ArrayList<E>(originalCollection.size());
             }
         }
 
-        protected Collection constructCloneCollectionByCloneable(Collection originalCollection) {
-            Collection cloneCollection;
+        protected <E> Collection<E> constructCloneCollectionByCloneable(Collection<E> originalCollection) {
+            Collection<E> cloneCollection;
             if (!(originalCollection instanceof Cloneable)) {
                 throw new IllegalStateException("The collection (" + originalCollection
                         + ") is an instance of a class (" + originalCollection.getClass()
@@ -251,7 +257,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
             try {
                 Method cloneMethod = originalCollection.getClass().getMethod("clone");
-                cloneCollection = (Collection) cloneMethod.invoke(originalCollection);
+                cloneCollection = (Collection<E>) cloneMethod.invoke(originalCollection);
                 // TODO Upgrade to JDK 1.7: catch (ReflectiveOperationException e) instead of these 4
             } catch (InvocationTargetException e) {
                 throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
@@ -270,18 +276,34 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             return cloneCollection;
         }
 
-        protected Map cloneMap(Map originalMap) {
+        protected <K,V> Map<K,V> cloneMap(Class<?> expectedType, Map<K,V> originalMap) {
+            Map<K,V> cloneMap = constructCloneMap(originalMap);
+            if (!expectedType.isInstance(cloneMap)) {
+                throw new IllegalStateException("The cloneMapClass (" + cloneMap.getClass()
+                        + ") created for originalMapClass (" + originalMap.getClass()
+                        + ") is not assignable to the field's type (" + expectedType + ")."
+                        + " Consider replacing the default " + SolutionCloner.class.getSimpleName() + ".");
+            }
+            for (Map.Entry<K,V> originalEntry : originalMap.entrySet()) {
+                K cloneKey = clone(originalEntry.getKey());
+                V cloneValue = clone(originalEntry.getValue());
+                cloneMap.put(cloneKey, cloneValue);
+            }
+            return cloneMap;
+        }
+
+        protected <K,V> Map<K,V> constructCloneMap(Map<K,V> originalMap) {
             // Normally a Map will never be selected for cloning, but extending implementations might anyway
             if (originalMap instanceof SortedMap) {
                 Comparator setComparator = ((SortedMap) originalMap).comparator();
-                return new TreeMap(setComparator);
+                return new TreeMap<K,V>(setComparator);
             } else if (originalMap instanceof LinkedHashMap) {
-                return new LinkedHashMap(originalMap.size());
+                return new LinkedHashMap<K,V>(originalMap.size());
             } else if (originalMap instanceof HashMap) {
-                return new HashMap(originalMap.size());
+                return new HashMap<K,V>(originalMap.size());
             } else { // Default Map
                 // Default to a LinkedHashMap to respect order
-                return new LinkedHashMap(originalMap.size());
+                return new LinkedHashMap<K,V>(originalMap.size());
             }
         }
 
