@@ -248,34 +248,6 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
         }
 
-        protected <E> Collection<E> constructCloneCollectionByCloneable(Collection<E> originalCollection) {
-            Collection<E> cloneCollection;
-            if (!(originalCollection instanceof Cloneable)) {
-                throw new IllegalStateException("The collection (" + originalCollection
-                        + ") is an instance of a class (" + originalCollection.getClass()
-                        + ") that does not implement Cloneable.");
-            }
-            try {
-                Method cloneMethod = originalCollection.getClass().getMethod("clone");
-                cloneCollection = (Collection<E>) cloneMethod.invoke(originalCollection);
-                // TODO Upgrade to JDK 1.7: catch (ReflectiveOperationException e) instead of these 4
-            } catch (InvocationTargetException e) {
-                throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
-                        + ") which is an instance of a class (" + originalCollection.getClass()
-                        + ") and implements Cloneable.");
-            } catch (NoSuchMethodException e) {
-                throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
-                        + ") which is an instance of a class (" + originalCollection.getClass()
-                        + ") and implements Cloneable.");
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
-                        + ") which is an instance of a class (" + originalCollection.getClass()
-                        + ") and implements Cloneable.");
-            }
-            cloneCollection.clear();
-            return cloneCollection;
-        }
-
         protected <K,V> Map<K,V> cloneMap(Class<?> expectedType, Map<K,V> originalMap) {
             Map<K,V> cloneMap = constructCloneMap(originalMap);
             if (!expectedType.isInstance(cloneMap)) {
