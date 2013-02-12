@@ -998,14 +998,21 @@ public class Visit ... implements Appearance {
           </listitem>
         </itemizedlist>
 
-        <para><emphasis role="bold">Implementing a planning clone method is hard.</emphasis> Therefore you don't have
-        to.</para>
+        <para><emphasis role="bold">Implementing a planning clone method is hard.</emphasis> Therefore you don't have to
+        implement it.</para>
 
         <section>
           <title><literal>FieldAccessingSolutionCloner</literal></title>
 
           <para>This <literal>SolutionCloner</literal> is used by default. It works for the majority of use
           cases.</para>
+
+          <warning>
+            <para>When the <literal>FieldAccessingSolutionCloner</literal> clones your entity collection, it might not
+            recognize the implementation and replace it with <literal>ArrayList</literal>,
+            <literal>LinkedHashSet</literal> or <literal>TreeSet</literal> (whichever is more applicable). It recognizes
+            most of the common JDK <literal>Collection</literal> implementations.</para>
+          </warning>
         </section>
 
         <section>
