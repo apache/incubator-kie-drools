@@ -299,8 +299,8 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
         return taskQueryService.getTasksAssignedAsPotentialOwner(userId, groupIds, language);
     }
 
-    public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult) {
-        return taskQueryService.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResult);
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults) {
+        return taskQueryService.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResults);
     }
 
     public List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language) {

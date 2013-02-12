@@ -1,12 +1,24 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
+
 package org.jbpm.task.api;
 
 import java.util.Date;
 import java.util.List;
-import org.jbpm.task.Content;
+
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
@@ -29,37 +41,38 @@ public interface TaskQueryService {
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language);
 
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult);
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults);
 
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language);
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language);
+    
     List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language);
 
     List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId, String language);
 
     List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId, String language);
 
-    List<TaskSummary> getTasksOwned(String userId);
-
-    List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language);
-    
-    List<TaskSummary> getTasksOwnedByExpirationDate(String userId, List<Status> status, Date expirationDate);
-
-    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String salaboy, List<Status> status, String language);
-
-    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language);
-
-    List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId, String language);
-
-    List<TaskSummary> getSubTasksByParent(long parentId);
-    
-    public int getPendingSubTasksByParent(long parentId);
-
-    Task getTaskInstanceById(long taskId);
-    
-    Task getTaskByWorkItemId(long workItemId);
-    
     List<TaskSummary> getTasksAssignedByGroup(String groupId, String language);
     
     List<TaskSummary> getTasksAssignedByGroups(List<String> groupsId, String language);
     
     List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate);
+    
+    List<TaskSummary> getTasksOwned(String userId);
+
+    List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language);
+    
+    List<TaskSummary> getTasksOwnedByExpirationDate(String userId, List<Status> status, Date expirationDate);
+    
+    List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId, String language);
+    
+    List<TaskSummary> getSubTasksByParent(long parentId);
+    
+    public int getPendingSubTasksByParent(long parentId);
+    
+    Task getTaskByWorkItemId(long workItemId);
+    
+    Task getTaskInstanceById(long taskId);
+
 }
