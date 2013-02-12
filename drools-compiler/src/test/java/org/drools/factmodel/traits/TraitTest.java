@@ -2466,6 +2466,55 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
+    public void traitSimpleTypes( TraitFactory.VirtualPropertyMode mode ) {
+
+        String s1 = "package org.drools.factmodel.traits;\n" +
+                "\n" +
+                "declare trait PassMark\n" +
+                "end\n" +
+                "\n" +
+                "declare ExamMark \n" +
+                "value : long \n" +
+                "end\n" +
+                "" +
+                "rule \"testTraitFieldTypePrimitive\"\n" +
+                "when\n" +
+                "    $mark : ExamMark()\n" +
+                "then\n" +
+                "    don($mark, PassMark.class);\n" +
+                "end\n" +
+                "" +
+                "rule \"Init\" when then insert( new ExamMark() ); end \n";
+
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( mode, kbase );
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+
+
+    }
+
+    @Test
+    public void testTraitWithSimpleTypesTriples() {
+        traitSimpleTypes( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testTraitWithSimpleTypesMap() {
+        traitSimpleTypes( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+
 
 
 

@@ -70,7 +70,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
 
         EnumClassDefinition edef = (EnumClassDefinition) classDef;
 
-        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
+        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 
         this.buildClassHeader( cw,
                 edef );
