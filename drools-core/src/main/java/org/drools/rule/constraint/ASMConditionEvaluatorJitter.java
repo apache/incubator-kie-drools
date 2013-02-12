@@ -15,6 +15,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -351,9 +353,9 @@ public class ASMConditionEvaluatorJitter {
                         }
                     } else {
                         if (type.isInterface()) {
-                            invokeInterface(type, "compareTo", int.class, type == Comparable.class ? Object.class : type);
+                            invokeInterface(type, "compareTo", int.class, type == Comparable.class ? Object.class : findComparingClass(type));
                         } else {
-                            invokeVirtual(type, "compareTo", int.class, type);
+                            invokeVirtual(type, "compareTo", int.class, findComparingClass(type));
                         }
                         mv.visitInsn(ICONST_0);
                         jitPrimitiveOperation(operation == BooleanOperator.NE ? BooleanOperator.EQ : operation, int.class);
@@ -364,6 +366,25 @@ public class ASMConditionEvaluatorJitter {
             }
 
             mv.visitLabel(shortcutEvaluation);
+        }
+
+        private Class<?> findComparingClass(Class<?> type) {
+            return findComparingClass(type, type);
+        }
+
+        private Class<?> findComparingClass(Class<?> type, Class<?> originalType) {
+            if (type == null) {
+                return originalType;
+            }
+            for (Type interfaze : type.getGenericInterfaces()) {
+                if (interfaze instanceof ParameterizedType) {
+                    ParameterizedType pType = (ParameterizedType)interfaze;
+                    if (pType.getRawType() == Comparable.class) {
+                        return (Class<?>) pType.getActualTypeArguments()[0];
+                    }
+                }
+            }
+            return findComparingClass(type.getSuperclass(), originalType);
         }
 
         private void prepareLeftOperand(BooleanOperator operation, Class<?> type, Class<?> leftType, Class<?> rightType, Label shortcutEvaluation) {
