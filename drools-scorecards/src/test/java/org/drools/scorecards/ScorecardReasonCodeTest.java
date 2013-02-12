@@ -12,6 +12,7 @@ import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -21,8 +22,9 @@ public class ScorecardReasonCodeTest {
     private static PMML pmmlDocument;
     private static String drl;
     private static ScorecardCompiler scorecardCompiler;
-    @Before
-    public void setUp() throws Exception {
+
+    @BeforeClass
+    public static void setUp() throws Exception {
         scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
         boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
         if (!compileResult) {
@@ -34,13 +36,12 @@ public class ScorecardReasonCodeTest {
         Assert.assertNotNull(drl);
         assertTrue(drl.length() > 0);
         //System.out.println(drl);
+        pmmlDocument = scorecardCompiler.getPMMLDocument();
+        Assert.assertNotNull(pmmlDocument);
     }
 
     @Test
     public void testPMMLDocument() throws Exception {
-        pmmlDocument = scorecardCompiler.getPMMLDocument();
-        Assert.assertNotNull(pmmlDocument);
-
         String pmml = scorecardCompiler.getPMML();
         Assert.assertNotNull(pmml);
         assertTrue(pmml.length() > 0);
