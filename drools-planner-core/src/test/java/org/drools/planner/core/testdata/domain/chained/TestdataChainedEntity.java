@@ -8,7 +8,6 @@ import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.testdata.domain.TestdataObject;
-import org.drools.planner.core.testdata.domain.multivar.TestdataMultiVarSolution;
 
 import static org.mockito.Mockito.*;
 
