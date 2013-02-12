@@ -128,7 +128,7 @@ public class SimplePersistenceBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.execute(new GenericCommand<Void>() {
 
             public Void execute(Context context) {
-                StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+                StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
                 WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.getProcessInstance(piId);
                 processInstance.setVariable("x", 0);
                 return null;
@@ -143,7 +143,7 @@ public class SimplePersistenceBPMNProcessTest extends JbpmBpmn2TestCase {
         Integer xValue = ksession.execute(new GenericCommand<Integer>() {
 
             public Integer execute(Context context) {
-                StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+                StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
                 WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.getProcessInstance(piId);
                 return (Integer) processInstance.getVariable("x");
                 
@@ -389,7 +389,7 @@ public class SimplePersistenceBPMNProcessTest extends JbpmBpmn2TestCase {
             }
         };
         ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getStatefulKnowledgesession() )
+                .getCommandService().getContext()).getKieSession() )
                 .session.addEventListener(agendaEventListener);
         ksession.addEventListener(new DebugAgendaEventListener());
         Map<String, Object> params = new HashMap<String, Object>();

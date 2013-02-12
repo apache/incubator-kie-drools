@@ -107,7 +107,7 @@ public class DynamicProcessTest extends JbpmBpmn2TestCase {
 		
 		((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().execute(new GenericCommand<Void>() {
 			public Void execute(Context context) {
-				StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+				StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
 				((ProcessInstanceImpl) ksession.getProcessInstance(processInstance.getId())).updateProcess(process);
 				return null;
 			}

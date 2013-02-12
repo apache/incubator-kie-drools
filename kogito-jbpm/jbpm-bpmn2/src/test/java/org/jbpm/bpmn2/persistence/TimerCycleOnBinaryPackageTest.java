@@ -87,7 +87,7 @@ public class TimerCycleOnBinaryPackageTest {
         });
         
         ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getStatefulKnowledgesession() )
+                .getCommandService().getContext()).getKieSession() )
             .session.addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
@@ -109,7 +109,7 @@ public class TimerCycleOnBinaryPackageTest {
         });
         
         ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getStatefulKnowledgesession() )
+                .getCommandService().getContext()).getKieSession() )
             .session.addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
@@ -136,7 +136,7 @@ public class TimerCycleOnBinaryPackageTest {
         });
         
         ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getStatefulKnowledgesession() )
+                .getCommandService().getContext()).getKieSession() )
             .session.addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
@@ -158,7 +158,7 @@ public class TimerCycleOnBinaryPackageTest {
         });
         
         ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getStatefulKnowledgesession() )
+                .getCommandService().getContext()).getKieSession() )
             .session.addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
@@ -181,7 +181,7 @@ public class TimerCycleOnBinaryPackageTest {
         ksession.setGlobal("list", list);
 
         ((StatefulKnowledgeSessionImpl) ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getStatefulKnowledgesession()).session.addEventListener(new TriggerRulesEventListener(ksession));
+                .getCommandService().getContext()).getKieSession()).session.addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
 
@@ -198,7 +198,7 @@ public class TimerCycleOnBinaryPackageTest {
         ksession.setGlobal("list", list2);
 
         ((StatefulKnowledgeSessionImpl) ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getStatefulKnowledgesession()).session.addEventListener(new TriggerRulesEventListener(ksession));
+                .getCommandService().getContext()).getKieSession()).session.addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
 
@@ -221,7 +221,7 @@ public class TimerCycleOnBinaryPackageTest {
         ksession.setGlobal("list", list);
 
         ((StatefulKnowledgeSessionImpl) ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getStatefulKnowledgesession()).session.addEventListener(new TriggerRulesEventListener(ksession));
+                .getCommandService().getContext()).getKieSession()).session.addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
 
@@ -238,7 +238,7 @@ public class TimerCycleOnBinaryPackageTest {
         ksession.setGlobal("list", list2);
 
         ((StatefulKnowledgeSessionImpl) ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).getStatefulKnowledgesession()).session.addEventListener(new TriggerRulesEventListener(ksession));
+                .getCommandService().getContext()).getKieSession()).session.addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
 

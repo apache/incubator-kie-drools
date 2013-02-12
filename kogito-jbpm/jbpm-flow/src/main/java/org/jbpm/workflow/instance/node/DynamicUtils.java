@@ -74,7 +74,7 @@ public class DynamicUtils {
     		commandService.execute(new GenericCommand<Void>() {
 				private static final long serialVersionUID = 5L;
 				public Void execute(Context context) {
-                    StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+                    StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
                     WorkflowProcessInstance realProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(processInstance.getId());
                     workItemNodeInstance.setProcessInstance(realProcessInstance);
                     if (dynamicContext == null) {
@@ -136,7 +136,7 @@ public class DynamicUtils {
     		commandService.execute(new GenericCommand<Void>() {
 				private static final long serialVersionUID = 5L;
 				public Void execute(Context context) {
-                    StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+                    StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
                     WorkflowProcessInstance realProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(processInstance.getId());
                     subProcessNodeInstance.setProcessInstance(realProcessInstance);
                     if (dynamicContext == null) {

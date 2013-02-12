@@ -32,6 +32,7 @@ import javax.persistence.Transient;
 
 import junit.framework.Assert;
 
+import org.kie.KieBase;
 import org.kie.KnowledgeBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.persistence.info.SessionInfo;
@@ -127,7 +128,7 @@ public class MarshalledData {
     }
 
     private void storeAssociatedKnowledgeBase(SessionInfo sessionInfo) throws IOException { 
-       KnowledgeBase kbase = sessionInfo.getJPASessionMashallingHelper().getKbase();
+       KieBase kbase = sessionInfo.getJPASessionMashallingHelper().getKbase();
        this.serializedKnowledgeBase = DroolsStreamUtils.streamOut(kbase);
     }
     
