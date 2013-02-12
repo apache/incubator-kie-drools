@@ -33,7 +33,7 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
 
         init( classDef );
 
-        ClassWriter cw = new ClassWriter(0);
+        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 
 
         try {

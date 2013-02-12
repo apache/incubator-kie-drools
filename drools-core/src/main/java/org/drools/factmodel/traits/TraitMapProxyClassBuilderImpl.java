@@ -76,7 +76,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             NoSuchFieldException {
 
 
-        ClassWriter cw = new ClassWriter( 0 );
+        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
         FieldVisitor fv;
         MethodVisitor mv;
 
@@ -160,7 +160,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "<init>", "()V" );
 
             mv.visitInsn( RETURN );
-            mv.visitMaxs( 1, 1 );
+//            mv.visitMaxs( 1, 1 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
         {
@@ -249,7 +250,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitLabel( l2 );
 
             mv.visitInsn( RETURN );
-            mv.visitMaxs( 5, 3 );
+//            mv.visitMaxs( 5, 3 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
         {
@@ -258,7 +260,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitFieldInsn( GETFIELD, internalProxy, "object", descrCore );
             mv.visitInsn( ARETURN );
-            mv.visitMaxs( 1, 1 );
+//            mv.visitMaxs( 1, 1 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
         {
@@ -267,7 +270,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitFieldInsn( GETFIELD, internalProxy, "object", descrCore );
             mv.visitInsn( ARETURN );
-            mv.visitMaxs( 1, 1 );
+//            mv.visitMaxs( 1, 1 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
 
@@ -277,7 +281,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKEVIRTUAL, internalProxy, "getCore", "()" + descrCore);
             mv.visitInsn(ARETURN);
-            mv.visitMaxs( 1, 1 );
+//            mv.visitMaxs( 1, 1 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
 
@@ -302,7 +307,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
 
             mv.visitInsn( RETURN );
-            mv.visitMaxs( 2, 2 );
+//            mv.visitMaxs( 2, 2 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
         {
@@ -329,7 +335,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "readExternal", "(" + Type.getDescriptor( ObjectInput.class ) + ")V" );
 
             mv.visitInsn( RETURN );
-            mv.visitMaxs( 3, 2 );
+//            mv.visitMaxs( 3, 2 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
 
@@ -454,7 +461,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
                 mv.visitInsn( BuildUtils.returnType( method.getReturnType().getName() ) );
                 int stack = TraitFactory.getStackSize( method ) ;
-                mv.visitMaxs( stack, stack );
+//                mv.visitMaxs( stack, stack );
+                mv.visitMaxs( 0, 0 );
                 mv.visitEnd();
             }
         }
@@ -482,7 +490,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         }
 
         mv.visitInsn( BuildUtils.returnType ( field.getTypeName() ) );
-        mv.visitMaxs( 2, 1 );
+//        mv.visitMaxs( 2, 1 );
+        mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 
     }
@@ -504,8 +513,9 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         TraitFactory.invokeInjector( mv, masterName, trait, core, field, false, 1 );
 
         mv.visitInsn(RETURN);
-        mv.visitMaxs( 2 + BuildUtils.sizeOf( fieldType ),
-                1 + BuildUtils.sizeOf( fieldType ) );
+//        mv.visitMaxs( 2 + BuildUtils.sizeOf( fieldType ),
+//                1 + BuildUtils.sizeOf( fieldType ) );
+        mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 
     }
@@ -530,7 +540,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
                             "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
         mv.visitInsn( POP );
         mv.visitInsn( RETURN );
-        mv.visitMaxs( 2 + BuildUtils.sizeOf( type ), 1 + BuildUtils.sizeOf( type ) );
+//        mv.visitMaxs( 2 + BuildUtils.sizeOf( type ), 1 + BuildUtils.sizeOf( type ) );
+        mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 
     }
@@ -566,12 +577,14 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             TraitFactory.promote( mv, type );
 
             mv.visitInsn( BuildUtils.returnType( type ) );
-            mv.visitMaxs( 2, 2 );
+//            mv.visitMaxs( 2, 2 );
+            mv.visitMaxs( 0, 0 );
 
         } else {
             mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( type ) );
             mv.visitInsn( ARETURN );
-            mv.visitMaxs( 2, 1 );
+//            mv.visitMaxs( 2, 1 );
+            mv.visitMaxs( 0, 0 );
         }
 
         mv.visitEnd();
@@ -633,7 +646,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( Object.class ), "equals", "(" + Type.getDescriptor( Object.class) + ")Z" );
 
             mv.visitInsn( IRETURN );
-            mv.visitMaxs( 2, 3 );
+//            mv.visitMaxs( 2, 3 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
 
@@ -661,7 +675,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
             mv.visitVarInsn( ILOAD, 1 );
             mv.visitInsn( IRETURN );
-            mv.visitMaxs( 2, 2 );
+//            mv.visitMaxs( 2, 2 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
 
         }
@@ -690,7 +705,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
                                 "(" + Type.getDescriptor( String.class ) + ")" + Type.getDescriptor( StringBuilder.class ) );
             mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( StringBuilder.class ), "toString", "()" + Type.getDescriptor( String.class ) );
             mv.visitInsn( ARETURN );
-            mv.visitMaxs( 2, 1 );
+//            mv.visitMaxs( 2, 1 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
 
@@ -835,7 +851,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
         mv.visitInsn( ICONST_1 );
         mv.visitInsn( IRETURN );
-        mv.visitMaxs( x, 3 );
+//        mv.visitMaxs( x, 3 );
+        mv.visitMaxs( 0, 0 );
         mv.visitEnd();
     }
 
@@ -997,7 +1014,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             }
             mv.visitVarInsn( ILOAD, 1 );
             mv.visitInsn( IRETURN );
-            mv.visitMaxs( x, y );
+//            mv.visitMaxs( x, y );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
     }

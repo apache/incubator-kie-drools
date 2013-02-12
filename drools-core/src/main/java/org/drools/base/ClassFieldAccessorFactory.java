@@ -214,7 +214,7 @@ public class ClassFieldAccessorFactory {
                               final Class< ? > fieldType,
                               final boolean isInterface) throws Exception {
 
-        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
+        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 
         final Class< ? > superClass = getReaderSuperClassFor( fieldType );
         buildClassHeader( superClass,
@@ -246,7 +246,7 @@ public class ClassFieldAccessorFactory {
                               final Class< ? > fieldType,
                               final boolean isInterface) throws Exception {
 
-        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
+        final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 
         final Class< ? > superClass = getWriterSuperClassFor( fieldType );
         buildClassHeader( superClass,

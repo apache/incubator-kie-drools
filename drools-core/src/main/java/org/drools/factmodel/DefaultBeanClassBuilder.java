@@ -71,7 +71,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             InstantiationException,
             NoSuchFieldException {
 
-        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
+        ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
         //ClassVisitor cw = new CheckClassAdapter(cwr);
 
         this.buildClassHeader( cw,
