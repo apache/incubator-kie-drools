@@ -159,29 +159,29 @@
     <echo message="Checking Eclipse download ..." />
     <condition property="eclipse.not.available">
       <not>
-        <available file="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.${download.extension}" />
+        <available file="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.${download.extension}" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse" depends="download.eclipse.check" if="eclipse.not.available">
     <echo message="Getting Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/technology/epp/downloads/release/helios/SR2/eclipse-java-helios-SR2-${download.type}.${download.extension}"
-         dest="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.${download.extension}"  />
+    <get src="http://download.eclipse.org/technology/epp/downloads/release/juno/SR1/eclipse-java-juno-SR1-${download.type}.${download.extension}"
+         dest="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.${download.extension}"  />
   </target>
   <target name="download.eclipse.gef.check">
     <echo message="Checking Eclipse GEF download ..." />
     <condition property="eclipse.gef.not.available">
       <not>
-        <available file="${install.home}/lib/GEF-SDK-3.6.2.zip" />
+        <available file="${install.home}/lib/GEF-SDK-3.8.1.zip" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse.gef" depends="download.eclipse.gef.check" if="eclipse.gef.not.available">
     <echo message="Getting Eclipse GEF ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://archive.eclipse.org/tools/gef/downloads/drops/3.6.2/R201102251600/GEF-SDK-3.6.2.zip"
-         dest="${install.home}/lib/GEF-SDK-3.6.2.zip"  />
+    <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.8.1/R201208200205/GEF-SDK-3.8.1.zip"
+         dest="${install.home}/lib/GEF-SDK-3.8.1.zip" />
   </target>
 
   <!-- Download jBPM binaries -->
@@ -274,9 +274,18 @@
 	
   <!-- Install guvnor -->
   <target name="install.guvnor.into.jboss" depends="download.drools.guvnor">
-    <copy file="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war"
+    <mkdir dir="${install.home}/target"/>
+    <mkdir dir="${install.home}/target/guvnor-war"/>
+    <unzip src="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war"
+           dest="${install.home}/target/guvnor-war"/>
+  	<copy tofile="${install.home}/target/guvnor-war/WEB-INF/classes/preferences.properties" overwrite="true" 
+  		file="${install.home}/guvnor.preferences.properties" failonerror="false"/>
+    <zip basedir="${install.home}/target/guvnor-war"
+         destfile="${install.home}/target/guvnor-${drools.guvnor.version}.war"/>
+    <copy file="${install.home}/target/guvnor-${drools.guvnor.version}.war"
           tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
           overwrite="true" />
+    <delete dir="${install.home}/target"/>
   </target>  	
 
   <!-- Install designer -->
@@ -295,7 +304,7 @@
     <delete dir="${install.home}/target"/>
   	<touch file="${jboss.server.deploy.dir}/designer.war.dodeploy"/>
   </target>
-	
+
   <!-- Install gwt-console -->
   <target name="install.jBPM-console.into.jboss" depends="download.db.driver,download.jBPM.console">
     <mkdir dir="${install.home}/target"/>
@@ -354,17 +363,17 @@
     <antcall target="unzipEclipse" />	
     <antcall target="untarEclipse" />
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/GEF-SDK-3.6.2.zip" />				         
+           src="${install.home}/lib/GEF-SDK-3.8.1.zip" />				         
   </target>
   
   <target name="unzipEclipse" if="expandTypeZip">
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.zip" />  
+           src="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.zip" />  
   </target>
 
   <target name="untarEclipse" if="expandTypeTarGz">
-    <gunzip src="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.tar.gz"/>
-    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.tar" />
+    <gunzip src="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.tar.gz"/>
+    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.tar" />
     <chmod perm="a+x" file="${install.home}/eclipse/eclipse" os="Linux"/>
     <chmod perm="a+x" file="${install.home}/eclipse/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
   </target>
@@ -522,8 +531,7 @@
   </target>
 
   <target name="clean.jboss.repository" if="clean.repository">
-  	<delete dir="${install.home}/repository"/>
-  	<delete file="${install.home}/repository.xml"/>
+  	<delete dir="${install.home}/.niogit"/>
   </target>
 	
   <target name="check.clean.repository">
