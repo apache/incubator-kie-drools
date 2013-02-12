@@ -1258,10 +1258,28 @@ public class Visit ... implements Appearance {
 
         <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
         runs in the same Planner version will execute the same code in the same order. <emphasis role="bold">Those 2
-        runs will have the same result</emphasis>, except if they rely on time based termination and they have a
-        sufficiently large difference in allocated CPU time. This allows you to consistently reproduce bugs. It also
-        allows you to benchmark certain refactorings (such as a score constraint optimization) fairly across
-        runs.</para>
+        runs will have the same result</emphasis>, except if the note below applies . This allows you to consistently
+        reproduce bugs. It also allows you to benchmark certain refactorings (such as a score constraint optimization)
+        fairly across runs.</para>
+
+        <note>
+          <para>Despite the reproducible mode, your application might still not be fully reproducible because:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Use of <literal>HashSet</literal> (or another <literal>Collection</literal> which has an
+              inconsistent order between JVM runs), especially in the <literal>Solution</literal> implementation.
+              Replace it with <literal>LinkedHashSet</literal>.</para>
+            </listitem>
+
+            <listitem>
+              <para>Combining a time gradient dependent algorithms (most notably simulated annealing) together with time
+              spend termination. A sufficiently large difference in allocated CPU time will influence the time gradient
+              values. Replace simulated annealing with late acceptance. Or instead, replace time spend termination with
+              step count termination.</para>
+            </listitem>
+          </itemizedlist>
+        </note>
 
         <para>The reproducible mode is not much slower than the production mode. If your production environment requires
         reproducibility, use it in production too.</para>
@@ -1279,7 +1297,8 @@ public class Visit ... implements Appearance {
         <para>The random seed is different on every run, which makes it more robust against an unlucky random seed. An
         unlucky random seed gives a bad result on a certain data set with a certain solver configuration. Note that in
         most use cases the impact of the random seed is relatively low on the result (even with simulated annealing). An
-        occasional bad result is far more likely to be caused by another issue (such as a score trap).</para>
+        occasional bad result is far more likely to be caused by another issue (such as a <link
+        linkend="scoreTrap">score trap</link>).</para>
       </section>
     </section>
 
