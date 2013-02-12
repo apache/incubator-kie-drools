@@ -66,7 +66,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
         this.primaryValue = primaryValue;
     }
 
-    @PlanningVariable()
+    @PlanningVariable
     @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueList")
     public TestdataValue getSecondaryValue() {
         return secondaryValue;
