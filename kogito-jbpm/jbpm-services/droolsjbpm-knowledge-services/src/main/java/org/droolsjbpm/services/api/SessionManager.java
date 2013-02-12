@@ -29,6 +29,8 @@ public interface SessionManager {
 
     void setDomain(Domain domain);
     
+    Domain getDomain();
+    
     int buildSession(String sessionName, String path, boolean streamMode);
 
     void buildSessions(boolean streamMode);

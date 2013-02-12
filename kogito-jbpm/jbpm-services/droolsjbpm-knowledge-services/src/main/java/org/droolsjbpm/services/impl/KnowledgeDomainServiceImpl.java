@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.droolsjbpm.services.api.Domain;
 
+import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
@@ -50,6 +51,7 @@ import org.kie.runtime.process.WorkItemManager;
  * @author salaboy
  */
 @ApplicationScoped
+@Transactional
 @Startup
 public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
@@ -229,6 +231,13 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
         @Override
         public void abortWorkItem(WorkItem wi, WorkItemManager wim) {
         }
+    }
+
+
+    @Override
+    public String getProcessAssetPath(String processId) {
+        
+        return sessionManager.getDomain().getAssetsDefs().get(processId);
     }
     
     

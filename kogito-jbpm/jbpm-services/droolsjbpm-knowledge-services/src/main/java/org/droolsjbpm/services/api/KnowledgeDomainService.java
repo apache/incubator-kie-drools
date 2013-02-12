@@ -42,4 +42,6 @@ public interface KnowledgeDomainService {
     int getSessionForProcessInstanceId(long processInstanceId);
     
     StatefulKnowledgeSession getSessionById(int sessionId);
+    
+    String getProcessAssetPath(String processId);
 }

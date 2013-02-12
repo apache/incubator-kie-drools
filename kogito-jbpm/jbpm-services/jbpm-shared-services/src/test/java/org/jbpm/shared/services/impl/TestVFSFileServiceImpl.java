@@ -147,4 +147,9 @@ public class TestVFSFileServiceImpl implements FileService {
         } );
   }
 
+    @Override
+    public String getRepositoryRoot() {
+        return repositoryRoot;
+    }
+
 }

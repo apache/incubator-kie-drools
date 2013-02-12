@@ -15,12 +15,14 @@
  */
 package org.jbpm.shared.services.impl;
 
+import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -31,42 +33,21 @@ import org.kie.commons.java.nio.IOException;
 import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Path;
 
-import static org.kie.commons.io.FileSystemType.Bootstrap.*;
-import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
-import static org.kie.commons.validation.PortablePreconditions.*;
-
 /**
  *
  */
 @Singleton
 public class VFSFileServiceImpl implements FileService {
 
-    private static final String REPO_PLAYGROUND = "git://jbpm-playground";
-    private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
+    private static final String REPO_PLAYGROUND = "git://jbpm-playground/";
 
-    //private final IOService ioService = new IOServiceDotFileImpl();
-    private final IOService ioService = new IOServiceNio2WrapperImpl();
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @PostConstruct
     public void init() {
-        if ( ioService.getFileSystem( URI.create( REPO_PLAYGROUND ) ) != null ) {
-            fetchChanges();
-        } else {
-            try {
-                final String userName = "guvnorngtestuser1";
-                final String password = "test1234";
-                final URI fsURI = URI.create( "git://jbpm-playground" );
-
-                final Map<String, Object> env = new HashMap<String, Object>();
-                env.put( "username", userName );
-                env.put( "password", password );
-                env.put( "origin", ORIGIN_URL );
-                ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
-            } catch ( Exception e ) {
-                System.out.println( ">>>>>>>>>>>>>>>>>>> E " + e.getMessage() );
-            }
-        }
-
+        fetchChanges();
     }
 
     public void fetchChanges() {
@@ -75,7 +56,7 @@ public class VFSFileServiceImpl implements FileService {
 
     @Override
     public byte[] loadFile( final String path ) throws FileException {
-        Path file = ioService.get( "git://jbpm-playground/" + path );
+        Path file = ioService.get(REPO_PLAYGROUND + path );
         
         checkNotNull( "file", file );
 
@@ -103,7 +84,7 @@ public class VFSFileServiceImpl implements FileService {
     @Override
     public Iterable<Path> loadFilesByType( final String path,
                                            final String fileType ) {
-        return ioService.newDirectoryStream( ioService.get( "git://jbpm-playground/" + path ), new DirectoryStream.Filter<Path>() {
+        return ioService.newDirectoryStream( ioService.get( REPO_PLAYGROUND + path ), new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
                 if ( !org.kie.commons.java.nio.file.Files.isDirectory(entry) && 
@@ -116,7 +97,7 @@ public class VFSFileServiceImpl implements FileService {
     }
     
     public Iterable<Path> listDirectories(final String path){
-      return ioService.newDirectoryStream( ioService.get( "git://jbpm-playground/" + path ), new DirectoryStream.Filter<Path>() {
+      return ioService.newDirectoryStream( ioService.get( REPO_PLAYGROUND + path ), new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
                 if ( org.kie.commons.java.nio.file.Files.isDirectory(entry) ) {
@@ -141,7 +122,7 @@ public class VFSFileServiceImpl implements FileService {
     
     @Override
     public boolean exists(String file){
-        Path path = ioService.get( "git://jbpm-playground/" + file );
+        Path path = ioService.get( REPO_PLAYGROUND + file );
         return ioService.exists(path);
     }
 
@@ -149,7 +130,7 @@ public class VFSFileServiceImpl implements FileService {
     public void move(String source, String dest){
         
         this.copy(source, dest);
-        ioService.delete(ioService.get( "git://jbpm-playground/" + source ));
+        ioService.delete(ioService.get( REPO_PLAYGROUND + source ));
     }
     
     @Override
@@ -158,8 +139,8 @@ public class VFSFileServiceImpl implements FileService {
         checkNotNull( "source", source );
         checkNotNull( "dest", dest );
         
-        Path sourcePath = ioService.get( "git://jbpm-playground/" + source );
-        Path targetPath = ioService.get( "git://jbpm-playground/" + dest );
+        Path sourcePath = ioService.get( REPO_PLAYGROUND + source );
+        Path targetPath = ioService.get( REPO_PLAYGROUND + dest );
         ioService.copy(sourcePath, targetPath);
     }
     
@@ -168,12 +149,12 @@ public class VFSFileServiceImpl implements FileService {
         
         checkNotNull( "path", path );
         
-        return ioService.createDirectory(ioService.get( "git://jbpm-playground/" + path));
+        return ioService.createDirectory(ioService.get( REPO_PLAYGROUND + path));
     }
     
     @Override
     public Path createFile(String path){
-        return ioService.createFile(ioService.get( "git://jbpm-playground/" + path));
+        return ioService.createFile(ioService.get( REPO_PLAYGROUND + path));
     }
     
     @Override
@@ -181,7 +162,7 @@ public class VFSFileServiceImpl implements FileService {
         
         checkNotNull( "path", path );
         
-        return ioService.deleteIfExists(ioService.get( "git://jbpm-playground/" + path ));
+        return ioService.deleteIfExists(ioService.get( REPO_PLAYGROUND + path ));
     }
     
     @Override
@@ -189,7 +170,12 @@ public class VFSFileServiceImpl implements FileService {
         
         checkNotNull( "path", path );
         
-        return ioService.newOutputStream(ioService.get( "git://jbpm-playground/" + path ));
+        return ioService.newOutputStream(ioService.get( REPO_PLAYGROUND + path ));
+    }
+
+    @Override
+    public String getRepositoryRoot() {
+        return REPO_PLAYGROUND;
     }
     
 }

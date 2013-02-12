@@ -17,7 +17,6 @@ package org.droolsjbpm.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +35,6 @@ import javax.transaction.UserTransaction;
 
 import org.drools.impl.EnvironmentFactory;
 import org.droolsjbpm.services.api.Domain;
-import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.WorkItemHandlerProducer;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
@@ -73,7 +71,6 @@ import org.kie.runtime.process.WorkItemHandler;
 /**
  * @author salaboy
  */
-@Transactional
 @ApplicationScoped
 public class CDISessionManager implements SessionManager {
 
@@ -97,8 +94,6 @@ public class CDISessionManager implements SessionManager {
     
     @Inject
     private BPMN2DataService bpmn2Service;
-    @Inject
-    private KnowledgeDataService dataService;
     @Inject
     private WorkItemHandlerProducer workItemHandlerProducer;
     
@@ -173,7 +168,7 @@ public class CDISessionManager implements SessionManager {
         Map<String, List<Path>> ksessionRulesDefinitions = getDomain().getRulesDefinitionFromKsession();
         for (String sessionName : ksessionProcessDefinitions.keySet()) {
             
-            Collection<ProcessDesc> existingProcesses = dataService.getProcessesBySessionName(sessionName);
+            Collection<ProcessDesc> existingProcesses = getProcessesBySessionName(sessionName);
             Collection<ProcessDesc> loadedProcesses = new ArrayList<ProcessDesc>();
             
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -362,7 +357,7 @@ public class CDISessionManager implements SessionManager {
   public int buildSession(String sessionName, String path, boolean streamMode) {
         getDomain().addKsessionRepositoryRoot(sessionName, path);
         
-        Collection<ProcessDesc> existingProcesses = dataService.getProcessesBySessionName(sessionName);
+        Collection<ProcessDesc> existingProcesses = getProcessesBySessionName(sessionName);
         Collection<ProcessDesc> loadedProcesses = new ArrayList<ProcessDesc>();
         Iterable<Path> loadProcessFiles = null;
         Iterable<Path> loadRulesFiles = null;
@@ -485,7 +480,15 @@ public class CDISessionManager implements SessionManager {
         
   }
 
-  /*
+  protected Collection<ProcessDesc> getProcessesBySessionName(String sessionName) {
+      List<ProcessDesc> processes = getEntityManager().createQuery("select pd from ProcessDesc pd where pd.sessionName=:sessionName GROUP BY pd.id ORDER BY pd.dataTimeStamp DESC")
+              .setParameter("sessionName", sessionName).getResultList();
+      return processes;
+  }
+
+
+
+/*
    * following are supporting methods to allow execution on application startup
    * as at that time RequestScoped entity manager cannot be used so instead
    * use EntityMnagerFactory and manage transaction manually
@@ -511,11 +514,16 @@ public class CDISessionManager implements SessionManager {
           } catch (Exception ex) {
               try {
                   ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
-                  ut.begin();
-                  environment.set(EnvironmentName.TRANSACTION, ut);
+                  
               } catch (Exception e1) {
                   throw new RuntimeException("Cannot find UserTransaction", e1);
               }
+          }
+          try {
+              ut.begin();
+              environment.set(EnvironmentName.TRANSACTION, ut);
+          } catch (Exception ex) {
+              
           }
           environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, this.emf);
       }

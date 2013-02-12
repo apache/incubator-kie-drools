@@ -53,4 +53,6 @@ public interface FileService {
     
     OutputStream openFile(String path);
     
+    String getRepositoryRoot();
+    
 }
