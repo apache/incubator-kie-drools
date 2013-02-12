@@ -34,7 +34,7 @@ public class AbortProcessInstanceCommand implements GenericCommand<Object> {
     }
 
     public Object execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         if (processInstanceId == null) {
             return null;
         }

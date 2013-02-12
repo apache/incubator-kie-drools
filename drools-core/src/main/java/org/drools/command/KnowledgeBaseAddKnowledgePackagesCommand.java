@@ -34,7 +34,7 @@ public class KnowledgeBaseAddKnowledgePackagesCommand
         if (kbuilder.hasErrors()) {
             throw new IllegalStateException("There are rule compilation errors:\n" + kbuilder.getErrors().toString());
         }
-        KnowledgeBase kbase = ((KnowledgeCommandContext) context).getKnowledgeBase();
+        KnowledgeBase kbase = (KnowledgeBase) ((KnowledgeCommandContext) context).getKieBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return null;
     }

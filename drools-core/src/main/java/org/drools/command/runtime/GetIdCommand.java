@@ -23,7 +23,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetIdCommand
@@ -37,7 +37,7 @@ public class GetIdCommand
     }
 
     public Integer execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         return ((StatefulKnowledgeSessionImpl)ksession).getId();
     }
 

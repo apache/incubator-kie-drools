@@ -33,6 +33,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.command.Context;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 
@@ -114,7 +115,7 @@ public class CreateProcessInstanceCommand implements GenericCommand<ProcessInsta
     }
 
     public ProcessInstance execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
 
         if (data != null) {
             for (Object o: data) {

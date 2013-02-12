@@ -22,7 +22,6 @@ import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.kie.KieBase;
-import org.kie.KnowledgeBase;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.CommandExecutor;
 import org.kie.runtime.Environment;
@@ -96,7 +95,7 @@ public class KnowledgeStoreServiceImpl
         try {
             Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
             Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( Integer.class,
-                                                                                              KnowledgeBase.class,
+                                                                                              KieBase.class,
                                                                                               KieSessionConfiguration.class,
                                                                                               Environment.class );
             return constructor.newInstance( sessionId,
@@ -124,7 +123,7 @@ public class KnowledgeStoreServiceImpl
 
         Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
         try {
-            Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( KnowledgeBase.class,
+            Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( KieBase.class,
                                                                                               KieSessionConfiguration.class,
                                                                                               Environment.class );
             return constructor.newInstance( kbase,

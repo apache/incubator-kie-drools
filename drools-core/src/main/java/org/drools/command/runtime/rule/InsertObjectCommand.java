@@ -32,7 +32,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -77,7 +77,7 @@ public class InsertObjectCommand
     }
 
     public FactHandle execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
         FactHandle factHandle;
         if ( StringUtils.isEmpty( this.entryPoint ) ) {

@@ -22,14 +22,14 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
 import org.kie.event.process.ProcessEventListener;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class GetProcessEventListenersCommand
     implements
     GenericCommand<Collection<ProcessEventListener> > {
 
     public Collection<ProcessEventListener> execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         return ksession.getProcessEventListeners();
     }
 

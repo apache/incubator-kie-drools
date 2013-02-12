@@ -22,6 +22,7 @@ import java.util.Collection;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 
@@ -30,8 +31,8 @@ public class GetProcessInstancesCommand
     GenericCommand<Collection<ProcessInstance>> {
 
     public Collection<ProcessInstance> execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+
         Collection<ProcessInstance> instances = ksession.getProcessInstances();
         Collection<ProcessInstance> result = new ArrayList<ProcessInstance>();
 

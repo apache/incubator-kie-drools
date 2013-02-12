@@ -486,7 +486,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
     
     public KieSessionConfiguration getSessionConfiguration() {
-        return ((KnowledgeCommandContext) commandService.getContext()).getStatefulKnowledgesession().getSessionConfiguration();
+        return ((KnowledgeCommandContext) commandService.getContext()).getKieSession().getSessionConfiguration();
     }
 
     public void addInterceptor(Interceptor interceptor) {

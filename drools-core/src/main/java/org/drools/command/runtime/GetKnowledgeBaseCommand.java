@@ -20,7 +20,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.KnowledgeBase;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class GetKnowledgeBaseCommand
     implements
@@ -30,8 +30,8 @@ public class GetKnowledgeBaseCommand
     }
 
     public KnowledgeBase execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        return ksession.getKieBase();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        return (KnowledgeBase)ksession.getKieBase();
     }
 
     public String toString() {

@@ -32,8 +32,8 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.kie.command.Context;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectsCommand
@@ -66,7 +66,7 @@ public class GetObjectsCommand
     }
 
     public Collection execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
         Collection col = null;
         

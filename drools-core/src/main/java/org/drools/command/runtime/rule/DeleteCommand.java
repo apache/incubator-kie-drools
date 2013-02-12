@@ -20,7 +20,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DisconnectedFactHandle;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -41,7 +41,7 @@ public class DeleteCommand
     }
 
     public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         ksession.getEntryPoint( handle.getEntryPointId() ).retract( handle );
         return null;
     }

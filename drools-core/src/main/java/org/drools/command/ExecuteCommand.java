@@ -26,7 +26,7 @@ import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.command.Command;
 import org.kie.command.Context;
 import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 
 public class ExecuteCommand
@@ -58,7 +58,7 @@ public class ExecuteCommand
     }
 
     public ExecutionResults execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
         ExecutionResults kresults = null;
         if( ksession instanceof StatefulKnowledgeSessionImpl ) { 

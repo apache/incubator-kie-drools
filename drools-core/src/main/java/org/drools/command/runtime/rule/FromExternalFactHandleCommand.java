@@ -6,7 +6,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalFactHandle;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 
 public class FromExternalFactHandleCommand implements GenericCommand<FactHandle> {
@@ -24,8 +24,7 @@ public class FromExternalFactHandleCommand implements GenericCommand<FactHandle>
     }
 
     public FactHandle execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context)
-                .getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         Collection<FactHandle> factHandles = ksession.getFactHandles();
         int fhId = Integer.parseInt(factHandleExternalForm.split(":")[1]);
         for (FactHandle factHandle : factHandles) {

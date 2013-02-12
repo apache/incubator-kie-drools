@@ -20,7 +20,7 @@ package org.drools.command.runtime.process;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.process.WorkItemHandler;
 
 public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
@@ -53,7 +53,7 @@ public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
     }
 
     public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         ksession.getWorkItemManager().registerWorkItemHandler(workItemName, handler);
         return null;
     }

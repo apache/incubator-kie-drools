@@ -26,7 +26,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.process.ProcessInstance;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -85,7 +85,7 @@ public class SignalEventCommand implements GenericCommand<Object> {
     }
 
     public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
         if (processInstanceId == -1) {
             ksession.signalEvent(eventType, event);

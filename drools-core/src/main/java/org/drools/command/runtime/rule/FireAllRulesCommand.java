@@ -26,7 +26,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.AgendaFilter;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -94,7 +94,7 @@ public class FireAllRulesCommand
     }
 
     public Integer execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         int fired;
         if ( max != -1 && agendaFilter != null ) {
             fired = ((StatefulKnowledgeSessionImpl) ksession).session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ), max );

@@ -19,9 +19,8 @@ package org.drools.command.runtime.rule;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DisconnectedFactHandle;
-import org.drools.common.InternalFactHandle;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 
 public class UpdateCommand
@@ -40,10 +39,9 @@ public class UpdateCommand
     }
 
     public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
-        ksession.getEntryPoint( handle.getEntryPointId() ).update( handle,
-                                                                                object );
+        ksession.getEntryPoint( handle.getEntryPointId() ).update( handle, object );
         return null;
     }
     

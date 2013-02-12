@@ -20,15 +20,15 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
 import org.kie.runtime.Calendars;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 public class GetCalendarsCommand
     implements
     GenericCommand<Calendars> {
 
     public Calendars execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        return (Calendars) ksession.getCalendars();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        return ksession.getCalendars();
     }
 
     public String toString() {

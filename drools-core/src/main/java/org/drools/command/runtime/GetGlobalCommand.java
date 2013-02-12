@@ -26,7 +26,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetGlobalCommand
@@ -66,7 +66,7 @@ public class GetGlobalCommand
     }
 
     public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
 
         Object object = ksession.getGlobal( identifier );
         ExecutionResultImpl results = ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
