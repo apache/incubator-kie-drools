@@ -31,7 +31,6 @@ import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.solution.Solution;
 
-// TODO clean me up!
 public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
 
     protected SolutionDescriptor solutionDescriptor;
@@ -46,20 +45,6 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
     public SolutionG cloneSolution(SolutionG originalSolution) {
         return new FieldAccessingSolutionClonerRun().cloneSolution(originalSolution);
-    }
-
-    protected static class Unprocessed {
-
-        protected Object bean;
-        protected Field field;
-        protected Object originalValue;
-
-        public Unprocessed(Object bean, Field field, Object originalValue) {
-            this.bean = bean;
-            this.field = field;
-            this.originalValue = originalValue;
-        }
-
     }
 
     protected class FieldAccessingSolutionClonerRun {
@@ -134,17 +119,33 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             if (originalValue == null) {
                 return false;
             }
+            if (isFieldAnEntityPropertyOnSolution(field)) {
+                return true;
+            }
+            if (isValueAnEntity(originalValue)) {
+                return true;
+            }
+            return false;
+        }
+
+        protected boolean isFieldAnEntityPropertyOnSolution(Field field) {
             Class<?> declaringClass = field.getDeclaringClass();
             if (declaringClass == ((Class) solutionDescriptor.getSolutionClass())) {
                 String fieldName = field.getName();
                 // This presumes we're dealing with a simple getter/setter. Dangerous?
+                // TODO fail-fast if there is an entity property that wasn't cloned!
                 if (solutionDescriptor.getEntityPropertyAccessorMap().get(fieldName) != null) {
                     return true;
                 }
+                // This presumes we're dealing with a simple getter/setter. Dangerous?
                 if (solutionDescriptor.getEntityCollectionPropertyAccessorMap().get(fieldName) != null) {
                     return true;
                 }
             }
+            return false;
+        }
+
+        protected boolean isValueAnEntity(Object originalValue) {
             Class valueClass = originalValue.getClass();
             if (solutionDescriptor.getPlanningEntityClassSet().contains(valueClass)
                     || valueClass == ((Class) solutionDescriptor.getSolutionClass())) {
@@ -160,7 +161,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
         }
 
-        private void process(Unprocessed unprocessed) {
+        protected void process(Unprocessed unprocessed) {
             Object cloneValue;
             if (unprocessed.originalValue instanceof Collection) {
                 cloneValue = cloneCollection((Collection) unprocessed.originalValue);
@@ -174,7 +175,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
         // TODO this is bad. It should follow hibernate limitations that we use an new empty ArrayList() for List, ...
         // TODO and detect things like a TreeSet's comparator too through SortedSet.getComparator()
-        private Collection cloneCollection(Collection originalCollection) {
+        protected Collection cloneCollection(Collection originalCollection) {
             Collection cloneCollection;
             if (!(originalCollection instanceof Cloneable)) {
                 // TODO stopgap to make the unit tests work for now
@@ -209,11 +210,12 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             return cloneCollection;
         }
 
-        private Map cloneMap(Map originalMap) {
+        protected Map cloneMap(Map originalMap) {
+            // Normally a Map will never be selected for cloning, but extending implementations might anyway
             throw new UnsupportedOperationException(); // TODO
         }
 
-        private Object getField(Object bean, Field field) {
+        protected Object getField(Object bean, Field field) {
             try {
                 return field.get(bean);
             } catch (IllegalAccessException e) {
@@ -223,7 +225,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
         }
 
-        private void setField(Object bean, Field field, Object value) {
+        protected void setField(Object bean, Field field, Object value) {
             try {
                 field.set(bean, value);
             } catch (IllegalAccessException e) {
@@ -231,6 +233,20 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
                         + ") has a field (" + field
                         + ") which can not be written to create a clone.", e);
             }
+        }
+
+    }
+
+    protected static class Unprocessed {
+
+        protected Object bean;
+        protected Field field;
+        protected Object originalValue;
+
+        public Unprocessed(Object bean, Field field, Object originalValue) {
+            this.bean = bean;
+            this.field = field;
+            this.originalValue = originalValue;
         }
 
     }
