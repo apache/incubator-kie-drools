@@ -1129,4 +1129,48 @@ public class MiscTest2 extends CommonTestMethodBase {
             this.price = price;
         }
     }
+
+    @Test
+    public void testJitComparable() {
+        // DROOLS-37
+        String str =
+                "import org.drools.integrationtests.MiscTest2.IntegerWrapperImpl;\n" +
+                "\n" +
+                "rule \"minCost\"\n" +
+                "when\n" +
+                "    $a : IntegerWrapperImpl()\n" +
+                "    IntegerWrapperImpl( this < $a )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert(new IntegerWrapperImpl(2));
+        ksession.insert(new IntegerWrapperImpl(3));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    interface IntegerWraper {
+        int getInt();
+    }
+
+    public static abstract class AbstractIntegerWrapper implements IntegerWraper, Comparable<IntegerWraper> { }
+
+    public static class IntegerWrapperImpl extends AbstractIntegerWrapper {
+
+        private final int i;
+
+        public IntegerWrapperImpl(int i) {
+            this.i = i;
+        }
+
+        public int compareTo(IntegerWraper o) {
+            return getInt() - o.getInt();
+        }
+
+        public int getInt() {
+            return i;
+        }
+    }
 }
