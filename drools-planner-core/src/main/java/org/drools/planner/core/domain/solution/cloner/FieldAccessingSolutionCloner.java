@@ -22,11 +22,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -197,36 +207,8 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             setFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
         }
 
-        // TODO this is bad. It should follow hibernate limitations that we use an new empty ArrayList() for List, ...
-        // TODO and detect things like a TreeSet's comparator too through SortedSet.getComparator()
         protected Collection cloneCollection(Collection originalCollection) {
-            Collection cloneCollection;
-            if (!(originalCollection instanceof Cloneable)) {
-                // TODO stopgap to make the unit tests work for now
-                cloneCollection = new ArrayList(originalCollection.size());
-//                throw new IllegalStateException("The collection (" + originalCollection
-//                        + ") is an instance of a class (" + originalCollection.getClass()
-//                        + ") that does not implement Cloneable.");
-            } else {
-                try {
-                    Method cloneMethod = originalCollection.getClass().getMethod("clone");
-                    cloneCollection = (Collection) cloneMethod.invoke(originalCollection);
-                    // TODO Upgrade to JDK 1.7: catch (ReflectiveOperationException e) instead of these 4
-                } catch (InvocationTargetException e) {
-                    throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
-                            + ") which is an instance of a class (" + originalCollection.getClass()
-                            + ") and implements Cloneable.");
-                } catch (NoSuchMethodException e) {
-                    throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
-                            + ") which is an instance of a class (" + originalCollection.getClass()
-                            + ") and implements Cloneable.");
-                } catch (IllegalAccessException e) {
-                    throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
-                            + ") which is an instance of a class (" + originalCollection.getClass()
-                            + ") and implements Cloneable.");
-                }
-                cloneCollection.clear();
-            }
+            Collection cloneCollection = constructCloneCollection(originalCollection);
             for (Object originalEntity : originalCollection) {
                 Object cloneElement = clone(originalEntity);
                 cloneCollection.add(cloneElement);
@@ -234,9 +216,73 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             return cloneCollection;
         }
 
+        protected Collection constructCloneCollection(Collection originalCollection) {
+            if (originalCollection instanceof List) {
+                if (originalCollection instanceof ArrayList) {
+                    return new ArrayList(originalCollection.size());
+                } else if (originalCollection instanceof LinkedList) {
+                    return new LinkedList();
+                } else { // Default List
+                    return new ArrayList(originalCollection.size());
+                }
+            } if (originalCollection instanceof Set) {
+                if (originalCollection instanceof SortedSet) {
+                    Comparator setComparator = ((SortedSet) originalCollection).comparator();
+                    return new TreeSet(setComparator);
+                } else if (originalCollection instanceof LinkedHashSet) {
+                    return new LinkedHashSet(originalCollection.size());
+                } else if (originalCollection instanceof HashSet) {
+                    return new HashSet(originalCollection.size());
+                } else { // Default Set
+                    // Default to a LinkedHashSet to respect order
+                    return new LinkedHashSet(originalCollection.size());
+                }
+            } else { // Default collection
+                return new ArrayList(originalCollection.size());
+            }
+        }
+
+        protected Collection constructCloneCollectionByCloneable(Collection originalCollection) {
+            Collection cloneCollection;
+            if (!(originalCollection instanceof Cloneable)) {
+                throw new IllegalStateException("The collection (" + originalCollection
+                        + ") is an instance of a class (" + originalCollection.getClass()
+                        + ") that does not implement Cloneable.");
+            }
+            try {
+                Method cloneMethod = originalCollection.getClass().getMethod("clone");
+                cloneCollection = (Collection) cloneMethod.invoke(originalCollection);
+                // TODO Upgrade to JDK 1.7: catch (ReflectiveOperationException e) instead of these 4
+            } catch (InvocationTargetException e) {
+                throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
+                        + ") which is an instance of a class (" + originalCollection.getClass()
+                        + ") and implements Cloneable.");
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
+                        + ") which is an instance of a class (" + originalCollection.getClass()
+                        + ") and implements Cloneable.");
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("Could not call clone() on collection (" + originalCollection
+                        + ") which is an instance of a class (" + originalCollection.getClass()
+                        + ") and implements Cloneable.");
+            }
+            cloneCollection.clear();
+            return cloneCollection;
+        }
+
         protected Map cloneMap(Map originalMap) {
             // Normally a Map will never be selected for cloning, but extending implementations might anyway
-            throw new UnsupportedOperationException(); // TODO
+            if (originalMap instanceof SortedMap) {
+                Comparator setComparator = ((SortedMap) originalMap).comparator();
+                return new TreeMap(setComparator);
+            } else if (originalMap instanceof LinkedHashMap) {
+                return new LinkedHashMap(originalMap.size());
+            } else if (originalMap instanceof HashMap) {
+                return new HashMap(originalMap.size());
+            } else { // Default Map
+                // Default to a LinkedHashMap to respect order
+                return new LinkedHashMap(originalMap.size());
+            }
         }
 
         protected Object getFieldValue(Object bean, Field field) {
@@ -253,9 +299,8 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             try {
                 field.set(bean, value);
             } catch (IllegalAccessException e) {
-                throw new IllegalStateException("The class (" + bean.getClass()
-                        + ") has a field (" + field
-                        + ") which can not be written to create a clone.", e);
+                throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
+                        + ") which can not be written with the value (" + value + ") to create a clone.", e);
             }
         }
 
