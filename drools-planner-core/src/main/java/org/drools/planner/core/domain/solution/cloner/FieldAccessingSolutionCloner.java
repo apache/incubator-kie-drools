@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -34,6 +35,8 @@ import org.drools.planner.core.solution.Solution;
 public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
 
     protected SolutionDescriptor solutionDescriptor;
+    protected Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
+    protected Map<Class, Field[]> fieldsCache = new HashMap<Class, Field[]>();
 
     public FieldAccessingSolutionCloner(SolutionDescriptor solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -45,6 +48,29 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
     public SolutionG cloneSolution(SolutionG originalSolution) {
         return new FieldAccessingSolutionClonerRun().cloneSolution(originalSolution);
+    }
+
+    protected <C> Constructor<C> retrieveCachedConstructor(Class<C> clazz) throws NoSuchMethodException {
+        Constructor<C> constructor = constructorCache.get(clazz);
+        if (constructor == null) {
+            constructor = clazz.getConstructor();
+            constructor.setAccessible(true);
+            constructorCache.put(clazz, constructor);
+        }
+        return constructor;
+    }
+
+    protected <C> Field[] retrieveCachedFields(Class<C> clazz) {
+        Field[]fields = fieldsCache.get(clazz);
+        if (fields == null) {
+            fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                // no need to reset because getDeclaredFields() creates new Field instances
+                field.setAccessible(true);
+            }
+            fieldsCache.put(clazz, fields);
+        }
+        return fields;
     }
 
     protected class FieldAccessingSolutionClonerRun {
@@ -78,8 +104,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
         protected <C> C constructClone(Class<C> clazz) {
             try {
-                Constructor<C> constructor = clazz.getConstructor(); // TODO cache me
-                constructor.setAccessible(true);
+                Constructor<C> constructor = retrieveCachedConstructor(clazz);
                 return constructor.newInstance();
                 // TODO Upgrade to JDK 1.7: catch (ReflectiveOperationException e) instead of these 4
             } catch (InvocationTargetException e) {
@@ -98,15 +123,14 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         }
 
         protected <C> void copyFields(Class<C> clazz, C original, C clone) {
-            for (Field field : clazz.getDeclaredFields()) {
-                field.setAccessible(true); // no need to reset because getDeclaredFields() creates new Field instances
-                Object originalValue = getField(original, field);
+            for (Field field : retrieveCachedFields(clazz)) {
+                Object originalValue = getFieldValue(original, field);
                 if (isDeepCloneField(field, originalValue)) {
                     // Postpone filling in the fields
                     unprocessedQueue.add(new Unprocessed(clone, field, originalValue));
                 } else {
                     // Shallow copy
-                    setField(clone, field, originalValue);
+                    setFieldValue(clone, field, originalValue);
                 }
             }
             Class<? super C> superclass = clazz.getSuperclass();
@@ -170,7 +194,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             } else {
                 cloneValue = clone(unprocessed.originalValue);
             }
-            setField(unprocessed.bean, unprocessed.field, cloneValue);
+            setFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
         }
 
         // TODO this is bad. It should follow hibernate limitations that we use an new empty ArrayList() for List, ...
@@ -215,7 +239,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             throw new UnsupportedOperationException(); // TODO
         }
 
-        protected Object getField(Object bean, Field field) {
+        protected Object getFieldValue(Object bean, Field field) {
             try {
                 return field.get(bean);
             } catch (IllegalAccessException e) {
@@ -225,7 +249,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
         }
 
-        protected void setField(Object bean, Field field, Object value) {
+        protected void setFieldValue(Object bean, Field field, Object value) {
             try {
                 field.set(bean, value);
             } catch (IllegalAccessException e) {
