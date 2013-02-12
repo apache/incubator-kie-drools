@@ -17,7 +17,12 @@
 package org.drools.planner.core.domain.solution.cloner;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.testdata.domain.TestdataEntity;
@@ -27,6 +32,8 @@ import org.drools.planner.core.testdata.domain.chained.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedEntity;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedObject;
 import org.drools.planner.core.testdata.domain.chained.TestdataChainedSolution;
+import org.drools.planner.core.testdata.domain.setbased.TestdataSetBasedEntity;
+import org.drools.planner.core.testdata.domain.setbased.TestdataSetBasedSolution;
 import org.junit.Test;
 
 import static org.drools.planner.core.testdata.util.PlannerAssert.*;
@@ -34,7 +41,7 @@ import static org.drools.planner.core.testdata.util.PlannerAssert.*;
 public class FieldAccessingSolutionClonerTest {
 
     @Test
-    public void testCloneSolution() {
+    public void cloneSolution() {
         SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         FieldAccessingSolutionCloner<TestdataSolution> cloner
                 = new FieldAccessingSolutionCloner<TestdataSolution>(solutionDescriptor);
@@ -85,7 +92,7 @@ public class FieldAccessingSolutionClonerTest {
     }
 
     @Test
-    public void testCloneChainedSolution() {
+    public void cloneChainedSolution() {
         SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
         FieldAccessingSolutionCloner<TestdataChainedSolution> cloner
                 = new FieldAccessingSolutionCloner<TestdataChainedSolution>(solutionDescriptor);
@@ -133,6 +140,73 @@ public class FieldAccessingSolutionClonerTest {
         assertCode(entityCode, originalEntity);
         assertCode(entityCode, cloneEntity);
         assertSame(value, cloneEntity.getChainedObject());
+    }
+
+    @Test
+    public void cloneSetBasedSolution() {
+        SolutionDescriptor solutionDescriptor = TestdataSetBasedSolution.buildSolutionDescriptor();
+        FieldAccessingSolutionCloner<TestdataSetBasedSolution> cloner
+                = new FieldAccessingSolutionCloner<TestdataSetBasedSolution>(solutionDescriptor);
+
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataValue val2 = new TestdataValue("2");
+        TestdataValue val3 = new TestdataValue("3");
+        TestdataSetBasedEntity a = new TestdataSetBasedEntity("a", val1);
+        TestdataSetBasedEntity b = new TestdataSetBasedEntity("b", val1);
+        TestdataSetBasedEntity c = new TestdataSetBasedEntity("c", val3);
+        TestdataSetBasedEntity d = new TestdataSetBasedEntity("d", val3);
+
+        TestdataSetBasedSolution original = new TestdataSetBasedSolution("solution");
+        Comparator<TestdataValue> valueComparator = new Comparator<TestdataValue>() {
+            public int compare(TestdataValue a, TestdataValue b) {
+                return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
+            }
+        };
+        Set<TestdataValue> valueSet = new TreeSet<TestdataValue>(valueComparator);
+        valueSet.addAll(Arrays.asList(val1, val2, val3));
+        original.setValueSet(valueSet);
+        Comparator<TestdataSetBasedEntity> entityComparator = new Comparator<TestdataSetBasedEntity>() {
+            public int compare(TestdataSetBasedEntity a, TestdataSetBasedEntity b) {
+                return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
+            }
+        };
+        Set<TestdataSetBasedEntity> originalEntitySet = new TreeSet<TestdataSetBasedEntity>(entityComparator);
+        originalEntitySet.addAll(Arrays.asList(a, b, c, d));
+        original.setEntitySet(originalEntitySet);
+
+        TestdataSetBasedSolution clone = cloner.cloneSolution(original);
+        assertNotSame(original, clone);
+        assertSame(valueSet, clone.getValueSet());
+
+        Set<TestdataSetBasedEntity> cloneEntitySet = clone.getEntitySet();
+        assertNotSame(originalEntitySet, cloneEntitySet);
+        assertTrue(cloneEntitySet instanceof SortedSet);
+        assertSame(entityComparator, ((SortedSet) cloneEntitySet).comparator());
+        assertCode("solution", clone);
+        assertEquals(4, cloneEntitySet.size());
+        Iterator<TestdataSetBasedEntity> it = cloneEntitySet.iterator();
+        // Reverse order because they got sorted
+        TestdataSetBasedEntity cloneD = it.next();
+        TestdataSetBasedEntity cloneC = it.next();
+        TestdataSetBasedEntity cloneB = it.next();
+        TestdataSetBasedEntity cloneA = it.next();
+        assertSetBasedEntityClone(a, cloneA, "a", "1");
+        assertSetBasedEntityClone(b, cloneB, "b", "1");
+        assertSetBasedEntityClone(c, cloneC, "c", "3");
+        assertSetBasedEntityClone(d, cloneD, "d", "3");
+
+        b.setValue(val2);
+        assertCode("2", b.getValue());
+        // Clone remains unchanged
+        assertCode("1", cloneB.getValue());
+    }
+
+    private void assertSetBasedEntityClone(TestdataSetBasedEntity originalEntity, TestdataSetBasedEntity cloneEntity,
+            String entityCode, String valueCode) {
+        assertNotSame(originalEntity, cloneEntity);
+        assertCode(entityCode, originalEntity);
+        assertCode(entityCode, cloneEntity);
+        assertCode(valueCode, cloneEntity.getValue());
     }
 
 }
