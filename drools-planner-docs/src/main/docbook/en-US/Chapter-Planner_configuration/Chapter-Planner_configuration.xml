@@ -996,8 +996,14 @@ public class Visit ... implements Appearance {
           </listitem>
         </itemizedlist>
 
-        <para><emphasis role="bold">Implementing a planning clone method is hard.</emphasis> Therefore you don't have to
-        implement it.</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Planner_configuration/solutionCloning.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para><emphasis role="bold">Implementing a planning clone method is hard, therefore you don't need to implement
+        it.</emphasis></para>
 
         <section>
           <title><literal>FieldAccessingSolutionCloner</literal></title>
