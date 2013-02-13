@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
-import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
+import org.drools.planner.examples.curriculumcourse.domain.CourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 
 public class CurriculumCourseSolutionExporter extends AbstractTxtSolutionExporter {
@@ -46,10 +46,10 @@ public class CurriculumCourseSolutionExporter extends AbstractTxtSolutionExporte
 
     public class CurriculumCourseOutputBuilder extends TxtOutputBuilder {
 
-        private CurriculumCourseSchedule schedule;
+        private CourseSchedule schedule;
 
         public void setSolution(Solution solution) {
-            schedule = (CurriculumCourseSchedule) solution;
+            schedule = (CourseSchedule) solution;
         }
 
         public void writeSolution() throws IOException {

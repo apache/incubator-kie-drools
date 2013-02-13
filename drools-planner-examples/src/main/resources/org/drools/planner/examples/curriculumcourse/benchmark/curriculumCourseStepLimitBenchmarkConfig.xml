@@ -4,12 +4,12 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.curriculumcourse.domain.CourseSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</inputSolutionFile>
     </problemBenchmarks>
 
     <solver>
-      <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+      <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
       <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>

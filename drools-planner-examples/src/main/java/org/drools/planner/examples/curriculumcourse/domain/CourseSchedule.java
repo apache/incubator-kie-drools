@@ -33,8 +33,8 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
-@XStreamAlias("CurriculumCourseSchedule")
-public class CurriculumCourseSchedule extends AbstractPersistable implements Solution<HardSoftScore> {
+@XStreamAlias("CourseSchedule")
+public class CourseSchedule extends AbstractPersistable implements Solution<HardSoftScore> {
 
     private String name;
 
@@ -164,10 +164,10 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         if (this == o) {
             return true;
         }
-        if (id == null || !(o instanceof CurriculumCourseSchedule)) {
+        if (id == null || !(o instanceof CourseSchedule)) {
             return false;
         } else {
-            CurriculumCourseSchedule other = (CurriculumCourseSchedule) o;
+            CourseSchedule other = (CourseSchedule) o;
             if (lectureList.size() != other.lectureList.size()) {
                 return false;
             }

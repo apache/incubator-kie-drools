@@ -19,13 +19,13 @@ package org.drools.planner.examples.curriculumcourse.domain.solver;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
-import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
+import org.drools.planner.examples.curriculumcourse.domain.CourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
-public class LectureDifficultyWeightFactory implements SelectionSorterWeightFactory<CurriculumCourseSchedule, Lecture> {
+public class LectureDifficultyWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Lecture> {
 
-    public Comparable createSorterWeight(CurriculumCourseSchedule schedule, Lecture lecture) {
+    public Comparable createSorterWeight(CourseSchedule schedule, Lecture lecture) {
         Course course = lecture.getCourse();
         int unavailablePeriodPenaltyCount = 0;
         for (UnavailablePeriodPenalty penalty : schedule.getUnavailablePeriodPenaltyList()) {

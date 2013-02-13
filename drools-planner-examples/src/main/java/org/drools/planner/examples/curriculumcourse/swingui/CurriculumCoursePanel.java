@@ -33,7 +33,7 @@ import javax.swing.JPanel;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.TangoColorFactory;
-import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
+import org.drools.planner.examples.curriculumcourse.domain.CourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
@@ -55,14 +55,14 @@ public class CurriculumCoursePanel extends SolutionPanel {
         setLayout(gridLayout);
     }
 
-    private CurriculumCourseSchedule getCurriculumCourseSchedule() {
-        return (CurriculumCourseSchedule) solutionBusiness.getSolution();
+    private CourseSchedule getCourseSchedule() {
+        return (CourseSchedule) solutionBusiness.getSolution();
     }
 
     public void resetPanel(Solution solution) {
         removeAll();
         tangoColorFactory = new TangoColorFactory();
-        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
+        CourseSchedule schedule = (CourseSchedule) solution;
         gridLayout.setColumns(schedule.getRoomList().size() + 1);
         JLabel headerCornerLabel = new JLabel("Period         \\         Room");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
@@ -136,11 +136,11 @@ public class CurriculumCoursePanel extends SolutionPanel {
 
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
-            List<Period> periodList = getCurriculumCourseSchedule().getPeriodList();
+            List<Period> periodList = getCourseSchedule().getPeriodList();
             JComboBox periodListField = new JComboBox(periodList.toArray());
             periodListField.setSelectedItem(lecture.getPeriod());
             listFieldsPanel.add(periodListField);
-            List<Room> roomList = getCurriculumCourseSchedule().getRoomList();
+            List<Room> roomList = getCourseSchedule().getRoomList();
             JComboBox roomListField = new JComboBox(roomList.toArray());
             roomListField.setSelectedItem(lecture.getRoom());
             listFieldsPanel.add(roomListField);

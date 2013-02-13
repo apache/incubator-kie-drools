@@ -1,4 +1,4 @@
-<CurriculumCourseSchedule id="1">
+<CourseSchedule id="1">
   <id>0</id>
   <name>Let0405-1</name>
   <teacherList id="2">
@@ -6741,4 +6741,4 @@
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
   </lectureList>
-</CurriculumCourseSchedule>
+</CourseSchedule>

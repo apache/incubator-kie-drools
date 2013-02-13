@@ -882,7 +882,7 @@ public class Visit ... implements Appearance {
 
         <para>Most use cases use a <literal>HardSoftScore</literal> instead:</para>
 
-        <programlisting language="java">public class CurriculumCourseSchedule implements Solution&lt;HardSoftScore&gt; {
+        <programlisting language="java">public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
 
     private HardSoftScore score;
 
@@ -1115,7 +1115,7 @@ public class Visit ... implements Appearance {
         <para>Usually, most of this data comes from your data layer, and your <literal>Solution</literal> implementation
         just aggregates that data and creates the uninitialized planning entity instances to plan:</para>
 
-        <programlisting language="java">        private void createLectureList(CurriculumCourseSchedule schedule) {
+        <programlisting language="java">        private void createLectureList(CourseSchedule schedule) {
             List&lt;Course&gt; courseList = schedule.getCourseList();
             List&lt;Lecture&gt; lectureList = new ArrayList&lt;Lecture&gt;(courseList.size());
             for (Course course : courseList) {

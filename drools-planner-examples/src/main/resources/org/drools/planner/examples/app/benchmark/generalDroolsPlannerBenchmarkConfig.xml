@@ -50,12 +50,12 @@
   <solverBenchmark>
     <name>curriculumcourse_tabuSearch</name>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</xstreamAnnotatedClass>
+      <xstreamAnnotatedClass>org.drools.planner.examples.curriculumcourse.domain.CourseSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
     </problemBenchmarks>
     <solver>
-      <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+      <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
       <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>

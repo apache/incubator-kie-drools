@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>FAST_ASSERT</environmentMode>-->
-  <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+  <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
   <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
 
   <scoreDirectorFactory>

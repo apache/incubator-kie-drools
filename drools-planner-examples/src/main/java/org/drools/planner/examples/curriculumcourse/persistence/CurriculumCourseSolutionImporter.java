@@ -27,8 +27,8 @@ import java.util.Map;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
+import org.drools.planner.examples.curriculumcourse.domain.CourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Curriculum;
-import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Day;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
@@ -62,7 +62,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
     public class CurriculumCourseInputBuilder extends TxtInputBuilder {
 
         public Solution readSolution() throws IOException {
-            CurriculumCourseSchedule schedule = new CurriculumCourseSchedule();
+            CourseSchedule schedule = new CourseSchedule();
             schedule.setId(0L);
             // Name: ToyExample
             schedule.setName(readStringValue("Name:"));
@@ -97,7 +97,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneLectureSize).pow(
                     schedule.getLectureList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("CurriculumCourseSchedule {} has {} teachers, {} curricula, {} courses, {} lectures," +
+            logger.info("CourseSchedule {} has {} teachers, {} curricula, {} courses, {} lectures," +
                     " {} periods, {} rooms and {} unavailable period constraints with a search space of {}.",
                     getInputId(),
                     schedule.getTeacherList().size(),
@@ -112,7 +112,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
         }
 
         private Map<String, Course> readCourseListAndTeacherList(
-                CurriculumCourseSchedule schedule, int courseListSize) throws IOException {
+                CourseSchedule schedule, int courseListSize) throws IOException {
             Map<String, Course> courseMap = new HashMap<String, Course>(courseListSize);
             Map<String, Teacher> teacherMap = new HashMap<String, Teacher>();
             List<Course> courseList = new ArrayList<Course>(courseListSize);
@@ -151,7 +151,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             return teacher;
         }
 
-        private void readRoomList(CurriculumCourseSchedule schedule, int roomListSize)
+        private void readRoomList(CourseSchedule schedule, int roomListSize)
                 throws IOException {
             readEmptyLine();
             readConstantLine("ROOMS:");
@@ -170,7 +170,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
         }
 
         private Map<List<Integer>, Period> createPeriodListAndDayListAndTimeslotList(
-                CurriculumCourseSchedule schedule, int dayListSize, int timeslotListSize) throws IOException {
+                CourseSchedule schedule, int dayListSize, int timeslotListSize) throws IOException {
             int periodListSize = dayListSize * timeslotListSize;
             Map<List<Integer>, Period> periodMap = new HashMap<List<Integer>, Period>(periodListSize);
             List<Day> dayList = new ArrayList<Day>(dayListSize);
@@ -204,7 +204,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             return periodMap;
         }
 
-        private void readCurriculumList(CurriculumCourseSchedule schedule,
+        private void readCurriculumList(CourseSchedule schedule,
                 Map<String, Course> courseMap, int curriculumListSize) throws IOException {
             readEmptyLine();
             readConstantLine("CURRICULA:");
@@ -238,7 +238,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             schedule.setCurriculumList(curriculumList);
         }
 
-        private void readUnavailablePeriodPenaltyList(CurriculumCourseSchedule schedule, Map<String, Course> courseMap,
+        private void readUnavailablePeriodPenaltyList(CourseSchedule schedule, Map<String, Course> courseMap,
                 Map<List<Integer>, Period> periodMap, int unavailablePeriodPenaltyListSize)
                 throws IOException {
             readEmptyLine();
@@ -265,7 +265,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             schedule.setUnavailablePeriodPenaltyList(penaltyList);
         }
 
-        private void createLectureList(CurriculumCourseSchedule schedule) {
+        private void createLectureList(CourseSchedule schedule) {
             List<Course> courseList = schedule.getCourseList();
             List<Lecture> lectureList = new ArrayList<Lecture>(courseList.size());
             long id = 0L;

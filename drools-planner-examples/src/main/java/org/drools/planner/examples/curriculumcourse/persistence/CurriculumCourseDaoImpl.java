@@ -17,12 +17,12 @@
 package org.drools.planner.examples.curriculumcourse.persistence;
 
 import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
-import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
+import org.drools.planner.examples.curriculumcourse.domain.CourseSchedule;
 
 public class CurriculumCourseDaoImpl extends XStreamSolutionDaoImpl {
 
     public CurriculumCourseDaoImpl() {
-        super("curriculumcourse", CurriculumCourseSchedule.class);
+        super("curriculumcourse", CourseSchedule.class);
     }
 
 }
