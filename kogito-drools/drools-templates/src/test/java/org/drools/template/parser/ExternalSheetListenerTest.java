@@ -339,6 +339,11 @@ public class ExternalSheetListenerTest {
                     return null;
                 }
 
+                public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+                    
+                    return null;
+                }
+
                 public WorkItemManager getWorkItemManager() {
                     
                     return null;

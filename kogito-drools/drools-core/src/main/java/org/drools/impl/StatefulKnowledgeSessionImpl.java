@@ -300,6 +300,10 @@ public class StatefulKnowledgeSessionImpl
         return this.session.getProcessInstance( id );
     }
 
+    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+        return this.session.getProcessInstance( id, readOnly );
+    }
+
     public void abortProcessInstance(long id) {
         this.session.getProcessRuntime().abortProcessInstance( id );
     }

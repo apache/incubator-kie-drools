@@ -372,6 +372,10 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
+    public ProcessInstance getProcessInstance( long id, boolean readOnly ) {
+        throw new IllegalStateException( ERRORMSG );
+    }
+
     public WorkItemManager getWorkItemManager() {
         throw new IllegalStateException( ERRORMSG );
     }

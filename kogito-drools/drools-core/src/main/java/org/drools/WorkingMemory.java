@@ -261,6 +261,8 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      */
     public ProcessInstance getProcessInstance(long id);
 
+    public ProcessInstance getProcessInstance(long id, boolean readOnly);
+
     public WorkItemManager getWorkItemManager();
 
     /**
