@@ -129,6 +129,18 @@ public interface ProcessRuntime {
     ProcessInstance getProcessInstance(long processInstanceId);
 
     /**
+     * Returns the process instance with the given id.  Note that only active process instances
+     * will be returned.  If a process instance has been completed already, this method will return
+     * <code>null</code>.
+     * 
+     * @param id the id of the process instance
+     * @param readonly if this is true and when using persistence, this process instance
+     * will not be tracked and updated by the engine
+     * @return the process instance with the given id or <code>null</code> if it cannot be found
+     */
+    ProcessInstance getProcessInstance(long processInstanceId, boolean readonly);
+    
+    /**
      * Aborts the process instance with the given id.  If the process instance has been completed
      * (or aborted), or the process instance cannot be found, this method will throw an
      * <code>IllegalArgumentException</code>.
