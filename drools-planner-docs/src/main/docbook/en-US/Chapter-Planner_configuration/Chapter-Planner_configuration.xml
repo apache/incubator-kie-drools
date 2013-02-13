@@ -118,9 +118,7 @@
       <programlisting language="java">        SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
-        Set&lt;Class&lt;?&gt;&gt; planningEntityClassSet = new HashSet&lt;Class&lt;?&gt;&gt;();
-        planningEntityClassSet.add(Queen.class);
-        solverConfig.setPlanningEntityClassSet(planningEntityClassSet);
+        solverConfig.setPlanningEntityClassSet(Collections.&lt;Class&lt;?&gt;&gt;singleton(Queen.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
@@ -1270,13 +1268,14 @@ public class Visit ... implements Appearance {
         fairly across runs.</para>
 
         <note>
-          <para>Despite the reproducible mode, your application might still not be fully reproducible because:</para>
+          <para>Despite the reproducible mode, your application might still not be fully reproducible because of:</para>
 
           <itemizedlist>
             <listitem>
               <para>Use of <literal>HashSet</literal> (or another <literal>Collection</literal> which has an
-              inconsistent order between JVM runs), especially in the <literal>Solution</literal> implementation.
-              Replace it with <literal>LinkedHashSet</literal>.</para>
+              inconsistent order between JVM runs) for collections of planning entities or planning values (but not
+              normal problem facts), especially in the <literal>Solution</literal> implementation. Replace it with
+              <literal>LinkedHashSet</literal>.</para>
             </listitem>
 
             <listitem>
