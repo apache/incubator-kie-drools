@@ -119,6 +119,13 @@ public class CommandBasedStatefulKnowledgeSession
         return commandService.execute( command );
     }
 
+    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+        GetProcessInstanceCommand command = new GetProcessInstanceCommand();
+        command.setProcessInstanceId( id );
+        command.setReadOnly( readOnly );
+        return commandService.execute( command );
+    }
+
     public void abortProcessInstance(long id) {
         AbortProcessInstanceCommand command = new AbortProcessInstanceCommand();
         command.setProcessInstanceId( id );

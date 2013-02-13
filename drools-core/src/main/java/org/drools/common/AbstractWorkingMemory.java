@@ -1033,6 +1033,10 @@ public abstract class AbstractWorkingMemory
         return processRuntime.getProcessInstance( processInstanceId );
     }
 
+    public ProcessInstance getProcessInstance(long processInstanceId, boolean readOnly) {
+        return processRuntime.getProcessInstance( processInstanceId, readOnly );
+    }
+
     public WorkItemManager getWorkItemManager() {
         if ( workItemManager == null ) {
             workItemManager = config.getWorkItemManagerFactory().createWorkItemManager( this.getKnowledgeRuntime() );

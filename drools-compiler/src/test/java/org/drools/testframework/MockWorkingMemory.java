@@ -282,6 +282,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
+    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     public Collection<ProcessInstance> getProcessInstances() {
         // TODO Auto-generated method stub
         return null;
