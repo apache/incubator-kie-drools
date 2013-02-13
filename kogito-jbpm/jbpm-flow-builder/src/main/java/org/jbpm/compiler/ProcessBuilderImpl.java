@@ -121,7 +121,8 @@ public class ProcessBuilderImpl implements ProcessBuilder {
             if ( errors.length != 0 ) {
                 hasErrors = true;
                 for ( int i = 0; i < errors.length; i++ ) {
-                    this.errors.add( new ParserError( errors[i].toString(),
+                    this.errors.add( new ParserError( resource,
+                                                      errors[i].toString(),
                                                       -1,
                                                       -1 ) );
                 }
