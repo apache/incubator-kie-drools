@@ -104,6 +104,9 @@ public class RowAdapter implements Row {
     }
     
     public String toString() {
+        if ( factHandles == null ) {
+            this.factHandles = this.leftTuple.toFactHandles();
+        }
         StringBuilder sbuilder = new StringBuilder();
         for ( int i = 0, length = this.factHandles.length -1; i < length; i++ ) {
             sbuilder.append( this.factHandles[i].getObject().toString() );
