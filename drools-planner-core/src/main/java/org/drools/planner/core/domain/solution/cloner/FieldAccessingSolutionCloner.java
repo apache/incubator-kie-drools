@@ -39,6 +39,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
+import org.drools.planner.core.domain.common.PropertyAccessor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.solution.Solution;
 
@@ -94,6 +95,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
                     solutionDescriptor.getPlanningEntityCount(originalSolution) + 1);
             SolutionG cloneSolution = clone(originalSolution);
             processQueue();
+            validateCloneSolution(originalSolution, cloneSolution);
             return cloneSolution;
         }
 
@@ -166,12 +168,13 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             Class<?> declaringClass = field.getDeclaringClass();
             if (declaringClass == ((Class) solutionDescriptor.getSolutionClass())) {
                 String fieldName = field.getName();
-                // This presumes we're dealing with a simple getter/setter. Dangerous?
-                // TODO fail-fast if there is an entity property that wasn't cloned!
+                // This assumes we're dealing with a simple getter/setter.
+                // If that assumption is false, validateCloneSolution(...) fails-fast.
                 if (solutionDescriptor.getEntityPropertyAccessorMap().get(fieldName) != null) {
                     return true;
                 }
-                // This presumes we're dealing with a simple getter/setter. Dangerous?
+                // This assumes we're dealing with a simple getter/setter.
+                // If that assumption is false, validateCloneSolution(...) fails-fast.
                 if (solutionDescriptor.getEntityCollectionPropertyAccessorMap().get(fieldName) != null) {
                     return true;
                 }
@@ -276,6 +279,35 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             } else { // Default Map
                 // Default to a LinkedHashMap to respect order
                 return new LinkedHashMap<K,V>(originalMap.size());
+            }
+        }
+
+        protected void validateCloneSolution(SolutionG originalSolution, SolutionG cloneSolution) {
+            for (PropertyAccessor propertyAccessor
+                    : solutionDescriptor.getEntityPropertyAccessorMap().values()) {
+                Object originalProperty = propertyAccessor.executeGetter(originalSolution);
+                if (originalProperty != null) {
+                    Object cloneProperty = propertyAccessor.executeGetter(cloneSolution);
+                    if (originalProperty == cloneProperty) {
+                        throw new IllegalStateException(
+                                "The solutionProperty (" + propertyAccessor.getName() + ") was not cloned as expected."
+                                + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
+                                + " that property's field, probably because its field name is different.");
+                    }
+                }
+            }
+            for (PropertyAccessor propertyAccessor
+                    : solutionDescriptor.getEntityCollectionPropertyAccessorMap().values()) {
+                Object originalProperty = propertyAccessor.executeGetter(originalSolution);
+                if (originalProperty != null) {
+                    Object cloneProperty = propertyAccessor.executeGetter(cloneSolution);
+                    if (originalProperty == cloneProperty) {
+                        throw new IllegalStateException(
+                                "The solutionProperty (" + propertyAccessor.getName() + ") was not cloned as expected."
+                                + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
+                                + " that property's field, probably because its field name is different.");
+                    }
+                }
             }
         }
 
