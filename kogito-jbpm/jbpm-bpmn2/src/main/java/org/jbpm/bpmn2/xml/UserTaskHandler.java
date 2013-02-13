@@ -61,7 +61,10 @@ public class UserTaskHandler extends TaskHandler {
   //      	} else if ("dataOutputAssociation".equals(nodeName)) {
    //     		readDataOutputAssociation(xmlNode, humanTaskNode, dataOutputs);
         	} else if ("potentialOwner".equals(nodeName)) {
-        		owners.add(readPotentialOwner(xmlNode, humanTaskNode));
+        		String owner = readPotentialOwner(xmlNode, humanTaskNode);
+        		if (owner != null) {
+        			owners.add(owner);
+        		}
         	}
     		xmlNode = xmlNode.getNextSibling();
         }
@@ -75,7 +78,17 @@ public class UserTaskHandler extends TaskHandler {
     }
     
     protected String readPotentialOwner(org.w3c.dom.Node xmlNode, HumanTaskNode humanTaskNode) {
-		return xmlNode.getFirstChild().getFirstChild().getFirstChild().getTextContent();
+    	org.w3c.dom.Node node = xmlNode.getFirstChild();
+		if (node != null) {
+			node = node.getFirstChild();
+			if (node != null) {
+				node = node.getFirstChild();
+				if (node != null) {
+					return node.getTextContent();
+				}
+			}
+		}
+		return null;
     }
     
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
