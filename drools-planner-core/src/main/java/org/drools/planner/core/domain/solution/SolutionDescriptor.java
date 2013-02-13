@@ -222,7 +222,12 @@ public class SolutionDescriptor {
 
     public Collection<Object> getAllFacts(Solution solution) {
         Collection<Object> facts = new ArrayList<Object>();
-        facts.addAll(solution.getProblemFacts());
+        Collection<?> problemFacts = solution.getProblemFacts();
+        if (problemFacts == null) {
+            throw new IllegalStateException("The solution (" + solution
+                    + ")'s method getProblemFacts() should never return null.");
+        }
+        facts.addAll(problemFacts);
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
             if (entity != null) {
