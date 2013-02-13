@@ -282,6 +282,11 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
         }
 
+        /**
+         * Fails fast if {@link #isFieldAnEntityPropertyOnSolution} assumptions were wrong.
+         * @param originalSolution never null
+         * @param cloneSolution never null
+         */
         protected void validateCloneSolution(SolutionG originalSolution, SolutionG cloneSolution) {
             for (PropertyAccessor propertyAccessor
                     : solutionDescriptor.getEntityPropertyAccessorMap().values()) {
