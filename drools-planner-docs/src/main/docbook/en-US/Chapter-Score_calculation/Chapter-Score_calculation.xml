@@ -1106,10 +1106,10 @@ end</programlisting>
       processes into that overloaded computer, as there is no penalty for doing so.</para>
 
       <important>
-        <para>Always specify the degree of infeasibility. The business will often say: "if the solution is infeasible
-        and it doesn't matter how infeasible it." While that's true for the business, it's not true for score
-        calculation: it needs to specify how infeasible it is. In practice, soft constraints usually do this naturally
-        and it's just a matter of doing it for the hard constraints too.</para>
+        <para>Always specify the degree of infeasibility. The business will often say: "if the solution is infeasible,
+        it doesn't matter how infeasible it." While that's true for the business, it's not true for score
+        calculation: it benefits from knowing how infeasible it is. In practice, soft constraints usually do this
+        naturally and it's just a matter of doing it for the hard constraints too.</para>
       </important>
 
       <note>
