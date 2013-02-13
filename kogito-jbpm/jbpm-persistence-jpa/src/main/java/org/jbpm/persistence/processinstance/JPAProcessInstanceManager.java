@@ -68,6 +68,10 @@ public class JPAProcessInstanceManager
     }
 
     public ProcessInstance getProcessInstance(long id) {
+        return getProcessInstance(id, false);
+    }
+
+    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
         org.jbpm.process.instance.ProcessInstance processInstance = null;
         processInstance = (org.jbpm.process.instance.ProcessInstance) this.processInstances.get(id);
         if (processInstance != null) {
@@ -84,9 +88,11 @@ public class JPAProcessInstanceManager
         if ( processInstanceInfo == null ) {
             return null;
         }
-        processInstanceInfo.updateLastReadDate();
+        if (!readOnly) {
+        	processInstanceInfo.updateLastReadDate();
+        }
         processInstance = (org.jbpm.process.instance.ProcessInstance)
-        	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment());
+        	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment(), readOnly);
         if (((ProcessInstanceImpl) processInstance).getProcessXml() == null) {
 	        Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );
 	        if ( process == null ) {
@@ -94,14 +100,14 @@ public class JPAProcessInstanceManager
 	        }
 	        processInstance.setProcess( process );
         }
-        if ( processInstance.getKnowledgeRuntime() == null ) {
-            Long parentProcessInstanceId = (Long) ((ProcessInstanceImpl) processInstance).getMetaData().get("ParentProcessInstanceId");
-            if (parentProcessInstanceId != null) {
-                kruntime.getProcessInstance(parentProcessInstanceId);
-            }
-            processInstance.setKnowledgeRuntime( kruntime );
-            ((ProcessInstanceImpl) processInstance).reconnect();
-        }
+//        if ( processInstance.getKnowledgeRuntime() == null ) {
+//            Long parentProcessInstanceId = (Long) ((ProcessInstanceImpl) processInstance).getMetaData().get("ParentProcessInstanceId");
+//            if (parentProcessInstanceId != null) {
+//                kruntime.getProcessInstance(parentProcessInstanceId);
+//            }
+//            processInstance.setKnowledgeRuntime( kruntime );
+//            ((ProcessInstanceImpl) processInstance).reconnect();
+//        }
         return processInstance;
     }
 

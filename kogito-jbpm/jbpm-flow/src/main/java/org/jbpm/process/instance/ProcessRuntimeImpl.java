@@ -202,7 +202,11 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     }
 
     public ProcessInstance getProcessInstance(long id) {
-        return processInstanceManager.getProcessInstance( id );
+        return getProcessInstance( id, false );
+    }
+
+    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+        return processInstanceManager.getProcessInstance( id, readOnly );
     }
 
     public void removeProcessInstance(ProcessInstance processInstance) {

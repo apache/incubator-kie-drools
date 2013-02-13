@@ -39,7 +39,7 @@ import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
 import org.jbpm.marshalling.impl.ProtobufRuleFlowProcessInstanceMarshaller;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
-import org.kie.definition.process.WorkflowProcess;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.runtime.Environment;
 import org.kie.runtime.process.ProcessInstance;
 
@@ -144,6 +144,12 @@ public class ProcessInstanceInfo{
 
     public ProcessInstance getProcessInstance(InternalKnowledgeRuntime kruntime,
                                               Environment env) {
+    	return getProcessInstance(kruntime, env, false);
+    }
+    
+    public ProcessInstance getProcessInstance(InternalKnowledgeRuntime kruntime,
+                                              Environment env,
+                                              boolean readOnly) {
         this.env = env;
         if ( processInstance == null ) {
             try {
@@ -156,8 +162,11 @@ public class ProcessInstanceInfo{
                                                                                this.env
                                                                               );
                 ProcessInstanceMarshaller marshaller = getMarshallerFromContext( context );
-                context.wm = ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory();
+            	context.wm = ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory();
                 processInstance = marshaller.readProcessInstance(context);
+                if (!readOnly) {
+                    ((WorkflowProcessInstanceImpl) processInstance).reconnect();
+                }
                 context.close();
             } catch ( IOException e ) {
                 e.printStackTrace();

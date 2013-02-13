@@ -262,6 +262,11 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
     }
 
     @Override
+    public ProcessInstance getProcessInstance(long l, boolean b) {
+        return ksession.getProcessInstance(l, b);
+    }
+
+    @Override
     public void abortProcessInstance(long l) {
         ksession.abortProcessInstance(l);
     }

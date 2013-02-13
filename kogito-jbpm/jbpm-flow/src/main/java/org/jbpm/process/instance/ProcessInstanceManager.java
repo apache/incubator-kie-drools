@@ -24,6 +24,8 @@ public interface ProcessInstanceManager {
 
     ProcessInstance getProcessInstance(long id);
     
+    ProcessInstance getProcessInstance(long id, boolean readOnly);
+    
     Collection<ProcessInstance> getProcessInstances();
 
     void addProcessInstance(ProcessInstance processInstance);

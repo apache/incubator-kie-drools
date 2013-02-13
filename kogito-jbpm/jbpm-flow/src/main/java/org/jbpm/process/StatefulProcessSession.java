@@ -69,6 +69,10 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		return processRuntime.getProcessInstance(processInstanceId);
 	}
 
+	public ProcessInstance getProcessInstance(long processInstanceId, boolean readonly) {
+		return processRuntime.getProcessInstance(processInstanceId, readonly);
+	}
+
 	public Collection<ProcessInstance> getProcessInstances() {
 		return processRuntime.getProcessInstances();
 	}

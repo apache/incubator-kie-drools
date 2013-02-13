@@ -47,6 +47,10 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
         return (ProcessInstance) processInstances.get(id);
     }
 
+    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+        return (ProcessInstance) processInstances.get(id);
+    }
+
     public void removeProcessInstance(ProcessInstance processInstance) {
         internalRemoveProcessInstance(processInstance);
     }

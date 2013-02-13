@@ -117,6 +117,15 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
         return pi;
     }
 
+    public ProcessInstance getProcessInstance(long arg0, boolean readOnly) {
+        RuleFlowProcessInstance pi = new RuleFlowProcessInstance();
+        pi.setId(arg0);
+        ProcessImpl processImpl = new ProcessImpl();
+        processImpl.setId(""+arg0);
+        pi.setProcess(processImpl);
+        return pi;
+    }
+
     public Collection<ProcessInstance> getProcessInstances() {
       List<ProcessInstance> pis = new ArrayList<ProcessInstance>();
       pis.add(new RuleFlowProcessInstance());

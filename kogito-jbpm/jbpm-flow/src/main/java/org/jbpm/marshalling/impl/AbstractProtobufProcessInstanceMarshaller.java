@@ -452,9 +452,6 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             }
         }
         processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );
-        if ( wm != null ) {
-            processInstance.reconnect();
-        }
         return processInstance;
     }
 
