@@ -236,7 +236,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
                 }
             } if (originalCollection instanceof Set) {
                 if (originalCollection instanceof SortedSet) {
-                    Comparator setComparator = ((SortedSet) originalCollection).comparator();
+                    Comparator<E> setComparator = ((SortedSet) originalCollection).comparator();
                     return new TreeSet<E>(setComparator);
                 } else if (originalCollection instanceof LinkedHashSet) {
                     return new LinkedHashSet<E>(originalCollection.size());
