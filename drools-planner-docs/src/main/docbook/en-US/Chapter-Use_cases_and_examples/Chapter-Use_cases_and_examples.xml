@@ -705,6 +705,16 @@ comp12 has 74 teachers, 150 curricula,  88 courses, 218 lectures, 36 periods, 11
 comp13 has 77 teachers,  66 curricula,  82 courses, 308 lectures, 25 periods, 19 rooms and  468 unavailable period constraints with a search space of  10^824.
 comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17 rooms and  486 unavailable period constraints with a search space of  10^722.</programlisting>
       </section>
+
+      <section>
+        <title>Domain model</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/curriculumCourseClassDiagram.png"/>
+          </imageobject>
+        </mediaobject>
+      </section>
     </section>
 
     <section xml:id="machineReassignment">
