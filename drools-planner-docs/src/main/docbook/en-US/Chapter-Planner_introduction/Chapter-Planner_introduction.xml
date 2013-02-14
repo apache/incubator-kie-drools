@@ -61,14 +61,14 @@
 
     <para>Every organization faces planning problems: provide products and services with a limited set of
     <emphasis>constrained</emphasis> resources (employees, assets, time and money). This is known as
-    <emphasis>Constraint Satisfaction Programming</emphasis> (which is part of the discipline
-    <emphasis>Operations Research</emphasis>).</para>
+    <emphasis>Constraint Satisfaction Programming</emphasis> (which is part of the discipline <emphasis>Operations
+    Research</emphasis>).</para>
 
     <para>Drools Planner helps normal Java<superscript>TM</superscript> programmers solve planning problems efficiently.
     Under the hood, it combines optimization heuristics and metaheuristics with very efficient score calculation.</para>
 
-    <para>Drools Planner, like the rest of Drools, is business-friendly <emphasis>open source</emphasis> software under
-    <link xlink:href="http://www.apache.org/licenses/LICENSE-2.0">the Apache Software License 2.0</link> (<link
+    <para>Drools Planner, like the rest of Drools, is <emphasis>open source</emphasis> software under <link
+    xlink:href="http://www.apache.org/licenses/LICENSE-2.0">the Apache Software License 2.0</link> (<link
     xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">layman's explanation</link>). It is
     100% pure Java<superscript>TM</superscript> and runs on any JVM.</para>
   </section>
@@ -245,7 +245,7 @@ $ runExamples.bat</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Planner_introduction/plannerExamplesAppScreenshot.png"></imagedata>
+          <imagedata fileref="images/Chapter-Planner_introduction/plannerExamplesAppScreenshot.png"/>
         </imageobject>
       </mediaobject>
 
@@ -330,6 +330,7 @@ $ runExamples.bat</programlisting>
         <para>The download zip's <filename>binaries</filename> directory contains far more jars then
         <literal>drools-planner-core</literal> actually uses. It also contains the jars used by other modules, such as
         <literal>drools-planner-benchmark</literal>.</para>
+
         <para>Check the maven repository <filename>pom.xml</filename> files to determine the minimal dependency set for
         a specific version of a specific module.</para>
       </note>
