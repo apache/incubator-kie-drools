@@ -991,8 +991,8 @@ public class Visit ... implements Appearance {
           </listitem>
 
           <listitem>
-            <para>The clone must use different, cloned instances of the entities and entity collections. Changes to the
-            original <literal>Solution</literal>'s entities must not effect its clone.</para>
+            <para>The clone must use different, cloned instances of the entities and entity collections. Changes to an
+            original <literal>Solution</literal>'s entity's variables must not effect its clone.</para>
           </listitem>
         </itemizedlist>
 
