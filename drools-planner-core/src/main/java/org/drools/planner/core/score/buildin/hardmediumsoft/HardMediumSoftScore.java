@@ -23,7 +23,8 @@ import org.drools.planner.core.solution.Solution;
 
 /**
  * This {@link Score} is based on 3 levels of int constraints: hard, medium and soft.
- * Hard constraints have priority over soft constraints.
+ * Hard constraints have priority over medium constraints.
+ * Medium constraints have priority over soft constraints.
  * <p/>
  * This class is immutable.
  * @see Score
