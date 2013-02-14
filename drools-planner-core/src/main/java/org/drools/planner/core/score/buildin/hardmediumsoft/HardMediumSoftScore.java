@@ -100,14 +100,14 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
     // Worker methods
     // ************************************************************************
 
-    public boolean isFeasible() {
-        return getHardScore() >= 0;
-    }
-
     /**
      * A {@link Solution} is feasible if it has no broken hard constraints.
      * @return true if the {@link #getHardScore()} is 0 or higher
      */
+    public boolean isFeasible() {
+        return getHardScore() >= 0;
+    }
+
     public HardMediumSoftScore add(HardMediumSoftScore augment) {
         return new HardMediumSoftScore(
                 hardScore + augment.getHardScore(),
