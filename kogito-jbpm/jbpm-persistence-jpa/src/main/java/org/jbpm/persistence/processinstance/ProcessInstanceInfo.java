@@ -164,8 +164,8 @@ public class ProcessInstanceInfo{
                 ProcessInstanceMarshaller marshaller = getMarshallerFromContext( context );
             	context.wm = ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory();
                 processInstance = marshaller.readProcessInstance(context);
-                if (!readOnly) {
-                    ((WorkflowProcessInstanceImpl) processInstance).reconnect();
+                if (readOnly) {
+                    ((WorkflowProcessInstanceImpl) processInstance).disconnect();
                 }
                 context.close();
             } catch ( IOException e ) {
