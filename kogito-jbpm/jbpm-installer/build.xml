@@ -399,6 +399,49 @@
     <delete dir="${eclipse.home}/droolsjbpm-update-site"/>
   </target>
 
+  <!-- Install Eclipse BPMN2 Modeler plugin -->
+  <target name="install.modeler.into.eclipse">
+    <exec executable="${eclipse.home}/eclipse.exe" osfamily="windows">
+      <arg value="-nosplash" />
+      <arg value="-application" />
+      <arg value="org.eclipse.equinox.p2.director" />
+      <arg value="-repository" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/site,http://download.eclipse.org/releases/juno,http://download.eclipse.org/bpmn2-modeler/bpmn2/site" />
+      <arg value="-destination" />
+      <arg value="./${eclipse.workspace.dir}" />
+      <arg value="-installIU" />
+      <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
+      <arg value="-installIU" />
+      <arg value="org.eclipse.bpmn2.modeler.jboss.runtime.feature.feature.group" />
+    </exec>
+    <exec executable="${eclipse.home}/eclipse" os="Linux">
+      <arg value="-nosplash" />
+      <arg value="-application" />
+      <arg value="org.eclipse.equinox.p2.director" />
+      <arg value="-repository" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/site,http://download.eclipse.org/releases/juno,http://download.eclipse.org/bpmn2-modeler/bpmn2/site" />
+      <arg value="-destination" />
+      <arg value="./${eclipse.workspace.dir}" />
+      <arg value="-installIU" />
+      <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
+      <arg value="-installIU" />
+      <arg value="org.eclipse.bpmn2.modeler.jboss.runtime.feature.feature.group" />
+    </exec>
+    <exec executable="${eclipse.home}/Eclipse.app/Contents/MacOS/eclipse" osfamily="mac">
+      <arg value="-nosplash" />
+      <arg value="-application" />
+      <arg value="org.eclipse.equinox.p2.director" />
+      <arg value="-repository" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/site,http://download.eclipse.org/releases/juno,http://download.eclipse.org/bpmn2-modeler/bpmn2/site" />
+      <arg value="-destination" />
+      <arg value="../../../../${eclipse.workspace.dir}" />
+      <arg value="-installIU" />
+      <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
+      <arg value="-installIU" />
+      <arg value="org.eclipse.bpmn2.modeler.jboss.runtime.feature.feature.group" />
+    </exec>
+  </target>
+
   <!-- Install Demo -->
   <target name="install.demo" depends="install.jboss,install.db.files,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
 
