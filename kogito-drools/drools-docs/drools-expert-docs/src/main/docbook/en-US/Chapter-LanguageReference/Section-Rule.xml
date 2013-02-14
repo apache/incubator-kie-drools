@@ -218,9 +218,10 @@ end</programlisting>
           <para>type: String</para>
 
           <para>Rules that belong to the same activation-group, identified by
-          this attribute's string value, will only fire exclusively. In other
-          words, the first rule in an activation-group to fire will cancel the
-          other rules' activations, i.e., stop them from firing.</para>
+          this attribute's string value, will only fire exclusively. More
+          precisely, the first rule in an activation-group to fire will
+          cancel all pending activations of all rules in the group, i.e., stop
+          them from firing.</para>
 
           <para>Note: This used to be called Xor group, but technically it's
           not quite an Xor. You may still hear people mention Xor group; just
