@@ -103,14 +103,26 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
         return new BendableScore(hardScores, softScores);
     }
 
+    public BendableScore scoreValueOf(int... scores) {
+        if (scores.length != (hardScoresSize + softScoresSize)) {
+            throw new IllegalArgumentException("The scores (" + Arrays.toString(scores)
+                    + ")'s length (" + scores.length
+                    + ") is not scoresSize (" + (hardScoresSize + softScoresSize) + ").");
+        }
+        return scoreValueOf(Arrays.copyOfRange(scores, 0, hardScoresSize),
+                Arrays.copyOfRange(scores, hardScoresSize, hardScoresSize + softScoresSize));
+    }
+
     public BendableScore scoreValueOf(int[] hardScores, int[] softScores) {
         if (hardScores.length != hardScoresSize) {
             throw new IllegalArgumentException("The hardScores (" + Arrays.toString(hardScores)
-                    + ")'s length (" + hardScores.length + ") is not hardScoresSize (" + hardScoresSize + ").");
+                    + ")'s length (" + hardScores.length
+                    + ") is not hardScoresSize (" + hardScoresSize + ").");
         }
         if (softScores.length != softScoresSize) {
             throw new IllegalArgumentException("The softScores (" + Arrays.toString(softScores)
-                    + ")'s length (" + softScores.length + ") is not softScoresSize (" + softScoresSize + ").");
+                    + ")'s length (" + softScores.length
+                    + ") is not softScoresSize (" + softScoresSize + ").");
         }
         return new BendableScore(hardScores, softScores);
     }
