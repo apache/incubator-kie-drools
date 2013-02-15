@@ -35,7 +35,6 @@ import org.kie.builder.model.KieSessionModel;
 import org.kie.definition.KiePackage;
 import org.kie.definition.type.FactType;
 import org.kie.io.Resource;
-import org.kie.io.ResourceType;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -49,6 +48,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import static org.kie.builder.impl.FormatsManager.isKieExtension;
 
 public class KieBuilderImpl
     implements
@@ -226,8 +227,8 @@ public class KieBuilderImpl
 
     private void addKBaseFilesToTrg(KieBaseModel kieBase) {
         for ( String fileName : srcMfs.getFileNames() ) {
-            if ( filterFileInKBase(kieBase, fileName) ) {
-                copySourceToTarget(fileName);
+            if ( isFileInKieBase(kieBase, fileName) ) {
+                copySourceToTarget( fileName );
             }
         }
     }
@@ -235,7 +236,12 @@ public class KieBuilderImpl
     void copySourceToTarget(String fileName) {
         byte[] bytes = srcMfs.getBytes( fileName );
         if (bytes != null) {
-            trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ), bytes, true );
+            FormatConverter formatConverter = FormatsManager.get().getConverterFor(fileName);
+            if (formatConverter == null) {
+                return;
+            }
+            FormatConversionResult result = formatConverter.convert( fileName, bytes );
+            trgMfs.write( result.getConvertedName().substring( RESOURCES_ROOT.length() - 1 ), result.getContent(), true );
         } else {
             trgMfs.remove( fileName.substring( RESOURCES_ROOT.length() - 1 ) );
         }
@@ -252,41 +258,31 @@ public class KieBuilderImpl
         }
     }
 
-    static boolean filterFileInKBase(KieBaseModel kieBase,
-                                      String fileName) {
-        if ( !isKieExtension( fileName ) ) {
+    static boolean filterFileInKBase( KieBaseModel kieBase,
+                                      String fileName ) {
+        return isKieExtension( fileName ) && isFileInKieBase( kieBase, fileName );
+    }
+
+    private static boolean isFileInKieBase( KieBaseModel kieBase, String fileName ) {
+        if ( kieBase.getPackages().isEmpty() ) {
+            String pathName = kieBase.getName().replace( '.', '/' );
+            return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.startsWith(pathName + "/");
+        } else {
+            int lastSep = fileName.lastIndexOf("/");
+            String pkgNameForFile = lastSep > 0 ? fileName.substring(0, lastSep) : fileName;
+            pkgNameForFile = pkgNameForFile.replace('/', '.');
+            for (String pkgName : kieBase.getPackages()) {
+                boolean isNegative = pkgName.startsWith("!");
+                if (isNegative) {
+                    pkgName = pkgName.substring(1);
+                }
+                if (pkgName.equals("*") || pkgNameForFile.endsWith(pkgName) ||
+                        (pkgName.endsWith(".*") && pkgNameForFile.contains(pkgName.substring(0, pkgName.length()-2))) ) {
+                    return !isNegative;
+                }
+            }
             return false;
         }
-        if ( kieBase.getPackages().isEmpty() ) {
-            return isFileInKieBase( fileName, kieBase.getName() );
-        }
-        return isFileInKiePackages(fileName, kieBase.getPackages());
-    }
-
-    private static boolean isFileInKieBase(String fileName, String kBaseName) {
-        String pathName = kBaseName.replace( '.', '/' );
-        return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.startsWith(pathName + "/");
-    }
-
-    private static boolean isFileInKiePackages(String fileName, List<String> pkgNames) {
-        int lastSep = fileName.lastIndexOf("/");
-        String pkgNameForFile = lastSep > 0 ? fileName.substring(0, lastSep) : fileName;
-        pkgNameForFile = pkgNameForFile.replace('/', '.');
-        for (String pkgName : pkgNames) {
-            boolean isNegative = pkgName.startsWith("!");
-            if (isNegative) {
-                pkgName = pkgName.substring(1);
-            }
-            if (pkgName.equals("*") || pkgNameForFile.endsWith(pkgName) ||
-                    (pkgName.endsWith(".*") && pkgNameForFile.contains(pkgName.substring(0, pkgName.length()-2))) ) {
-                return !isNegative;
-            }
-        }
-        return false;
-    }
-
-    static boolean isKieExtension(String fileName) {
-        return !fileName.endsWith( ".java" ) && ResourceType.determineResourceType( fileName ) != null;
     }
 
     public Results getResults() {
