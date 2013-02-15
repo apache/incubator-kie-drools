@@ -216,9 +216,9 @@
         </imageobject>
       </mediaobject>
 
-      <para>The <literal>Score</literal> implementation (for example <literal>HardSoftScore</literal>) must be
-      the same throughout a <literal>Solver</literal> runtime. The <literal>Score</literal> implementation is configured
-      in the solver configuration as a ScoreDefinition:</para>
+      <para>The <literal>Score</literal> implementation (for example <literal>HardSoftScore</literal>) must be the same
+      throughout a <literal>Solver</literal> runtime. The <literal>Score</literal> implementation is configured in the
+      solver configuration as a ScoreDefinition:</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
@@ -262,11 +262,13 @@
           <literal>int</literal> value. Configure it with <literal>scoreDefinitionType</literal>
           <literal>SIMPLE_LONG</literal>.</para>
         </listitem>
+
         <listitem>
           <para><literal>SimpleDoubleScore</literal>: Uses a <literal>double</literal> value instead of an
           <literal>int</literal> value. Configure it with <literal>scoreDefinitionType</literal>
           <literal>SIMPLE_DOUBLE</literal>.</para>
         </listitem>
+
         <listitem>
           <para><literal>SimpleBigDecimalScore</literal>: Uses a <literal>BigDecimal</literal> value instead of an
           <literal>int</literal> value. Configure it with <literal>scoreDefinitionType</literal>
@@ -279,9 +281,8 @@
       <title>HardSoftScore (recommended)</title>
 
       <para>The <literal>HardSoftScoreDefinition</literal> defines the <literal>Score</literal> as a
-      <literal>HardSoftScore</literal> which has a hard <literal>int</literal> value and a soft
-      <literal>int</literal> value, for example <literal>-123hard/-456soft</literal>. It has 2 score levels (hard and
-      soft).</para>
+      <literal>HardSoftScore</literal> which has a hard <literal>int</literal> value and a soft <literal>int</literal>
+      value, for example <literal>-123hard/-456soft</literal>. It has 2 score levels (hard and soft).</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
@@ -296,11 +297,13 @@
           <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
           <literal>HARD_SOFT_LONG</literal>.</para>
         </listitem>
+
         <listitem>
           <para><literal>HardSoftDoubleScore</literal>: Uses <literal>double</literal> values instead of
           <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
           <literal>HARD_SOFT_DOUBLE</literal>.</para>
         </listitem>
+
         <listitem>
           <para><literal>HardSoftBigDecimalScore</literal>: Uses <literal>BigDecimal</literal> values instead of
           <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
@@ -323,6 +326,22 @@
   &lt;/scoreDirectorFactory&gt;</programlisting>
     </section>
 
+    <section>
+      <title>BendableScore</title>
+
+      <para>A <literal>BendableScore</literal> has a configurable number of score levels. It has an array of hard
+      <literal>int</literal> values and an array of soft <literal>int</literal> value, for example
+      <literal>-123/-456/-789/-012/-345</literal>. The number of hard and soft score levels needs to be set at
+      configuration time, it's not flexible to change during solving.</para>
+
+      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+    &lt;scoreDefinitionType&gt;BENDABLE&lt;/scoreDefinitionType&gt;
+    &lt;bendableHardLevelCount&gt;2&lt;/bendableHardLevelCount&gt;
+    &lt;bendableSoftLevelCount&gt;3&lt;/bendableSoftLevelCount&gt;
+    ...
+  &lt;/scoreDirectorFactory&gt;</programlisting>
+    </section>
+
     <section xml:id="customScore">
       <title>Implementing a custom Score</title>
 
@@ -337,7 +356,7 @@
       <filename>SolverConfig.xml</filename>:</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionClass&gt;org.drools.planner.examples.my.score.definition.MyScoreDefinition&lt;/scoreDefinitionClass&gt;
+    &lt;scoreDefinitionClass&gt;...MyScoreDefinition&lt;/scoreDefinitionClass&gt;
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
     </section>
@@ -1107,9 +1126,9 @@ end</programlisting>
 
       <important>
         <para>Always specify the degree of infeasibility. The business will often say: "if the solution is infeasible,
-        it doesn't matter how infeasible it." While that's true for the business, it's not true for score
-        calculation: it benefits from knowing how infeasible it is. In practice, soft constraints usually do this
-        naturally and it's just a matter of doing it for the hard constraints too.</para>
+        it doesn't matter how infeasible it." While that's true for the business, it's not true for score calculation:
+        it benefits from knowing how infeasible it is. In practice, soft constraints usually do this naturally and it's
+        just a matter of doing it for the hard constraints too.</para>
       </important>
 
       <note>

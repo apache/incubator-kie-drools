@@ -19,7 +19,6 @@ package org.drools.planner.core.score.buildin.bendable;
 import org.drools.planner.core.score.AbstractScore;
 import org.drools.planner.core.score.FeasibilityScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.Solution;
 
 /**
  * This {@link Score} is based on n levels of int constraints.
@@ -31,7 +30,7 @@ import org.drools.planner.core.solution.Solution;
 public final class BendableScore extends AbstractScore<BendableScore>
         implements FeasibilityScore<BendableScore> {
 
-    // The parseScore and valueOf methods are on the ScoreDefinition to validate hardScoresSize and softScoresSize
+    // The parseScore and valueOf methods are on the ScoreDefinition to validate hardLevelCount and softLevelCount
 
     // ************************************************************************
     // Fields
@@ -47,7 +46,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
 
     // Intentionally no getters for the hardScores or softScores int arrays to guarantee that this class is immutable
 
-    public int getHardScoresSize() {
+    public int getHardLevelCount() {
         return hardScores.length;
     }
 
@@ -59,7 +58,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return hardScores[index];
     }
 
-    public int getSoftScoresSize() {
+    public int getSoftLevelCount() {
         return softScores.length;
     }
 
@@ -153,8 +152,8 @@ public final class BendableScore extends AbstractScore<BendableScore>
             return true;
         } else if (o instanceof BendableScore) {
             BendableScore other = (BendableScore) o;
-            if (getHardScoresSize() != other.getHardScoresSize()
-                    || getSoftScoresSize() != other.getSoftScoresSize()) {
+            if (getHardLevelCount() != other.getHardLevelCount()
+                    || getSoftLevelCount() != other.getSoftLevelCount()) {
                 return false;
             }
             for (int i = 0; i < hardScores.length; i++) {
@@ -232,17 +231,17 @@ public final class BendableScore extends AbstractScore<BendableScore>
     }
 
     private void validateCompatible(BendableScore other) {
-        if (getHardScoresSize() != other.getHardScoresSize()) {
+        if (getHardLevelCount() != other.getHardLevelCount()) {
             throw new IllegalArgumentException("The score (" + this
-                    + ") with hardScoreSize (" + getHardScoresSize()
+                    + ") with hardScoreSize (" + getHardLevelCount()
                     + ") is not compatible with the other score (" + other
-                    + ") with hardScoreSize (" + other.getHardScoresSize() + ").");
+                    + ") with hardScoreSize (" + other.getHardLevelCount() + ").");
         }
-        if (getSoftScoresSize() != other.getSoftScoresSize()) {
+        if (getSoftLevelCount() != other.getSoftLevelCount()) {
             throw new IllegalArgumentException("The score (" + this
-                    + ") with softScoreSize (" + getSoftScoresSize()
+                    + ") with softScoreSize (" + getSoftLevelCount()
                     + ") is not compatible with the other score (" + other
-                    + ") with softScoreSize (" + other.getSoftScoresSize() + ").");
+                    + ") with softScoreSize (" + other.getSoftLevelCount() + ").");
         }
     }
 

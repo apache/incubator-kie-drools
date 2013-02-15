@@ -26,12 +26,12 @@ public class BendableScoreHolder extends AbstractScoreHolder {
     private int[] hardScores;
     private int[] softScores;
 
-    public BendableScoreHolder(int hardScoresSize, int softScoresSize) {
-        hardScores = new int[hardScoresSize];
-        softScores = new int[softScoresSize];
+    public BendableScoreHolder(int hardLevelCount, int softLevelCount) {
+        hardScores = new int[hardLevelCount];
+        softScores = new int[softLevelCount];
     }
 
-    public int getHardScoresSize() {
+    public int getHardLevelCount() {
         return hardScores.length;
     }
 
@@ -43,7 +43,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
         hardScores[index] = hardScore;
     }
 
-    public int getSoftScoresSize() {
+    public int getSoftLevelCount() {
         return softScores.length;
     }
 

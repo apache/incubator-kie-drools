@@ -25,25 +25,25 @@ import org.drools.planner.core.score.holder.ScoreHolder;
 
 public class BendableScoreDefinition extends AbstractScoreDefinition<BendableScore> {
 
-    private final int hardScoresSize;
-    private final int softScoresSize;
+    private final int hardLevelCount;
+    private final int softLevelCount;
 
     private double recursiveTimeGradientWeight = 0.50; // TODO this is a guess
 
     private BendableScore perfectMaximumScore = null;
     private BendableScore perfectMinimumScore = null;
 
-    public BendableScoreDefinition(int hardScoresSize, int softScoresSize) {
-        this.hardScoresSize = hardScoresSize;
-        this.softScoresSize = softScoresSize;
+    public BendableScoreDefinition(int hardLevelCount, int softLevelCount) {
+        this.hardLevelCount = hardLevelCount;
+        this.softLevelCount = softLevelCount;
     }
 
-    public int getHardScoresSize() {
-        return hardScoresSize;
+    public int getHardLevelCount() {
+        return hardLevelCount;
     }
 
-    public int getSoftScoresSize() {
-        return softScoresSize;
+    public int getSoftLevelCount() {
+        return softLevelCount;
     }
 
     public double getRecursiveTimeGradientWeight() {
@@ -90,10 +90,10 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
     }
 
     public Score parseScore(String scoreString) {
-        int scoresSize = hardScoresSize + softScoresSize;
-        String[] levelStrings = AbstractScore.parseLevelStrings(scoreString, scoresSize);
-        int[] hardScores = new int[hardScoresSize];
-        int[] softScores = new int[softScoresSize];
+        int levelCount = hardLevelCount + softLevelCount;
+        String[] levelStrings = AbstractScore.parseLevelStrings(scoreString, levelCount);
+        int[] hardScores = new int[hardLevelCount];
+        int[] softScores = new int[softLevelCount];
         for (int i = 0; i < hardScores.length; i++) {
             hardScores[i] = Integer.parseInt(levelStrings[i]);
         }
@@ -104,25 +104,26 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
     }
 
     public BendableScore scoreValueOf(int... scores) {
-        if (scores.length != (hardScoresSize + softScoresSize)) {
+        int levelCount = hardLevelCount + softLevelCount;
+        if (scores.length != levelCount) {
             throw new IllegalArgumentException("The scores (" + Arrays.toString(scores)
                     + ")'s length (" + scores.length
-                    + ") is not scoresSize (" + (hardScoresSize + softScoresSize) + ").");
+                    + ") is not levelCount (" + levelCount + ").");
         }
-        return scoreValueOf(Arrays.copyOfRange(scores, 0, hardScoresSize),
-                Arrays.copyOfRange(scores, hardScoresSize, hardScoresSize + softScoresSize));
+        return scoreValueOf(Arrays.copyOfRange(scores, 0, hardLevelCount),
+                Arrays.copyOfRange(scores, hardLevelCount, levelCount));
     }
 
     public BendableScore scoreValueOf(int[] hardScores, int[] softScores) {
-        if (hardScores.length != hardScoresSize) {
+        if (hardScores.length != hardLevelCount) {
             throw new IllegalArgumentException("The hardScores (" + Arrays.toString(hardScores)
                     + ")'s length (" + hardScores.length
-                    + ") is not hardScoresSize (" + hardScoresSize + ").");
+                    + ") is not hardLevelCount (" + hardLevelCount + ").");
         }
-        if (softScores.length != softScoresSize) {
+        if (softScores.length != softLevelCount) {
             throw new IllegalArgumentException("The softScores (" + Arrays.toString(softScores)
                     + ")'s length (" + softScores.length
-                    + ") is not softScoresSize (" + softScoresSize + ").");
+                    + ") is not softLevelCount (" + softLevelCount + ").");
         }
         return new BendableScore(hardScores, softScores);
     }
@@ -136,14 +137,14 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
         }
         double timeGradient = 0.0;
         double levelTimeGradientWeight = 1.0;
-        int scoresSize = hardScoresSize + softScoresSize;
-        for (int i = 0; i < scoresSize; i++) {
-            if (i != (scoresSize - 1)) {
+        int levelCount = hardLevelCount + softLevelCount;
+        for (int i = 0; i < levelCount; i++) {
+            if (i != (levelCount - 1)) {
                 levelTimeGradientWeight *= recursiveTimeGradientWeight;
             }
-            int startScoreLevel = (i < hardScoresSize) ? startScore.getHardScore(i) : startScore.getSoftScore(i);
-            int endScoreLevel = (i < hardScoresSize) ? endScore.getHardScore(i) : endScore.getSoftScore(i);
-            int scoreLevel = (i < hardScoresSize) ? score.getHardScore(i) : score.getSoftScore(i);
+            int startScoreLevel = (i < hardLevelCount) ? startScore.getHardScore(i) : startScore.getSoftScore(i);
+            int endScoreLevel = (i < hardLevelCount) ? endScore.getHardScore(i) : endScore.getSoftScore(i);
+            int scoreLevel = (i < hardLevelCount) ? score.getHardScore(i) : score.getSoftScore(i);
             if (scoreLevel >= endScoreLevel) {
                 timeGradient += levelTimeGradientWeight;
             } else {
@@ -166,7 +167,7 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
     }
 
     public ScoreHolder buildScoreHolder() {
-        return new BendableScoreHolder(hardScoresSize, softScoresSize);
+        return new BendableScoreHolder(hardLevelCount, softLevelCount);
     }
 
 }

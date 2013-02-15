@@ -59,8 +59,8 @@ public class ScoreDirectorFactoryConfig {
     protected ScoreDefinition scoreDefinition = null;
     protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
     protected ScoreDefinitionType scoreDefinitionType = null;
-    protected Integer bendableHardScoresSize = null;
-    protected Integer bendableSoftScoresSize = null;
+    protected Integer bendableHardLevelCount = null;
+    protected Integer bendableSoftLevelCount = null;
 
     @XStreamOmitField
     protected SimpleScoreCalculator simpleScoreCalculator = null;
@@ -100,20 +100,20 @@ public class ScoreDirectorFactoryConfig {
         this.scoreDefinitionType = scoreDefinitionType;
     }
 
-    public Integer getBendableHardScoresSize() {
-        return bendableHardScoresSize;
+    public Integer getBendableHardLevelCount() {
+        return bendableHardLevelCount;
     }
 
-    public void setBendableHardScoresSize(Integer bendableHardScoresSize) {
-        this.bendableHardScoresSize = bendableHardScoresSize;
+    public void setBendableHardLevelCount(Integer bendableHardLevelCount) {
+        this.bendableHardLevelCount = bendableHardLevelCount;
     }
 
-    public Integer getBendableSoftScoresSize() {
-        return bendableSoftScoresSize;
+    public Integer getBendableSoftLevelCount() {
+        return bendableSoftLevelCount;
     }
 
-    public void setBendableSoftScoresSize(Integer bendableSoftScoresSize) {
-        this.bendableSoftScoresSize = bendableSoftScoresSize;
+    public void setBendableSoftLevelCount(Integer bendableSoftLevelCount) {
+        this.bendableSoftLevelCount = bendableSoftLevelCount;
     }
 
     public SimpleScoreCalculator getSimpleScoreCalculator() {
@@ -213,11 +213,11 @@ public class ScoreDirectorFactoryConfig {
     }
 
     public ScoreDefinition buildScoreDefinition() {
-        if ((bendableHardScoresSize != null || bendableSoftScoresSize != null)
+        if ((bendableHardLevelCount != null || bendableSoftLevelCount != null)
                 && scoreDefinitionType != ScoreDefinitionType.BENDABLE) {
             throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
-                    + ") there must be no bendableHardScoresSize (" + bendableHardScoresSize
-                    + ") or bendableSoftScoresSize (" + bendableSoftScoresSize + ").");
+                    + ") there must be no bendableHardLevelCount (" + bendableHardLevelCount
+                    + ") or bendableSoftLevelCount (" + bendableSoftLevelCount + ").");
         }
         if (scoreDefinition != null) {
             return scoreDefinition;
@@ -244,12 +244,12 @@ public class ScoreDirectorFactoryConfig {
                 case HARD_MEDIUM_SOFT:
                     return new HardMediumSoftScoreDefinition();
                 case BENDABLE:
-                    if (bendableHardScoresSize == null || bendableSoftScoresSize == null) {
+                    if (bendableHardLevelCount == null || bendableSoftLevelCount == null) {
                         throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
-                                + ") there must be a bendableHardScoresSize (" + bendableHardScoresSize
-                                + ") and a bendableSoftScoresSize (" + bendableSoftScoresSize + ").");
+                                + ") there must be a bendableHardLevelCount (" + bendableHardLevelCount
+                                + ") and a bendableSoftLevelCount (" + bendableSoftLevelCount + ").");
                     }
-                    return new BendableScoreDefinition(bendableHardScoresSize, bendableSoftScoresSize);
+                    return new BendableScoreDefinition(bendableHardLevelCount, bendableSoftLevelCount);
                 default:
                     throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
                             + ") is not implemented.");
@@ -323,12 +323,12 @@ public class ScoreDirectorFactoryConfig {
 
     public void inherit(ScoreDirectorFactoryConfig inheritedConfig) {
         if (scoreDefinition == null && scoreDefinitionClass == null && scoreDefinitionType == null
-                && bendableHardScoresSize == null && bendableSoftScoresSize == null) {
+                && bendableHardLevelCount == null && bendableSoftLevelCount == null) {
             scoreDefinition = inheritedConfig.getScoreDefinition();
             scoreDefinitionClass = inheritedConfig.getScoreDefinitionClass();
             scoreDefinitionType = inheritedConfig.getScoreDefinitionType();
-            bendableHardScoresSize = inheritedConfig.getBendableHardScoresSize();
-            bendableSoftScoresSize = inheritedConfig.getBendableSoftScoresSize();
+            bendableHardLevelCount = inheritedConfig.getBendableHardLevelCount();
+            bendableSoftLevelCount = inheritedConfig.getBendableSoftLevelCount();
         }
         if (simpleScoreCalculator == null) {
             simpleScoreCalculator = inheritedConfig.getSimpleScoreCalculator();
