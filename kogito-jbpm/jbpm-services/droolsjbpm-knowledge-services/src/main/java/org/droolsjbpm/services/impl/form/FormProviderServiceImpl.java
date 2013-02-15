@@ -203,9 +203,16 @@ public class FormProviderServiceImpl implements FormProviderService {
 
         // merge template with process variables
         Map<String, Object> renderContext = new HashMap<String, Object>();
-        renderContext.put("task", task);
-        renderContext.put("inputs", input);
+        renderContext.put("task", task);        
         renderContext.put("outputs", finalOutput);
+        // add all inputs as direct entries
+        if (input instanceof Map) {
+            for (Map.Entry<String, Object> inputVar : ((Map<String, Object>)input).entrySet()) {
+                renderContext.put(inputVar.getKey(), inputVar.getValue());
+            }
+        } else {
+            renderContext.put("input", input);
+        }
 
         return render(name, template, renderContext);
 
