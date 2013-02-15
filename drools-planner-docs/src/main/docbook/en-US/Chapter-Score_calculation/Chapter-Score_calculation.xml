@@ -242,11 +242,13 @@
   <section>
     <title>Choose a Score definition</title>
 
+    <para>Each <literal>Score</literal> implementation also has a <literal>ScoreDefinition</literal> implementation. For
+    example: <literal>SimpleScore</literal> is definied by <literal>SimpleScoreDefinition</literal>.</para>
+
     <section>
       <title>SimpleScore</title>
 
-      <para>The <literal>SimpleScoreDefinition</literal> defines the <literal>Score</literal> as a
-      <literal>SimpleScore</literal> which has a single <literal>int</literal> value, for example
+      <para>A <literal>SimpleScore</literal> has a single <literal>int</literal> value, for example
       <literal>-123</literal>. It has a single score level.</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
@@ -254,25 +256,22 @@
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-      <para>Variants:</para>
+      <para>Variants of this <literal>scoreDefinitionType</literal>:</para>
 
       <itemizedlist>
         <listitem>
-          <para><literal>SimpleLongScore</literal>: Uses a <literal>long</literal> value instead of an
-          <literal>int</literal> value. Configure it with <literal>scoreDefinitionType</literal>
-          <literal>SIMPLE_LONG</literal>.</para>
+          <para><literal>SIMPLE_LONG</literal>: Uses <literal>SimpleLongScore</literal> which has a
+          <literal>long</literal> value instead of an <literal>int</literal> value.</para>
         </listitem>
 
         <listitem>
-          <para><literal>SimpleDoubleScore</literal>: Uses a <literal>double</literal> value instead of an
-          <literal>int</literal> value. Configure it with <literal>scoreDefinitionType</literal>
-          <literal>SIMPLE_DOUBLE</literal>.</para>
+          <para><literal>SIMPLE_DOUBLE</literal>: Uses <literal>SimpleDoubleScore</literal> which has a
+          <literal>double</literal> value instead of an <literal>int</literal> value.</para>
         </listitem>
 
         <listitem>
-          <para><literal>SimpleBigDecimalScore</literal>: Uses a <literal>BigDecimal</literal> value instead of an
-          <literal>int</literal> value. Configure it with <literal>scoreDefinitionType</literal>
-          <literal>SIMPLE_BIG_DECIMAL</literal>.</para>
+          <para><literal>SIMPLE_BIG_DECIMAL</literal>: Uses <literal>SimpleBigDecimalScore</literal> which has a
+          <literal>BigDecimal</literal> value instead of an <literal>int</literal> value.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -280,8 +279,7 @@
     <section>
       <title>HardSoftScore (recommended)</title>
 
-      <para>The <literal>HardSoftScoreDefinition</literal> defines the <literal>Score</literal> as a
-      <literal>HardSoftScore</literal> which has a hard <literal>int</literal> value and a soft <literal>int</literal>
+      <para>A <literal>HardSoftScore</literal> has a hard <literal>int</literal> value and a soft <literal>int</literal>
       value, for example <literal>-123hard/-456soft</literal>. It has 2 score levels (hard and soft).</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
@@ -289,25 +287,22 @@
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-      <para>Variants:</para>
+      <para>Variants of this <literal>scoreDefinitionType</literal>:</para>
 
       <itemizedlist>
         <listitem>
-          <para><literal>HardSoftLongScore</literal>: Uses <literal>long</literal> values instead of
-          <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
-          <literal>HARD_SOFT_LONG</literal>.</para>
+          <para><literal>HARD_SOFT_LONG</literal>: Uses <literal>HardSoftLongScore</literal> which has
+          <literal>long</literal> values instead of <literal>int</literal> values.</para>
         </listitem>
 
         <listitem>
-          <para><literal>HardSoftDoubleScore</literal>: Uses <literal>double</literal> values instead of
-          <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
-          <literal>HARD_SOFT_DOUBLE</literal>.</para>
+          <para><literal>HARD_SOFT_DOUBLE</literal>: Uses <literal>HardSoftDoubleScore</literal> which has
+          <literal>double</literal> values instead of <literal>int</literal> values.</para>
         </listitem>
 
         <listitem>
-          <para><literal>HardSoftBigDecimalScore</literal>: Uses <literal>BigDecimal</literal> values instead of
-          <literal>int</literal> values. Configure it with <literal>scoreDefinitionType</literal>
-          <literal>HARD_SOFT_BIG_DECIMAL</literal>.</para>
+          <para><literal>HARD_SOFT_BIG_DECIMAL</literal>: Uses <literal>HardSoftBigDecimalScore</literal> which has
+          <literal>BigDecimal</literal> values instead of <literal>int</literal> values..</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -315,8 +310,7 @@
     <section>
       <title>HardMediumSoftScore</title>
 
-      <para>The <literal>HardMediumSoftScoreDefinition</literal> defines the <literal>Score</literal> as a
-      <literal>HardMediumSoftScore</literal> which has a hard <literal>int</literal> value, a medium
+      <para>A <literal>HardMediumSoftScore</literal> which has a hard <literal>int</literal> value, a medium
       <literal>int</literal> value and a soft <literal>int</literal> value, for example
       <literal>-123hard/-456medium/-789soft</literal>. It has 3 score levels (hard, medium and soft).</para>
 
@@ -330,9 +324,9 @@
       <title>BendableScore</title>
 
       <para>A <literal>BendableScore</literal> has a configurable number of score levels. It has an array of hard
-      <literal>int</literal> values and an array of soft <literal>int</literal> value, for example
-      <literal>-123/-456/-789/-012/-345</literal>. The number of hard and soft score levels needs to be set at
-      configuration time, it's not flexible to change during solving.</para>
+      <literal>int</literal> values and an array of soft <literal>int</literal> value, for example 2 hard levels and 3
+      soft levels for a score <literal>-123/-456/-789/-012/-345</literal>. The number of hard and soft score levels
+      needs to be set at configuration time, it's not flexible to change during solving.</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;BENDABLE&lt;/scoreDefinitionType&gt;
