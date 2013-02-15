@@ -20,9 +20,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import org.kie.runtime.KnowledgeRuntime;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
@@ -33,6 +31,7 @@ import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.AfterTaskSkippedEvent;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
@@ -46,7 +45,7 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
     @Inject
     private TaskServiceEntryPoint taskService;
     
-    private Map<Integer, StatefulKnowledgeSession > kruntimes = new HashMap<Integer,StatefulKnowledgeSession>();
+    private Map<Integer, KieSession> kruntimes = new HashMap<Integer,KieSession>();
     private Map<Integer, ClassLoader> classLoaders = new HashMap<Integer,ClassLoader>();
     
 
@@ -65,7 +64,7 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
         addSession(session, null);
     }
      
-    public void addSession(StatefulKnowledgeSession session, ClassLoader classLoader) {
+    public void addSession(KieSession session, ClassLoader classLoader) {
         kruntimes.put(session.getId(), session);
         classLoaders.put(session.getId(), classLoader);
     }
@@ -75,7 +74,7 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
 
         long workItemId = task.getTaskData().getWorkItemId();
         int processSessionId = task.getTaskData().getProcessSessionId();
-        StatefulKnowledgeSession session = kruntimes.get(processSessionId);
+        KieSession session = kruntimes.get(processSessionId);
         ClassLoader classLoader = classLoaders.get(processSessionId);
         if (task.getTaskData().getStatus() == Status.Completed) {
             String userId = task.getTaskData().getActualOwner().getId();
@@ -125,7 +124,7 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
     }
 
     public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskCompletedEvent Task task) {
-        StatefulKnowledgeSession session = kruntimes.get(task.getTaskData().getProcessSessionId());
+        KieSession session = kruntimes.get(task.getTaskData().getProcessSessionId());
         if (session != null) {
             System.out.println(">> I've recieved an event a known session (" + task.getTaskData().getProcessSessionId()+")");
             processTaskState(task);

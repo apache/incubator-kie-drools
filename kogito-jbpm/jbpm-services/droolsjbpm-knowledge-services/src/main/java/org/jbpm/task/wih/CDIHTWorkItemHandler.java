@@ -35,6 +35,7 @@ import org.jbpm.task.annotations.External;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.impl.factories.TaskFactory;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 
@@ -59,11 +60,11 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     public CDIHTWorkItemHandler() {
     }
     
-    public void addSession(StatefulKnowledgeSession ksession){
+    public void addSession(KieSession ksession){
         addSession(ksession, null);
     }
     
-    public void addSession(StatefulKnowledgeSession ksession, ClassLoader classLoader){
+    public void addSession(KieSession ksession, ClassLoader classLoader){
         
         listener.addSession(ksession, classLoader);
     }

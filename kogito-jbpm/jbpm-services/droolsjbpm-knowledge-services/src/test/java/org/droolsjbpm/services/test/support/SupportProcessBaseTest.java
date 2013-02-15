@@ -58,38 +58,14 @@ public abstract class SupportProcessBaseTest {
     @Inject
     private SessionManager sessionManager;
 
-    @Before
-    public void setUp() throws IOException, FileException {
-    }
-
-    @After
-    public void cleanUp() throws IOException {
-    }
+ 
 
     @Test
     public void testSupportProcess() throws FileException {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
 
-//        Iterable<Path> loadFilesByType = null;
-//        try {
-//            loadFilesByType = fs.loadFilesByType("examples/support/", "bpmn");
-//        } catch (FileException ex) {
-//            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        String kSessionName = "myKsession";
-//        myDomain.addKsessionRepositoryRoot(kSessionName, "examples/support/");
-//        for (Path p : loadFilesByType) {
-//
-//            
-//            String processString = new String(fs.loadFile(p));
-//            String processId = bpmn2Service.findProcessId(processString);
-//            if(!processId.equals("")){
-//              System.out.println(" >>> Loading Path -> " + p.toString());
-//              myDomain.addProcessDefinitionToKsession("myKsession", p);
-//              myDomain.addProcessBPMN2ContentToKsession(kSessionName, processId, processString);
-//            }
-//        }
+
 
         sessionManager.buildSession("myKsession", "examples/support/", false);
 
@@ -155,12 +131,6 @@ public abstract class SupportProcessBaseTest {
         output = new HashMap<String, Object>();
         output.put("output_solution", "solved today");
         taskService.complete(notifySupportTask.getId(), "salaboy", output);
-
-
-        
-
-        
-
 
 
 
