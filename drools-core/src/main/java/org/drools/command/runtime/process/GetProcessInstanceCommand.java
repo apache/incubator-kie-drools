@@ -25,6 +25,7 @@ import org.drools.runtime.process.ProcessInstance;
 public class GetProcessInstanceCommand implements GenericCommand<ProcessInstance> {
 
     private Long processInstanceId;
+    private boolean readOnly = false;
 
     public GetProcessInstanceCommand() {}
 
@@ -40,12 +41,20 @@ public class GetProcessInstanceCommand implements GenericCommand<ProcessInstance
         this.processInstanceId = processInstanceId;
     }
 
+    public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
     public ProcessInstance execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         if (processInstanceId == null) {
             return null;
         }
-        return ksession.getProcessInstance(processInstanceId);
+        return ksession.getProcessInstance(processInstanceId, readOnly);
     }
 
     public String toString() {
