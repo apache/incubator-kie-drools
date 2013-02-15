@@ -34,6 +34,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.score.buildin.bendable.BendableScoreDefinition;
 import org.drools.planner.core.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.drools.planner.core.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreDefinition;
@@ -58,6 +59,8 @@ public class ScoreDirectorFactoryConfig {
     protected ScoreDefinition scoreDefinition = null;
     protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
     protected ScoreDefinitionType scoreDefinitionType = null;
+    protected Integer bendableHardScoresSize = null;
+    protected Integer bendableSoftScoresSize = null;
 
     @XStreamOmitField
     protected SimpleScoreCalculator simpleScoreCalculator = null;
@@ -95,6 +98,22 @@ public class ScoreDirectorFactoryConfig {
 
     public void setScoreDefinitionType(ScoreDefinitionType scoreDefinitionType) {
         this.scoreDefinitionType = scoreDefinitionType;
+    }
+
+    public Integer getBendableHardScoresSize() {
+        return bendableHardScoresSize;
+    }
+
+    public void setBendableHardScoresSize(Integer bendableHardScoresSize) {
+        this.bendableHardScoresSize = bendableHardScoresSize;
+    }
+
+    public Integer getBendableSoftScoresSize() {
+        return bendableSoftScoresSize;
+    }
+
+    public void setBendableSoftScoresSize(Integer bendableSoftScoresSize) {
+        this.bendableSoftScoresSize = bendableSoftScoresSize;
     }
 
     public SimpleScoreCalculator getSimpleScoreCalculator() {
@@ -194,6 +213,12 @@ public class ScoreDirectorFactoryConfig {
     }
 
     public ScoreDefinition buildScoreDefinition() {
+        if ((bendableHardScoresSize != null || bendableSoftScoresSize != null)
+                && scoreDefinitionType != ScoreDefinitionType.BENDABLE) {
+            throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
+                    + ") there must be no bendableHardScoresSize (" + bendableHardScoresSize
+                    + ") or bendableSoftScoresSize (" + bendableSoftScoresSize + ").");
+        }
         if (scoreDefinition != null) {
             return scoreDefinition;
         } else if (scoreDefinitionClass != null) {
@@ -218,6 +243,13 @@ public class ScoreDirectorFactoryConfig {
                     return new HardSoftBigDecimalScoreDefinition();
                 case HARD_MEDIUM_SOFT:
                     return new HardMediumSoftScoreDefinition();
+                case BENDABLE:
+                    if (bendableHardScoresSize == null || bendableSoftScoresSize == null) {
+                        throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
+                                + ") there must be a bendableHardScoresSize (" + bendableHardScoresSize
+                                + ") and a bendableSoftScoresSize (" + bendableSoftScoresSize + ").");
+                    }
+                    return new BendableScoreDefinition(bendableHardScoresSize, bendableSoftScoresSize);
                 default:
                     throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
                             + ") is not implemented.");
@@ -265,15 +297,15 @@ public class ScoreDirectorFactoryConfig {
             for (String scoreDrl : scoreDrlList) {
                 InputStream scoreDrlIn = getClass().getResourceAsStream(scoreDrl);
                 if (scoreDrlIn == null) {
-                    throw new IllegalArgumentException("scoreDrl (" + scoreDrl
+                    throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
                             + ") does not exist as a classpath resource.");
                 }
                 try {
                     packageBuilder.addPackageFromDrl(new InputStreamReader(scoreDrlIn, "UTF-8"));
                 } catch (DroolsParserException e) {
-                    throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") could not be loaded.", e);
+                    throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") could not be loaded.", e);
                 } catch (IOException e) {
-                    throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") could not be loaded.", e);
+                    throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") could not be loaded.", e);
                 } finally {
                     IOUtils.closeQuietly(scoreDrlIn);
                 }
@@ -290,10 +322,13 @@ public class ScoreDirectorFactoryConfig {
     }
 
     public void inherit(ScoreDirectorFactoryConfig inheritedConfig) {
-        if (scoreDefinition == null && scoreDefinitionClass == null && scoreDefinitionType == null) {
+        if (scoreDefinition == null && scoreDefinitionClass == null && scoreDefinitionType == null
+                && bendableHardScoresSize == null && bendableSoftScoresSize == null) {
             scoreDefinition = inheritedConfig.getScoreDefinition();
             scoreDefinitionClass = inheritedConfig.getScoreDefinitionClass();
             scoreDefinitionType = inheritedConfig.getScoreDefinitionType();
+            bendableHardScoresSize = inheritedConfig.getBendableHardScoresSize();
+            bendableSoftScoresSize = inheritedConfig.getBendableSoftScoresSize();
         }
         if (simpleScoreCalculator == null) {
             simpleScoreCalculator = inheritedConfig.getSimpleScoreCalculator();
@@ -324,6 +359,7 @@ public class ScoreDirectorFactoryConfig {
         HARD_SOFT_DOUBLE,
         HARD_SOFT_BIG_DECIMAL,
         HARD_MEDIUM_SOFT,
+        BENDABLE,
     }
 
 }
