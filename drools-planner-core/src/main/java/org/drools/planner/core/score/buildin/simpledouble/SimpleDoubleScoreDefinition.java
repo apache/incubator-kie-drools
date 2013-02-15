@@ -26,8 +26,18 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     private SimpleDoubleScore perfectMaximumScore = SimpleDoubleScore.valueOf(0.0);
     private SimpleDoubleScore perfectMinimumScore = SimpleDoubleScore.valueOf(-Double.MAX_VALUE);
 
+    @Override
+    public SimpleDoubleScore getPerfectMaximumScore() {
+        return perfectMaximumScore;
+    }
+
     public void setPerfectMaximumScore(SimpleDoubleScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
+    }
+
+    @Override
+    public SimpleDoubleScore getPerfectMinimumScore() {
+        return perfectMinimumScore;
     }
 
     public void setPerfectMinimumScore(SimpleDoubleScore perfectMinimumScore) {
@@ -37,16 +47,6 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public SimpleDoubleScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    @Override
-    public SimpleDoubleScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
 
     public Class<SimpleDoubleScore> getScoreClass() {
         return SimpleDoubleScore.class;

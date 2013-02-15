@@ -26,8 +26,18 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     private SimpleScore perfectMaximumScore = SimpleScore.valueOf(0);
     private SimpleScore perfectMinimumScore = SimpleScore.valueOf(Integer.MIN_VALUE);
 
+    @Override
+    public SimpleScore getPerfectMaximumScore() {
+        return perfectMaximumScore;
+    }
+
     public void setPerfectMaximumScore(SimpleScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
+    }
+
+    @Override
+    public SimpleScore getPerfectMinimumScore() {
+        return perfectMinimumScore;
     }
 
     public void setPerfectMinimumScore(SimpleScore perfectMinimumScore) {
@@ -37,16 +47,6 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public SimpleScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    @Override
-    public SimpleScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
 
     public Class<SimpleScore> getScoreClass() {
         return SimpleScore.class;

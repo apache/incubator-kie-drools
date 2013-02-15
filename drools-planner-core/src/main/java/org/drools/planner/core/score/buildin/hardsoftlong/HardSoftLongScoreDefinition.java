@@ -29,6 +29,10 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
     private HardSoftLongScore perfectMinimumScore = HardSoftLongScore.valueOf(
             Long.MIN_VALUE, Long.MIN_VALUE);
 
+    public double getHardScoreTimeGradientWeight() {
+        return hardScoreTimeGradientWeight;
+    }
+
     /**
      * It's recommended to use a number which can be exactly represented as a double,
      * such as 0.5, 0.25, 0.75, 0.125, ... but not 0.1, 0.2, ...
@@ -42,8 +46,18 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
         }
     }
 
+    @Override
+    public HardSoftLongScore getPerfectMaximumScore() {
+        return perfectMaximumScore;
+    }
+
     public void setPerfectMaximumScore(HardSoftLongScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
+    }
+
+    @Override
+    public HardSoftLongScore getPerfectMinimumScore() {
+        return perfectMinimumScore;
     }
 
     public void setPerfectMinimumScore(HardSoftLongScore perfectMinimumScore) {
@@ -53,16 +67,6 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public HardSoftLongScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    @Override
-    public HardSoftLongScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
 
     public Class<HardSoftLongScore> getScoreClass() {
         return HardSoftLongScore.class;
@@ -79,8 +83,8 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
         } else if (score.compareTo(startScore) < 0) {
             return 0.0;
         }
-        double softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight;
         double timeGradient = 0.0;
+        double softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight;
         if (startScore.getHardScore() == endScore.getHardScore()) {
             timeGradient += hardScoreTimeGradientWeight;
         } else {

@@ -30,11 +30,22 @@ import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 public abstract class AbstractScore<S extends Score>
         implements Score<S>, Serializable {
 
-    protected static String[] parseLevelStrings(String scoreString, String... levelSuffixes) {
+    public static String[] parseLevelStrings(String scoreString, int levelsSize) {
+        String[] scoreTokens = scoreString.split("\\/");
+        if (scoreTokens.length != levelsSize) {
+            throw new IllegalArgumentException("The scoreString (" + scoreString
+                    + ") doesn't follow the correct pattern (" + buildScorePattern(levelsSize) + "):"
+                    + " the scoreTokens length (" + scoreTokens.length
+                    + ") differs from the levelsSize (" + levelsSize + ")." );
+        }
+        return scoreTokens;
+    }
+
+    public static String[] parseLevelStrings(String scoreString, String... levelSuffixes) {
         String[] scoreTokens = scoreString.split("\\/");
         if (scoreTokens.length != levelSuffixes.length) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
-                    + ") doesn't follow the correct pattern (" + buildScorePattern() + "):"
+                    + ") doesn't follow the correct pattern (" + buildScorePattern(levelSuffixes) + "):"
                     + " the scoreTokens length (" + scoreTokens.length
                     + ") differs from the levelSuffixes length (" + levelSuffixes.length + ")." );
         }
@@ -42,7 +53,7 @@ public abstract class AbstractScore<S extends Score>
         for (int i = 0; i < levelSuffixes.length; i++) {
             if (!scoreTokens[i].endsWith(levelSuffixes[i])) {
                 throw new IllegalArgumentException("The scoreString (" + scoreString
-                        + ") doesn't follow the correct pattern (" + buildScorePattern() + "):"
+                        + ") doesn't follow the correct pattern (" + buildScorePattern(levelSuffixes) + "):"
                         + " the scoreToken (" + scoreTokens[i]
                         + ") does not end with levelSuffix (" + levelSuffixes[i] + ")." );
             }
@@ -51,7 +62,21 @@ public abstract class AbstractScore<S extends Score>
         return levelStrings;
     }
 
-    private static String buildScorePattern(String... levelSuffixes) {
+    public static String buildScorePattern(int levelsSize) {
+        StringBuilder scorePattern = new StringBuilder(levelsSize * 4);
+        boolean first = true;
+        for (int i = 0; i < levelsSize; i++) {
+            if (first) {
+                first = false;
+            } else {
+                scorePattern.append("/");
+            }
+            scorePattern.append("999");
+        }
+        return scorePattern.toString();
+    }
+
+    public static String buildScorePattern(String... levelSuffixes) {
         StringBuilder scorePattern = new StringBuilder(levelSuffixes.length * 10);
         boolean first = true;
         for (String levelSuffix : levelSuffixes) {

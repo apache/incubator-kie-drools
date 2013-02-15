@@ -25,8 +25,18 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     private SimpleLongScore perfectMaximumScore = SimpleLongScore.valueOf(0L);
     private SimpleLongScore perfectMinimumScore = SimpleLongScore.valueOf(Long.MIN_VALUE);
 
+    @Override
+    public SimpleLongScore getPerfectMaximumScore() {
+        return perfectMaximumScore;
+    }
+
     public void setPerfectMaximumScore(SimpleLongScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
+    }
+
+    @Override
+    public SimpleLongScore getPerfectMinimumScore() {
+        return perfectMinimumScore;
     }
 
     public void setPerfectMinimumScore(SimpleLongScore perfectMinimumScore) {
@@ -36,16 +46,6 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public SimpleLongScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    @Override
-    public SimpleLongScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
 
     public Class<SimpleLongScore> getScoreClass() {
         return SimpleLongScore.class;

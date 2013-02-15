@@ -29,6 +29,10 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
     private HardMediumSoftScore perfectMinimumScore = HardMediumSoftScore.valueOf(
             Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
 
+    public double getHardScoreTimeGradientWeight() {
+        return hardScoreTimeGradientWeight;
+    }
+
     /**
      * It's recommended to use a number which can be exactly represented as a double,
      * such as 0.5, 0.25, 0.75, 0.125, ... but not 0.1, 0.2, ...
@@ -40,6 +44,10 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
             throw new IllegalArgumentException("Property hardScoreTimeGradientWeight (" + hardScoreTimeGradientWeight
                     + ") must be greater or equal to 0.0 and smaller or equal to 1.0.");
         }
+    }
+
+    public double getMediumScoreTimeGradientWeight() {
+        return mediumScoreTimeGradientWeight;
     }
 
     /**
@@ -55,9 +63,18 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
         }
     }
 
+    @Override
+    public HardMediumSoftScore getPerfectMaximumScore() {
+        return perfectMaximumScore;
+    }
 
     public void setPerfectMaximumScore(HardMediumSoftScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
+    }
+
+    @Override
+    public HardMediumSoftScore getPerfectMinimumScore() {
+        return perfectMinimumScore;
     }
 
     public void setPerfectMinimumScore(HardMediumSoftScore perfectMinimumScore) {
@@ -67,16 +84,6 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public HardMediumSoftScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    @Override
-    public HardMediumSoftScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
 
     public Class<HardMediumSoftScore> getScoreClass() {
         return HardMediumSoftScore.class;
@@ -93,8 +100,8 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
         } else if (score.compareTo(startScore) < 0) {
             return 0.0;
         }
-        double softScoreTimeGradientWeight = 1.0 - this.hardScoreTimeGradientWeight - this.mediumScoreTimeGradientWeight;
         double timeGradient = 0.0;
+        double softScoreTimeGradientWeight = 1.0 - this.hardScoreTimeGradientWeight - this.mediumScoreTimeGradientWeight;
         if (startScore.getHardScore() == endScore.getHardScore()) {
             timeGradient += hardScoreTimeGradientWeight;
         } else {

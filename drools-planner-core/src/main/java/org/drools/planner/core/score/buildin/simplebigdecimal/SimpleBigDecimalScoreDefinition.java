@@ -27,8 +27,18 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     private SimpleBigDecimalScore perfectMaximumScore = SimpleBigDecimalScore.valueOf(BigDecimal.ZERO);
     private SimpleBigDecimalScore perfectMinimumScore = null;
 
+    @Override
+    public SimpleBigDecimalScore getPerfectMaximumScore() {
+        return perfectMaximumScore;
+    }
+
     public void setPerfectMaximumScore(SimpleBigDecimalScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
+    }
+
+    @Override
+    public SimpleBigDecimalScore getPerfectMinimumScore() {
+        return perfectMinimumScore;
     }
 
     public void setPerfectMinimumScore(SimpleBigDecimalScore perfectMinimumScore) {
@@ -38,16 +48,6 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public SimpleBigDecimalScore getPerfectMaximumScore() {
-        return perfectMaximumScore;
-    }
-
-    @Override
-    public SimpleBigDecimalScore getPerfectMinimumScore() {
-        return perfectMinimumScore;
-    }
 
     public Class<SimpleBigDecimalScore> getScoreClass() {
         return SimpleBigDecimalScore.class;
