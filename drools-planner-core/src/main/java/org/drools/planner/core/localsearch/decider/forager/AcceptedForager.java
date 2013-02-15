@@ -79,9 +79,9 @@ public class AcceptedForager extends AbstractForager {
         selectedMoveCount = 0L;
         acceptedMoveCount = 0L;
         maxScoreAcceptedList = new ArrayList<LocalSearchMoveScope>(1024);
-        maxAcceptedScore = stepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        maxAcceptedScore = null;
         maxScoreUnacceptedList = new ArrayList<LocalSearchMoveScope>(1024);
-        maxUnacceptedScore = stepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        maxUnacceptedScore = null;
         earlyPickedMoveScope = null;
     }
 
@@ -125,7 +125,7 @@ public class AcceptedForager extends AbstractForager {
     }
 
     protected void addToMaxScoreAcceptedList(LocalSearchMoveScope moveScope) {
-        if (scoreComparator.compare(moveScope.getScore(), maxAcceptedScore) > 0) {
+        if (maxAcceptedScore == null || scoreComparator.compare(moveScope.getScore(), maxAcceptedScore) > 0) {
             maxAcceptedScore = moveScope.getScore();
             maxScoreAcceptedList.clear();
             maxScoreAcceptedList.add(moveScope);
@@ -135,7 +135,7 @@ public class AcceptedForager extends AbstractForager {
     }
 
     protected void addToMaxScoreUnacceptedList(LocalSearchMoveScope moveScope) {
-        if (scoreComparator.compare(moveScope.getScore(), maxUnacceptedScore) > 0) {
+        if (maxUnacceptedScore == null || scoreComparator.compare(moveScope.getScore(), maxUnacceptedScore) > 0) {
             maxUnacceptedScore = moveScope.getScore();
             maxScoreUnacceptedList.clear();
             maxScoreUnacceptedList.add(moveScope);

@@ -59,7 +59,7 @@ public class GreedyForager extends GreedySolverPhaseLifecycleListenerAdapter {
     public void stepStarted(GreedyFitStepScope greedyStepScope) {
         selectedCount = 0;
         maxScoreAcceptedList = new ArrayList<GreedyMoveScope>(1024); // TODO use size of moveList in decider
-        maxScore = greedyStepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        maxScore = null;
         earlyPickedMoveScope = null;
     }
 
@@ -86,7 +86,7 @@ public class GreedyForager extends GreedySolverPhaseLifecycleListenerAdapter {
     }
 
     protected void addMoveScopeToAcceptedList(GreedyMoveScope moveScope) {
-        if (scoreComparator.compare(moveScope.getScore(), maxScore) > 0) {
+        if (maxScore == null || scoreComparator.compare(moveScope.getScore(), maxScore) > 0) {
             maxScore = moveScope.getScore();
             maxScoreAcceptedList.clear();
             maxScoreAcceptedList.add(moveScope);

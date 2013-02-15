@@ -57,7 +57,7 @@ public class ValuePlacer extends AbstractPlacer {
             return null;
         }
         // TODO extract to PlacerForager
-        Score maxScore = stepScope.getPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        Score maxScore = null;
         ConstructionHeuristicMoveScope nominatedMoveScope = null;
 
         int moveIndex = 0;
@@ -78,7 +78,7 @@ public class ValuePlacer extends AbstractPlacer {
             } else {
                 doMove(moveScope);
                 // TODO extract to PlacerForager
-                if (moveScope.getScore().compareTo(maxScore) > 0) {
+                if (maxScore == null || moveScope.getScore().compareTo(maxScore) > 0) {
                     maxScore = moveScope.getScore();
                     // TODO for non explicit Best Fit *, default to random picking from a maxMoveScopeList
                     nominatedMoveScope = moveScope;
