@@ -10,9 +10,9 @@
   <title>Inference</title>
 
   <section>
-    <title>Buss Pass Example</title>
+    <title>Bus Pass Example</title>
 
-    <para>Inference has a bad names these days, as something not relevant to
+    <para>Inference has a bad name these days, as something not relevant to
     business use cases and just too complicated to be useful. It is true that
     contrived and complicated examples occur with inference, but that should
     not detract from the fact that simple and useful ones exist too. But more
@@ -20,7 +20,7 @@
     prone businesses with easier to maintain software.</para>
 
     <para>So what is inference? Something is inferred when we gain knowledge
-    of something from using previous knowledge. For example given a Person
+    of something from using previous knowledge. For example, given a Person
     fact with an age field and a rule that provides age policy control, we can
     infer whether a Person is an adult or a child and act on this.</para>
 
@@ -31,9 +31,9 @@ then
   insert( new IsAdult( $p ) )
 end</programlisting>
 
-    <para>So in the above every Person who is 18 or over will have an instance
-    of IsAdult inserted for them. This fact is special in that it is known as
-    a relation. We can use this inferred relation in any rule:</para>
+    <para>due to the preceding rule, every Person who is 18 or over will have an
+    instance of IsAdult inserted for them. This fact is special in that it is known
+    as a relation. We can use this inferred relation in any rule:</para>
 
     <programlisting>$p : Person()
 IsAdult( person == $p )</programlisting>
@@ -42,9 +42,9 @@ IsAdult( person == $p )</programlisting>
     this facilitate good rule design and maintenance?</para>
 
     <para>Let's take a government department that are responsible for issuing
-    ID cards when children become adults, hence forth referred to as ID
+    ID cards when children become adults, henceforth referred to as ID
     department. They might have a decision table that includes logic like
-    this, which says when an adult living in london is 18 or over, issue the
+    this, which says when an adult living in London is 18 or over, issue the
     card:</para>
 
     <mediaobject>
@@ -55,24 +55,24 @@ IsAdult( person == $p )</programlisting>
 
     <para>However the ID department does not set the policy on who an adult
     is. That's done at a central government level. If the central government
-    where to change that age to 21 there is a change management process.
-    Someone has to liaise with the ID department and make sure their systems
+    were to change that age to 21, this would initiate a change management process.
+    Someone would have to liaise with the ID department and make sure their systems
     are updated, in time for the law going live.</para>
 
     <para>This change management process and communication between departments
-    is not ideal for an agile environment and change become costly and error
+    is not ideal for an agile environment, and change becomes costly and error
     prone. Also the card department is managing more information than it needs
     to be aware of with its "monolithic" approach to rules management which is
-    "leaking" information better placed else where. By this I mean that it
+    "leaking" information better placed elsewhere. By this I mean that it
     doesn't care what explicit "age &gt;= 18" information determines whether
     someone is an adult, only that they are an adult.</para>
 
-    <para>Instead what if we were to split (de-couple) the authoring
-    responsibility, so the central government maintains its rules and the ID
-    department maintains its.</para>
+    <para>In contrast to this, let's pursue an approach where we split (de-couple)
+    the authoring responsibilities, so that both the central government and the ID
+    department maintain their own rules.</para>
 
-    <para>So its the central governments job to determine who is an adult and
-    if they change the law they just update their central repository with the
+    <para>It's the central government's job to determine who is an adult.
+    If they change the law they just update their central repository with the
     new rules, which others use:</para>
 
     <mediaobject>
@@ -83,7 +83,7 @@ IsAdult( person == $p )</programlisting>
 
     <para>The IsAdult fact, as discussed previously, is inferred from the
     policy rules. It encapsulates the seemingly arbitrary piece of logic "age
-    &gt;= 18" and provides semantic abstractions for it's meaning. Now if
+    &gt;= 18" and provides semantic abstractions for its meaning. Now if
     anyone uses the above rules, they no longer need to be aware of explicit
     information that determines whether someone is an adult or not. They can
     just use the inferred fact:</para>
@@ -96,8 +96,8 @@ IsAdult( person == $p )</programlisting>
 
     <para>While the example is very minimal and trivial it illustrates some
     important points. We started with a monolithic and leaky approach to our
-    knowledge engineering. We create a single decision table that had all
-    possible information in it that leaks information from central government
+    knowledge engineering. We created a single decision table that had all
+    possible information in it and that leaks information from central government
     that the ID department did not care about and did not want to
     manage.</para>
 
@@ -107,7 +107,7 @@ IsAdult( person == $p )</programlisting>
     IsAdult also gave a semantic abstraction to the previously arbitrary logic
     "age &gt;= 18".</para>
 
-    <para>So a general rule or thumb when doing your knowledge engineering
+    <para>So a general rule of thumb when doing your knowledge engineering
     is:</para>
 
     <itemizedlist>
