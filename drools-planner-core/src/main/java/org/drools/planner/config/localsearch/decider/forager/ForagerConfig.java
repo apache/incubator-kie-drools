@@ -29,8 +29,7 @@ public class ForagerConfig {
 
     private Class<? extends Forager> foragerClass = null;
     @XStreamAlias("deciderScoreComparatorFactory")
-    private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig
-            = new DeciderScoreComparatorFactoryConfig();
+    private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig = null;
     private PickEarlyType pickEarlyType = null;
 
     protected Integer minimalAcceptedSelection = null;
@@ -81,7 +80,11 @@ public class ForagerConfig {
                 ? Integer.MAX_VALUE : this.minimalAcceptedSelection;
 
         AcceptedForager forager = new AcceptedForager(pickEarlyType, minimalAcceptedSelection);
-        forager.setDeciderScoreComparatorFactory(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
+        DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig_
+                = deciderScoreComparatorFactoryConfig == null ? new DeciderScoreComparatorFactoryConfig()
+                : deciderScoreComparatorFactoryConfig;
+        forager.setDeciderScoreComparatorFactory(
+                deciderScoreComparatorFactoryConfig_.buildDeciderScoreComparatorFactory());
         return forager;
     }
 
