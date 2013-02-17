@@ -70,8 +70,9 @@ public class NQueensApp extends CommonApp {
         scoreDirectorFactoryConfig.setScoreDrlList(
                 Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
 
-        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setScoreAttained("0");
+        solverConfig.setTerminationConfig(terminationConfig);
         List<SolverPhaseConfig> solverPhaseConfigList = new ArrayList<SolverPhaseConfig>();
         ConstructionHeuristicSolverPhaseConfig constructionHeuristicSolverPhaseConfig
                 = new ConstructionHeuristicSolverPhaseConfig();

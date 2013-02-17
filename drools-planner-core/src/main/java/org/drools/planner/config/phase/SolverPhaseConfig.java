@@ -43,7 +43,7 @@ public abstract class SolverPhaseConfig {
     // and also because the input config file should match the output config file
 
     @XStreamAlias("termination")
-    private TerminationConfig terminationConfig = new TerminationConfig();
+    private TerminationConfig terminationConfig = null;
 
     public TerminationConfig getTerminationConfig() {
         return terminationConfig;
@@ -64,7 +64,8 @@ public abstract class SolverPhaseConfig {
     protected void configureSolverPhase(AbstractSolverPhase solverPhase, int phaseIndex,
             EnvironmentMode environmentMode, ScoreDefinition scoreDefinition, Termination solverTermination) {
         solverPhase.setPhaseIndex(phaseIndex);
-        solverPhase.setTermination(terminationConfig.buildTermination(scoreDefinition,
+        TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig() : terminationConfig;
+        solverPhase.setTermination(terminationConfig_.buildTermination(scoreDefinition,
                 new PhaseToSolverTerminationBridge(solverTermination)));
     }
 

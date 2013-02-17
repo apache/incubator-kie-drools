@@ -143,7 +143,8 @@ public class SolverConfig {
                 environmentMode, solutionDescriptor);
         solver.setScoreDirectorFactory(scoreDirectorFactory);
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
-        Termination termination = terminationConfig.buildTermination(scoreDefinition, basicPlumbingTermination);
+        TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig() : terminationConfig;
+        Termination termination = terminationConfig_.buildTermination(scoreDefinition, basicPlumbingTermination);
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode);
         solver.setBestSolutionRecaller(bestSolutionRecaller);

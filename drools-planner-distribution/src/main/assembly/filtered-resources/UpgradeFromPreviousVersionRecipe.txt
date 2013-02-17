@@ -2775,3 +2775,15 @@ After in *ScoreDefinition.java:
     public Class<HardSoftScore> getScoreClass() {
         return HardSoftScore.class;
     }
+
+
+From 6.0.0.Alpha7 to 6.0.0.Beta1
+--------------------------------
+
+
+[MINOR] If you're using solver configuration by API (instead of XML): the Config properties are now null by default.
+Before in *.java:
+        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+After in *.java:
+        TerminationConfig terminationConfig = new TerminationConfig();
+        solverConfig.setTerminationConfig(terminationConfig);

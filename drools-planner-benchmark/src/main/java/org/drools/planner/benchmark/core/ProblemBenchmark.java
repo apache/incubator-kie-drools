@@ -153,7 +153,8 @@ public class ProblemBenchmark {
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
             SolverBenchmark solverBenchmark = singleBenchmark.getSolverBenchmark();
             TerminationConfig originalTerminationConfig = solverBenchmark.getSolverConfig().getTerminationConfig();
-            TerminationConfig tmpTerminationConfig = originalTerminationConfig.clone();
+            TerminationConfig tmpTerminationConfig = originalTerminationConfig == null
+                    ? new TerminationConfig() : originalTerminationConfig.clone();
             tmpTerminationConfig.shortenMaximumTimeMillisSpendTotal(timeLeft);
             solverBenchmark.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
 

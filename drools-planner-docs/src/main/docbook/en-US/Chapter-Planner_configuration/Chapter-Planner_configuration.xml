@@ -125,8 +125,9 @@
         scoreDirectorFactoryConfig.setScoreDrlList(
                 Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
 
-        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        TerminationConfig terminationConfig = new TerminationConfig();
         // ...
+        solverConfig.setTerminationConfig(terminationConfig);
         List&lt;SolverPhaseConfig&gt; solverPhaseConfigList = new ArrayList&lt;SolverPhaseConfig&gt;();
         ConstructionHeuristicSolverPhaseConfig constructionHeuristicSolverPhaseConfig
                 = new ConstructionHeuristicSolverPhaseConfig();
