@@ -60,7 +60,7 @@ public class SolverConfig {
     protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
 
     @XStreamAlias("termination")
-    private TerminationConfig terminationConfig = new TerminationConfig();
+    private TerminationConfig terminationConfig;
 
     @XStreamImplicit()
     protected List<SolverPhaseConfig> solverPhaseConfigList = null;
