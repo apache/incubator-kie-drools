@@ -124,7 +124,7 @@
                                         <#list benchmarkReport.bestScoreSummaryChartFileList as bestScoreSummaryChartFile>
                                             <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScore_chart_${scoreLevelIndex}">
                                                 <div class="benchmark-chart">
-                                                    <img src="${bestScoreSummaryChartFile.name}"/>
+                                                    <img src="summary/${bestScoreSummaryChartFile.name}"/>
                                                 </div>
                                             </div>
                                             <#assign scoreLevelIndex = scoreLevelIndex + 1>
@@ -178,7 +178,7 @@
                                         <#list benchmarkReport.bestScoreScalabilitySummaryChartFileList as bestScoreScalabilitySummaryChartFile>
                                             <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScoreScalability_chart_${scoreLevelIndex}">
                                                 <div class="benchmark-chart">
-                                                    <img src="${bestScoreScalabilitySummaryChartFile.name}"/>
+                                                    <img src="summary/${bestScoreScalabilitySummaryChartFile.name}"/>
                                                 </div>
                                             </div>
                                             <#assign scoreLevelIndex = scoreLevelIndex + 1>
@@ -203,7 +203,7 @@
                                     <#list benchmarkReport.winningScoreDifferenceSummaryChartFileList as winningScoreDifferenceSummaryChartFile>
                                         <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_winningScoreDifference_chart_${scoreLevelIndex}">
                                             <div class="benchmark-chart">
-                                                <img src="${winningScoreDifferenceSummaryChartFile.name}"/>
+                                                <img src="summary/${winningScoreDifferenceSummaryChartFile.name}"/>
                                             </div>
                                         </div>
                                         <#assign scoreLevelIndex = scoreLevelIndex + 1>
@@ -255,7 +255,7 @@
                                     <#list benchmarkReport.worstScoreDifferencePercentageSummaryChartFileList as worstScoreDifferencePercentageSummaryChartFile>
                                         <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_worstScoreDifferencePercentage_chart_${scoreLevelIndex}">
                                             <div class="benchmark-chart">
-                                                <img src="${worstScoreDifferencePercentageSummaryChartFile.name}"/>
+                                                <img src="summary/${worstScoreDifferencePercentageSummaryChartFile.name}"/>
                                             </div>
                                         </div>
                                         <#assign scoreLevelIndex = scoreLevelIndex + 1>
@@ -331,7 +331,7 @@
                             <div class="tab-pane" id="summary_timeSpend">
                                 <h3>Time spend summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${benchmarkReport.timeSpendSummaryChartFile.name}"/>
+                                    <img src="summary/${benchmarkReport.timeSpendSummaryChartFile.name}"/>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
@@ -368,13 +368,13 @@
                             <div class="tab-pane" id="summary_timeSpendScalability">
                                 <h3>Time spend scalability summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${benchmarkReport.timeSpendScalabilitySummaryChartFile.name}"/>
+                                    <img src="summary/${benchmarkReport.timeSpendScalabilitySummaryChartFile.name}"/>
                                 </div>
                             </div>
                             <div class="tab-pane active" id="summary_averageCalculateCount">
                                 <h3>Average calculate count summary</h3>
                                 <div class="benchmark-chart">
-                                    <img src="${benchmarkReport.averageCalculateCountSummaryChartFile.name}"/>
+                                    <img src="summary/${benchmarkReport.averageCalculateCountSummaryChartFile.name}"/>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>

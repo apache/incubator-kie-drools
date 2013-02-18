@@ -66,6 +66,7 @@ public class BenchmarkReport {
     protected Locale locale;
 
     protected File htmlOverviewFile = null;
+    protected File summaryDirectory = null;
     protected List<File> bestScoreSummaryChartFileList = null;
     protected List<File> bestScoreScalabilitySummaryChartFileList = null;
     protected List<File> winningScoreDifferenceSummaryChartFileList = null;
@@ -85,16 +86,20 @@ public class BenchmarkReport {
         return plannerBenchmark;
     }
 
-    public File getHtmlOverviewFile() {
-        return htmlOverviewFile;
-    }
-
     public Locale getLocale() {
         return locale;
     }
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public File getHtmlOverviewFile() {
+        return htmlOverviewFile;
+    }
+
+    public File getSummaryDirectory() {
+        return summaryDirectory;
     }
 
     public List<File> getBestScoreSummaryChartFileList() {
@@ -167,7 +172,8 @@ public class BenchmarkReport {
     }
 
     public void writeReport() {
-        warningList = new ArrayList<String>();
+        summaryDirectory = new File(plannerBenchmark.getBenchmarkReportDirectory(), "summary");
+        summaryDirectory.mkdir();
         fillWarningList();
         writeBestScoreSummaryCharts();
         writeBestScoreScalabilitySummaryChart();
@@ -188,6 +194,7 @@ public class BenchmarkReport {
     }
 
     protected void fillWarningList() {
+        warningList = new ArrayList<String>();
         String javaVmName = System.getProperty("java.vm.name");
         if (javaVmName != null && javaVmName.contains("Client VM")) {
             warningList.add("The Java VM (" + javaVmName + ") is the Client VM."
@@ -451,7 +458,7 @@ public class BenchmarkReport {
 
     private File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File summaryChartFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), fileNameBase + ".png");
+        File summaryChartFile = new File(summaryDirectory, fileNameBase + ".png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(summaryChartFile);
