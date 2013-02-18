@@ -120,10 +120,11 @@
         solverConfig.setSolutionClass(NQueens.class);
         solverConfig.setPlanningEntityClassSet(Collections.&lt;Class&lt;?&gt;&gt;singleton(Queen.class));
 
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
         scoreDirectorFactoryConfig.setScoreDrlList(
                 Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
+        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         TerminationConfig terminationConfig = new TerminationConfig();
         // ...
