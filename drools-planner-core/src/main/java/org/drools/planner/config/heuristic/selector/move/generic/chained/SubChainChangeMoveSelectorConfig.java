@@ -38,9 +38,9 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     private Class<?> planningEntityClass = null;
     @XStreamAlias("subChainSelector")
-    private SubChainSelectorConfig subChainSelectorConfig = new SubChainSelectorConfig();
+    private SubChainSelectorConfig subChainSelectorConfig = null;
     @XStreamAlias("valueSelector")
-    private ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
+    private ValueSelectorConfig valueSelectorConfig = null;
 
     private Boolean selectReversingMoveToo = null;
 
@@ -83,10 +83,14 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(solutionDescriptor, planningEntityClass);
-        SubChainSelector subChainSelector = subChainSelectorConfig.buildSubChainSelector(environmentMode,
+        SubChainSelectorConfig subChainSelectorConfig_ = subChainSelectorConfig == null ? new SubChainSelectorConfig()
+                : subChainSelectorConfig;
+        SubChainSelector subChainSelector = subChainSelectorConfig_.buildSubChainSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode,
+        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
+                : valueSelectorConfig;
+        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {

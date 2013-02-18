@@ -53,9 +53,9 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
     @XStreamAlias("acceptor")
-    private AcceptorConfig acceptorConfig = new AcceptorConfig();
+    private AcceptorConfig acceptorConfig = null;
     @XStreamAlias("forager")
-    private ForagerConfig foragerConfig = new ForagerConfig();
+    private ForagerConfig foragerConfig = null;
 
     public List<MoveSelectorConfig> getMoveSelectorConfigList() {
         return moveSelectorConfigList;
@@ -103,8 +103,12 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         decider.setTermination(phaseTermination);
         MoveSelector moveSelector = buildMoveSelector(environmentMode, solutionDescriptor);
         decider.setMoveSelector(moveSelector);
-        decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
-        Forager forager = foragerConfig.buildForager(scoreDefinition);
+        AcceptorConfig acceptorConfig_ = acceptorConfig == null ? new AcceptorConfig()
+                : acceptorConfig;
+        decider.setAcceptor(acceptorConfig_.buildAcceptor(environmentMode, scoreDefinition));
+        ForagerConfig foragerConfig_ = foragerConfig == null ? new ForagerConfig()
+                : foragerConfig;
+        Forager forager = foragerConfig_.buildForager(scoreDefinition);
         decider.setForager(forager);
         if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
             throw new IllegalStateException("The moveSelector (" + moveSelector

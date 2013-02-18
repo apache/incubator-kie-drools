@@ -37,7 +37,7 @@ import org.drools.planner.core.heuristic.selector.move.generic.PillarSwapMoveSel
 public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
 
     @XStreamAlias("pillarSelector")
-    private PillarSelectorConfig pillarSelectorConfig = new PillarSelectorConfig();
+    private PillarSelectorConfig pillarSelectorConfig = null;
     @XStreamAlias("secondaryPillarSelector")
     private PillarSelectorConfig secondaryPillarSelectorConfig = null;
 
@@ -75,11 +75,13 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PillarSelector leftPillarSelector = pillarSelectorConfig.buildPillarSelector(
+        PillarSelectorConfig pillarSelectorConfig_ = pillarSelectorConfig == null ? new PillarSelectorConfig()
+                : pillarSelectorConfig;
+        PillarSelector leftPillarSelector = pillarSelectorConfig_.buildPillarSelector(
                 environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         PillarSelectorConfig rightPillarSelectorConfig = secondaryPillarSelectorConfig == null
-                ? pillarSelectorConfig : secondaryPillarSelectorConfig;
+                ? pillarSelectorConfig_ : secondaryPillarSelectorConfig;
         PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(
                 environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));

@@ -2780,10 +2780,15 @@ After in *ScoreDefinition.java:
 From 6.0.0.Alpha7 to 6.0.0.Beta1
 --------------------------------
 
-
 [MINOR] If you're using solver configuration by API (instead of XML): the Config properties are now null by default.
 Before in *.java:
         TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
 After in *.java:
         TerminationConfig terminationConfig = new TerminationConfig();
         solverConfig.setTerminationConfig(terminationConfig);
+Generally this applies to ScoreDirectorFactoryConfig, AcceptorConfig, ForagerConfig, EntitySelectorConfig, ValueSelectorConfig, ...:
+Before in *.java:
+        FooConfig fooConfig = ...Config.getFooConfig();
+After in *.java:
+        FooConfig fooConfig = new FooConfig();
+        ...Config.setFooConfig(fooConfig);

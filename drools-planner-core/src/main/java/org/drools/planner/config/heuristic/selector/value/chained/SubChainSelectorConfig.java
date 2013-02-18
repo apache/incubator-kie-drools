@@ -41,7 +41,7 @@ public class SubChainSelectorConfig extends SelectorConfig {
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
     @XStreamAlias("valueSelector")
-    protected ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
+    protected ValueSelectorConfig valueSelectorConfig = null;
 
     protected Integer minimumSubChainSize = null;
     protected Integer maximumSubChainSize = null;
@@ -99,8 +99,10 @@ public class SubChainSelectorConfig extends SelectorConfig {
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the chains change every step.");
         }
+        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
+                : valueSelectorConfig;
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode,
+        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {

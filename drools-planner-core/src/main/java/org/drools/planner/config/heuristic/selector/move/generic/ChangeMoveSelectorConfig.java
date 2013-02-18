@@ -33,9 +33,9 @@ import org.drools.planner.core.heuristic.selector.value.ValueSelector;
 public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     @XStreamAlias("entitySelector")
-    private EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+    private EntitySelectorConfig entitySelectorConfig = null;
     @XStreamAlias("valueSelector")
-    private ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
+    private ValueSelectorConfig valueSelectorConfig = null;
 
 
     public EntitySelectorConfig getEntitySelectorConfig() {
@@ -60,9 +60,13 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
+        EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
+                : entitySelectorConfig;
+        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode,
+        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
+                : valueSelectorConfig;
+        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(environmentMode,
                 solutionDescriptor, entitySelector.getEntityDescriptor(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new ChangeMoveSelector(entitySelector, valueSelector, randomSelection);

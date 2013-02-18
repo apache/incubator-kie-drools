@@ -64,7 +64,8 @@ public abstract class SolverPhaseConfig {
     protected void configureSolverPhase(AbstractSolverPhase solverPhase, int phaseIndex,
             EnvironmentMode environmentMode, ScoreDefinition scoreDefinition, Termination solverTermination) {
         solverPhase.setPhaseIndex(phaseIndex);
-        TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig() : terminationConfig;
+        TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
+                : terminationConfig;
         solverPhase.setTermination(terminationConfig_.buildTermination(scoreDefinition,
                 new PhaseToSolverTerminationBridge(solverTermination)));
     }

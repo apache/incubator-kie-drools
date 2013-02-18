@@ -27,6 +27,7 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
+import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.score.director.ScoreDirectorFactoryConfig;
 import org.drools.planner.config.solver.SolverConfig;
@@ -53,22 +54,36 @@ public class NQueensApp extends CommonApp {
 
     @Override
     protected Solver createSolver() {
+        return createSolverByXml();
+    }
+
+    /**
+     * Normal way to create a {@link Solver}.
+     * @return never null
+     */
+    protected Solver createSolverByXml() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();
         solverFactory.configure(SOLVER_CONFIG);
         return solverFactory.buildSolver();
     }
 
+    /**
+     * Unused alternative. Abnormal way to create a {@link Solver}.
+     * <p/>
+     * Not recommended! It is recommended to use {@link #createSolverByXml()} instead.
+     * @return never null
+     */
     protected Solver createSolverByApi() {
-        // Not recommended! It is highly recommended to use XmlSolverFactory with an XML configuration instead.
         SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
         solverConfig.setPlanningEntityClassSet(Collections.<Class<?>>singleton(Queen.class));
 
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
         scoreDirectorFactoryConfig.setScoreDrlList(
                 Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
+        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setScoreAttained("0");
@@ -86,7 +101,9 @@ public class NQueensApp extends CommonApp {
         changeMoveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         localSearchSolverPhaseConfig.setMoveSelectorConfigList(
                 Arrays.<MoveSelectorConfig>asList(changeMoveSelectorConfig));
-        localSearchSolverPhaseConfig.getAcceptorConfig().setSolutionTabuSize(1000);
+        AcceptorConfig acceptorConfig = new AcceptorConfig();
+        acceptorConfig.setPlanningEntityTabuSize(5);
+        localSearchSolverPhaseConfig.setAcceptorConfig(acceptorConfig);
         solverPhaseConfigList.add(localSearchSolverPhaseConfig);
         solverConfig.setSolverPhaseConfigList(solverPhaseConfigList);
         return solverConfig.buildSolver();

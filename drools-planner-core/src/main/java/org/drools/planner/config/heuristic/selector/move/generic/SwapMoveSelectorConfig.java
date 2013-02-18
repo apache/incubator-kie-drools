@@ -37,7 +37,7 @@ import org.drools.planner.core.heuristic.selector.move.generic.SwapMoveSelector;
 public class SwapMoveSelectorConfig extends MoveSelectorConfig {
 
     @XStreamAlias("entitySelector")
-    private EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+    private EntitySelectorConfig entitySelectorConfig = null;
     @XStreamAlias("secondaryEntitySelector")
     private EntitySelectorConfig secondaryEntitySelectorConfig = null;
 
@@ -75,11 +75,13 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        EntitySelector leftEntitySelector = entitySelectorConfig.buildEntitySelector(
+        EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
+                : entitySelectorConfig;
+        EntitySelector leftEntitySelector = entitySelectorConfig_.buildEntitySelector(
                 environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         EntitySelectorConfig rightEntitySelectorConfig = secondaryEntitySelectorConfig == null
-                ? entitySelectorConfig : secondaryEntitySelectorConfig;
+                ? entitySelectorConfig_ : secondaryEntitySelectorConfig;
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
                 environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));

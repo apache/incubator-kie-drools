@@ -57,7 +57,7 @@ public class SolverConfig {
     protected Set<Class<?>> planningEntityClassSet = null;
 
     @XStreamAlias("scoreDirectorFactory")
-    protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+    protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = null;
 
     @XStreamAlias("termination")
     private TerminationConfig terminationConfig;
@@ -139,11 +139,15 @@ public class SolverConfig {
             }
         }
         SolutionDescriptor solutionDescriptor = buildSolutionDescriptor();
-        ScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig.buildScoreDirectorFactory(
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
+                = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
+                : scoreDirectorFactoryConfig;
+        ScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
                 environmentMode, solutionDescriptor);
         solver.setScoreDirectorFactory(scoreDirectorFactory);
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
-        TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig() : terminationConfig;
+        TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
+                : terminationConfig;
         Termination termination = terminationConfig_.buildTermination(scoreDefinition, basicPlumbingTermination);
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode);

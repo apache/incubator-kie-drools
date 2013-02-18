@@ -34,7 +34,7 @@ import org.drools.planner.core.heuristic.selector.entity.pillar.SameValuePillarS
 public class PillarSelectorConfig extends SelectorConfig {
 
     @XStreamAlias("entitySelector")
-    protected EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+    protected EntitySelectorConfig entitySelectorConfig = null;
 
     // TODO add planningVariableName but do not duplicate from PillarSwapMoveSelectorConfig
 //    @XStreamImplicit(itemFieldName = "planningVariableName")
@@ -79,7 +79,9 @@ public class PillarSelectorConfig extends SelectorConfig {
                     + " because the pillars change every step.");
         }
         // EntitySelector uses SelectionOrder.ORIGINAL because a SameValuePillarSelector STEP caches the values
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode, solutionDescriptor,
+        EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
+                : entitySelectorConfig;
+        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.ORIGINAL);
         Collection<PlanningVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
                 .getPlanningVariableDescriptors();

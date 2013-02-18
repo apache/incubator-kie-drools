@@ -35,7 +35,7 @@ public class SolverBenchmarkConfig {
     private SolverConfig solverConfig = null;
 
     @XStreamAlias("problemBenchmarks")
-    private ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
+    private ProblemBenchmarksConfig problemBenchmarksConfig = null;
 
     public String getName() {
         return name;
@@ -71,8 +71,11 @@ public class SolverBenchmarkConfig {
         solverBenchmark.setName(name);
         solverBenchmark.setSolverConfig(solverConfig);
         solverBenchmark.setSingleBenchmarkList(new ArrayList<SingleBenchmark>());
-        List<ProblemBenchmark> problemBenchmarkList = problemBenchmarksConfig
-                .buildProblemBenchmarkList(plannerBenchmark, solverBenchmark);
+        ProblemBenchmarksConfig problemBenchmarksConfig_
+                = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
+                : problemBenchmarksConfig;
+        List<ProblemBenchmark> problemBenchmarkList
+                = problemBenchmarksConfig_.buildProblemBenchmarkList(plannerBenchmark, solverBenchmark);
         solverBenchmark.setProblemBenchmarkList(problemBenchmarkList);
         return solverBenchmark;
     }

@@ -38,9 +38,9 @@ import org.drools.planner.core.termination.Termination;
 public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
 
     @XStreamAlias("entitySelector")
-    protected EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+    protected EntitySelectorConfig entitySelectorConfig = null;
     @XStreamImplicit(itemFieldName = "valuePlacer")
-    protected List<ValuePlacerConfig> valuePlacerConfigList = Arrays.asList(new ValuePlacerConfig());
+    protected List<ValuePlacerConfig> valuePlacerConfigList = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -65,10 +65,15 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
     public QueuedEntityPlacer buildEntityPlacer(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, Termination phaseTermination) {
         // TODO filter out initialized entities
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(environmentMode,
+        EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
+                : entitySelectorConfig;
+        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(environmentMode,
                 solutionDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL); // TODO fix selection order
-        List<ValuePlacer> valuePlacerList = new ArrayList<ValuePlacer>(valuePlacerConfigList.size());
-        for (ValuePlacerConfig valuePlacerConfig : valuePlacerConfigList) {
+        List<ValuePlacerConfig> valuePlacerConfigList_
+                = valuePlacerConfigList == null ? Arrays.asList(new ValuePlacerConfig())
+                : valuePlacerConfigList;
+        List<ValuePlacer> valuePlacerList = new ArrayList<ValuePlacer>(valuePlacerConfigList_.size());
+        for (ValuePlacerConfig valuePlacerConfig : valuePlacerConfigList_) {
             valuePlacerList.add(valuePlacerConfig.buildValuePlacer(environmentMode,
                     solutionDescriptor, phaseTermination, entitySelector.getEntityDescriptor()));
         }

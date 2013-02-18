@@ -33,7 +33,7 @@ import org.drools.planner.core.termination.Termination;
 public class ValuePlacerConfig extends PlacerConfig {
 
     @XStreamAlias("valueSelector")
-    protected ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
+    protected ValueSelectorConfig valueSelectorConfig = null;
 
     protected Integer selectedCountLimit = null;
 
@@ -59,7 +59,9 @@ public class ValuePlacerConfig extends PlacerConfig {
 
     public ValuePlacer buildValuePlacer(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             Termination phaseTermination, PlanningEntityDescriptor entityDescriptor) {
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(environmentMode,
+        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
+                : valueSelectorConfig;
+        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 selectedCountLimit == null ? SelectionCacheType.STEP : SelectionCacheType.JUST_IN_TIME,
                 selectedCountLimit == null ? SelectionOrder.ORIGINAL : SelectionOrder.RANDOM);

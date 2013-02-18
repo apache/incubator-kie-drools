@@ -34,7 +34,7 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
 
     private Class<?> planningEntityClass = null;
     @XStreamAlias("subChainSelector")
-    private SubChainSelectorConfig subChainSelectorConfig = new SubChainSelectorConfig();
+    private SubChainSelectorConfig subChainSelectorConfig = null;
     @XStreamAlias("secondarySubChainSelector")
     private SubChainSelectorConfig secondarySubChainSelectorConfig = null;
 
@@ -79,11 +79,13 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
     public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(solutionDescriptor, planningEntityClass);
-        SubChainSelector leftSubChainSelector = subChainSelectorConfig.buildSubChainSelector(environmentMode,
+        SubChainSelectorConfig subChainSelectorConfig_ = subChainSelectorConfig == null ? new SubChainSelectorConfig()
+                : subChainSelectorConfig;
+        SubChainSelector leftSubChainSelector = subChainSelectorConfig_.buildSubChainSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         SubChainSelectorConfig rightSubChainSelectorConfig = secondarySubChainSelectorConfig == null
-                ? subChainSelectorConfig : secondarySubChainSelectorConfig;
+                ? subChainSelectorConfig_ : secondarySubChainSelectorConfig;
         SubChainSelector rightSubChainSelector = rightSubChainSelectorConfig.buildSubChainSelector(environmentMode,
                 solutionDescriptor, entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
