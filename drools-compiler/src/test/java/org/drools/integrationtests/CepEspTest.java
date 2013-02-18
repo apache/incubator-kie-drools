@@ -2646,11 +2646,11 @@ public class CepEspTest extends CommonTestMethodBase {
                 "       resultsAfter.add( $b );\n" +
                 "end";
 
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(config, str);
 
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(conf, null);
 
