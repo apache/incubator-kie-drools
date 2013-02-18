@@ -37,6 +37,7 @@ import org.apache.commons.collections.comparators.ReverseComparator;
 import org.drools.core.util.StringUtils;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
+import org.drools.planner.benchmark.core.history.BenchmarkHistoryReport;
 import org.drools.planner.benchmark.core.statistic.BenchmarkReport;
 import org.drools.planner.core.Solver;
 import org.slf4j.Logger;
@@ -61,6 +62,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private List<SolverBenchmark> solverBenchmarkList = null;
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
     private final BenchmarkReport benchmarkReport = new BenchmarkReport(this);
+
+    private boolean benchmarkHistoryReportEnabled;
+    private final BenchmarkHistoryReport benchmarkHistoryReport = new BenchmarkHistoryReport(this);
 
     private long startingSystemTimeMillis;
     private Date startingTimestamp;
@@ -140,6 +144,22 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.unifiedProblemBenchmarkList = unifiedProblemBenchmarkList;
     }
 
+    public BenchmarkReport getBenchmarkReport() {
+        return benchmarkReport;
+    }
+
+    public boolean isBenchmarkHistoryReportEnabled() {
+        return benchmarkHistoryReportEnabled;
+    }
+
+    public void setBenchmarkHistoryReportEnabled(boolean benchmarkHistoryReportEnabled) {
+        this.benchmarkHistoryReportEnabled = benchmarkHistoryReportEnabled;
+    }
+
+    public BenchmarkHistoryReport getBenchmarkHistoryReport() {
+        return benchmarkHistoryReport;
+    }
+
     public Date getStartingTimestamp() {
         return startingTimestamp;
     }
@@ -154,10 +174,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     public long getBenchmarkTimeMillisSpend() {
         return benchmarkTimeMillisSpend;
-    }
-
-    public BenchmarkReport getBenchmarkReport() {
-        return benchmarkReport;
     }
 
     // ************************************************************************
@@ -296,6 +312,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         determineSolverBenchmarkRanking();
         benchmarkTimeMillisSpend = calculateTimeMillisSpend();
         benchmarkReport.writeReport();
+        if (benchmarkHistoryReportEnabled) {
+            benchmarkHistoryReport.writeHistory();
+        }
         if (failureCount == 0) {
             logger.info("Benchmarking ended: time spend ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
                     benchmarkTimeMillisSpend, favoriteSolverBenchmark.getName(),

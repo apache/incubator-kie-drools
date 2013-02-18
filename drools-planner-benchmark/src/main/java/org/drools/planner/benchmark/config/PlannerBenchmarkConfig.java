@@ -74,6 +74,8 @@ public class PlannerBenchmarkConfig {
     @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmarkConfig> solverBenchmarkConfigList = null;
 
+    private Boolean benchmarkHistoryReportEnabled = null;
+
     public String getName() {
         return name;
     }
@@ -185,6 +187,14 @@ public class PlannerBenchmarkConfig {
         this.solverBenchmarkConfigList = solverBenchmarkConfigList;
     }
 
+    public Boolean getBenchmarkHistoryReportEnabled() {
+        return benchmarkHistoryReportEnabled;
+    }
+
+    public void setBenchmarkHistoryReportEnabled(Boolean benchmarkHistoryReportEnabled) {
+        this.benchmarkHistoryReportEnabled = benchmarkHistoryReportEnabled;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -201,6 +211,8 @@ public class PlannerBenchmarkConfig {
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
         plannerBenchmark.getBenchmarkReport().setLocale(
                 benchmarkReportLocale == null ? Locale.getDefault() : benchmarkReportLocale);
+        plannerBenchmark.getBenchmarkHistoryReport().setLocale(
+                benchmarkReportLocale == null ? Locale.getDefault() : benchmarkReportLocale);
         supplySolverBenchmarkRanking(plannerBenchmark);
 
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
@@ -211,6 +223,9 @@ public class PlannerBenchmarkConfig {
             solverBenchmarkList.add(solverBenchmark);
         }
         plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
+        boolean benchmarkHistoryReportEnabled_ = benchmarkHistoryReportEnabled == null ? true
+                : benchmarkHistoryReportEnabled;
+        plannerBenchmark.setBenchmarkHistoryReportEnabled(benchmarkHistoryReportEnabled_);
         return plannerBenchmark;
     }
 
