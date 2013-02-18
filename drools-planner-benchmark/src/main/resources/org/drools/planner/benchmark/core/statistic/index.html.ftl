@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Planner benchmark report ${benchmarkReport.plannerBenchmark.startingTimestamp?datetime}</title>
+    <title>${benchmarkReport.plannerBenchmark.name} Planner benchmark report</title>
     <link href="twitterbootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet"/>
     <link href="twitterbootstrap/css/prettify.css" rel="stylesheet"/>
@@ -531,6 +531,10 @@
                     <h1>Benchmark information</h1>
                 </div>
                 <table class="benchmark-table table table-striped">
+                    <tr>
+                        <th>name</th>
+                        <td>${benchmarkReport.plannerBenchmark.name}</td>
+                    </tr>
                     <tr>
                         <th>startingTimestamp</th>
                         <td>${benchmarkReport.plannerBenchmark.startingTimestamp?datetime}</td>

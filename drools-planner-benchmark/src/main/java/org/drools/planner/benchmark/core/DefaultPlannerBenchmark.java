@@ -34,6 +34,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.commons.collections.comparators.ReverseComparator;
+import org.drools.core.util.StringUtils;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.core.statistic.BenchmarkReport;
@@ -48,6 +49,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    private String name = null;
     private File benchmarkDirectory = null;
     private File benchmarkReportDirectory = null;
     private Comparator<SolverBenchmark> solverBenchmarkRankingComparator = null;
@@ -69,6 +71,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private Long averageProblemScale = null;
     private SolverBenchmark favoriteSolverBenchmark;
     private long benchmarkTimeMillisSpend;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
@@ -195,6 +205,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         benchmarkDirectory.mkdirs();
         String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(startingTimestamp);
+        if (StringUtils.isEmpty(name)) {
+            name = timestamp;
+        }
         benchmarkReportDirectory = new File(benchmarkDirectory, timestamp);
         benchmarkReportDirectory.mkdirs();
     }

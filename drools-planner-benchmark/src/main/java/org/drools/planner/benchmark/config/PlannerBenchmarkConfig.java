@@ -54,6 +54,7 @@ public class PlannerBenchmarkConfig {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    private String name = null;
     private File benchmarkDirectory = null;
 
     private String parallelBenchmarkCount = null;
@@ -72,6 +73,14 @@ public class PlannerBenchmarkConfig {
 
     @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmarkConfig> solverBenchmarkConfigList = null;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
@@ -186,6 +195,7 @@ public class PlannerBenchmarkConfig {
         inherit();
 
         DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
+        plannerBenchmark.setName(name);
         plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmark.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
@@ -205,6 +215,12 @@ public class PlannerBenchmarkConfig {
     }
 
     protected void validate() {
+        final String nameRegex = "^[\\w\\d _\\-\\.\\(\\)]+$";
+        if (name != null && !name.matches(nameRegex)) {
+            throw new IllegalStateException("The plannerBenchmark name (" + name
+                    + ") is invalid because it does not follow the nameRegex (" + nameRegex + ")" +
+                    " which might cause an illegal filename.");
+        }
         if (solverBenchmarkConfigList == null || solverBenchmarkConfigList.isEmpty()) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <solverBenchmark> in the <plannerBenchmark> configuration.");

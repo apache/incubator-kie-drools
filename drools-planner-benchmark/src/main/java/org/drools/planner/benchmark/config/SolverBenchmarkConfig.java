@@ -81,7 +81,7 @@ public class SolverBenchmarkConfig {
     }
 
     private void validate() {
-        String nameRegex = "^[\\w\\d _\\-\\.\\(\\)]+$";
+        final String nameRegex = "^[\\w\\d _\\-\\.\\(\\)]+$";
         if (!name.matches(nameRegex)) {
             throw new IllegalStateException("The solverBenchmark name (" + name
                     + ") is invalid because it does not follow the nameRegex (" + nameRegex + ")" +
