@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.core.statistic;
+package org.drools.planner.benchmark.core.report;
 
 import java.awt.BasicStroke;
 import java.awt.image.BufferedImage;
@@ -40,6 +40,8 @@ import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.drools.planner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
+import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.config.SolverFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;

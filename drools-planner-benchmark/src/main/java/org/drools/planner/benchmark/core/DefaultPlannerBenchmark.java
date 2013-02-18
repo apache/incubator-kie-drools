@@ -38,7 +38,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.core.history.BenchmarkHistoryReport;
-import org.drools.planner.benchmark.core.statistic.BenchmarkReport;
+import org.drools.planner.benchmark.core.report.BenchmarkReport;
 import org.drools.planner.core.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

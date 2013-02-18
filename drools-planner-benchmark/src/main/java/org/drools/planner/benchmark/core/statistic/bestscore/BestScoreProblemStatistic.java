@@ -27,7 +27,7 @@ import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.statistic.AbstractProblemStatistic;
-import org.drools.planner.benchmark.core.statistic.BenchmarkReport;
+import org.drools.planner.benchmark.core.report.BenchmarkReport;
 import org.drools.planner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.SingleStatistic;

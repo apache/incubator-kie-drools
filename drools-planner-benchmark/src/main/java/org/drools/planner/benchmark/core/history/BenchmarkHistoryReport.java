@@ -31,7 +31,7 @@ import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
-import org.drools.planner.benchmark.core.statistic.WebsiteResourceUtils;
+import org.drools.planner.benchmark.core.report.WebsiteResourceUtils;
 
 public class BenchmarkHistoryReport {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.core.statistic;
+package org.drools.planner.benchmark.core.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +26,7 @@ import org.apache.commons.io.IOUtils;
 
 public class WebsiteResourceUtils {
 
-    private static final String RESOURCE_NAMESPACE = "/org/drools/planner/benchmark/core/statistic/";
+    private static final String RESOURCE_NAMESPACE = "/org/drools/planner/benchmark/core/report/";
 
     public static void copyResourcesTo(File benchmarkReportDirectory) {
         // Twitter Bootstrap
