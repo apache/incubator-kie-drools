@@ -1,0 +1,27 @@
+package org.drools;
+
+import org.drools.StockTick;
+
+global java.util.List resultsAfter;
+
+declare StockTick 
+    @role( event )
+    @duration( duration )
+end
+
+/*
+rule "Rule never fired"
+	when 
+	   $a : StockTick( company == "LEGO" )
+	        StockTick( company == "HARIBO", this after $a )
+	then
+end   */ 
+
+rule "after[60,80]"
+	when
+	    $a : StockTick( company == "DROO" )
+	    $b : StockTick( company == "ACME", this after[60,80] $a )
+	then
+       resultsAfter.add( $b );
+end
+
