@@ -305,7 +305,7 @@ public class ObjectTypeNode extends ObjectSource
             TimerService clock = workingMemory.getTimerService();
 
             long nextTimestamp = Math.max( clock.getCurrentTime() + this.expirationOffset,
-                                           ((EventFactHandle) factHandle).getStartTimestamp() + this.expirationOffset );
+                                           ((EventFactHandle) factHandle).getEndTimestamp() + this.expirationOffset );
             JobContext jobctx = new ExpireJobContext( expire,
                                                       workingMemory );
             JobHandle handle = clock.scheduleJob( job,
