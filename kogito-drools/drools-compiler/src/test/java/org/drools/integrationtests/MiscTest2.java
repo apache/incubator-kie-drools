@@ -1173,4 +1173,41 @@ public class MiscTest2 extends CommonTestMethodBase {
             return i;
         }
     }
+
+    @Test @Ignore("fixed with mvel 2.1.5.Final")
+    public void testEqualityOfDifferentTypes() {
+        // DROOLS-42
+        String str =
+                "declare Person\n" +
+                "  name: String\n" +
+                "end\n" +
+                "declare Customer\n" +
+                "extends Person\n" +
+                "  rating: int\n" +
+                "end\n" +
+                "declare Employee\n" +
+                "extends Person\n" +
+                "  wage: int\n" +
+                "end\n" +
+                "\n" +
+                "rule initphone\n" +
+                "salience 100\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Customer( \"Joe\", 100 ) );\n" +
+                "    insert( new Employee( \"Paul\", 2100 ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule match\n" +
+                "when\n" +
+                "    $c: Customer()\n" +
+                "    $e: Employee( this != $c )\n" +
+                "then\n" +
+                "    System.out.println( \"c/e \" + $c + \" \" + $e );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+    }
 }
