@@ -515,7 +515,7 @@ public class BenchmarkReport {
         freemarkerCfg.setLocale(locale);
         freemarkerCfg.setClassForTemplateLoading(BenchmarkReport.class, "");
 
-        String templateFilename = "index.html.ftl";
+        String templateFilename = "benchmarkReport.html.ftl";
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("benchmarkReport", this);
 
