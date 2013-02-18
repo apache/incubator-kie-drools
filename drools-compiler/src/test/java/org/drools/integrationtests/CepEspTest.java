@@ -2416,6 +2416,53 @@ public class CepEspTest extends CommonTestMethodBase {
         Assert.assertThat( aafe.get( 3 ).getMatch().getRule().getName(),
                            is( "R3" ) );
     }
-    
-    
+
+    @Test
+    public void testExpireEventOnEndTimestamp() throws Exception {
+        // DROOLS-40
+        String str =
+                "package org.drools;\n" +
+                "\n" +
+                "import org.drools.StockTick;\n" +
+                "\n" +
+                "global java.util.List resultsAfter;\n" +
+                "\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "    @duration( duration )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"after[60,80]\"\n" +
+                "when\n" +
+                "$a : StockTick( company == \"DROO\" )\n" +
+                "$b : StockTick( company == \"ACME\", this after[60,80] $a )\n" +
+                "then\n" +
+                "       resultsAfter.add( $b );\n" +
+                "end";
+
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(config, str);
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(conf, null);
+
+        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
+
+        List<StockTick> resultsAfter = new ArrayList<StockTick>();
+        ksession.setGlobal("resultsAfter", resultsAfter);
+
+        // inserting new StockTick with duration 30 at time 0 => rule
+        // after[60,80] should fire when ACME lasts at 100-120
+        ksession.insert(new StockTick(1, "DROO", 0, 0, 30));
+
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+
+        ksession.insert(new StockTick(2, "ACME", 0, 0, 20));
+
+        ksession.fireAllRules();
+
+        assertEquals(1, resultsAfter.size());
+    }
 }
