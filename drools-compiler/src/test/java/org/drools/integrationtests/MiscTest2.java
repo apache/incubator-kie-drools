@@ -1241,4 +1241,42 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals(2, ksession.fireAllRules());
     }
+
+    @Test
+    public void testDeclarationsScopeUsingOR() {
+        // DROOLS-44
+        String str =
+                "declare A\n" +
+                "    a1 : String\n" +
+                "end\n" +
+                "\n" +
+                "declare B\n" +
+                "    b1 : String\n" +
+                "end\n" +
+                "\n" +
+                "rule Init salience 10 when \n" +
+                "then\n" +
+                "    insert( new A( \"A\" ) );\n" +
+                "    insert( new B( null ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule R when \n" +
+                "    A ( $a1 : a1 != null )\n" +
+                "    (or\n" +
+                "        (and\n" +
+                "            B( $b1 : b1 != null )\n" +
+                "            eval( $a1.compareTo( $b1 ) < 0 )\n" +
+                "        )\n" +
+                "        (and\n" +
+                "            B( b1 == null )\n" +
+                "            eval( $a1.compareTo(\"B\") < 0 )\n" +
+                "        )\n" +
+                "    )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        assertEquals(2, ksession.fireAllRules());
+    }
 }
