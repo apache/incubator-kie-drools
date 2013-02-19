@@ -56,14 +56,11 @@ import org.drools.planner.core.score.director.simple.SimpleScoreDirectorFactory;
 @XStreamAlias("scoreDirectorFactory")
 public class ScoreDirectorFactoryConfig {
 
-    protected ScoreDefinition scoreDefinition = null;
     protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
     protected ScoreDefinitionType scoreDefinitionType = null;
     protected Integer bendableHardLevelCount = null;
     protected Integer bendableSoftLevelCount = null;
 
-    @XStreamOmitField
-    protected SimpleScoreCalculator simpleScoreCalculator = null;
     protected Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass = null;
 
     protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
@@ -75,14 +72,6 @@ public class ScoreDirectorFactoryConfig {
 
     @XStreamAlias("assertionScoreDirectorFactory")
     protected ScoreDirectorFactoryConfig assertionScoreDirectorFactory = null;
-
-    public ScoreDefinition getScoreDefinition() {
-        return scoreDefinition;
-    }
-
-    public void setScoreDefinition(ScoreDefinition scoreDefinition) {
-        this.scoreDefinition = scoreDefinition;
-    }
 
     public Class<? extends ScoreDefinition> getScoreDefinitionClass() {
         return scoreDefinitionClass;
@@ -114,14 +103,6 @@ public class ScoreDirectorFactoryConfig {
 
     public void setBendableSoftLevelCount(Integer bendableSoftLevelCount) {
         this.bendableSoftLevelCount = bendableSoftLevelCount;
-    }
-
-    public SimpleScoreCalculator getSimpleScoreCalculator() {
-        return simpleScoreCalculator;
-    }
-
-    public void setSimpleScoreCalculator(SimpleScoreCalculator simpleScoreCalculator) {
-        this.simpleScoreCalculator = simpleScoreCalculator;
     }
 
     public Class<? extends SimpleScoreCalculator> getSimpleScoreCalculatorClass() {
@@ -193,8 +174,7 @@ public class ScoreDirectorFactoryConfig {
                         + assertionScoreDirectorFactory + ") cannot have a non-null assertionScoreDirectorFactory ("
                         + assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() + ").");
             }
-            if (assertionScoreDirectorFactory.getScoreDefinition() != null
-                    || assertionScoreDirectorFactory.getScoreDefinitionClass() != null
+            if (assertionScoreDirectorFactory.getScoreDefinitionClass() != null
                     || assertionScoreDirectorFactory.getScoreDefinitionType() != null) {
                 throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
                         + assertionScoreDirectorFactory + ") must reuse the scoreDefinition of its parent." +
@@ -219,9 +199,7 @@ public class ScoreDirectorFactoryConfig {
                     + ") there must be no bendableHardLevelCount (" + bendableHardLevelCount
                     + ") or bendableSoftLevelCount (" + bendableSoftLevelCount + ").");
         }
-        if (scoreDefinition != null) {
-            return scoreDefinition;
-        } else if (scoreDefinitionClass != null) {
+        if (scoreDefinitionClass != null) {
             return ConfigUtils.newInstance(this, "scoreDefinitionClass", scoreDefinitionClass);
         } else if (scoreDefinitionType != null) {
             switch (scoreDefinitionType) {
@@ -260,9 +238,7 @@ public class ScoreDirectorFactoryConfig {
     }
 
     private AbstractScoreDirectorFactory buildSimpleScoreDirectorFactory() {
-        if (simpleScoreCalculator != null) {
-            return new SimpleScoreDirectorFactory(simpleScoreCalculator);
-        } else if (simpleScoreCalculatorClass != null) {
+        if (simpleScoreCalculatorClass != null) {
             SimpleScoreCalculator simpleScoreCalculator = ConfigUtils.newInstance(this,
                     "simpleScoreCalculatorClass", simpleScoreCalculatorClass);
             return new SimpleScoreDirectorFactory(simpleScoreCalculator);
@@ -322,16 +298,12 @@ public class ScoreDirectorFactoryConfig {
     }
 
     public void inherit(ScoreDirectorFactoryConfig inheritedConfig) {
-        if (scoreDefinition == null && scoreDefinitionClass == null && scoreDefinitionType == null
+        if (scoreDefinitionClass == null && scoreDefinitionType == null
                 && bendableHardLevelCount == null && bendableSoftLevelCount == null) {
-            scoreDefinition = inheritedConfig.getScoreDefinition();
             scoreDefinitionClass = inheritedConfig.getScoreDefinitionClass();
             scoreDefinitionType = inheritedConfig.getScoreDefinitionType();
             bendableHardLevelCount = inheritedConfig.getBendableHardLevelCount();
             bendableSoftLevelCount = inheritedConfig.getBendableSoftLevelCount();
-        }
-        if (simpleScoreCalculator == null) {
-            simpleScoreCalculator = inheritedConfig.getSimpleScoreCalculator();
         }
         if (simpleScoreCalculatorClass == null) {
             simpleScoreCalculatorClass = inheritedConfig.getSimpleScoreCalculatorClass();

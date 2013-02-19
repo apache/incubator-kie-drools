@@ -2792,3 +2792,14 @@ Before in *.java:
 After in *.java:
         FooConfig fooConfig = new FooConfig();
         ...Config.setFooConfig(fooConfig);
+
+[MINOR] XML solver configuration: ScoreDirectorFactoryConfig no longer supports setScoreDefinition(...).
+Everyone used setScoreDefinitionClass(...) instead.
+Before in *ScoreDefinition.java:
+    scoreDirectorFactoryConfig.setScoreDefinition(...);
+
+[MINOR] XML solver configuration: ScoreDirectorFactoryConfig no longer supports setSimpleScoreCalculator(...).
+Everyone used setSimpleScoreCalculatorClass(...) instead, except maybe for score weighting parametrization,
+which can be done through the Solution (which enables real-time tweaking), see the InstitutionParametrization in the examples.
+Before in *ScoreDefinition.java:
+    scoreDirectorFactoryConfig.setSimpleScoreCalculator(...);
