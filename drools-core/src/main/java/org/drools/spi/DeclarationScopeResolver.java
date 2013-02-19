@@ -220,6 +220,10 @@ public class DeclarationScopeResolver {
     public Map<String, Declaration> getDeclarations(Rule rule, String consequenceName) {
         final Map<String, Declaration> declarations = new HashMap<String, Declaration>();
         for (RuleConditionElement aBuildStack : this.buildStack) {
+            if (aBuildStack instanceof GroupElement && ((GroupElement)aBuildStack).getType() == GroupElement.Type.OR) {
+                continue;
+            }
+
             // this may be optimized in the future to only re-add elements at
             // scope breaks, like "NOT" and "EXISTS"
             Map<String,Declaration> innerDeclarations = aBuildStack instanceof GroupElement ?
