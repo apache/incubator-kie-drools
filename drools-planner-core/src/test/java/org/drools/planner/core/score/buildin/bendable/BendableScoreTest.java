@@ -28,74 +28,74 @@ public class BendableScoreTest extends AbstractScoreTest {
     @Test
     public void feasibleHSS() {
         assertScoreNotFeasible(
-                scoreDefinitionHSS.scoreValueOf(-5, -300, -4000)
+                scoreDefinitionHSS.createScore(-5, -300, -4000)
         );
         assertScoreFeasible(
-                scoreDefinitionHSS.scoreValueOf(0, -300, -4000),
-                scoreDefinitionHSS.scoreValueOf(2, -300, -4000)
+                scoreDefinitionHSS.createScore(0, -300, -4000),
+                scoreDefinitionHSS.createScore(2, -300, -4000)
         );
     }
 
     @Test
     public void addHSS() {
-        assertEquals(scoreDefinitionHSS.scoreValueOf(19, -320, 0),
-                scoreDefinitionHSS.scoreValueOf(20, -20, -4000).add(
-                        scoreDefinitionHSS.scoreValueOf(-1, -300, 4000)));
+        assertEquals(scoreDefinitionHSS.createScore(19, -320, 0),
+                scoreDefinitionHSS.createScore(20, -20, -4000).add(
+                        scoreDefinitionHSS.createScore(-1, -300, 4000)));
     }
 
     @Test
     public void subtractHSS() {
-        assertEquals(scoreDefinitionHSS.scoreValueOf(21, 280, -8000),
-                scoreDefinitionHSS.scoreValueOf(20, -20, -4000).subtract(
-                        scoreDefinitionHSS.scoreValueOf(-1, -300, 4000)));
+        assertEquals(scoreDefinitionHSS.createScore(21, 280, -8000),
+                scoreDefinitionHSS.createScore(20, -20, -4000).subtract(
+                        scoreDefinitionHSS.createScore(-1, -300, 4000)));
     }
 
     @Test
     public void multiplyHSS() {
-        assertEquals(scoreDefinitionHSS.scoreValueOf(6, -6, 6),
-                scoreDefinitionHSS.scoreValueOf(5, -5, 5).multiply(1.2));
-        assertEquals(scoreDefinitionHSS.scoreValueOf(1, -2, 1),
-                scoreDefinitionHSS.scoreValueOf(1, -1, 1).multiply(1.2));
-        assertEquals(scoreDefinitionHSS.scoreValueOf(4, -5, 4),
-                scoreDefinitionHSS.scoreValueOf(4, -4, 4).multiply(1.2));
+        assertEquals(scoreDefinitionHSS.createScore(6, -6, 6),
+                scoreDefinitionHSS.createScore(5, -5, 5).multiply(1.2));
+        assertEquals(scoreDefinitionHSS.createScore(1, -2, 1),
+                scoreDefinitionHSS.createScore(1, -1, 1).multiply(1.2));
+        assertEquals(scoreDefinitionHSS.createScore(4, -5, 4),
+                scoreDefinitionHSS.createScore(4, -4, 4).multiply(1.2));
     }
 
     @Test
     public void divideHSS() {
-        assertEquals(scoreDefinitionHSS.scoreValueOf(5, -5, 5),
-                scoreDefinitionHSS.scoreValueOf(25, -25, 25).divide(5.0));
-        assertEquals(scoreDefinitionHSS.scoreValueOf(4, -5, 4),
-                scoreDefinitionHSS.scoreValueOf(21, -21, 21).divide(5.0));
-        assertEquals(scoreDefinitionHSS.scoreValueOf(4, -5, 4),
-                scoreDefinitionHSS.scoreValueOf(24, -24, 24).divide(5.0));
+        assertEquals(scoreDefinitionHSS.createScore(5, -5, 5),
+                scoreDefinitionHSS.createScore(25, -25, 25).divide(5.0));
+        assertEquals(scoreDefinitionHSS.createScore(4, -5, 4),
+                scoreDefinitionHSS.createScore(21, -21, 21).divide(5.0));
+        assertEquals(scoreDefinitionHSS.createScore(4, -5, 4),
+                scoreDefinitionHSS.createScore(24, -24, 24).divide(5.0));
     }
 
     @Test
     public void equalsAndHashCodeHSS() {
         assertScoresEqualsAndHashCode(
-                scoreDefinitionHSS.scoreValueOf(-10, -20, -30),
-                scoreDefinitionHSS.scoreValueOf(-10, -20, -30)
+                scoreDefinitionHSS.createScore(-10, -20, -30),
+                scoreDefinitionHSS.createScore(-10, -20, -30)
         );
     }
 
     @Test
     public void compareToHSS() {
         assertScoreCompareToOrder(
-                scoreDefinitionHSS.scoreValueOf(-20, Integer.MIN_VALUE, Integer.MIN_VALUE),
-                scoreDefinitionHSS.scoreValueOf(-20, Integer.MIN_VALUE, -20),
-                scoreDefinitionHSS.scoreValueOf(-20, Integer.MIN_VALUE, 1),
-                scoreDefinitionHSS.scoreValueOf(-20, -300, -4000),
-                scoreDefinitionHSS.scoreValueOf(-20, -300, -300),
-                scoreDefinitionHSS.scoreValueOf(-20, -300, -20),
-                scoreDefinitionHSS.scoreValueOf(-20, -300, 300),
-                scoreDefinitionHSS.scoreValueOf(-20, -20, -300),
-                scoreDefinitionHSS.scoreValueOf(-20, -20, 0),
-                scoreDefinitionHSS.scoreValueOf(-20, -20, 1),
-                scoreDefinitionHSS.scoreValueOf(-1, -300, -4000),
-                scoreDefinitionHSS.scoreValueOf(-1, -300, -20),
-                scoreDefinitionHSS.scoreValueOf(-1, -20, -300),
-                scoreDefinitionHSS.scoreValueOf(1, Integer.MIN_VALUE, -20),
-                scoreDefinitionHSS.scoreValueOf(1, -20, Integer.MIN_VALUE)
+                scoreDefinitionHSS.createScore(-20, Integer.MIN_VALUE, Integer.MIN_VALUE),
+                scoreDefinitionHSS.createScore(-20, Integer.MIN_VALUE, -20),
+                scoreDefinitionHSS.createScore(-20, Integer.MIN_VALUE, 1),
+                scoreDefinitionHSS.createScore(-20, -300, -4000),
+                scoreDefinitionHSS.createScore(-20, -300, -300),
+                scoreDefinitionHSS.createScore(-20, -300, -20),
+                scoreDefinitionHSS.createScore(-20, -300, 300),
+                scoreDefinitionHSS.createScore(-20, -20, -300),
+                scoreDefinitionHSS.createScore(-20, -20, 0),
+                scoreDefinitionHSS.createScore(-20, -20, 1),
+                scoreDefinitionHSS.createScore(-1, -300, -4000),
+                scoreDefinitionHSS.createScore(-1, -300, -20),
+                scoreDefinitionHSS.createScore(-1, -20, -300),
+                scoreDefinitionHSS.createScore(1, Integer.MIN_VALUE, -20),
+                scoreDefinitionHSS.createScore(1, -20, Integer.MIN_VALUE)
         );
     }
 
@@ -104,76 +104,76 @@ public class BendableScoreTest extends AbstractScoreTest {
     @Test
     public void feasibleHHSSS() {
         assertScoreNotFeasible(
-                scoreDefinitionHHSSS.scoreValueOf(-5, 0, -300, -4000, -5000),
-                scoreDefinitionHHSSS.scoreValueOf(0, -5, -300, -4000, -5000)
+                scoreDefinitionHHSSS.createScore(-5, 0, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScore(0, -5, -300, -4000, -5000)
         );
         assertScoreFeasible(
-                scoreDefinitionHHSSS.scoreValueOf(0, 0, -300, -4000, -5000),
-                scoreDefinitionHHSSS.scoreValueOf(0, 2, -300, -4000, -5000),
-                scoreDefinitionHHSSS.scoreValueOf(2, 0, -300, -4000, -5000)
+                scoreDefinitionHHSSS.createScore(0, 0, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScore(0, 2, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScore(2, 0, -300, -4000, -5000)
         );
     }
 
     @Test
     public void addHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.scoreValueOf(19, -320, 0, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(20, -20, -4000, 0, 0).add(
-                        scoreDefinitionHHSSS.scoreValueOf(-1, -300, 4000, 0, 0)));
+        assertEquals(scoreDefinitionHHSSS.createScore(19, -320, 0, 0, 0),
+                scoreDefinitionHHSSS.createScore(20, -20, -4000, 0, 0).add(
+                        scoreDefinitionHHSSS.createScore(-1, -300, 4000, 0, 0)));
     }
 
     @Test
     public void subtractHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.scoreValueOf(21, 280, -8000, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(20, -20, -4000, 0, 0).subtract(
-                        scoreDefinitionHHSSS.scoreValueOf(-1, -300, 4000, 0, 0)));
+        assertEquals(scoreDefinitionHHSSS.createScore(21, 280, -8000, 0, 0),
+                scoreDefinitionHHSSS.createScore(20, -20, -4000, 0, 0).subtract(
+                        scoreDefinitionHHSSS.createScore(-1, -300, 4000, 0, 0)));
     }
 
     @Test
     public void multiplyHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.scoreValueOf(6, -6, 6, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(5, -5, 5, 0, 0).multiply(1.2));
-        assertEquals(scoreDefinitionHHSSS.scoreValueOf(1, -2, 1, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(1, -1, 1, 0, 0).multiply(1.2));
-        assertEquals(scoreDefinitionHHSSS.scoreValueOf(4, -5, 4, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(4, -4, 4, 0, 0).multiply(1.2));
+        assertEquals(scoreDefinitionHHSSS.createScore(6, -6, 6, 0, 0),
+                scoreDefinitionHHSSS.createScore(5, -5, 5, 0, 0).multiply(1.2));
+        assertEquals(scoreDefinitionHHSSS.createScore(1, -2, 1, 0, 0),
+                scoreDefinitionHHSSS.createScore(1, -1, 1, 0, 0).multiply(1.2));
+        assertEquals(scoreDefinitionHHSSS.createScore(4, -5, 4, 0, 0),
+                scoreDefinitionHHSSS.createScore(4, -4, 4, 0, 0).multiply(1.2));
     }
 
     @Test
     public void divideHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.scoreValueOf(5, -5, 5, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(25, -25, 25, 0, 0).divide(5.0));
-        assertEquals(scoreDefinitionHHSSS.scoreValueOf(4, -5, 4, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(21, -21, 21, 0, 0).divide(5.0));
-        assertEquals(scoreDefinitionHHSSS.scoreValueOf(4, -5, 4, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(24, -24, 24, 0, 0).divide(5.0));
+        assertEquals(scoreDefinitionHHSSS.createScore(5, -5, 5, 0, 0),
+                scoreDefinitionHHSSS.createScore(25, -25, 25, 0, 0).divide(5.0));
+        assertEquals(scoreDefinitionHHSSS.createScore(4, -5, 4, 0, 0),
+                scoreDefinitionHHSSS.createScore(21, -21, 21, 0, 0).divide(5.0));
+        assertEquals(scoreDefinitionHHSSS.createScore(4, -5, 4, 0, 0),
+                scoreDefinitionHHSSS.createScore(24, -24, 24, 0, 0).divide(5.0));
     }
 
     @Test
     public void equalsAndHashCodeHHSSS() {
         assertScoresEqualsAndHashCode(
-                scoreDefinitionHHSSS.scoreValueOf(-10, -20, -30, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-10, -20, -30, 0, 0)
+                scoreDefinitionHHSSS.createScore(-10, -20, -30, 0, 0),
+                scoreDefinitionHHSSS.createScore(-10, -20, -30, 0, 0)
         );
     }
 
     @Test
     public void compareToHHSSS() {
         assertScoreCompareToOrder(
-                scoreDefinitionHHSSS.scoreValueOf(-20, Integer.MIN_VALUE, Integer.MIN_VALUE, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-20, Integer.MIN_VALUE, -20, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-20, Integer.MIN_VALUE, 1, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-20, -300, -4000, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-20, -300, -300, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-20, -300, -20, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-20, -300, 300, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-20, -20, -300, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-20, -20, 0, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-20, -20, 1, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-1, -300, -4000, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-1, -300, -20, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(-1, -20, -300, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(1, Integer.MIN_VALUE, -20, 0, 0),
-                scoreDefinitionHHSSS.scoreValueOf(1, -20, Integer.MIN_VALUE, 0, 0)
+                scoreDefinitionHHSSS.createScore(-20, Integer.MIN_VALUE, Integer.MIN_VALUE, 0, 0),
+                scoreDefinitionHHSSS.createScore(-20, Integer.MIN_VALUE, -20, 0, 0),
+                scoreDefinitionHHSSS.createScore(-20, Integer.MIN_VALUE, 1, 0, 0),
+                scoreDefinitionHHSSS.createScore(-20, -300, -4000, 0, 0),
+                scoreDefinitionHHSSS.createScore(-20, -300, -300, 0, 0),
+                scoreDefinitionHHSSS.createScore(-20, -300, -20, 0, 0),
+                scoreDefinitionHHSSS.createScore(-20, -300, 300, 0, 0),
+                scoreDefinitionHHSSS.createScore(-20, -20, -300, 0, 0),
+                scoreDefinitionHHSSS.createScore(-20, -20, 0, 0, 0),
+                scoreDefinitionHHSSS.createScore(-20, -20, 1, 0, 0),
+                scoreDefinitionHHSSS.createScore(-1, -300, -4000, 0, 0),
+                scoreDefinitionHHSSS.createScore(-1, -300, -20, 0, 0),
+                scoreDefinitionHHSSS.createScore(-1, -20, -300, 0, 0),
+                scoreDefinitionHHSSS.createScore(1, Integer.MIN_VALUE, -20, 0, 0),
+                scoreDefinitionHHSSS.createScore(1, -20, Integer.MIN_VALUE, 0, 0)
         );
     }
 

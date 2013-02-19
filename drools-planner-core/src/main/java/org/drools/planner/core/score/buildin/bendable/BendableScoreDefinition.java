@@ -103,18 +103,18 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
         return new BendableScore(hardScores, softScores);
     }
 
-    public BendableScore scoreValueOf(int... scores) {
+    public BendableScore createScore(int... scores) {
         int levelCount = hardLevelCount + softLevelCount;
         if (scores.length != levelCount) {
             throw new IllegalArgumentException("The scores (" + Arrays.toString(scores)
                     + ")'s length (" + scores.length
                     + ") is not levelCount (" + levelCount + ").");
         }
-        return scoreValueOf(Arrays.copyOfRange(scores, 0, hardLevelCount),
+        return createScore(Arrays.copyOfRange(scores, 0, hardLevelCount),
                 Arrays.copyOfRange(scores, hardLevelCount, levelCount));
     }
 
-    public BendableScore scoreValueOf(int[] hardScores, int[] softScores) {
+    public BendableScore createScore(int[] hardScores, int[] softScores) {
         if (hardScores.length != hardLevelCount) {
             throw new IllegalArgumentException("The hardScores (" + Arrays.toString(hardScores)
                     + ")'s length (" + hardScores.length
