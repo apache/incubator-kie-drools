@@ -25,12 +25,31 @@ import org.drools.planner.core.score.Score;
  * The number of levels is bendable at configuration time.
  * <p/>
  * This class is immutable.
+ * <p/>
+ * The {@link #getHardLevelCount()} and {@link #getSoftLevelCount()} must be the same as in the
+ * {@link BendableScoreDefinition} used.
  * @see Score
  */
 public final class BendableScore extends AbstractScore<BendableScore>
         implements FeasibilityScore<BendableScore> {
 
-    // The parseScore and valueOf methods are on the ScoreDefinition to validate hardLevelCount and softLevelCount
+    public static BendableScore parseScore(int hardLevelCount, int softLevelCount, String scoreString) {
+        int levelCount = hardLevelCount + softLevelCount;
+        String[] levelStrings = parseLevelStrings(scoreString, levelCount);
+        int[] hardScores = new int[hardLevelCount];
+        int[] softScores = new int[softLevelCount];
+        for (int i = 0; i < hardScores.length; i++) {
+            hardScores[i] = Integer.parseInt(levelStrings[i]);
+        }
+        for (int i = 0; i < softScores.length; i++) {
+            softScores[i] = Integer.parseInt(levelStrings[hardScores.length + i]);
+        }
+        return valueOf(hardScores, softScores);
+    }
+
+    public static BendableScore valueOf(int[] hardScores, int[] softScores) {
+        return new BendableScore(hardScores, softScores);
+    }
 
     // ************************************************************************
     // Fields
@@ -230,7 +249,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return s.toString();
     }
 
-    private void validateCompatible(BendableScore other) {
+    public void validateCompatible(BendableScore other) {
         if (getHardLevelCount() != other.getHardLevelCount()) {
             throw new IllegalArgumentException("The score (" + this
                     + ") with hardScoreSize (" + getHardLevelCount()

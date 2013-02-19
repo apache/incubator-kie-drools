@@ -90,17 +90,7 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
     }
 
     public Score parseScore(String scoreString) {
-        int levelCount = hardLevelCount + softLevelCount;
-        String[] levelStrings = AbstractScore.parseLevelStrings(scoreString, levelCount);
-        int[] hardScores = new int[hardLevelCount];
-        int[] softScores = new int[softLevelCount];
-        for (int i = 0; i < hardScores.length; i++) {
-            hardScores[i] = Integer.parseInt(levelStrings[i]);
-        }
-        for (int i = 0; i < softScores.length; i++) {
-            softScores[i] = Integer.parseInt(levelStrings[hardScores.length + i]);
-        }
-        return new BendableScore(hardScores, softScores);
+        return BendableScore.parseScore(hardLevelCount, softLevelCount, scoreString);
     }
 
     public BendableScore createScore(int... scores) {
@@ -110,26 +100,14 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
                     + ")'s length (" + scores.length
                     + ") is not levelCount (" + levelCount + ").");
         }
-        return createScore(Arrays.copyOfRange(scores, 0, hardLevelCount),
+        return BendableScore.valueOf(Arrays.copyOfRange(scores, 0, hardLevelCount),
                 Arrays.copyOfRange(scores, hardLevelCount, levelCount));
-    }
-
-    public BendableScore createScore(int[] hardScores, int[] softScores) {
-        if (hardScores.length != hardLevelCount) {
-            throw new IllegalArgumentException("The hardScores (" + Arrays.toString(hardScores)
-                    + ")'s length (" + hardScores.length
-                    + ") is not hardLevelCount (" + hardLevelCount + ").");
-        }
-        if (softScores.length != softLevelCount) {
-            throw new IllegalArgumentException("The softScores (" + Arrays.toString(softScores)
-                    + ")'s length (" + softScores.length
-                    + ") is not softLevelCount (" + softLevelCount + ").");
-        }
-        return new BendableScore(hardScores, softScores);
     }
 
     public double calculateTimeGradient(BendableScore startScore, BendableScore endScore,
             BendableScore score) {
+        startScore.validateCompatible(score);
+        score.validateCompatible(endScore);
         if (score.compareTo(endScore) > 0) {
             return 1.0;
         } else if (score.compareTo(startScore) < 0) {
