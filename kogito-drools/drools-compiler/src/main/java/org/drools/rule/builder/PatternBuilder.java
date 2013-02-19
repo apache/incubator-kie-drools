@@ -259,6 +259,9 @@ public class PatternBuilder
             }
         }
 
+        // adding the newly created pattern to the build stack this is necessary in case of local declaration usage
+        context.getBuildStack().push( pattern );
+
         if ( duplicateBindings ) {
             processDuplicateBindings( patternDescr.isUnification(), patternDescr, pattern, patternDescr, "this", patternDescr.getIdentifier(), context );
         }
@@ -268,9 +271,6 @@ public class PatternBuilder
             context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
                                                                               pattern );
         }
-
-        // adding the newly created pattern to the build stack this is necessary in case of local declaration usage
-        context.getBuildStack().push( pattern );
 
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             Class< ? > cls = ((ClassObjectType) pattern.getObjectType()).getClassType();

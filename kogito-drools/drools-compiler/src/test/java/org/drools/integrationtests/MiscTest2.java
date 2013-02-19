@@ -1210,4 +1210,35 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testUnificationInRule() {
+        // DROOLS-45
+        String str =
+                "declare A\n" +
+                "end\n" +
+                "\n" +
+                "declare B\n" +
+                " inner : A\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  A a = new A();\n" +
+                "  insert( a );\n" +
+                "  insert( new B( a ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check\"\n" +
+                "when\n" +
+                "  B( $in := inner )\n" +
+                "  $in := A()\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        assertEquals(2, ksession.fireAllRules());
+    }
 }
