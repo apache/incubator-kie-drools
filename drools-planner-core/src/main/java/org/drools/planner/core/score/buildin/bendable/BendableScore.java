@@ -47,6 +47,12 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return valueOf(hardScores, softScores);
     }
 
+    /**
+     * Creates a new {@link BendableScore}.
+     * @param hardScores never null, never change that array afterwards: it must be immutable
+     * @param softScores never null, never change that array afterwards: it must be immutable
+     * @return never null
+     */
     public static BendableScore valueOf(int[] hardScores, int[] softScores) {
         return new BendableScore(hardScores, softScores);
     }
