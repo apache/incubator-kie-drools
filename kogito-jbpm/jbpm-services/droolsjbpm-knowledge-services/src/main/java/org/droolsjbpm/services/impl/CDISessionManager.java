@@ -506,7 +506,7 @@ public class CDISessionManager implements SessionManager {
           String processString = new String(ioService.readAllBytes(path));
           ProcessDesc process = bpmn2Service.findProcessId(processString);
             if(process != null){
-              getDomain().addAsset(process.getId(), "/"+sessionName +"/"+ path.getFileName().toString());
+              getDomain().addAsset(process.getId(), path.toString());
               getDomain().addProcessDefinitionToKsession(sessionName, path);
               getDomain().addProcessBPMN2ContentToKsession(sessionName, process.getId(), processString);
               
