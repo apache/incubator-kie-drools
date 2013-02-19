@@ -35,8 +35,8 @@ import org.droolsjbpm.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
-import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
+import org.droolsjbpm.services.impl.CDISessionManager;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
@@ -53,7 +53,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.definition.process.Process;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
@@ -72,7 +72,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
     @Inject
     private FileService fs;
     @Inject
-    private SessionManager sessionManager;
+    private CDISessionManager sessionManager;
     
     @Inject
     private KnowledgeDomainService domainService;
@@ -98,7 +98,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             }
         }
 
-        sessionManager.buildSessions(false); //DO THIS -> OR oneSessionOneProcessStrategy.buildSessionByName("mySession");
+        sessionManager.buildSession("myKsession","examples/general/",false); 
 
 
         ProcessInstance pI = sessionManager.getKsessionsByName("myKsession").get(1).startProcess("org.jbpm.writedocument");
@@ -116,33 +116,16 @@ public abstract class DomainKnowledgeServiceBaseTest {
     public void simpleDomainTwoSessionsTest() throws FileException {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
+        sessionManager.buildSession("myKsession0","examples/general/",false); 
+        sessionManager.buildSession("myKsession1","examples/general/",false); 
+       
 
-        Iterable<Path> loadFilesByType = null;
-        try {
-            loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
-        } catch (FileException ex) {
-            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        int i = 0;
-        for (Path p : loadFilesByType) {
-            
-            String kSessionName = "myKsession" + i;
-            
-            String processString = new String( fs.loadFile(p) );
-            ProcessDesc process = bpmn2Service.findProcessId( processString );
-            if(process != null){
-               myDomain.addProcessBPMN2ContentToKsession(kSessionName, process.getId() , processString ); 
-               myDomain.addProcessDefinitionToKsession(kSessionName , p);
-            }
-            
-            i++;
-        }
-
-        sessionManager.buildSessions(false);
+        
 
 
         Collection<String> sessionNames = sessionManager.getAllSessionsNames();
-        i = 1;
+        
+        
         for (String sessionName : sessionNames) {
             Collection<String> processDefinitionsIds = sessionManager.getProcessesInSession(sessionName);
             for (String processDefId : processDefinitionsIds) {
@@ -150,12 +133,12 @@ public abstract class DomainKnowledgeServiceBaseTest {
                     // FIXME skip parent process as it requires to have two processes available - uses call activity
                     continue;
                 }
-                String ksessionName = sessionManager.getProcessInSessionByName(processDefId);
-                ProcessInstance pI = sessionManager.getKsessionsByName(ksessionName).values().iterator().next().startProcess(processDefId);
+                
+                ProcessInstance pI = sessionManager.getKsessionsByName(sessionName).values().iterator().next().startProcess(processDefId);
                 assertNotNull(pI);
 
             }
-            i++;
+        
         }
         assertEquals(2, sessionManager.getProcessInstanceIdKsession().size());
 
@@ -186,7 +169,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             }
         }
 
-        sessionManager.buildSessions(false);
+        sessionManager.buildSession("myKsession","examples/release/",false); 
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
@@ -287,11 +270,11 @@ public abstract class DomainKnowledgeServiceBaseTest {
             myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
 
-        sessionManager.buildSessions(false);
+        sessionManager.buildSession("myKsession","examples/general/",false); 
 
 
 
-        StatefulKnowledgeSession ksession = sessionManager.getKsessionsByName("myKsession").values().iterator().next();
+        KieSession ksession = sessionManager.getKsessionsByName("myKsession").values().iterator().next();
 
 
 
@@ -474,9 +457,9 @@ public abstract class DomainKnowledgeServiceBaseTest {
             myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
 
-        sessionManager.buildSessions(false);
+        sessionManager.buildSession("myKsession","examples/general/",false); 
 
-        StatefulKnowledgeSession ksession = sessionManager.getKsessionsByName("myKsession").values().iterator().next();
+        KieSession ksession = sessionManager.getKsessionsByName("myKsession").values().iterator().next();
 
 
         ProcessInstance processInstance = ksession.startProcess("org.jbpm.writedocument", null);

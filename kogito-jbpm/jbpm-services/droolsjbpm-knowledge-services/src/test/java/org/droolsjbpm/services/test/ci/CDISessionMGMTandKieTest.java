@@ -35,9 +35,9 @@ import org.junit.runner.RunWith;
  * @author salaboy
  */
 @RunWith(Arquillian.class)
-public class CDISessionMGMTandCITest extends SessionMGMTandCIBaseTest{
+public class CDISessionMGMTandKieTest extends SessionMGMTandCIBaseTest{
   
-  public CDISessionMGMTandCITest() {
+  public CDISessionMGMTandKieTest() {
   }
   
   
@@ -83,12 +83,6 @@ public class CDISessionMGMTandCITest extends SessionMGMTandCIBaseTest{
 
     }
 
-    @Before
-    public void setUp() throws Exception {
-      fileManager = new FileManager();
-      fileManager.setUp();
-
-    }
     
     @After
     public void tearDown() throws Exception {
@@ -96,6 +90,6 @@ public class CDISessionMGMTandCITest extends SessionMGMTandCIBaseTest{
         int removedLogs = adminDataService.removeAllData();
         System.out.println(" --> Removed Tasks = "+removedTasks + " - ");
         System.out.println(" --> Removed Logs = "+removedLogs + " - ");
-        fileManager.tearDown();
+      
     }
 }

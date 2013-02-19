@@ -59,6 +59,7 @@ public class DomainKnowledgeServiceWithRulesCDITest extends DomainKnowledgeServi
                 .addPackage("org.droolsjbpm.services.impl.vfs")
                 .addPackage("org.kie.commons.java.nio.fs.jgit")
                 .addPackage("org.droolsjbpm.services.test")
+                .addPackage("org.droolsjbpm.services.impl.event")
                 .addPackage("org.droolsjbpm.services.impl.event.listeners")
                 .addPackage("org.droolsjbpm.services.impl.example") 
                 .addPackage("org.droolsjbpm.services.impl.util") 

@@ -25,7 +25,7 @@ import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.process.ProcessInstance;
 
 public abstract class KnowledgeDataServiceBaseTest {
@@ -98,7 +98,7 @@ public abstract class KnowledgeDataServiceBaseTest {
         assertNotNull(foundInstances);
         assertEquals(0, foundInstances.size());
         
-        StatefulKnowledgeSession ksession = sessionManager.getKsessionById(1);
+        KieSession ksession = sessionManager.getKsessionById(1);
         ksession.startProcess("signal");
         
         // find process just by state

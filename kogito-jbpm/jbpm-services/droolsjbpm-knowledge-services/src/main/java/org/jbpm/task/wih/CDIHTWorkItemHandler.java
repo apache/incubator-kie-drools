@@ -18,7 +18,7 @@ package org.jbpm.task.wih;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.impl.CDISessionManager;
 import org.jboss.seam.transaction.Transactional;
 
 
@@ -52,10 +52,8 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private ExternalTaskEventListener listener;
     
     @Inject
-    private SessionManager sessionManager;
-    
-    
-    
+    private CDISessionManager sessionManager;
+
     
     public CDIHTWorkItemHandler() {
     }
@@ -79,7 +77,7 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         
         int sessionId = sessionManager.getSessionForProcessInstanceId(workItem.getProcessInstanceId());
-        StatefulKnowledgeSession ksessionById = sessionManager.getKsessionById(sessionId);
+        KieSession ksessionById = sessionManager.getKsessionById(sessionId);
         
         Task task = createTaskBasedOnWorkItemParams(ksessionById, workItem);
         TaskFactory.initializeTask(task);

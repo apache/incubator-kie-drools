@@ -15,42 +15,21 @@
  */
 package org.droolsjbpm.services.test.ci;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.UserTransaction;
-import org.apache.commons.io.IOUtils;
-import org.drools.core.util.FileManager;
-import org.drools.impl.EnvironmentFactory;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
+import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
+import org.droolsjbpm.services.impl.CDISessionManager;
+import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.junit.Test;
-import org.kie.KieServices;
-import org.kie.builder.ReleaseId;
-import org.kie.scanner.MavenRepository;
 
 import static org.junit.Assert.*;
-import org.junit.Ignore;
-import org.kie.KieBase;
-import org.kie.builder.KieScanner;
-import org.kie.builder.impl.InternalKieModule;
-import org.kie.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
 import org.kie.runtime.process.ProcessInstance;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 /**
  *
@@ -58,62 +37,71 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
  */
 public abstract class SessionMGMTandCIBaseTest extends AbstractKieCiTest {
 
-  protected FileManager fileManager;
-  private File kPom;
   @Inject
   protected TaskServiceEntryPoint taskService;
   @Inject
-  private CDIHTWorkItemHandler handler;
+  private BPMN2DataService bpmn2Service;
   @Inject
   protected KnowledgeAdminDataService adminDataService;
   @Inject
-  private EntityManager em;
-  @Inject
-  private EntityManagerFactory emf;
+  private CDISessionManager kieSessionManager;
 
   public SessionMGMTandCIBaseTest() {
   }
 
-  protected void resetFileManager() {
-    this.fileManager.tearDown();
-    this.fileManager = new FileManager();
-    this.fileManager.setUp();
-  }
+//  @Test @Ignore
+//  public void simpleCITest() throws IOException {
+//    KieServices ks = KieServices.Factory.get();
+//    ReleaseId releaseId = ks.newReleaseId("org.jbpm", "myprocesses", "1.0-SNAPSHOT");
+//    kPom = createKPom(releaseId);
+//
+//
+//    InternalKieModule kJar1 = createKieJar(ks, releaseId, "support",
+//            IOUtils.toString(new FileReader("src/test/resources/repo/examples/support/support.bpmn")));
+//
+//    MavenRepository repository = getMavenRepository();
+//    repository.deployArtifact(releaseId, kJar1, kPom);
+//
+//    KieContainer kieContainer = ks.newKieContainer(releaseId);
+//    KieScanner scanner = ks.newKieScanner(kieContainer);
+//
+//    scanner.scanNow();
+//
+//    Environment env = EnvironmentFactory.newEnvironment();
+//    UserTransaction ut = setupEnvironment(env);
+//    
+//    KieBase kieBase = kieContainer.getKieBase("KBase1");
+//    KieSession ksession1 = JPAKnowledgeService.newStatefulKnowledgeSession(kieBase, null, env);
+//
+//
+//    handler.addSession(ksession1);
+//    ksession1.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+//    Map<String, Object> params = new HashMap<String, Object>();
+//    params.put("customer", "salaboy");
+//    
+//    
+//
+//    ProcessInstance startProcess = ksession1.startProcess("support.process", params);
+//
+//    assertNotNull(startProcess);
+//
+//    // Configure Release
+//    List<TaskSummary> tasksAssignedToSalaboy = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
+//
+//    assertEquals(1, tasksAssignedToSalaboy.size());
+//    assertEquals("Create Support", tasksAssignedToSalaboy.get(0).getName());
+//
+//
+//  }
+  @Test
+  public void simpleSessionMGMTCITest() throws IOException {
 
-  @Test @Ignore
-  public void simpleCITest() throws IOException {
-    KieServices ks = KieServices.Factory.get();
-    ReleaseId releaseId = ks.newReleaseId("org.jbpm", "myprocesses", "1.0-SNAPSHOT");
-    kPom = createKPom(releaseId);
+    kieSessionManager.setDomain(new SimpleDomainImpl("myDomain"));
 
-
-    InternalKieModule kJar1 = createKieJar(ks, releaseId, "support",
-            IOUtils.toString(new FileReader("src/test/resources/repo/examples/support/support.bpmn")));
-    KieContainer kieContainer = ks.newKieContainer(releaseId);
-
-
-    MavenRepository repository = getMavenRepository();
-    repository.deployArtifact(releaseId, kJar1, kPom);
-
-    KieScanner scanner = ks.newKieScanner(kieContainer);
-
-    scanner.scanNow();
-
-    Environment env = EnvironmentFactory.newEnvironment();
-    UserTransaction ut = setupEnvironment(env);
-    
-    KieBase kieBase = kieContainer.getKieBase("KBase1");
-    KieSession ksession1 = JPAKnowledgeService.newStatefulKnowledgeSession(kieBase, null, env);
-    completeOperation(ut, null);
-//    KieSession ksession1 = kieContainer.newKieSession("KSession1");
-    handler.addSession(ksession1);
-    ksession1.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+    int ksessionId = kieSessionManager.buildSession("support", "examples/support", true);
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("customer", "salaboy");
-    
-    
-
-    ProcessInstance startProcess = ksession1.startProcess("support.process", params);
+    ProcessInstance startProcess = kieSessionManager.getKsessionById(ksessionId).startProcess("support.process", params);
 
     assertNotNull(startProcess);
 
@@ -123,70 +111,30 @@ public abstract class SessionMGMTandCIBaseTest extends AbstractKieCiTest {
     assertEquals(1, tasksAssignedToSalaboy.size());
     assertEquals("Create Support", tasksAssignedToSalaboy.get(0).getName());
 
+    TaskSummary createSupportTask = tasksAssignedToSalaboy.get(0);
+
+    taskService.start(createSupportTask.getId(), "salaboy");
+
+    Map<String, Object> taskContent = taskService.getTaskContent(createSupportTask.getId());
+
+    assertEquals("salaboy", taskContent.get("input_customer"));
+
+    Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings("support.process", createSupportTask.getName());
+
+    assertEquals(1, taskOutputMappings.size());
+    assertEquals("output_customer", taskOutputMappings.values().iterator().next());
+
+    Map<String, Object> output = new HashMap<String, Object>();
+
+    output.put("output_customer", "salaboy@redhat");
+    taskService.complete(createSupportTask.getId(), "salaboy", output);
+
+    tasksAssignedToSalaboy = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
+    assertEquals(1, tasksAssignedToSalaboy.size());
+
+    assertEquals("Resolve Support", tasksAssignedToSalaboy.get(0).getName());
+    
+    
 
   }
-
-  private File createKPom(ReleaseId releaseId) throws IOException {
-    File pomFile = fileManager.newFile("pom.xml");
-    fileManager.write(pomFile, getPom(releaseId));
-    return pomFile;
-  }
-
-  
-  /*
-   * following are supporting methods to allow execution on application startup
-   * as at that time RequestScoped entity manager cannot be used so instead
-   * use EntityMnagerFactory and manage transaction manually
-   */
-  protected EntityManager getEntityManager() {
-      try {
-          this.em.toString();          
-          return this.em;
-      } catch (ContextNotActiveException e) {
-          EntityManager em = this.emf.createEntityManager();
-          return em;
-      }
-  }
-  
-  protected UserTransaction setupEnvironment(Environment environment) {
-      UserTransaction ut = null;
-      try {
-          this.em.toString();
-          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, this.em.getEntityManagerFactory());
-      } catch (ContextNotActiveException e) {
-          try {
-              ut = InitialContext.doLookup("java:comp/UserTransaction");
-          } catch (Exception ex) {
-              try {
-                  ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
-                  
-              } catch (Exception e1) {
-                  throw new RuntimeException("Cannot find UserTransaction", e1);
-              }
-          }
-          try {
-              ut.begin();
-              environment.set(EnvironmentName.TRANSACTION, ut);
-          } catch (Exception ex) {
-              
-          }
-          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, this.emf);
-      }
-      
-      return ut;
-  }
-  protected void completeOperation(UserTransaction ut, EntityManager entityManager) {
-      if (ut != null) {
-          try {
-              ut.commit();
-              if (entityManager != null) {
-                  entityManager.clear();
-                  entityManager.close();
-              }
-          } catch (Exception e) {
-              e.printStackTrace();
-          }
-      }
-  }
-
 }

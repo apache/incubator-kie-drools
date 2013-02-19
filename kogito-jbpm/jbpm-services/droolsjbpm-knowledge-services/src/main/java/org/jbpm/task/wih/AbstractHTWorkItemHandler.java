@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
@@ -34,6 +33,7 @@ import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
+import org.kie.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         this.action = action;
     }
 
-    protected Task createTaskBasedOnWorkItemParams(StatefulKnowledgeSession session, WorkItem workItem) {
+    protected Task createTaskBasedOnWorkItemParams(KieSession session, WorkItem workItem) {
         Task task = new Task();
         String taskName = (String) workItem.getParameter("TaskName");
         if (taskName != null) {
@@ -93,8 +93,8 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         if (session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
             taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
         }
-        if (session != null && (session instanceof StatefulKnowledgeSession)) {
-            taskData.setProcessSessionId(((StatefulKnowledgeSession) session).getId());
+        if (session != null && (session instanceof KieSession)) {
+            taskData.setProcessSessionId(((KieSession) session).getId());
         }
         taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data
@@ -132,7 +132,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         return task;
     }
 
-    protected ContentData createTaskContentBasedOnWorkItemParams(StatefulKnowledgeSession session, WorkItem workItem) {
+    protected ContentData createTaskContentBasedOnWorkItemParams(KieSession session, WorkItem workItem) {
         ContentData content = null;
         Object contentObject = workItem.getParameter("Content");
         if (contentObject == null) {

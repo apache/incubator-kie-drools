@@ -10,15 +10,16 @@ import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
 import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkflowProcessInstance;
 import org.kie.runtime.rule.FactHandle;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
+import org.droolsjbpm.services.impl.event.ProcessInstanceCompletedEvent;
+import org.droolsjbpm.services.impl.event.ProcessInstanceStartedEvent;
 
 import org.kie.runtime.KieRuntime;
+import org.kie.runtime.KieSession;
 
 @ApplicationScoped // This should be something like DomainScoped
 @Transactional
@@ -36,14 +37,13 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
     }
 
     public void afterProcessStarted(ProcessStartedEvent event) {
-        // do nothing
-        event.getKieRuntime().getEntryPoint("process-events").insert(new org.droolsjbpm.services.impl.event.ProcessStartedEvent(event));
-        ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
+        event.getKieRuntime().getEntryPoint("process-events").insert(new ProcessInstanceStartedEvent(event));
+        ((KieSession) event.getKieRuntime()).fireAllRules();
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
-        event.getKieRuntime().getEntryPoint("process-events").insert(new org.droolsjbpm.services.impl.event.ProcessCompletedEvent(event));
-        ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
+        event.getKieRuntime().getEntryPoint("process-events").insert(new ProcessInstanceCompletedEvent(event));
+        ((KieSession) event.getKieRuntime()).fireAllRules();
     }
 
     public void afterProcessCompleted(ProcessCompletedEvent event) {
@@ -57,7 +57,7 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         // do nothing
         event.getKieRuntime().getEntryPoint("process-events").insert(new NodeInstanceTriggeredEvent(event));
-        ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
+        ((KieSession) event.getKieRuntime()).fireAllRules();
         
     }
 
@@ -67,7 +67,7 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
 
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
         event.getKieRuntime().getEntryPoint("process-events").insert(new NodeInstanceLeftEvent(event));
-        ((StatefulKnowledgeSession) event.getKieRuntime()).fireAllRules();
+        ((KieSession) event.getKieRuntime()).fireAllRules();
     }
 
     public void afterNodeLeft(ProcessNodeLeftEvent event) {

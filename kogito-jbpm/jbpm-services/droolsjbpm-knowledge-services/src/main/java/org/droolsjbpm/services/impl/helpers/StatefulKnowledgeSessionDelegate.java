@@ -16,7 +16,6 @@
 package org.droolsjbpm.services.impl.helpers;
 
 import org.droolsjbpm.services.api.SessionManager;
-import org.kie.KnowledgeBase;
 import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
@@ -41,24 +40,26 @@ import org.kie.time.SessionClock;
 
 import java.util.Collection;
 import java.util.Map;
+import org.kie.KieBase;
+import org.kie.runtime.KieSession;
 
 /**
  *
  * @author salaboy
  */
-public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSession{
+public class StatefulKnowledgeSessionDelegate implements KieSession{
 
-    private StatefulKnowledgeSession ksession;
+    private KieSession ksession;
     private SessionManager sessionManager;
     private String name;
 
-    public StatefulKnowledgeSessionDelegate(String name, StatefulKnowledgeSession ksession, SessionManager sessionManager) {
+    public StatefulKnowledgeSessionDelegate(String name, KieSession ksession, SessionManager sessionManager) {
         this.name = name;
         this.ksession = ksession;
         this.sessionManager = sessionManager;
     }
 
-    public StatefulKnowledgeSession getKsession() {
+    public KieSession getKsession() {
         return ksession;
     }
 
@@ -107,7 +108,7 @@ public class StatefulKnowledgeSessionDelegate implements StatefulKnowledgeSessio
     }
 
     @Override
-    public KnowledgeBase getKieBase() {
+    public KieBase getKieBase() {
         return ksession.getKieBase();
     }
 
