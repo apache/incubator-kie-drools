@@ -18,6 +18,7 @@ package org.jbpm.workflow.instance.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -116,6 +117,14 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     	boolean hidden = false;
     	if (getNode().getMetaData().get("hidden") != null) {
     		hidden = true;
+    	}
+    	
+    	Collection<Connection> incoming = getNode().getIncomingConnections(type);
+    	for (Connection conn : incoming) {
+    	    if (conn.getFrom().getId() == from.getNodeId()) {
+    	        this.metaData.put("IncomingConnection", conn.getMetaData().get("UniqueId"));
+    	        break;
+    	    }
     	}
     	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
     	if (!hidden) {
@@ -277,6 +286,13 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     	}
     	// trigger next node
         nodeInstance.trigger(this, type);
+        Collection<Connection> outgoing = getNode().getOutgoingConnections(type);
+        for (Connection conn : outgoing) {
+            if (conn.getTo().getId() == nodeInstance.getNodeId()) {
+                this.metaData.put("OutgoingConnection", conn.getMetaData().get("UniqueId"));
+                break;
+            }
+        }
         if (!hidden) {
         	((InternalProcessRuntime) kruntime.getProcessRuntime())
         		.getProcessEventSupport().fireAfterNodeLeft(this, kruntime);

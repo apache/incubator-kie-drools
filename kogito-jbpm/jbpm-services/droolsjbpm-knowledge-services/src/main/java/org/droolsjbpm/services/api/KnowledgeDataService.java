@@ -55,6 +55,8 @@ public interface KnowledgeDataService {
     
     Collection<NodeInstanceDesc> getProcessInstanceActiveNodes(int sessionId, long processId);
     
+    Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(int sessionId, long processId);
+    
     Collection<VariableStateDesc> getVariablesCurrentState(long processInstanceId);
     
     Collection<VariableStateDesc> getVariableHistory(long processInstanceId, String variableId);

@@ -2,6 +2,7 @@ package org.droolsjbpm.services.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
+import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
 import org.jbpm.shared.services.api.FileService;
@@ -128,5 +130,133 @@ public abstract class KnowledgeDataServiceBaseTest {
         
         assertNotNull(foundInstances);
         assertEquals(1, foundInstances.size());
+    }
+    
+    @Test
+    public void testGetCompletedNodes() {
+        
+        StatefulKnowledgeSession ksession = sessionManager.getKsessionById(1);
+        ProcessInstance pi = ksession.startProcess("signal");
+        
+        List<NodeInstanceDesc> executedNodes = new ArrayList<NodeInstanceDesc>(dataService.getProcessInstanceCompletedNodes(1, pi.getId()));
+        assertNotNull(executedNodes);
+        assertEquals(2, executedNodes.size());
+        NodeInstanceDesc startNode = executedNodes.get(0);
+        
+        assertNotNull(startNode);
+        assertEquals("StartProcess", startNode.getName());
+        assertEquals("StartEvent_1", startNode.getNodeUniqueId());
+        assertEquals(null, startNode.getConnection());
+        
+        startNode = executedNodes.get(1);
+        
+        assertNotNull(startNode);
+        assertEquals("StartProcess", startNode.getName());
+        assertEquals("StartEvent_1", startNode.getNodeUniqueId());
+        assertNotNull(startNode.getConnection());
+        assertEquals("StartEvent_1-IntermediateCatchEvent_1", startNode.getConnection());
+        
+        ksession.signalEvent("MySignal", null, pi.getId());
+        
+        executedNodes = new ArrayList<NodeInstanceDesc>(dataService.getProcessInstanceCompletedNodes(1, pi.getId()));
+        assertNotNull(executedNodes);
+        assertEquals(8, executedNodes.size());
+        
+        List<NodeInstanceDesc> completed = new ArrayList<NodeInstanceDesc>(executedNodes);
+        
+        // start node as it was
+        startNode = completed.get(0);
+        
+        assertNotNull(startNode);
+        assertEquals("StartProcess", startNode.getName());
+        assertEquals("StartEvent_1", startNode.getNodeUniqueId());
+        assertEquals(null, startNode.getConnection());
+        
+        startNode = completed.get(1);
+        
+        assertNotNull(startNode);
+        assertEquals("StartProcess", startNode.getName());
+        assertEquals("StartEvent_1", startNode.getNodeUniqueId());
+        assertNotNull(startNode.getConnection());
+        assertEquals("StartEvent_1-IntermediateCatchEvent_1", startNode.getConnection());
+        
+        // signal
+        NodeInstanceDesc signalNode = completed.get(2);
+        
+        assertNotNull(signalNode);
+        assertEquals("Catch", signalNode.getName());
+        assertEquals("IntermediateCatchEvent_1", signalNode.getNodeUniqueId());
+        assertNotNull(signalNode.getConnection());
+        assertEquals("StartEvent_1-IntermediateCatchEvent_1", signalNode.getConnection());
+        
+        signalNode = completed.get(3);
+        
+        assertNotNull(signalNode);
+        assertEquals("Catch", signalNode.getName());
+        assertEquals("IntermediateCatchEvent_1", signalNode.getNodeUniqueId());
+        assertNotNull(signalNode.getConnection());
+        assertEquals("IntermediateCatchEvent_1-ScriptTask_1", signalNode.getConnection());
+        
+        
+        //script
+        NodeInstanceDesc scriptNode = completed.get(6);
+        
+        assertNotNull(scriptNode);
+        assertEquals("Script Task", scriptNode.getName());
+        assertEquals("ScriptTask_1", scriptNode.getNodeUniqueId());
+        assertNotNull(scriptNode.getConnection());
+        assertEquals("IntermediateCatchEvent_1-ScriptTask_1", scriptNode.getConnection());
+        
+        scriptNode = completed.get(7);
+        
+        assertNotNull(scriptNode);
+        assertEquals("Script Task", scriptNode.getName());
+        assertEquals("ScriptTask_1", scriptNode.getNodeUniqueId());
+        assertNotNull(scriptNode.getConnection());
+        assertEquals("ScriptTask_1-EndEvent_1", scriptNode.getConnection());
+        
+        
+        //end
+        NodeInstanceDesc endNode = completed.get(4);
+        
+        assertNotNull(endNode);
+        assertEquals("EndProcess", endNode.getName());
+        assertEquals("EndEvent_1", endNode.getNodeUniqueId());
+        assertNotNull(endNode.getConnection());
+        assertEquals("ScriptTask_1-EndEvent_1", endNode.getConnection());
+        
+        endNode = completed.get(5);
+        
+        assertNotNull(endNode);
+        assertEquals("EndProcess", endNode.getName());
+        assertEquals("EndEvent_1", endNode.getNodeUniqueId());
+        assertNull(endNode.getConnection());
+       
+        
+        pi = ksession.getProcessInstance(pi.getId());
+        assertEquals(null, pi);
+    }
+    
+    @Test
+    public void testGetActiveNodes() {
+        
+        StatefulKnowledgeSession ksession = sessionManager.getKsessionById(1);
+        ProcessInstance pi = ksession.startProcess("signal");
+        
+        Collection<NodeInstanceDesc> executedNodes = dataService.getProcessInstanceActiveNodes(1, pi.getId());
+        assertNotNull(executedNodes);
+        assertEquals(1, executedNodes.size());
+        NodeInstanceDesc signalNode = executedNodes.iterator().next();
+        
+        assertNotNull(signalNode);
+        assertEquals("Catch", signalNode.getName());
+        assertEquals("IntermediateCatchEvent_1", signalNode.getNodeUniqueId());
+        assertNotNull(signalNode.getConnection());
+        assertEquals("StartEvent_1-IntermediateCatchEvent_1", signalNode.getConnection());
+        
+        ksession.signalEvent("MySignal", null, pi.getId());
+        
+        pi = ksession.getProcessInstance(pi.getId());
+        assertEquals(null, pi);
     }
 }

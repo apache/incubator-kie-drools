@@ -15,8 +15,8 @@
  */
 package org.droolsjbpm.services.impl.helpers;
 
-import org.kie.runtime.process.NodeInstance;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
+import org.kie.runtime.process.NodeInstance;
 
 /**
  *
@@ -24,13 +24,15 @@ import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
  */
 public class NodeInstanceDescFactory {
     public static NodeInstanceDesc newNodeInstanceDesc(String domainName, int sessionId, long processInstanceId, 
-                                                        NodeInstance nodeInstance, boolean completed){
+                                                        NodeInstance nodeInstance, boolean completed, String connection){
         return new NodeInstanceDesc(nodeInstance.getId(),
                                     nodeInstance.getNodeId(),
                                     nodeInstance.getNode().getName(), 
                                     nodeInstance.getNode().getMetaData().get("UniqueId").toString(),
                                     nodeInstance.getNode().getClass().getSimpleName(),
-                                    domainName, sessionId, processInstanceId, completed);
+                                    domainName, sessionId, processInstanceId, 
+                                    connection,
+                                    completed);
     }
     
 }

@@ -41,6 +41,7 @@ public class NodeInstanceDesc implements Serializable{
     private long processInstanceId;
     private String type;
     private boolean completed;
+    private String connection;
     
     
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -51,12 +52,12 @@ public class NodeInstanceDesc implements Serializable{
     }
 
     public NodeInstanceDesc(long id, long nodeId, String name, String uniqueId, String type, 
-                            String domainName, int sessionId, long processInstanceId){
-        this(id, nodeId, name, uniqueId,  type, domainName, sessionId, processInstanceId, false);
+                            String domainName, int sessionId, long processInstanceId, String connection){
+        this(id, nodeId, name, uniqueId,  type, domainName, sessionId, processInstanceId, connection, false);
         
     } 
     public NodeInstanceDesc(long id, long nodeId, String name, String uniqueId, String type,
-                            String domainName, int sessionId, long processInstanceId, 
+                            String domainName, int sessionId, long processInstanceId, String connection, 
                             boolean completed) {
         this.id = id;
         this.nodeId = nodeId;
@@ -68,6 +69,7 @@ public class NodeInstanceDesc implements Serializable{
         this.domainName = domainName;
         this.completed = completed;
         this.dataTimeStamp = new Date();
+        this.connection = connection;
     }
 
     public long getId() {
@@ -123,16 +125,12 @@ public class NodeInstanceDesc implements Serializable{
         return "NodeInstanceDesc{" + "pk=" + pk + ", id=" + id + ", nodeId=" + nodeId + ", nodeUniqueId=" + nodeUniqueId + ", name=" + name + ", domainName=" + domainName + ", sessionId=" + sessionId + ", processInstanceId=" + processInstanceId + ", type=" + type + ", completed=" + completed + ", dataTimeStamp=" + dataTimeStamp + '}';
     }
 
-    
-    
+    public String getConnection() {
+        return connection;
+    }
 
-   
-
-    
-  
-    
-    
-    
-    
+    public void setConnection(String incomingConnection) {
+        this.connection = incomingConnection;
+    }
     
 }

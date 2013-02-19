@@ -227,4 +227,17 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         processInstances = query.getResultList();
         return processInstances;
     }
+
+    @Override
+    public Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(int sessionId, long processId) {
+        List<NodeInstanceDesc> completedNodeInstances = em.createQuery("select n from NodeInstanceDesc n where n.nodeId in " +
+        		"(select nodeId from NodeInstanceDesc nid where nid.processInstanceId=:processId AND nid.sessionId=:sessionId AND nid.completed =:completed) ORDER BY n.nodeId, n.dataTimeStamp DESC")
+                .setParameter("processId", processId)
+                .setParameter("sessionId", sessionId)
+                .setParameter("completed", true)
+                .getResultList();
+        
+        return completedNodeInstances;
+        
+    }
 }

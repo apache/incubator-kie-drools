@@ -21,6 +21,7 @@ import org.droolsjbpm.services.impl.helpers.NodeInstanceDescFactory;
 import org.droolsjbpm.services.impl.helpers.ProcessInstanceDescFactory;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.process.ProcessNodeLeftEvent;
@@ -89,7 +90,8 @@ public class CDIProcessEventListener implements ProcessEventListener {
         int sessionId = ((StatefulKnowledgeSession)pnte.getKieRuntime()).getId();
         long processInstanceId = pnte.getProcessInstance().getId();
         NodeInstance nodeInstance = pnte.getNodeInstance();
-        em.persist(NodeInstanceDescFactory.newNodeInstanceDesc(domainName, sessionId, processInstanceId, nodeInstance, false));
+        String connection = (String)((NodeInstanceImpl)nodeInstance).getMetaData().get("IncomingConnection");
+        em.persist(NodeInstanceDescFactory.newNodeInstanceDesc(domainName, sessionId, processInstanceId, nodeInstance, false, connection));
     }
 
     public void afterNodeTriggered(ProcessNodeTriggeredEvent pnte) {
@@ -104,7 +106,8 @@ public class CDIProcessEventListener implements ProcessEventListener {
         int sessionId = ((StatefulKnowledgeSession)pnle.getKieRuntime()).getId();
         long processInstanceId = pnle.getProcessInstance().getId();
         NodeInstance nodeInstance = pnle.getNodeInstance();
-        em.persist(NodeInstanceDescFactory.newNodeInstanceDesc(domainName, sessionId, processInstanceId, nodeInstance, true));
+        String connection = (String)((NodeInstanceImpl)nodeInstance).getMetaData().get("OutgoingConnection");
+        em.persist(NodeInstanceDescFactory.newNodeInstanceDesc(domainName, sessionId, processInstanceId, nodeInstance, true, connection));
     }
 
     public void beforeVariableChanged(ProcessVariableChangedEvent pvce) {
