@@ -101,7 +101,6 @@ public class CDISessionManager implements SessionManager {
     private FileService fs;
     
     @Inject
-    @Named("fileServiceIOStrategy")
     private IOService ioService;
     private Domain domain;
     // Ksession Name  / sessionId , Ksession

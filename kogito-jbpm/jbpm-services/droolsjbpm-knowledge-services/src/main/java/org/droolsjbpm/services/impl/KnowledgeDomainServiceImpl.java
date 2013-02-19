@@ -66,7 +66,6 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
     @Inject
     private FileService fs;
     @Inject
-    @Named("fileServiceIOStrategy")
     private IOService ioService;
     
     @Inject

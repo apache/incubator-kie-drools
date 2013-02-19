@@ -568,6 +568,11 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
         
         return content;
     }
+
+    @Override
+    public List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> statuses, Date expirationDate) {
+        return taskQueryService.getTasksOwnedByExpirationDate(userId, statuses, expirationDate);
+    }
     
     
 }

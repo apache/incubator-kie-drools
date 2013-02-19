@@ -121,8 +121,8 @@ public class FormProviderServiceImpl implements FormProviderService {
     @Override
     public String getFormDisplayTask(long taskId) {
         Task task = queryService.getTaskInstanceById(taskId);
-
-
+        Map<String, Object> renderContext = new HashMap<String, Object>();
+        
         Object input = null;
         long inputContentId = task.getTaskData().getDocumentContentId();
         if (inputContentId != -1) {
@@ -166,7 +166,8 @@ public class FormProviderServiceImpl implements FormProviderService {
         InputStream template = null;
         try {
             if (selectedForm == null) {
-
+                // since we use default task that lists all inputs there needs to be complete map available
+                renderContext.put("inputs", input);
                 template = new ByteArrayInputStream(fileService.loadFile("forms/DefaultTask.ftl"));
 
             } else {
@@ -201,8 +202,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         }
 
 
-        // merge template with process variables
-        Map<String, Object> renderContext = new HashMap<String, Object>();
+        // merge template with process variables        
         renderContext.put("task", task);        
         renderContext.put("outputs", finalOutput);
         // add all inputs as direct entries

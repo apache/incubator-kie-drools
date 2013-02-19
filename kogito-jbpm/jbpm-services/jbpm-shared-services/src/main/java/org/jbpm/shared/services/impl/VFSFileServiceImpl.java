@@ -109,12 +109,6 @@ public class VFSFileServiceImpl implements FileService {
     
     }
 
-    @Produces
-    @Named("fileServiceIOStrategy")
-    public IOService ioService() {
-        return ioService;
-    }
-
     @Override
     public boolean exists(Path file){
         return ioService.exists(file);

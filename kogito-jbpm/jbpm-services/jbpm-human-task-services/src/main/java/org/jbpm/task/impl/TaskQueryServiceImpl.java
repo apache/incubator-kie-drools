@@ -273,4 +273,15 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         else 
             return (Task) (tasks.get(0));
     }
+
+    @Override
+    public List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> status, Date expirationDate) {
+        List<TaskSummary> taskOwned = em.createNamedQuery("TasksOwnedWithParticularStatusByExpirationDateOptional")
+                    .setParameter("userId", userId)
+                    .setParameter("status", status)
+                    .setParameter("expirationDate", expirationDate)
+                    .setParameter("language", "en-UK").getResultList();
+        
+        return taskOwned;
+    }
 }
