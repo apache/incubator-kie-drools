@@ -135,7 +135,7 @@ public abstract class KnowledgeDataServiceBaseTest {
     @Test
     public void testGetCompletedNodes() {
         
-        StatefulKnowledgeSession ksession = sessionManager.getKsessionById(1);
+        KieSession ksession = sessionManager.getKsessionById(1);
         ProcessInstance pi = ksession.startProcess("signal");
         
         List<NodeInstanceDesc> executedNodes = new ArrayList<NodeInstanceDesc>(dataService.getProcessInstanceCompletedNodes(1, pi.getId()));
@@ -240,7 +240,7 @@ public abstract class KnowledgeDataServiceBaseTest {
     @Test
     public void testGetActiveNodes() {
         
-        StatefulKnowledgeSession ksession = sessionManager.getKsessionById(1);
+        KieSession ksession = sessionManager.getKsessionById(1);
         ProcessInstance pi = ksession.startProcess("signal");
         
         Collection<NodeInstanceDesc> executedNodes = dataService.getProcessInstanceActiveNodes(1, pi.getId());
