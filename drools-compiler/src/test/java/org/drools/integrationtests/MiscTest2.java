@@ -1353,4 +1353,36 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals(3, ksession.fireAllRules());
     }
+
+    @Test
+    public void testDeclarationsScopeUsingOR4() {
+        // DROOLS-44
+        String str =
+                "declare A\n" +
+                "    a1 : String\n" +
+                "end\n" +
+                "\n" +
+                "declare B\n" +
+                "    b1 : String\n" +
+                "end\n" +
+                "\n" +
+                "rule R when \n" +
+                "    A ( $a1 : a1 != null )\n" +
+                "    (or\n" +
+                "        (and\n" +
+                "            B( $b1 : b1 != null )\n" +
+                "            eval( $a1.compareTo( $b1 ) < 0 )\n" +
+                "        )\n" +
+                "        (and\n" +
+                "            B( b1 == null )\n" +
+                "            eval( $a1.compareTo( $b1 ) < 0 )\n" +
+                "        )\n" +
+                "    )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        assertTrue( kbuilder.hasErrors() );
+    }
 }
