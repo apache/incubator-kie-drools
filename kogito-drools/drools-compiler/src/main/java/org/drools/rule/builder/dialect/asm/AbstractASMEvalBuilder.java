@@ -37,7 +37,15 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
                                                                           new BoundIdentifiers( context.getDeclarationResolver().getDeclarationClasses(decls),
                                                                                                 context.getPackageBuilder().getGlobals() ) );
 
-        final Declaration[] declarations = decls.values().toArray( new Declaration[decls.size()]);
+        List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
+        for (String usedIdentifier : analysis.getIdentifiers()) {
+            Declaration usedDec = decls.get(usedIdentifier);
+            if (usedDec != null) {
+                requiredDeclarations.add(usedDec);
+            }
+        }
+
+        final Declaration[] declarations = requiredDeclarations.toArray( new Declaration[requiredDeclarations.size()]);
         return buildEval(context, evalDescr, analysis, declarations);
      }
 
