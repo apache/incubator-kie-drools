@@ -30,29 +30,27 @@ public class BeliefSystemTypeOption implements SingleValueKnowledgeSessionOption
     public static final String PROPERTY_NAME = "drools.beliefSystem";
     
     /**
-     * Belie System Type
+     * Belief System Type
      */
-    private final String belieSystemType;
+    private final String beliefSystemType;
     
     /**
      * Private constructor to enforce the use of the factory method
      * @param belieSystemType
      */
-    private BeliefSystemTypeOption( String belieSystemType ) {
-        this.belieSystemType = belieSystemType;
+    private BeliefSystemTypeOption( String beliefSystemType ) {
+        this.beliefSystemType = beliefSystemType;
     }
     
     /**
      * This is a factory method for this belief system configuration.
-     * The factory method is a best practice for the case where the 
-     * actual object construction is changed in the future.
      * 
-     * @param belieSystem  the identifier for the belie system 
+     * @param beliefSystem  the identifier for the belief system 
      * 
-     * @return the actual type safe default clock type configuration.
+     * @return the actual belief system type configuration.
      */
-    public static BeliefSystemTypeOption get( String belieSystemType ) {
-        return new BeliefSystemTypeOption( belieSystemType );
+    public static BeliefSystemTypeOption get( String beliefSystemType ) {
+        return new BeliefSystemTypeOption( beliefSystemType );
     }
     
     /**
@@ -63,19 +61,19 @@ public class BeliefSystemTypeOption implements SingleValueKnowledgeSessionOption
     }
     
     /**
-     * Returns the configured clock type
+     * Returns the configured belief system type
      * 
-     * @return
+     * @return a String
      */
-    public String getBelieSystemType() {
-        return belieSystemType;
+    public String getBeliefSystemType() {
+        return beliefSystemType;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (( belieSystemType == null) ? 0 :  belieSystemType.hashCode());
+        result = prime * result + (( beliefSystemType == null) ? 0 :  beliefSystemType.hashCode());
         return result;
     }
 
@@ -85,14 +83,14 @@ public class BeliefSystemTypeOption implements SingleValueKnowledgeSessionOption
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         BeliefSystemTypeOption other = (BeliefSystemTypeOption) obj;
-        if (  belieSystemType == null ) {
-            if ( other.belieSystemType != null ) return false;
-        } else if ( ! belieSystemType.equals( other.belieSystemType ) ) return false;
+        if (  beliefSystemType == null ) {
+            if ( other.beliefSystemType != null ) return false;
+        } else if ( ! beliefSystemType.equals( other.beliefSystemType ) ) return false;
         return true;
     }
     
     @Override
     public String toString() {
-        return "BelieSystemTypeOption( "+ belieSystemType +" )";
+        return "BeliefSystemTypeOption( "+ beliefSystemType +" )";
     }
 }
