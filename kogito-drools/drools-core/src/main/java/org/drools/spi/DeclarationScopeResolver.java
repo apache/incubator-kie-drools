@@ -220,6 +220,7 @@ public class DeclarationScopeResolver {
     public Map<String, Declaration> getDeclarations(Rule rule, String consequenceName) {
         final Map<String, Declaration> declarations = new HashMap<String, Declaration>();
         for (RuleConditionElement aBuildStack : this.buildStack) {
+            // if we are inside of an OR we don't want each previous stack entry added because we can't see those variables
             if (aBuildStack instanceof GroupElement && ((GroupElement)aBuildStack).getType() == GroupElement.Type.OR) {
                 continue;
             }

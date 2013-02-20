@@ -1279,4 +1279,78 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals(2, ksession.fireAllRules());
     }
+
+    @Test
+    public void testDeclarationsScopeUsingOR2() {
+        // DROOLS-44
+        String str =
+                "declare A\n" +
+                "    a1 : String\n" +
+                "end\n" +
+                "\n" +
+                "declare B\n" +
+                "    b1 : String\n" +
+                "end\n" +
+                "\n" +
+                "rule Init salience 10 when \n" +
+                "then\n" +
+                "    insert( new A( \"A\" ) );\n" +
+                "    insert( new B( \"B\" ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule R when \n" +
+                "    A ( $a1 : a1 != null )\n" +
+                "    (or\n" +
+                "        B( $b1 : b1 != null )\n" +
+                "        B( $b1 : b1 == null )\n" +
+                "    )\n" +
+                "    eval( $a1.compareTo( $b1 ) < 0 )\n" +
+                "then\n" +
+                "    System.out.println( $b1 );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testDeclarationsScopeUsingOR3() {
+        // DROOLS-44
+        String str =
+                "declare A\n" +
+                "    a1 : String\n" +
+                "end\n" +
+                "\n" +
+                "declare B\n" +
+                "    b1 : String\n" +
+                "end\n" +
+                "\n" +
+                "rule Init salience 10 when \n" +
+                "then\n" +
+                "    insert( new A( \"A\" ) );\n" +
+                "    insert( new B( null ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule R when \n" +
+                "    (or \n" +
+                "        A ( $a1 : a1 != null )\n" +
+                "        A ( $a1 : a1 != null ) ) \n" +
+                "    (or\n" +
+                "        (and\n" +
+                "            B( $b1 : b1 != null )\n" +
+                "            eval( $a1.compareTo( $b1 ) < 0 )\n" +
+                "        )\n" +
+                "        (and\n" +
+                "            B( b1 == null )\n" +
+                "            eval( $a1.compareTo(\"B\") < 0 )\n" +
+                "        )\n" +
+                "    )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        assertEquals(3, ksession.fireAllRules());
+    }
 }
