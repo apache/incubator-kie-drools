@@ -98,7 +98,7 @@ public enum DayOfWeek {
     }
 
     public String getLabel() {
-        return code.substring(0, 1);
+        return code.substring(0, 2);
     }
 
     public String toString() {
