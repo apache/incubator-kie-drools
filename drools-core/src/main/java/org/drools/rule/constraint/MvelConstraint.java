@@ -35,6 +35,8 @@ import org.drools.util.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -51,6 +53,8 @@ import static org.drools.core.util.StringUtils.skipBlanks;
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
     protected static final boolean TEST_JITTING = false;
     protected static final int JIT_THRESOLD = 20; // Integer.MAX_VALUE;
+
+    private static final Logger logger = LoggerFactory.getLogger(MvelConstraint.class);
 
     protected final transient AtomicInteger invocationCounter = new AtomicInteger(1);
     protected transient boolean jitted = false;
@@ -269,14 +273,18 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             return;
         }
 
-        CompositeClassLoader classLoader = ruleBase.getRootClassLoader();
-        if (analyzedCondition == null) {
-            analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
-        }
         try {
+            CompositeClassLoader classLoader = ruleBase.getRootClassLoader();
+            if (analyzedCondition == null) {
+                analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
+            }
             conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, classLoader, leftTuple);
         } catch (Throwable t) {
-            throw new RuntimeException("Exception jitting: " + expression, t);
+            if (TEST_JITTING) {
+                throw new RuntimeException("Exception jitting: " + expression, t);
+            } else {
+                logger.warn("Exception jitting: " + expression, t);
+            }
         }
     }
 
