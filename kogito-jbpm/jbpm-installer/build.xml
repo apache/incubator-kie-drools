@@ -408,7 +408,7 @@
       <arg value="-repository" />
       <arg value="http://download.eclipse.org/bpmn2-modeler/site,http://download.eclipse.org/releases/juno,http://download.eclipse.org/bpmn2-modeler/bpmn2/site" />
       <arg value="-destination" />
-      <arg value="./${eclipse.workspace.dir}" />
+      <arg value="${eclipse.home}" />
       <arg value="-installIU" />
       <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
       <arg value="-installIU" />
@@ -421,7 +421,7 @@
       <arg value="-repository" />
       <arg value="http://download.eclipse.org/bpmn2-modeler/site,http://download.eclipse.org/releases/juno,http://download.eclipse.org/bpmn2-modeler/bpmn2/site" />
       <arg value="-destination" />
-      <arg value="./${eclipse.workspace.dir}" />
+      <arg value="${eclipse.home}" />
       <arg value="-installIU" />
       <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
       <arg value="-installIU" />
@@ -434,7 +434,7 @@
       <arg value="-repository" />
       <arg value="http://download.eclipse.org/bpmn2-modeler/site,http://download.eclipse.org/releases/juno,http://download.eclipse.org/bpmn2-modeler/bpmn2/site" />
       <arg value="-destination" />
-      <arg value="../../../../${eclipse.workspace.dir}" />
+      <arg value="${eclipse.home}" />
       <arg value="-installIU" />
       <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
       <arg value="-installIU" />
