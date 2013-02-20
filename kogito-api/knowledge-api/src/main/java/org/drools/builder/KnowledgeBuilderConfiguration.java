@@ -47,7 +47,7 @@ import org.drools.builder.conf.KnowledgeBuilderOptionsConfiguration;
  * <ul>
  * <li>drools.dialect.default = &lt;String&gt;</li>
  * <li>drools.accumulate.function.&lt;function name&gt; = &lt;qualified class&gt;</li>
- * <li>drools.evaluator.<ident> = &lt;qualified class&gt;</li>
+ * <li>drools.evaluator.&lt;ident&gt; = &lt;qualified class&gt;</li>
  * <li>drools.dump.dir = &lt;String&gt;</li>
  * <li>drools.parser.processStringEscapes = &lt;true|false&gt;</li>
  * </ul>
