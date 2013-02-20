@@ -20,6 +20,10 @@ import java.util.Arrays;
 
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
+import org.kie.event.rule.ActivationUnMatchListener;
+import org.kie.runtime.rule.Match;
+import org.kie.runtime.rule.RuleContext;
+import org.kie.runtime.rule.Session;
 
 public class BendableScoreHolder extends AbstractScoreHolder {
 
@@ -35,29 +39,47 @@ public class BendableScoreHolder extends AbstractScoreHolder {
         return hardScores.length;
     }
 
-    public int getHardScore(int index) {
-        return hardScores[index];
+    public int getHardScore(int hardLevel) {
+        return hardScores[hardLevel];
     }
 
-    public void setHardScore(int index, int hardScore) {
-        hardScores[index] = hardScore;
+    public void setHardScore(int hardLevel, int hardScore) {
+        hardScores[hardLevel] = hardScore;
     }
 
     public int getSoftLevelCount() {
         return softScores.length;
     }
 
-    public int getSoftScore(int index) {
-        return softScores[index];
+    public int getSoftScore(int softLevel) {
+        return softScores[softLevel];
     }
 
-    public void setSoftScore(int index, int softScore) {
-        softScores[index] = softScore;
+    public void setSoftScore(int softLevel, int softScore) {
+        softScores[softLevel] = softScore;
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final int weight) {
+        hardScores[hardLevel] += weight;
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                hardScores[hardLevel] -= weight;
+            }
+        });
+    }
+
+    public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final int weight) {
+        softScores[softLevel] += weight;
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                softScores[softLevel] -= weight;
+            }
+        });
+    }
 
     public Score extractScore() {
         return new BendableScore(Arrays.copyOf(hardScores, hardScores.length),

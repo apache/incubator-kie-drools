@@ -18,6 +18,10 @@ package org.drools.planner.core.score.buildin.hardmediumsoft;
 
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
+import org.kie.event.rule.ActivationUnMatchListener;
+import org.kie.runtime.rule.Match;
+import org.kie.runtime.rule.RuleContext;
+import org.kie.runtime.rule.Session;
 
 public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
 
@@ -52,6 +56,33 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
+        hardScore += weight;
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                hardScore -= weight;
+            }
+        });
+    }
+
+    public void addMediumConstraintMatch(RuleContext kcontext, final int weight) {
+        mediumScore += weight;
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                mediumScore -= weight;
+            }
+        });
+    }
+
+    public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
+        softScore += weight;
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                softScore -= weight;
+            }
+        });
+    }
 
     public Score extractScore() {
         return HardMediumSoftScore.valueOf(hardScore, mediumScore, softScore);
