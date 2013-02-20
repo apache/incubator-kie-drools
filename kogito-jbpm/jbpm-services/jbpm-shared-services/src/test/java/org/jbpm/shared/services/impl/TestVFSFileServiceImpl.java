@@ -73,7 +73,8 @@ public class TestVFSFileServiceImpl implements FileService {
             @Override
             public boolean accept( final Path entry ) throws IOException {
                 if ( !org.kie.commons.java.nio.file.Files.isDirectory(entry) && 
-                        entry.getFileName().toString().endsWith( fileType ) ) {
+                        (entry.getFileName().toString().endsWith( fileType )
+                                || entry.getFileName().toString().matches(fileType))) {
                     return true;
                 }
                 return false;

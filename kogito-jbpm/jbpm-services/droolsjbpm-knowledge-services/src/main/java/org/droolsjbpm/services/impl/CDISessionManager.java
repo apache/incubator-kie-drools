@@ -277,7 +277,7 @@ public class CDISessionManager implements SessionManager {
         Iterable<Path> loadProcessFiles = null;
         Iterable<Path> loadRulesFiles = null;
         try {
-            loadProcessFiles = fs.loadFilesByType(path, "bpmn");
+            loadProcessFiles = fs.loadFilesByType(path, ".+bpmn[2]?$");
             loadRulesFiles = fs.loadFilesByType(path, "drl");
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
