@@ -20,8 +20,10 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.config.PlannerBenchmarkConfig;
+import org.drools.planner.benchmark.config.ProblemBenchmarksConfig;
 import org.drools.planner.benchmark.config.SolverBenchmarkConfig;
 import org.drools.planner.benchmark.config.XmlPlannerBenchmarkFactory;
 import org.drools.planner.config.termination.TerminationConfig;
@@ -53,7 +55,8 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
     
     private XmlPlannerBenchmarkFactory buildPlannerBenchmarkFactory(File unsolvedDataFile) {
         XmlPlannerBenchmarkFactory benchmarkFactory = new XmlPlannerBenchmarkFactory();
-        benchmarkFactory.configure(createBenchmarkConfigResource());
+        String benchmarkConfigResource = createBenchmarkConfigResource();
+        benchmarkFactory.configure(benchmarkConfigResource);
         PlannerBenchmarkConfig plannerBenchmarkConfig = benchmarkFactory.getPlannerBenchmarkConfig();
         plannerBenchmarkConfig.setBenchmarkDirectory(new File("target/test/data/nqueens"));
         plannerBenchmarkConfig.setWarmUpHoursSpend(0L);
@@ -61,6 +64,10 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
         plannerBenchmarkConfig.setWarmUpSecondsSpend(WARM_UP_SECONDS_SPEND);
         plannerBenchmarkConfig.setWarmUpTimeMillisSpend(0L);
         List<SolverBenchmarkConfig> solverBenchmarkConfigList = plannerBenchmarkConfig.getSolverBenchmarkConfigList();
+        if (CollectionUtils.isEmpty(solverBenchmarkConfigList)) {
+            throw new IllegalStateException("The benchmarkConfigResource (" + benchmarkConfigResource
+                    + ") should have at least 1 solverBenchmarkConfig.");
+        }
         if (solverBenchmarkConfigList.size() > MAXIMUM_SOLVER_BENCHMARK_SIZE) {
             solverBenchmarkConfigList = solverBenchmarkConfigList.subList(0, MAXIMUM_SOLVER_BENCHMARK_SIZE);
             plannerBenchmarkConfig.setSolverBenchmarkConfigList(solverBenchmarkConfigList);
@@ -68,14 +75,22 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
         long maximumSecondsSpendPerSolverBenchmark = MAXIMUM_SECONDS_SPEND / solverBenchmarkConfigList.size();
         SolverBenchmarkConfig inheritedSolverBenchmarkConfig = plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig();
         if (inheritedSolverBenchmarkConfig != null) {
-            inheritedSolverBenchmarkConfig.getProblemBenchmarksConfig().setInputSolutionFileList(
+            ProblemBenchmarksConfig problemBenchmarksConfig = inheritedSolverBenchmarkConfig.getProblemBenchmarksConfig();
+            if (problemBenchmarksConfig == null) {
+                problemBenchmarksConfig = new ProblemBenchmarksConfig();
+                inheritedSolverBenchmarkConfig.setProblemBenchmarksConfig(problemBenchmarksConfig);
+            }
+            problemBenchmarksConfig.setInputSolutionFileList(
                     Collections.singletonList(unsolvedDataFile));
             TerminationConfig terminationConfig = new TerminationConfig();
             terminationConfig.setMaximumSecondsSpend(maximumSecondsSpendPerSolverBenchmark);
             inheritedSolverBenchmarkConfig.getSolverConfig().setTerminationConfig(terminationConfig);
         }
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            solverBenchmarkConfig.getProblemBenchmarksConfig().setInputSolutionFileList(null);
+            ProblemBenchmarksConfig problemBenchmarksConfig = solverBenchmarkConfig.getProblemBenchmarksConfig();
+            if (problemBenchmarksConfig != null) {
+                problemBenchmarksConfig.setInputSolutionFileList(null);
+            }
             solverBenchmarkConfig.getSolverConfig().setTerminationConfig(new TerminationConfig());
         }
         return benchmarkFactory;
