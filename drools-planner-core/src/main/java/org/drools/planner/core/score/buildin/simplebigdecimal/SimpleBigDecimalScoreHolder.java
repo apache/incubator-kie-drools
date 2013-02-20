@@ -44,14 +44,11 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
 
     public void addConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         score = score.add(weight);
-        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
-        agendaItem.setActivationUnMatchListener(
-                new ActivationUnMatchListener() {
-                    public void unMatch(Session workingMemory, Match activation) {
-                        score = score.subtract(weight);
-                    }
-                }
-        );
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                score = score.subtract(weight);
+            }
+        });
     }
 
     public Score extractScore() {

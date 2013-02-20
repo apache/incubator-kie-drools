@@ -53,26 +53,20 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
 
     public void addHardConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         hardScore = hardScore.add(weight);
-        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
-        agendaItem.setActivationUnMatchListener(
-                new ActivationUnMatchListener() {
-                    public void unMatch(Session workingMemory, Match activation) {
-                        hardScore = hardScore.add(weight);
-                    }
-                }
-        );
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                hardScore = hardScore.subtract(weight);
+            }
+        });
     }
 
     public void addSoftConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
-        softScore = softScore.subtract(weight);
-        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
-        agendaItem.setActivationUnMatchListener(
-                new ActivationUnMatchListener() {
-                    public void unMatch(Session workingMemory, Match activation) {
-                        softScore = softScore.subtract(weight);
-                    }
-                }
-        );
+        softScore = softScore.add(weight);
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                softScore = softScore.subtract(weight);
+            }
+        });
     }
 
     public Score extractScore() {

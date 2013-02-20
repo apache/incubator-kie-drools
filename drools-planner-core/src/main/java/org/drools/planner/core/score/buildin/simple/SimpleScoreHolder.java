@@ -42,14 +42,11 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
 
     public void addConstraintMatch(RuleContext kcontext, final int weight) {
         score += weight;
-        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
-        agendaItem.setActivationUnMatchListener(
-                new ActivationUnMatchListener() {
-                    public void unMatch(Session workingMemory, Match activation) {
-                        score -= weight;
-                    }
-                }
-        );
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                score -= weight;
+            }
+        });
     }
 
     public Score extractScore() {

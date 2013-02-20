@@ -18,9 +18,24 @@ package org.drools.planner.core.score.holder;
 
 import java.io.Serializable;
 
+import org.drools.common.AgendaItem;
+import org.kie.event.rule.ActivationUnMatchListener;
+import org.kie.runtime.rule.RuleContext;
+import org.kie.runtime.rule.Session;
+
 /**
  * Abstract superclass for {@link ScoreHolder}.
  */
 public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
+
+
+    protected void registerUndoListener(RuleContext kcontext, ActivationUnMatchListener undoListener) {
+        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
+        if (agendaItem.getActivationUnMatchListener() != null) {
+            Session workingMemory = null; // Should not be used by the undoListener anyway
+            agendaItem.getActivationUnMatchListener().unMatch(workingMemory, agendaItem);
+        }
+        agendaItem.setActivationUnMatchListener(undoListener);
+    }
 
 }

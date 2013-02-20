@@ -16,7 +16,6 @@
 
 package org.drools.planner.core.score.buildin.hardsoft;
 
-import org.drools.common.AgendaItem;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.holder.AbstractScoreHolder;
 import org.kie.event.rule.ActivationUnMatchListener;
@@ -51,26 +50,20 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
 
     public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
         hardScore += weight;
-        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
-        agendaItem.setActivationUnMatchListener(
-                new ActivationUnMatchListener() {
-                    public void unMatch(Session workingMemory, Match activation) {
-                        hardScore -= weight;
-                    }
-                }
-        );
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                hardScore -= weight;
+            }
+        });
     }
 
     public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
         softScore += weight;
-        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
-        agendaItem.setActivationUnMatchListener(
-                new ActivationUnMatchListener() {
-                    public void unMatch(Session workingMemory, Match activation) {
-                        softScore -= weight;
-                    }
-                }
-        );
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+            public void unMatch(Session workingMemory, Match activation) {
+                softScore -= weight;
+            }
+        });
     }
 
     public Score extractScore() {
