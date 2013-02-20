@@ -498,6 +498,34 @@ where
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
+      
+       <named-query name="TasksAssignedAsPotentialOwnerByGroupsByExpirationDateOptional">
+          <query>
+select
+     
+     t.id,
+     potentialOwners.id
+
+from
+    Task t, 
+    
+              OrganizationalEntity potentialOwners        
+
+where
+    
+    potentialOwners.id in (:groupIds) and
+    potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
+    t.archived = 0 and
+    t.taskData.actualOwner = null and          
+    (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
+    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+    
+    
+              
+    
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>      
  
       <named-query name="SubTasksAssignedAsPotentialOwner">
           <query>

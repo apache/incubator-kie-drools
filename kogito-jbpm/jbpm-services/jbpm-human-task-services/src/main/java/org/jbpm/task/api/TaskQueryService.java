@@ -59,6 +59,8 @@ public interface TaskQueryService {
     
     List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate);
     
+    List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate);
+    
     List<TaskSummary> getTasksOwned(String userId);
 
     List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language);

@@ -150,6 +150,8 @@ public interface TaskServiceEntryPoint {
     
     List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate);
     
+    List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate);
+    
     User getUserById(String userId);
 
     List<User> getUsers();

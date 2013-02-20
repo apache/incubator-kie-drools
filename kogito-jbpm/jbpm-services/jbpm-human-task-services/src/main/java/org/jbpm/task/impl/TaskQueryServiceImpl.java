@@ -80,13 +80,16 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 .getResultList();
     }
 
-    
-    public List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate) {
+    public List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate) {
 
-        List tasksByGroups = em.createNamedQuery("TasksAssignedAsPotentialOwnerByGroupsByExpirationDate")
+        List tasksByGroups = em.createNamedQuery("TasksAssignedAsPotentialOwnerByGroupsByExpirationDateOptional")
                 .setParameter("groupIds", groupIds)
                 .setParameter("expirationDate", expirationDate)
                 .getResultList();
+        return collectTasksByPotentialOwners(tasksByGroups, language);
+    }  
+    
+    protected List<TaskSummary> collectTasksByPotentialOwners(List tasksByGroups, String language) {
         Set<Long> tasksIds = Collections.synchronizedSet(new HashSet<Long>());
         Map<Long, List<String>> potentialOwners = Collections.synchronizedMap(new HashMap<Long, List<String>>());
         for (Object o : tasksByGroups) {
@@ -109,6 +112,15 @@ public class TaskQueryServiceImpl implements TaskQueryService {
             return tasks;
         }
         return new ArrayList<TaskSummary>();
+    }
+    
+    public List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate) {
+
+        List tasksByGroups = em.createNamedQuery("TasksAssignedAsPotentialOwnerByGroupsByExpirationDate")
+                .setParameter("groupIds", groupIds)
+                .setParameter("expirationDate", expirationDate)
+                .getResultList();
+        return collectTasksByPotentialOwners(tasksByGroups, language);
     }        
             
     public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language) {

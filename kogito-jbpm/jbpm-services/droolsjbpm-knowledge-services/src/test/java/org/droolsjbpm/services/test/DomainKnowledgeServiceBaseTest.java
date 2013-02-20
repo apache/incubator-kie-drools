@@ -101,15 +101,12 @@ public abstract class DomainKnowledgeServiceBaseTest {
         sessionManager.buildSession("myKsession","examples/general/",false); 
 
 
-        ProcessInstance pI = sessionManager.getKsessionsByName("myKsession").get(1).startProcess("org.jbpm.writedocument");
+        ProcessInstance pI = sessionManager.getKsessionsByName("myKsession").values().iterator().next().startProcess("org.jbpm.writedocument");
 
 
         assertNotNull(pI);
 
         assertEquals(1, sessionManager.getProcessInstanceIdKsession().size());
-
-        assertEquals(1, sessionManager.getSessionForProcessInstanceId(pI.getId()));
-
     }
 
     @Test
