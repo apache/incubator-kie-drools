@@ -227,7 +227,7 @@ public class KieBuilderImpl
 
     private void addKBaseFilesToTrg(KieBaseModel kieBase) {
         for ( String fileName : srcMfs.getFileNames() ) {
-            if ( isFileInKieBase(kieBase, fileName) ) {
+            if ( fileName.startsWith( RESOURCES_ROOT ) && isFileInKieBase(kieBase, fileName) ) {
                 copySourceToTarget( fileName );
             }
         }
@@ -235,15 +235,16 @@ public class KieBuilderImpl
 
     void copySourceToTarget(String fileName) {
         byte[] bytes = srcMfs.getBytes( fileName );
+        fileName = fileName.substring( RESOURCES_ROOT.length() - 1 );
         if (bytes != null) {
             FormatConverter formatConverter = FormatsManager.get().getConverterFor(fileName);
             if (formatConverter == null) {
                 return;
             }
             FormatConversionResult result = formatConverter.convert( fileName, bytes );
-            trgMfs.write( result.getConvertedName().substring( RESOURCES_ROOT.length() - 1 ), result.getContent(), true );
+            trgMfs.write( result.getConvertedName(), result.getContent(), true );
         } else {
-            trgMfs.remove( fileName.substring( RESOURCES_ROOT.length() - 1 ) );
+            trgMfs.remove( fileName );
         }
     }
 
