@@ -66,8 +66,10 @@ public class NQueensPanel extends SolutionPanel {
         repaint(); // When GridLayout doesn't fill up all the space
         NQueens nQueens = (NQueens) solution;
         int n = nQueens.getN();
-        if (n > 500) {
-            add(new JLabel("The dataset is too big to show."));
+        if (n > 100) {
+            JLabel tooBigToShowLabel = new JLabel("The dataset is too big to show.");
+            tooBigToShowLabel.setForeground(Color.WHITE);
+            add(tooBigToShowLabel);
             return;
         }
         List<Queen> queenList = nQueens.getQueenList();
