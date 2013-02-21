@@ -16,6 +16,7 @@
 
 package org.drools.integrationtests;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -59,16 +60,17 @@ import org.drools.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Package;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
+import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
+import org.kie.event.rule.AfterMatchFiredEvent;
+import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.MatchCancelledEvent;
 import org.kie.event.rule.MatchCreatedEvent;
-import org.kie.event.rule.AgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.marshalling.ObjectMarshallingStrategy;
@@ -76,6 +78,7 @@ import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.SessionEntryPoint;
+import org.mockito.ArgumentCaptor;
 
 public class DynamicRulesTest extends CommonTestMethodBase {
 
@@ -1123,6 +1126,63 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         session.fireAllRules();
         assertEquals( 1,
                       list.size() );
+    }
+
+    @Test
+    public void testDynamicRulesWithTypeDeclarations() {
+        String type = "package com.sample\n" +
+                      "declare type Foo\n" +
+                      "  id : int\n" +
+                      "end\n";
+
+        String r1 = "package com.sample\n" +
+                    "rule R1 when\n" +
+                    "  not Foo()\n" +
+                    "then\n" +
+                    "  insert( new Foo(1) );\n" +
+                    "end\n";
+
+        String r2 = "package com.sample\n" +
+                "rule R2 when\n" +
+                "  $f : Foo()\n" +
+                "then\n" +
+                "  $f.setId( 2 );\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( type.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        
+        ksession.fireAllRules();
+        verify( ael, never() ).afterMatchFired( any( AfterMatchFiredEvent.class ) );
+        
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbase );
+        kbuilder.add( ResourceFactory.newByteArrayResource( r1.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        
+        ksession.fireAllRules();
+        ArgumentCaptor<AfterMatchFiredEvent> capt = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
+        verify( ael, times(1) ).afterMatchFired( capt.capture() );
+        assertThat( "R1", is( capt.getValue().getMatch().getRule().getName() ) );
+        
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbase );
+        kbuilder.add( ResourceFactory.newByteArrayResource( r2.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        
+        ksession.fireAllRules();
+        verify( ael, times(2) ).afterMatchFired( capt.capture() );
+        assertThat( "R2", is( capt.getAllValues().get( 2 ).getMatch().getRule().getName() ) );
+        
+        ksession.dispose();
+        
     }
 
     @Test
