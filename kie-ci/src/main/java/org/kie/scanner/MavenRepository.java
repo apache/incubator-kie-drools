@@ -30,13 +30,26 @@ public class MavenRepository {
     private static final MavenRepository DEFAUL_MAVEN_REPOSITORY = new MavenRepository(Aether.DEFUALT_AETHER);
 
     private final Aether aether;
-
+    private static final List<RemoteRepository> extraRepositories = new ArrayList<RemoteRepository>();
+    
     private MavenRepository(Aether aether) {
         this.aether = aether;
     }
-
+    
     public static MavenRepository getMavenRepository() {
         return DEFAUL_MAVEN_REPOSITORY;
+    }
+    
+    public static void addExtraRepository(RemoteRepository r){
+      extraRepositories.add(r);
+    }
+    
+    public static List<RemoteRepository> getExtraRepositories(){
+      return extraRepositories;
+    }
+    
+    public static void clearExtraRepositories(){
+      extraRepositories.clear();
     }
 
     public static MavenRepository getMavenRepository(MavenProject mavenProject) {
@@ -50,7 +63,9 @@ public class MavenRepository {
         for (RemoteRepository repo : aether.getRepositories()) {
             collectRequest.addRepository(repo);
         }
-
+        for (RemoteRepository repo : extraRepositories) {
+            collectRequest.addRepository(repo);
+        }
         CollectResult collectResult;
         try {
             collectResult = aether.getSystem().collectDependencies(aether.getSession(), collectRequest);
@@ -74,7 +89,9 @@ public class MavenRepository {
         for (RemoteRepository repo : aether.getRepositories()) {
             artifactRequest.addRepository(repo);
         }
-
+        for (RemoteRepository repo : extraRepositories) {
+            artifactRequest.addRepository(repo);
+        }
         ArtifactResult artifactResult;
         try {
             artifactResult = aether.getSystem().resolveArtifact(aether.getSession(), artifactRequest);
@@ -84,6 +101,8 @@ public class MavenRepository {
 
         return artifactResult.getArtifact();
     }
+    
+  
 
     public void deployArtifact(ReleaseId releaseId, InternalKieModule kieModule, File pomfile) {
         File jarFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName(releaseId, null) + ".jar");
