@@ -594,7 +594,7 @@ abstract public class AbstractRuleBase
              // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
             for (Package newPkg : newPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
-
+                
                 // this needs to go here, as functions will set a java dialect to dirty
                 if (newPkg.getFunctions() != null) {
                     for (Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet()) {
