@@ -21,7 +21,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.droolsjbpm.services.api.Domain;
 
 import org.jboss.seam.transaction.Transactional;
@@ -41,9 +40,6 @@ import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 
 /**
  * @author salaboy
@@ -53,123 +49,97 @@ import org.kie.runtime.process.WorkItemManager;
 @Startup
 public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
-    private Map<String, StatefulKnowledgeSession> ksessions = new HashMap<String, StatefulKnowledgeSession>();
-    @Inject
-    private CDIHTWorkItemHandler handler;
-    @Inject
-    private CDIProcessEventListener processListener;
-    
-    @Inject
-    private BPMN2DataService bpmn2Service;
-    @Inject
-    private FileService fs;
-    @Inject
-    private IOService ioService;
-    
-    @Inject
-    private TaskServiceEntryPoint taskService;
-    
-    @Inject
-    private SessionManager sessionManager;
-    
-    @Inject
-    private MoveFileWorkItemHandler moveFilesWIHandler;
-    
-    @Inject
-    private TriggerTestsWorkItemHandler triggerTestsWorkItemHandler;
-    
-    @Inject
-    private NotificationWorkItemHandler notificationWorkItemHandler;
-    
-    @Inject
-    private RulesNotificationService rulesNotificationService;
-    
-    private Domain domain;
-    
+  private Map<String, StatefulKnowledgeSession> ksessions = new HashMap<String, StatefulKnowledgeSession>();
+  @Inject
+  private CDIHTWorkItemHandler handler;
+  @Inject
+  private CDIProcessEventListener processListener;
+  @Inject
+  private BPMN2DataService bpmn2Service;
+  @Inject
+  private FileService fs;
+  @Inject
+  private IOService ioService;
+  @Inject
+  private TaskServiceEntryPoint taskService;
+  @Inject
+  private SessionManager sessionManager;
+  @Inject
+  private MoveFileWorkItemHandler moveFilesWIHandler;
+  @Inject
+  private TriggerTestsWorkItemHandler triggerTestsWorkItemHandler;
+  @Inject
+  private NotificationWorkItemHandler notificationWorkItemHandler;
+  @Inject
+  private RulesNotificationService rulesNotificationService;
+  private Domain domain;
 
-    public KnowledgeDomainServiceImpl() {
-        domain = new SimpleDomainImpl("myDomain");
-        
-    }
+  public KnowledgeDomainServiceImpl() {
+    domain = new SimpleDomainImpl("myDomain");
 
-    @PostConstruct
-    public void createDomain() {
-       
-        sessionManager.setDomain(domain);
-        Iterable<Path> availableDirectories = fs.listDirectories("examples/");
-        
-        for(Path p : availableDirectories){
-          
-           sessionManager.buildSession(p.getFileName().toString(), "examples/"+p.getFileName().toString(), true);
-          
-        }
-        
-       
-    }
+  }
 
-    @Override
-    public Collection<String> getSessionsNames() {
-        return sessionManager.getAllSessionsNames();
-    }
+  @PostConstruct
+  public void createDomain() {
 
-    @Override
-    public int getAmountOfSessions() {
-        return sessionManager.getAllSessionsNames().size();
-    }
+    sessionManager.setDomain(domain);
+    Iterable<Path> availableDirectories = fs.listDirectories("examples/");
 
-    @Override
-    public Map<String, String> getAvailableProcesses() {
-        return domain.getAllProcesses();
-    }
-    
-    @Override
-    public Map<String, String> getAvailableProcessesPaths() {
-        return domain.getAssetsDefs();
-    }
+    for (Path p : availableDirectories) {
 
-    @Override
-    public Map<Integer, KieSession> getSessionsByName(String ksessionName) {
-        return sessionManager.getKsessionsByName(ksessionName);
-        
-    }
+      sessionManager.buildSession(p.getFileName().toString(), "examples/" + p.getFileName().toString(), true);
 
-    public String getProcessInSessionByName(String processDefId){
-        return sessionManager.getProcessInSessionByName(processDefId);
-    }
-    
-    public int getSessionForProcessInstanceId(long processInstanceId){
-      return sessionManager.getSessionForProcessInstanceId(processInstanceId);
-    }
-
-    @Override
-    public KieSession getSessionById(int sessionId) {
-      return sessionManager.getKsessionById(sessionId);
-    }
-    
-    
-    private class DoNothingWorkItemHandler implements WorkItemHandler {
-
-        @Override
-        public void executeWorkItem(WorkItem wi, WorkItemManager wim) {
-            for(String k : wi.getParameters().keySet()){
-                System.out.println("Key = "+ k + " - value = "+wi.getParameter(k));
-            }
-            
-            wim.completeWorkItem(wi.getId(), null);
-        }
-
-        @Override
-        public void abortWorkItem(WorkItem wi, WorkItemManager wim) {
-        }
     }
 
 
-    @Override
-    public String getProcessAssetPath(String processId) {
-        
-        return sessionManager.getDomain().getAssetsDefs().get(processId);
-    }
-    
-    
-    
+  }
+
+  @Override
+  public Collection<String> getSessionsNames() {
+    return sessionManager.getAllSessionsNames();
+  }
+
+  @Override
+  public int getAmountOfSessions() {
+    return sessionManager.getAllSessionsNames().size();
+  }
+
+  @Override
+  public Map<String, String> getAvailableProcesses() {
+    return domain.getAllProcesses();
+  }
+
+  @Override
+  public Map<String, String> getAvailableProcessesPaths() {
+    return domain.getAssetsDefs();
+  }
+
+  @Override
+  public Map<Integer, KieSession> getSessionsByName(String ksessionName) {
+    return sessionManager.getKsessionsByName(ksessionName);
+
+  }
+
+  public String getProcessInSessionByName(String processDefId) {
+    return sessionManager.getProcessInSessionByName(processDefId);
+  }
+
+  public int getSessionForProcessInstanceId(long processInstanceId) {
+    return sessionManager.getSessionForProcessInstanceId(processInstanceId);
+  }
+
+  @Override
+  public KieSession getSessionById(int sessionId) {
+    return sessionManager.getKsessionById(sessionId);
+  }
+
+  @Override
+  public int newKieSession(String groupId, String artifactId, String version, String kbaseName, String sessionName) {
+    return sessionManager.newKieSession(groupId, artifactId, version, kbaseName, sessionName);
+  }
+
+  @Override
+  public String getProcessAssetPath(String processId) {
+    return sessionManager.getDomain().getAssetsDefs().get(processId);
+  }
 }

@@ -17,6 +17,7 @@ package org.droolsjbpm.services.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +31,6 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -74,8 +74,11 @@ import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.process.WorkItemHandler;
+import org.kie.scanner.KieModuleMetaData;
 import org.kie.scanner.MavenRepository;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
+import org.sonatype.aether.repository.RemoteRepository;
+
 
 /**
  * @author salaboy
@@ -114,6 +117,9 @@ public class CDISessionManager implements SessionManager {
     @Inject
     private IOService ioService;
     private Domain domain;
+    
+    
+    
     // Ksession Name  / sessionId , Ksession
     private Map<String, Map<Integer, KieSession>> ksessions = new HashMap<String, Map<Integer, KieSession>>();
     // Ksession Name, Ksession Id
@@ -266,6 +272,87 @@ public class CDISessionManager implements SessionManager {
       this.ksessionHandlers.clear();
     }
 
+ 
+  
+  public int newKieSession(String groupId, String artifactId, String version, String kbaseName, String sessionName){
+          Environment env = EnvironmentFactory.newEnvironment();
+          UserTransaction ut = setupEnvironment(env);
+          EntityManager entityManager = getEntityManager();
+
+          
+          MavenRepository repository = getMavenRepository();
+          repository.addExtraRepository(getGuvnorM2Repository());
+          KieServices ks = KieServices.Factory.get();
+          ReleaseId releaseId = ks.newReleaseId(groupId, artifactId, version);
+          KieContainer kieContainer = ks.newKieContainer(releaseId);
+          KieScanner scanner = ks.newKieScanner(kieContainer);
+          scanner.scanNow();
+          
+          KieModuleMetaData newKieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(releaseId);
+          Map<String, String> processes = newKieModuleMetaData.getProcesses();
+          
+          
+          
+          KieBase kieBase = kieContainer.getKieBase(kbaseName);
+          
+
+          for(String path : processes.keySet()){   
+               String processString = processes.get(path);
+              ProcessDesc process = bpmn2Service.findProcessId(processString);
+              //getDomain().addAsset(p.getId(), "/"+sessionName +"/"+ path.getFileName().toString());
+              //getDomain().addProcessDefinitionToKsession(sessionName, path);
+              getDomain().addProcessBPMN2ContentToKsession(sessionName, process.getId(), processString); 
+              addProcessDefinitionToSession(sessionName, process.getId());
+          }
+            
+         
+          KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kieBase, null, env);
+
+          for(String processId : processDefinitionNamesBySession.get(sessionName)){
+                ProcessDesc processDesc = bpmn2Service.getProcessDesc(processId);
+                processDesc.setSessionId(ksession.getId());
+                processDesc.setSessionName(sessionName);
+                processDesc.setDomainName(domain.getName());
+
+                entityManager.persist(processDesc);
+          }
+
+          ksession.addEventListener(processListener);
+
+          ksession.addEventListener(bamProcessListener);
+
+          //KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+
+          handler.addSession(ksession);
+
+          // Register the same handler for all the ksessions
+          ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+          // Register the configured handlers
+          Map<String, Object> params = new HashMap<String, Object>();
+          params.put("ksession", ksession);
+          Map<String, WorkItemHandler> handlers = workItemHandlerProducer.getWorkItemHandlers(getDomain().getKsessionRepositoryRoot().get(sessionName), params);
+          StatefulKnowledgeSessionDelegate statefulKnowledgeSessionDelegate = new StatefulKnowledgeSessionDelegate(sessionName, ksession, this);
+
+          for (Map.Entry<String, WorkItemHandler> wihandler : handlers.entrySet()) {
+              ksession.getWorkItemManager().registerWorkItemHandler(wihandler.getKey(), wihandler.getValue());
+          }
+
+          if(ksessions.get(sessionName) == null){
+            ksessions.put(sessionName, new HashMap<Integer, KieSession>());
+          }
+          ksessions.get(sessionName).put(ksession.getId(), statefulKnowledgeSessionDelegate);
+
+          if(ksessionIds.get(sessionName) == null){
+            ksessionIds.put(sessionName, new ArrayList<Integer>());
+          }
+          ksessionIds.get(sessionName).add(ksession.getId());
+          completeOperation(ut, entityManager);
+          return ksession.getId();
+    
+  }
+  
+  
+    
   @Override
   public int buildSession(String sessionName, String path, boolean streamMode) {
         
@@ -315,7 +402,7 @@ public class CDISessionManager implements SessionManager {
           // end guvnor 
 
 
-            KieContainer kieContainer = ks.newKieContainer(releaseId);
+          KieContainer kieContainer = ks.newKieContainer(releaseId);
           KieScanner scanner = ks.newKieScanner(kieContainer);
 
           scanner.scanNow();
@@ -545,6 +632,19 @@ public class CDISessionManager implements SessionManager {
         kfs.writeKModuleXML(kproj.toXML());
         return kfs;
     }
+
+    private RemoteRepository getGuvnorM2Repository() {
+        File m2RepoDir = new File( "repository" );
+          if (!m2RepoDir.exists()) {
+             return null;
+           }
+          try {
+                String localRepositoryUrl = m2RepoDir.toURI().toURL().toExternalForm();
+              return new RemoteRepository( "guvnor-m2-repo", "default", localRepositoryUrl );
+          } catch (MalformedURLException e) { }
+          return null;
+      }
+
 
 
 }

@@ -54,7 +54,8 @@ public class TaskCommentServiceImpl implements TaskCommentService{
     }
 
     public List<Comment> getAllCommentsByTaskId(long taskId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Task task = em.find(Task.class, taskId);
+ 	return task.getTaskData().getComments();
     }
 
     public Comment getCommentById(long commentId) {

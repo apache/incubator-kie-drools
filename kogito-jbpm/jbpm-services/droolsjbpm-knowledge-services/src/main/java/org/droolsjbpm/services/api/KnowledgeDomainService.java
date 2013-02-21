@@ -35,6 +35,8 @@ public interface KnowledgeDomainService {
     
     void createDomain();
     
+    int newKieSession(String groupId, String artifactId, String version, String kbaseName, String sessionName);
+    
     Map<Integer, KieSession> getSessionsByName(String ksessionName);
     
     String getProcessInSessionByName(String processDefId);
