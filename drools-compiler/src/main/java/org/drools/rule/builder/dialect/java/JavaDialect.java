@@ -152,10 +152,10 @@ public class JavaDialect
 
         this.generatedClassList = new ArrayList();
 
-        JavaDialectRuntimeData data = null;
+        JavaDialectRuntimeData data = (JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( ID );
 
-        // initialie the dialect runtime data if it doesn't already exist
-        if ( pkg.getDialectRuntimeRegistry().getDialectData( ID ) == null ) {
+        // initialise the dialect runtime data if it doesn't already exist
+        if ( data == null ) {
             data = new JavaDialectRuntimeData();
             this.pkg.getDialectRuntimeRegistry().setDialectData( ID,
                                                                  data );

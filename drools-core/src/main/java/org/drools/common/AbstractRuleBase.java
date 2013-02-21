@@ -495,15 +495,23 @@ abstract public class AbstractRuleBase
                     pkgs.put( pkg.getName(),
                               pkg );
                 }
-
-                // first merge anything related to classloader re-wiring
-                pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(),
-                                                       this.rootClassLoader );
+                
+                // shouldn't merge with itself
+                if( pkg != newPkg ) {
+                    
+                    // first merge anything related to classloader re-wiring
+                    pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(),
+                                                           this.rootClassLoader );
+                }
             }
 
             // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
             for (Package newPkg : newPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
+                // shouldn't merge with itself
+                if( pkg == newPkg ) {
+                    continue;
+                }
 
                 // this needs to go here, as functions will set a java dialect to dirty
                 if (newPkg.getFunctions() != null) {
@@ -520,6 +528,10 @@ abstract public class AbstractRuleBase
             for (Package newPkg : newPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
 
+                // shouldn't merge with itself
+                if( pkg == newPkg ) {
+                    continue;
+                }
                 // we have to do this before the merging, as it does some classloader resolving
                 TypeDeclaration lastType = null;
                 try {
