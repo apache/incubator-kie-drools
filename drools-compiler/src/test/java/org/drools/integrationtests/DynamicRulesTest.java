@@ -16,8 +16,17 @@
 
 package org.drools.integrationtests;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -60,6 +69,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.io.ResourceFactory;
@@ -73,6 +83,7 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 public class DynamicRulesTest extends CommonTestMethodBase {
     
@@ -150,8 +161,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         workingMemory.fireAllRules();
 
         assertEquals( "Rule from package 3 should have been fired",
-                             "match Person ok",
-                             bob.getStatus() );
+                      "match Person ok",
+                      bob.getStatus() );
 
         assertEquals( 1,
                       list.size() );
@@ -168,8 +179,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         assertEquals( "Rule from package 4 should have been fired",
-                             "Who likes Stilton ok",
-                             bob.getStatus() );
+                      "Who likes Stilton ok",
+                      bob.getStatus() );
 
         assertEquals( 2,
                       list.size() );
@@ -620,9 +631,9 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
         Environment env = EnvironmentFactory.newEnvironment();
-        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
-                    new IdentityPlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(null, env);
+        env.set( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
+                 new IdentityPlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT )} );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( null, env );
         List results = new ArrayList();
         ksession.setGlobal( "results",
                             results );
@@ -649,7 +660,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         kbase = SerializationHelper.serializeObject( kbase );
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-        //                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
+                                                                              //                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                               false );
 
         results = (List) ksession.getGlobal( "results" );
@@ -675,7 +686,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         kbase = SerializationHelper.serializeObject( kbase );
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-        //                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
+                                                                              //                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                               false );
 
         results = (List) ksession.getGlobal( "results" );
@@ -1214,7 +1225,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackageFromDrl( new StringReader( str ) );
         assertTrue( "Should not have errors",
-                           pkgBuilder.getErrors().isEmpty() );
+                    pkgBuilder.getErrors().isEmpty() );
 
         // Add once ...
         ReteooRuleBase rb = new ReteooRuleBase( "dummy" );
@@ -1242,6 +1253,63 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testDynamicRulesWithTypeDeclarations() {
+        String type = "package com.sample\n" +
+                      "declare type Foo\n" +
+                      "  id : int\n" +
+                      "end\n";
+
+        String r1 = "package com.sample\n" +
+                    "rule R1 when\n" +
+                    "  not Foo()\n" +
+                    "then\n" +
+                    "  insert( new Foo(1) );\n" +
+                    "end\n";
+
+        String r2 = "package com.sample\n" +
+                "rule R2 when\n" +
+                "  $f : Foo()\n" +
+                "then\n" +
+                "  $f.setId( 2 );\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( type.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        
+        ksession.fireAllRules();
+        verify( ael, never() ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
+        
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbase );
+        kbuilder.add( ResourceFactory.newByteArrayResource( r1.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        
+        ksession.fireAllRules();
+        ArgumentCaptor<AfterActivationFiredEvent> capt = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        verify( ael, times(1) ).afterActivationFired( capt.capture() );
+        assertThat( "R1", is( capt.getValue().getActivation().getRule().getName() ) );
+        
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbase );
+        kbuilder.add( ResourceFactory.newByteArrayResource( r2.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        
+        ksession.fireAllRules();
+        verify( ael, times(2) ).afterActivationFired( capt.capture() );
+        assertThat( "R2", is( capt.getAllValues().get( 2 ).getActivation().getRule().getName() ) );
+        
+        ksession.dispose();
+        
+    }
+
+    @Test
     public void testJBRULES_2206() {
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
@@ -1256,17 +1324,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
 
         addDrlToKBase( kbase, "test_JBRULES_2206_1.drl" );
-        
+
         // two matching rules were added, so 2 activations should have been created 
-        verify( ael, times(2) ).activationCreated( any( ActivationCreatedEvent.class ) );
+        verify( ael, times( 2 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
         int fireCount = session.fireAllRules();
         // both should have fired
         assertEquals( 2, fireCount );
-        
+
         addDrlToKBase( kbase, "test_JBRULES_2206_2.drl" );
-        
+
         // one rule was overridden and should activate 
-        verify( ael, times(3) ).activationCreated( any( ActivationCreatedEvent.class ) );
+        verify( ael, times( 3 ) ).activationCreated( any( ActivationCreatedEvent.class ) );
         fireCount = session.fireAllRules();
         // that rule should fire again
         assertEquals( 1, fireCount );
@@ -1274,7 +1342,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         session.dispose();
     }
 
-    private void addDrlToKBase(KnowledgeBase kbase, String drlName) {
+    private void addDrlToKBase(KnowledgeBase kbase,
+                               String drlName) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( drlName,
                                                             DynamicRulesTest.class ),
