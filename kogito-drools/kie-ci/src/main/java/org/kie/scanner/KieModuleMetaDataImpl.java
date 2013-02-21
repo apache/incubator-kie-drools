@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -37,6 +38,8 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private final Map<String, Collection<String>> classes = new HashMap<String, Collection<String>>();
 
+    private final Map<String, String> processes = new HashMap<String, String>();
+    
     private final Map<URI, File> jars = new HashMap<URI, File>();
 
     private final Map<String, TypeMetaInfo> typeMetaInfos = new HashMap<String, TypeMetaInfo>();
@@ -151,6 +154,9 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
                 String pathName = entry.getName();
+                if(pathName.endsWith("bpmn2")){
+                  processes.put(pathName, new String(readBytesFromZipEntry(jarFile, entry)));
+                }
                 if (!indexClass(pathName)) {
                     if (pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
                         indexMetaInfo(readBytesFromZipEntry(jarFile, entry));
@@ -190,6 +196,11 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private void indexMetaInfo(byte[] bytes) {
         typeMetaInfos.putAll(unmarshallMetaInfos(new String(bytes)));
+    }
+
+    @Override
+    public Map<String, String> getProcesses() {
+      return processes;
     }
 
 }

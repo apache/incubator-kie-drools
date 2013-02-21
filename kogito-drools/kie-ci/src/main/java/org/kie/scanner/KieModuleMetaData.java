@@ -7,6 +7,7 @@ import org.kie.builder.impl.InternalKieModule;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 
 public interface KieModuleMetaData {
 
@@ -15,6 +16,8 @@ public interface KieModuleMetaData {
     Collection<String> getClasses(String packageName);
 
     Class<?> getClass(String pkgName, String className);
+    
+    Map<String, String> getProcesses();
 
     TypeMetaInfo getTypeMetaInfo(Class<?> clazz);
 
