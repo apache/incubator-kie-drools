@@ -196,13 +196,13 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         facts.addAll(admissionPartList);
         facts.addAll(requiredPatientEquipmentList);
         facts.addAll(preferredPatientEquipmentList);
-        facts.addAll(calculateAdmissionPartConflictList());
-//        facts.addAll(calculateAdmissionPartSpecialismMissingInRoomList());
+        facts.addAll(precalculateAdmissionPartConflictList());
+//        facts.addAll(precalculateAdmissionPartSpecialismMissingInRoomList());
         // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
     }
 
-    private List<AdmissionPartConflict> calculateAdmissionPartConflictList() {
+    private List<AdmissionPartConflict> precalculateAdmissionPartConflictList() {
         List<AdmissionPartConflict> admissionPartConflictList = new ArrayList<AdmissionPartConflict>();
         for (AdmissionPart leftAdmissionPart : admissionPartList) {
             for (AdmissionPart rightAdmissionPart : admissionPartList) {
@@ -218,7 +218,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         return admissionPartConflictList;
     }
 
-//    private List<AdmissionPartSpecialismMissingInRoom> calculateAdmissionPartSpecialismMissingInRoomList() {
+//    private List<AdmissionPartSpecialismMissingInRoom> precalculateAdmissionPartSpecialismMissingInRoomList() {
 //        List<AdmissionPartSpecialismMissingInRoom> admissionPartSpecialismMissingInRoomList
 //                = new ArrayList<AdmissionPartSpecialismMissingInRoom>();
 //        for (AdmissionPart admissionPart : admissionPartList) {

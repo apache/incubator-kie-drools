@@ -8,6 +8,9 @@
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
     <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
     <!--<scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseCompensationActionExperimentScoreRules.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>

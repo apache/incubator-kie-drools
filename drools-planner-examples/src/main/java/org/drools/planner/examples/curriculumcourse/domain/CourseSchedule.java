@@ -30,6 +30,7 @@ import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
 import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.curriculumcourse.domain.solver.CourseConflict;
 import org.drools.planner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
@@ -156,8 +157,34 @@ public class CourseSchedule extends AbstractPersistable implements Solution<Hard
         facts.addAll(periodList);
         facts.addAll(roomList);
         facts.addAll(unavailablePeriodPenaltyList);
+        facts.addAll(precalculateCourseConflictList());
         // Do not add the planning entity's (lectureList) because that will be done automatically
         return facts;
+    }
+
+    private List<CourseConflict> precalculateCourseConflictList() {
+        List<CourseConflict> courseConflictList = new ArrayList<CourseConflict>();
+        for (Course leftCourse : courseList) {
+            for (Course rightCourse : courseList) {
+                if (leftCourse.getId() < rightCourse.getId()) {
+                    boolean conflicted = false;
+                    if (leftCourse.getTeacher().equals(rightCourse.getTeacher())) {
+                        conflicted = true;
+                    } else {
+                        for (Curriculum curriculum : leftCourse.getCurriculumList()) {
+                            if (rightCourse.getCurriculumList().contains(curriculum)) {
+                                conflicted = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (conflicted) {
+                        courseConflictList.add(new CourseConflict(leftCourse, rightCourse));
+                    }
+                }
+            }
+        }
+        return courseConflictList;
     }
 
     public boolean equals(Object o) {

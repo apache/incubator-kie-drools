@@ -31,6 +31,7 @@ import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.domain.Teacher;
 import org.drools.planner.examples.curriculumcourse.domain.Timeslot;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
+import org.drools.planner.examples.curriculumcourse.domain.solver.CourseConflict;
 
 global HardSoftScoreHolder scoreHolder;
 
@@ -43,16 +44,18 @@ global HardSoftScoreHolder scoreHolder;
 
 // Conflicts: Two conflicting lectures in the same period.
 // Three conflicting lectures count as 3 violations: one for each pair.
-rule "conflictingLecturesInSamePeriod"
+rule "conflictingLecturesDifferentCourseInSamePeriod"
     when
-        $leftCourse : Course($leftCourseId : id, $leftTeacher : teacher, $leftCurriculumList : curriculumList)
-        // Lectures of the same course can also be conflicting
-        $rightCourse : Course(id >= $leftCourseId, $rightTeacher : teacher, $rightCurriculumList : curriculumList)
-        eval($leftTeacher == $rightTeacher)
-            or exists Curriculum(this memberOf $leftCurriculumList, this memberOf $rightCurriculumList)
-
+        $courseConflict : CourseConflict($leftCourse : leftCourse, $rightCourse : rightCourse)
         $leftLecture : Lecture(course == $leftCourse, $period : period, period != null)
         $rightLecture : Lecture(course == $rightCourse, period == $period, this != $leftLecture)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1);
+end
+rule "conflictingLecturesSameCourseInSamePeriod"
+    when
+        $leftLecture : Lecture($leftId : id, $leftCourse : course, $period : period, period != null)
+        $rightLecture : Lecture(course == $leftCourse, period == $period, id > $leftId)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end

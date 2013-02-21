@@ -143,12 +143,12 @@ public class Examination extends AbstractPersistable
         facts.addAll(periodPenaltyList);
         facts.addAll(roomPenaltyList);
         // A faster alternative to a insertLogicalTopicConflicts rule.
-        facts.addAll(calculateTopicConflictList());
+        facts.addAll(precalculateTopicConflictList());
         // Do not add the planning entity's (examList) because that will be done automatically
         return facts;
     }
 
-    private List<TopicConflict> calculateTopicConflictList() {
+    private List<TopicConflict> precalculateTopicConflictList() {
         List<TopicConflict> topicConflictList = new ArrayList<TopicConflict>();
         for (Topic leftTopic : topicList) {
             for (Topic rightTopic : topicList) {
