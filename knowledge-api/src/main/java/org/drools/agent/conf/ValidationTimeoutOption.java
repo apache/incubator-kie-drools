@@ -49,7 +49,7 @@ public class ValidationTimeoutOption {
     }
 
     /**
-     * Returns the threshold value for alpha hashing
+     * Returns the timeout value
      *
      * @return
      */
