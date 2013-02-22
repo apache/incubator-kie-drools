@@ -2,206 +2,218 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>drools-multiproject</artifactId>
-    <version>5.5.1-SNAPSHOT</version>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-multiproject</artifactId>
+        <version>5.5.1-SNAPSHOT</version>
+    </parent>
 
-  <artifactId>drools-core</artifactId>
+    <artifactId>drools-core</artifactId>
 
-  <name>Drools :: Core</name>
-  
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!--
-      following are required for parser (lang). May be refactored out of
-      core module.
-    -->
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>knowledge-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>knowledge-internal-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr-runtime</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <scope>test</scope>
-    </dependency>
+    <name>Drools :: Core</name>
 
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.xml.stream</groupId>
-      <artifactId>stax-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--
+          following are required for parser (lang). May be refactored out of
+          core module.
+        -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>knowledge-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>knowledge-internal-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-runtime</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.stream</groupId>
+            <artifactId>stax-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-  <profiles>
-    <profile>
-      <id>grammarsProfile</id>
-      <activation>
-        <property>
-          <name>grammars</name>
-        </property>
-      </activation>
-      <build>
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>grammarsProfile</id>
+            <activation>
+                <property>
+                    <name>grammars</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin><!-- TODO JBRULES-2740 use mojo's antlr-maven-plugin or antlr3-maven-plugin so the jar versions are always up to date -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <tasks if="generategrammars">
+                                        <path id="base.classpath">
+                                            <pathelement
+                                                    path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
+                                            <pathelement
+                                                    path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
+                                            <pathelement
+                                                    path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar"/>
+                                        </path>
+                                        <property name="antlr_classpath" refid="maven.compile.classpath"/>
+                                        <echo message="Generating Antlr Grammars"/>
+                                        <java classname="org.antlr.Tool" fork="true">
+                                            <arg
+                                                    line="-lib src/test/resources/org/drools/reteoo/test/parser src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g"/>
+                                            <classpath refid="base.classpath"/>
+                                        </java>
+                                        <move todir="src/test/java/org/drools/reteoo/test/parser">
+                                            <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
+                                                <include name="**/*.java"/>
+                                                <exclude name="**/__*"/>
+                                            </fileset>
+                                        </move>
+                                        <delete>
+                                            <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
+                                                <include name="**/*.tokens"/>
+                                                <include name="**/classes"/>
+                                                <include name="**/__*"/>
+                                                <include name="NodeTestDSL__.g"/>
+                                            </fileset>
+                                        </delete>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
         <plugins>
-          <plugin><!-- TODO JBRULES-2740 use mojo's antlr-maven-plugin or antlr3-maven-plugin so the jar versions are always up to date -->
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                  <tasks if="generategrammars">
-                    <path id="base.classpath">
-                      <pathelement
-                          path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
-                      <pathelement
-                          path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
-                      <pathelement
-                          path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar"/>
-                    </path>
-                    <property name="antlr_classpath" refid="maven.compile.classpath"/>
-                    <echo message="Generating Antlr Grammars"/>
-                    <java classname="org.antlr.Tool" fork="true">
-                      <arg
-                          line="-lib src/test/resources/org/drools/reteoo/test/parser src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g"/>
-                      <classpath refid="base.classpath"/>
-                    </java>
-                    <move todir="src/test/java/org/drools/reteoo/test/parser">
-                      <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
-                        <include name="**/*.java"/>
-                        <exclude name="**/__*"/>
-                      </fileset>
-                    </move>
-                    <delete>
-                      <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
-                        <include name="**/*.tokens"/>
-                        <include name="**/classes"/>
-                        <include name="**/__*"/>
-                        <include name="NodeTestDSL__.g"/>
-                      </fileset>
-                    </delete>
-                  </tasks>
+                    <archive>
+                        <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
                 </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${maven-felix-plugin.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <manifestLocation>META-INF</manifestLocation>
+                    <instructions>
+                        <_removeheaders>Ignore-Package</_removeheaders>
+                        <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
+                        <!--<Require-Bundle>
+                            org.drools.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"
+                        </Require-Bundle> -->
+                        <Import-Package>
+                            !org.drools.*,
+                            *,
+                            org.osgi.util.tracker
+                        </Import-Package>
+                        <Export-Package>
+                            !org.drools.visualize,
+                            org.drools.reteoo.*,
+                            org.drools.*
+                        </Export-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <excludePackageNames>org.drools.asm*,org.drools.objenesis.*,org.drools.commons.jci.*
+                    </excludePackageNames>
+                </configuration>
+            </plugin>
         </plugins>
-      </build>
-    </profile>
-  </profiles>
-
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <_removeheaders>Ignore-Package</_removeheaders>
-            <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
-            <Require-Bundle>org.drools.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*, *,org.osgi.util.tracker</Import-Package>
-            <Export-Package>!org.drools.visualize,org.drools.reteoo.*, org.drools.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <excludePackageNames>org.drools.asm*,org.drools.objenesis.*,org.drools.commons.jci.*</excludePackageNames>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    </build>
 </project>
