@@ -9,6 +9,8 @@ public interface PersistenceContext {
 
     public SessionInfo findSessionInfo(Integer id);
 
+    void remove(SessionInfo sessionInfo);
+
     boolean isOpen();
 
     void joinTransaction();

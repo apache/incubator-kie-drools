@@ -268,6 +268,10 @@ public class StatefulKnowledgeSessionImpl
         this.session = DisposedReteooWorkingMemory.INSTANCE;
     }
 
+    public void destroy() {
+        dispose();
+    }
+
     public FactHandle insert(Object object) {
         return this.session.insert( object );
     }
