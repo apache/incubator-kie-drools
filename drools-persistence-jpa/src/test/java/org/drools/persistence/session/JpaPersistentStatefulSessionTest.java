@@ -17,9 +17,7 @@ package org.drools.persistence.session;
 
 import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -389,5 +387,103 @@ public class JpaPersistentStatefulSessionTest {
         SessionConfiguration sessionConfig = (SessionConfiguration)ksession.getSessionConfiguration();
 
         assertEquals("com.example.CustomJPAProcessInstanceManagerFactory", sessionConfig.getProcessInstanceManagerFactory());
+    }
+
+    @Test
+    public void testCreateAndDestroySession() {
+        String str = "";
+        str += "package org.kie.test\n";
+        str += "global java.util.List list\n";
+        str += "rule rule1\n";
+        str += "when\n";
+        str += "  Integer(intValue > 0)\n";
+        str += "then\n";
+        str += "  list.add( 1 );\n";
+        str += "end\n";
+        str += "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        List<?> list = new ArrayList<Object>();
+
+        ksession.setGlobal( "list",
+                list );
+
+        ksession.insert( 1 );
+        ksession.insert( 2 );
+        ksession.insert( 3 );
+
+        ksession.fireAllRules();
+
+        assertEquals( 3, list.size() );
+
+        int ksessionId = ksession.getId();
+        ksession.destroy();
+
+        try {
+            JPAKnowledgeService.loadStatefulKnowledgeSession(ksessionId, kbase, null, env);
+            fail("There should not be any session with id " + ksessionId);
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Test
+    public void testCreateAndDestroyNonPersistentSession() {
+        String str = "";
+        str += "package org.kie.test\n";
+        str += "global java.util.List list\n";
+        str += "rule rule1\n";
+        str += "when\n";
+        str += "  Integer(intValue > 0)\n";
+        str += "then\n";
+        str += "  list.add( 1 );\n";
+        str += "end\n";
+        str += "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<?> list = new ArrayList<Object>();
+
+        ksession.setGlobal( "list",
+                list );
+
+        ksession.insert( 1 );
+        ksession.insert( 2 );
+        ksession.insert( 3 );
+
+        ksession.fireAllRules();
+
+        assertEquals( 3, list.size() );
+
+        int ksessionId = ksession.getId();
+        ksession.destroy();
+
+        try {
+            ksession.fireAllRules();
+            fail("Session should already be disposed " + ksessionId);
+        } catch (IllegalStateException e) {
+
+        }
     }
 }

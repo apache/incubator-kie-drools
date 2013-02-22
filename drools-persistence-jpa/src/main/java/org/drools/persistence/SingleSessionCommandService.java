@@ -418,6 +418,33 @@ public class SingleSessionCommandService
         }
     }
 
+    @Override
+    public void destroy() {
+        PersistenceContext persistenceContext = this.jpm.getApplicationScopedPersistenceContext();
+
+        boolean transactionOwner = false;
+        try {
+            transactionOwner = txm.begin();
+
+            persistenceContext.joinTransaction();
+            initExistingKnowledgeSession( this.sessionInfo.getId(),
+                    this.marshallingHelper.getKbase(),
+                    this.marshallingHelper.getConf(),
+                    persistenceContext );
+
+            persistenceContext.remove(this.sessionInfo);
+
+            txm.commit( transactionOwner );
+
+        } catch ( RuntimeException re ) {
+            rollbackTransaction( re, transactionOwner );
+            throw re;
+        } catch ( Exception t1 ) {
+            rollbackTransaction( t1, transactionOwner );
+            throw new RuntimeException( "Wrapped exception see cause", t1 );
+        }
+    }
+
     public int getSessionId() {
         return sessionInfo.getId();
     }
