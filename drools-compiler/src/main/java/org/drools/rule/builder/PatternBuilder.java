@@ -566,7 +566,9 @@ public class PatternBuilder
                 return;
             }
 
-            boolean isSimpleIdentifier = descr.getExpression().matches("[a-zA-Z_\\$][a-zA-Z_\\$0-9]*");
+            String expr = descr.getExpression();
+            boolean isSimpleIdentifier = !expr.equals("true") && !expr.equals("false") &&
+                                         !expr.equals("null") && expr.matches("[a-zA-Z_\\$][a-zA-Z_\\$0-9]*");
 
             if ( isSimpleIdentifier ) {
                 // create a binding
