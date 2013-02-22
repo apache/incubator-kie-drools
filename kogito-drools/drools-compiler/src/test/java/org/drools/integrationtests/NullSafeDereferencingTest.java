@@ -87,4 +87,30 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+
+    @Test
+    public void testNullSafeMemberOf() {
+        // DROOLS-50
+        String str =
+                "declare A\n" +
+                "    list : java.util.List\n" +
+                "end\n" +
+                "\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "    insert( new A( java.util.Arrays.asList( \"test\" ) ) );" +
+                "    insert( \"test\" );" +
+                "end\n" +
+                "rule R when\n" +
+                "    $a : A()\n" +
+                "    $s : String( this memberOf $a!.list )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        assertEquals(2, ksession.fireAllRules());
+        ksession.dispose();
+    }
 }
