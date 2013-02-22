@@ -312,6 +312,11 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
                                                   operator.isNegated() );
         if ( op == Operator.determineOperator( "memberOf",
                                                operator.isNegated() ) ) {
+            int lastAndPos = left.lastIndexOf("&&");
+            if ( lastAndPos > 0 ) {
+                sbuilder.append( left.substring(0, lastAndPos).trim() ).append( " && " );
+                left = left.substring(lastAndPos + 2).trim();
+            }
             sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
                     .append( right )
                     .append( " contains " )
