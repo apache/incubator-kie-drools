@@ -271,4 +271,9 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
     @Override
     public void delete(FactHandle fh) {
     }
+
+    @Override
+    public void destroy() {
+        dispose();        
+    }
 }

@@ -261,4 +261,8 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 	public int getId() {
 		return testSessionId; 
 	}
+
+    public void destroy() {
+        dispose();
+    }
 }

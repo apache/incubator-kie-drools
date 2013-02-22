@@ -358,6 +358,7 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		throw new UnsupportedOperationException();
 	}
 
+
     @Override
     public ProcessInstance startProcess(String processId,
             CorrelationKey correlationKey, Map<String, Object> parameters) {
@@ -376,6 +377,10 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
 
         return processRuntime.getProcessInstance(correlationKey);
+    }
+    
+    public void destroy() {
+        dispose();
     }
 
 }

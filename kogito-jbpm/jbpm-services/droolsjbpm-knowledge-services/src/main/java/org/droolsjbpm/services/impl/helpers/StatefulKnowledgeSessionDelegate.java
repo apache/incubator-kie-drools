@@ -367,5 +367,10 @@ public class StatefulKnowledgeSessionDelegate implements KieSession{
         ksession.fireUntilHalt(af);
     }
 
+    @Override
+    public void destroy() {
+        ksession.destroy();
+    }
+
   
 }
