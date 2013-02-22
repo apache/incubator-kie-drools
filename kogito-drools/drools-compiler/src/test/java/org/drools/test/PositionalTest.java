@@ -53,4 +53,32 @@ public class PositionalTest extends CommonTestMethodBase {
 
     }
 
+
+    @Test(timeout = 5000)
+    public void testPositionalWithNull() {
+        // DROOLS-51
+        String str =
+                "declare Bean\n" +
+                "  value : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Bean( null ) );\n" +
+                "  insert( \"test\" );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Bind\"\n" +
+                "when\n" +
+                "  $s : String(  )\n" +
+                "  $b : Bean( null ; )\n" +
+                "then\n" +
+                "  modify ( $b ) { setValue( $s ); }\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        assertEquals(2, ksession.fireAllRules());
+    }
 }
