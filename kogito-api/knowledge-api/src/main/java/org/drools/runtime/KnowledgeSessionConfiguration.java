@@ -20,27 +20,35 @@ import org.drools.PropertiesConfiguration;
 import org.drools.runtime.conf.KnowledgeSessionOptionsConfiguration;
 
 /**
- * KnowledgeSessionConfiguration
- *
- * A class to store Session related configuration. It must be used at session instantiation time
+ * A class for storing Session related configuration. It must be used at session instantiation time
  * or not used at all.
- * 
- * This class will automatically load default values from a number of places, accumulating properties from each location.
- * This list of locations, in given priority is:
- * System properties, home directory, working directory, META-INF/ of optionally provided classLoader
- * META-INF/ of Thread.currentThread().getContextClassLoader() and META-INF/ of  ClassLoader.getSystemClassLoader()
- * 
- * So if you want to set a default configuration value for all your new KnowledgeSession, you can simply set the property as
- * a System property.
- *
- * After the KnowledgeSession is created, it makes the configuration immutable and there is no way to make it
- * mutable again. This is to avoid inconsistent behaviour inside KnowledgeSession.
- *
- * 
- * 
- * drools.keepReference = <true|false>
- * drools.clockType = <pseudo|realtime>
+ * <p>
+ * This class will automatically load default values from a number of places, accumulating
+ * properties from each location. This list of locations, in given priority is:
+ * System properties, home directory, working directory, META-INF/ of optionally
+ * provided classLoader, META-INF/ of Thread.currentThread().getContextClassLoader() and 
+ * META-INF/ of  ClassLoader.getSystemClassLoader().
+ * <p>
+ * To set a default configuration value for a new KnowledgeSession, you can simply set the
+ * property as a System property.
+ * <p>
+ * Creating the KnowledgeSession makes the configuration immutable and there is no way to
+ * make it mutable again. This is to avoid inconsistent behaviour inside a running 
+ * KnowledgeSession.
+ * <p>
+ * The following options are available:
+ * <ul>
+ * <li>drools.clockType = &lt;realtime|pseudo&gt;
+ * <li>drools.keepReference = &lt;true|false&gt;
+ * <li>drools.queryListener = &lt;standard|lightweight&gt;
+ * <li>drools.timerJobFactory = &lt;default|trackable&gt;
+ * <li>drools.workItemHandlers&lt;name&gt; = &lt;handler&gt;
+ * </ul>
+ * Note that, in contrast to similar multi-value options in other configurations, there is no
+ * period between <tt>drools.workItemHandlers</tt> and the &lt;name&gt; identifying the
+ * WorkItemHandler.
  */
+
 public interface KnowledgeSessionConfiguration
     extends
     PropertiesConfiguration,
