@@ -569,15 +569,9 @@ public class PatternBuilder
                 return;
             }
 
-            // TODO: WTH is this??????
-            DRLLexer lex = new DRLLexer( new ANTLRStringStream( descr.getExpression() ) );
-            boolean isSimpleIdentifier = false;
-            try {
-                lex.mID();
-                isSimpleIdentifier = lex.getCharIndex() >= descr.getExpression().length();
-            } catch ( RecognitionException e ) {
-
-            }
+            String expr = descr.getExpression();
+            boolean isSimpleIdentifier = !expr.equals("true") && !expr.equals("false") &&
+                                         !expr.equals("null") && expr.matches("[a-zA-Z_\\$][a-zA-Z_\\$0-9]*");
 
             if ( isSimpleIdentifier ) {
                 // create a binding
