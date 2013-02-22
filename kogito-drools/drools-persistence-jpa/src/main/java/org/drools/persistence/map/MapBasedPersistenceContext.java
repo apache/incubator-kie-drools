@@ -43,6 +43,11 @@ public class MapBasedPersistenceContext
         return sessionInfo;
     }
 
+    @Override
+    public void remove(SessionInfo sessionInfo) {
+        this.ksessions.remove(sessionInfo.getId());
+    }
+
     public boolean isOpen() {
         return open;
     }

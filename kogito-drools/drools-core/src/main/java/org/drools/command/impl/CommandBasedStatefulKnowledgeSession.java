@@ -23,19 +23,7 @@ import java.util.Set;
 import org.drools.command.CommandService;
 import org.drools.command.GetSessionClockCommand;
 import org.drools.command.Interceptor;
-import org.drools.command.runtime.AddEventListenerCommand;
-import org.drools.command.runtime.DisposeCommand;
-import org.drools.command.runtime.GetCalendarsCommand;
-import org.drools.command.runtime.GetChannelsCommand;
-import org.drools.command.runtime.GetEnvironmentCommand;
-import org.drools.command.runtime.GetGlobalCommand;
-import org.drools.command.runtime.GetGlobalsCommand;
-import org.drools.command.runtime.GetIdCommand;
-import org.drools.command.runtime.GetKnowledgeBaseCommand;
-import org.drools.command.runtime.RegisterChannelCommand;
-import org.drools.command.runtime.RemoveEventListenerCommand;
-import org.drools.command.runtime.SetGlobalCommand;
-import org.drools.command.runtime.UnregisterChannelCommand;
+import org.drools.command.runtime.*;
 import org.drools.command.runtime.process.AbortProcessInstanceCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
@@ -245,6 +233,10 @@ public class CommandBasedStatefulKnowledgeSession
 
     public void dispose() {
         commandService.execute( new DisposeCommand() );
+    }
+
+    public void destroy() {
+        commandService.execute( new DestroySessionCommand(commandService));
     }
 
     public int fireAllRules() {

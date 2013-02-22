@@ -28,6 +28,11 @@ public class JpaPersistenceContext implements PersistenceContext {
         return this.em.find( SessionInfo.class, id );
     }
 
+    @Override
+    public void remove(SessionInfo sessionInfo) {
+        em.remove( sessionInfo );
+    }
+
     public boolean isOpen() {
         return this.em.isOpen();
     }
