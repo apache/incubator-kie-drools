@@ -86,4 +86,11 @@ public interface KieSession
      * will not free the memory used by the session.
      */
     void dispose();
+    
+    
+    /**
+     * Destroys session permanently. In case of session state being persisted in data store
+     * it will be removed from it otherwise it falls back to default dispose() method. 
+     */
+    void destroy();
 }
