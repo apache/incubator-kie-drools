@@ -63,7 +63,14 @@
     <dependency>
       <groupId>org.jboss.seam.transaction</groupId>
       <artifactId>seam-transaction</artifactId>
-      <version>3.1.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.solder</groupId>
+      <artifactId>solder-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.solder</groupId>
+      <artifactId>solder-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
