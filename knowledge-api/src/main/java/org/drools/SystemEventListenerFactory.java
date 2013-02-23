@@ -21,8 +21,6 @@ import org.drools.util.ServiceRegistryImpl;
 /**
  * This factory allows you to set the SystemEventListener that will be used by various components of Drools, such
  * as the KnowledgeAgent, ResourceChangeNotifier and ResourceChangeListener.
- * 
- * The default SystemEventListener
  */
 public class SystemEventListenerFactory {
     private static SystemEventListenerService service;
