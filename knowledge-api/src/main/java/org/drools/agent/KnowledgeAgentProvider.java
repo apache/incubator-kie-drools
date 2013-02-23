@@ -22,10 +22,10 @@ import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 
 /**
- * KnowledgeAgentProvider is used by the KnowledgeAgentFactory to "provide" it's concrete implementation.
+ * KnowledgeAgentProvider is used by the KnowledgeAgentFactory to "provide" its concrete implementation.
  * 
- * This class is not considered stable and may change, the user is protected from this change by using 
- * the Factory api, which is considered stable.
+ * This class is not considered stable and may change. The user is protected from this change by using 
+ * the Factory API, which is considered stable.
  */
 public interface KnowledgeAgentProvider {
     KnowledgeAgentConfiguration newKnowledgeAgentConfiguration();
