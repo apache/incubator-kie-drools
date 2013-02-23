@@ -26,8 +26,6 @@ package org.drools;
  * such as the KnowledgeAgent, ResourceChangeNotifier and ResourceChangeListener. Although many of these components
  * allow the used listener to be overriden with a setSystemEventListener(SystemEventListener) method.
  * </p>
- * 
- * Componens 
  */
 public interface SystemEventListener {
     /**
