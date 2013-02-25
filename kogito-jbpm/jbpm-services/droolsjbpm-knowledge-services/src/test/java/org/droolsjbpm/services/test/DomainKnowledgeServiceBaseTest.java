@@ -84,7 +84,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
         
         Iterable<Path> loadFilesByType = null;
         try {
-            loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
+            loadFilesByType = fs.loadFilesByType("processes/general/", "bpmn");
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -98,7 +98,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             }
         }
 
-        sessionManager.buildSession("myKsession","examples/general/",false); 
+        sessionManager.buildSession("myKsession","processes/general/",false);
 
 
         ProcessInstance pI = sessionManager.getKsessionsByName("myKsession").values().iterator().next().startProcess("org.jbpm.writedocument");
@@ -113,8 +113,8 @@ public abstract class DomainKnowledgeServiceBaseTest {
     public void simpleDomainTwoSessionsTest() throws FileException {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
-        sessionManager.buildSession("myKsession0","examples/general/",false); 
-        sessionManager.buildSession("myKsession1","examples/general/",false); 
+        sessionManager.buildSession("myKsession0","processes/general/",false);
+        sessionManager.buildSession("myKsession1","processes/general/",false);
        
 
         
@@ -150,7 +150,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
         Iterable<Path> loadFilesByType = null;
         try {
-            loadFilesByType = fs.loadFilesByType("examples/release/", "bpmn");
+            loadFilesByType = fs.loadFilesByType("processes/release/", "bpmn");
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -166,7 +166,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             }
         }
 
-        sessionManager.buildSession("myKsession","examples/release/",false); 
+        sessionManager.buildSession("myKsession","processes/release/",false);
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());
@@ -259,7 +259,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
         Iterable<Path> loadFilesByType = null;
         try {
-            loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
+            loadFilesByType = fs.loadFilesByType("processes/general/", "bpmn");
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -267,7 +267,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
 
-        sessionManager.buildSession("myKsession","examples/general/",false); 
+        sessionManager.buildSession("myKsession","processes/general/",false);
 
 
 
@@ -446,7 +446,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
 
         Iterable<Path> loadFilesByType = null;
         try {
-            loadFilesByType = fs.loadFilesByType("examples/general/", "bpmn");
+            loadFilesByType = fs.loadFilesByType("processes/general/", "bpmn");
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -454,7 +454,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
             myDomain.addProcessDefinitionToKsession("myKsession", p);
         }
 
-        sessionManager.buildSession("myKsession","examples/general/",false); 
+        sessionManager.buildSession("myKsession","processes/general/",false);
 
         KieSession ksession = sessionManager.getKsessionsByName("myKsession").values().iterator().next();
 
@@ -536,10 +536,10 @@ public abstract class DomainKnowledgeServiceBaseTest {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
         
-        Iterable<Path> availableDirectories = fs.listDirectories("examples/");
+        Iterable<Path> availableDirectories = fs.listDirectories("processes/");
         
         for(Path p : availableDirectories){          
-           sessionManager.buildSession(p.getFileName().toString(), "examples/"+p.getFileName().toString(), true);          
+           sessionManager.buildSession(p.getFileName().toString(), "processes/"+p.getFileName().toString(), true);
         }
         
         Collection<ProcessDesc> processes = dataService.getProcesses();
@@ -547,9 +547,9 @@ public abstract class DomainKnowledgeServiceBaseTest {
         assertEquals(6, processes.size());
         
         // second load as there were no changes same process desc should be returned
-        availableDirectories = fs.listDirectories("examples/");
+        availableDirectories = fs.listDirectories("processes/");
         for(Path p : availableDirectories){          
-            sessionManager.buildSession(p.getFileName().toString(), "examples/"+p.getFileName().toString(), true);          
+            sessionManager.buildSession(p.getFileName().toString(), "processes/"+p.getFileName().toString(), true);
          }
         processes = dataService.getProcesses();
         assertNotNull(processes);

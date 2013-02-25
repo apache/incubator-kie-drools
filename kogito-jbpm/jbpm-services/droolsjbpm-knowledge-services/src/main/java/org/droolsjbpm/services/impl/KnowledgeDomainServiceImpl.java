@@ -83,11 +83,11 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
   public void createDomain() {
 
     sessionManager.setDomain(domain);
-    Iterable<Path> availableDirectories = fs.listDirectories("examples/");
+    Iterable<Path> availableDirectories = fs.listDirectories("processes/");
 
     for (Path p : availableDirectories) {
 
-      sessionManager.buildSession(p.getFileName().toString(), "examples/" + p.getFileName().toString(), true);
+      sessionManager.buildSession(p.getFileName().toString(), "processes/" + p.getFileName().toString(), true);
 
     }
 

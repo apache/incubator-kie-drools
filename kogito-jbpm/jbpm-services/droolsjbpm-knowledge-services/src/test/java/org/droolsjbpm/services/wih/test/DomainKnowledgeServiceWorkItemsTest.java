@@ -69,7 +69,7 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
     @Before
     public void setUp() throws IOException, FileException{
         
-        releasePath = "examples/releaseDir";
+        releasePath = "processes/releaseDir";
         sourceDir = "origin";
         targetDir = "stage-"+UUID.randomUUID().toString();
         
@@ -90,7 +90,7 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
 
 //        Iterable<Path> loadFilesByType = null;
 //        try {
-//            loadFilesByType = fs.loadFilesByType("examples/release/", "bpmn");
+//            loadFilesByType = fs.loadFilesByType("processes/release/", "bpmn");
 //        } catch (FileException ex) {
 //            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
 //        }
@@ -98,7 +98,7 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
 //            myDomain.addProcessDefinitionToKsession("myKsession", p);
 //        }
         
-        sessionManager.buildSession("myKsession", "examples/release/", false);
+        sessionManager.buildSession("myKsession", "processes/release/", false);
 
         sessionManager.addKsessionHandler("myKsession", "MoveFile", moveFileWorkItemHandler);
 

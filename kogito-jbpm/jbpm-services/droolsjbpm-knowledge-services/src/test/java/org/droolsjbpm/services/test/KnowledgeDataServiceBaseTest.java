@@ -49,7 +49,7 @@ public abstract class KnowledgeDataServiceBaseTest {
     public void setup() {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         sessionManager.setDomain(myDomain);
-        sessionManager.buildSession("myKsession", "examples/general/", true);
+        sessionManager.buildSession("myKsession", "processes/general/", true);
     }
     
     @After

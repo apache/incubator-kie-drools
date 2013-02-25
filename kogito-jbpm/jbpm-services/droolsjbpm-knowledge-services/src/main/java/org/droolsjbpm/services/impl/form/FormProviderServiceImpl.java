@@ -76,11 +76,10 @@ public class FormProviderServiceImpl implements FormProviderService {
 
     @Override
     public String getFormDisplayProcess(String processId) {
-
-        
+        String processAssetPath = domainService.getProcessAssetPath(processId);
         Iterable<Path> availableForms = null;
         try {
-            availableForms = fileService.loadFilesByType("forms/", "ftl");
+            availableForms = fileService.loadFilesByType(processAssetPath.substring(1, processAssetPath.lastIndexOf('/'))+"/forms/", "ftl");
         } catch (FileException ex) {
             Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -94,7 +93,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         try {
             if (selectedForm == null) {
 
-                template = new ByteArrayInputStream(fileService.loadFile("forms/DefaultProcess.ftl"));
+                template = new ByteArrayInputStream(fileService.loadFile("globals/forms/DefaultProcess.ftl"));
 
             } else {
 
@@ -122,6 +121,10 @@ public class FormProviderServiceImpl implements FormProviderService {
     public String getFormDisplayTask(long taskId) {
         Task task = queryService.getTaskInstanceById(taskId);
         Map<String, Object> renderContext = new HashMap<String, Object>();
+        String processAssetPath = "";
+        if(task.getTaskData().getProcessId() != null && !task.getTaskData().getProcessId().equals("") ){
+            processAssetPath = domainService.getProcessAssetPath(task.getTaskData().getProcessId());
+        }
         
         Object input = null;
         long inputContentId = task.getTaskData().getDocumentContentId();
@@ -153,7 +156,9 @@ public class FormProviderServiceImpl implements FormProviderService {
         }
         Iterable<Path> availableForms = null;
         try {
-            availableForms = fileService.loadFilesByType("forms/", "ftl");
+            if(processAssetPath != null && !processAssetPath.equals("")){
+                availableForms = fileService.loadFilesByType(processAssetPath.substring(1, processAssetPath.lastIndexOf('/'))+"/forms/", "ftl");
+            }
         } catch (FileException ex) {
             Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -168,7 +173,7 @@ public class FormProviderServiceImpl implements FormProviderService {
             if (selectedForm == null) {
                 // since we use default task that lists all inputs there needs to be complete map available
                 renderContext.put("inputs", input);
-                template = new ByteArrayInputStream(fileService.loadFile("forms/DefaultTask.ftl"));
+                template = new ByteArrayInputStream(fileService.loadFile("globals/forms/DefaultTask.ftl"));
 
             } else {
 

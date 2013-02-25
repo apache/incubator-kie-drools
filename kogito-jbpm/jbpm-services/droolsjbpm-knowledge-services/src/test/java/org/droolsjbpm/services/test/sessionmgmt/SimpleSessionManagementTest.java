@@ -126,7 +126,7 @@ public class SimpleSessionManagementTest {
         Domain myDomain = new SimpleDomainImpl("myDomain");
         
         sessionManager.setDomain(myDomain);
-        int firstSessionId = sessionManager.buildSession("supportKsession","examples/support/", false);
+        int firstSessionId = sessionManager.buildSession("supportKsession","processes/support/", false);
         
         
         sessionManager.registerHandlersForSession("supportKsession",firstSessionId);
@@ -143,7 +143,7 @@ public class SimpleSessionManagementTest {
         
         assertEquals(1, supportSessionsIds.size());
         
-        int secondSessionId = sessionManager.buildSession("supportKsession","examples/support/", false);
+        int secondSessionId = sessionManager.buildSession("supportKsession","processes/support/", false);
         
         sessionManager.registerHandlersForSession("supportKsession", secondSessionId);
         

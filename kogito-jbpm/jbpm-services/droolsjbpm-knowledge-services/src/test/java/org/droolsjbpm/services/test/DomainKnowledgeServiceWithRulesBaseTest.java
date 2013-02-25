@@ -79,7 +79,7 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
 
 
         
-        sessionManager.buildSession("myKsession", "examples/release/", true);
+        sessionManager.buildSession("myKsession", "processes/release/", true);
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", new DoNothingWorkItemHandler());
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", new DoNothingWorkItemHandler());

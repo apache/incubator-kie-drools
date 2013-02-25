@@ -57,7 +57,7 @@ public abstract class SessionMGMTandCIBaseTest extends AbstractKieCiTest {
 //
 //
 //    InternalKieModule kJar1 = createKieJar(ks, releaseId, "support",
-//            IOUtils.toString(new FileReader("src/test/resources/repo/examples/support/support.bpmn")));
+//            IOUtils.toString(new FileReader("src/test/resources/repo/processes/support/support.bpmn")));
 //
 //    MavenRepository repository = getMavenRepository();
 //    repository.deployArtifact(releaseId, kJar1, kPom);
@@ -98,7 +98,7 @@ public abstract class SessionMGMTandCIBaseTest extends AbstractKieCiTest {
 
     kieSessionManager.setDomain(new SimpleDomainImpl("myDomain"));
 
-    int ksessionId = kieSessionManager.buildSession("support", "examples/support", true);
+    int ksessionId = kieSessionManager.buildSession("support", "processes/support", true);
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("customer", "salaboy");
     ProcessInstance startProcess = kieSessionManager.getKsessionById(ksessionId).startProcess("support.process", params);

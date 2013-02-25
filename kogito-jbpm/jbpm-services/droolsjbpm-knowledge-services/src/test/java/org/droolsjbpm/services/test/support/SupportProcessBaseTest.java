@@ -67,7 +67,7 @@ public abstract class SupportProcessBaseTest {
 
 
 
-        sessionManager.buildSession("myKsession", "examples/support/", false);
+        sessionManager.buildSession("myKsession", "processes/support/", false);
 
 
 

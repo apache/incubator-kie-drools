@@ -85,7 +85,7 @@ public abstract class ReleaseProcessBaseTest {
     @Before
     public void setUp() throws IOException, FileException{
         
-        releasePath = "examples/release/testdir";
+        releasePath = "processes/release/testdir";
         sourceDir = "origin";
         stageDir = "stage";
         productionDir = "production";
@@ -101,7 +101,7 @@ public abstract class ReleaseProcessBaseTest {
 
         Iterable<Path> loadFilesByType = null;
         try {
-            loadFilesByType = fs.loadFilesByType("examples/release/", "bpmn");
+            loadFilesByType = fs.loadFilesByType("processes/release/", "bpmn");
         } catch (FileException ex) {
             Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -137,12 +137,12 @@ public abstract class ReleaseProcessBaseTest {
 
 //        Iterable<Path> loadFilesByType = null;
 //        try {
-//            loadFilesByType = fs.loadFilesByType("examples/release/", "bpmn");
+//            loadFilesByType = fs.loadFilesByType("processes/release/", "bpmn");
 //        } catch (FileException ex) {
 //            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //        String kSessionName = "myKsession";
-//        myDomain.addKsessionRepositoryRoot(kSessionName, "examples/release/");
+//        myDomain.addKsessionRepositoryRoot(kSessionName, "processes/release/");
 //        for (Path p : loadFilesByType) {
 //            
 //            
@@ -155,7 +155,7 @@ public abstract class ReleaseProcessBaseTest {
 //            }
 //        }
 
-        sessionManager.buildSession("myKsession", "examples/release/", false);
+        sessionManager.buildSession("myKsession", "processes/release/", false);
 
         sessionManager.addKsessionHandler("myKsession", "MoveToStagingArea", moveFilesWIHandler);
         sessionManager.addKsessionHandler("myKsession", "MoveToTest", moveFilesWIHandler);
