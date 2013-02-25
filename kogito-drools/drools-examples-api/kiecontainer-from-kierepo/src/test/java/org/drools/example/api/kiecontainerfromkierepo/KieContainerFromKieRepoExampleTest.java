@@ -1,4 +1,4 @@
-package org.drools.example.api.kiecontainerfromfìkierepo;
+package org.drools.example.api.kiecontainerfromkierepo;
 
 import org.junit.Ignore;
 import org.junit.Test;
