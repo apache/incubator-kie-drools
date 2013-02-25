@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright 2013 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.48.3.1 r9886"
+   width="16"
+   height="16"
+   sodipodi:docname="deleteCloudComputer.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="deleteCloudComputer.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
+   version="1.1">
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Geoffrey De Smet</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs5" />
+  <sodipodi:namedview
+     inkscape:window-height="991"
+     inkscape:window-width="1680"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="32"
+     inkscape:cx="9.9387365"
+     inkscape:cy="10.286794"
+     inkscape:window-x="1680"
+     inkscape:window-y="27"
+     inkscape:current-layer="svg2"
+     inkscape:grid-points="true"
+     inkscape:object-nodes="true"
+     inkscape:guide-points="true"
+     inkscape:object-points="true"
+     inkscape:object-bbox="true"
+     showgrid="true"
+     inkscape:window-maximized="1" />
+  <g
+     id="g3848"
+     transform="scale(0.5,0.5)">
+    <path
+       inkscape:connector-curvature="0"
+       id="path3054"
+       d="m 0.4609525,20.415279 -0.068454,-6.503124 12.8693425,-9.1043762 18.345661,6.7084862 0,6.708489 -12.800889,8.967468 z"
+       style="fill:#d3d7cf;stroke:none" />
+    <polygon
+       points="63.214,54.119 63.214,67.976 2.014,45.704 2.014,45.704 2.014,31.849 "
+       id="polygon9"
+       style="fill:#eeeeec"
+       transform="matrix(0.3,0,0,0.3,-0.0135095,6.5367898)" />
+    <polygon
+       points="63.214,67.976 2.014,45.704 2.014,45.704 2.014,31.849 63.214,54.119 "
+       id="polygon9-3"
+       style="fill:#eeeeec"
+       transform="matrix(0.3,0,0,0.3,-0.0135095,4.4831698)" />
+    <polygon
+       points="105.846,38.12 63.214,67.976 63.214,54.119 63.214,54.119 105.846,24.265 "
+       id="polygon11"
+       style="fill:#d3d7cf"
+       transform="matrix(0.3,0,0,0.3,-0.2546225,6.6475798)" />
+    <polygon
+       points="105.846,38.12 63.214,67.976 63.214,54.119 63.214,54.119 105.846,24.265 "
+       id="polygon11-9"
+       style="fill:#d3d7cf"
+       transform="matrix(0.3,0,0,0.3,-0.2546225,4.3886008)" />
+    <polygon
+       points="63.718,54.119 63.718,67.623 63.214,67.976 62.711,67.792 62.711,67.792 62.711,54.119 "
+       id="polygon15"
+       style="fill:#ffffff"
+       transform="matrix(0.3,0,0,0.46796091,-0.2261915,-4.7983232)" />
+    <polygon
+       transform="matrix(0.29670362,0,0,0.3,-0.02756109,4.4454)"
+       points="2.512,31.5 63.141,53.443 105.332,24.078 105.846,24.265 105.846,24.947 63.288,54.682 2.014,32.391 2.014,31.849 2.512,31.5 "
+       id="polygon13"
+       style="fill:#ffffff" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3949"
+       d="M 0.954,14.775729 1.069845,20.055453 2.923359,20.71542 2.865435,15.490692 z"
+       style="fill:#888a85;stroke:#babdb6;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3949-8"
+       d="m 3.454626,15.701913 0.115845,5.279724 1.853514,0.659967 -0.057924,-5.224728 z"
+       style="fill:#888a85;stroke:#babdb6;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3949-9"
+       d="m 5.932998,16.64007 0.115845,5.279724 1.853514,0.659967 -0.057924,-5.224728 z"
+       style="fill:#888a85;stroke:#babdb6;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3949-8-4"
+       d="m 8.433624,17.566254 0.115845,5.279724 1.853514,0.659967 -0.05792,-5.224728 z"
+       style="fill:#888a85;stroke:#babdb6;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3949-7"
+       d="m 10.930137,18.507125 0.115845,5.279724 1.853514,0.659967 -0.05792,-5.224728 z"
+       style="fill:#888a85;stroke:#babdb6;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3949-8-7"
+       d="m 13.430764,19.433309 0.115845,5.279724 1.853514,0.659967 -0.05792,-5.224728 z"
+       style="fill:#888a85;stroke:#babdb6;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path19"
+       d="m 16.827854,20.749206 c -0.27426,0.0049 -0.46875,0.182775 -0.46875,0.46875 0,0.3813 0.337275,0.812025 0.759375,0.965625 0.4221,0.1536 0.76875,-0.0312 0.76875,-0.4125 0,-0.3816 -0.34665,-0.812025 -0.76875,-0.965625 -0.105525,-0.03847 -0.199206,-0.05789 -0.290625,-0.05625 z"
+       style="fill:#888a85;fill-rule:evenodd" />
+    <path
+       style="fill:none;stroke:#555753;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 0.4609525,20.415279 -0.068454,-6.503124 12.8693425,-9.1043762 18.345661,6.7084862 0,6.708489 -12.800889,8.967468 z"
+       id="path3814"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     id="g2254"
+     transform="matrix(1.0451787,0,0,1.0451787,-5.5873231,-30.671612)"
+     inkscape:r_cx="true"
+     inkscape:r_cy="true"
+     style="stroke:#a40000;stroke-width:1.91354835;stroke-miterlimit:4;stroke-dasharray:none">
+    <path
+       inkscape:r_cy="true"
+       inkscape:r_cx="true"
+       id="path1377"
+       d="M 8,32 18,42"
+       style="color:#000000;fill:none;stroke:#a40000;stroke-width:1.91354835;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible"
+       inkscape:connector-curvature="0" />
+    <path
+       style="color:#000000;fill:none;stroke:#a40000;stroke-width:1.91354835;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible"
+       d="M 18,32 8,42"
+       id="path2252"
+       inkscape:r_cx="true"
+       inkscape:r_cy="true"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

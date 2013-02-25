@@ -21,11 +21,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -95,17 +98,24 @@ public class CloudComputerPanel extends JPanel {
     }
 
     private void createTotalsUI() {
-        JPanel labelAndDeletePanel = new JPanel(new BorderLayout());
+        JPanel labelAndDeletePanel = new JPanel(new BorderLayout(5, 0));
+        if (computer != null) {
+            labelAndDeletePanel.add(new JLabel(cloudBalancingPanel.getCloudComputerIcon()), BorderLayout.WEST);
+        }
         computerLabel = new JLabel(getComputerLabel());
         computerLabel.setEnabled(false);
         labelAndDeletePanel.add(computerLabel, BorderLayout.CENTER);
         if (computer != null) {
-            deleteButton = new JButton(new AbstractAction("X") {
+            JPanel deletePanel = new JPanel(new BorderLayout());
+            deleteButton = new JButton(cloudBalancingPanel.getDeleteCloudComputerIcon());
+            deleteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     cloudBalancingPanel.deleteComputer(computer);
                 }
             });
-            labelAndDeletePanel.add(deleteButton, BorderLayout.EAST);
+            deleteButton.setMargin(new Insets(0, 0, 0, 0));
+            deletePanel.add(deleteButton, BorderLayout.NORTH);
+            labelAndDeletePanel.add(deletePanel, BorderLayout.EAST);
         }
         add(labelAndDeletePanel);
         cpuPowerField = new JTextField("0 GHz / " + getComputerCpuPower() + " GHz");
@@ -129,6 +139,7 @@ public class CloudComputerPanel extends JPanel {
     private void createBarsUI() {
         numberOfProcessesLabel = new JLabel("    0 processes");
         numberOfProcessesLabel.setEnabled(false);
+        numberOfProcessesLabel.setBorder(BorderFactory.createEmptyBorder(0, 37, 0, 0));
         add(numberOfProcessesLabel);
         cpuPowerBar = new CloudBar(getComputerCpuPower(), cloudBalancingPanel.getMaximumComputerCpuPower());
         cpuPowerBar.setEnabled(false);
@@ -200,7 +211,7 @@ public class CloudComputerPanel extends JPanel {
     }
 
     private void updateBars(boolean used) {
-        numberOfProcessesLabel.setText("    " + processList.size() + " processes");
+        numberOfProcessesLabel.setText(processList.size() + " processes");
         numberOfProcessesLabel.setEnabled(used);
         cpuPowerBar.setEnabled(used);
         cpuPowerBar.repaint();

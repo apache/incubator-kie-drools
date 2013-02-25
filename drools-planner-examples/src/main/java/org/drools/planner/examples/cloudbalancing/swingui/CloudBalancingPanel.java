@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -45,6 +46,9 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     public static final String LOGO_PATH = "/org/drools/planner/examples/cloudbalancing/swingui/cloudBalancingLogo.png";
 
+    private final ImageIcon cloudComputerIcon;
+    private final ImageIcon deleteCloudComputerIcon;
+
     private JPanel computersPanel;
 
     private CloudComputerPanel unassignedPanel;
@@ -56,6 +60,8 @@ public class CloudBalancingPanel extends SolutionPanel {
     private int maximumComputerNetworkBandwidth;
 
     public CloudBalancingPanel() {
+        cloudComputerIcon = new ImageIcon(getClass().getResource("cloudComputer.png"));
+        deleteCloudComputerIcon = new ImageIcon(getClass().getResource("deleteCloudComputer.png"));
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         JPanel headerPanel = createHeaderPanel();
@@ -67,6 +73,14 @@ public class CloudBalancingPanel extends SolutionPanel {
                         GroupLayout.PREFERRED_SIZE)
                 .addComponent(computersPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE));
+    }
+
+    public ImageIcon getCloudComputerIcon() {
+        return cloudComputerIcon;
+    }
+
+    public ImageIcon getDeleteCloudComputerIcon() {
+        return deleteCloudComputerIcon;
     }
 
     public int getMaximumComputerCpuPower() {

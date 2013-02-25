@@ -58,7 +58,8 @@ public class VehicleRoutingSchedulePainter {
         };
         if (vehicleImageIcons.length != TangoColorFactory.SEQUENCE_1.length) {
             throw new IllegalStateException("The vehicleImageIcons length (" + vehicleImageIcons.length
-                    + ") should be equal to the TangoColorFactory.SEQUENCE length (" + TangoColorFactory.SEQUENCE_1.length + ").");
+                    + ") should be equal to the TangoColorFactory.SEQUENCE length ("
+                    + TangoColorFactory.SEQUENCE_1.length + ").");
         }
     }
 
