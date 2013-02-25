@@ -79,14 +79,18 @@ public class FormProviderServiceImpl implements FormProviderService {
         String processAssetPath = domainService.getProcessAssetPath(processId);
         Iterable<Path> availableForms = null;
         try {
-            availableForms = fileService.loadFilesByType(processAssetPath.substring(1, processAssetPath.lastIndexOf('/'))+"/forms/", "ftl");
+            if(fileService.exists(processAssetPath.substring(1, processAssetPath.lastIndexOf('/'))+"/forms/")){
+                availableForms = fileService.loadFilesByType(processAssetPath.substring(1, processAssetPath.lastIndexOf('/'))+"/forms/", "ftl");
+            }
         } catch (FileException ex) {
             Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         Path selectedForm = null;
-        for (Path p : availableForms) {
-            if (p.getFileName().toString().contains(processId)) {
-                selectedForm = p;
+        if(availableForms != null){
+            for (Path p : availableForms) {
+                if (p.getFileName().toString().contains(processId)) {
+                    selectedForm = p;
+                }
             }
         }
         InputStream template = null;
@@ -157,15 +161,19 @@ public class FormProviderServiceImpl implements FormProviderService {
         Iterable<Path> availableForms = null;
         try {
             if(processAssetPath != null && !processAssetPath.equals("")){
-                availableForms = fileService.loadFilesByType(processAssetPath.substring(1, processAssetPath.lastIndexOf('/'))+"/forms/", "ftl");
+                if(fileService.exists(processAssetPath.substring(1, processAssetPath.lastIndexOf('/'))+"/forms/")){
+                    availableForms = fileService.loadFilesByType(processAssetPath.substring(1, processAssetPath.lastIndexOf('/'))+"/forms/", "ftl");
+                }
             }
         } catch (FileException ex) {
             Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         Path selectedForm = null;
-        for (Path p : availableForms) {
-            if (p.getFileName().toString().contains(task.getNames().get(0).getText())) {
-                selectedForm = p;
+        if(availableForms != null){
+            for (Path p : availableForms) {
+                if (p.getFileName().toString().contains(task.getNames().get(0).getText())) {
+                    selectedForm = p;
+                }
             }
         }
         InputStream template = null;
