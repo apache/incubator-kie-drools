@@ -199,6 +199,8 @@ public class CloudBalancingPanel extends SolutionPanel {
         for (CloudComputerPanel computerPanel : computerToPanelMap.values()) {
             computerPanel.update();
         }
+        // If computersPanel.add() or computersPanel.remove() was called, the component needs to be validated.
+        computersPanel.validate();
     }
 
     public void deleteComputer(final CloudComputer computer) {
