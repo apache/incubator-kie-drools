@@ -2777,8 +2777,8 @@ After in *ScoreDefinition.java:
     }
 
 
-From 6.0.0.Alpha7 to 6.0.0.Beta1
---------------------------------
+From 6.0.0.Alpha7 to 6.0.0.Alpha8
+---------------------------------
 
 [MINOR] If you're using solver configuration by API (instead of XML): the Config properties are now null by default.
 Before in *.java:
