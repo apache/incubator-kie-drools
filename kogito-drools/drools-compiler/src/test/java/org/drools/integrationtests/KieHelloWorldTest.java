@@ -16,6 +16,8 @@ import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.conf.ClockTypeOption;
 
+import java.io.ByteArrayInputStream;
+
 /**
  * This is a sample class to launch a rule.
  */
@@ -39,6 +41,29 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         int count = ksession.fireAllRules();
          
+        assertEquals( 1, count );
+    }
+
+    @Test
+    public void testHelloWorldWithEmptyFile() throws Exception {
+        String drl = "package org.drools\n" +
+                "rule R1 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write("src/main/resources/r1.drl", drl)
+                .write("src/main/resources/empty.drl", ks.getResources().newInputStreamResource(new ByteArrayInputStream(new byte[0])));
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        ksession.insert(new Message("Hello World"));
+
+        int count = ksession.fireAllRules();
+
         assertEquals( 1, count );
     }
 
