@@ -146,7 +146,7 @@ public class QueryElement extends ConditionalElement
 
     @Override
     public QueryElement clone() {
-        return new QueryElement( resultPattern, queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes, openQuery );
+        return new QueryElement( resultPattern.clone(), queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes, openQuery );
     }
 
     @Override
