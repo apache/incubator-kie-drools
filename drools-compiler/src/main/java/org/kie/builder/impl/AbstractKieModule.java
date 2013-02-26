@@ -160,11 +160,15 @@ public abstract class AbstractKieModule
         for ( String fileName : kieModule.getFileNames() ) {
             if ( filterFileInKBase(kieBaseModel, fileName) && !fileName.endsWith( ".properties" ) ) {
                 ResourceConfiguration conf = getResourceConfiguration(kieModule, fileName);
+                byte[] bytes = kieModule.getBytes( fileName );
+                if ( bytes == null || bytes.length == 0 ) {
+                    continue;
+                }
                 if ( conf == null ) {
-                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ).setSourcePath( fileName ),
+                    ckbuilder.add( ResourceFactory.newByteArrayResource( bytes ).setSourcePath( fileName ),
                                    ResourceType.determineResourceType( fileName ) );
                 } else {
-                    ckbuilder.add( ResourceFactory.newByteArrayResource( kieModule.getBytes( fileName ) ).setSourcePath(fileName),
+                    ckbuilder.add( ResourceFactory.newByteArrayResource( bytes ).setSourcePath(fileName),
                                    ResourceType.determineResourceType( fileName ),
                                    conf );
                 }
