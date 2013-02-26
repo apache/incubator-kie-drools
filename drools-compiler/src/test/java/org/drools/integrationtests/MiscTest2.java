@@ -1385,4 +1385,45 @@ public class MiscTest2 extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
         assertTrue( kbuilder.hasErrors() );
     }
+
+    @Test
+    public void testQueryAfterEvalInsideOR() {
+        // DROOLS-54
+        String str =
+                "package pakko\n" +
+                "\n" +
+                "declare Holder\n" +
+                "  str : String\n" +
+                "end\n" +
+                "\n" +
+                "declare Bean\n" +
+                "  val : String\n" +
+                "end\n" +
+                "\n" +
+                "declare Mock end \n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Bean( \"xyz\" ) );\n" +
+                "  insert( new Holder( \"xyz\" ) );\n" +
+                "  insert( new Mock() );\n" +
+                "end\n" +
+                "\n" +
+                "query mock( Mock $m ) $m := Mock() end\n" +
+                "\n" +
+                "rule \"Check\"\n" +
+                "when\n" +
+                "  $b : Bean( $t : val )\n" +
+                "  ( Holder( $t ; ) or eval( $t.startsWith( \"abc\" ) ) )\n" +
+                "  mock( $m ; ) \n" +
+                "then\n" +
+                "  System.out.println( $m );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        assertEquals(2, ksession.fireAllRules());
+    }
 }
