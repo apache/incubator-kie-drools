@@ -1426,4 +1426,21 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals(2, ksession.fireAllRules());
     }
+
+    @Test
+    public void testPackageVisibility() {
+        // DROOLS-61
+        String str =
+                "package org.drools.integrationtests;\n" +
+                "rule \"getX\"\n" +
+                "when\n" +
+                "    $x: PackageProtected( )\n" +
+                "then\n" +
+                "    System.out.println( $x );\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        assertTrue( kbuilder.hasErrors() );
+    }
 }
