@@ -88,6 +88,7 @@ import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -158,6 +159,13 @@ public class PatternBuilder
         } else {
             try {
                 final Class< ? > userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
+                if ( !Modifier.isPublic(userProvidedClass.getModifiers()) ) {
+                    context.addError(new DescrBuildError(context.getParentDescr(),
+                                                         patternDescr,
+                                                         null,
+                                                         "The class '" + patternDescr.getObjectType() + "' is not public"));
+                    return null;
+                }
                 PackageRegistry pkgr = context.getPackageBuilder().getPackageRegistry( ClassUtils.getPackage( userProvidedClass ) );
                 org.drools.rule.Package pkg = pkgr == null ? context.getPkg() : pkgr.getPackage();
                 final boolean isEvent = pkg.isEvent( userProvidedClass );
@@ -220,9 +228,9 @@ public class PatternBuilder
             if ( rce == null ) {
                 // this isn't a query either, so log an error
                 context.addError(new DescrBuildError(context.getParentDescr(),
-                        patternDescr,
-                        null,
-                        "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'"));
+                                                     patternDescr,
+                                                     null,
+                                                     "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'"));
             }
             return rce;
         }
