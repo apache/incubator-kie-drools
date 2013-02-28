@@ -29,6 +29,8 @@
         <class>org.jbpm.task.impl.command.CommandBasedTaskInstanceServiceImpl</class>
     </alternatives>
     <decorators>
+        <class>org.jbpm.task.identity.UserGroupTaskQueryServiceDecorator</class>
+        <class>org.jbpm.task.identity.UserGroupTaskInstanceServiceDecorator</class>
         <class>org.jbpm.task.identity.UserGroupTaskCommandExecutorDecorator</class>
         <class>org.jbpm.task.deadlines.DeadlinesDecorator</class>
     </decorators>

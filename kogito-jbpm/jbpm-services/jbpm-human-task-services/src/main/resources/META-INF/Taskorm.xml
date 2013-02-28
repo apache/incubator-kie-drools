@@ -325,7 +325,7 @@ where
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
 
-    
+    group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>

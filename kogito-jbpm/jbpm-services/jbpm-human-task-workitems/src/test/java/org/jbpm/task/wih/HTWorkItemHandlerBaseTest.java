@@ -15,26 +15,36 @@
  */
 package org.jbpm.task.wih;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.task.events.AfterTaskAddedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.test.MyObject;
 import org.jbpm.task.test.TestStatefulKnowledgeSession;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.jbpm.task.utils.OnErrorAction;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
 public abstract class HTWorkItemHandlerBaseTest {
 
@@ -47,6 +57,9 @@ public abstract class HTWorkItemHandlerBaseTest {
 
     @Inject
     protected TaskServiceEntryPoint taskService; 
+    
+    @Inject
+    protected AddedTaskListener listenr;
  
     @Test
     public void testTask() throws Exception {
@@ -106,8 +119,8 @@ public abstract class HTWorkItemHandlerBaseTest {
         
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
     }
-    @Ignore
-    @Test // FIX UserGROUP CALLBACK
+    
+    @Test
     public void testTaskGroupActors() throws Exception {
 
     	TestWorkItemManager manager = new TestWorkItemManager();
@@ -120,7 +133,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         workItem.setParameter("GroupId", "Crusaders");
         getHandler().executeWorkItem(workItem, manager);
 
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Luke", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Luke Cage", "en-UK");
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
         assertEquals("TaskName", taskSummary.getName());
@@ -130,7 +143,7 @@ public abstract class HTWorkItemHandlerBaseTest {
 
         PermissionDeniedException denied = null;
         try {
-            taskService.claim(taskSummary.getId(), "Darth Vader");
+            taskService.claim(taskSummary.getId(), "nocrusadaer");
         } catch (PermissionDeniedException e) {
             denied = e;
         }
@@ -146,7 +159,6 @@ public abstract class HTWorkItemHandlerBaseTest {
     
     
     @Test
-    @Ignore // FIX USER GROUP CALLBACK STUFF
     public void testTaskSingleAndGroupActors() throws Exception {
 //    	Properties userGroups = new Properties();
 //        userGroups.setProperty("Darth Vader", "Crusaders");
@@ -443,72 +455,65 @@ public abstract class HTWorkItemHandlerBaseTest {
     }
     
     
-//    @Test
-//    public void testTaskCreateFailedWithLog() throws Exception {
-//        TestWorkItemManager manager = new TestWorkItemManager();
-//        
-//        if (handler instanceof GenericHTWorkItemHandler) {
-//            ((GenericHTWorkItemHandler) handler).setAction(OnErrorAction.LOG);
-//        }
-//        
-//        ksession.setWorkItemManager(manager);
-//        WorkItemImpl workItem = new WorkItemImpl();
-//        workItem.setName("Human Task");
-//        workItem.setParameter("TaskName", "TaskName");
-//        workItem.setParameter("Comment", "Comment");
-//        workItem.setParameter("Priority", "10");
-//        workItem.setParameter("ActorId", "DoesNotExist");
-//        workItem.setProcessInstanceId(10);
-//        
-//        
-//        handler.executeWorkItem(workItem, manager);
-//        assertFalse(manager.isAborted());
-//    }
-//    @Test
-//    public void testTaskCreateFailedWithAbort() throws Exception {
-//        TestWorkItemManager manager = new TestWorkItemManager();
-//        
-//        if (handler instanceof GenericHTWorkItemHandler) {
-//            ((GenericHTWorkItemHandler) handler).setAction(OnErrorAction.ABORT);
-//        }
-//        ksession.setWorkItemManager(manager);
-//        WorkItemImpl workItem = new WorkItemImpl();
-//        workItem.setName("Human Task");
-//        workItem.setParameter("TaskName", "TaskName");
-//        workItem.setParameter("Comment", "Comment");
-//        workItem.setParameter("Priority", "10");
-//        workItem.setParameter("ActorId", "DoesNotExist");
-//        workItem.setProcessInstanceId(10);
-//        
-//        
-//        handler.executeWorkItem(workItem, manager);
-//        assertTrue(manager.isAborted());
-//    }
-//    @Test
-//    public void testTaskCreateFailedWithRethrow() throws Exception {
-//        TestWorkItemManager manager = new TestWorkItemManager();
-//        
-//        if (handler instanceof GenericHTWorkItemHandler) {
-//            ((GenericHTWorkItemHandler) handler).setAction(OnErrorAction.RETHROW);
-//        }
-//        ksession.setWorkItemManager(manager);
-//        WorkItemImpl workItem = new WorkItemImpl();
-//        workItem.setName("Human Task");
-//        workItem.setParameter("TaskName", "TaskName");
-//        workItem.setParameter("Comment", "Comment");
-//        workItem.setParameter("Priority", "10");
-//        workItem.setParameter("ActorId", "DoesNotExist");
-//        workItem.setProcessInstanceId(10);
-//        
-//        try {
-//            handler.executeWorkItem(workItem, manager);
-//            fail("Should fail due to OnErroAction set to rethrow");
-//        } catch (Exception e) {
-//            // do nothing
-//            
-//        }
-//    }
-//
+    @Test
+    public void testTaskCreateFailedWithLog() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ((AbstractHTWorkItemHandler)handler).setAction(OnErrorAction.LOG);
+        listenr.setThrowException(true);
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "DoesNotExist");
+        workItem.setProcessInstanceId(10);
+        
+        
+        handler.executeWorkItem(workItem, manager);
+        assertFalse(manager.isAborted());
+    }
+    @Test
+    public void testTaskCreateFailedWithAbort() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        listenr.setThrowException(true);
+        ((AbstractHTWorkItemHandler)handler).setAction(OnErrorAction.ABORT);
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "DoesNotExist");
+        workItem.setProcessInstanceId(10);
+        
+        
+        handler.executeWorkItem(workItem, manager);
+        assertTrue(manager.isAborted());
+    }
+    @Test
+    public void testTaskCreateFailedWithRethrow() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        listenr.setThrowException(true);
+        ((AbstractHTWorkItemHandler)handler).setAction(OnErrorAction.RETHROW);
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "DoesNotExist");
+        workItem.setProcessInstanceId(10);
+        
+        try {
+            handler.executeWorkItem(workItem, manager);
+            fail("Should fail due to OnErroAction set to rethrow");
+        } catch (Exception e) {
+            // do nothing
+            
+        }
+    }
+
     
     @Test
     public void testTaskWithCreatedBy() throws Exception {
@@ -643,6 +648,29 @@ public abstract class HTWorkItemHandlerBaseTest {
         }
 
         public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
+        }
+    }
+    
+    @ApplicationScoped
+    public static class AddedTaskListener {
+        public AddedTaskListener() {
+            
+        }
+        
+        private boolean throwException = false;
+
+        public boolean isThrowException() {
+            return throwException;
+        }
+
+        public void setThrowException(boolean throwException) {
+            this.throwException = throwException;
+        }
+        
+        public void listen(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task task) {
+            if (isThrowException()) {
+                throw new RuntimeException("test exception");
+            }
         }
     }
 }

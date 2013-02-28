@@ -68,6 +68,7 @@ public class HTWorkItemHandlerCDITest extends HTWorkItemHandlerBaseTest {
     @Before
     public void setUp() throws Exception {
         ksession = (TestStatefulKnowledgeSession) sessionManager.getKsessionById(TestStatefulKnowledgeSession.testSessionId);
+        listenr.setThrowException(false);
         htWorkItemHandler.addSession(ksession);
         setHandler(htWorkItemHandler);
     }
