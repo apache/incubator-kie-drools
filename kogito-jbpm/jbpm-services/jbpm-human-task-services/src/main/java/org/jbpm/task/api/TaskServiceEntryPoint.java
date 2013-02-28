@@ -126,7 +126,7 @@ public interface TaskServiceEntryPoint {
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language);
 
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult);
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language);
 

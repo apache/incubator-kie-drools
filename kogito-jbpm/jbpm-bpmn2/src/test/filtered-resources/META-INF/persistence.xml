@@ -34,9 +34,6 @@
             <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
             <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
             <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
-      
-            <!-- neccessary when testing db2 -->      
-            <property name="hibernate.default_schema" value="${maven.jdbc.schema}" />
 
             <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
             <property name="hibernate.id.new_generator_mappings" value="false" />            

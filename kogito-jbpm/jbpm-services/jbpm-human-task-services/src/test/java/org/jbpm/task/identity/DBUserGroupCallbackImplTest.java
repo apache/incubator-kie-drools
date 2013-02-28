@@ -69,22 +69,22 @@ public class DBUserGroupCallbackImplTest {
     protected void prepareDb() {
         try {
             Connection conn = pds.getConnection();
-            String createUserTableSql = "create table Users (userId varchar(255));";
+            String createUserTableSql = "create table Users (userId varchar(255))";
             PreparedStatement st = conn.prepareStatement(createUserTableSql);
             st.execute();
 
-            String createGroupTableSql = "create table Groups (groupId varchar(255), userId varchar(255));";
+            String createGroupTableSql = "create table Groups (groupId varchar(255), userId varchar(255))";
             st = conn.prepareStatement(createGroupTableSql);
             st.execute();
 
             // insert user rows
-            String insertUser = "insert into Users (userId) values (?);";
+            String insertUser = "insert into Users (userId) values (?)";
             st = conn.prepareStatement(insertUser);
             st.setString(1, "john");
             st.execute();
 
             // insert group rows
-            String insertGroup = "insert into Groups (groupId, userId) values (?, ?);";
+            String insertGroup = "insert into Groups (groupId, userId) values (?, ?)";
             st = conn.prepareStatement(insertGroup);
             st.setString(1, "PM");
             st.setString(2, "john");
@@ -103,11 +103,11 @@ public class DBUserGroupCallbackImplTest {
     protected void cleanDb() {
         try {
             Connection conn = pds.getConnection();
-            String dropUserTableSql = "drop table Users;";
+            String dropUserTableSql = "drop table Users";
             PreparedStatement st = conn.prepareStatement(dropUserTableSql);
             st.execute();
 
-            String dropGroupTableSql = "drop table Groups;";
+            String dropGroupTableSql = "drop table Groups";
             st = conn.prepareStatement(dropGroupTableSql);
 
             st.execute();
