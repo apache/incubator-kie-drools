@@ -152,6 +152,12 @@ public interface TaskServiceEntryPoint {
     
     List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate);
     
+    List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language);
+
+    List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
+    
+    List<Long> getTasksByProcessInstanceId(long processInstanceId);
+    
     User getUserById(String userId);
 
     List<User> getUsers();

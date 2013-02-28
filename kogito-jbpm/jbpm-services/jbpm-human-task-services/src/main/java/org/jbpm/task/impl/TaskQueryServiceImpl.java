@@ -296,4 +296,35 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         
         return taskOwned;
     }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language) {
+        List<TaskSummary> tasks = em.createNamedQuery("TasksByStatusByProcessId")
+                .setParameter("processInstanceId", processInstanceId)
+                .setParameter("status", status)
+                .setParameter("language", language).getResultList();
+    
+        return tasks;
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName,
+            String language) {
+        List<TaskSummary> tasks = em.createNamedQuery("TasksByStatusByProcessIdByTaskName")
+                .setParameter("processInstanceId", processInstanceId)
+                .setParameter("status", status)
+                .setParameter("taskName", taskName)
+                .setParameter("language", language).getResultList();
+    
+        return tasks;
+    }
+
+    @Override
+    public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
+        List<Long> tasks = em.createNamedQuery("TasksByProcessInstanceId")
+                .setParameter("processInstanceId", processInstanceId)
+                .getResultList();
+    
+        return tasks;
+    }
 }

@@ -73,10 +73,17 @@ public interface TaskQueryService {
     
     List<TaskSummary> getSubTasksByParent(long parentId);
     
-    public int getPendingSubTasksByParent(long parentId);
+    List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language);
+
+    List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
+
+    int getPendingSubTasksByParent(long parentId);
     
     Task getTaskByWorkItemId(long workItemId);
     
     Task getTaskInstanceById(long taskId);
-
+    
+    List<Long> getTasksByProcessInstanceId(long processInstanceId);
+    
+    
 }

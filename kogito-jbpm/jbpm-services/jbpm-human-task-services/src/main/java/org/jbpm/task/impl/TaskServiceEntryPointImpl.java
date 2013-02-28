@@ -577,6 +577,24 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> statuses, Date expirationDate) {
         return taskQueryService.getTasksOwnedByExpirationDateOptional(userId, statuses, expirationDate);
     }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessId(
+            long processInstanceId, List<Status> status, String language) {
+        return taskQueryService.getTasksByStatusByProcessId(processInstanceId, status, language);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(
+            long processInstanceId, List<Status> status, String taskName,
+            String language) {
+        return taskQueryService.getTasksByStatusByProcessIdByTaskName(processInstanceId, status, taskName, language);
+    }
+
+    @Override
+    public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
+        return taskQueryService.getTasksByProcessInstanceId(processInstanceId);
+    }
     
     
 }

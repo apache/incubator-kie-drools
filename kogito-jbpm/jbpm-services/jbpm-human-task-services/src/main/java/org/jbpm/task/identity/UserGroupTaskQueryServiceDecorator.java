@@ -180,4 +180,23 @@ public class UserGroupTaskQueryServiceDecorator extends
         return delegate.getTaskInstanceById(taskId);
     }
 
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessId(
+            long processInstanceId, List<Status> status, String language) {
+
+        return delegate.getTasksByStatusByProcessId(processInstanceId, status, language);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(
+            long processInstanceId, List<Status> status, String taskName, String language) {
+        return delegate.getTasksByStatusByProcessIdByTaskName(processInstanceId, status, taskName, language);
+    }
+
+    @Override
+    public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
+
+        return delegate.getTasksByProcessInstanceId(processInstanceId);
+    }
+
 }
