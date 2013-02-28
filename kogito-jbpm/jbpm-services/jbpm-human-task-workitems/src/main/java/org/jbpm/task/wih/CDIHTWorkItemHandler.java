@@ -18,6 +18,8 @@ package org.jbpm.task.wih;
 import java.util.Date;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
 import org.jboss.seam.transaction.Transactional;
@@ -26,6 +28,7 @@ import org.jbpm.task.ContentData;
 import org.jbpm.task.Task;
 import org.jbpm.task.annotations.External;
 import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.task.events.AfterTaskAddedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.impl.factories.TaskFactory;
 import org.jbpm.task.utils.OnErrorAction;
@@ -80,7 +83,10 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
         TaskFactory.initializeTask(task);
         ContentData content = createTaskContentBasedOnWorkItemParams(ksessionById, workItem);
         try {
-            taskService.addTask(task, content);
+            long taskId = taskService.addTask(task, content);
+            if (isAutoClaim(workItem, task)) {
+                taskService.claim(taskId, (String) workItem.getParameter("SwimlaneActorId"));
+            }
         } catch (Exception e) {
             if (action.equals(OnErrorAction.ABORT)) {
                 manager.abortWorkItem(workItem.getId());
@@ -110,6 +116,5 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
             }
         }
     }
-
     
 }

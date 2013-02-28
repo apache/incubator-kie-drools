@@ -133,6 +133,15 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         }
         return content;
     }
+    
+    protected boolean isAutoClaim(WorkItem workItem, Task task) {
+        String swimlaneUser = (String) workItem.getParameter("SwimlaneActorId");
+        if (swimlaneUser != null  && !"".equals(swimlaneUser)) {
+            return true;
+        }
+        
+        return false;
+    }
 
     
     public abstract void executeWorkItem(WorkItem workItem, WorkItemManager manager);
