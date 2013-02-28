@@ -15,7 +15,7 @@
  */
 package org.droolsjbpm.services.impl.helpers;
 
-import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.api.ServicesSessionManager;
 import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
@@ -50,10 +50,10 @@ import org.kie.runtime.KieSession;
 public class StatefulKnowledgeSessionDelegate implements KieSession{
 
     private KieSession ksession;
-    private SessionManager sessionManager;
+    private ServicesSessionManager sessionManager;
     private String name;
 
-    public StatefulKnowledgeSessionDelegate(String name, KieSession ksession, SessionManager sessionManager) {
+    public StatefulKnowledgeSessionDelegate(String name, KieSession ksession, ServicesSessionManager sessionManager) {
         this.name = name;
         this.ksession = ksession;
         this.sessionManager = sessionManager;

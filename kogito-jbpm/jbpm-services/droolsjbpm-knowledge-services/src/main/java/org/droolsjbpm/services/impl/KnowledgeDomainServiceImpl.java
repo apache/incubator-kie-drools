@@ -27,7 +27,7 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.FileService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.RulesNotificationService;
-import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
@@ -63,7 +63,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
   @Inject
   private TaskServiceEntryPoint taskService;
   @Inject
-  private SessionManager sessionManager;
+  private ServicesSessionManager sessionManager;
   @Inject
   private MoveFileWorkItemHandler moveFilesWIHandler;
   @Inject

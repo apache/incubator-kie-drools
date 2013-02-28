@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import org.droolsjbpm.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
@@ -118,7 +118,7 @@ public class SimpleSessionManagementTest {
     protected KnowledgeAdminDataService adminDataService;
 
     @Inject
-    private SessionManager sessionManager;
+    private ServicesSessionManager sessionManager;
     
     
    @Test

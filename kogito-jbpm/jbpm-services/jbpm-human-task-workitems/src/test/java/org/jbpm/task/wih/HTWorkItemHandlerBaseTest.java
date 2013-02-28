@@ -43,7 +43,7 @@ public abstract class HTWorkItemHandlerBaseTest {
     private static final int MANAGER_ABORT_WAIT_TIME = DEFAULT_WAIT_TIME;
     
     private WorkItemHandler handler;
-    protected TestStatefulKnowledgeSession ksession = new TestStatefulKnowledgeSession();
+    protected TestStatefulKnowledgeSession ksession;
 
     @Inject
     protected TaskServiceEntryPoint taskService; 

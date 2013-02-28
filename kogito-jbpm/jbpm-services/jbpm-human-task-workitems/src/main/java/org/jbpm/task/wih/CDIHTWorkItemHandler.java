@@ -16,27 +16,24 @@
 package org.jbpm.task.wih;
 
 import java.util.Date;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.droolsjbpm.services.impl.CDISessionManager;
+
 import org.jboss.seam.transaction.Transactional;
-
-
-import org.jbpm.task.utils.OnErrorAction;
-import org.jbpm.task.Task;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemManager;
-
+import org.jbpm.process.SessionManager;
 import org.jbpm.task.ContentData;
+import org.jbpm.task.Task;
 import org.jbpm.task.annotations.External;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.impl.factories.TaskFactory;
+import org.jbpm.task.utils.OnErrorAction;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @ApplicationScoped
@@ -52,7 +49,7 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private ExternalTaskEventListener listener;
     
     @Inject
-    private CDISessionManager sessionManager;
+    private SessionManager sessionManager;
 
     
     public CDIHTWorkItemHandler() {

@@ -31,7 +31,7 @@ import org.apache.commons.io.IOUtils;
 import org.droolsjbpm.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
@@ -61,7 +61,7 @@ public abstract class ReleaseProcessBaseTest {
     @Inject
     private FileService fs;
     @Inject
-    private SessionManager sessionManager;
+    private ServicesSessionManager sessionManager;
     
     @Inject
     private MoveFileWorkItemHandler moveFilesWIHandler;

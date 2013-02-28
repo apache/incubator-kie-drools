@@ -18,7 +18,7 @@ package org.droolsjbpm.services.impl.event.listeners;
 import java.util.Date;
 import java.util.List;
 import org.droolsjbpm.services.api.IdentityProvider;
-import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.api.ServicesSessionManager;
 import org.jboss.seam.transaction.Transactional;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;
@@ -51,7 +51,7 @@ public class CDIBAMProcessEventListener implements ProcessEventListener {
 
     private String domainName;
     
-    private SessionManager sessionManager;
+    private ServicesSessionManager sessionManager;
   
     
     public CDIBAMProcessEventListener() {
@@ -134,7 +134,7 @@ public class CDIBAMProcessEventListener implements ProcessEventListener {
         this.domainName = domainName;
     }
 
-    public void setSessionManager(SessionManager sessionManager) {
+    public void setSessionManager(ServicesSessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
     

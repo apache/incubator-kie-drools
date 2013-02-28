@@ -32,7 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.droolsjbpm.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
@@ -57,7 +57,7 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
     @Inject
     private FileService fs;
     @Inject
-    private SessionManager sessionManager;
+    private ServicesSessionManager sessionManager;
     
     @Inject
     private MoveFileWorkItemHandler moveFileWorkItemHandler;

@@ -23,10 +23,11 @@ import org.kie.runtime.KieSession;
 import org.kie.runtime.process.WorkItemHandler;
 
 /**
- *
+ * Extension of the main <code>SessionManager</code> that provides services specific
+ * enhancements. 
  * @author salaboy
  */
-public interface SessionManager {
+public interface ServicesSessionManager extends org.jbpm.process.SessionManager {
 
     void setDomain(Domain domain);
     
@@ -38,13 +39,9 @@ public interface SessionManager {
 
     Map<Integer, KieSession> getKsessionsByName(String ksessionName);
 
-    Map<Integer, Long> getProcessInstanceIdKsession();
-
-    KieSession getKsessionById(int ksessionId);
+    Map<Integer, List<Long>> getProcessInstanceIdKsession();
 
     void addProcessInstanceIdKsession(Integer ksessionId, Long processInstanceId);
-
-    int getSessionForProcessInstanceId(Long processInstanceId);
 
     List<Integer> getSessionIdsByName(String ksessionName);
 

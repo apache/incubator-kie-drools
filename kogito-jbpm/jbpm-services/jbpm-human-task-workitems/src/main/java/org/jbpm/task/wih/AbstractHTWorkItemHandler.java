@@ -18,14 +18,8 @@ package org.jbpm.task.wih;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+
 import org.jbpm.task.ContentData;
-import org.jbpm.task.Group;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.PeopleAssignments;
@@ -34,6 +28,13 @@ import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
+import org.jbpm.task.wih.util.HumanTaskHandlerHelper;
+import org.jbpm.task.wih.util.PeopleAssignmentHelper;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         this.action = action;
     }
 
-    protected Task createTaskBasedOnWorkItemParams(StatefulKnowledgeSession session, WorkItem workItem) {
+    protected Task createTaskBasedOnWorkItemParams(KieSession session, WorkItem workItem) {
         Task task = new Task();
         String taskName = (String) workItem.getParameter("TaskName");
         if (taskName != null) {
@@ -93,8 +94,8 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         if (session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
             taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
         }
-        if (session != null && (session instanceof StatefulKnowledgeSession)) {
-            taskData.setProcessSessionId(((StatefulKnowledgeSession) session).getId());
+        if (session != null && (session instanceof KieSession)) {
+            taskData.setProcessSessionId(((KieSession) session).getId());
         }
         taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data
@@ -106,38 +107,18 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         if (createdBy != null && createdBy.trim().length() > 0) {
             taskData.setCreatedBy(new User(createdBy));
         }
-        PeopleAssignments assignments = new PeopleAssignments();
-        List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
-        String actorId = (String) workItem.getParameter("ActorId");
-        if (actorId != null && actorId.trim().length() > 0) {
-            String[] actorIds = actorId.split(",");
-            for (String id : actorIds) {
-                potentialOwners.add(new User(id.trim()));
-            }
-            //Set the first user as creator ID??? hmmm might be wrong
-            if (potentialOwners.size() > 0 && taskData.getCreatedBy() == null) {
-                taskData.setCreatedBy((User) potentialOwners.get(0));
-            }
-        }
-        String groupId = (String) workItem.getParameter("GroupId");
-        if (groupId != null && groupId.trim().length() > 0) {
-            String[] groupIds = groupId.split(",");
-            for (String id : groupIds) {
-                potentialOwners.add(new Group(id.trim()));
-            }
-        }
+        PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
+        peopleAssignmentHelper.handlePeopleAssignments(workItem, task, taskData);
         
-        assignments.setPotentialOwners(potentialOwners);
-        List<OrganizationalEntity> businessAdministrators = new ArrayList<OrganizationalEntity>();
-        businessAdministrators.add(new User("Administrator"));
-        assignments.setBusinessAdministrators(businessAdministrators);
-        task.setPeopleAssignments(assignments);
+        PeopleAssignments peopleAssignments = task.getPeopleAssignments();
+        List<OrganizationalEntity> businessAdministrators = peopleAssignments.getBusinessAdministrators();
+        
         task.setTaskData(taskData);
-//        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
+        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
         return task;
     }
 
-    protected ContentData createTaskContentBasedOnWorkItemParams(StatefulKnowledgeSession session, WorkItem workItem) {
+    protected ContentData createTaskContentBasedOnWorkItemParams(KieSession session, WorkItem workItem) {
         ContentData content = null;
         Object contentObject = workItem.getParameter("Content");
         if (contentObject == null) {
