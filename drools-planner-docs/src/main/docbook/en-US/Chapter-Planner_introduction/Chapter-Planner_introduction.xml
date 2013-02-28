@@ -70,7 +70,7 @@
     <para>Drools Planner, like the rest of Drools, is <emphasis>open source</emphasis> software under <link
     xlink:href="http://www.apache.org/licenses/LICENSE-2.0">the Apache Software License 2.0</link> (<link
     xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">layman's explanation</link>). It is
-    100% pure Java<superscript>TM</superscript> and runs on any JVM.</para>
+    100% pure Java<superscript>TM</superscript> and runs on <link xlink:href="compatibility">any JVM</link>.</para>
   </section>
 
   <section>
@@ -196,16 +196,6 @@
       but it's impossible to tell in advance. <emphasis role="bold">With Planner, it is easy to switch the optimization
       algorithm</emphasis>, by changing the solver configuration in a few lines of XML or code.</para>
     </section>
-  </section>
-
-  <section>
-    <title>Status of Drools Planner</title>
-
-    <para>Drools Planner is production ready. The API is almost stable but backward incompatible changes can occur. With
-    the recipe called <link
-    xlink:href="https://github.com/droolsjbpm/drools-planner/blob/master/drools-planner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
-    you can easily upgrade to a newer version and quickly deal with any backwards incompatible changes. That recipe file
-    is included in every release.</para>
   </section>
 
   <section xml:id="downloadAndRunTheExamples">
@@ -361,6 +351,28 @@ $ mvn -DskipTests clean install
 $ mvn exec:exec
 ...</programlisting>
     </section>
+  </section>
+
+  <section>
+    <title>Status of Drools Planner</title>
+
+    <para>Drools Planner is production ready. The API is almost stable but backward incompatible changes can occur. With
+    the recipe called <link
+    xlink:href="https://github.com/droolsjbpm/drools-planner/blob/master/drools-planner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
+    you can easily upgrade to a newer version and quickly deal with any backwards incompatible changes. That recipe file
+    is included in every release.</para>
+  </section>
+
+  <section xml:id="compatiblity">
+    <title>Compatibility</title>
+
+    <para>OptaPlanner is 100% pure Java<superscript>TM</superscript> and runs on any JVM 1.6 or higher.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Planner_introduction/compatibility.png"/>
+      </imageobject>
+    </mediaobject>
   </section>
 
   <section>
