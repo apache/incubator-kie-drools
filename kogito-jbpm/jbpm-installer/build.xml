@@ -196,7 +196,7 @@
   <target name="download.jBPM.bin" depends="download.jBPM.bin.check" if="jBPM.bin.not.available">
     <echo message="Getting jBPM binaries ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${jBPM.url}/jbpm-${jBPM.version}-bin.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-bin.zip"  />
+    <get src="${jBPM.url}" dest="${install.home}/lib/jbpm-${jBPM.version}-bin.zip"  />
   </target>
 
   <!-- Download Drools Guvnor -->
@@ -226,7 +226,7 @@
   <target name="download.designer" depends="download.designer.check" if="designer.not.available">
     <echo message="Getting Designer ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${designer.url}/jbpm-designer-${designer.version}.war" dest="${install.home}/lib/jbpm-designer-${designer.version}.war" />
+    <get src="${designer.url}" dest="${install.home}/lib/jbpm-designer-${designer.version}.war" />
   </target>
 
   <!-- Download jBPM and Drools Eclipse plugins -->
@@ -443,13 +443,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.db.files,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-console.into.jboss,install.jBPM.runtime" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.jBPM.runtime" />
   
   <!-- ############ START/STOP ############ -->
   <target name="start.h2.check">
