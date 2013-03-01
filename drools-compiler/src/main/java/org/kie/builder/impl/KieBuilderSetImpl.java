@@ -87,7 +87,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                                  InternalKieModule kieModule,
                                  String resourceName ) {
         byte[] bytes = kieModule.getBytes(resourceName);
-        if (bytes == null) {
+        if (bytes == null || bytes.length == 0) {
             return false;
         }
         Resource resource = KieServices.Factory.get().getResources().newByteArrayResource(bytes).setSourcePath(resourceName);
