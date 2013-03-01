@@ -67,7 +67,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
     private JTextArea descriptionTextArea;
 
     public DroolsPlannerExamplesApp() {
-        super("Drools Planner examples");
+        super("OptaPlanner examples");
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

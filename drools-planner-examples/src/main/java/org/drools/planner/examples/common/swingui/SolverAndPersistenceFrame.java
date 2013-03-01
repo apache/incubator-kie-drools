@@ -73,7 +73,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     private ShowConstraintScoreMapDialogAction showConstraintScoreMapDialogAction;
 
     public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
-        super(exampleName + " Drools Planner example");
+        super(exampleName + " OptaPlanner example");
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
         solutionPanel.setSolutionBusiness(solutionBusiness);

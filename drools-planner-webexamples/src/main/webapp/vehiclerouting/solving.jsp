@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drools Planner webexamples: vehicle routing</title>
+  <title>OptaPlanner webexamples: vehicle routing</title>
   <link href="<%=application.getContextPath()%>/twitterbootstrap/css/bootstrap.css" rel="stylesheet">
   <link href="<%=application.getContextPath()%>/twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet">
   <link href="<%=application.getContextPath()%>/website/css/droolsPlannerWebexamples.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 <div class="row-fluid">
 <div class="span2">
   <div class="benchmark-report-nav">
-    <a href="http://www.jboss.org/drools/drools-planner"><img src="../website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
+    <a href="http://www.jboss.org/drools/drools-planner"><img src="../website/img/droolsPlannerLogo.png" alt="OptaPlanner"/></a>
   </div>
 </div>
 <div class="span10">

@@ -56,7 +56,7 @@ public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter 
             solutionElement.addContent(schedulingPeriodIDElement);
 
             Element competitorElement = new Element("Competitor");
-            competitorElement.setText("Geoffrey De Smet with Drools Planner");
+            competitorElement.setText("Geoffrey De Smet with OptaPlanner");
             solutionElement.addContent(competitorElement);
 
             Element softConstraintsPenaltyElement = new Element("SoftConstraintsPenalty");

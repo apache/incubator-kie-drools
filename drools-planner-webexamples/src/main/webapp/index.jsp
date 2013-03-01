@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drools Planner webexamples</title>
+  <title>OptaPlanner webexamples</title>
   <link href="<%=application.getContextPath()%>/twitterbootstrap/css/bootstrap.css" rel="stylesheet">
   <link href="<%=application.getContextPath()%>/twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet">
   <link href="<%=application.getContextPath()%>/website/css/droolsPlannerWebexamples.css" rel="stylesheet">
@@ -18,12 +18,12 @@
 <div class="row-fluid">
 <div class="span2">
   <div class="benchmark-report-nav">
-    <a href="http://www.jboss.org/drools/drools-planner"><img src="website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
+    <a href="http://www.jboss.org/drools/drools-planner"><img src="website/img/droolsPlannerLogo.png" alt="OptaPlanner"/></a>
   </div>
 </div>
 <div class="span10">
   <header class="main-page-header">
-    <h1>Drools Planner web examples</h1>
+    <h1>OptaPlanner web examples</h1>
   </header>
   <p>Which example do you want to see?</p>
   <ul>
