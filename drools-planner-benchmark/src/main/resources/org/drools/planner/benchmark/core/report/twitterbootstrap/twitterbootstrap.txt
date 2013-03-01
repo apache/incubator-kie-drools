@@ -6,7 +6,7 @@ TODO: Remove inclusion as soon as it's available as a dependency on maven centra
 
 Twitter bootstrap version: 2.0.3
 Downloaded from: http://twitter.github.com/bootstrap/
-License: Apache License v2.0 (just like Drools Planner)
+License: Apache License v2.0 (just like OptaPlanner)
 
 jQuery version: 1.7.2
 Downloaded from: http://jquery.com/
@@ -14,4 +14,4 @@ License: MIT (which can be used by Apache License v2.0 projects)
 
 google-code-pretty version: 1-Jun-2011
 Downloaded from: http://code.google.com/p/google-code-prettify
-License: Apache License v2.0 (just like Drools Planner)
+License: Apache License v2.0 (just like OptaPlanner)
