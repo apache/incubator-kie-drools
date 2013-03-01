@@ -21,9 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.Agenda;
 import org.drools.common.InternalAgenda;
-import org.kie.runtime.rule.AgendaGroup;
 import org.kie.runtime.rule.RuleFlowGroup;
 
 public class RuleFlowGroupImpl implements RuleFlowGroup, Externalizable {
@@ -56,6 +54,10 @@ public class RuleFlowGroupImpl implements RuleFlowGroup, Externalizable {
 
     public void clear() {
         this.agenda.clearAndCancelRuleFlowGroup( this.name );
+    }
+    
+    public void setAutoDeactivate( boolean deactivate ) {
+        this.agenda.getRuleFlowGroup( this.name ).setAutoDeactivate( deactivate );
     }
 
 }
