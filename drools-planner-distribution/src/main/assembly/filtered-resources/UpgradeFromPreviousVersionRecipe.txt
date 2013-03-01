@@ -2803,3 +2803,7 @@ Everyone used setSimpleScoreCalculatorClass(...) instead, except maybe for score
 which can be done through the Solution (which enables real-time tweaking), see the InstitutionParametrization in the examples.
 Before in *ScoreDefinition.java:
     scoreDirectorFactoryConfig.setSimpleScoreCalculator(...);
+
+
+From 6.0.0.Alpha9 to 6.0.0.Beta1
+--------------------------------
