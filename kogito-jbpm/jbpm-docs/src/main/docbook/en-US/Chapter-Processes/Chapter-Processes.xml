@@ -1570,8 +1570,8 @@ WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
     
     </section>
       
-    <section>
-      <title>Multi-threading</title>
+    <section id="sec.multi-threading"> 
+      <title id="sec.multi-threading.title">Multi-threading</title>
    
     <para>In the following text, we will refer to two types of "multi-threading": 
     <emphasis>logical</emphasis> and <emphasis>technical</emphasis>. 

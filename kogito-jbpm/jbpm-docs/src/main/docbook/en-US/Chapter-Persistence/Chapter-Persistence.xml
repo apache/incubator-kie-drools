@@ -684,9 +684,8 @@ ut.commit();</programlisting>
     <section>
       <title>Persistence and concurrency</title>
 
-      <para>Please see the <emphasis>Multi-threading</emphasis> section of
-      <quote><link linkend='ch.core-basics' endterm="ch.core-basics.title"/></quote>
-      for more information.</para>
+      <para>Please see the <link linkend='sec.multi-threading'
+      endterm='sec.multi-threading.title'/> section for more information.</para>
 
     </section>
 

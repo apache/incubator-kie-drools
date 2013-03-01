@@ -129,7 +129,7 @@
 
     <para>The core jBPM engine is the heart of the project.  It's a light-weight workflow
     engine that executes your business processes.  It can be embedded as part of your application
-    or deployed as a service (possibly on the cloud).  It's most important features are the following:
+    or deployed as a service (possibly on the cloud).  Its most important features are the following:
       <itemizedlist>
         <listitem>Solid, stable core engine for executing your process instances.</listitem>
         <listitem>Native support for the latest BPMN 2.0 specification for modeling and
