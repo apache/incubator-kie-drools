@@ -30,8 +30,8 @@ import org.drools.planner.core.solver.ProblemFactChange;
  * A Solution does not even have to be initialized with a possible solution.
  * <p/>
  * A Solution is mutable.
- * Drools Planner will continuously modify the same solution for scalability reasons
- * and clone it to recall the best solution.
+ * For scalability reasons, the same Solution instance will be continuously modified.
+ * It's cloned to recall the best solution.
  */
 public interface Solution<S extends Score> {
 

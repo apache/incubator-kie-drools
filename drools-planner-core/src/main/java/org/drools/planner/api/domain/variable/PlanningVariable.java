@@ -30,7 +30,7 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a bean property should be optimized by Drools Planner.
+ * Specifies that a bean property can be changed and should be optimized by the optimization algorithms.
  * <p/>
  * It is specified on a getter of a java bean property of a {@link PlanningEntity} class.
  */
