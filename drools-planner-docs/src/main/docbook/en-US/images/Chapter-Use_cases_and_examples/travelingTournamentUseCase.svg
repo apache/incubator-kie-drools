@@ -13,7 +13,7 @@
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47pre4 r22446"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="travelingTournamentUseCase.svg"
    inkscape:export-filename="travelingTournamentUseCase.png"
    inkscape:export-xdpi="90"
@@ -1241,10 +1241,10 @@
      width="800px"
      borderlayer="true"
      gridtolerance="10"
-     inkscape:window-width="1280"
-     inkscape:window-height="948"
+     inkscape:window-width="1680"
+     inkscape:window-height="991"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
      inkscape:snap-bbox="false"
@@ -3685,7 +3685,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 387.35102,337.07711 3.33135,-7.96539 5.23255,6.86773 -8.5639,1.09766 z"
+       d="m 387.35102,337.07711 3.33135,-7.96539 5.23255,6.86773 z"
        transform="translate(11.509227,459.44269)" />
     <path
        sodipodi:type="star"
@@ -3701,7 +3701,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 394.24271,330.56304 -1.36484,7.7741 -6.05014,-5.06904 7.41498,-2.70506 z"
+       d="m 394.24271,330.56304 -1.36484,7.7741 -6.05014,-5.06904 z"
        transform="translate(30.648559,476.38273)" />
     <path
        sodipodi:type="star"
@@ -3717,7 +3717,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 393.4122,332.6031 -1.88582,3.99476 -2.51665,-3.63055 4.40247,-0.36421 z"
+       d="m 393.4122,332.6031 -1.88582,3.99476 -2.51665,-3.63055 z"
        transform="translate(73.650847,410.37272)" />
     <path
        sodipodi:type="star"
@@ -3733,7 +3733,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 391.50491,329.80779 3.39592,6.53597 -7.35828,-0.32703 3.96236,-6.20894 z"
+       d="m 391.50491,329.80779 3.39592,6.53597 -7.35828,-0.32703 z"
        transform="translate(73.41483,371.09556)" />
     <path
        sodipodi:type="star"
@@ -3749,7 +3749,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 391.3161,338.20999 -3.59738,-6.23085 7.19476,0 -3.59738,6.23085 z"
+       d="m 391.3161,338.20999 -3.59738,-6.23085 7.19476,0 z"
        transform="translate(53.967033,371.28438)" />
     <path
        sodipodi:type="star"
@@ -3765,7 +3765,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 392.09067,329.46696 2.81245,7.55449 -7.94861,-1.34159 5.13616,-6.2129 z"
+       d="m 392.09067,329.46696 2.81245,7.55449 -7.94861,-1.34159 z"
        transform="translate(111.44335,372.89522)" />
     <path
        sodipodi:type="star"
@@ -3781,7 +3781,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 391.50491,329.00533 4.09087,7.73966 -8.74817,-0.32703 4.6573,-7.41263 z"
+       d="m 391.50491,329.00533 4.09087,7.73966 -8.74817,-0.32703 z"
        transform="translate(102.07566,472.72446)" />
     <path
        sodipodi:type="star"
@@ -3797,7 +3797,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 391.35636,338.81276 -4.17978,-7.10014 8.23879,-0.0697 -4.05901,7.16986 z"
+       d="m 391.35636,338.81276 -4.17978,-7.10014 8.23879,-0.0697 z"
        transform="translate(38.309865,368.43332)" />
     <path
        sodipodi:type="star"
@@ -3813,7 +3813,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 387.35102,337.07711 3.33135,-7.96539 5.23255,6.86773 -8.5639,1.09766 z"
+       d="m 387.35102,337.07711 3.33135,-7.96539 5.23255,6.86773 z"
        transform="translate(-15.914921,454.64556)" />
     <path
        sodipodi:type="star"
@@ -3829,7 +3829,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 387.91746,337.54914 2.07289,-8.18289 6.05014,5.88663 -8.12303,2.29626 z"
+       d="m 387.91746,337.54914 2.07289,-8.18289 6.05014,5.88663 z"
        transform="translate(-21.086357,368.07454)" />
     <path
        sodipodi:type="star"
@@ -3845,7 +3845,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 391.42311,328.90216 4.30292,7.82357 -8.92687,-0.18535 4.62395,-7.63822 z"
+       d="m 391.42311,328.90216 4.30292,7.82357 -8.92687,-0.18535 z"
        transform="translate(84.802279,363.46002)" />
     <path
        sodipodi:type="star"
@@ -3861,7 +3861,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 394.09334,332.20394 -2.56185,5.18338 -3.20801,-4.81031 5.76986,-0.37307 z"
+       d="m 394.09334,332.20394 -2.56185,5.18338 -3.20801,-4.81031 z"
        transform="translate(79.662093,421.00341)" />
     <path
        sodipodi:type="star"
@@ -3877,7 +3877,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 394.15907,331.88474 -2.384,5.71911 -3.7609,-4.92416 6.1449,-0.79495 z"
+       d="m 394.15907,331.88474 -2.384,5.71911 -3.7609,-4.92416 z"
        transform="translate(34.519236,506.28607)" />
     <path
        sodipodi:type="star"
@@ -3893,7 +3893,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 389.28693,336.9436 0.5431,-6.08857 5.00131,3.51462 -5.54441,2.57395 z"
+       d="m 389.28693,336.9436 0.5431,-6.08857 5.00131,3.51462 z"
        transform="translate(64.041264,506.34271)" />
     <path
        sodipodi:type="star"
@@ -3909,7 +3909,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 389.15342,335.87551 1.66836,-4.60206 3.15132,3.74587 -4.81968,0.85619 z"
+       d="m 389.15342,335.87551 1.66836,-4.60206 3.15132,3.74587 z"
        transform="translate(84.067967,425.5161)" />
     <path
        sodipodi:type="star"
@@ -3925,7 +3925,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 393.95983,330.60181 -0.9741,7.47096 -5.98299,-4.57907 6.95709,-2.89189 z"
+       d="m 393.95983,330.60181 -0.9741,7.47096 -5.98299,-4.57907 z"
        transform="translate(-44.757136,353.44667)" />
     <path
        sodipodi:type="star"
@@ -3941,7 +3941,7 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 391.12729,338.06391 -3.18765,-6.17525 6.94174,0.32704 -3.75409,5.84821 z"
+       d="m 391.12729,338.06391 -3.18765,-6.17525 6.94174,0.32704 z"
        transform="translate(99.943135,364.29827)" />
     <flowRoot
        xml:space="preserve"
@@ -3955,7 +3955,7 @@
            x="19.045469"
            y="314.42111"
            style="font-size:24px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara6730-7">Drools Planner</flowPara></flowRoot>    <flowRoot
+         id="flowPara6730-7">OptaPlanner</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot6718-4-6"
        style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"

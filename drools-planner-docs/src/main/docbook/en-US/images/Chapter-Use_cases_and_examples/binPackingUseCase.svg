@@ -13,7 +13,7 @@
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.0 r9654"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="binPackingUseCase.svg"
    inkscape:export-filename="binPackingUseCase.png"
    inkscape:export-xdpi="90"
@@ -246,8 +246,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.1866667"
-     inkscape:cx="401.68539"
-     inkscape:cy="300"
+     inkscape:cx="428.50126"
+     inkscape:cy="283.94474"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -255,9 +255,9 @@
      borderlayer="true"
      gridtolerance="10"
      inkscape:window-width="1680"
-     inkscape:window-height="1000"
+     inkscape:window-height="991"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
      inkscape:snap-bbox="false">
@@ -280,7 +280,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -840,15 +840,15 @@
        xml:space="preserve"
        id="flowRoot4310"
        style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="translate(0,452.36218)"><flowRegion
+       transform="translate(0,464.1947)"><flowRegion
          id="flowRegion4312"><rect
            id="rect4314"
-           width="120.00018"
-           height="60.000019"
-           x="620"
+           width="139.99995"
+           height="60.000023"
+           x="610"
            y="230" /></flowRegion><flowPara
          id="flowPara4316"
-         style="font-size:22px">Drools Planner</flowPara></flowRoot>    <flowRoot
+         style="font-size:22px">OptaPlanner</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4318"
        style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"

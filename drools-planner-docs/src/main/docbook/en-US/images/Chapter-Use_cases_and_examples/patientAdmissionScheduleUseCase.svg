@@ -13,7 +13,7 @@
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47pre4 r22446"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="patientAdmissionScheduleUseCase.svg"
    inkscape:export-filename="patientAdmissionScheduleUseCase.png"
    inkscape:export-xdpi="90"
@@ -1248,10 +1248,10 @@
      width="800px"
      borderlayer="true"
      gridtolerance="10"
-     inkscape:window-width="1280"
-     inkscape:window-height="948"
+     inkscape:window-width="1680"
+     inkscape:window-height="991"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
      inkscape:snap-bbox="false"
@@ -1275,7 +1275,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1399,7 +1399,7 @@
            height="29.999964"
            width="280"
            id="rect3996" /></flowRegion><flowPara
-         id="flowPara3998">Drools Planner</flowPara></flowRoot>    <flowRoot
+         id="flowPara3998">OptaPlanner</flowPara></flowRoot>    <flowRoot
        transform="translate(327.44336,672.88101)"
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#a40000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot4272"
