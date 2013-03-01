@@ -1088,20 +1088,23 @@ end</programlisting>
     <section xml:id="scoreTrap">
       <title>Score trap</title>
 
-      <para>Be watchful for score traps. A score trap is a state in which several moves need to be done to resolve or
-      lower the weight of a single constraint occurrence. Some examples of score traps:</para>
+      <para>Make sure that none of your score constraints cause a score trap. A trapped score constraint uses the same
+      weight for different constraint occurrences, when it could just as easily use a different weight. It effectively
+      lumps its constraint occurrences together, which creates a flatlined score function for that constraint. This can
+      cause a solution state in which several moves need to be done to resolve or lower the weight of that single
+      constraint. Some examples of score traps:</para>
 
       <itemizedlist>
         <listitem>
-          <para>If you need 2 doctors at each table, but you're only moving 1 doctor at a time, then the solver has no
+          <para>If you need 2 doctors at each table, but you're only moving 1 doctor at a time. So the solver has no
           incentive to move a doctor to a table with no doctors. Punish a table with no doctors more then a table with
-          only 1 doctor in your score function.</para>
+          only 1 doctor in that score constraint in the score function.</para>
         </listitem>
 
         <listitem>
-          <para>If you only add the table as a cause of the ConstraintOccurrence and forget the jobType (which is doctor
-          or politician), then the solver has no incentive to move a doctor to table which is short of a doctor and a
-          politician.</para>
+          <para>2 exams needs to be conducted at the same time, but you're only move 1 exam at a time. So the solver has
+          a disincentive move one of those exams to another timeslot without moving the other in the same move. Add a
+          course-grained move that moves both exams at the same time. </para>
         </listitem>
       </itemizedlist>
 
@@ -1118,6 +1121,14 @@ end</programlisting>
       even more processes on the overloaded computer). Before they do that, they might actually start moving more
       processes into that overloaded computer, as there is no penalty for doing so.</para>
 
+      <note>
+        <para>Avoiding score traps does not mean that your score function should be smart enough to avoid local optima.
+        Leave it to the optimization algorithms to deal with the local optima.</para>
+
+        <para>Avoiding score traps means to avoid - for each score constraint individually - a flatlined score
+        function.</para>
+      </note>
+
       <important>
         <para>Always specify the degree of infeasibility. The business will often say: "if the solution is infeasible,
         it doesn't matter how infeasible it." While that's true for the business, it's not true for score calculation:
@@ -1125,9 +1136,28 @@ end</programlisting>
         just a matter of doing it for the hard constraints too.</para>
       </important>
 
-      <note>
-        <para>Mixing course-grained and fine-grained moves reduces the chance of hitting a score trap.</para>
-      </note>
+      <para>There are several ways to deal with a score trap:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Improve the score constraint to make a distinction in the score weight. For example: penalize
+          <literal>-1hard</literal> for every missing CPU, instead of just <literal>-1hard</literal> if any CPU is
+          missing.</para>
+        </listitem>
+
+        <listitem>
+          <para>If changing the score constraint is not allowed from the business perspective, add a lower score level
+          with a score constraint that makes such a distinction. For example: penalize <literal>-1subsoft</literal> for
+          every missing CPU, on top of <literal>-1hard</literal> if any CPU is missing. The business ignores the subsoft
+          score level.</para>
+        </listitem>
+
+        <listitem>
+          <para>Add course-grained moves and union select them with the existing fine-grained moves. A course-grained
+          move effectively does multiple moves to directly get out of a score trap with a single move. For example: move
+          multiple items from the same container to another container.</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section>
