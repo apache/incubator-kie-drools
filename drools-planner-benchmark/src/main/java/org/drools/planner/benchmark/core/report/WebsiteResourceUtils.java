@@ -44,7 +44,7 @@ public class WebsiteResourceUtils {
         copyResource(benchmarkReportDirectory, "twitterbootstrap/js/prettify.js");
         // Website resources
         copyResource(benchmarkReportDirectory, "website/css/benchmarkReport.css");
-        copyResource(benchmarkReportDirectory, "website/img/droolsPlannerLogo.png");
+        copyResource(benchmarkReportDirectory, "website/img/optaPlannerLogo.png");
     }
 
     private static void copyResource(File benchmarkReportDirectory, String websiteResource) {
