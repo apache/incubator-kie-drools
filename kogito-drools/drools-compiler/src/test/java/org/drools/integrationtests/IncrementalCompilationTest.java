@@ -274,4 +274,40 @@ public class IncrementalCompilationTest {
         assertEquals( 1, removeResults.getRemovedMessages().size() );
     }
 
+    @Test
+    @Ignore("Should a full build after incremental updates (with errors) show there are errors in the package")
+    public void testIncrementalCompilationAddErrorBuildAllMessages() throws Exception {
+        //Valid
+        String drl1 = "package org.drools\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        //Field is unknown ("mesage" not "message")
+        String drl2_1 = "package org.drools\n" +
+                "rule R2_1 when\n" +
+                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write( "src/main/resources/r1.drl", drl1 );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.builder.Message.Level.ERROR ).size() );
+
+        //Add file with error - expect 1 "added" error message
+        kfs.write( "src/main/resources/r2.drl", drl2_1 );
+        IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+
+        assertEquals( 1, addResults.getAddedMessages().size() );
+        assertEquals( 0, addResults.getRemovedMessages().size() );
+
+        //Check errors on a full build
+        assertEquals( 1, kieBuilder.buildAll().getResults().getMessages().size() );
+    }
+
 }
