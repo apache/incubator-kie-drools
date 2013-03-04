@@ -19,6 +19,8 @@ import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.ResultSeverity;
 import org.kie.io.Resource;
 
+import java.util.Arrays;
+
 /**
  * A base abstract class for all Knowledge Builder results
  *
@@ -57,4 +59,23 @@ public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilder
         return getClass().getSimpleName() + ": " + getMessage();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (getClass() != o.getClass()) return false;
+
+        KnowledgeBuilderResult that = (KnowledgeBuilderResult) o;
+
+        if (resource != null ? !resource.equals(that.getResource()) : that.getResource() != null) {
+            return false;
+        }
+
+        return getMessage().equals(that.getMessage()) && Arrays.equals(getLines(), that.getLines());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = (29 * getMessage().hashCode()) + (31 * Arrays.hashCode(getLines()));
+        return resource != null ? hash + (37 * resource.hashCode()) : hash;
+    }
 }

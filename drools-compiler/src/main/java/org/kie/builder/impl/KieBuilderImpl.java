@@ -73,6 +73,8 @@ public class KieBuilderImpl
 
     private Collection<KieModule> dependencies;
 
+    private KieBuilderSetImpl     kieBuilderSet;
+
     public KieBuilderImpl(File file) {
         this.srcMfs = new DiskResourceReader( file );
         init();
@@ -526,6 +528,9 @@ public class KieBuilderImpl
 
     @Override
     public KieBuilderSet createFileSet(String... files) {
-        return new KieBuilderSetImpl(this, files);
+        if (kieBuilderSet == null) {
+            kieBuilderSet = new KieBuilderSetImpl(this);
+        }
+        return kieBuilderSet.setFiles(files);
     }
 }
