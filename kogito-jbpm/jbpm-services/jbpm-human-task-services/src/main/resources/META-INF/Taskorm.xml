@@ -1241,7 +1241,7 @@ where
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
  
-	  <named-query name="UnescalatedDeadlines">
+	  <named-query name="UnescalatedEndDeadlines">
           <query>
 select
      new org.jbpm.task.query.DeadlineSummary(
@@ -1253,7 +1253,27 @@ from
     Deadline d
 where
     t.archived = 0 and
-    (d in elements( t.deadlines.startDeadlines ) or d in elements( t.deadlines.endDeadlines ) ) and
+    d in elements( t.deadlines.endDeadlines ) and
+    d.escalated = 0
+order by
+    d.date
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
+          <named-query name="UnescalatedStartDeadlines">
+          <query>
+select
+     new org.jbpm.task.query.DeadlineSummary(
+     t.id,
+     d.id,
+     d.date)
+from
+    Task t,
+    Deadline d
+where
+    t.archived = 0 and
+    d in elements( t.deadlines.startDeadlines ) and
     d.escalated = 0
 order by
     d.date

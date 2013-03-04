@@ -32,6 +32,7 @@ import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskDeadlinesService;
+import org.jbpm.task.api.TaskDeadlinesService.DeadlineType;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
 
@@ -100,7 +101,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
         instanceService.complete(taskId, userId, data);
-        clearDeadlines(taskId);
+        clearDeadlines(taskId, true, true);
     }
 
     public void delegate(long taskId, String userId, String targetUserId) {
@@ -117,12 +118,12 @@ public class DeadlinesDecorator implements TaskInstanceService {
 
     public void exit(long taskId, String userId) {
         instanceService.exit(taskId, userId);
-        clearDeadlines(taskId);
+        clearDeadlines(taskId, true, true);
     }
 
     public void fail(long taskId, String userId, Map<String, Object> faultData) {
         instanceService.fail(taskId, userId, faultData);
-        clearDeadlines(taskId);
+        clearDeadlines(taskId, true, true);
     }
 
     public void forward(long taskId, String userId, String targetEntityId) {
@@ -155,11 +156,12 @@ public class DeadlinesDecorator implements TaskInstanceService {
 
     public void skip(long taskId, String userId) {
         instanceService.skip(taskId, userId);
-        clearDeadlines(taskId);
+        clearDeadlines(taskId, true, true);
     }
 
     public void start(long taskId, String userId) {
         instanceService.start(taskId, userId);
+        clearDeadlines(taskId, true, false);
     }
 
     public void stop(long taskId, String userId) {
@@ -180,47 +182,53 @@ public class DeadlinesDecorator implements TaskInstanceService {
         final List<Deadline> startDeadlines = task.getDeadlines().getStartDeadlines();
 
         if (startDeadlines != null) {
-            scheduleDeadlines(startDeadlines, now, task.getId());
+            scheduleDeadlines(startDeadlines, now, task.getId(), DeadlineType.START);
         }
 
         final List<Deadline> endDeadlines = task.getDeadlines().getEndDeadlines();
 
         if (endDeadlines != null) {
-            scheduleDeadlines(endDeadlines, now, task.getId());
+            scheduleDeadlines(endDeadlines, now, task.getId(), DeadlineType.END);
         }
     }
 
-    private void scheduleDeadlines(final List<Deadline> deadlines, final long now, final long taskId) {
+    private void scheduleDeadlines(final List<Deadline> deadlines, final long now, final long taskId, DeadlineType type) {
         for (Deadline deadline : deadlines) {
             if (!deadline.isEscalated()) {
                 // only escalate when true - typically this would only be true
                 // if the user is requested that the notification should never be escalated
                 Date date = deadline.getDate();
-                deadlineService.schedule(taskId, deadline.getId(), date.getTime() - now);
+                deadlineService.schedule(taskId, deadline.getId(), date.getTime() - now, type);
             }
         }
     }
 
-    private void clearDeadlines(final long taskId) {
+    private void clearDeadlines(final long taskId, boolean removeStart, boolean removeEnd) {
         Task task = queryService.getTaskInstanceById(taskId);
         if (task.getDeadlines() == null) {
             return;
         }
 
         Iterator<Deadline> it = null;
-        if (task.getDeadlines().getStartDeadlines() != null) {
-            it = task.getDeadlines().getStartDeadlines().iterator();
-            while (it.hasNext()) {
-                em.remove(it.next());
-                it.remove();
+        if (removeStart) {
+            if (task.getDeadlines().getStartDeadlines() != null) {
+                it = task.getDeadlines().getStartDeadlines().iterator();
+                while (it.hasNext()) {
+                    deadlineService.unschedule(taskId, DeadlineType.START);
+                    em.remove(it.next());
+                    it.remove();
+                }
             }
         }
 
-        if (task.getDeadlines().getEndDeadlines() != null) {
-            it = task.getDeadlines().getEndDeadlines().iterator();
-            while (it.hasNext()) {
-                em.remove(it.next());
-                it.remove();
+        if (removeEnd) {
+            if (task.getDeadlines().getEndDeadlines() != null) {
+                it = task.getDeadlines().getEndDeadlines().iterator();
+                while (it.hasNext()) {
+                    deadlineService.unschedule(taskId, DeadlineType.END);
+                    em.remove(it.next());
+                    it.remove();
+                }
             }
         }
     }

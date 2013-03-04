@@ -20,11 +20,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+
 import org.jbpm.task.Group;
 import org.jbpm.task.OrganizationalEntity;
 
 import org.jbpm.task.UserInfo;
 
+@Alternative
+@ApplicationScoped
 public class MockUserInfo implements UserInfo {
 
     private Map<Group, List<OrganizationalEntity>> groups = new HashMap<Group, List<OrganizationalEntity>>();

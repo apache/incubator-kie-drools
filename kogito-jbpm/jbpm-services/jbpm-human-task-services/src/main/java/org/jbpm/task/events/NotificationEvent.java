@@ -16,6 +16,8 @@
 package org.jbpm.task.events;
 
 import java.io.Serializable;
+import java.util.Map;
+
 import org.jbpm.task.Content;
 import org.jbpm.task.Notification;
 import org.jbpm.task.Task;
@@ -26,12 +28,12 @@ import org.jbpm.task.Task;
 public class NotificationEvent implements Serializable{
     private Notification notification;
     private Task task;
-    private Content content;
+    private Map<String, Object> variables;
 
-    public NotificationEvent(Notification notification, Task task, Content content) {
+    public NotificationEvent(Notification notification, Task task, Map<String, Object> variables) {
         this.notification = notification;
         this.task = task;
-        this.content = content;
+        this.variables = variables;
     }
 
     public Notification getNotification() {
@@ -50,12 +52,12 @@ public class NotificationEvent implements Serializable{
         this.task = task;
     }
 
-    public Content getContent() {
-        return content;
+    public Map<String, Object> getContent() {
+        return variables;
     }
 
-    public void setContent(Content content) {
-        this.content = content;
+    public void setContent(Map<String, Object> variables) {
+        this.variables = variables;
     }
     
     
