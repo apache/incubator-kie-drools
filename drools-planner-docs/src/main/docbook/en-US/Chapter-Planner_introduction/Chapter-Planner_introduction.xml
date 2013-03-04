@@ -10,9 +10,8 @@
   <section>
     <title>What is Drools Planner?</title>
 
-    <para><emphasis role="bold"><link xlink:href="http://www.optaplanner.org">OptaPlanner</link> is a
-    lightweight, embeddable planning engine that optimizes planning problems.</emphasis> It solves use cases, such
-    as:</para>
+    <para><emphasis role="bold"><link xlink:href="http://www.optaplanner.org">OptaPlanner</link> is a lightweight,
+    embeddable planning engine that optimizes planning problems.</emphasis> It solves use cases, such as:</para>
 
     <itemizedlist>
       <listitem>
@@ -59,15 +58,21 @@
       </listitem>
     </itemizedlist>
 
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Planner_introduction/useCaseOverview.png"/>
+      </imageobject>
+    </mediaobject>
+
     <para>Every organization faces planning problems: provide products and services with a limited set of
     <emphasis>constrained</emphasis> resources (employees, assets, time and money). This is known as
     <emphasis>Constraint Satisfaction Programming</emphasis> (which is part of the discipline <emphasis>Operations
     Research</emphasis>).</para>
 
-    <para>Drools Planner helps normal Java<superscript>TM</superscript> programmers solve planning problems efficiently.
+    <para>OptaPlanner helps normal Java<superscript>TM</superscript> programmers solve planning problems efficiently.
     Under the hood, it combines optimization heuristics and metaheuristics with very efficient score calculation.</para>
 
-    <para>Drools Planner, like the rest of Drools, is <emphasis>open source</emphasis> software under <link
+    <para>OptaPlanner is <emphasis>open source</emphasis> software under <link
     xlink:href="http://www.apache.org/licenses/LICENSE-2.0">the Apache Software License 2.0</link> (<link
     xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">layman's explanation</link>). It is
     100% pure Java<superscript>TM</superscript> and runs on <link xlink:href="compatibility">any JVM</link>.</para>
@@ -208,8 +213,8 @@
 
       <itemizedlist>
         <listitem>
-          <para>Download a release zip of OptaPlanner from <link
-          xlink:href="http://www.optaplanner.org">the OptaPlanner website</link>.</para>
+          <para>Download a release zip of OptaPlanner from <link xlink:href="http://www.optaplanner.org">the OptaPlanner
+          website</link>.</para>
         </listitem>
 
         <listitem>
