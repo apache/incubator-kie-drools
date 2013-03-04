@@ -2304,6 +2304,13 @@ From 5.5.0.Final to 6.0.0.Alpha7
 [README] Starting from 6.1.0.Final, planner will have a backwards compatible API.
 As preparation for that, every part of the API is being reviewed.
 
+[RECOMMENDED] Don't directly upgrade the jars to 6.0.0.Final.
+In 6.0.0.Beta1, Drools Planner has been renamed to OptaPlanner.
+Instead, upgrade the jars to 6.0.0.Alpha9 first.
+Once that compiles, immediately upgrade the jars to your desired version and continue following the upgrade recipe.
+The 6.0.0.Alpha9 jars are available in the maven repository and in this zip:
+  https://repository.jboss.org/nexus/content/groups/public/org/drools/planner/drools-planner-distribution/6.0.0.Alpha9/drools-planner-distribution-6.0.0.Alpha9.zip
+
 [README] ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY now works. The regression in 5.5 from 5.4 has been fixed.
 
 [RECOMMENDED] Planning variables can now have a null value when initialized.
