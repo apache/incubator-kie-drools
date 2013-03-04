@@ -180,7 +180,6 @@ public class IncrementalCompilationTest {
     }
 
     @Test
-    @Ignore("Successive uses of incremental builds does not return expect messages")
     public void testIncrementalCompilationAddErrorThenRemoveError() throws Exception {
         //Valid
         String drl1 = "package org.drools\n" +
@@ -227,7 +226,6 @@ public class IncrementalCompilationTest {
     }
 
     @Test
-    @Ignore("Successive uses of incremental builds does not return expect messages")
     public void testIncrementalCompilationAddTwoErrorsThenRemove1Error() throws Exception {
         //Fact Type is unknown ("Mesage" not "Message")
         String drl1 = "package org.drools\n" +
@@ -275,7 +273,6 @@ public class IncrementalCompilationTest {
     }
 
     @Test
-    @Ignore("Should a full build after incremental updates (with errors) show there are errors in the package")
     public void testIncrementalCompilationAddErrorBuildAllMessages() throws Exception {
         //Valid
         String drl1 = "package org.drools\n" +
@@ -307,7 +304,7 @@ public class IncrementalCompilationTest {
         assertEquals( 0, addResults.getRemovedMessages().size() );
 
         //Check errors on a full build
-        assertEquals( 1, kieBuilder.buildAll().getResults().getMessages().size() );
+        assertEquals( 1, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size() );
     }
 
 }
