@@ -10,7 +10,7 @@
   <section>
     <title>What is Drools Planner?</title>
 
-    <para><emphasis role="bold"><link xlink:href="http://www.jboss.org/drools/drools-planner">Drools Planner</link> is a
+    <para><emphasis role="bold"><link xlink:href="http://www.optaplanner.org">OptaPlanner</link> is a
     lightweight, embeddable planning engine that optimizes planning problems.</emphasis> It solves use cases, such
     as:</para>
 
@@ -208,8 +208,8 @@
 
       <itemizedlist>
         <listitem>
-          <para>Download a release zip of Drools Planner from <link
-          xlink:href="http://www.jboss.org/drools/downloads.html">the Drools download site</link>.</para>
+          <para>Download a release zip of OptaPlanner from <link
+          xlink:href="http://www.optaplanner.org">the OptaPlanner website</link>.</para>
         </listitem>
 
         <listitem>

@@ -23,7 +23,7 @@
 <div class="row-fluid">
 <div class="span2">
   <div class="benchmark-report-nav">
-    <a href="http://www.jboss.org/drools/drools-planner"><img src="../website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
+    <a href="http://www.optaplanner.org"><img src="../website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
   </div>
 </div>
 <div class="span10">

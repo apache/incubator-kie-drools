@@ -6,11 +6,11 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
   <info>
-    <title>Drools Planner User Guide</title>
+    <title>OptaPlanner User Guide</title>
     <releaseinfo>Version &project.version;</releaseinfo>
     <authorgroup>
       <author>
-        <orgname><link xlink:href="http://www.jboss.org/drools/team.html">The JBoss Drools team</link></orgname>
+        <orgname><link xlink:href="http://www.optaplanner.org/community/team.html">The OptaPlanner team</link></orgname>
       </author>
     </authorgroup>
 
