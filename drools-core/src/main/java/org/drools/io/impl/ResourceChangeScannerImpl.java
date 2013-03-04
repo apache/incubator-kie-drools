@@ -185,7 +185,7 @@ public class ResourceChangeScannerImpl
                             }
                             changeSet.getResourcesRemoved().add( resource );
                         }
-                    } else if ( lastRead < lastModified && lastRead >= 0 ) {
+                    } else if ( lastRead < lastModified ) {
                         this.listener.debug( "ResourceChangeScanner modified resource=" + resource + " : " + lastRead + " : " + lastModified );
                         // it's modified
                         // iterate notifiers for this resource and add to each
