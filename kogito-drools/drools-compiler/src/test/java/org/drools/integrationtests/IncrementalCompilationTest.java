@@ -1,6 +1,7 @@
 package org.drools.integrationtests;
 
 import org.drools.Message;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieServices;
 import org.kie.builder.IncrementalResults;
@@ -177,4 +178,100 @@ public class IncrementalCompilationTest {
         ksession.insert(new Message("Hello World"));
         assertEquals( 2, ksession.fireAllRules() );
     }
+
+    @Test
+    @Ignore("Successive uses of incremental builds does not return expect messages")
+    public void testIncrementalCompilationAddErrorThenRemoveError() throws Exception {
+        //Valid
+        String drl1 = "package org.drools\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        //Field is unknown ("mesage" not "message")
+        String drl2_1 = "package org.drools\n" +
+                "rule R2_1 when\n" +
+                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        //Valid
+        String drl2_2 = "package org.drools\n" +
+                "rule R2_2 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write( "src/main/resources/r1.drl", drl1 );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.builder.Message.Level.ERROR ).size() );
+
+        //Add file with error - expect 1 "added" error message
+        kfs.write( "src/main/resources/r2.drl", drl2_1 );
+        IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+
+        assertEquals( 1, addResults.getAddedMessages().size() );
+        assertEquals( 0, addResults.getRemovedMessages().size() );
+
+        //Update flawed file with correct version - expect 0 "added" error messages and removal of 1 previous error
+        kfs.write( "src/main/resources/r2.drl", drl2_2 );
+        IncrementalResults removeResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+
+        assertEquals( 0, removeResults.getAddedMessages().size() );
+        assertEquals( 1, removeResults.getRemovedMessages().size() );
+    }
+
+    @Test
+    @Ignore("Successive uses of incremental builds does not return expect messages")
+    public void testIncrementalCompilationAddTwoErrorsThenRemove1Error() throws Exception {
+        //Fact Type is unknown ("Mesage" not "Message")
+        String drl1 = "package org.drools\n" +
+                "rule R1 when\n" +
+                "   $m : Mesage()\n" +
+                "then\n" +
+                "end\n";
+
+        //Field is unknown ("mesage" not "message")
+        String drl2_1 = "package org.drools\n" +
+                "rule R2_1 when\n" +
+                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        //Valid
+        String drl2_2 = "package org.drools\n" +
+                "rule R2_2 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write( "src/main/resources/r1.drl", drl1 );
+
+        //Initial file contains errors
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 1, kieBuilder.getResults().getMessages( org.kie.builder.Message.Level.ERROR ).size() );
+
+        //Add file with error - expect 1 "added" error message
+        kfs.write( "src/main/resources/r2.drl", drl2_1  );
+        IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+
+        assertEquals( 1, addResults.getAddedMessages().size() );
+        assertEquals( 0, addResults.getRemovedMessages().size() );
+
+        //Update flawed file with correct version - expect 0 "added" error messages and removal of 1 previous error relating to updated file
+        kfs.write( "src/main/resources/r2.drl", drl2_2 );
+        IncrementalResults removeResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+
+        assertEquals( 0, removeResults.getAddedMessages().size() );
+        assertEquals( 1, removeResults.getRemovedMessages().size() );
+    }
+
 }
