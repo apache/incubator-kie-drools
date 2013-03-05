@@ -11,8 +11,8 @@
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
 
-  <groupId>org.drools.planner</groupId>
-  <artifactId>drools-planner</artifactId>
+  <groupId>org.optaplanner</groupId>
+  <artifactId>optaplanner</artifactId>
   <packaging>pom</packaging>
 
   <name>OptaPlanner multiproject</name>
@@ -42,16 +42,16 @@
   </repositories>
 
   <scm>
-    <connection>scm:git:git@github.com:droolsjbpm/drools-planner.git</connection>
-    <developerConnection>scm:git:git@github.com:droolsjbpm/drools-planner.git</developerConnection>
-    <url>https://github.com/droolsjbpm/drools-planner</url>
+    <connection>scm:git:git@github.com:droolsjbpm/optaplanner.git</connection>
+    <developerConnection>scm:git:git@github.com:droolsjbpm/optaplanner.git</developerConnection>
+    <url>https://github.com/droolsjbpm/optaplanner</url>
   </scm>
 
   <modules>
-    <module>drools-planner-core</module>
-    <module>drools-planner-benchmark</module>
-    <module>drools-planner-examples</module>
-    <module>drools-planner-webexamples</module>
+    <module>optaplanner-core</module>
+    <module>optaplanner-benchmark</module>
+    <module>optaplanner-examples</module>
+    <module>optaplanner-webexamples</module>
   </modules>
 
   <profiles>
@@ -63,8 +63,8 @@
         </property>
       </activation>
       <modules>
-        <module>drools-planner-docs</module>
-        <module>drools-planner-distribution</module>
+        <module>optaplanner-docs</module>
+        <module>optaplanner-distribution</module>
       </modules>
     </profile>
   </profiles>

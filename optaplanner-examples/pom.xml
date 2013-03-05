@@ -4,17 +4,17 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools.planner</groupId>
-    <artifactId>drools-planner</artifactId>
+    <groupId>org.optaplanner</groupId>
+    <artifactId>optaplanner</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-planner-examples</artifactId>
+  <artifactId>optaplanner-examples</artifactId>
 
   <name>Drools Planner examples</name>
   <description>
     Drools Planner optimizes automated planning by combining metaheuristic search algorithms with rule
-    engine powered score calculation. This is the drools-planner-examples module which contains examples on how to use
+    engine powered score calculation. This is the optaplanner-examples module which contains examples on how to use
     Drools Planner.
   </description>
 
@@ -76,12 +76,12 @@
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-core</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-benchmark</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-benchmark</artifactId>
     </dependency>
     <!-- External dependencies -->
     <!-- Commons -->
@@ -108,7 +108,7 @@
     <!-- Examples only dependencies. -->
     <!--
       WARNING: every examples only dependency must be properly dealt with in
-      drools-planner-distribution/src/main/assembly/assembly-drools-planner.xml
+      optaplanner-distribution/src/main/assembly/assembly-optaplanner.xml
     -->
     <!-- Converters -->
     <dependency>

@@ -4,12 +4,12 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools.planner</groupId>
-    <artifactId>drools-planner</artifactId>
+    <groupId>org.optaplanner</groupId>
+    <artifactId>optaplanner</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-planner-distribution</artifactId>
+  <artifactId>optaplanner-distribution</artifactId>
   <packaging>pom</packaging>
 
   <name>Drools Planner distribution</name>
@@ -33,9 +33,9 @@
               <reportOutputDirectory>${project.build.directory}/aggregated-javadocs</reportOutputDirectory>
               <includeDependencySources>true</includeDependencySources>
               <dependencySourceIncludes>
-                <dependencySourceInclude>org.drools.planner:drools-planner-core</dependencySourceInclude>
-                <dependencySourceInclude>org.drools.planner:drools-planner-benchmark</dependencySourceInclude>
-                <!-- TODO apparently drools-planner-examples gets included too somehow? -->
+                <dependencySourceInclude>org.drools.planner:optaplanner-core</dependencySourceInclude>
+                <dependencySourceInclude>org.drools.planner:optaplanner-benchmark</dependencySourceInclude>
+                <!-- TODO apparently optaplanner-examples gets included too somehow? -->
               </dependencySourceIncludes>
             </configuration>
           </execution>
@@ -54,7 +54,7 @@
         </executions>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/assembly-drools-planner.xml</descriptor>
+            <descriptor>src/main/assembly/assembly-optaplanner.xml</descriptor>
           </descriptors>
           <appendAssemblyId>false</appendAssemblyId> 
         </configuration>
@@ -65,49 +65,49 @@
   <dependencies>
     <!-- Binaries and sources -->
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-core</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-core</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-benchmark</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-benchmark</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-benchmark</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-benchmark</artifactId>
       <classifier>sources</classifier>
     </dependency>
 
     <!-- Examples -->
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-examples</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-examples</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-examples</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-examples</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-webexamples</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-webexamples</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-webexamples</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-webexamples</artifactId>
       <classifier>sources</classifier>
     </dependency>
 
     <!-- Documentation -->
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-docs</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-docs</artifactId>
       <type>jdocbook</type>
     </dependency>
   </dependencies>

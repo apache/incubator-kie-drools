@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>drools-planner-examples</name>
+  <name>optaplanner-examples</name>
   <projects/>
   <buildSpec>
     <buildCommand>

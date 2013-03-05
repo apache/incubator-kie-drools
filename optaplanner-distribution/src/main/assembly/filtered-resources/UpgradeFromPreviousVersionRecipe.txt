@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Drools Planner isn't always backwards compatible at this time.
+OptaPlanner isn't always backwards compatible at this time.
 This file describes how can you upgrade from earlier versions to the latest.
 
 Starting from 5.1.0, every migration change has an indication

@@ -4,25 +4,25 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools.planner</groupId>
-    <artifactId>drools-planner</artifactId>
+    <groupId>org.optaplanner</groupId>
+    <artifactId>optaplanner</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-planner-benchmark</artifactId>
+  <artifactId>optaplanner-benchmark</artifactId>
 
   <name>Drools Planner Benchmark</name>
   <description>
     Drools Planner optimizes automated planning by combining metaheuristic search algorithms with rule
-    engine powered score calculation. This is the drools-planner-benchmark module which contains the benchmarker
+    engine powered score calculation. This is the optaplanner-benchmark module which contains the benchmarker
     tool.
   </description>
 
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-core</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
     </dependency>
     <!-- External dependencies -->
     <!-- Commons -->

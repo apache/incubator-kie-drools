@@ -2,7 +2,7 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 
-  <id>assembly-drools-planner</id>
+  <id>assembly-optaplanner</id>
   <formats>
     <format>dir</format>
     <format>zip</format>
@@ -48,7 +48,7 @@
     </fileSet>
     <!-- Examples -->
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-      <directory>../drools-planner-examples/data</directory>
+      <directory>../optaplanner-examples/data</directory>
       <outputDirectory>examples/data</outputDirectory>
       <includes>
         <include>**/input/*.*</include>
@@ -58,7 +58,7 @@
       </includes>
     </fileSet>
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-      <directory>../drools-planner-examples</directory>
+      <directory>../optaplanner-examples</directory>
       <outputDirectory>examples/sources</outputDirectory>
       <excludes>
         <exclude>data/**</exclude>
@@ -73,7 +73,7 @@
       </excludes>
     </fileSet>
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-      <directory>../drools-planner-webexamples</directory>
+      <directory>../optaplanner-webexamples</directory>
       <outputDirectory>webexamples/sources</outputDirectory>
       <excludes>
         <exclude>target/**</exclude>
@@ -91,10 +91,10 @@
   <dependencySets>
     <dependencySet>
       <excludes>
-        <exclude>org.drools.planner:drools-planner-examples</exclude>
-        <exclude>org.drools.planner:drools-planner-webexamples</exclude>
+        <exclude>org.optaplanner:optaplanner-examples</exclude>
+        <exclude>org.optaplanner:optaplanner-webexamples</exclude>
         <exclude>org.jdom:jdom</exclude>
-        <exclude>org.drools.planner:drools-planner-docs</exclude>
+        <exclude>org.optaplanner:optaplanner-docs</exclude>
         <exclude>*:sources</exclude>
       </excludes>
       <outputDirectory>binaries</outputDirectory>
@@ -102,7 +102,7 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools.planner:drools-planner-examples:jar</include>
+        <include>org.optaplanner:optaplanner-examples:jar</include>
         <include>org.jdom:jdom:jar</include>
       </includes>
       <excludes>
@@ -113,18 +113,18 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools.planner:drools-planner-webexamples:war</include>
+        <include>org.optaplanner:optaplanner-webexamples:war</include>
       </includes>
       <outputDirectory>webexamples/binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools.planner:*:jar:sources</include>
+        <include>org.optaplanner:*:jar:sources</include>
       </includes>
       <excludes>
-        <exclude>org.drools.planner:drools-planner-examples:jar:sources</exclude>
-        <exclude>org.drools.planner:drools-planner-webexamples:jar:sources</exclude>
+        <exclude>org.optaplanner:optaplanner-examples:jar:sources</exclude>
+        <exclude>org.optaplanner:optaplanner-webexamples:jar:sources</exclude>
       </excludes>
       <outputDirectory>sources</outputDirectory>
       <unpack>false</unpack>
@@ -133,7 +133,7 @@
     <!-- Reference manual -->
     <dependencySet>
       <includes>
-        <include>org.drools.planner:drools-planner-docs:jdocbook</include>
+        <include>org.optaplanner:optaplanner-docs:jdocbook</include>
       </includes>
       <outputDirectory>reference_manual</outputDirectory>
       <!-- Workaround for https://jira.codehaus.org/browse/MASSEMBLY-557 -->

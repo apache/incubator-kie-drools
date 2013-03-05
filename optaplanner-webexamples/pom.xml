@@ -4,34 +4,34 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools.planner</groupId>
-    <artifactId>drools-planner</artifactId>
+    <groupId>org.optaplanner</groupId>
+    <artifactId>optaplanner</artifactId>
     <version>6.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-planner-webexamples</artifactId>
+  <artifactId>optaplanner-webexamples</artifactId>
   <packaging>war</packaging>
 
   <name>Drools Planner webexamples</name>
   <description>
     Drools Planner optimizes automated planning by combining metaheuristic search algorithms with rule
-    engine powered score calculation. This is the drools-planner-webexamples module which contains web examples
+    engine powered score calculation. This is the optaplanner-webexamples module which contains web examples
     on how to use Drools Planner in a war file.
   </description>
 
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-core</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-benchmark</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-benchmark</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-examples</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-examples</artifactId>
     </dependency>
     <!-- External dependencies -->
     <!-- Commons -->
