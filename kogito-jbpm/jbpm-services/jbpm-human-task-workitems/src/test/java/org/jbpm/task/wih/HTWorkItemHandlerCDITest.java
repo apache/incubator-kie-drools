@@ -22,7 +22,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.process.SessionManager;
+import org.jbpm.shared.services.api.SessionManager;
 import org.jbpm.task.test.TestStatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;

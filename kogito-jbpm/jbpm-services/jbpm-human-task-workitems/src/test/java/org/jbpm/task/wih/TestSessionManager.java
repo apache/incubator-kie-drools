@@ -3,7 +3,7 @@ package org.jbpm.task.wih;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jbpm.process.SessionManager;
+import org.jbpm.shared.services.api.SessionManager;
 import org.jbpm.task.test.TestStatefulKnowledgeSession;
 import org.kie.runtime.KieSession;
 

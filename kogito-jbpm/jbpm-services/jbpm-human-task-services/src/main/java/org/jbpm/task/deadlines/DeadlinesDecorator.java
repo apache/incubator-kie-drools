@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.Deadline;
+import org.jbpm.task.Deadlines;
 import org.jbpm.task.FaultData;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
@@ -178,17 +179,20 @@ public class DeadlinesDecorator implements TaskInstanceService {
 
     private void scheduleDeadlinesForTask(final Task task) {
         final long now = System.currentTimeMillis();
-
-        final List<Deadline> startDeadlines = task.getDeadlines().getStartDeadlines();
-
-        if (startDeadlines != null) {
-            scheduleDeadlines(startDeadlines, now, task.getId(), DeadlineType.START);
-        }
-
-        final List<Deadline> endDeadlines = task.getDeadlines().getEndDeadlines();
-
-        if (endDeadlines != null) {
-            scheduleDeadlines(endDeadlines, now, task.getId(), DeadlineType.END);
+        Deadlines deadlines = task.getDeadlines();
+        
+        if (deadlines != null) {
+            final List<Deadline> startDeadlines = deadlines.getStartDeadlines();
+    
+            if (startDeadlines != null) {
+                scheduleDeadlines(startDeadlines, now, task.getId(), DeadlineType.START);
+            }
+    
+            final List<Deadline> endDeadlines = deadlines.getEndDeadlines();
+    
+            if (endDeadlines != null) {
+                scheduleDeadlines(endDeadlines, now, task.getId(), DeadlineType.END);
+            }
         }
     }
 

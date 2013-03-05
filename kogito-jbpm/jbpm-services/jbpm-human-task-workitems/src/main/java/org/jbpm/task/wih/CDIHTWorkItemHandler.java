@@ -23,7 +23,7 @@ import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.process.SessionManager;
+import org.jbpm.shared.services.api.SessionManager;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.Task;
 import org.jbpm.task.annotations.External;

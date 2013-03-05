@@ -27,7 +27,7 @@ import org.kie.runtime.process.WorkItemHandler;
  * enhancements. 
  * @author salaboy
  */
-public interface ServicesSessionManager extends org.jbpm.process.SessionManager {
+public interface ServicesSessionManager extends org.jbpm.shared.services.api.SessionManager {
 
     void setDomain(Domain domain);
     

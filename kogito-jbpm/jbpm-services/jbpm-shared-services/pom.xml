@@ -100,7 +100,12 @@
       <artifactId>commons-vfs</artifactId>
       <version>1.0</version>
     </dependency>
-   
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+      <type>jar</type>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

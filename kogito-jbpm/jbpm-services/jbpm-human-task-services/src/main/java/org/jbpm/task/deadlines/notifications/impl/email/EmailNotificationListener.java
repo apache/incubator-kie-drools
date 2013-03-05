@@ -30,7 +30,6 @@ import javax.activation.DataHandler;
 import javax.activation.MimetypesFileTypeMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.mail.Message;
 import javax.mail.Multipart;
@@ -42,6 +41,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.jbpm.shared.services.cdi.Startup;
 import org.jbpm.task.EmailNotification;
 import org.jbpm.task.EmailNotificationHeader;
 import org.jbpm.task.Group;
@@ -55,26 +55,39 @@ import org.jbpm.task.events.NotificationEvent;
 import org.mvel2.templates.TemplateRuntime;
 
 @ApplicationScoped
+@Startup
 public class EmailNotificationListener implements NotificationListener {
 
     @Inject
-    private Instance<UserInfo> userInfoInstance;
+    private UserInfo userInfoInstance;
     
     @Inject
-    private Session mailSession;
+    private Session mailSessionInstance;
     
     protected UserInfo getUserInfo() {        
-        return userInfoInstance.get();
+        try {
+            return userInfoInstance;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    protected Session getSession() {  
+        try {
+        return mailSessionInstance;
+        } catch (Exception e) {
+            return null;
+        }
     }
     
     @Override
     public void onNotification(@Observes NotificationEvent event) {
-        
-        if (userInfoInstance == null || mailSession == null) {
+        UserInfo userInfo = getUserInfo();
+        Session mailSession = getSession();
+        if (userInfo == null || mailSession == null) {
             System.err.println("Cannot proceed with notifications as not all requirements are meet - mail session or userinfo is not available.");
             return;
         }
-        UserInfo userInfo = getUserInfo();
         
         if (event.getNotification() instanceof EmailNotification) {
   
@@ -181,7 +194,7 @@ public class EmailNotificationListener implements NotificationListener {
                     
                     msg.setHeader( "X-Mailer", "jbpm huamn task service" );
                     msg.setSentDate( new Date() );
-                    
+
                     Transport.send(msg);
 
                 } catch (Exception e) {

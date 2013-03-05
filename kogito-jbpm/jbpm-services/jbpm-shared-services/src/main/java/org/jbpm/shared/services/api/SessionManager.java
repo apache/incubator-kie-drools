@@ -1,4 +1,4 @@
-package org.jbpm.process;
+package org.jbpm.shared.services.api;
 
 import org.kie.runtime.KieSession;
 

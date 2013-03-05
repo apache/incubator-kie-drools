@@ -25,6 +25,7 @@ import org.droolsjbpm.services.api.Domain;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.FileService;
+import org.jbpm.shared.services.cdi.Startup;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.RulesNotificationService;
 import org.droolsjbpm.services.api.ServicesSessionManager;
@@ -33,7 +34,6 @@ import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
 import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
-import org.droolsjbpm.services.impl.util.Startup;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.commons.io.IOService;

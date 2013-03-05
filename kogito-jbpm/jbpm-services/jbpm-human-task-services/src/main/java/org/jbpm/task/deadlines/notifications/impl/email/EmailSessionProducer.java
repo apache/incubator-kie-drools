@@ -24,7 +24,7 @@ import javax.mail.Session;
 
 public class EmailSessionProducer {
 
-    @Resource
+    @Resource(mappedName="mail/jbpmMailSession")
     private Session mailSession;
     
     

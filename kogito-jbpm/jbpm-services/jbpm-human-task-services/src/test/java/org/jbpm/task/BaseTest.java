@@ -45,9 +45,6 @@ public abstract class BaseTest {
         if (!usersLoaded) {
 
             try {
-
-                MockUserInfo userInfo = new MockUserInfo();
-                taskService.setUserInfo(userInfo);
                 taskService.addUser(new User("Administrator"));
                 usersLoaded = true;
             } catch (Exception ex) {

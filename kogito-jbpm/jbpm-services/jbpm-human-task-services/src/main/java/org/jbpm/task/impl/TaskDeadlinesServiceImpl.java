@@ -33,11 +33,16 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.UserTransaction;
 
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.cdi.Startup;
 import org.jbpm.task.Content;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.Escalation;
@@ -59,6 +64,7 @@ import org.kie.runtime.Environment;
  */
 @Transactional
 @ApplicationScoped
+@Startup
 public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(3);
@@ -68,32 +74,41 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     @Inject 
     private EntityManager em;
     @Inject
+    private EntityManagerFactory emf;
+    @Inject
     private Event<NotificationEvent> notificationEvents;
-    @Inject 
-    private Logger logger;
+    
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+
     
     public TaskDeadlinesServiceImpl() {
     }
 
     @PostConstruct
     public void init() {
+        UserTransaction ut = setupEnvironment();
+        EntityManager entityManager = getEntityManager();
         long now = System.currentTimeMillis();
-        List<DeadlineSummary> resultList = em.createNamedQuery("UnescalatedStartDeadlines").getResultList();
+        List<DeadlineSummary> resultList = entityManager.createNamedQuery("UnescalatedStartDeadlines").getResultList();
         for (DeadlineSummary summary : resultList) {
             long delay = summary.getDate().getTime() - now;
             schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.START);
         }
         
-        resultList = em.createNamedQuery("UnescalatedEndDeadlines").getResultList();
+        resultList = entityManager.createNamedQuery("UnescalatedEndDeadlines").getResultList();
         for (DeadlineSummary summary : resultList) {
             long delay = summary.getDate().getTime() - now;
             schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.END);
         }
+        completeOperation(ut, entityManager);
     }
 
     private void executeEscalatedDeadline(long taskId, long deadlineId, DeadlineType type) {
-        Task task = (Task) em.find(Task.class, taskId);
-        Deadline deadline = (Deadline) em.find(Deadline.class, deadlineId);
+        UserTransaction ut = setupEnvironment();
+        EntityManager entityManager = getEntityManager();
+        
+        Task task = (Task) entityManager.find(Task.class, taskId);
+        Deadline deadline = (Deadline) entityManager.find(Deadline.class, deadlineId);
 
         TaskData taskData = task.getTaskData();
         
@@ -102,7 +117,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             Map<String, Object> variables = null;
             
             if (taskData != null) {
-                Content content = (Content) em.find(Content.class, taskData.getDocumentContentId());
+                Content content = (Content) entityManager.find(Content.class, taskData.getDocumentContentId());
                 
                 if (content != null) {
                     Object objectFromBytes = ContentMarshallerHelper.unmarshall(content.getContent(), getEnvironment(), getClassLoader());
@@ -147,7 +162,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                 }
             }
         }
-
+        completeOperation(ut, entityManager);
         deadline.setEscalated(true);
     }
 
@@ -277,4 +292,57 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         }
     }
 
+    
+    /*
+     * following are supporting methods to allow execution on application startup
+     * as at that time RequestScoped entity manager cannot be used so instead
+     * use EntityMnagerFactory and manage transaction manually
+     */
+    protected EntityManager getEntityManager() {
+        try {
+            this.em.toString();          
+            return this.em;
+        } catch (ContextNotActiveException e) {
+            EntityManager em = this.emf.createEntityManager();
+            return em;
+        }
+    }
+    
+    protected UserTransaction setupEnvironment() {
+        UserTransaction ut = null;
+        try {
+            this.em.toString();
+        } catch (ContextNotActiveException e) {
+            try {
+                ut = InitialContext.doLookup("java:comp/UserTransaction");
+            } catch (Exception ex) {
+                try {
+                    ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
+                    
+                } catch (Exception e1) {
+                    throw new RuntimeException("Cannot find UserTransaction", e1);
+                }
+            }
+            try {
+                ut.begin();
+            } catch (Exception ex) {
+                
+            }
+        }
+        
+        return ut;
+    }
+    protected void completeOperation(UserTransaction ut, EntityManager entityManager) {
+        if (ut != null) {
+            try {
+                ut.commit();
+                if (entityManager != null) {
+                    entityManager.clear();
+                    entityManager.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

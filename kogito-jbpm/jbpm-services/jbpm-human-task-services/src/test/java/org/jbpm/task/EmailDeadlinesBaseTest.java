@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
@@ -109,11 +110,13 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         assertEquals(0, getWiser().getMessages().size());
 
         long time = 0;
-        while (getWiser().getMessages().size() != 2 && time < 15000) {
+        while (getWiser().getMessages().size() != 2 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
-
+        for (WiserMessage msg : getWiser().getMessages()) {
+            System.out.println(msg.getEnvelopeReceiver());
+        }
         // 1 email with two recipients should now exist
         assertEquals(2, getWiser().getMessages().size());
 
@@ -163,7 +166,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         // nor yet
         assertEquals(0, getWiser().getMessages().size());
         long time = 0;
-        while (getWiser().getMessages().size() != 2 && time < 15000) {
+        while (getWiser().getMessages().size() != 2 && time < 5000) {
             Thread.sleep(500);
             time = 500;
         }
@@ -235,7 +238,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         assertEquals(0, getWiser().getMessages().size());
 
         long time = 0;
-        while (getWiser().getMessages().size() != 2 && time < 15000) {
+        while (getWiser().getMessages().size() != 2 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -298,7 +301,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         assertEquals(0, getWiser().getMessages().size());
 
         long time = 0;
-        while (getWiser().getMessages().size() != 2 && time < 15000) {
+        while (getWiser().getMessages().size() != 2 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -354,7 +357,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         assertEquals(0, getWiser().getMessages().size());
 
         long time = 0;
-        while (getWiser().getMessages().size() != 2 && time < 15000) {
+        while (getWiser().getMessages().size() != 2 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -371,14 +374,6 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
-        
-        MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(new User("Tony Stark"), "tony@domain.com");
-        userInfo.getEmails().put(new User("Darth Vader"), "darth@domain.com");
-
-        userInfo.getLanguages().put(new User("Tony Stark"), "en-UK");
-        userInfo.getLanguages().put(new User("Darth Vader"), "en-UK");
-        taskService.setUserInfo(userInfo);
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
         Task task = (Task) TaskFactory.evalTask(reader, vars);
@@ -418,7 +413,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         assertEquals(0, getWiser().getMessages().size());
 
         long time = 0;
-        while (getWiser().getMessages().size() != 2 && time < 15000) {
+        while (getWiser().getMessages().size() != 2 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -459,7 +454,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
 
         // should have re-assigned by now
         long time = 0;
-        while (getWiser().getMessages().size() != 2 && time < 15000) {
+        while (getWiser().getMessages().size() != 2 && time < 5000) {
             Thread.sleep(500);
             time += 500;
         }
@@ -525,7 +520,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
           assertEquals(0, getWiser().getMessages().size());
 
           long time = 0;
-          while (getWiser().getMessages().size() != 2 && time < 15000) {
+          while (getWiser().getMessages().size() != 2 && time < 5000) {
               Thread.sleep(500);
               time += 500;
           }
