@@ -15,7 +15,7 @@
 
     <para>The source code of all these examples is available in the distribution zip under
     <filename>examples/sources</filename> and also in git under
-    <filename>drools-planner/drools-planner-examples</filename>.</para>
+    <filename>optaplanner/optaplanner-examples</filename>.</para>
 
     <table>
       <title>Examples overview</title>

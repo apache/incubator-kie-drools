@@ -25,18 +25,18 @@
     <section>
       <title>Adding the extra dependency</title>
 
-      <para>The benchmarker is in a separate artifact called <literal>drools-planner-benchmark</literal>.</para>
+      <para>The benchmarker is in a separate artifact called <literal>optaplanner-benchmark</literal>.</para>
 
       <para>If you use maven, add a dependency in your <filename>pom.xml</filename> file:</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
-      &lt;groupId&gt;org.drools.planner&lt;/groupId&gt;
-      &lt;artifactId&gt;drools-planner-benchmark&lt;/artifactId&gt;
+      &lt;groupId&gt;org.optaplanner&lt;/groupId&gt;
+      &lt;artifactId&gt;optaplanner-benchmark&lt;/artifactId&gt;
       &lt;version&gt;...&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
       <para>This is similar for gradle, ivy and buildr. The version must be exactly the same as the
-      <literal>drools-planner-core</literal> version used.</para>
+      <literal>optaplanner-core</literal> version used.</para>
 
       <para>If you use ANT, you've probably already copied the required jars from the download zip's
       <filename>binaries</filename> directory.</para>
