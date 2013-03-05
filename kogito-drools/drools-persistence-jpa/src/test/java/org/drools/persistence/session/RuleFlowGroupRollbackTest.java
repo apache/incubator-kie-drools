@@ -32,6 +32,7 @@ import org.kie.command.Context;
 import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ public class RuleFlowGroupRollbackTest {
         }
 
         public Void execute(Context context) {
-            StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+            KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
             ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup(ruleFlowGroupName);
             return null;
         }
