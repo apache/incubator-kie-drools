@@ -35,16 +35,16 @@
     </section>
   </section>
 
-  <section xml:id="releaseNotes_6.0.0_Planner">
-    <title>Planner</title>
+  <section xml:id="releaseNotes_6.0.0_OptaPlanner">
+    <title>OptaPlanner (AKA Drools Planner)</title>
 
     <section>
-      <title>TODO</title>
+      <title>Drools Planner renamed to OptaPlanner</title>
       <para>TODO</para>
     </section>
   </section>
 
-  <section xml:id="releaseNotes_6.0.0_Drools Integration">
+  <section xml:id="releaseNotes_6.0.0_DroolsIntegration">
     <title>Drools Integration</title>
 
     <section>
