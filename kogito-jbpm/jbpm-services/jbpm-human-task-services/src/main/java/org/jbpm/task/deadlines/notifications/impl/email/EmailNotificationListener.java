@@ -30,6 +30,7 @@ import javax.activation.DataHandler;
 import javax.activation.MimetypesFileTypeMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.mail.Message;
 import javax.mail.Multipart;
@@ -62,7 +63,7 @@ public class EmailNotificationListener implements NotificationListener {
     private UserInfo userInfoInstance;
     
     @Inject
-    private Session mailSessionInstance;
+    private Instance<Session> mailSessionInstance;
     
     protected UserInfo getUserInfo() {        
         try {
@@ -74,7 +75,7 @@ public class EmailNotificationListener implements NotificationListener {
     
     protected Session getSession() {  
         try {
-        return mailSessionInstance;
+        return mailSessionInstance.get();
         } catch (Exception e) {
             return null;
         }

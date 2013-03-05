@@ -17,14 +17,14 @@ package org.jbpm.task.deadlines.notifications.impl.email;
 
 import java.util.Properties;
 
-import javax.annotation.Resource;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 import javax.mail.Session;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 public class EmailSessionProducer {
 
-    @Resource(mappedName="mail/jbpmMailSession")
     private Session mailSession;
     
     
@@ -32,15 +32,20 @@ public class EmailSessionProducer {
     @Singleton
     public Session produceSession() {
         if (mailSession == null) {
-            Properties conf = new Properties();
+            
             try {
-                conf.load(this.getClass().getResourceAsStream("/email.properties"));
-                
-                mailSession = Session.getInstance(conf);
-            } catch (Exception e) {
-                return null;
+                mailSession = InitialContext.doLookup("mail/jbpmMailSession");
+            } catch (NamingException e1) {
+               
+                Properties conf = new Properties();
+                try {
+                    conf.load(this.getClass().getResourceAsStream("/email.properties"));
+                    
+                    mailSession = Session.getInstance(conf);
+                } catch (Exception e) {
+                    return null;
+                }
             }
-        
         }
         
         return mailSession;
