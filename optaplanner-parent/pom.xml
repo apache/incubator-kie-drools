@@ -15,12 +15,13 @@
   <artifactId>optaplanner</artifactId>
   <packaging>pom</packaging>
 
-  <name>OptaPlanner multiproject</name>
+  <name>OptaPlanner multiproject parent</name>
   <description>
-    OptaPlanner optimizes automated planning
-    by combining metaheuristic search algorithms
-    with rule engine powered score calculation.
-    This is the optaplanner multiproject.
+    OptaPlanner solves planning problems.
+    This lightweight, embeddable planning engine implements powerful and scalable algorithms
+    to optimize business resource scheduling and planning.
+
+    This module is just the multiproject parent. The planning engine itself is in optaplanner-core.
   </description>
 
   <repositories>

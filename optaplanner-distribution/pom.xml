@@ -12,9 +12,13 @@
   <artifactId>optaplanner-distribution</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools Planner distribution</name>
+  <name>OptaPlanner distribution</name>
   <description>
-    Builds the download zip of Drools Planner.
+    OptaPlanner solves planning problems.
+    This lightweight, embeddable planning engine implements powerful and scalable algorithms
+    to optimize business resource scheduling and planning.
+
+    This module builds the download zip.
   </description>
 
   <build>

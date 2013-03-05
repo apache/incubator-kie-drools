@@ -12,11 +12,13 @@
   <artifactId>optaplanner-webexamples</artifactId>
   <packaging>war</packaging>
 
-  <name>Drools Planner webexamples</name>
+  <name>OptaPlanner webexamples</name>
   <description>
-    Drools Planner optimizes automated planning by combining metaheuristic search algorithms with rule
-    engine powered score calculation. This is the optaplanner-webexamples module which contains web examples
-    on how to use Drools Planner in a war file.
+    OptaPlanner solves planning problems.
+    This lightweight, embeddable planning engine implements powerful and scalable algorithms
+    to optimize business resource scheduling and planning.
+
+    This module contains the web examples which demonstrate how to use it in a war file.
   </description>
 
   <dependencies>

@@ -11,11 +11,13 @@
 
   <artifactId>optaplanner-core</artifactId>
 
-  <name>Drools Planner core</name>
+  <name>OptaPlanner core</name>
   <description>
-    Drools Planner optimizes automated planning by combining metaheuristic search algorithms with rule
-    engine powered score calculation. This is the optaplanner-core module which contains metaheuristic
-    algorithms.
+    OptaPlanner solves planning problems.
+    This lightweight, embeddable planning engine implements powerful and scalable algorithms
+    to optimize business resource scheduling and planning.
+
+    This module contains the planning engine itself.
   </description>
 
   <dependencies>

@@ -13,7 +13,13 @@
   <artifactId>optaplanner-docs</artifactId>
   <packaging>jdocbook</packaging>
 
-  <name>Drools Planner documentation</name>
-  <description>Drools Planner documentation</description>
+  <name>OptaPlanner documentation</name>
+  <description>
+    OptaPlanner solves planning problems.
+    This lightweight, embeddable planning engine implements powerful and scalable algorithms
+    to optimize business resource scheduling and planning.
+
+    This module builds the documentation.
+  </description>
 
 </project>
