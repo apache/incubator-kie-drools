@@ -15,12 +15,12 @@
   <artifactId>drools-planner</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools Planner multiproject</name>
+  <name>OptaPlanner multiproject</name>
   <description>
-    Drools Planner optimizes automated planning
+    OptaPlanner optimizes automated planning
     by combining metaheuristic search algorithms
     with rule engine powered score calculation.
-    This is the drools planner multiproject.
+    This is the optaplanner multiproject.
   </description>
 
   <repositories>
