@@ -878,9 +878,10 @@ from
     left join t.subjects as subject
     left join t.descriptions as description 
     left join t.names as name
+    left join t.peopleAssignments.potentialOwners potOwners
 where
     t.archived = 0 and          
-    t.taskData.actualOwner.id = :userId and
+    (t.taskData.actualOwner.id = :userId or potOwners.id = :userId) and
     t.taskData.status in (:status) and
     t.taskData.expirationTime = :expirationDate and
     (
@@ -931,9 +932,10 @@ from
     left join t.subjects as subject
     left join t.descriptions as description 
     left join t.names as name
+    left join t.peopleAssignments.potentialOwners potOwners
 where
     t.archived = 0 and          
-    t.taskData.actualOwner.id = :userId and
+    (t.taskData.actualOwner.id = :userId or potOwners.id = :userId) and
     t.taskData.status in (:status) and
     (t.taskData.expirationTime = :expirationDate or
     t.taskData.expirationTime is null)
