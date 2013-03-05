@@ -66,7 +66,7 @@ public class FailTaskCommand<Void> extends TaskCommand {
             FaultData faultData = ContentMarshallerHelper.marshalFault(data, null);
             Content content = new Content();
             content.setContent(faultData.getContent());
-            context.getEm().persist(content);
+            context.getPm().persist(content);
             task.getTaskData().setFault(content.getId(), faultData);
 
         }

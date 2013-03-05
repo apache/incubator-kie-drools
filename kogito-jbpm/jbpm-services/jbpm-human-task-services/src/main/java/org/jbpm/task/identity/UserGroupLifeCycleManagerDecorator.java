@@ -11,8 +11,8 @@ import java.util.Map;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.drools.core.util.StringUtils;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 import org.jbpm.task.Group;
 import org.jbpm.task.Operation;
@@ -24,17 +24,38 @@ import org.jbpm.task.internals.lifecycle.LifeCycleManager;
  *
  */
 @Decorator
-public abstract class UserGroupLifeCycleManagerDecorator implements LifeCycleManager {
+public class UserGroupLifeCycleManagerDecorator implements LifeCycleManager {
 
     @Inject
     @Delegate
     @Mvel
     private LifeCycleManager manager;
     @Inject 
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
     @Inject
     private UserGroupCallback userGroupCallback;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
+
+    public UserGroupLifeCycleManagerDecorator() {
+    }
+
+    public void setManager(LifeCycleManager manager) {
+        this.manager = manager;
+    }
+
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
+
+    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
+        this.userGroupCallback = userGroupCallback;
+    }
+
+    public LifeCycleManager getManager() {
+        return manager;
+    }
+    
+    
 
     public void taskOperation(Operation operation, long taskId, String userId, String targetEntityId, Map<String, Object> data, List<String> groupIds) throws TaskException {
         groupIds = doUserGroupCallbackOperation(userId, groupIds);
@@ -74,10 +95,10 @@ public abstract class UserGroupLifeCycleManagerDecorator implements LifeCycleMan
 
     private void addUserFromCallbackOperation(String userId) {
         try {
-            boolean userExists = em.find(User.class, userId) != null;
+            boolean userExists = pm.find(User.class, userId) != null;
             if (!StringUtils.isEmpty(userId) && !userExists) {
                 User user = new User(userId);
-                em.persist(user);
+                pm.persist(user);
             }
         } catch (Throwable t) {
             //logger.log(Level.SEVERE, "Unable to add user " + userId);
@@ -120,10 +141,10 @@ public abstract class UserGroupLifeCycleManagerDecorator implements LifeCycleMan
 
     private void addGroupFromCallbackOperation(String groupId) {
         try {
-            boolean groupExists = em.find(Group.class, groupId) != null;
+            boolean groupExists = pm.find(Group.class, groupId) != null;
             if (!StringUtils.isEmpty(groupId) && !groupExists) {
                 Group group = new Group(groupId);
-                em.persist(group);
+                pm.persist(group);
             }
         } catch (Throwable t) {
             //logger.log(Level.WARNING, "UserGroupCallback has not been registered.");

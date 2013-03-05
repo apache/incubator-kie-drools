@@ -86,6 +86,22 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
         return taskDefService;
     }
 
+    public void setTaskContentService(TaskContentService taskContentService) {
+        this.taskContentService = taskContentService;
+    }
+
+    public void setTaskCommentService(TaskCommentService taskCommentService) {
+        this.taskCommentService = taskCommentService;
+    }
+
+    public void setTaskAttachmentService(TaskAttachmentService taskAttachmentService) {
+        this.taskAttachmentService = taskAttachmentService;
+    }
+
+    public void setTaskStatisticService(TaskStatisticsService taskStatisticService) {
+        this.taskStatisticService = taskStatisticService;
+    }
+    
     @Override
     public TaskInstanceService getTaskInstanceService() {
         return taskInstanceService;
@@ -188,10 +204,6 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
 
     public Group getGroupById(String groupId) {
         return taskIdentityService.getGroupById(groupId);
-    }
-
-    public long newTask(String name, Map<String, Object> params) {
-        return taskInstanceService.newTask(name, params);
     }
 
     public void activate(long taskId, String userId) {
@@ -361,14 +373,6 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
 
     public List<TaskEvent> getTaskEventsById(long taskId) {
         return taskEventsService.getTaskEventsById(taskId);
-    }
-
-    public long newTask(TaskDef def, Map<String, Object> params) {
-        return taskInstanceService.newTask(def, params);
-    }
-    
-    public long newTask(TaskDef def, Map<String, Object> params, boolean deploy) {
-        return taskInstanceService.newTask(def, params, deploy);
     }
 
     public long addTask(Task task, Map<String, Object> params){

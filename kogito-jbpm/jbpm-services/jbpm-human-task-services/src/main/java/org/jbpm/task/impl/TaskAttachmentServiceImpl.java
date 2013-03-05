@@ -18,9 +18,8 @@ package org.jbpm.task.impl;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Content;
 import org.jbpm.task.Task;
@@ -34,25 +33,23 @@ import org.jbpm.task.api.TaskAttachmentService;
 public class TaskAttachmentServiceImpl implements TaskAttachmentService {
 
     @Inject 
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
 
     public TaskAttachmentServiceImpl() {
     }
-    
-    
-
+ 
     public long addAttachment(long taskId, Attachment attachment, Content content) {
         //@TODO: The attachment is not being persisted! 
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         // doCallbackOperationForAttachment(attachment); -> This should go in a decorator
-        em.persist(content);
+        pm.persist(content);
         attachment.setContent(content);
         task.getTaskData().addAttachment(attachment);
         return content.getId();
     }
 
     public void deleteAttachment(long taskId, long attachmentId) {
-       Task task = em.find(Task.class, taskId);
+       Task task = pm.find(Task.class, taskId);
        task.getTaskData().removeAttachment(attachmentId);
        //TODO: should I remove the content?
        
@@ -63,6 +60,6 @@ public class TaskAttachmentServiceImpl implements TaskAttachmentService {
     }
 
     public Attachment getAttachmentById(long attachId) {
-        return em.find(Attachment.class, attachId);
+        return pm.find(Attachment.class, attachId);
     }
 }

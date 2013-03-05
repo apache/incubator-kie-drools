@@ -47,13 +47,13 @@ import org.kie.runtime.KieSession;
  *
  * @author salaboy
  */
-public class StatefulKnowledgeSessionDelegate implements KieSession{
+public class KieSessionDelegate implements KieSession{
 
     private KieSession ksession;
     private SessionManager sessionManager;
     private String name;
 
-    public StatefulKnowledgeSessionDelegate(String name, KieSession ksession, SessionManager sessionManager) {
+    public KieSessionDelegate(String name, KieSession ksession, SessionManager sessionManager) {
         this.name = name;
         this.ksession = ksession;
         this.sessionManager = sessionManager;

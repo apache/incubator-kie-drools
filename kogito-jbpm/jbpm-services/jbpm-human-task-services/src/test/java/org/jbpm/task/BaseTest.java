@@ -40,7 +40,7 @@ public abstract class BaseTest {
     protected TaskServiceEntryPoint taskService;
 
     @Before
-    protected void setUp() {
+    public void setUp() {
         
         if (!usersLoaded) {
 
@@ -60,7 +60,7 @@ public abstract class BaseTest {
     @After
     public void tearDown() {
         int removeAllTasks = taskService.removeAllTasks();
-        //System.out.println(" XXX Cleaning up "+removeAllTasks+" tasks generated in the previous test");
+        System.out.println(" XXX Cleaning up "+removeAllTasks+" tasks generated in the previous test");
     }
     
     @AfterClass

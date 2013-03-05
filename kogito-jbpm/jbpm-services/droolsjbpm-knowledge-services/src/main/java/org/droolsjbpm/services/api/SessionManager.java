@@ -41,6 +41,8 @@ public interface SessionManager {
     Map<Integer, Long> getProcessInstanceIdKsession();
 
     KieSession getKsessionById(int ksessionId);
+    
+    void addKsession(String sessionName, KieSession session);
 
     void addProcessInstanceIdKsession(Integer ksessionId, Long processInstanceId);
 

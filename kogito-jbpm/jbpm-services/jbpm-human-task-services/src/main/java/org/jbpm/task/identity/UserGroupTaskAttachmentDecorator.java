@@ -19,8 +19,8 @@ import java.util.List;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.drools.core.util.StringUtils;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Content;
 import org.jbpm.task.User;
@@ -40,7 +40,7 @@ public class UserGroupTaskAttachmentDecorator implements TaskAttachmentService {
     private UserGroupCallback userGroupCallback;
     
     @Inject
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
     
     public long addAttachment(long taskId, Attachment attachment, Content content) {
         doCallbackOperationForAttachment(attachment);
@@ -80,10 +80,10 @@ public class UserGroupTaskAttachmentDecorator implements TaskAttachmentService {
     
     private void addUserFromCallbackOperation(String userId) {
         try {
-            boolean userExists = em.find(User.class, userId) != null;
+            boolean userExists = pm.find(User.class, userId) != null;
             if (!StringUtils.isEmpty(userId) && !userExists) {
                 User user = new User(userId);
-                em.persist(user);
+                pm.persist(user);
             }
         } catch (Throwable t) {
             //logger.log(Level.SEVERE, "Unable to add user " + userId);

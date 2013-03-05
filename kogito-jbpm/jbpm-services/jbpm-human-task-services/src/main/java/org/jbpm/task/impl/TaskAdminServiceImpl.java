@@ -9,9 +9,9 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import javax.persistence.EntityManager;
 
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskAdminService;
 import org.jbpm.task.query.TaskSummary;
@@ -24,9 +24,13 @@ import org.jbpm.task.query.TaskSummary;
 public class TaskAdminServiceImpl implements TaskAdminService {
 
     @Inject
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
 
     public TaskAdminServiceImpl() {
+    }
+
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
     }
 
     public List<TaskSummary> getActiveTasks() {
@@ -62,8 +66,8 @@ public class TaskAdminServiceImpl implements TaskAdminService {
         int count = 0;
 
         for (TaskSummary taskSummary : tasks) {
-            Task task = em.find(Task.class, taskSummary.getId());
-            em.remove(task);
+            Task task =  pm.find(Task.class, taskSummary.getId());
+            pm.remove(task);
             count++;
         }
 
@@ -71,10 +75,10 @@ public class TaskAdminServiceImpl implements TaskAdminService {
     }
 
     public int removeAllTasks() {
-        List<Task> tasks = em.createQuery("select t from Task t").getResultList();
+        List<Task> tasks = (List<Task>) pm.queryStringInTransaction("select t from Task t");
         int count = 0;
         for (Task t : tasks) {
-            em.remove(t);
+            pm.remove(t);
             count++;
         }
         return count;

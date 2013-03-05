@@ -18,8 +18,8 @@ package org.jbpm.task.impl;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskCommentService;
@@ -31,35 +31,33 @@ import org.jbpm.task.api.TaskCommentService;
 @ApplicationScoped
 public class TaskCommentServiceImpl implements TaskCommentService{
     @Inject 
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
 
     public TaskCommentServiceImpl() {
     }
-    
-    
-    
+
     public long addComment(long taskId, Comment comment) {
-        Task task = em.find(Task.class, taskId);
-        em.persist(comment);
+        Task task = pm.find(Task.class, taskId);
+        pm.persist(comment);
         task.getTaskData().addComment(comment);
         return comment.getId();
        
     }
 
     public void deleteComment(long taskId, long commentId) {
-        Task task = em.find(Task.class, taskId);
-        Comment comment = em.find(Comment.class, commentId);
+        Task task = pm.find(Task.class, taskId);
+        Comment comment = pm.find(Comment.class, commentId);
         task.getTaskData().removeComment(commentId);
-        em.remove(comment);
+        pm.remove(comment);
     }
 
     public List<Comment> getAllCommentsByTaskId(long taskId) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
  	return task.getTaskData().getComments();
     }
 
     public Comment getCommentById(long commentId) {
-        return em.find(Comment.class, commentId);
+        return pm.find(Comment.class, commentId);
     }
     
 }

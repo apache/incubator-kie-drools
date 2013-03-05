@@ -56,7 +56,15 @@ public interface TaskServiceEntryPoint {
     void setTaskQueryService(TaskQueryService queryService);
 
     void setTaskEventsService(TaskEventsService eventsService);
+    
+    void setTaskContentService(TaskContentService taskContentService);
 
+    void setTaskCommentService(TaskCommentService taskCommentService);
+
+    void setTaskAttachmentService(TaskAttachmentService taskAttachmentService);
+
+    void setTaskStatisticService(TaskStatisticsService taskStatisticService);
+    
     // Delegates
     void activate(long taskId, String userId);
 
@@ -155,12 +163,6 @@ public interface TaskServiceEntryPoint {
     User getUserById(String userId);
 
     List<User> getUsers();
-
-    long newTask(String name, Map<String, Object> params);
-
-    long newTask(TaskDef def, Map<String, Object> params);
-
-    long newTask(TaskDef def, Map<String, Object> params, boolean deploy);
 
     long addTask(Task task, Map<String, Object> params);
 

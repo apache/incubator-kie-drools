@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.FaultData;
@@ -30,7 +30,6 @@ import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
-import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskDeadlinesService;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
@@ -49,23 +48,29 @@ public class DeadlinesDecorator implements TaskInstanceService {
     @Inject
     private TaskDeadlinesService deadlineService;
     @Inject 
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
 
     public DeadlinesDecorator() { 
     }
+
+    public void setInstanceService(TaskInstanceService instanceService) {
+        this.instanceService = instanceService;
+    }
+
+    public void setQueryService(TaskQueryService queryService) {
+        this.queryService = queryService;
+    }
+
+    public void setDeadlineService(TaskDeadlinesService deadlineService) {
+        this.deadlineService = deadlineService;
+    }
+
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
     
-    public long newTask(String name, Map<String, Object> params) {
-        return instanceService.newTask(name, params);
-    }
-
-    public long newTask(TaskDef def, Map<String, Object> params) {
-        return instanceService.newTask(def, params);
-    }
-
-    public long newTask(TaskDef def, Map<String, Object> params, boolean deploy) {
-        return instanceService.newTask(def, params, deploy);
-    }
-
+    
+    
     public long addTask(Task task, Map<String, Object> params) {
         long taskId = instanceService.addTask(task, params);
         scheduleDeadlinesForTask(task);
@@ -176,17 +181,18 @@ public class DeadlinesDecorator implements TaskInstanceService {
 
     private void scheduleDeadlinesForTask(final Task task) {
         final long now = System.currentTimeMillis();
+        if( task.getDeadlines() != null ){
+            final List<Deadline> startDeadlines = task.getDeadlines().getStartDeadlines();
 
-        final List<Deadline> startDeadlines = task.getDeadlines().getStartDeadlines();
+            if (startDeadlines != null) {
+                scheduleDeadlines(startDeadlines, now, task.getId());
+            }
 
-        if (startDeadlines != null) {
-            scheduleDeadlines(startDeadlines, now, task.getId());
-        }
+            final List<Deadline> endDeadlines = task.getDeadlines().getEndDeadlines();
 
-        final List<Deadline> endDeadlines = task.getDeadlines().getEndDeadlines();
-
-        if (endDeadlines != null) {
-            scheduleDeadlines(endDeadlines, now, task.getId());
+            if (endDeadlines != null) {
+                scheduleDeadlines(endDeadlines, now, task.getId());
+            }
         }
     }
 
@@ -211,7 +217,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
         if (task.getDeadlines().getStartDeadlines() != null) {
             it = task.getDeadlines().getStartDeadlines().iterator();
             while (it.hasNext()) {
-                em.remove(it.next());
+                pm.remove(it.next());
                 it.remove();
             }
         }
@@ -219,7 +225,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
         if (task.getDeadlines().getEndDeadlines() != null) {
             it = task.getDeadlines().getEndDeadlines().iterator();
             while (it.hasNext()) {
-                em.remove(it.next());
+                pm.remove(it.next());
                 it.remove();
             }
         }

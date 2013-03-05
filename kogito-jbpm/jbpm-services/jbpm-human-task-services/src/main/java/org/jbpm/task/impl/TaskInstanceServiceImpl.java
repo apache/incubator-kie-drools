@@ -15,11 +15,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.drools.core.util.StringUtils;
 import org.jbpm.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.task.annotations.Mvel;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.Deadline;
@@ -37,16 +37,13 @@ import org.jbpm.task.Status;
 import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
-import org.jbpm.task.TaskDef;
 import org.jbpm.task.User;
-import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.task.events.AfterTaskAddedEvent;
-import org.jbpm.task.events.BeforeTaskDelegatedEvent;
 import org.jbpm.task.exception.CannotAddTaskException;
 import org.jbpm.task.identity.UserGroupCallback;
-import org.jbpm.task.impl.factories.TaskFactory;
+import org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator;
 import org.jbpm.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.utils.ContentMarshallerHelper;
@@ -58,15 +55,14 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 @ApplicationScoped
 public class TaskInstanceServiceImpl implements TaskInstanceService {
 
-    @Inject
-    private TaskDefService taskDefService;
+    
     @Inject
     private TaskQueryService taskQueryService;
     @Inject
     @Mvel
     private LifeCycleManager lifeCycleManager;
     @Inject
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
     @Inject
     private Logger logger;
     @Inject
@@ -75,47 +71,27 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     public TaskInstanceServiceImpl() {
     }
 
-    public TaskInstanceServiceImpl(TaskDefService taskDefService, LifeCycleManager lifeCycleManager) {
-        this.taskDefService = taskDefService;
+    public void setTaskQueryService(TaskQueryService taskQueryService) {
+        this.taskQueryService = taskQueryService;
+    }
+
+    public void setLifeCycleManager(LifeCycleManager lifeCycleManager) {
         this.lifeCycleManager = lifeCycleManager;
     }
 
-    public long newTask(String name, Map<String, Object> params) {
-        TaskDef taskDef = taskDefService.getTaskDefById(name);
-
-        Task task = TaskFactory.newTask(taskDef);
-        em.persist(task);
-        if (params != null) {
-            ContentData contentData = ContentMarshallerHelper.marshal(params, null);
-            Content content = new Content(contentData.getContent());
-            em.persist(content);
-            task.getTaskData().setDocument(content.getId(), contentData);
-        }
-
-        return task.getId();
-
+    public void setTaskEvents(Event<Task> taskEvents) {
+        this.taskEvents = taskEvents;
     }
 
-    public long newTask(TaskDef taskDef, Map<String, Object> params) {
-        return newTask(taskDef, params, true);
+    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
+        this.userGroupCallback = userGroupCallback;
     }
 
-    public long newTask(TaskDef taskDef, Map<String, Object> params, boolean deploy) {
-        //TODO: need to deal with the params for the content
-        if (deploy) {
-            taskDefService.deployTaskDef(taskDef);
-        }
-        Task task = TaskFactory.newTask(taskDef);
-        em.persist(task);
-        if (params != null) {
-            ContentData contentData = ContentMarshallerHelper.marshal(params, null);
-            Content content = new Content(contentData.getContent());
-            em.persist(content);
-            task.getTaskData().setDocument(content.getId(), contentData);
-        }
-
-        return task.getId();
+    
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
     }
+
 
     public long addTask(Task task, Map<String, Object> params) {
         doCallbackOperationForPeopleAssignments(task.getPeopleAssignments());
@@ -124,11 +100,13 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         if (params != null) {
             ContentData contentData = ContentMarshallerHelper.marshal(params, null);
             Content content = new Content(contentData.getContent());
-            em.persist(content);
+            pm.persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
-        em.persist(task);
-        taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
+        pm.persist(task);
+        if(taskEvents != null){
+            taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
+        }
         return task.getId();
     }
 
@@ -136,13 +114,15 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         doCallbackOperationForPeopleAssignments(task.getPeopleAssignments());
         doCallbackOperationForTaskData(task.getTaskData());
         doCallbackOperationForTaskDeadlines(task.getDeadlines());
-        em.persist(task);
+        pm.persist(task);
         if (contentData != null) {
             Content content = new Content(contentData.getContent());
-            em.persist(content);
+            pm.persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
-        taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
+        if(taskEvents != null){
+            taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
+        }
         return task.getId();
     }
 
@@ -222,12 +202,12 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void setPriority(long taskId, int priority) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         task.setPriority(priority);
     }
 
     public void setTaskNames(long taskId, List<I18NText> taskNames) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         task.setNames(taskNames);
     }
 
@@ -250,26 +230,30 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     //@TODO: WHY THE HELL THIS IS NOT AN OPERATION???
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
         doCallbackOperationForPotentialOwners(potentialOwners);
-        ((MVELLifeCycleManager) lifeCycleManager).nominate(taskId, userId, potentialOwners);
+        if(lifeCycleManager instanceof UserGroupLifeCycleManagerDecorator){
+            ((MVELLifeCycleManager)((UserGroupLifeCycleManagerDecorator) lifeCycleManager).getManager()).nominate(taskId, userId, potentialOwners);
+        } else if(lifeCycleManager instanceof MVELLifeCycleManager){
+            ((MVELLifeCycleManager)lifeCycleManager).nominate(taskId, userId, potentialOwners);
+        }
     }
 
     public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         task.setSubTaskStrategy(strategy);
     }
 
     public void setExpirationDate(long taskId, Date date) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         task.getTaskData().setExpirationTime(date);
     }
 
     public void setDescriptions(long taskId, List<I18NText> descriptions) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         task.setDescriptions(descriptions);
     }
 
     public void setSkipable(long taskId, boolean skipable) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         task.getTaskData().setSkipable(skipable);
     }
 
@@ -304,20 +288,21 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 
     private void addUserFromCallbackOperation(String userId) {
         try {
-            boolean userExists = em.find(User.class, userId) != null;
+            boolean userExists = pm.find(User.class, userId) != null;
             if (!StringUtils.isEmpty(userId) && !userExists) {
                 User user = new User(userId);
-                em.persist(user);
+                pm.persist(user);
             }
         } catch (Throwable t) {
             logger.log(Level.SEVERE, "Unable to add user " + userId);
         }
     }
+   
     // ALL THIS CODE SHOULD NOT BE HERE>> THIS IS PLACED HERE TO DEMONSTRATE THAT IS WRONG
     @Inject
     private UserGroupCallback userGroupCallback;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
-
+    
     private void doCallbackGroupsOperation(String userId, List<String> groupIds) {
 
         if (userId != null) {
@@ -354,10 +339,10 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 
     private void addGroupFromCallbackOperation(String groupId) {
         try {
-            boolean groupExists = em.find(Group.class, groupId) != null;
+            boolean groupExists = pm.find(Group.class, groupId) != null;
             if (!StringUtils.isEmpty(groupId) && !groupExists) {
                 Group group = new Group(groupId);
-                em.persist(group);
+                pm.persist(group);
             }
         } catch (Throwable t) {
             logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
@@ -651,27 +636,27 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public int getPriority(long taskId) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         return task.getPriority();
     }
 
     public Date getExpirationDate(long taskId) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         return task.getTaskData().getExpirationTime();
     }
 
     public List<I18NText> getDescriptions(long taskId) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         return task.getDescriptions();
     }
 
     public boolean isSkipable(long taskId) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         return task.getTaskData().isSkipable();
     }
 
     public SubTasksStrategy getSubTaskStrategy(long taskId) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         return task.getSubTaskStrategy();
     }
 }

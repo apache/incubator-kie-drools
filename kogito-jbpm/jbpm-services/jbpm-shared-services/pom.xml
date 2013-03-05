@@ -100,7 +100,11 @@
       <artifactId>commons-vfs</artifactId>
       <version>1.0</version>
     </dependency>
-   
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-jpa</artifactId>
+      <type>jar</type>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

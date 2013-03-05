@@ -66,10 +66,7 @@ public abstract class SupportProcessBaseTest {
         sessionManager.setDomain(myDomain);
 
 
-
         sessionManager.buildSession("myKsession", "processes/support/", false);
-
-
 
         sessionManager.registerHandlersForSession("myKsession", 1);
 

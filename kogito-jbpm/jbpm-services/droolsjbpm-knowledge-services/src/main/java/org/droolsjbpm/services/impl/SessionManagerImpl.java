@@ -33,7 +33,6 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 import org.drools.core.util.FileManager;
 import org.drools.impl.EnvironmentFactory;
@@ -46,10 +45,12 @@ import org.droolsjbpm.services.impl.event.listeners.BAM;
 import org.droolsjbpm.services.impl.event.listeners.CDIBAMProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
-import org.droolsjbpm.services.impl.helpers.StatefulKnowledgeSessionDelegate;
+import org.droolsjbpm.services.impl.helpers.KieSessionDelegate;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.KieBase;
@@ -84,18 +85,15 @@ import org.sonatype.aether.repository.RemoteRepository;
  * @author salaboy
  */
 @ApplicationScoped
-public class CDISessionManager implements SessionManager {
+public class SessionManagerImpl implements SessionManager {
 
     @Inject
-    private EntityManager em; 
-    
+    private JbpmServicesPersistenceManager pm; 
+
     @Inject
-    private EntityManagerFactory emf;
-    
-    @Inject
-    private TaskServiceEntryPoint taskService;
+    private BPMN2DataService bpmn2Service;
     @Inject 
-    private CDIHTWorkItemHandler handler;
+    private CDIHTWorkItemHandler htWorkItemHandler;
     @Inject
     private CDIProcessEventListener processListener;
     @Inject
@@ -103,9 +101,7 @@ public class CDISessionManager implements SessionManager {
     private CDIBAMProcessEventListener bamProcessListener;
     @Inject
     private CDIRuleAwareProcessEventListener processFactsListener;
-    
-    @Inject
-    private BPMN2DataService bpmn2Service;
+ 
     @Inject
     private WorkItemHandlerProducer workItemHandlerProducer;
     
@@ -116,6 +112,7 @@ public class CDISessionManager implements SessionManager {
     
     @Inject
     private IOService ioService;
+    
     private Domain domain;
     
     
@@ -132,15 +129,45 @@ public class CDISessionManager implements SessionManager {
     private Map<String, Map<String, WorkItemHandler>> ksessionHandlers = new HashMap<String, Map<String, WorkItemHandler>>();
 
     
-    public CDISessionManager() {
+    public SessionManagerImpl() {
     }
-    
-   
 
-    public CDISessionManager(Domain domain) {
+
+    public SessionManagerImpl(Domain domain) {
         this.domain = domain;
     }
 
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
+
+
+    public void setBamProcessListener(CDIBAMProcessEventListener bamProcessListener) {
+        this.bamProcessListener = bamProcessListener;
+    }
+
+    public void setBpmn2Service(BPMN2DataService bpmn2Service) {
+        this.bpmn2Service = bpmn2Service;
+    }
+
+    public void setHTWorkItemHandler(CDIHTWorkItemHandler htWorkItemHandler) {
+        this.htWorkItemHandler = htWorkItemHandler;
+    }
+
+    public void setProcessListener(CDIProcessEventListener processListener) {
+        this.processListener = processListener;
+    }
+
+    public void setProcessFactsListener(CDIRuleAwareProcessEventListener processFactsListener) {
+        this.processFactsListener = processFactsListener;
+    }
+
+    public void setWorkItemHandlerProducer(WorkItemHandlerProducer workItemHandlerProducer) {
+        this.workItemHandlerProducer = workItemHandlerProducer;
+    }
+
+    
+    
     @Override
     public void setDomain(Domain domain) {
         this.domain = domain;
@@ -191,6 +218,13 @@ public class CDISessionManager implements SessionManager {
     @Override
     public Map<Integer, KieSession> getKsessionsByName(String ksessionName) {
         return ksessions.get(ksessionName);
+    }
+    
+    public void addKsession(String sessionName, KieSession session) {
+        if(ksessions.get(sessionName) == null){
+            ksessions.put(sessionName, new HashMap<Integer, KieSession>());
+          }
+          ksessions.get(sessionName).put(session.getId(), session);
     }
     
     @Override
@@ -323,15 +357,15 @@ public class CDISessionManager implements SessionManager {
 
           //KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 
-          handler.addSession(ksession);
+          htWorkItemHandler.addSession(ksession);
 
           // Register the same handler for all the ksessions
-          ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+          ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htWorkItemHandler);
           // Register the configured handlers
           Map<String, Object> params = new HashMap<String, Object>();
           params.put("ksession", ksession);
           Map<String, WorkItemHandler> handlers = workItemHandlerProducer.getWorkItemHandlers(getDomain().getKsessionRepositoryRoot().get(sessionName), params);
-          StatefulKnowledgeSessionDelegate statefulKnowledgeSessionDelegate = new StatefulKnowledgeSessionDelegate(sessionName, ksession, this);
+          KieSessionDelegate kieSessionDelegate = new KieSessionDelegate(sessionName, ksession, this);
 
           for (Map.Entry<String, WorkItemHandler> wihandler : handlers.entrySet()) {
               ksession.getWorkItemManager().registerWorkItemHandler(wihandler.getKey(), wihandler.getValue());
@@ -340,7 +374,7 @@ public class CDISessionManager implements SessionManager {
           if(ksessions.get(sessionName) == null){
             ksessions.put(sessionName, new HashMap<Integer, KieSession>());
           }
-          ksessions.get(sessionName).put(ksession.getId(), statefulKnowledgeSessionDelegate);
+          ksessions.get(sessionName).put(ksession.getId(), kieSessionDelegate);
 
           if(ksessionIds.get(sessionName) == null){
             ksessionIds.put(sessionName, new ArrayList<Integer>());
@@ -375,7 +409,7 @@ public class CDISessionManager implements SessionManager {
             try {
                processString = new String(fs.loadFile(p));
             } catch (FileException ex) {
-               Logger.getLogger(CDISessionManager.class.getName()).log(Level.SEVERE, null, ex);
+               Logger.getLogger(SessionManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
             ProcessDesc process = bpmn2Service.findProcessId(processString);
             if(process != null){
@@ -430,15 +464,15 @@ public class CDISessionManager implements SessionManager {
 
           //KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 
-          handler.addSession(ksession);
+          htWorkItemHandler.addSession(ksession);
 
           // Register the same handler for all the ksessions
-          ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+          ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htWorkItemHandler);
           // Register the configured handlers
           Map<String, Object> params = new HashMap<String, Object>();
           params.put("ksession", ksession);
           Map<String, WorkItemHandler> handlers = workItemHandlerProducer.getWorkItemHandlers(getDomain().getKsessionRepositoryRoot().get(sessionName), params);
-          StatefulKnowledgeSessionDelegate statefulKnowledgeSessionDelegate = new StatefulKnowledgeSessionDelegate(sessionName, ksession, this);
+          KieSessionDelegate statefulKnowledgeSessionDelegate = new KieSessionDelegate(sessionName, ksession, this);
 
           for (Map.Entry<String, WorkItemHandler> wihandler : handlers.entrySet()) {
               ksession.getWorkItemManager().registerWorkItemHandler(wihandler.getKey(), wihandler.getValue());
@@ -476,10 +510,10 @@ public class CDISessionManager implements SessionManager {
    */
   protected EntityManager getEntityManager() {
       try {
-          this.em.toString();          
-          return this.em;
+          ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().toString();          
+          return ((JbpmServicesPersistenceManagerImpl)this.pm).getEm();
       } catch (ContextNotActiveException e) {
-          EntityManager em = this.emf.createEntityManager();
+          EntityManager em = ((JbpmServicesPersistenceManagerImpl)this.pm).getEmf().createEntityManager();
           return em;
       }
   }
@@ -487,8 +521,8 @@ public class CDISessionManager implements SessionManager {
   protected UserTransaction setupEnvironment(Environment environment) {
       UserTransaction ut = null;
       try {
-          this.em.toString();
-          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, this.em.getEntityManagerFactory());
+          this.pm.toString();
+          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().getEntityManagerFactory());
       } catch (ContextNotActiveException e) {
           try {
               ut = InitialContext.doLookup("java:comp/UserTransaction");
@@ -506,7 +540,7 @@ public class CDISessionManager implements SessionManager {
           } catch (Exception ex) {
               
           }
-          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, this.emf);
+          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, ((JbpmServicesPersistenceManagerImpl)this.pm).getEmf());
       }
       
       return ut;
@@ -531,7 +565,7 @@ public class CDISessionManager implements SessionManager {
     try {
       fileManager.write(pomFile, getPom(releaseId));
     } catch (IOException ex) {
-      Logger.getLogger(CDISessionManager.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(SessionManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
     return pomFile;
   }

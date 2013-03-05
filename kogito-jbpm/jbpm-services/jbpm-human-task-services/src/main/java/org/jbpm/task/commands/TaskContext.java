@@ -17,7 +17,7 @@ package org.jbpm.task.commands;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.command.Context;
 import org.kie.command.World;
 import org.jbpm.task.Task;
@@ -34,7 +34,7 @@ import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
  */
 public class TaskContext implements Context{
     @Inject 
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
     @Inject
     private TaskDefService taskDefService;
     @Inject
@@ -53,14 +53,14 @@ public class TaskContext implements Context{
     public TaskContext() {
     }
 
-    public EntityManager getEm() {
-        return em;
+    public JbpmServicesPersistenceManager getPm() {
+        return pm;
     }
 
-    public void setEm(EntityManager em) {
-        this.em = em;
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
     }
-
+    
     public TaskDefService getTaskDefService() {
         return taskDefService;
     }

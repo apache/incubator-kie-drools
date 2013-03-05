@@ -57,16 +57,16 @@ public class AddTaskCommand<Long> extends TaskCommand {
         if (params != null) {
             ContentData contentData = ContentMarshallerHelper.marshal(params, null);
             Content content = new Content(contentData.getContent());
-            context.getEm().persist(content);
+            context.getPm().persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
         if (data != null) {
             Content content = new Content(data.getContent());
-            context.getEm().persist(content);
+            context.getPm().persist(content);
             task.getTaskData().setDocument(content.getId(), data);
         }
         
-        context.getEm().persist(task);
+        context.getPm().persist(task);
         context.getTaskEvents().select(new AnnotationLiteral<AfterTaskAddedEvent>() {
         }).fire(task);
         return (Long) task.getId();

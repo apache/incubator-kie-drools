@@ -20,7 +20,6 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-shared-services</artifactId>
-      <version>${project.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -33,13 +32,11 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-workitems</artifactId>
-      <version>${project.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>form-services</artifactId>
-      <version>${project.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>

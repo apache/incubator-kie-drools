@@ -21,6 +21,7 @@ import javax.decorator.Delegate;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.drools.core.util.StringUtils;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Comment;
 import org.jbpm.task.User;
 import org.jbpm.task.api.TaskAttachmentService;
@@ -38,7 +39,7 @@ public class UserGroupTaskCommentDecorator implements TaskCommentService {
     @Inject
     private UserGroupCallback userGroupCallback;
     @Inject
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
 
     public long addComment(long taskId, Comment comment) {
         doCallbackOperationForComment(comment);
@@ -78,10 +79,10 @@ public class UserGroupTaskCommentDecorator implements TaskCommentService {
 
     private void addUserFromCallbackOperation(String userId) {
         try {
-            boolean userExists = em.find(User.class, userId) != null;
+            boolean userExists = pm.find(User.class, userId) != null;
             if (!StringUtils.isEmpty(userId) && !userExists) {
                 User user = new User(userId);
-                em.persist(user);
+                pm.persist(user);
             }
         } catch (Throwable t) {
             //logger.log(Level.SEVERE, "Unable to add user " + userId);

@@ -31,8 +31,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Content;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.Escalation;
@@ -57,7 +57,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     private Map<Long, List<ScheduledFuture<ScheduledTaskDeadline>>> scheduledTaskDeadlines = new ConcurrentHashMap<Long, List<ScheduledFuture<ScheduledTaskDeadline>>>();
     protected List<Status> validStatuses = new ArrayList<Status>();
     @Inject 
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
     @Inject
     private Event<NotificationEvent> notificationEvents;
     @Inject 
@@ -65,6 +65,20 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     
     public TaskDeadlinesServiceImpl() {
     }
+
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
+
+    public void setNotificationEvents(Event<NotificationEvent> notificationEvents) {
+        this.notificationEvents = notificationEvents;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+    
+    
 
     @PostConstruct
     public void init() {
@@ -78,13 +92,13 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     }
 
     private void executeEscalatedDeadline(long taskId, long deadlineId) {
-        Task task = (Task) em.find(Task.class, taskId);
-        Deadline deadline = (Deadline) em.find(Deadline.class, deadlineId);
+        Task task = (Task) pm.find(Task.class, taskId);
+        Deadline deadline = (Deadline) pm.find(Deadline.class, deadlineId);
 
         TaskData taskData = task.getTaskData();
         Content content = null;
         if (taskData != null) {
-            content = (Content) em.find(Content.class, taskData.getDocumentContentId());
+            content = (Content) pm.find(Content.class, taskData.getDocumentContentId());
         }
         if (deadline == null || deadline.getEscalations() == null || !isInValidStatus(task)) {
             return;

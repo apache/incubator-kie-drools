@@ -148,7 +148,7 @@ public class PeopleAssignments
         int result = 1;
         result = prime * result + CollectionUtils.hashCode( businessAdministrators );
         result = prime * result + CollectionUtils.hashCode( excludedOwners );
-        result = prime * result + CollectionUtils.hashCode( potentialOwners );
+        result = prime * result + ((potentialOwners == null) ? 0 : CollectionUtils.hashCode( potentialOwners ));
         result = prime * result + CollectionUtils.hashCode( recipients );
         result = prime * result + ((taskInitiator == null) ? 0 : taskInitiator.hashCode());
         result = prime * result + CollectionUtils.hashCode( taskStakeholders );

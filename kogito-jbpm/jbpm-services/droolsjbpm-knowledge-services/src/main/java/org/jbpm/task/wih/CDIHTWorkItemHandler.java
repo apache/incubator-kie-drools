@@ -18,7 +18,8 @@ package org.jbpm.task.wih;
 import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.droolsjbpm.services.impl.CDISessionManager;
+import org.droolsjbpm.services.api.SessionManager;
+import org.droolsjbpm.services.impl.SessionManagerImpl;
 import org.jboss.seam.transaction.Transactional;
 
 
@@ -36,7 +37,6 @@ import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.impl.factories.TaskFactory;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 
 @ApplicationScoped
@@ -52,7 +52,7 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private ExternalTaskEventListener listener;
     
     @Inject
-    private CDISessionManager sessionManager;
+    private SessionManager sessionManager;
 
     
     public CDIHTWorkItemHandler() {
@@ -63,11 +63,20 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     }
     
     public void addSession(KieSession ksession, ClassLoader classLoader){
-        
         listener.addSession(ksession, classLoader);
     }
 
-    
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
+    public void setTaskService(TaskServiceEntryPoint taskService) {
+        this.taskService = taskService;
+    }
+
+    public void setTaskEventListener(ExternalTaskEventListener listener) {
+        this.listener = listener;
+    }
 
     public TaskServiceEntryPoint getTaskService() {
         return taskService;

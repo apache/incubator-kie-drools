@@ -16,12 +16,10 @@
 package org.droolsjbpm.services.impl.bpmn2;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.drools.xml.ExtensibleXmlParser;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.bpmn2.xml.ProcessHandler;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -30,11 +28,8 @@ public class ProcessGetInformationHandler extends ProcessHandler {
 
     @Inject
     private ProcessDescriptionRepository repository;
-    @Inject
-    private TaskServiceEntryPoint taskService;
-    @Inject
-    private EntityManager em;
-    private ProcessDescRepoHelper repo;
+    
+    private ProcessDescRepoHelper repositoryHelper;
 
     public ProcessGetInformationHandler() {
     }
@@ -53,20 +48,25 @@ public class ProcessGetInformationHandler extends ProcessHandler {
         value.setProcess(new ProcessDesc(processId, processName, version, packageName, processType, "", namespace, ""));
         repository.addProcessDescription(processId, value);
         
-        repo.setProcess(value.getProcess());
+        repositoryHelper.setProcess(value.getProcess());
         
         return super.start(uri, localName, attrs, parser);
     }
 
     
-    public void setRepo(ProcessDescRepoHelper repo) {
-        this.repo = repo;
+    public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
+        this.repositoryHelper = repositoryHelper;
     }
 
+    public void setRepository(ProcessDescriptionRepository repository) {
+        this.repository = repository;
+    }
+
+    
     @Override
     public Object end(String uri, String localName, ExtensibleXmlParser parser)
             throws SAXException {
-        repo.clear();
+        repositoryHelper.clear();
         return super.end(uri, localName, parser);
     }
 }

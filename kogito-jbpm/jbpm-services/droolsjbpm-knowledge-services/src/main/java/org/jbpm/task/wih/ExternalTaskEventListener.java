@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
@@ -32,7 +33,6 @@ import org.jbpm.task.events.AfterTaskSkippedEvent;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  *
@@ -40,7 +40,7 @@ import org.kie.runtime.StatefulKnowledgeSession;
  */
 @ApplicationScoped
 @External
-public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
+public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  implements TaskLifeCycleEventListener {
 
     @Inject
     private TaskServiceEntryPoint taskService;
@@ -51,6 +51,7 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
 
     public ExternalTaskEventListener() {
     }
+    
 
     public TaskServiceEntryPoint getTaskService() {
         return taskService;
@@ -60,7 +61,7 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
         this.taskService = taskService;
     }
 
-    public void addSession(StatefulKnowledgeSession session) {
+    public void addSession(KieSession session) {
         addSession(session, null);
     }
      

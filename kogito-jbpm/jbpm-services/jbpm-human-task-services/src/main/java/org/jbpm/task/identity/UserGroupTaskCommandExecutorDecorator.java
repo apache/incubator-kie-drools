@@ -24,6 +24,7 @@ import javax.decorator.Delegate;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.drools.core.util.StringUtils;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.Deadlines;
 import org.jbpm.task.Escalation;
@@ -54,7 +55,7 @@ public class UserGroupTaskCommandExecutorDecorator implements TaskCommandExecuto
     @CommandBased
     private TaskCommandExecutor executor;
     @Inject 
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
     @Inject
     private UserGroupCallback userGroupCallback;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
@@ -107,10 +108,10 @@ public class UserGroupTaskCommandExecutorDecorator implements TaskCommandExecuto
 
     private void addUserFromCallbackOperation(String userId) {
         try {
-            boolean userExists = em.find(User.class, userId) != null;
+            boolean userExists = pm.find(User.class, userId) != null;
             if (!StringUtils.isEmpty(userId) && !userExists) {
                 User user = new User(userId);
-                em.persist(user);
+                pm.persist(user);
             }
         } catch (Throwable t) {
             //logger.log(Level.SEVERE, "Unable to add user " + userId);
@@ -153,10 +154,10 @@ public class UserGroupTaskCommandExecutorDecorator implements TaskCommandExecuto
 
     private void addGroupFromCallbackOperation(String groupId) {
         try {
-            boolean groupExists = em.find(Group.class, groupId) != null;
+            boolean groupExists = pm.find(Group.class, groupId) != null;
             if (!StringUtils.isEmpty(groupId) && !groupExists) {
                 Group group = new Group(groupId);
-                em.persist(group);
+                pm.persist(group);
             }
         } catch (Throwable t) {
             //logger.log(Level.WARNING, "UserGroupCallback has not been registered.");

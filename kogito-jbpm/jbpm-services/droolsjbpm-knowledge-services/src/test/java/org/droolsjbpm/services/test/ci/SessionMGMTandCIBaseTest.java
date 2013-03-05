@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
-import org.droolsjbpm.services.impl.CDISessionManager;
+import org.droolsjbpm.services.impl.SessionManagerImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
@@ -44,7 +44,7 @@ public abstract class SessionMGMTandCIBaseTest extends AbstractKieCiTest {
   @Inject
   protected KnowledgeAdminDataService adminDataService;
   @Inject
-  private CDISessionManager kieSessionManager;
+  private SessionManagerImpl kieSessionManager;
 
   public SessionMGMTandCIBaseTest() {
   }
