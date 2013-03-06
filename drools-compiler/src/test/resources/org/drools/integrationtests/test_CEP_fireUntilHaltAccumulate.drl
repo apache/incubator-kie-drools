@@ -1,0 +1,19 @@
+package org.drools.integrationtests
+
+import java.util.List;
+
+declare Stock
+    @role( event )
+    @expires( 1s ) // setting to a large value causes the test to pass
+    name : String
+    value : Double
+end
+
+rule "collect events"
+when
+    stocks := List()
+        from accumulate( $zeroStock : Stock( value == 0.0 )
+                         collectList( $zeroStock ) )
+then
+    // empty consequence
+end
