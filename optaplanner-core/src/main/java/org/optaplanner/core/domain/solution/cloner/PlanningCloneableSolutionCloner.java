@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.domain.solution.cloner;
 
-import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
-import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.api.domain.solution.cloner.PlanningCloneable;
+import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.solution.Solution;
 
 public class PlanningCloneableSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.planner.api.domain.entity;
+package org.optaplanner.api.domain.entity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Comparator;
 
-import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.score.director.ScoreDirector;

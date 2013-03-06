@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.drools.planner.api.domain.value.ValueRange;
-import org.drools.planner.api.domain.value.ValueRanges;
-import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.optaplanner.api.domain.value.ValueRange;
+import org.optaplanner.api.domain.value.ValueRanges;
+import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.drools.planner.config.util.ConfigUtils;
 import org.optaplanner.core.domain.common.PropertyAccessor;
 import org.optaplanner.core.domain.common.ReflectionPropertyAccessor;

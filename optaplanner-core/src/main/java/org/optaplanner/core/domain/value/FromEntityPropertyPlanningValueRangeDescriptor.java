@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.drools.planner.api.domain.value.ValueRange;
+import org.optaplanner.api.domain.value.ValueRange;
 import org.optaplanner.core.domain.common.PropertyAccessor;
 import org.optaplanner.core.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;

@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.solution.Solution;
 import org.optaplanner.core.testdata.domain.TestdataEntity;

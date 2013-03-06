@@ -37,7 +37,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.domain.common.PropertyAccessor;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.solution.Solution;

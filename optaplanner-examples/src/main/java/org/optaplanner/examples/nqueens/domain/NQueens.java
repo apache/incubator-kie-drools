@@ -22,8 +22,8 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
-import org.drools.planner.api.domain.solution.PlanningSolution;
+import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.solution.Solution;

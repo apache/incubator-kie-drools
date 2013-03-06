@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.heuristic.selector.common.decorator;
 
-import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.heuristic.selector.Selector;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.director.ScoreDirector;

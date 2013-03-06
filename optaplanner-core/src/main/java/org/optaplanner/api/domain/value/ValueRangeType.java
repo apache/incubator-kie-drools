@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.api.domain.value;
+package org.optaplanner.api.domain.value;
 
 import org.optaplanner.core.solution.Solution;
 

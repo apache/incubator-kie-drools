@@ -19,7 +19,7 @@ package org.optaplanner.core.solver.scope;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.definition.ScoreDefinition;

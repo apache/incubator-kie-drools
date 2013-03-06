@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.api.domain.solution.cloner;
+package org.optaplanner.api.domain.solution.cloner;
 
 import org.optaplanner.core.solution.Solution;
 

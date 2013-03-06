@@ -19,8 +19,8 @@ package org.optaplanner.core.testdata.domain.setbased;
 import java.util.Collection;
 import java.util.Set;
 
-import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
-import org.drools.planner.api.domain.solution.PlanningSolution;
+import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.solution.Solution;

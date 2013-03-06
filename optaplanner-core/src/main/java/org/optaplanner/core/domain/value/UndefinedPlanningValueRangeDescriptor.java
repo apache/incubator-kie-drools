@@ -18,7 +18,7 @@ package org.optaplanner.core.domain.value;
 
 import java.util.Collection;
 
-import org.drools.planner.api.domain.value.ValueRange;
+import org.optaplanner.api.domain.value.ValueRange;
 import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.solution.Solution;
 

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import org.drools.planner.api.domain.entity.PlanningEntity;
-import org.drools.planner.api.domain.value.ValueRange;
+import org.optaplanner.api.domain.entity.PlanningEntity;
+import org.optaplanner.api.domain.value.ValueRange;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
 

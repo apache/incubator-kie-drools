@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
-import org.drools.planner.api.domain.solution.PlanningEntityProperty;
-import org.drools.planner.api.domain.solution.PlanningSolution;
-import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
-import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.api.domain.solution.PlanningEntityProperty;
+import org.optaplanner.api.domain.solution.PlanningSolution;
+import org.optaplanner.api.domain.solution.cloner.PlanningCloneable;
+import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
 import org.drools.planner.config.util.ConfigUtils;
 import org.optaplanner.core.domain.common.PropertyAccessor;
 import org.optaplanner.core.domain.common.ReflectionPropertyAccessor;

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.planner.api.domain.value;
+package org.optaplanner.api.domain.value;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
-import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;
