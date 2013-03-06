@@ -16,25 +16,13 @@
 
 package org.jbpm.event.process;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.kie.event.process.ProcessCompletedEvent;
-import org.kie.event.process.ProcessEvent;
-import org.kie.event.process.ProcessEventListener;
-import org.kie.event.process.ProcessNodeLeftEvent;
-import org.kie.event.process.ProcessNodeTriggeredEvent;
-import org.kie.event.process.ProcessStartedEvent;
-import org.kie.event.process.ProcessVariableChangedEvent;
 import org.drools.rule.Package;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
-import org.kie.runtime.process.ProcessInstance;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.impl.Action;
@@ -48,9 +36,24 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
+import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.event.process.ProcessCompletedEvent;
+import org.kie.event.process.ProcessEvent;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.process.ProcessNodeLeftEvent;
+import org.kie.event.process.ProcessNodeTriggeredEvent;
+import org.kie.event.process.ProcessStartedEvent;
+import org.kie.event.process.ProcessVariableChangedEvent;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessContext;
+import org.kie.runtime.process.ProcessInstance;
 
-public class ProcessEventSupportTest extends JbpmTestCase {
+public class ProcessEventSupportTest {
 
+	@Test
     public void testProcessEventListener() throws Exception {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -163,6 +166,7 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(15)).getProcessInstance().getProcessId());
     }
     
+	@Test
     public void testProcessEventListenerWithEvent() throws Exception {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -300,6 +304,7 @@ public class ProcessEventSupportTest extends JbpmTestCase {
     
     
     
+    @Test
     public void testProcessEventListenerWithEndEvent() throws Exception {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -411,6 +416,7 @@ public class ProcessEventSupportTest extends JbpmTestCase {
         assertEquals( "org.drools.process.event", ((ProcessStartedEvent) processEventList.get(13)).getProcessInstance().getProcessId());
     }
     
+    @Test
     public void testProcessEventListenerWithStartEvent() throws Exception {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 

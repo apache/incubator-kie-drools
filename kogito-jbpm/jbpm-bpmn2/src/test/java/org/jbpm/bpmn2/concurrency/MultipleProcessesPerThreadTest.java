@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.jbpm.bpmn2.objects.Status;
-import org.jbpm.persistence.util.LoggingPrintStream;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
@@ -38,9 +37,6 @@ public class MultipleProcessesPerThreadTest {
     private static final int LOOPS = 1000;
     
     private static Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
-    static { 
-        System.setOut(new LoggingPrintStream(System.out));
-    }
     
     protected static StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) { 
         return kbase.newStatefulKnowledgeSession();

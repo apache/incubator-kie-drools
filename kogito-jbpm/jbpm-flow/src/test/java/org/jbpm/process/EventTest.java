@@ -16,18 +16,14 @@
 
 package org.jbpm.process;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
-import org.kie.runtime.process.ProcessInstance;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -44,9 +40,16 @@ import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.core.node.StartNode;
+import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessContext;
+import org.kie.runtime.process.ProcessInstance;
 
-public class EventTest extends JbpmTestCase {
+public class EventTest {
     
+	@Test
     public void testEvent1() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.event");
@@ -137,7 +140,8 @@ public class EventTest extends JbpmTestCase {
         assertEquals(1, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-    
+	
+    @Test
     public void testEvent2() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.event");
@@ -228,6 +232,7 @@ public class EventTest extends JbpmTestCase {
         assertEquals(2, myList.size());
     }
 
+    @Test
     public void testEvent3() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.event");
@@ -346,6 +351,7 @@ public class EventTest extends JbpmTestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
     public void testEvent4() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.event");
@@ -450,6 +456,7 @@ public class EventTest extends JbpmTestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
     public void testEvent5() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.event");

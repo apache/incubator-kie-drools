@@ -2,7 +2,8 @@ package org.jbpm.process.builder;
 
 import java.util.Collection;
 
-import org.jbpm.JbpmTestCase;
+import junit.framework.TestCase;
+
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
@@ -10,7 +11,7 @@ import org.kie.definition.process.Process;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
-public class KnowledgeBuilderTest extends JbpmTestCase {
+public class KnowledgeBuilderTest extends TestCase {
 	
 	public void testKnowledgeProviderWithProcesses() {
 		KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();

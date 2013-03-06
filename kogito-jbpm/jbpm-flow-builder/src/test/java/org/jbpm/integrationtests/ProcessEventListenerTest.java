@@ -21,11 +21,17 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
+import org.drools.rule.Package;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.junit.Test;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEvent;
 import org.kie.event.process.ProcessEventListener;
@@ -33,14 +39,9 @@ import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
-import org.drools.rule.Package;
 import org.kie.runtime.process.ProcessInstance;
-import org.jbpm.JbpmBaseTest;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.junit.Test;
 
-public class ProcessEventListenerTest extends JbpmBaseTest {
+public class ProcessEventListenerTest extends TestCase {
 
     @Test
 	public void testInternalNodeSignalEvent() {

@@ -19,10 +19,6 @@ import org.kie.runtime.process.ProcessInstance;
 
 public class BoundaryEventWithCancelActivityTest extends JbpmBpmn2TestCase {
 
-    protected void setUp() {
-        persistence = false;
-    }
-    
     public void testConditionalBoundaryEventInterrupting() throws Exception {
         KnowledgeBase kbase = readKnowledgeBaseFromDisc("BPMN2-ConditionalBoundaryEventInterrupting.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);

@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * <li>JPAProcessInstanceDbLog</li>
  * </ul>
  */
-public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
+public class JPAWorkingMemoryDbLoggerTest {
 
     private HashMap<String, Object> context;
     private Logger logger = LoggerFactory.getLogger(JPAWorkingMemoryDbLoggerTest.class);

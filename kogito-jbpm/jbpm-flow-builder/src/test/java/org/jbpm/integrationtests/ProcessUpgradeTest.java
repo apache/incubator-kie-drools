@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ReaderResource;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
@@ -19,7 +20,7 @@ import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
-public class ProcessUpgradeTest extends JbpmTestCase {
+public class ProcessUpgradeTest extends TestCase {
     
     public void testDefaultUpgrade() throws Exception {
         String rule = "package org.test;\n";

@@ -5,6 +5,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
@@ -12,11 +14,10 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Message;
 import org.jbpm.Person;
 
-public class ProcessStartTest extends JbpmTestCase {
+public class ProcessStartTest extends TestCase {
     
 	public void testStartConstraintTrigger() throws Exception {
 		PackageBuilder builder = new PackageBuilder();

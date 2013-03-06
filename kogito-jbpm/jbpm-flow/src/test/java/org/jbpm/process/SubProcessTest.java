@@ -16,18 +16,15 @@
 
 package org.jbpm.process;
 
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
@@ -39,17 +36,28 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessContext;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemHandler;
+import org.kie.runtime.process.WorkItemManager;
 
-public class SubProcessTest extends JbpmTestCase {
+public class SubProcessTest {
 
 	private boolean executed = false;
 	private WorkItem workItem;
 	
+	@Before
 	public void setUp() {
 		executed = false;
 		workItem = null;
 	}
     
+	@Test
     public void testSynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.process");
@@ -120,6 +128,7 @@ public class SubProcessTest extends JbpmTestCase {
         assertEquals(0, ksession.getProcessInstances().size());
     }
 
+	@Test
     public void testAsynchronousSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.process.process");
@@ -196,6 +205,7 @@ public class SubProcessTest extends JbpmTestCase {
         assertEquals(0, ksession.getProcessInstances().size());
     }
     
+	@Test
     public void testNonExistentSubProcess() {
 	    String nonExistentSubProcessName = "nonexistent.process";
         RuleFlowProcess process = new RuleFlowProcess();

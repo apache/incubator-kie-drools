@@ -4,6 +4,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -15,7 +17,6 @@ import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.spi.ProcessContext;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.process.instance.impl.Action;
@@ -24,11 +25,8 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 
-public class JavaActionBuilderTest extends JbpmTestCase {
+public class JavaActionBuilderTest extends TestCase {
 
-    public void setUp() {
-    }
-    
     public void testSimpleAction() throws Exception {
         final Package pkg = new Package( "pkg1" );
 

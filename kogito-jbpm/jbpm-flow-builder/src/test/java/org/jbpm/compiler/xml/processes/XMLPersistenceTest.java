@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.definition.process.Process;
+import junit.framework.TestCase;
+
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
@@ -36,7 +37,6 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.xml.SemanticModules;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
@@ -76,8 +76,9 @@ import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.definition.process.Process;
 
-public class XMLPersistenceTest extends JbpmTestCase {
+public class XMLPersistenceTest extends TestCase {
     
     public void testPersistenceOfEmptyNodes() throws Exception {
         RuleFlowProcess process = new RuleFlowProcess() {

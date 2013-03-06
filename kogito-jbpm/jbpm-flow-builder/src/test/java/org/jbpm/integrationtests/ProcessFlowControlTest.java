@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -17,11 +19,10 @@ import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.rule.Match;
 
-public class ProcessFlowControlTest extends JbpmTestCase {
+public class ProcessFlowControlTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,

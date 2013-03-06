@@ -100,30 +100,6 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 
     private Logger logger = LoggerFactory.getLogger(SimpleBPMNProcessTest.class);
     
-    protected void setUp() { 
-        String testName = getName();
-        String [] testFailsWithPersistence = { 
-            "testEventBasedSplit", "testTimerBoundaryEvent", "testIntermediateCatchEventTimer", "testTimerStart", 
-            // broken, but should work?!?
-            "testSignalBoundaryEvent", 
-            "testEscalationBoundaryEventOnTask", "testErrorBoundaryEventOnTask",
-            "testBusinessRuleTask",
-            "testNullVariableInScriptTaskProcess",
-            "testConditionalBoundaryEvent",
-            "testMessageBoundaryEventOnTask",
-            "testMessageBoundaryEvent",
-            "testCallActivityWithBoundaryEvent",
-            "testRuleTaskWithFacts",
-            "testMultiInstanceLoopCharacteristicsProcessWithORGateway"
-        };
-        for( String testNameBegin : testFailsWithPersistence ) { 
-             if( testName.startsWith(testNameBegin) ) { 
-                 persistence = false;
-             }
-        }
-        super.setUp();
-    }
-    
     public void testSignalBoundaryEventOnTask() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-BoundarySignalEventOnTaskbpmn2.bpmn");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -155,6 +131,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
         ksession.signalEvent("MySignal", "value");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        ksession.dispose();
     }
     
     public void testSignalBoundaryEventOnTaskComplete() throws Exception {
@@ -191,6 +168,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.signalEvent("MySignal", "value");
         ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        ksession.dispose();
     }
     
 	public void testMinimalProcess() throws Exception {
@@ -198,6 +176,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Minimal");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testMinimalProcessImplicit() throws Exception {
@@ -205,6 +184,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Minimal");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testImplicitEndParallel() throws Exception {
@@ -212,6 +192,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testMinimalProcessWithGraphical() throws Exception {
@@ -219,6 +200,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Minimal");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testMinimalProcessWithDIGraphical() throws Exception {
@@ -226,6 +208,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Minimal");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testCompositeProcessWithDIGraphical() throws Exception {
@@ -233,6 +216,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Composite");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testScriptTask() throws Exception {
@@ -240,6 +224,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("ScriptTask");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testImport() throws Exception {
@@ -247,6 +232,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Import");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testRuleTask() throws Exception {
@@ -294,6 +280,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.fireAllRules();
 		assertTrue(list.size() == 1);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testRuleTask2() throws Exception {
@@ -343,6 +330,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.fireAllRules();
 		assertTrue(list.size() == 0);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testRuleTaskWithFacts() throws Exception {
@@ -429,6 +417,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         params.put("x", "SomeString");
         processInstance = ksession.startProcess("RuleTask", params);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
 	
 	public void testRuleTaskAcrossSessions() throws Exception {
@@ -453,6 +442,8 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertProcessInstanceActive(processInstance2.getId(), ksession2);
 		ksession2.fireAllRules();
 		assertProcessInstanceCompleted(processInstance2.getId(), ksession2);
+		ksession1.dispose();
+		ksession2.dispose();
 	}
 	
 	public void testDataObject() throws Exception {
@@ -463,6 +454,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess("Evaluation",
 				params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testDataStore() throws Exception {
@@ -478,6 +470,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertEquals("employeeStore", dataStore.getName());
 		assertEquals(String.class.getCanonicalName(),
 				((ObjectDataType) dataStore.getType()).getClassName());
+		ksession.dispose();
 	}
 
 	public void testAssociation() throws Exception {
@@ -492,6 +485,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertEquals("_1234", assoc.getId());
 		assertEquals("_1", assoc.getSourceRef());
 		assertEquals("_2", assoc.getTargetRef());
+		ksession.dispose();
 	}
 
 	public void testUserTaskWithDataStoreScenario() throws Exception {
@@ -501,6 +495,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				new DoNothingWorkItemHandler());
 		ksession.startProcess("UserProcess");
 		// we can't test further as user tasks are asynchronous.
+		ksession.dispose();
 	}
 
 	public void testEvaluationProcess() throws Exception {
@@ -515,6 +510,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess("Evaluation",
 				params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testEvaluationProcess2() throws Exception {
@@ -527,6 +523,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"com.sample.evaluation", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testEvaluationProcess3() throws Exception {
@@ -541,6 +538,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess("Evaluation",
 				params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testUserTask() throws Exception {
@@ -557,6 +555,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertEquals("john", workItem.getParameter("ActorId"));
 		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testLane() throws Exception {
@@ -585,6 +584,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertEquals("mary", workItem.getParameter("ActorId"));
 		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testExclusiveSplit() throws Exception {
@@ -598,6 +598,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testExclusiveSplitXPathAdvanced() throws Exception {
@@ -619,6 +620,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testExclusiveSplitXPathAdvanced2() throws Exception {
@@ -640,6 +642,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testExclusiveSplitXPathAdvancedWithVars() throws Exception {
@@ -661,6 +664,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testExclusiveSplitPriority() throws Exception {
@@ -674,6 +678,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testExclusiveSplitDefault() throws Exception {
@@ -687,6 +692,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testInclusiveSplit() throws Exception {
@@ -697,6 +703,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 	
    public void testInclusiveSplitAndJoin() throws Exception {
@@ -719,6 +726,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
         }
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
 
     public void testInclusiveSplitAndJoinLoop() throws Exception {
@@ -741,6 +749,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
         }
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
 
     public void testInclusiveSplitAndJoinLoop2() throws Exception {
@@ -763,6 +772,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
             ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
         }
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
    
    public void testInclusiveSplitAndJoinNested() throws Exception {
@@ -793,6 +803,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
        }
        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       ksession.dispose();
    }
    
    public void testInclusiveSplitAndJoinEmbedded() throws Exception {
@@ -815,6 +826,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
        }
        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       ksession.dispose();
    }
    
    public void testInclusiveSplitAndJoinWithParallel() throws Exception {
@@ -837,6 +849,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
        }
        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       ksession.dispose();
    }
    
    public void testInclusiveSplitAndJoinWithEnd() throws Exception {
@@ -862,6 +875,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
        
        ksession.getWorkItemManager().completeWorkItem(activeWorkItems.get(2).getId(), null);
        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       ksession.dispose();
    }
    
    public void testInclusiveSplitAndJoinWithTimer() throws Exception {
@@ -889,6 +903,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 
        ksession.getWorkItemManager().completeWorkItem(activeWorkItems.get(1).getId(), null);
        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       ksession.dispose();
    }
    
    public void testInclusiveSplitAndJoinExtraPath() throws Exception {
@@ -916,6 +931,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 
        ksession.getWorkItemManager().completeWorkItem(activeWorkItems.get(3).getId(), null);
        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       ksession.dispose();
    }
    
    public void testMultiInstanceLoopCharacteristicsProcessWithORGateway() throws Exception {
@@ -968,6 +984,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
        ksession.getWorkItemManager().completeWorkItem(workItems.get(3).getId(), null);
        
        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       ksession.dispose();
    }
 
 	public void testInclusiveSplitDefault() throws Exception {
@@ -978,6 +995,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	// public void testExclusiveSplitXPath() throws Exception {
@@ -1027,6 +1045,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				new SystemOutWorkItemHandler());
 		ksession.signalEvent("No", "NoValue", processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testEventBasedSplitBefore() throws Exception {
@@ -1058,6 +1077,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				new DoNothingWorkItemHandler());
 		ksession.signalEvent("No", "NoValue", processInstance.getId());
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+		ksession.dispose();
 	}
 
 	public void testEventBasedSplitAfter() throws Exception {
@@ -1087,6 +1107,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				new DoNothingWorkItemHandler());
 		// No
 		ksession.signalEvent("No", "NoValue", processInstance.getId());
+		ksession.dispose();
 	}
 
 	public void testEventBasedSplit2() throws Exception {
@@ -1130,6 +1151,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				new SystemOutWorkItemHandler());
 		ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testEventBasedSplit3() throws Exception {
@@ -1162,6 +1184,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				new SystemOutWorkItemHandler());
 		ksession.insert(jack);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testEventBasedSplit4() throws Exception {
@@ -1193,6 +1216,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.signalEvent("Message-NoMessage", "NoValue",
 				processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testEventBasedSplit5() throws Exception {
@@ -1233,6 +1257,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		receiveTaskHandler.messageReceived("NoMessage", "NoValue");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		receiveTaskHandler.messageReceived("YesMessage", "YesValue");
+		ksession.dispose();
 	}
 
 	public void testCallActivity() throws Exception {
@@ -1261,6 +1286,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 		assertEquals("new value",
 				((WorkflowProcessInstance) processInstance).getVariable("y"));
+		ksession.dispose();
 	}
 	
    public void testCallActivityByName() throws Exception {
@@ -1289,6 +1315,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertEquals("new value V2",
                 ((WorkflowProcessInstance) processInstance).getVariable("y"));
+        ksession.dispose();
     }
 
 	public void testSubProcess() throws Exception {
@@ -1309,6 +1336,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		});
 		ProcessInstance processInstance = ksession.startProcess("SubProcess");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 	
 	public void testSubProcessWithTerminateEndEvent() throws Exception {
@@ -1324,6 +1352,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("SubProcessTerminate");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertEquals(7, list.size());
+        ksession.dispose();
     }
 	
 	public void testSubProcessWithTerminateEndEventProcessScope() throws Exception {
@@ -1339,6 +1368,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("SubProcessTerminate");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertEquals(5, list.size());
+        ksession.dispose();
     }
 
 	public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
@@ -1352,6 +1382,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"MultiInstanceLoopCharacteristicsProcess", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 	
 	public void testMultiInstanceLoopCharacteristicsProcessWithOutput() throws Exception {
@@ -1369,6 +1400,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
                 "MultiInstanceLoopCharacteristicsProcessWithOutput", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertEquals(2, myListOut.size());
+        ksession.dispose();
     }
 
 	public void testMultiInstanceLoopCharacteristicsTaskWithOutput() throws Exception {
@@ -1388,6 +1420,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
                 "MultiInstanceLoopCharacteristicsTask", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertEquals(2, myListOut.size());
+        ksession.dispose();
     }
 	
 	public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
@@ -1403,6 +1436,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess(
 				"MultiInstanceLoopCharacteristicsTask", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testEscalationBoundaryEvent() throws Exception {
@@ -1411,6 +1445,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession
 				.startProcess("EscalationBoundaryEvent");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testEscalationBoundaryEventInterrupting() throws Exception {
@@ -1422,6 +1457,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				.startProcess("EscalationBoundaryEvent");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 		// TODO: check for cancellation of task
+		ksession.dispose();
 	}
 
 	public void testEscalationBoundaryEventOnTask() throws Exception {
@@ -1466,6 +1502,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        ksession.dispose();
     }
 	
 	
@@ -1477,6 +1514,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession
 				.startProcess("ErrorBoundaryEvent");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 	
 	public void testErrorBoundaryEventOnTask() throws Exception {
@@ -1521,6 +1559,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        ksession.dispose();
     }
 
 	public void testTimerBoundaryEventDuration() throws Exception {
@@ -1534,6 +1573,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		Thread.sleep(1000);
 		ksession = restoreSession(ksession, true);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 	
    public void testTimerBoundaryEventDurationISO() throws Exception {
@@ -1547,6 +1587,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         Thread.sleep(1500);
         ksession = restoreSession(ksession, true);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
    
    public void testTimerBoundaryEventDateISO() throws Exception {
@@ -1564,6 +1605,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
        Thread.sleep(2000);
        ksession = restoreSession(ksession, true);
        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       ksession.dispose();
    }
 
 	public void testTimerBoundaryEventCycle1() throws Exception {
@@ -1577,6 +1619,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		Thread.sleep(1000);
 		ksession = restoreSession(ksession, true);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testTimerBoundaryEventCycle2() throws Exception {
@@ -1593,6 +1636,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertProcessInstanceActive(processInstance.getId(), ksession);
 		ksession.abortProcessInstance(processInstance.getId());
 		Thread.sleep(1000);
+		ksession.dispose();
 	}
 	
    public void testTimerBoundaryEventCycleISO() throws Exception {
@@ -1624,6 +1668,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		logger.debug("Firing timer");
 		ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 	
 	public void testTimerBoundaryEventInterruptingOnTask() throws Exception {
@@ -1639,6 +1684,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         logger.debug("Firing timer");
         ksession.fireAllRules();
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
 	
 	public void testSignalBoundaryEventInterrupting() throws Exception {
@@ -1653,6 +1699,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession = restoreSession(ksession, true);
         ksession.signalEvent("MyMessage", null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
 
 	public void testAdHocSubProcess() throws Exception {
@@ -1712,6 +1759,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
 				workItemHandler);
 		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+		ksession.dispose();
 	}
 
 	public void testAdHocSubProcessAutoComplete() throws Exception {
@@ -1769,6 +1817,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				workItemHandler);
 		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testAdHocSubProcessAutoCompleteDynamicTask() throws Exception {
@@ -1835,6 +1884,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		workItem = workItemHandler2.getWorkItem();
 		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 	
 	public void testAdHocSubProcessAutoCompleteDynamicSubProcess() throws Exception {
@@ -1899,6 +1949,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 //		workItem = workItemHandler2.getWorkItem();
 //		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 	
 	public void testAdHocSubProcessAutoCompleteDynamicSubProcess2() throws Exception {
@@ -1963,6 +2014,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		workItem = workItemHandler2.getWorkItem();
 		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 	
 	public void testAdHocProcess() throws Exception {
@@ -1981,6 +2033,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.insert(new Person());
 		ksession.signalEvent("Task3", null, processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testAdHocProcessDynamicTask() throws Exception {
@@ -2007,6 +2060,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.insert(new Person());
 		ksession.signalEvent("Task3", null, processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testAdHocProcessDynamicSubProcess() throws Exception {
@@ -2030,6 +2084,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.insert(new Person());
 		ksession.signalEvent("Task3", null, processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testIntermediateCatchEventSignal() throws Exception {
@@ -2044,6 +2099,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		// now signal process instance
 		ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testIntermediateCatchEventMessage() throws Exception {
@@ -2059,6 +2115,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.signalEvent("Message-HelloMessage", "SomeValue",
 				processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testIntermediateCatchEventTimerDuration() throws Exception {
@@ -2076,6 +2133,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				new DoNothingWorkItemHandler());
 		ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 	
    public void testIntermediateCatchEventTimerDateISO() throws Exception {
@@ -2094,6 +2152,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         Thread.sleep(2000);
         ksession.fireAllRules();
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
 	
    public void testIntermediateCatchEventTimerDurationISO() throws Exception {
@@ -2111,6 +2170,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
                 new DoNothingWorkItemHandler());
         ksession.fireAllRules();
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
 
 	public void testIntermediateCatchEventTimerCycle1() throws Exception {
@@ -2128,6 +2188,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				new DoNothingWorkItemHandler());
 		ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 	
    public void testIntermediateCatchEventTimerCycleISO() throws Exception {
@@ -2156,6 +2217,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
             Thread.sleep(1000);
         }
         assertEquals(6, list.size());
+        ksession.dispose();
     }
 
 	public void testIntermediateCatchEventTimerCycle2() throws Exception {
@@ -2173,6 +2235,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		assertProcessInstanceActive(processInstance.getId(), ksession);
 		ksession.abortProcessInstance(processInstance.getId());
 		Thread.sleep(1000);
+		ksession.dispose();
 	}
 
 	public void testIntermediateCatchEventCondition() throws Exception {
@@ -2187,6 +2250,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		person.setName("Jack");
 		ksession.insert(person);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testErrorEndEventProcess() throws Exception {
@@ -2196,6 +2260,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				.startProcess("ErrorEndEvent");
 		assertProcessInstanceAborted(processInstance.getId(), ksession);
 		assertEquals("error", ((org.jbpm.process.instance.ProcessInstance)processInstance).getOutcome());
+		ksession.dispose();
 	}
 
 	public void testEscalationEndEventProcess() throws Exception {
@@ -2204,6 +2269,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession
 				.startProcess("EscalationEndEvent");
 		assertProcessInstanceAborted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testEscalationIntermediateThrowEventProcess() throws Exception {
@@ -2212,6 +2278,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession
 				.startProcess("EscalationIntermediateThrowEvent");
 		assertProcessInstanceAborted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testCompensateIntermediateThrowEventProcess() throws Exception {
@@ -2220,6 +2287,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession
 				.startProcess("CompensateIntermediateThrowEvent");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testCompensateEndEventProcess() throws Exception {
@@ -2229,6 +2297,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				.startProcess("CompensateEndEvent");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		assertNodeTriggered(processInstance.getId(), "StartProcess", "Task", "CompensateEvent", "CompensateEvent2", "Compensate", "EndEvent");
+		ksession.dispose();
 	}
 
 	public void testServiceTask() throws Exception {
@@ -2242,6 +2311,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				.startProcess("ServiceProcess", params);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		assertEquals("Hello john!", processInstance.getVariable("s"));
+		ksession.dispose();
 	}
 
 	public void testSendTask() throws Exception {
@@ -2254,6 +2324,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
 				.startProcess("SendTask", params);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testReceiveTask() throws Exception {
@@ -2268,6 +2339,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession = restoreSession(ksession, true);
 		receiveTaskHandler.messageReceived("HelloMessage", "Hello john!");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		ksession.dispose();
 	}
 
 	public void testConditionalStart() throws Exception {
@@ -2281,6 +2353,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		person.setName("john");
 		ksession.insert(person);
 		ksession.fireAllRules();
+		ksession.dispose();
 	}
 
 	public void testTimerStart() throws Exception {
@@ -2299,6 +2372,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 			Thread.sleep(500);
 		}
 		assertEquals(5, list.size());
+		ksession.dispose();
 	}
 	
     public void testTimerStartCycleISO() throws Exception {
@@ -2317,7 +2391,9 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
             Thread.sleep(1000);
         }
         assertEquals(6, list.size());
+        ksession.dispose();
     }	
+    
 //Following test is commented out since it relies on fixed date 
 //and it cannot be given as variable as timer should start the process
     
@@ -2355,9 +2431,8 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         Thread.sleep(3000);
 
         assertEquals(1, list.size());
+        ksession.dispose();
     }
-   
-
 
 	public void testTimerStartCron() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStartCron.bpmn2");
@@ -2374,6 +2449,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 			Thread.sleep(1000);
 		}
 		assertEquals(6, list.size());
+		ksession.dispose();
 	}
 
 	public void testSignalStart() throws Exception {
@@ -2387,6 +2463,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		});
 		ksession.signalEvent("MySignal", "NewValue");
 		assertEquals(1, list.size());
+		ksession.dispose();
 	}
 
 	public void testSignalStartDynamic() throws Exception {
@@ -2402,6 +2479,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		});
 		ksession.signalEvent("MySignal", "NewValue");
 		assertEquals(1, list.size());
+		ksession.dispose();
 	}
 
 	public void testSignalEnd() throws Exception {
@@ -2410,12 +2488,14 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("x", "MyValue");
 		ksession.startProcess("SignalEndEvent", params);
+		ksession.dispose();
 	}
 
 	public void testMessageStart() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageStart.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.signalEvent("Message-HelloMessage", "NewValue");
+		ksession.dispose();
 	}
 
 	public void testMessageEnd() throws Exception {
@@ -2429,6 +2509,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				"MessageEndEvent", params);
 		assertEquals(ProcessInstance.STATE_COMPLETED,
 				processInstance.getState());
+		ksession.dispose();
 	}
 
 	public void testMessageIntermediateThrow() throws Exception {
@@ -2442,6 +2523,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				"MessageIntermediateEvent", params);
 		assertEquals(ProcessInstance.STATE_COMPLETED,
 				processInstance.getState());
+		ksession.dispose();
 	}
 
 	public void testSignalIntermediateThrow() throws Exception {
@@ -2453,6 +2535,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				"SignalIntermediateEvent", params);
 		assertEquals(ProcessInstance.STATE_COMPLETED,
 				processInstance.getState());
+		ksession.dispose();
 	}
 
 	public void testNoneIntermediateThrow() throws Exception {
@@ -2462,6 +2545,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				"NoneIntermediateEvent", null);
 		assertEquals(ProcessInstance.STATE_COMPLETED,
 				processInstance.getState());
+		ksession.dispose();
 	}
 
 	public void testXpathExpression() throws Exception {
@@ -2478,6 +2562,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess("XPathProcess",
 				params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testOnEntryExitScript() throws Exception {
@@ -2491,6 +2576,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				.startProcess("OnEntryExitScriptProcess");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 		assertEquals(4, myList.size());
+		ksession.dispose();
 	}
 	
 	public void testOnEntryExitNamespacedScript() throws Exception {
@@ -2504,6 +2590,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				.startProcess("OnEntryExitScriptProcess");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 		assertEquals(4, myList.size());
+		ksession.dispose();
 	}
 	
 	public void testOnEntryExitMixedNamespacedScript() throws Exception {
@@ -2517,6 +2604,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				.startProcess("OnEntryExitScriptProcess");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 		assertEquals(4, myList.size());
+		ksession.dispose();
 	}
 	
 	public void testOnEntryExitScriptDesigner() throws Exception {
@@ -2530,6 +2618,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				.startProcess("OnEntryExitScriptProcess");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 		assertEquals(4, myList.size());
+		ksession.dispose();
 	}
 	
 	public void testXORGateway() throws Exception {
@@ -2554,6 +2643,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess("process",
 				params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 
 	public void testDataInputAssociations() throws Exception {
@@ -2581,6 +2671,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		params.put("instanceMetadata", document.getFirstChild());
 		ProcessInstance processInstance = ksession.startProcess("process",
 				params);
+		ksession.dispose();
 	}
 
 	public void testDataInputAssociationsWithStringObject() throws Exception {
@@ -2604,6 +2695,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		params.put("instanceMetadata", "hello");
 		ProcessInstance processInstance = ksession.startProcess("process",
 				params);
+		ksession.dispose();
 	}
 
 	public void FIXMEtestDataInputAssociationsWithLazyLoading()
@@ -2646,6 +2738,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		params.put("instanceMetadata", document.getFirstChild());
 		ProcessInstance processInstance = ksession.startProcess("process",
 				params);
+		ksession.dispose();
 	}
 
 	public void FIXMEtestDataInputAssociationsWithString() throws Exception {
@@ -2667,6 +2760,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				});
 		ProcessInstance processInstance = ksession
 				.startProcess("process", null);
+		ksession.dispose();
 	}
 
 	public void testDataInputAssociationsWithStringWithoutQuotes()
@@ -2689,6 +2783,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				});
 		ProcessInstance processInstance = ksession
 				.startProcess("process", null);
+		ksession.dispose();
 	}
 
 	public void testDataInputAssociationsWithXMLLiteral() throws Exception {
@@ -2714,6 +2809,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				});
 		ProcessInstance processInstance = ksession
 				.startProcess("process", null);
+		ksession.dispose();
 	}
 
 	public void FIXMEtestDataInputAssociationsWithTwoAssigns() throws Exception {
@@ -2749,6 +2845,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		params.put("instanceMetadata", document.getFirstChild());
 		ProcessInstance processInstance = ksession.startProcess("process",
 				params);
+		ksession.dispose();
 	}
 
 	public void testDataOutputAssociationsforHumanTask() throws Exception {
@@ -2796,6 +2893,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		Map<String, Object> params = new HashMap<String, Object>();
 		ProcessInstance processInstance = ksession.startProcess("process",
 				params);
+		ksession.dispose();
 	}
 
 	public void testDataOutputAssociations() throws Exception {
@@ -2830,6 +2928,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				});
 		ProcessInstance processInstance = ksession
 				.startProcess("process", null);
+		ksession.dispose();
 	}
 
 	public void testDataOutputAssociationsXmlNode() throws Exception {
@@ -2864,6 +2963,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				});
 		ProcessInstance processInstance = ksession
 				.startProcess("process", null);
+		ksession.dispose();
 	}
 
 	public void testLinkIntermediateEvent() throws Exception {
@@ -2873,7 +2973,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession
 				.startProcess("linkEventProcessExample");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-
+		ksession.dispose();
 	}
 
 	public void testLinkEventCompositeProcess() throws Exception {
@@ -2881,6 +2981,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Composite");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
 	}
 	
 	public void testBusinessRuleTask() throws Exception {
@@ -2896,6 +2997,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        ksession.dispose();
     }
 	
    public void testBusinessRuleTaskDynamic() throws Exception {
@@ -2914,6 +3016,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        ksession.dispose();
     }
 	
    public void testBusinessRuleTaskWithDataInputs() throws Exception {
@@ -2931,6 +3034,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        ksession.dispose();
     }
 
     public void testNullVariableInScriptTaskProcess() throws Exception {
@@ -2945,6 +3049,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         Thread.sleep(sleep);
         
         assertTrue(ProcessInstance.STATE_ABORTED == process.getState());
+        ksession.dispose();
     }
 
     public void testIntermediateCatchEventConditionFilterByProcessInstance()throws Exception {
@@ -2982,7 +3087,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         
         assertNull("First process should be completed", ksession.getProcessInstance(pi1id));
         assertNotNull("Second process should NOT be completed", ksession.getProcessInstance(pi2id));
-
+        ksession.dispose();
     }
     
 	public void testConditionalBoundaryEventOnTask() throws Exception {
@@ -2997,6 +3102,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.insert(person);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "Boundary event", "Condition met", "End2");
+        ksession.dispose();
     }
 	
 	public void testConditionalBoundaryEventOnTaskComplete() throws Exception {
@@ -3015,6 +3121,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "User Task2", "End1");
+        ksession.dispose();
     }
 	
 	public void testConditionalBoundaryEventOnTaskActiveOnStartup() throws Exception {
@@ -3030,6 +3137,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "Boundary event", "Condition met", "End2");
+        ksession.dispose();
     }
 	
 	public void testConditionalBoundaryEventInterrupting() throws Exception {
@@ -3048,6 +3156,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "StartProcess", "Hello", "StartSubProcess",
                 "Task", "BoundaryEvent", "Goodbye", "EndProcess");
+        ksession.dispose();
     }
 	
 	public void testMessageBoundaryEventOnTask() throws Exception {
@@ -3061,6 +3170,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "Boundary event",
                 "Condition met", "End2");
+        ksession.dispose();
     }
 	
 	public void testMessageBoundaryEventOnTaskComplete() throws Exception {
@@ -3077,6 +3187,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "User Task2",
                 "End1");
+        ksession.dispose();
 	}
 	
 	public void testMultipleStartEventsRegularStart() throws Exception {
@@ -3092,6 +3203,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertEquals("john", workItem.getParameter("ActorId"));
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
     
     public void testMultipleStartEventsStartOnTimer() throws Exception {
@@ -3112,6 +3224,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
             Thread.sleep(500);
         }
         assertEquals(5, list.size());
+        ksession.dispose();
     }
     
     public void testMultipleEventBasedStartEventsSignalStart() throws Exception {
@@ -3140,6 +3253,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertEquals("john", workItem.getParameter("ActorId"));
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
     
     public void testMultipleEventBasedStartEventsStartOnTimer() throws Exception {
@@ -3160,6 +3274,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
             Thread.sleep(500);
         }
         assertEquals(5, list.size());
+        ksession.dispose();
     }
     
     public void testMultipleInOutgoingSequenceFlows() throws Exception {
@@ -3181,6 +3296,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
          
         assertEquals(1, list.size());
         System.clearProperty("jbpm.enable.multi.con");
+        ksession.dispose();
     }
     
     public void testConditionalFlow() throws Exception {
@@ -3195,19 +3311,16 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(wpi.getId(), ksession);
         assertNodeTriggered(wpi.getId(), "start", "script", "end1");
         System.clearProperty("jbpm.enable.multi.con");
+        ksession.dispose();
     }
     
     public void testMultipleInOutgoingSequenceFlowsDisable() throws Exception {
-
     	try {
 	        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
-	        createKnowledgeSession(kbase);
-	        
 	        fail("Should fail as multiple outgoing and incoming connections are disabled by default");
     	} catch (Exception e) {
 			assertEquals("This type of node cannot have more than one outgoing connection!", e.getMessage());
 		}
-
     }
     
     public void testIntermediateCatchEventTimerCycleWithError() throws Exception {
@@ -3232,6 +3345,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         
         ksession.abortProcessInstance(processInstance.getId());
         assertProcessInstanceAborted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
     
     public void testScriptTaskWithVariableByName() throws Exception {
@@ -3241,6 +3355,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("BPMN2-ProcessWithVariableName", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        ksession.dispose();
     }
 
     public void testCallActivityWithBoundaryEvent() throws Exception {
@@ -3277,7 +3392,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
                 ((WorkflowProcessInstance) processInstance).getVariable("y"));
         assertNodeTriggered(processInstance.getId(), "StartProcess", "CallActivity", "Boundary event", 
                 "Script Task", "end", "StartProcess2", "User Task");
-
+        ksession.dispose();
     }
     
     public void testUserTaskWithBooleanOutput() throws Exception {
@@ -3296,6 +3411,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         output.put("isCheckedCheckbox", "true");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), output);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
     
     public void testUserTaskWithSimData() throws Exception {
@@ -3312,6 +3428,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertEquals("john", workItem.getParameter("ActorId"));
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession.dispose();
     }
     
     public void testEventSubprocessSignal() throws Exception {
@@ -3351,6 +3468,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(4, executednodes.size());
+        ksession.dispose();
     }
     
     public void testEventSubprocessSignalWithStateNode() throws Exception {
@@ -3409,6 +3527,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "User Task 2", "end-sub");
         assertEquals(4, executednodes.size());
+        ksession.dispose();
     }
     
     public void testEventSubprocessSignalInterrupting() throws Exception {
@@ -3440,6 +3559,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceAborted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
+        ksession.dispose();
     }
  
     public void testEventSubprocessMessage() throws Exception {
@@ -3479,6 +3599,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(4, executednodes.size());
+        ksession.dispose();
     }
     
     public void testEventSubprocessEscalation() throws Exception {
@@ -3510,6 +3631,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
+        ksession.dispose();
     }
     
     public void testEventSubprocessError() throws Exception {
@@ -3541,6 +3663,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
+        ksession.dispose();
     }
 
     public void testEventSubprocessCompensation() throws Exception {
@@ -3572,6 +3695,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
+        ksession.dispose();
     }
 
     public void testEventSubprocessTimer() throws Exception {
@@ -3602,6 +3726,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
+        ksession.dispose();
     }
     
     public void testEventSubprocessTimerCycle() throws Exception {
@@ -3632,6 +3757,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "start-sub", "Script Task 1", "end-sub");
         assertEquals(4, executednodes.size());
+        ksession.dispose();
     }
     
     public void testEventSubprocessConditional() throws Exception {
@@ -3665,6 +3791,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1", "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
+        ksession.dispose();
     }
     
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {

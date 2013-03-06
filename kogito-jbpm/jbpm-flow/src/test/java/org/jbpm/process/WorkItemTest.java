@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
@@ -19,9 +17,6 @@ import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.process.core.impl.WorkImpl;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
@@ -33,9 +28,14 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.process.ProcessInstance;
 
-public class WorkItemTest extends JbpmTestCase {
+public class WorkItemTest {
 
+	@Test
     public void testReachNonRegisteredWorkItemHandler() {
         String processId = "org.drools.actions";
         String workName = "Unnexistent Task";
@@ -62,6 +62,7 @@ public class WorkItemTest extends JbpmTestCase {
         Assert.assertNull( processInstance );
     }
 
+	@Test
     public void testCancelNonRegisteredWorkItemHandler() {
         String processId = "org.drools.actions";
         String workName = "Unnexistent Task";

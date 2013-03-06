@@ -8,8 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.io.impl.ReaderResource;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Message;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
@@ -23,7 +24,7 @@ import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.FactHandle;
 
-public class ProcessActionTest extends JbpmTestCase {
+public class ProcessActionTest extends TestCase {
     
     public void testOnEntryExit() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

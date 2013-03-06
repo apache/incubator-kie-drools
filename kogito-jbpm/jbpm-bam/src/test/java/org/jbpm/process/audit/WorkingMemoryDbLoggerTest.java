@@ -16,16 +16,19 @@
 
 package org.jbpm.process.audit;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
+import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-
-import javax.transaction.TransactionManager;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -34,8 +37,6 @@ import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.rule.Package;
-import org.hibernate.service.jta.platform.internal.TransactionManagerAccess;
-import org.hibernate.transaction.TransactionManagerLookup;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
@@ -53,7 +54,7 @@ import bitronix.tm.TransactionManagerServices;
  * <li>ProcessInstanceDbLog</li>
  * </ul>
  */
-public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
+public class WorkingMemoryDbLoggerTest {
     
     private HashMap<String, Object> context;
 

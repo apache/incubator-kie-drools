@@ -1,28 +1,43 @@
 package org.jbpm.bpmn2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
+import bitronix.tm.TransactionManagerServices;
+import bitronix.tm.resource.jdbc.PoolingDataSource;
+import junit.framework.Assert;
+import org.drools.ClockType;
 import org.drools.SessionConfiguration;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.impl.EnvironmentFactory;
+import org.h2.tools.DeleteDbFiles;
+import org.h2.tools.Server;
+import org.jbpm.process.audit.AuditLoggerFactory;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
+import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.SystemEventListenerFactory;
 import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.process.Node;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
 import org.kie.runtime.process.ProcessInstance;
@@ -30,6 +45,20 @@ import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.process.WorkflowProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Base test case for the jbpm-bpmn2 module. 
@@ -37,27 +66,132 @@ import org.kie.runtime.process.WorkflowProcessInstance;
  * Please keep this test class in the org.jbpm.bpmn2 package or otherwise give it a unique name. 
  *
  */
-public abstract class JbpmBpmn2TestCase extends TestCase {
+public abstract class JbpmJUnitTestCase extends Assert {
 	
+    public static String [] txStateName = { "ACTIVE",
+        "MARKED_ROLLBACK", 
+        "PREPARED",
+        "COMMITTED",
+        "ROLLEDBACK", 
+        "UNKNOWN", 
+        "NO_TRANSACTION",
+        "PREPARING",
+        "COMMITTING",
+        "ROLLING_BACK" };
+
     protected final static String EOL = System.getProperty( "line.separator" );
     
-	private HashMap<String, Object> context;
+    private boolean setupDataSource = false;
+	private boolean sessionPersistence = false;
+	private EntityManagerFactory emf;
+	private PoolingDataSource ds;
+	private H2Server server = new H2Server();
 
 	private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
 	
 	private WorkingMemoryInMemoryLogger logger;
-
-    protected void setUp() {
-        System.out.println( "RUNNING: " + getName() );
+	private JPAProcessInstanceDbLog log;
+	private Logger testLogger = null;
+   
+	@Rule
+	public TestName testName = new TestName();
+	
+	public JbpmJUnitTestCase() {
+		this(false);
+	}
+	
+	public JbpmJUnitTestCase(boolean setupDataSource) {
+	    System.setProperty("jbpm.user.group.mapping", "classpath:/usergroups.properties");
+		System.setProperty("jbpm.usergroup.callback", "org.jbpm.task.identity.DefaultUserGroupCallbackImpl");
+		this.setupDataSource = setupDataSource;
+	}
+	
+    public static PoolingDataSource setupPoolingDataSource() {
+        PoolingDataSource pds = new PoolingDataSource();
+        pds.setUniqueName("jdbc/jbpm-ds");
+        pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
+        pds.setMaxPoolSize(5);
+        pds.setAllowLocalTransactions(true);
+        pds.getDriverProperties().put("user", "sa");
+        pds.getDriverProperties().put("password", "");
+        pds.getDriverProperties().put("url", "jdbc:h2:tcp://localhost/~/jbpm-db");
+        pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
+        pds.init();
+        return pds;
     }
     
-	protected KnowledgeBase createKnowledgeBase(String... process) {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		for (String p: process) {
-			kbuilder.add(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
-		}
-		return kbuilder.newKnowledgeBase();
+    public void setPersistence(boolean sessionPersistence) {
+    	this.sessionPersistence = sessionPersistence;
+    }
+	
+	public boolean isPersistence() {
+		return sessionPersistence;
 	}
+  
+	@Before
+    public void setUp() throws Exception {
+        if( testLogger == null ) { 
+            testLogger = LoggerFactory.getLogger(getClass());
+        }
+        if (setupDataSource) {
+            server.start();
+        	ds = setupPoolingDataSource();
+        	emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
+        }
+    }
+
+	@After
+    public void tearDown() throws Exception {
+    	if (setupDataSource) {
+    		if (emf != null) {
+    			emf.close();
+    			emf = null;
+    		}
+    		if (ds != null) {
+    			ds.close();
+    			ds = null;
+    		}
+    		server.stop();
+    		DeleteDbFiles.execute("~", "jbpm-db", true);
+    		
+    		// Clean up possible transactions
+    		Transaction tx = TransactionManagerServices.getTransactionManager().getCurrentTransaction();
+    		if( tx != null ) { 
+    		    int testTxState = tx.getStatus();
+    		    if(  testTxState != Status.STATUS_NO_TRANSACTION && 
+    		         testTxState != Status.STATUS_ROLLEDBACK &&
+    		         testTxState != Status.STATUS_COMMITTED ) { 
+    		        try { 
+    		            tx.rollback();
+    		        }
+    		        catch( Throwable t ) { 
+    		            // do nothing..
+    		        }
+    		        Assert.fail("Transaction had status " + txStateName[testTxState] + " at the end of the test.");
+    		    }
+    		}
+    	}
+    }
+    
+    protected KnowledgeBase createKnowledgeBase(String... process) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        for (String p: process) {
+            kbuilder.add(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
+        }
+        
+        // Check for errors
+        if (kbuilder.hasErrors()) {
+            if (kbuilder.getErrors().size() > 0) {
+                boolean errors = false;
+                for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+                    testLogger.error(error.toString());
+                    errors = true;
+                }
+                assertFalse("Could not build knowldge base.", errors);
+            }
+        }
+        return kbuilder.newKnowledgeBase();
+    }
 	
 	protected KnowledgeBase createKnowledgeBase(Map<String, ResourceType> resources) throws Exception {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -115,12 +249,30 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	}
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-	    Properties defaultProps = new Properties();
-	    defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-	    defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
-	    SessionConfiguration sessionConfig = new SessionConfiguration(defaultProps);
-	    StatefulKnowledgeSession result = kbase.newStatefulKnowledgeSession(sessionConfig, EnvironmentFactory.newEnvironment());
-	    logger = new WorkingMemoryInMemoryLogger(result);
+	    StatefulKnowledgeSession result;
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+	    // Do NOT use the Pseudo clock yet.. 
+        // conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        
+		if (sessionPersistence) {
+		    Environment env = createEnvironment(emf);
+		    result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, conf, env);
+		    AuditLoggerFactory.newInstance(Type.JPA, result, null);
+		    if (log == null) {
+		    	log = new JPAProcessInstanceDbLog(result.getEnvironment());
+		    }
+		} else {
+		    Environment env = EnvironmentFactory.newEnvironment();
+		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+		    
+		    Properties defaultProps = new Properties();
+		    defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
+		    defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+		    conf = new SessionConfiguration(defaultProps);
+		    
+			result = kbase.newStatefulKnowledgeSession(conf, env);
+			logger = new WorkingMemoryInMemoryLogger(result);
+		}
 		return result;
 	}
 	
@@ -128,11 +280,59 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 		KnowledgeBase kbase = createKnowledgeBase(process);
 		return createKnowledgeSession(kbase);
 	}
-		
-	protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) {
-		return ksession;
+	
+	protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) throws SystemException {
+		if (sessionPersistence) {
+			int id = ksession.getId();
+			KnowledgeBase kbase = ksession.getKieBase();
+			Transaction tx = TransactionManagerServices.getTransactionManager().getCurrentTransaction();
+			if( tx != null ) { 
+			    int txStatus = tx.getStatus();
+			    assertTrue("Current transaction state is " + txStateName[txStatus], tx.getStatus() == Status.STATUS_NO_TRANSACTION );
+			}
+			Environment env = null;
+			if (noCache) {
+				emf.close();
+			    env = EnvironmentFactory.newEnvironment();
+			    emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
+			    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+			    env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
+				JPAProcessInstanceDbLog.setEnvironment(env);
+			} else {
+				env = ksession.getEnvironment();
+			}
+			KieSessionConfiguration config = ksession.getSessionConfiguration();
+			ksession.dispose();
+			
+			// reload knowledge session 
+			ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
+			AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
+			return ksession;
+		} else {
+			return ksession;
+		}
 	}
     
+    protected Environment createEnvironment(EntityManagerFactory emf) { 
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+        env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
+        return env;
+    }
+    
+	public StatefulKnowledgeSession loadSession(int id, String... process) { 
+	    KnowledgeBase kbase = createKnowledgeBase(process);
+	       
+        final KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        config.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        
+	    StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, createEnvironment(emf));
+        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
+        
+        return ksession;
+	}
+	
+	
 	public Object getVariableValue(String name, long processInstanceId, StatefulKnowledgeSession ksession) {
 		return ((WorkflowProcessInstance) ksession.getProcessInstance(processInstanceId)).getVariable(name);
 	}
@@ -184,11 +384,23 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 		for (String nodeName: nodeNames) {
 			names.add(nodeName);
 		}
-		for (LogEvent event: logger.getLogEvents()) {
-			if (event instanceof RuleFlowNodeLogEvent) {
-				String nodeName = ((RuleFlowNodeLogEvent) event).getNodeName();
-				if (names.contains(nodeName)) {
-					names.remove(nodeName);
+		if (sessionPersistence) {
+			List<NodeInstanceLog> logs = log.findNodeInstances(processInstanceId);
+			if (logs != null) {
+				for (NodeInstanceLog l: logs) {
+					String nodeName = l.getNodeName();
+					if ((l.getType() == NodeInstanceLog.TYPE_ENTER || l.getType() == NodeInstanceLog.TYPE_EXIT) && names.contains(nodeName)) {
+						names.remove(nodeName);
+					}
+				}
+			}
+		} else {
+			for (LogEvent event: logger.getLogEvents()) {
+				if (event instanceof RuleFlowNodeLogEvent) {
+					String nodeName = ((RuleFlowNodeLogEvent) event).getNodeName();
+					if (names.contains(nodeName)) {
+						names.remove(nodeName);
+					}
 				}
 			}
 		}
@@ -202,7 +414,14 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	}
 	
 	protected void clearHistory() {
-		logger.clear();
+		if (sessionPersistence) {
+			if (log == null) {
+				log = new JPAProcessInstanceDbLog();
+			}
+			log.clear();
+		} else {
+			logger.clear();
+		}
 	}
 	
 	public TestWorkItemHandler getTestWorkItemHandler() {
@@ -332,6 +551,33 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
         WorkflowProcessInstanceImpl instance = (WorkflowProcessInstanceImpl) process;
         if(!instance.getWorkflowProcess().getPackageName().equals(packageName)) {
             fail("Expected package name: " + packageName + " - found " + instance.getWorkflowProcess().getPackageName());
+        }
+    }
+    
+    private static class H2Server {
+        private Server server;
+        public synchronized void start() {
+            if (server == null || !server.isRunning(false)) {
+                try {
+                    DeleteDbFiles.execute("~", "jbpm-db", true);
+                    server = Server.createTcpServer(new String[0]);
+                    server.start();
+                } catch (SQLException e) {
+                    throw new RuntimeException("Cannot start h2 server database", e);
+                }
+            }
+        }
+        public synchronized void finalize() throws Throwable {
+        	stop();
+            super.finalize();
+        }
+        public void stop() {
+            if (server != null) {
+                server.stop();
+                server.shutdown();
+                DeleteDbFiles.execute("~", "jbpm-db", true);
+                server = null;
+            }
         }
     }
     

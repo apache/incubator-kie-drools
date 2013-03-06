@@ -5,20 +5,21 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 
-public class ProcessMilestoneTest extends JbpmTestCase {
+public class ProcessMilestoneTest extends TestCase {
     
     public void testMilestone() {
         PackageBuilder builder = new PackageBuilder();

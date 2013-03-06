@@ -6,7 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbpm.JbpmTestCase;
+import junit.framework.TestCase;
+
 import org.jbpm.Person;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -22,7 +23,7 @@ import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.process.WorkflowProcessInstance;
 
-public class ProcessWorkItemTest extends JbpmTestCase {
+public class ProcessWorkItemTest extends TestCase {
     
     public void testWorkItem() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

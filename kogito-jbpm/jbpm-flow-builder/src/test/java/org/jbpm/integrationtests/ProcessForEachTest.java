@@ -7,19 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.jbpm.process.instance.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
-import org.jbpm.JbpmTestCase;
-import org.jbpm.process.instance.ProcessInstance;
 
-public class ProcessForEachTest extends JbpmTestCase {
-    
+public class ProcessForEachTest extends TestCase {
     
     public void testForEach() {
         PackageBuilder builder = new PackageBuilder();

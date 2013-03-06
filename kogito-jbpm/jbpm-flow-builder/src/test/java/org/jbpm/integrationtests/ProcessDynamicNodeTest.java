@@ -7,13 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
@@ -30,7 +31,7 @@ import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.process.WorkflowProcessInstance;
 
-public class ProcessDynamicNodeTest extends JbpmTestCase {
+public class ProcessDynamicNodeTest extends TestCase {
     
     public void TODOtestDynamicActions() {
         PackageBuilder builder = new PackageBuilder();

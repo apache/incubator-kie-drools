@@ -3,7 +3,8 @@ package org.jbpm.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.JbpmTestCase;
+import junit.framework.TestCase;
+
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -12,7 +13,7 @@ import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 
-public class ExecutionFlowControlTest extends JbpmTestCase {
+public class ExecutionFlowControlTest extends TestCase {
 
     public void testRuleFlowUpgrade() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

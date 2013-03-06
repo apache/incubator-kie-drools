@@ -16,11 +16,12 @@
 
 package org.jbpm.process;
 
-import org.jbpm.JbpmTestCase;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.junit.Test;
 
-public class ProcessFactoryTest extends JbpmTestCase {
+public class ProcessFactoryTest {
 	
+	@Test
 	public void testProcessFactory() {
 		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.drools.process");
 		factory

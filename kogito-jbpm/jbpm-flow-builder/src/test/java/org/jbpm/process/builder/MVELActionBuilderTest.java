@@ -4,6 +4,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -16,7 +18,6 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.ProcessContext;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.process.builder.dialect.mvel.MVELActionBuilder;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.MVELAction;
@@ -24,7 +25,7 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
 
-public class MVELActionBuilderTest extends JbpmTestCase {
+public class MVELActionBuilderTest extends TestCase {
 
 
     public void testSimpleAction() throws Exception {

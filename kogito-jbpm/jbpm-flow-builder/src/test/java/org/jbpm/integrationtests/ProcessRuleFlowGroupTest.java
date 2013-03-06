@@ -3,17 +3,18 @@ package org.jbpm.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 
-public class ProcessRuleFlowGroupTest extends JbpmTestCase {
+public class ProcessRuleFlowGroupTest extends TestCase {
     
     public void testRuleSetProcessContext() throws Exception {
         PackageBuilder builder = new PackageBuilder();

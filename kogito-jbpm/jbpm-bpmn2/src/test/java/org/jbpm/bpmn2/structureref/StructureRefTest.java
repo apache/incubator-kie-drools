@@ -24,9 +24,6 @@ import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 
 public class StructureRefTest extends JbpmBpmn2TestCase {
-    public StructureRefTest() {
-        super(true);
-    }
 
     public void testStringStructureRef() {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-StringStructureRef.bpmn2");

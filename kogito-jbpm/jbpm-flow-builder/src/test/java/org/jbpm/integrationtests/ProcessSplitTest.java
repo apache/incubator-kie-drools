@@ -8,12 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -29,7 +30,7 @@ import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 
-public class ProcessSplitTest extends JbpmTestCase {
+public class ProcessSplitTest extends TestCase {
     
     public void testSplitWithProcessInstanceConstraint() {
         PackageBuilder builder = new PackageBuilder();

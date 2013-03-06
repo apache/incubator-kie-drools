@@ -238,7 +238,10 @@ public class JPAProcessInstanceDbLog {
         boolean newTx = false;
         TransactionManager transactionManager = null;
         if (env != null) {
-        	transactionManager = (TransactionManager) env.get(EnvironmentName.TRANSACTION_MANAGER);
+        	Object o = env.get(EnvironmentName.TRANSACTION_MANAGER);
+        	if (o instanceof TransactionManager) {
+            	transactionManager = (TransactionManager) o;
+        	}
         }
         if (transactionManager != null) {
     		newTx = transactionManager.begin();
@@ -288,7 +291,10 @@ public class JPAProcessInstanceDbLog {
 	        em.close(); // and this closes the entity manager
 	        TransactionManager transactionManager = null;
 	        if (env != null) {
-	        	transactionManager = (TransactionManager) env.get(EnvironmentName.TRANSACTION_MANAGER);
+	        	Object o = env.get(EnvironmentName.TRANSACTION_MANAGER);
+	        	if (o instanceof TransactionManager) {
+	            	transactionManager = (TransactionManager) o;
+	        	}
 	        }
             if (transactionManager != null) {
             	transactionManager.commit(newTx);

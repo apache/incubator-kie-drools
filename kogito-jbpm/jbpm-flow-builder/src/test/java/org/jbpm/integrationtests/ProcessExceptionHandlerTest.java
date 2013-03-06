@@ -5,6 +5,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -12,10 +14,9 @@ import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderErrors;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.process.instance.ProcessInstance;
 
-public class ProcessExceptionHandlerTest extends JbpmTestCase {
+public class ProcessExceptionHandlerTest extends TestCase {
     
     public void testFaultWithoutHandler() {
         PackageBuilder builder = new PackageBuilder();

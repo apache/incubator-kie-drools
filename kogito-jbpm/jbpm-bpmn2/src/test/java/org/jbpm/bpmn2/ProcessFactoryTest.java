@@ -28,10 +28,6 @@ import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
-    public ProcessFactoryTest() {
-        super(false);
-    }
-    
 	public void testProcessFactory() {
 		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
 		factory

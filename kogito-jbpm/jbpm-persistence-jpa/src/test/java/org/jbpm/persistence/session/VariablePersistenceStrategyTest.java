@@ -3,7 +3,10 @@ package org.jbpm.persistence.session;
 import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +36,6 @@ import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.impl.WorkImpl;
-import org.jbpm.persistence.JbpmTestCase;
 import org.jbpm.persistence.session.objects.MyEntity;
 import org.jbpm.persistence.session.objects.MyEntityMethods;
 import org.jbpm.persistence.session.objects.MyEntityOnlyFields;
@@ -76,7 +78,7 @@ import org.kie.runtime.process.WorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VariablePersistenceStrategyTest extends JbpmTestCase {
+public class VariablePersistenceStrategyTest {
 
     private static Logger logger = LoggerFactory.getLogger( VariablePersistenceStrategyTest.class );
     
@@ -86,7 +88,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
     @Before
     public void setUp() throws Exception {
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
-        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
+        emf = (EntityManagerFactory) context.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
     }
 
     @After

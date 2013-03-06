@@ -1,5 +1,17 @@
 package org.jbpm.integrationtests;
 
+import static org.jbpm.integrationtests.SerializationHelper.getSerialisedStatefulSession;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
@@ -7,7 +19,6 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
@@ -25,17 +36,7 @@ import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.jbpm.integrationtests.SerializationHelper.getSerialisedStatefulSession;
-
-public class ProcessMarshallingTest extends JbpmTestCase {
+public class ProcessMarshallingTest extends TestCase {
 
     @SuppressWarnings("unchecked")
 	public void test1() throws Exception {

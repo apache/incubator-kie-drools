@@ -3,6 +3,8 @@ package org.jbpm.persistence.correlation;
 import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +17,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
-import org.jbpm.persistence.JbpmTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ import org.kie.KieInternalServices;
 import org.kie.process.CorrelationKeyFactory;
 import org.kie.runtime.EnvironmentName;
 
-public class CorrelationPersistenceTest  extends JbpmTestCase {
+public class CorrelationPersistenceTest {
     
     private HashMap<String, Object> context;
     

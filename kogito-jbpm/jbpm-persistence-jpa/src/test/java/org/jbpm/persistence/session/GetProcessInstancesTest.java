@@ -4,13 +4,16 @@ import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NA
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.jbpm.persistence.JbpmTestCase;
 import org.jbpm.persistence.processinstance.JPAProcessInstanceManager;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +32,7 @@ import org.kie.runtime.StatefulKnowledgeSession;
  * with regards to created (but not started) process instances 
  * and whether the process instances are available or not after creation.
  */
-public class GetProcessInstancesTest extends JbpmTestCase {
+public class GetProcessInstancesTest {
     
     private HashMap<String, Object> context;
     

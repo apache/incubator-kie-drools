@@ -4,13 +4,13 @@ import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NA
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.persistence.JbpmTestCase;
 import org.jbpm.persistence.util.LoggingPrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -27,12 +27,7 @@ import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;
 
-/**
- * This test 
- * 
- *
- */
-public class ParameterMappingTest extends JbpmTestCase {
+public class ParameterMappingTest {
     
     private HashMap<String, Object> context;
     

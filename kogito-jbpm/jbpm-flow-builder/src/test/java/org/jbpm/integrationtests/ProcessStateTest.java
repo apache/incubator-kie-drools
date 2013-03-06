@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jbpm.JbpmTestCase;
+import junit.framework.TestCase;
+
 import org.jbpm.Person;
 import org.jbpm.workflow.instance.node.StateNodeInstance;
 import org.kie.KnowledgeBase;
@@ -19,7 +20,7 @@ import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;
 
-public class ProcessStateTest extends JbpmTestCase {
+public class ProcessStateTest extends TestCase {
     
     public void testManualSignalState() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import junit.framework.TestCase;
+
 import org.drools.ClockType;
-import org.kie.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
@@ -20,17 +21,15 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.Message;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.junit.Ignore;
+import org.kie.runtime.conf.ClockTypeOption;
 
-public class ProcessTimerTest extends JbpmTestCase {
+public class ProcessTimerTest extends TestCase {
 	
     @Ignore
 	@SuppressWarnings("unchecked")

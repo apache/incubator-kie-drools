@@ -20,17 +20,18 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.DroolsStreamUtils;
-import org.kie.definition.process.Process;
-import org.kie.io.Resource;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.process.core.Context;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
+import org.kie.definition.process.Process;
+import org.kie.io.Resource;
 
-public class PackageBuilderTest extends JbpmTestCase {
+public class PackageBuilderTest extends TestCase {
 
     public void testRuleFlow() throws Exception {
         PackageBuilder builder = new PackageBuilder();

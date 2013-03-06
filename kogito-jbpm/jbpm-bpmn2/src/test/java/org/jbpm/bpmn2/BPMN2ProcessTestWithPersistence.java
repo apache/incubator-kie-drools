@@ -35,10 +35,6 @@ public class BPMN2ProcessTestWithPersistence extends JbpmBpmn2TestCase {
 
     private Logger logger = LoggerFactory.getLogger(SimpleBPMNProcessTest.class);
     
-    public BPMN2ProcessTestWithPersistence() {
-        super(true);
-    }
-
     public void testCallActivityWithHistoryLog() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
                 .newKnowledgeBuilder();

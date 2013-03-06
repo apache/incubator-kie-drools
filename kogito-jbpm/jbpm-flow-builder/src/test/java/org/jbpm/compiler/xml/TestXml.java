@@ -4,12 +4,13 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.List;
 
-import org.kie.definition.process.Process;
-import org.drools.xml.SemanticModules;
-import org.jbpm.JbpmTestCase;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
+import junit.framework.TestCase;
 
-public class TestXml extends JbpmTestCase {
+import org.drools.xml.SemanticModules;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.kie.definition.process.Process;
+
+public class TestXml extends TestCase {
 
     public void testSimpleXml() throws Exception {
         SemanticModules modules = new SemanticModules();

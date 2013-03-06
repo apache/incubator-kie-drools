@@ -4,27 +4,28 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import junit.framework.TestCase;
+
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ReturnValueDescr;
-import org.kie.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialect;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.process.builder.dialect.java.JavaReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.instance.node.SplitInstance;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.definition.KnowledgePackage;
+import org.kie.runtime.StatefulKnowledgeSession;
 
-public class JavaReturnValueConstraintEvaluatorBuilderTest extends JbpmTestCase {
+public class JavaReturnValueConstraintEvaluatorBuilderTest extends TestCase {
 
     public void testSimpleReturnValueConstraintEvaluator() throws Exception {
         final Package pkg = new Package( "pkg1" );
