@@ -1,5 +1,10 @@
 package org.jbpm.bpmn2;
 
+import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
+import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +18,11 @@ import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.impl.EnvironmentFactory;
+import org.jbpm.process.audit.AuditLoggerFactory;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
+import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -22,6 +32,9 @@ import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.definition.process.Node;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
+import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.runtime.Environment;
+import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
@@ -41,14 +54,37 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	
     protected final static String EOL = System.getProperty( "line.separator" );
     
+	protected boolean persistence = true;
 	private HashMap<String, Object> context;
 
 	private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+	public StatefulKnowledgeSession ksession;
 	
 	private WorkingMemoryInMemoryLogger logger;
 
+	public JbpmBpmn2TestCase() {
+		this(true);
+	}
+	
+	public JbpmBpmn2TestCase(boolean persistence) {
+		this.persistence = persistence;
+	}
+	
+	public boolean isPersistence() {
+		return persistence;
+	}
+    
     protected void setUp() {
         System.out.println( "RUNNING: " + getName() );
+    	if (persistence) {
+	    	context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
+    	}
+    }
+
+    protected void tearDown() {
+        if(persistence) { 
+            cleanUp(context);
+        }
     }
     
 	protected KnowledgeBase createKnowledgeBase(String... process) {
@@ -115,13 +151,23 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	}
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-	    Properties defaultProps = new Properties();
-	    defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-	    defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
-	    SessionConfiguration sessionConfig = new SessionConfiguration(defaultProps);
-	    StatefulKnowledgeSession result = kbase.newStatefulKnowledgeSession(sessionConfig, EnvironmentFactory.newEnvironment());
-	    logger = new WorkingMemoryInMemoryLogger(result);
-		return result;
+		if (persistence) {
+		    Environment env = createEnvironment(context);
+		    
+		    StatefulKnowledgeSession result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+		    AuditLoggerFactory.newInstance(Type.JPA, result, null);
+		    JPAProcessInstanceDbLog.setEnvironment(result.getEnvironment());
+		    return result;
+		} else {
+		    Properties defaultProps = new Properties();
+		    defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
+		    defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+		    SessionConfiguration sessionConfig = new SessionConfiguration(defaultProps);
+
+		    StatefulKnowledgeSession result = kbase.newStatefulKnowledgeSession(sessionConfig, EnvironmentFactory.newEnvironment());
+		    logger = new WorkingMemoryInMemoryLogger(result);
+			return result;
+		}
 	}
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(String... process) {
@@ -130,7 +176,22 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	}
 		
 	protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) {
-		return ksession;
+		if (persistence) {
+			int id = ksession.getId();
+			KnowledgeBase kbase = ksession.getKieBase();
+			Environment env = null;
+			if (noCache) {
+				env = createEnvironment(context);
+			} else {
+				env = ksession.getEnvironment();
+			}
+			KieSessionConfiguration config = ksession.getSessionConfiguration();
+			StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
+			AuditLoggerFactory.newInstance(Type.JPA, result, null);
+			return result;
+		} else {
+			return ksession;
+		}
 	}
     
 	public Object getVariableValue(String name, long processInstanceId, StatefulKnowledgeSession ksession) {
@@ -184,11 +245,24 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 		for (String nodeName: nodeNames) {
 			names.add(nodeName);
 		}
-		for (LogEvent event: logger.getLogEvents()) {
-			if (event instanceof RuleFlowNodeLogEvent) {
-				String nodeName = ((RuleFlowNodeLogEvent) event).getNodeName();
-				if (names.contains(nodeName)) {
-					names.remove(nodeName);
+		if (persistence) {
+			List<NodeInstanceLog> logs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+			if (logs != null) {
+				for (NodeInstanceLog l: logs) {
+					String nodeName = l.getNodeName();
+					// needs to check both types as catch events will not have TYPE_ENTER entries
+					if ((l.getType() == NodeInstanceLog.TYPE_ENTER || l.getType() == NodeInstanceLog.TYPE_EXIT) && names.contains(nodeName)) {
+						names.remove(nodeName);
+					}
+				}
+			}
+		} else {
+			for (LogEvent event: logger.getLogEvents()) {
+				if (event instanceof RuleFlowNodeLogEvent) {
+					String nodeName = ((RuleFlowNodeLogEvent) event).getNodeName();
+					if (names.contains(nodeName)) {
+						names.remove(nodeName);
+					}
 				}
 			}
 		}
@@ -202,7 +276,11 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	}
 	
 	protected void clearHistory() {
-		logger.clear();
+		if (persistence) {
+			JPAProcessInstanceDbLog.clear();
+		} else {
+			logger.clear();
+		}
 	}
 	
 	public TestWorkItemHandler getTestWorkItemHandler() {
