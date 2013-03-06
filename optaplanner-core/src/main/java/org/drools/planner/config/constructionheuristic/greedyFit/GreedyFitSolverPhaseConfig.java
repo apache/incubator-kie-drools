@@ -25,21 +25,21 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhase;
-import org.drools.planner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
-import org.drools.planner.core.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
-import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
-import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelector;
-import org.drools.planner.core.heuristic.selector.variable.PlanningValueSelector;
-import org.drools.planner.core.heuristic.selector.variable.PlanningValueWalker;
-import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalker;
-import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.termination.Termination;
+import org.optaplanner.core.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
+import org.optaplanner.core.constructionheuristic.greedyFit.GreedyFitSolverPhase;
+import org.optaplanner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
+import org.optaplanner.core.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
+import org.optaplanner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
+import org.optaplanner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
+import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelector;
+import org.optaplanner.core.heuristic.selector.variable.PlanningValueSelector;
+import org.optaplanner.core.heuristic.selector.variable.PlanningValueWalker;
+import org.optaplanner.core.heuristic.selector.variable.PlanningVariableWalker;
+import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.termination.Termination;
 
 @XStreamAlias("greedyFit")
 @Deprecated // Use ConstructionHeuristicSolverPhaseConfig

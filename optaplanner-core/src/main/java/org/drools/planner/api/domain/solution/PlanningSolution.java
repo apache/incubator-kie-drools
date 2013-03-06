@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 
 import org.drools.planner.api.domain.solution.cloner.PlanningCloneable;
 import org.drools.planner.api.domain.solution.cloner.SolutionCloner;
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;

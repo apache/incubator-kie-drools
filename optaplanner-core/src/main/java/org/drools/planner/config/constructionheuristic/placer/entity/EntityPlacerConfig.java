@@ -19,9 +19,9 @@ package org.drools.planner.config.constructionheuristic.placer.entity;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.constructionheuristic.placer.PlacerConfig;
-import org.drools.planner.core.constructionheuristic.placer.entity.EntityPlacer;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.termination.Termination;
+import org.optaplanner.core.constructionheuristic.placer.entity.EntityPlacer;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.termination.Termination;
 
 /**
  * General superclass for {@link QueuedEntityPlacerConfig} // TODO and {@link PooledEntityPlacerConfig}.

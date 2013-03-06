@@ -18,7 +18,7 @@ package org.optaplanner.examples.curriculumcourse.persistence;
 
 import java.io.IOException;
 
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;

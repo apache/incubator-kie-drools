@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
-import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.score.director.simple.SimpleScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;

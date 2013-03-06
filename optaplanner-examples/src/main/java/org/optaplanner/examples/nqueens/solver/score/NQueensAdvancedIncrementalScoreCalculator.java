@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.planner.core.score.buildin.simple.SimpleScore;
-import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.optaplanner.core.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;

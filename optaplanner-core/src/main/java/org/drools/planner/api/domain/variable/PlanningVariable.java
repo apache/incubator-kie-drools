@@ -22,9 +22,9 @@ import java.util.Comparator;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.value.ValueRange;
-import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.drools.planner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.drools.planner.core.score.director.ScoreDirector;
+import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.score.director.ScoreDirector;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;

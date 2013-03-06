@@ -18,17 +18,17 @@ package org.drools.planner.config.heuristic.selector.value;
 
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
-import org.drools.planner.core.heuristic.selector.value.decorator.ShufflingValueSelector;
-import org.drools.planner.core.testdata.domain.TestdataEntity;
-import org.drools.planner.core.testdata.domain.TestdataSolution;
+import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
+import org.optaplanner.core.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.heuristic.selector.value.decorator.ShufflingValueSelector;
+import org.optaplanner.core.testdata.domain.TestdataEntity;
+import org.optaplanner.core.testdata.domain.TestdataSolution;
 import org.junit.Test;
 
-import static org.drools.planner.core.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
 
 public class ValueSelectorConfigTest {

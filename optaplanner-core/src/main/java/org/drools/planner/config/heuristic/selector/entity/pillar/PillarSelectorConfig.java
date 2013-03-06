@@ -23,12 +23,12 @@ import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.entity.EntitySelector;
-import org.drools.planner.core.heuristic.selector.entity.pillar.PillarSelector;
-import org.drools.planner.core.heuristic.selector.entity.pillar.SameValuePillarSelector;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.heuristic.selector.entity.pillar.PillarSelector;
+import org.optaplanner.core.heuristic.selector.entity.pillar.SameValuePillarSelector;
 
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig {

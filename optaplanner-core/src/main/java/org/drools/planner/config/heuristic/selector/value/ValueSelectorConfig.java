@@ -22,20 +22,19 @@ import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.SelectorConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
-import org.drools.planner.core.domain.value.PlanningValueRangeDescriptor;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
-import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
-import org.drools.planner.core.heuristic.selector.value.FromEntityPropertyValueSelector;
-import org.drools.planner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
-import org.drools.planner.core.heuristic.selector.value.decorator.CachingValueSelector;
-import org.drools.planner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
-import org.drools.planner.core.heuristic.selector.value.decorator.ShufflingValueSelector;
+import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
+import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.optaplanner.core.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.heuristic.selector.value.FromEntityPropertyValueSelector;
+import org.optaplanner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
+import org.optaplanner.core.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.heuristic.selector.value.decorator.CachingValueSelector;
+import org.optaplanner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
+import org.optaplanner.core.heuristic.selector.value.decorator.ShufflingValueSelector;
 
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig {

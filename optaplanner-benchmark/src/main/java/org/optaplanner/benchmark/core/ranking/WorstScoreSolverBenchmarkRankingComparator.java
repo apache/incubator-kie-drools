@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.benchmark.core.SolverBenchmark;
-import org.drools.planner.core.score.Score;
+import org.optaplanner.core.score.Score;
 
 /**
  * This ranking {@link Comparator} orders a {@link SolverBenchmark} by its worst {@link Score}.

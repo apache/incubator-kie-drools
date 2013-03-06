@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.examination.solver.move;
 
-import org.drools.planner.core.score.director.ScoreDirector;
+import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.domain.Room;

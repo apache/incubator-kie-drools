@@ -16,7 +16,7 @@
 
 package org.drools.planner.api.domain.value;
 
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.Solution;
 
 public enum ValueRangeType {
     /**

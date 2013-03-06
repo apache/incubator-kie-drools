@@ -21,8 +21,8 @@ import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.benchmark.core.SolverBenchmark;
-import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.score.Score;
+import org.optaplanner.core.solution.Solution;
 
 /**
  * This ranking {@link Comparator} orders a {@link SolverBenchmark} by its total {@link Score}.

@@ -16,7 +16,7 @@
 
 package org.drools.planner.api.domain.solution.cloner;
 
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.Solution;
 
 /**
  * Tagging interface for a {@link Solution} that implements its own planning cloning

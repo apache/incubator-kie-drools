@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.optaplanner.benchmark.core.SingleBenchmark;
 import org.optaplanner.benchmark.core.measurement.ScoreDifferencePercentage;
-import org.drools.planner.core.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.score.buildin.simple.SimpleScore;
 
 public abstract class AbstractRankingComparatorTest {
 

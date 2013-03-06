@@ -31,7 +31,7 @@ import org.optaplanner.benchmark.core.report.BenchmarkReport;
 import org.optaplanner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.core.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.core.statistic.SingleStatistic;
-import org.drools.planner.core.score.Score;
+import org.optaplanner.core.score.Score;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;

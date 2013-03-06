@@ -16,8 +16,8 @@
 
 package org.optaplanner.examples.machinereassignment.solver.solution.initializer;
 
-import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
-import org.drools.planner.core.score.director.ScoreDirector;
+import org.optaplanner.core.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.slf4j.Logger;

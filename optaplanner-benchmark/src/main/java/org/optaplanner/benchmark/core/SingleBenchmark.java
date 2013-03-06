@@ -24,12 +24,12 @@ import org.optaplanner.benchmark.core.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.core.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.core.statistic.SingleStatistic;
 import org.optaplanner.benchmark.core.statistic.StatisticType;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.DefaultSolver;
-import org.drools.planner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.Solver;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.score.Score;
+import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.solver.DefaultSolver;
+import org.optaplanner.core.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

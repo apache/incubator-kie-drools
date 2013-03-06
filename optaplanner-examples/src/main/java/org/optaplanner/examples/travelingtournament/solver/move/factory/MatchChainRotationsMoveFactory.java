@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
-import org.drools.planner.core.move.Move;
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.move.Move;
+import org.optaplanner.core.solution.Solution;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.Team;

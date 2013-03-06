@@ -17,7 +17,7 @@
 package org.optaplanner.examples.tsp.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.score.buildin.hardsoft.HardSoftScoreHolder;
 
 import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
 import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;

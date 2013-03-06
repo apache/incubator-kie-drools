@@ -24,14 +24,14 @@ import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.generic.chained.SubChainChangeMoveSelector;
-import org.drools.planner.core.heuristic.selector.value.EntityIndependentValueSelector;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
-import org.drools.planner.core.heuristic.selector.value.chained.SubChainSelector;
+import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.heuristic.selector.move.generic.chained.SubChainChangeMoveSelector;
+import org.optaplanner.core.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.heuristic.selector.value.chained.SubChainSelector;
 
 @XStreamAlias("subChainChangeMoveSelector")
 public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {

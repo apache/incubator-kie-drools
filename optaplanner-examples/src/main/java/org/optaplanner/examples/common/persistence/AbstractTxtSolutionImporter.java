@@ -26,7 +26,7 @@ import java.net.URL;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.Solution;
 
 public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImporter {
 

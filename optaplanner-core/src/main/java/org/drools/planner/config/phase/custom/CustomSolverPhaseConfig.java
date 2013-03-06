@@ -25,12 +25,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.phase.custom.CustomSolverPhase;
-import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
-import org.drools.planner.core.phase.custom.DefaultCustomSolverPhase;
-import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.termination.Termination;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.phase.custom.CustomSolverPhase;
+import org.optaplanner.core.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.phase.custom.DefaultCustomSolverPhase;
+import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.termination.Termination;
 
 @XStreamAlias("customSolverPhase")
 public class CustomSolverPhaseConfig extends SolverPhaseConfig {

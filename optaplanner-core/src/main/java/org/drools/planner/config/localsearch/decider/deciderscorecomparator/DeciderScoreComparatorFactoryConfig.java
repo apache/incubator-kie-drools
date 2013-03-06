@@ -18,9 +18,9 @@ package org.drools.planner.config.localsearch.decider.deciderscorecomparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
-import org.drools.planner.core.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
-import org.drools.planner.core.localsearch.decider.deciderscorecomparator.ShiftingHardPenaltyDeciderScoreComparatorFactory;
+import org.optaplanner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
+import org.optaplanner.core.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
+import org.optaplanner.core.localsearch.decider.deciderscorecomparator.ShiftingHardPenaltyDeciderScoreComparatorFactory;
 
 @XStreamAlias("deciderScoreComparatorFactory")
 public class DeciderScoreComparatorFactoryConfig {

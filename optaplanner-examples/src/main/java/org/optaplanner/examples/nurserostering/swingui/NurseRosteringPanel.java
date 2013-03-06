@@ -36,9 +36,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.ProblemFactChange;
+import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.core.statistic.AbstractSingleStatistic;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.event.BestSolutionChangedEvent;
-import org.drools.planner.core.event.SolverEventListener;
+import org.optaplanner.core.Solver;
+import org.optaplanner.core.event.BestSolutionChangedEvent;
+import org.optaplanner.core.event.SolverEventListener;
 
 public class BestScoreSingleStatistic extends AbstractSingleStatistic {
 

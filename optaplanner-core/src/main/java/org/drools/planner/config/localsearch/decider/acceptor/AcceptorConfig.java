@@ -24,16 +24,16 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang.ObjectUtils;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.PlanningEntityTabuAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.PlanningValueTabuAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
-import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.localsearch.decider.acceptor.Acceptor;
+import org.optaplanner.core.localsearch.decider.acceptor.CompositeAcceptor;
+import org.optaplanner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
+import org.optaplanner.core.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
+import org.optaplanner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
+import org.optaplanner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
+import org.optaplanner.core.localsearch.decider.acceptor.tabu.PlanningEntityTabuAcceptor;
+import org.optaplanner.core.localsearch.decider.acceptor.tabu.PlanningValueTabuAcceptor;
+import org.optaplanner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
+import org.optaplanner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("acceptor")
 public class AcceptorConfig {

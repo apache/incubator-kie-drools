@@ -24,12 +24,12 @@ import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolv
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.drools.planner.config.phase.custom.CustomSolverPhaseConfig;
 import org.drools.planner.config.termination.TerminationConfig;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.phase.AbstractSolverPhase;
-import org.drools.planner.core.phase.SolverPhase;
-import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.termination.PhaseToSolverTerminationBridge;
-import org.drools.planner.core.termination.Termination;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.phase.AbstractSolverPhase;
+import org.optaplanner.core.phase.SolverPhase;
+import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.termination.PhaseToSolverTerminationBridge;
+import org.optaplanner.core.termination.Termination;
 
 @XStreamInclude({
         CustomSolverPhaseConfig.class,

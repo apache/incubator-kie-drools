@@ -28,18 +28,18 @@ import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.score.director.ScoreDirectorFactoryConfig;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.bestsolution.BestSolutionRecaller;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.phase.AbstractSolverPhase;
-import org.drools.planner.core.phase.SolverPhase;
-import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.score.director.ScoreDirectorFactory;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.BasicPlumbingTermination;
-import org.drools.planner.core.solver.DefaultSolver;
-import org.drools.planner.core.termination.Termination;
+import org.optaplanner.core.Solver;
+import org.optaplanner.core.bestsolution.BestSolutionRecaller;
+import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.phase.AbstractSolverPhase;
+import org.optaplanner.core.phase.SolverPhase;
+import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.score.director.ScoreDirectorFactory;
+import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.solver.BasicPlumbingTermination;
+import org.optaplanner.core.solver.DefaultSolver;
+import org.optaplanner.core.termination.Termination;
 
 @XStreamAlias("solver")
 public class SolverConfig {

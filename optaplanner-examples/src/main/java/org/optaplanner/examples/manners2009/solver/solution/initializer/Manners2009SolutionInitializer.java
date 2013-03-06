@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
-import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.simple.SimpleScore;
-import org.drools.planner.core.score.director.ScoreDirector;
+import org.optaplanner.core.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.score.Score;
+import org.optaplanner.core.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.manners2009.domain.Guest;
 import org.optaplanner.examples.manners2009.domain.Manners2009;

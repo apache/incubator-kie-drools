@@ -17,7 +17,7 @@
 package org.drools.planner.config;
 
 import org.drools.planner.config.solver.SolverConfig;
-import org.drools.planner.core.Solver;
+import org.optaplanner.core.Solver;
 
 /**
  * Builds a {@link Solver}.

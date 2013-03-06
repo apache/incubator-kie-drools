@@ -26,12 +26,12 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.entity.pillar.PillarSelector;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.generic.PillarSwapMoveSelector;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.entity.pillar.PillarSelector;
+import org.optaplanner.core.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.heuristic.selector.move.generic.PillarSwapMoveSelector;
 
 @XStreamAlias("pillarSwapMoveSelector")
 public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {

@@ -18,17 +18,17 @@ package org.drools.planner.config.heuristic.selector.move;
 
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.SelectorTestUtils;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.decorator.CachingMoveSelector;
-import org.drools.planner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
-import org.drools.planner.core.move.DummyMove;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.heuristic.selector.SelectorTestUtils;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.heuristic.selector.move.decorator.CachingMoveSelector;
+import org.optaplanner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
+import org.optaplanner.core.move.DummyMove;
 import org.junit.Test;
 
-import static org.drools.planner.core.testdata.util.PlannerAssert.*;
-import static org.drools.planner.core.testdata.util.PlannerAssert.assertSame;
+import static org.optaplanner.core.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.testdata.util.PlannerAssert.assertSame;
 import static org.junit.Assert.assertEquals;
 
 public class MoveSelectorConfigTest {

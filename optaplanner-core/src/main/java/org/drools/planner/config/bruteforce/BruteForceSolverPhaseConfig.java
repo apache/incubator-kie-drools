@@ -19,12 +19,12 @@ package org.drools.planner.config.bruteforce;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
-import org.drools.planner.core.bruteforce.BruteForceEntityWalker;
-import org.drools.planner.core.bruteforce.BruteForceSolverPhase;
-import org.drools.planner.core.bruteforce.DefaultBruteForceSolverPhase;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.termination.Termination;
+import org.optaplanner.core.bruteforce.BruteForceEntityWalker;
+import org.optaplanner.core.bruteforce.BruteForceSolverPhase;
+import org.optaplanner.core.bruteforce.DefaultBruteForceSolverPhase;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.termination.Termination;
 
 @XStreamAlias("bruteForce")
 public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {

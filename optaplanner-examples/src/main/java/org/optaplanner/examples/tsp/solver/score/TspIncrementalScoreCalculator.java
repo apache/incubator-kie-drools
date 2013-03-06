@@ -16,8 +16,8 @@
 
 package org.optaplanner.examples.tsp.solver.score;
 
-import org.drools.planner.core.score.buildin.simple.SimpleScore;
-import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.optaplanner.core.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Appearance;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;

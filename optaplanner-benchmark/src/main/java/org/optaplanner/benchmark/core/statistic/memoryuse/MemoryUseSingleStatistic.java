@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.core.statistic.AbstractSingleStatistic;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
-import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solver.DefaultSolver;
+import org.optaplanner.core.Solver;
+import org.optaplanner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.solver.DefaultSolver;
 
 public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
 

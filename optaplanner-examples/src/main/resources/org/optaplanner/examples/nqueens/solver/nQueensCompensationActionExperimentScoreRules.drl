@@ -17,7 +17,7 @@
 package org.optaplanner.examples.nqueens.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.simple.SimpleScoreHolder;
+import org.optaplanner.core.score.buildin.simple.SimpleScoreHolder;
 
 import org.optaplanner.examples.nqueens.domain.Queen;
 

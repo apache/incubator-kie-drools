@@ -20,10 +20,10 @@ import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import org.drools.planner.core.move.Move;
-import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.ProblemFactChange;
+import org.optaplanner.core.move.Move;
+import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.tsp.domain.City;

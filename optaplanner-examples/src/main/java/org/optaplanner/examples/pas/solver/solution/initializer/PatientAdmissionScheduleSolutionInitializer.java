@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
-import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.hardsoft.HardSoftScore;
-import org.drools.planner.core.score.director.ScoreDirector;
+import org.optaplanner.core.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.score.Score;
+import org.optaplanner.core.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;

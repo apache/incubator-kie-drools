@@ -23,8 +23,8 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.core.SingleBenchmark;
 import org.optaplanner.benchmark.core.SolverBenchmark;
-import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.score.Score;
+import org.optaplanner.core.solution.Solution;
 
 /**
  * This {@link SolverBenchmarkRankingWeightFactory} orders a {@link SolverBenchmark} by how how many time each of it's

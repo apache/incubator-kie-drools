@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.solver.SolverConfig;
-import org.drools.planner.core.Solver;
+import org.optaplanner.core.Solver;
 
 /**
  * XML based configuration that builds a {@link Solver}.

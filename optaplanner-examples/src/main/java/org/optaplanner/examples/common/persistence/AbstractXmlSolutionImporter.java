@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.Solution;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;

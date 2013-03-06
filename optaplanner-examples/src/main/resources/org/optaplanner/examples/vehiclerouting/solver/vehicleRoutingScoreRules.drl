@@ -17,9 +17,9 @@
 package org.optaplanner.examples.tsp.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreHolder;
-import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
-import org.drools.planner.core.score.constraint.ConstraintType;
+import org.optaplanner.core.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.score.constraint.IntConstraintOccurrence;
+import org.optaplanner.core.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
 import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;

@@ -23,9 +23,9 @@ import javax.servlet.http.HttpSession;
 
 import org.drools.planner.config.SolverFactory;
 import org.drools.planner.config.XmlSolverFactory;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.event.BestSolutionChangedEvent;
-import org.drools.planner.core.event.SolverEventListener;
+import org.optaplanner.core.Solver;
+import org.optaplanner.core.event.BestSolutionChangedEvent;
+import org.optaplanner.core.event.SolverEventListener;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingSolutionImporter;
 

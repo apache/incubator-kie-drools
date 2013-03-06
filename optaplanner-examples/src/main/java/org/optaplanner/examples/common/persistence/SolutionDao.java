@@ -18,7 +18,7 @@ package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
 
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.Solution;
 
 /**
  * Data Access Object for the examples.

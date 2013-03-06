@@ -22,12 +22,12 @@ import org.drools.planner.config.constructionheuristic.placer.PlacerConfig;
 import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.value.ValueSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.constructionheuristic.placer.value.ValuePlacer;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.value.ValueSelector;
-import org.drools.planner.core.termination.Termination;
+import org.optaplanner.core.constructionheuristic.placer.value.ValuePlacer;
+import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.termination.Termination;
 
 @XStreamAlias("valuePlacer")
 public class ValuePlacerConfig extends PlacerConfig {

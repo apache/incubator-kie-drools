@@ -20,11 +20,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactory;
-import org.drools.planner.core.heuristic.selector.move.factory.MoveListFactoryToMoveSelectorBridge;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.heuristic.selector.move.factory.MoveListFactoryToMoveSelectorBridge;
 
 @XStreamAlias("moveListFactory")
 public class MoveListFactoryConfig extends MoveSelectorConfig {

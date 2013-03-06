@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.nurserostering.solver.move;
 
-import org.drools.planner.core.score.director.ScoreDirector;
+import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 

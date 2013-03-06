@@ -19,10 +19,10 @@ package org.drools.planner.config.localsearch.decider.forager;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.localsearch.decider.forager.AcceptedForager;
-import org.drools.planner.core.localsearch.decider.forager.Forager;
-import org.drools.planner.core.localsearch.decider.forager.PickEarlyType;
-import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.localsearch.decider.forager.AcceptedForager;
+import org.optaplanner.core.localsearch.decider.forager.Forager;
+import org.optaplanner.core.localsearch.decider.forager.PickEarlyType;
+import org.optaplanner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("forager")
 public class ForagerConfig {

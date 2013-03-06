@@ -17,7 +17,7 @@
 package org.optaplanner.examples.manners2009.app;
 
 import org.drools.planner.config.XmlSolverFactory;
-import org.drools.planner.core.Solver;
+import org.optaplanner.core.Solver;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;

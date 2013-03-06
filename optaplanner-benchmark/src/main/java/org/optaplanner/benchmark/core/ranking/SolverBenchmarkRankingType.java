@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.core.ranking;
 
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.Solution;
 
 public enum SolverBenchmarkRankingType {
     /**

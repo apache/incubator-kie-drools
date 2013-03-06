@@ -16,9 +16,9 @@
 
 package org.optaplanner.examples.curriculumcourse.solver.move;
 
-import org.drools.planner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.drools.planner.core.heuristic.selector.move.generic.SwapMove;
-import org.drools.planner.core.score.director.ScoreDirector;
+import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.heuristic.selector.move.generic.SwapMove;
+import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 
 public class DifferentCourseSwapMoveFilter implements SelectionFilter<SwapMove> {

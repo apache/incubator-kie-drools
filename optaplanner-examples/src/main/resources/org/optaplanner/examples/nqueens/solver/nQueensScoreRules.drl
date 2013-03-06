@@ -17,9 +17,9 @@
 package org.optaplanner.examples.nqueens.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.simple.SimpleScoreHolder;
-import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
-import org.drools.planner.core.score.constraint.ConstraintType;
+import org.optaplanner.core.score.buildin.simple.SimpleScoreHolder;
+import org.optaplanner.core.score.constraint.UnweightedConstraintOccurrence;
+import org.optaplanner.core.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.nqueens.domain.Queen;
 

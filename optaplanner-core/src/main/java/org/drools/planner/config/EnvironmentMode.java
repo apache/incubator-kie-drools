@@ -16,8 +16,8 @@
 
 package org.drools.planner.config;
 
-import org.drools.planner.core.localsearch.decider.DefaultDecider;
-import org.drools.planner.core.move.Move;
+import org.optaplanner.core.localsearch.decider.DefaultDecider;
+import org.optaplanner.core.move.Move;
 
 /**
  * A solver has a single Random instance. Some solver configurations use the Random instance a lot more than others.

@@ -21,9 +21,9 @@ import java.io.File;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.termination.TerminationConfig;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.Solver;
+import org.optaplanner.core.score.Score;
+import org.optaplanner.core.solution.Solution;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.junit.Before;
 

@@ -18,7 +18,7 @@ package org.optaplanner.examples.nurserostering.persistence;
 
 import java.io.IOException;
 
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractXmlSolutionExporter;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.Shift;

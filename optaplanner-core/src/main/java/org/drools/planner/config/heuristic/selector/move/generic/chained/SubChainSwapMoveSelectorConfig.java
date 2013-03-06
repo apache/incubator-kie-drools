@@ -22,12 +22,12 @@ import org.drools.planner.config.heuristic.selector.common.SelectionOrder;
 import org.drools.planner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.drools.planner.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
-import org.drools.planner.core.heuristic.selector.value.chained.SubChainSelector;
+import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
+import org.optaplanner.core.heuristic.selector.value.chained.SubChainSelector;
 
 @XStreamAlias("subChainSwapMoveSelector")
 public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {

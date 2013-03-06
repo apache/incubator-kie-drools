@@ -31,8 +31,8 @@ import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
 import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.core.solution.ProblemIO;
-import org.drools.planner.core.solution.Solution;
+import org.optaplanner.core.solution.ProblemIO;
+import org.optaplanner.core.solution.Solution;
 
 public class XStreamProblemIO implements ProblemIO {
 

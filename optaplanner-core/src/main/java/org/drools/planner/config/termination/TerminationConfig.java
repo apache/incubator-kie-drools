@@ -23,15 +23,15 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.termination.AbstractCompositeTermination;
-import org.drools.planner.core.termination.AndCompositeTermination;
-import org.drools.planner.core.termination.OrCompositeTermination;
-import org.drools.planner.core.termination.ScoreAttainedTermination;
-import org.drools.planner.core.termination.StepCountTermination;
-import org.drools.planner.core.termination.Termination;
-import org.drools.planner.core.termination.TimeMillisSpendTermination;
-import org.drools.planner.core.termination.UnimprovedStepCountTermination;
+import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.termination.AbstractCompositeTermination;
+import org.optaplanner.core.termination.AndCompositeTermination;
+import org.optaplanner.core.termination.OrCompositeTermination;
+import org.optaplanner.core.termination.ScoreAttainedTermination;
+import org.optaplanner.core.termination.StepCountTermination;
+import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.termination.TimeMillisSpendTermination;
+import org.optaplanner.core.termination.UnimprovedStepCountTermination;
 
 @XStreamAlias("termination")
 public class TerminationConfig implements Cloneable {

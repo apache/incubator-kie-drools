@@ -32,16 +32,16 @@ import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.util.ConfigUtils;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.common.SelectionCacheType;
-import org.drools.planner.core.heuristic.selector.move.MoveSelector;
-import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
-import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
-import org.drools.planner.core.localsearch.decider.Decider;
-import org.drools.planner.core.localsearch.decider.DefaultDecider;
-import org.drools.planner.core.localsearch.decider.forager.Forager;
-import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.termination.Termination;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.localsearch.DefaultLocalSearchSolverPhase;
+import org.optaplanner.core.localsearch.LocalSearchSolverPhase;
+import org.optaplanner.core.localsearch.decider.Decider;
+import org.optaplanner.core.localsearch.decider.DefaultDecider;
+import org.optaplanner.core.localsearch.decider.forager.Forager;
+import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.termination.Termination;
 
 @XStreamAlias("localSearch")
 public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {

@@ -22,8 +22,8 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.planner.core.move.Move;
-import org.drools.planner.core.score.director.ScoreDirector;
+import org.optaplanner.core.move.Move;
+import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 

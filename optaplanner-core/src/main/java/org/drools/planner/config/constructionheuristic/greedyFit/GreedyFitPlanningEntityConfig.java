@@ -19,10 +19,10 @@ package org.drools.planner.config.constructionheuristic.greedyFit;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelectionOrder;
-import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelector;
+import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelectionOrder;
+import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelector;
 
 @XStreamAlias("greedyFitPlanningEntity")
 @Deprecated // Use ConstructionHeuristicSolverPhaseConfig
