@@ -16,12 +16,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.executor.annotations.Completed;
@@ -46,30 +51,34 @@ public class ExecutorRunnable implements Runnable {
     @Inject
     private EntityManager em;
     @Inject
+    private EntityManagerFactory emf;
+    @Inject
     private BeanManager beanManager;
-    @Inject
-    private Event<RequestInfo> requestEvents;
-    @Inject
-    private Event<ErrorInfo> errorEvents;
+    //@Inject
+    //private Event<RequestInfo> requestEvents;
+    //@Inject
+    //private Event<ErrorInfo> errorEvents;
     @Inject 
     private ExecutorQueryService queryService;
     
     private final Map<String, Command> commandCache = new HashMap<String, Command>();
     private final Map<String, CommandCallback> callbackCache = new HashMap<String, CommandCallback>();
-
+    
     @Transactional
     public void run() {
         logger.log(Level.INFO, " >>> Executor Thread {0} Waking Up!!!", this.toString());
         List<?> resultList = queryService.getPendingRequests();
         logger.log(Level.INFO, " >>> Pending Requests = {0}", resultList.size());
+        EntityManager entityManager = getEntityManager();
         if (resultList.size() > 0) {
             RequestInfo r = null;
             Throwable exception = null;
             try {
                 r = (RequestInfo) resultList.get(0);
                 r.setStatus(STATUS.RUNNING);
-                em.merge(r);
-                requestEvents.select(new AnnotationLiteral<Running>(){}).fire(r);
+                entityManager.merge(r);
+                // CDI Contexts are not propagated to new threads
+                //requestEvents.select(new AnnotationLiteral<Running>(){}).fire(r); 
                 logger.log(Level.INFO, " >> Processing Request Id: {0}", r.getId());
                 logger.log(Level.INFO, " >> Request Status ={0}", r.getStatus());
                 logger.log(Level.INFO, " >> Command Name to execute = {0}", r.getCommandName());
@@ -111,11 +120,13 @@ public class ExecutorRunnable implements Runnable {
                         r.setResponseData(null);
                     }
                 }
-
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
+            	Thread.currentThread().interrupt();
+            } catch (Throwable e) {
                 e.printStackTrace();
                 exception = e;
             }
+            
             if (exception != null) {
                 logger.log(Level.SEVERE, "{0} >>> Before - Error Handling!!!{1}", new Object[]{System.currentTimeMillis(), exception.getMessage()});
                 
@@ -123,8 +134,9 @@ public class ExecutorRunnable implements Runnable {
                 
                 ErrorInfo errorInfo = new ErrorInfo(exception.getMessage(), ExceptionUtils.getFullStackTrace(exception.fillInStackTrace()));
                 errorInfo.setRequestInfo(r);
-                requestEvents.select(new AnnotationLiteral<OnError>(){}).fire(r);
-                errorEvents.select(new AnnotationLiteral<OnError>(){}).fire(errorInfo);
+                // CDI Contexts are not propagated to new threads
+                //requestEvents.select(new AnnotationLiteral<OnError>(){}).fire(r);
+                //errorEvents.select(new AnnotationLiteral<OnError>(){}).fire(errorInfo);
                 r.getErrorInfo().add(errorInfo);
                 logger.log(Level.SEVERE, " >>> Error Number: {0}", r.getErrorInfo().size());
                 if (r.getRetries() > 0) {
@@ -138,7 +150,7 @@ public class ExecutorRunnable implements Runnable {
                     r.setExecutions(r.getExecutions() + 1);
                 }
 
-                em.merge(r);
+                entityManager.merge(r);
 
 
                 logger.severe(" >>> After - Error Handling!!!");
@@ -147,12 +159,29 @@ public class ExecutorRunnable implements Runnable {
             } else {
                 
                 r.setStatus(STATUS.DONE);
-                em.merge(r);
-                requestEvents.select(new AnnotationLiteral<Completed>(){}).fire(r);
+                entityManager.merge(r);
+                // CDI Contexts are not propagated to new threads
+                //requestEvents.select(new AnnotationLiteral<Completed>(){}).fire(r);
             }
         }
     }
 
+    /*
+     * following are supporting methods to allow execution on application startup
+     * as at that time RequestScoped entity manager cannot be used so instead
+     * use EntityManagerFactory and manage transaction manually
+     */
+    protected EntityManager getEntityManager() {
+        try {
+            this.em.toString();          
+            return this.em;
+        } catch (ContextNotActiveException e) {
+            EntityManager em = this.emf.createEntityManager();
+            return em;
+        }
+    }
+
+    
     private Command findCommand(String name) {
 
         synchronized (commandCache) {
