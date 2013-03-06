@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/tsp</benchmarkDirectory>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.optaplanner.examples.tsp.domain.TravelingSalesmanTour</xstreamAnnotatedClass>
+      <inputSolutionFile>data/tsp/unsolved/dj38.xml</inputSolutionFile>
+      <inputSolutionFile>data/tsp/unsolved/europe40.xml</inputSolutionFile>
+      <inputSolutionFile>data/tsp/unsolved/lu980.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
+
+    <solver>
+      <solutionClass>org.optaplanner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.tsp.domain.Visit</planningEntityClass>
+
+      <scoreDirectorFactory>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+        <scoreDrl>/org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+
+      <termination>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>tabuSearch</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <cacheType>PHASE</cacheType>
+            <selectionOrder>SHUFFLED</selectionOrder>
+          </changeMoveSelector>
+          <!--<swapMoveSelector>-->
+            <!--<cacheType>PHASE</cacheType>-->
+            <!--<selectionOrder>SHUFFLED</selectionOrder>-->
+          <!--</swapMoveSelector>-->
+          <subChainChangeMoveSelector>
+            <subChainSelector>
+              <maximumSubChainSize>40</maximumSubChainSize>
+            </subChainSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
+          <!--<subChainSwapMoveSelector>-->
+            <!--<subChainSelector>-->
+              <!--<maximumSubChainSize>40</maximumSubChainSize>-->
+            <!--</subChainSelector>-->
+            <!--<selectReversingMoveToo>true</selectReversingMoveToo>-->
+          <!--</subChainSwapMoveSelector>-->
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>5000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

@@ -56,21 +56,21 @@
       it with a solver configuration XML file:</para>
 
       <programlisting language="java">        XmlSolverFactory solverFactory = new XmlSolverFactory();
-        solverFactory.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
+        solverFactory.configure("/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();</programlisting>
 
       <para>A solver configuration file looks something like this:</para>
 
-      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+      <programlisting language="xml"><![CDATA[<![CDATA[&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solver&gt;
   &lt;!-- Define the model --&gt;
-  &lt;solutionClass&gt;org.drools.planner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
-  &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+  &lt;solutionorg.optaplanner.examples.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
+  &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
 
   &lt;!-- Define the score function --&gt;
   &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-    &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;
 
   &lt;!-- Configure the optimization algorithm(s) --&gt;
@@ -83,7 +83,7 @@
   &lt;localSearch&gt;
     ...
   &lt;/localSearch&gt;
-&lt;/solver&gt;</programlisting>
+&lt;/solver&gt;]]>]]></programlisting>
 
       <para>Notice the 3 parts in it:</para>
 
@@ -123,7 +123,7 @@
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
         scoreDirectorFactoryConfig.setScoreDrlList(
-                Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
+                Arrays.asList("/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl"));
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         TerminationConfig terminationConfig = new TerminationConfig();
@@ -146,7 +146,7 @@
       runtime:</para>
 
       <programlisting language="java">        XmlSolverFactory solverFactory = new XmlSolverFactory();
-        solverFactory.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
+        solverFactory.configure("/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.getTerminationConfig().setMaximumMinutesSpend(userInput);
@@ -314,11 +314,11 @@ public class Lecture {
 
         <para>The solver configuration also needs to be made aware of each planning entity class:</para>
 
-        <programlisting language="java">&lt;solver&gt;
+        <programlisting language="java"><![CDATA[&lt;solver&gt;
   ...
-  &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+  &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
   ...
-&lt;/solver&gt;</programlisting>
+&lt;/solver&gt;]]></programlisting>
 
         <para>Some uses cases have multiple planning entity classes. For example: route freight and trains into railway
         network arcs, where each freight can use multiple trains over its journey and each train can carry multiple

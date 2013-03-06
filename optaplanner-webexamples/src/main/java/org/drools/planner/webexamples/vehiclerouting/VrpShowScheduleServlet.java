@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
-import org.drools.planner.examples.vehiclerouting.swingui.VehicleRoutingSchedulePainter;
+import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingSchedulePainter;
 
 public class VrpShowScheduleServlet extends HttpServlet {
 

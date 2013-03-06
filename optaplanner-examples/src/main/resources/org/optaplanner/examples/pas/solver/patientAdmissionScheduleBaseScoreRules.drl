@@ -1,0 +1,217 @@
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.examples.pas.solver;
+    dialect "java"
+
+import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.optaplanner.examples.pas.domain.AdmissionPart;
+import org.optaplanner.examples.pas.domain.Bed;
+import org.optaplanner.examples.pas.domain.BedDesignation;
+import org.optaplanner.examples.pas.domain.Department;
+import org.optaplanner.examples.pas.domain.DepartmentSpecialism;
+import org.optaplanner.examples.pas.domain.Equipment;
+import org.optaplanner.examples.pas.domain.Gender;
+import org.optaplanner.examples.pas.domain.GenderLimitation;
+import org.optaplanner.examples.pas.domain.Night;
+import org.optaplanner.examples.pas.domain.Patient;
+import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
+import org.optaplanner.examples.pas.domain.PreferredPatientEquipment;
+import org.optaplanner.examples.pas.domain.RequiredPatientEquipment;
+import org.optaplanner.examples.pas.domain.Room;
+import org.optaplanner.examples.pas.domain.RoomEquipment;
+import org.optaplanner.examples.pas.domain.RoomSpecialism;
+import org.optaplanner.examples.pas.domain.Specialism;
+import org.optaplanner.examples.pas.domain.solver.AdmissionPartConflict;
+import org.optaplanner.examples.pas.domain.solver.AdmissionPartSpecialismMissingInRoom;
+
+global HardSoftScoreHolder scoreHolder;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+// Not yet applicable: RoomMaintenance constraint
+
+// In separate drl or build-in: Two patients in the same bed for a number of nights
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+// Gender limitation: Female in a male only room
+rule "femaleInMaleRoom"
+    when
+        // TODO try optimizing joins with $room : Room(genderLimitation == GenderLimitation.MALE_ONLY)
+        $bedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.MALE_ONLY,
+                patientGender == Gender.FEMALE)
+    then
+        insertLogical(new IntConstraintOccurrence("femaleInMaleRoom", ConstraintType.SOFT,
+                - 50 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+// Gender limitation: Male in a female only room
+rule "maleInFemaleRoom"
+    when
+        $bedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.FEMALE_ONLY,
+                patientGender == Gender.MALE)
+    then
+        insertLogical(new IntConstraintOccurrence("maleInFemaleRoom", ConstraintType.SOFT,
+                - 50 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+// Gender limitation: Different genders in the same room when the room doesn't allow it
+// TODO the official spec gives lower scores in big rooms (capacity >= 6) with minimum 3 males and 3 females
+rule "differentGenderInSameGenderRoomInSameNight"
+    when
+        $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
+                $rightAdmissionPart : rightAdmissionPart,
+                differentGender == true)
+        $leftBedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.SAME_GENDER,
+                admissionPart == $leftAdmissionPart, $room : room)
+        $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart)
+    then
+        insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight", ConstraintType.SOFT,
+                - 50 * $admissionPartConflict.getNightSize(),
+                $leftBedDesignation, $rightBedDesignation));
+end
+
+// Department's minimumAge constraint
+rule "departmentMinimumAge"
+    when
+        $department : Department(minimumAge != null, $minimumAge : minimumAge)
+        $bedDesignation : BedDesignation(department == $department, patientAge < $minimumAge)
+    then
+        insertLogical(new IntConstraintOccurrence("departmentMinimumAge", ConstraintType.SOFT,
+                - 100 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+// Department's maximumAge constraint
+rule "departmentMaximumAge"
+    when
+        $department : Department(maximumAge != null, $maximumAge : maximumAge)
+        $bedDesignation : BedDesignation(department == $department, patientAge > $maximumAge)
+    then
+        insertLogical(new IntConstraintOccurrence("departmentMaximumAge", ConstraintType.SOFT,
+                - 100 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+
+// Not yet applicable: Patient's requiredMaximumRoomCapacity constraint
+
+// Patient preferredMaximumRoomCapacity
+rule "preferredMaximumRoomCapacity"
+    when
+        $bedDesignation : BedDesignation(patientPreferredMaximumRoomCapacity != null,
+                patientPreferredMaximumRoomCapacity < roomCapacity, bed != null)
+    then
+        insertLogical(new IntConstraintOccurrence("preferredMaximumRoomCapacity", ConstraintType.SOFT,
+                // TODO this would be better for the problem, though the official spec does not do it
+                // 8 * ($bedDesignation.getPatientPreferredMaximumRoomCapacity() - $bedDesignation.getRoomCapacity())
+                // * $bedDesignation.getAdmissionPartNightCount(),
+                - 8 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+
+// DepartmentSpecialism constraint
+rule "departmentSpecialism"
+    when
+        $bedDesignation : BedDesignation($specialism : admissionPartSpecialism, $department : department, bed != null)
+        not DepartmentSpecialism(department == $department, specialism == $specialism)
+    then
+        insertLogical(new IntConstraintOccurrence("departmentSpecialism", ConstraintType.SOFT,
+                - 10 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+
+// RoomSpecialism constraint
+rule "roomSpecialismNotExists"
+    when
+        $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism,
+            $room : room, bed != null)
+        not RoomSpecialism(room == $room, specialism == $specialism)
+    then
+        insertLogical(new IntConstraintOccurrence("roomSpecialismNotExists", ConstraintType.SOFT,
+                - 20 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+rule "roomSpecialismNotFirstPriority"
+    when
+        $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism,
+            $room : room, bed != null)
+        RoomSpecialism(priority > 1, room == $room, specialism == $specialism, $priority : priority)
+    then
+        insertLogical(new IntConstraintOccurrence("roomSpecialismNotFirstPriority", ConstraintType.SOFT,
+                - 10 * ($priority - 1) * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+
+// RequiredPatientEquipment constraint
+rule "requiredPatientEquipment"
+    when
+        $requiredPatientEquipment : RequiredPatientEquipment($patient : patient, $equipment : equipment)
+        $bedDesignation : BedDesignation(patient == $patient, $room : room, bed != null)
+        not RoomEquipment(room == $room, equipment == $equipment)
+    then
+        insertLogical(new IntConstraintOccurrence("requiredPatientEquipment", ConstraintType.SOFT,
+                - 50 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation, $requiredPatientEquipment));
+end
+
+// PreferredPatientEquipment constraint
+rule "preferredPatientEquipment"
+    when
+        $preferredPatientEquipment : PreferredPatientEquipment($patient : patient, $equipment : equipment)
+        $bedDesignation : BedDesignation(patient == $patient, $room : room, bed != null)
+        not RoomEquipment(room == $room, equipment == $equipment)
+    then
+        insertLogical(new IntConstraintOccurrence("preferredPatientEquipment", ConstraintType.SOFT,
+                - 20 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation, $preferredPatientEquipment));
+end
+
+// Do not change bed in an AdmissionPart on different Nights constraint is build-in
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+// Accumulate hard constraints
+rule "accumulateHardScore"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $hardTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreHolder.setHardScore($hardTotal.intValue());
+end
+
+// Accumulate soft constraints
+rule "accumulateSoftScore"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreHolder.setSoftScore($softTotal.intValue());
+end

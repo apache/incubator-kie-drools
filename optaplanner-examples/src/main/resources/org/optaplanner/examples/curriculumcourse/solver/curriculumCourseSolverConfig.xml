@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
+  <planningEntityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+    <!--<scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseCompensationActionExperimentScoreRules.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
+  </scoreDirectorFactory>
+
+  <termination>
+    <!--
+      Official benchmark maximumSecondsSpend allowed on:
+      ge0ffrey's main pc: 429
+      ge0ffrey's old pc: 1152
+    -->
+    <maximumSecondsSpend>429</maximumSecondsSpend>
+    <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
+  </termination>
+  <constructionHeuristic>
+    <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+    <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
+  </constructionHeuristic>
+  <localSearch>
+    <unionMoveSelector>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
+        <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
+        <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+      <moveListFactory>
+        <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
+        <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+    </unionMoveSelector>
+    <acceptor>
+      <planningEntityTabuSize>10</planningEntityTabuSize>
+    </acceptor>
+    <forager>
+      <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+    </forager>
+  </localSearch>
+</solver>

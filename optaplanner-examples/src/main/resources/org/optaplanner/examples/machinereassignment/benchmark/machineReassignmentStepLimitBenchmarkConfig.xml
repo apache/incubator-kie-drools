@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/machinereassignment/stepLimit</benchmarkDirectory>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <problemIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
+      <inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>
+    </problemBenchmarks>
+
+    <solver>
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+      <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+
+      <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <!--<scoreDrl>/org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+      </scoreDirectorFactory>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <termination>
+          <maximumStepCount>3000</maximumStepCount>
+        </termination>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

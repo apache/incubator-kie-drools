@@ -1,0 +1,67 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.examples.tsp.solver;
+    dialect "java"
+
+import org.drools.planner.core.score.buildin.simple.SimpleScoreHolder;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.optaplanner.examples.tsp.domain.City;
+import org.optaplanner.examples.tsp.domain.Domicile;
+import org.optaplanner.examples.tsp.domain.Visit;
+import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+
+global SimpleScoreHolder scoreHolder;
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "distanceToPreviousAppearance"
+    when
+        $visit : Visit(previousAppearance != null, $distanceToPreviousAppearance : distanceToPreviousAppearance)
+    then
+        insertLogical(new IntConstraintOccurrence("distanceToPreviousAppearance", ConstraintType.SOFT,
+                - $distanceToPreviousAppearance,
+                $visit));
+end
+
+rule "distanceFromLastVisitToDomicile"
+    when
+        $visit : Visit(previousAppearance != null)
+        not Visit(previousAppearance == $visit)
+        $domicile : Domicile()
+    then
+        insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDomicile", ConstraintType.SOFT,
+                - $visit.getDistanceTo($domicile),
+                $visit, $domicile));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+rule "accumulateScore"
+    when
+        $softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreHolder.setScore($softTotal.intValue());
+end

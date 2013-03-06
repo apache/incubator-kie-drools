@@ -142,7 +142,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
 
       <para>Try it yourself. <link linkend="downloadAndRunTheExamples">Download and configure the examples in your
       favorite IDE.</link> Run
-      <literal>org.drools.planner.examples.cloudbalancing.app.CloudBalancingHelloWorld</literal>. By default, it is
+      <literal>org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld</literal>. By default, it is
       configured to run for 120 seconds. It will execute this code:</para>
 
       <example>
@@ -153,7 +153,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
     public static void main(String[] args) {
         // Build the Solver
         SolverFactory solverFactory = new XmlSolverFactory(
-                "/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+                "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
 
         // Load a problem with 400 computers and 1200 processes
@@ -181,7 +181,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
           <para>Build the <literal>Solver</literal> based on a solver configuration (in this case an XML file).</para>
 
           <programlisting language="java">        SolverFactory solverFactory = new XmlSolverFactory(
-                "/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+                "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();</programlisting>
         </listitem>
 
@@ -219,21 +219,21 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
       <example>
         <title>cloudBalancingSolverConfig.xml</title>
 
-        <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+        <programlisting language="xml"><![CDATA[<![CDATA[<![CDATA[&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solver&gt;
   &lt;!--&lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;--&gt;
 
   &lt;!-- Domain model configuration --&gt;
-  &lt;solutionClass&gt;org.drools.planner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
-  &lt;planningEntityClass&gt;org.drools.planner.examples.cloudbalancing.domain.CloudProcess&lt;/planningEntityClass&gt;
+  &lt;solutionClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
+  &lt;planningEntityClaorg.optaplanner.examplesamples.cloudbalancing.domain.CloudProcess&lt;/planningEntityClass&gt;
 
   &lt;!-- Score configuration --&gt;
   &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
-    &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
-    &lt;!--&lt;scoreDrl&gt;/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
+    &lt;simpleScoreCalculaorg.optaplanner.examplesner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+    &lt;!--&lt;scoreDrl&gt;/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
   &lt;/scoreDirectorFactory&gt;
-  
+
   &lt;!-- Optimization algorithms configuration --&gt;
   &lt;termination&gt;
     &lt;maximumSecondsSpend&gt;120&lt;/maximumSecondsSpend&gt;
@@ -250,7 +250,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
       &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;
     &lt;/forager&gt;
   &lt;/localSearch&gt;
-&lt;/solver&gt;</programlisting>
+&lt;/solver&gt;]]>]]>]]></programlisting>
       </example>
 
       <para>This solver configuration consists out of 3 parts:</para>
@@ -260,8 +260,8 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
           <para><emphasis role="bold">Domain model configuration</emphasis>: What can Planner change? We need to make
           Planner aware of our domain classes:</para>
 
-          <programlisting language="xml">  &lt;solutionClass&gt;org.drools.planner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
-  &lt;planningEntityClass&gt;org.drools.planner.examples.cloudbalancing.domain.CloudProcess&lt;/planningEntityClass&gt;</programlisting>
+          <programlisting language="xml"><![CDATA[<![CDATA[  &lt;solutionClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
+  &lt;planningEntityClaorg.optaplanner.examplesamples.cloudbalancing.domain.CloudProcess&lt;/planningEntityClass&gt;]]>]]></programlisting>
         </listitem>
 
         <listitem>
@@ -271,11 +271,11 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
           'll look into 2 alternatives to calculate the score: using a simple Java implementation or using Drools
           DRL.</para>
 
-          <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+          <programlisting language="xml"><![CDATA[  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
-    &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
-    &lt;!--&lt;scoreDrl&gt;/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+    &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+    &lt;!--&lt;scoreDrl&gt;/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
+  &lt;/scoreDirectorFactory&gt;]]></programlisting>
         </listitem>
 
         <listitem>
@@ -476,10 +476,10 @@ public class CloudProcess ... {
         <para>One way to define a score function is to implement the interface <literal>SimpleScoreCalculator</literal>
         in plain Java.</para>
 
-        <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+        <programlisting language="xml"><![CDATA[  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
-    &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+    &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+  &lt;/scoreDirectorFactory&gt;]]></programlisting>
 
         <para>Just implement the method <literal>calculateScore(Solution)</literal> to return a
         <literal>HardSoftScore</literal> instance.</para>
@@ -551,7 +551,7 @@ public class CloudProcess ... {
 
         <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
-    &lt;scoreDrl&gt;/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDrl&gt;/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
         <para>First, we want to make sure that all computers have enough CPU, RAM and network bandwidth to support all
@@ -562,9 +562,9 @@ public class CloudProcess ... {
 
           <programlisting>...
 
-import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
-import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
+import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
+import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
 global HardSoftScoreHolder scoreHolder;
 

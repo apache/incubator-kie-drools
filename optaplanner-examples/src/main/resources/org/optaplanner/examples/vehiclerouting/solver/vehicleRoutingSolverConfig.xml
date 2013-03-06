@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
+  <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDrl>/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
+    <!--<scoreDrl>/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingCompensationActionExperimentScoreRules.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDrl>/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
+  </scoreDirectorFactory>
+
+  <termination>
+    <maximumMinutesSpend>2</maximumMinutesSpend>
+  </termination>
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
+    <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      <subChainChangeMoveSelector>
+        <selectReversingMoveToo>false</selectReversingMoveToo>
+      </subChainChangeMoveSelector>
+      <subChainSwapMoveSelector>
+        <selectReversingMoveToo>false</selectReversingMoveToo>
+      </subChainSwapMoveSelector>
+    </unionMoveSelector>
+    <acceptor>
+      <planningEntityTabuSize>9</planningEntityTabuSize>
+    </acceptor>
+    <forager>
+      <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+    </forager>
+  </localSearch>
+  <!--<localSearch>-->
+    <!--<unionMoveSelector>-->
+      <!--<changeMoveSelector/>-->
+      <!--<swapMoveSelector/>-->
+      <!--<subChainChangeMoveSelector/>-->
+    <!--</unionMoveSelector>-->
+    <!--<acceptor>-->
+      <!--<simulatedAnnealingStartingTemperature>10</simulatedAnnealingStartingTemperature>-->
+    <!--</acceptor>-->
+    <!--<forager>-->
+      <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
+    <!--</forager>-->
+  <!--</localSearch>-->
+</solver>

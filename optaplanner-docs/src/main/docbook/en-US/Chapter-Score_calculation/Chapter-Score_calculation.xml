@@ -464,10 +464,10 @@
 
       <para>Configure it in your solver configuration:</para>
 
-      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+      <programlisting language="xml"><![CDATA[  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
-    &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+    &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+  &lt;/scoreDirectorFactory&gt;]]></programlisting>
 
       <para>Alternatively, build a <literal>SimpleScoreCalculator</literal> instance at runtime and set it with the
       programmatic API:</para>
@@ -657,10 +657,10 @@
 
       <para>Configure it in your solver configuration:</para>
 
-      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+      <programlisting language="xml"><![CDATA[  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
-    &lt;incrementalScoreCalculatorClass&gt;org.drools.planner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator&lt;/incrementalScoreCalculatorClass&gt;
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+    &lt;incrementalScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator&lt;/incrementalScoreCalculatorClass&gt;
+  &lt;/scoreDirectorFactory&gt;]]></programlisting>
 
       <para>Optionally, to get better output when the <literal>IncrementalScoreCalculator</literal> is corrupted in
       <literal>environmentMode</literal> <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT</literal>, you can
@@ -778,7 +778,7 @@
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
-    &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
           <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if needed, but normally you'll define
@@ -941,15 +941,15 @@ end</programlisting>
       assertions triggered by the <literal>environmentMode</literal>. Just configure it as
       <literal>assertionScoreDirectorFactory</literal>:</para>
 
-      <programlisting language="xml">  &lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;
+      <programlisting language="xml"><![CDATA[  &lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;
   ...
   &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
-    &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+    &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;assertionScoreDirectorFactory&gt;
-      &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+      &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
     &lt;/assertionScoreDirectorFactory&gt;
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+  &lt;/scoreDirectorFactory&gt;]]></programlisting>
     </section>
   </section>
 

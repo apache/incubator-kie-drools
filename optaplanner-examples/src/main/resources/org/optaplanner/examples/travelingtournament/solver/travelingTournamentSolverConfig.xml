@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+  <planningEntityClass>org.optaplanner.examples.travelingtournament.domain.Match</planningEntityClass>
+
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDrl>/org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
+
+  <termination>
+    <scoreAttained>0hard/0soft</scoreAttained>
+  </termination>
+  <localSearch>
+    <unionMoveSelector>
+      <swapMoveSelector>
+        <cacheType>PHASE</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
+        <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
+      </swapMoveSelector>
+      <moveListFactory>
+        <cacheType>STEP</cacheType>
+        <selectionOrder>SHUFFLED</selectionOrder>
+        <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+    </unionMoveSelector>
+    <acceptor>
+      <solutionTabuSize>1500</solutionTabuSize>
+      <moveTabuSize>7</moveTabuSize>
+    </acceptor>
+    <forager>
+      <deciderScoreComparatorFactory>
+        <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
+        <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
+        <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
+        <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
+        <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
+        <hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>
+        <startingHardWeight>1000</startingHardWeight>
+      </deciderScoreComparatorFactory>
+      <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+    </forager>
+  </localSearch>
+</solver>

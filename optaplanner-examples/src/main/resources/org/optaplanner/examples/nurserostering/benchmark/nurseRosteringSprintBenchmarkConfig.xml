@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/nurserostering/sprint</benchmarkDirectory>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+  <warmUpSecondsSpend>5</warmUpSecondsSpend>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
+      <inputSolutionFile>data/nurserostering/unsolved/sprint01.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/sprint02.xml</inputSolutionFile>
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint04.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint05.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint06.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint07.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint08.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint09.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint10.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_hint01.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_hint02.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_hint03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late01.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late02.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late04.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late05.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late06.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late07.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late08.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late09.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late10.xml</inputSolutionFile>-->
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
+
+    <solver>
+      <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
+      <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+        <scoreDrl>/org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <termination>
+        <!--
+          Official benchmark maximumSecondsSpend allowed on:
+          - ge0ffrey's main pc: sprint 11, medium 700, long 42000
+        -->
+        <maximumSecondsSpend>11</maximumSecondsSpend>
+      </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>pillarPart300</name>
+    <solver>
+      <localSearch>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>STEP</cacheType>
+            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
+        <acceptor>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <planningEntityTabuSize>11</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>300</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

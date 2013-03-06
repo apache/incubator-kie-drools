@@ -26,8 +26,8 @@ import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.event.BestSolutionChangedEvent;
 import org.drools.planner.core.event.SolverEventListener;
-import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
-import org.drools.planner.examples.vehiclerouting.persistence.VehicleRoutingSolutionImporter;
+import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingSolutionImporter;
 
 public class VrpWebAction {
 
@@ -35,7 +35,7 @@ public class VrpWebAction {
 
     public void setup(HttpSession session) {
         SolverFactory solverFactory = new XmlSolverFactory(
-                "/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml");
+                "/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(VrpSessionAttributeName.SOLVER, solver);
 

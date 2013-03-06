@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/nurserostering/stepLimit</benchmarkDirectory>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</inputSolutionFile>
+    </problemBenchmarks>
+
+    <solver>
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+      <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
+      <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+        <scoreDrl>/org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <termination>
+          <maximumStepCount>100</maximumStepCount>
+        </termination>
+        <unionMoveSelector>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+          <moveListFactory>
+            <cacheType>PHASE</cacheType>
+            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
+        <acceptor>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <moveTabuSize>7</moveTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

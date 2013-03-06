@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+  <planningEntityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+    <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <!--<scoreDrl>/org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>-->
+      <!--<scoreDrl>/org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
+  </scoreDirectorFactory>
+  <termination>
+    <maximumMinutesSpend>5</maximumMinutesSpend>
+  </termination>
+  
+  <!--<constructionHeuristic>-->
+    <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
+    <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
+  <!--</constructionHeuristic>-->
+  <customSolverPhase>
+    <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+  </customSolverPhase>
+  <localSearch>
+    <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+    </unionMoveSelector>
+    <acceptor>
+      <planningEntityTabuSize>7</planningEntityTabuSize>
+      <!--<lateAcceptanceSize>2000</lateAcceptanceSize>-->
+    </acceptor>
+    <forager>
+      <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+      <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
+    </forager>
+  </localSearch>
+</solver>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/machinereassignment/template</benchmarkDirectory>
+  <!--<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>-->
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <problemIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_1.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_2.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_3.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_5.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_1.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_2.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_3.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_4.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_5.txt</inputSolutionFile>-->
+      <inputSolutionFile>data/machinereassignment/input/model_b_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_2.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_3.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_4.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_5.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_6.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_7.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_8.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_9.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_b_10.txt</inputSolutionFile>
+      <!--<problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>-->
+      <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
+    </problemBenchmarks>
+
+    <solver>
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+      <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+
+      <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <!--<scoreDrl>/org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+      </scoreDirectorFactory>
+      <termination>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>original</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+    </solver>
+  </solverBenchmark>
+<#list [500, 1000, 2000, 4000] as minimalAcceptedSelection>
+<#list [5, 7, 9, 11] as planningEntityTabuSize>
+    <solverBenchmark>
+    <name>entityTabu${planningEntityTabuSize}-mas${minimalAcceptedSelection}</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>${minimalAcceptedSelection}</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</#list>
+<#list [500, 1000, 2000, 4000] as lateAcceptanceSize>
+    <solverBenchmark>
+    <name>lateAcceptance${lateAcceptanceSize}-mas${minimalAcceptedSelection}</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>${minimalAcceptedSelection}</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</#list>
+</#list>
+</plannerBenchmark>

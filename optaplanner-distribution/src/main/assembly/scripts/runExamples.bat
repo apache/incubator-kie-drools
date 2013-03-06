@@ -3,7 +3,7 @@
 setLocal EnableDelayedExpansion
 set mainClasspath=
 for %%i in (binaries\*.jar) do (set mainClasspath=!mainClasspath!;%%i)
-set mainClass=org.drools.planner.examples.app.DroolsPlannerExamplesApp
+set mainClass=org.optaplanner.examples.app.DroolsPlannerExamplesApp
 
 echo "Usage: runExamples.bat"
 echo "For example: runExamples.bat"

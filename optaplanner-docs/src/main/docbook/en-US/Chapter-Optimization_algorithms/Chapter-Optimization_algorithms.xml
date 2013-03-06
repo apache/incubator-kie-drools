@@ -789,13 +789,13 @@
 
     <para>And configure it like this:</para>
 
-    <programlisting language="xml">&lt;solver&gt;
+    <programlisting language="xml"><![CDATA[&lt;solver&gt;
   ...
   &lt;customSolverPhase&gt;
-    &lt;customSolverPhaseCommandClass&gt;org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer&lt;/customSolverPhaseCommandClass&gt;
+    &lt;customSolverPhaseCommandClass&gt;org.optaplanner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer&lt;/customSolverPhaseCommandClass&gt;
   &lt;/customSolverPhase&gt;
   ... &lt;!-- Other phases --&gt;
-&lt;/solver&gt;</programlisting>
+&lt;/solver&gt;]]></programlisting>
 
     <para>It's possible to configure multiple <literal>customSolverPhaseCommandClass</literal> instances, which will be
     run in sequence.</para>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/cloudbalancing/scoreDirector</benchmarkDirectory>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</xstreamAnnotatedClass>
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/cb-0002comp-0006proc.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/cb-0003comp-0009proc.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/cb-0004comp-0012proc.xml</inputSolutionFile>-->
+      <inputSolutionFile>data/cloudbalancing/unsolved/cb-0100comp-0300proc.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/cb-0200comp-0600proc.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/cb-0400comp-1200proc.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/cb-0800comp-2400proc.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
+
+    <solver>
+      <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
+      <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+      </scoreDirectorFactory>
+      <termination>
+        <maximumMinutesSpend>20</maximumMinutesSpend>
+      </termination>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <planningEntityTabuSize>7</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>TS with Simple Java</name>
+    <solver>
+      <scoreDirectorFactory>
+        <simpleScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator</simpleScoreCalculatorClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>TS with Incremental Java</name>
+    <solver>
+      <scoreDirectorFactory>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>TS with Drools</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>TS with Drools compensation action experiment</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingCompensationActionExperimentScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>
