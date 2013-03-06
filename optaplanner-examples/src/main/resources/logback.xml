@@ -25,9 +25,9 @@
     </encoder>
   </appender>
   <!--<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-    <!--<file>local/log/droolsPlannerBenchmarker.log</file>-->
+    <!--<file>local/log/optaplannerBenchmark.log</file>-->
     <!--<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">-->
-      <!--<fileNamePattern>local/log/droolsPlannerBenchmarker.%i.log.zip</fileNamePattern>-->
+      <!--<fileNamePattern>local/log/optaplannerBenchmark.%i.log.zip</fileNamePattern>-->
       <!--<minIndex>1</minIndex>-->
       <!--<maxIndex>3</maxIndex>-->
     <!--</rollingPolicy>-->

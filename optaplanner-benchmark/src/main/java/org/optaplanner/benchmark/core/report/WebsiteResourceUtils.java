@@ -26,7 +26,7 @@ import org.apache.commons.io.IOUtils;
 
 public class WebsiteResourceUtils {
 
-    private static final String RESOURCE_NAMESPACE = "/org/drools/planner/benchmark/core/report/";
+    private static final String RESOURCE_NAMESPACE = "/org/optaplanner/benchmark/core/report/";
 
     public static void copyResourcesTo(File benchmarkReportDirectory) {
         // Twitter Bootstrap

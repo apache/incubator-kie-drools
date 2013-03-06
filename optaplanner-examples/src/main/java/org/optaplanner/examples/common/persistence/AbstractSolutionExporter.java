@@ -53,7 +53,7 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
         Arrays.sort(inputFiles);
         if (inputFiles == null) {
             throw new IllegalArgumentException(
-                    "Your working dir should be drools-planner-examples and contain: " + inputDir);
+                    "Your working dir should be optaplanner-examples and contain: " + inputDir);
         }
         for (File inputFile : inputFiles) {
             String inputFileName = inputFile.getName();

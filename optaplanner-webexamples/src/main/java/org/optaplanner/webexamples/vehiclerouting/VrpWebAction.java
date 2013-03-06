@@ -39,7 +39,7 @@ public class VrpWebAction {
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(VrpSessionAttributeName.SOLVER, solver);
 
-        URL unsolvedSolutionURL = getClass().getResource("/org/drools/planner/webexamples/vehiclerouting/A-n33-k6.vrp");
+        URL unsolvedSolutionURL = getClass().getResource("/org/optaplanner/webexamples/vehiclerouting/A-n33-k6.vrp");
         VrpSchedule unsolvedSolution = (VrpSchedule) new VehicleRoutingSolutionImporter()
                 .readSolution(unsolvedSolutionURL);
         session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);

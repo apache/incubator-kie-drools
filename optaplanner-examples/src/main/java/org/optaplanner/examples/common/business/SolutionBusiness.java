@@ -99,7 +99,7 @@ public class SolutionBusiness {
             throw new IllegalStateException("The directory dataDir (" + dataDir.getAbsolutePath()
                     + ") does not exist." +
                     " The working directory should be set to the directory that contains the data directory." +
-                    " This is different in a git clone (drools-planner/drools-planner-examples)" +
+                    " This is different in a git clone (optaplanner/optaplanner-examples)" +
                     " and the release zip (examples).");
         }
         if (hasImporter()) {
