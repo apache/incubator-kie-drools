@@ -31,8 +31,7 @@
     <!-- External dependencies -->
     <dependency>
       <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>3.8</version>
+      <artifactId>poi-ooxml</artifactId>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
