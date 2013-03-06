@@ -16,8 +16,8 @@
 
 package org.drools.planner.examples.common.app;
 
-import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.config.XmlPlannerBenchmarkFactory;
+import org.optaplanner.benchmark.api.PlannerBenchmark;
+import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
 
 public abstract class CommonBenchmarkApp extends LoggingMain {
 

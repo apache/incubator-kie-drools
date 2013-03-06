@@ -37,7 +37,7 @@ import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
-import org.drools.planner.persistence.xstream.XStreamScoreConverter;
+import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("NurseRoster")

@@ -21,11 +21,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.config.PlannerBenchmarkConfig;
-import org.drools.planner.benchmark.config.ProblemBenchmarksConfig;
-import org.drools.planner.benchmark.config.SolverBenchmarkConfig;
-import org.drools.planner.benchmark.config.XmlPlannerBenchmarkFactory;
+import org.optaplanner.benchmark.api.PlannerBenchmark;
+import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
+import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
+import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
+import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
 import org.drools.planner.config.termination.TerminationConfig;
 
 /**

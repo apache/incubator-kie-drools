@@ -31,7 +31,7 @@ import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.curriculumcourse.domain.solver.CourseConflict;
-import org.drools.planner.persistence.xstream.XStreamScoreConverter;
+import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("CourseSchedule")

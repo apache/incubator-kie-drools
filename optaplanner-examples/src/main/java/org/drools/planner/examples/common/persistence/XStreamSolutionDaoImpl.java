@@ -19,7 +19,7 @@ package org.drools.planner.examples.common.persistence;
 import java.io.File;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.persistence.xstream.XStreamProblemIO;
+import org.optaplanner.persistence.xstream.XStreamProblemIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

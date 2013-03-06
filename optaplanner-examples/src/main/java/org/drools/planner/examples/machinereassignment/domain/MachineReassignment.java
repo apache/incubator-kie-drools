@@ -26,13 +26,12 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningSolution;
-import org.drools.planner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.drools.planner.core.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceDependency;
-import org.drools.planner.persistence.xstream.XStreamScoreConverter;
+import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("MachineReassignment")
