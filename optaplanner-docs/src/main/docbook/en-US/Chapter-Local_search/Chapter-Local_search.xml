@@ -198,7 +198,7 @@
         </listitem>
       </orderedlist>
 
-      <para>If we turn on <literal>debug</literal> logging for the category <literal>org.drools.planner</literal>, then
+      <para>If we turn on <literal>debug</literal> logging for the category <literal>org.optaplanner</literal>, then
       those steps are shown into the log:</para>
 
       <programlisting>INFO  Solving started: time spend (0), score (-6), new best score (-6), random seed (0).
@@ -276,7 +276,7 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
     <para>In the above example the selector generated the moves shown with the blue lines, the acceptor accepted all of
     them and the forager picked the move <emphasis>B0 to B3</emphasis>.</para>
 
-    <para>If we turn on <literal>trace</literal> logging for the category <literal>org.drools.planner</literal>, then
+    <para>If we turn on <literal>trace</literal> logging for the category <literal>org.optaplanner</literal>, then
     the decision making is shown in the log:</para>
 
     <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random seed (0).

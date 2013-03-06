@@ -1391,12 +1391,12 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
       &lt;version&gt;1.x&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
-      <para>Configure the logging level on the package <literal>org.drools.planner</literal> in your
+      <para>Configure the logging level on the package <literal>org.optaplanner</literal> in your
       <filename>logback.xml</filename> file:</para>
 
       <programlisting language="xml">&lt;configuration&gt;
 
-  &lt;logger name="org.drools.planner" level="debug"/&gt;
+  &lt;logger name="org.optaplanner" level="debug"/&gt;
 
   ...
 
@@ -1411,12 +1411,12 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
       &lt;version&gt;1.x&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
-      <para>And configure the logging level on the package <literal>org.drools.planner</literal> in your
+      <para>And configure the logging level on the package <literal>org.optaplanner</literal> in your
       <filename>log4j.xml</filename> file:</para>
 
       <programlisting language="xml">&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
 
-  &lt;category name="org.drools.planner"&gt;
+  &lt;category name="org.optaplanner"&gt;
     &lt;priority value="debug" /&gt;
   &lt;/category&gt;
 

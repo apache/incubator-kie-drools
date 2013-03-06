@@ -260,7 +260,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
           <para><emphasis role="bold">Domain model configuration</emphasis>: What can Planner change? We need to make
           Planner aware of our domain classes:</para>
 
-          <programlisting language="xml">  &lt;solutionClass&gt;org.drools.planner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
+          <programlisting language="xml">  &lt;solutionClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
   &lt;planningEntityClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudProcess&lt;/planningEntityClass&gt;</programlisting>
         </listitem>
 

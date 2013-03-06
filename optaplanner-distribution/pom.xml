@@ -37,8 +37,8 @@
               <reportOutputDirectory>${project.build.directory}/aggregated-javadocs</reportOutputDirectory>
               <includeDependencySources>true</includeDependencySources>
               <dependencySourceIncludes>
-                <dependencySourceInclude>org.drools.planner:optaplanner-core</dependencySourceInclude>
-                <dependencySourceInclude>org.drools.planner:optaplanner-benchmark</dependencySourceInclude>
+                <dependencySourceInclude>org.optaplanner:optaplanner-core</dependencySourceInclude>
+                <dependencySourceInclude>org.optaplanner:optaplanner-benchmark</dependencySourceInclude>
                 <!-- TODO apparently optaplanner-examples gets included too somehow? -->
               </dependencySourceIncludes>
             </configuration>
