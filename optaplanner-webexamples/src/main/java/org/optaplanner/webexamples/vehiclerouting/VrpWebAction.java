@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.webexamples.vehiclerouting;
+package org.optaplanner.webexamples.vehiclerouting;
 
 import java.net.URL;
 import java.util.concurrent.ExecutorService;

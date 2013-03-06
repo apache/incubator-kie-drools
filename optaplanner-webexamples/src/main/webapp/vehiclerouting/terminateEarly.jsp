@@ -1,6 +1,6 @@
-<%@ page import="org.drools.planner.webexamples.vehiclerouting.VrpWebAction" %>
+<%@ page import="org.optaplanner.webexamples.vehiclerouting.VrpWebAction" %>
 <%
-  new org.drools.planner.webexamples.vehiclerouting.VrpWebAction().terminateEarly(session);
+  new org.optaplanner.webexamples.vehiclerouting.VrpWebAction().terminateEarly(session);
 %>
 <!DOCTYPE html>
 <html lang="en">

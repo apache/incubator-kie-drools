@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.webexamples.vehiclerouting;
+package org.optaplanner.webexamples.vehiclerouting;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;

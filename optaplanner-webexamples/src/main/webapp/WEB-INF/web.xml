@@ -11,7 +11,7 @@
 
   <servlet>
     <servlet-name>VrpShowScheduleServlet</servlet-name>
-    <servlet-class>org.drools.planner.webexamples.vehiclerouting.VrpShowScheduleServlet</servlet-class>
+    <servlet-class>org.optaplanner.webexamples.vehiclerouting.VrpShowScheduleServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>VrpShowScheduleServlet</servlet-name>
