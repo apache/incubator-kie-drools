@@ -148,8 +148,7 @@ public class ExternalSpreadsheetCompilerTest {
 
 
     @Test
-    public void testIntegration() throws Exception
-    {
+    public void testIntegration() throws Exception {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final String drl = converter.compile("/data/IntegrationExampleTest.xls", "/templates/test_integration.drl", 18, 3);
         //COMPILE
