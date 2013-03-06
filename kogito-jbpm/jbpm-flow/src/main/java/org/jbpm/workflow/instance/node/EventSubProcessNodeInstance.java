@@ -50,7 +50,7 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
         if (getProcessInstance().getNodeInstances().contains(this) || type.startsWith("Error-")) {
             StartNode startNode = getCompositeNode().findStartNode();
             NodeInstance nodeInstance = getNodeInstance(startNode);
-            ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(null, null);
+            ((StartNodeInstance) nodeInstance).signalEvent(type, event);
         }
     }
 
@@ -60,7 +60,7 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
             if (getCompositeNode().isKeepActive()) {
                 StartNode startNode = getCompositeNode().findStartNode();
                 triggerCompleted(true);
-                if (startNode.isInterupting()) {
+                if (startNode.isInterrupting()) {
                     ((NodeInstanceContainer) getNodeInstanceContainer()).setState( ProcessInstance.STATE_ABORTED);
                 }                
             }            

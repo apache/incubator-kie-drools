@@ -16,6 +16,9 @@
 
 package org.jbpm.workflow.instance.node;
 
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.event.EventTransformer;
+import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.runtime.process.NodeInstance;
@@ -41,13 +44,25 @@ public class StartNodeInstance extends NodeInstanceImpl {
         triggerCompleted();
     }
     
+    public void signalEvent(String type, Object event) {
+        String variableName = (String) getStartNode().getMetaData("TriggerMapping");
+        if (variableName != null) {
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+            if (variableScopeInstance == null) {
+                throw new IllegalArgumentException(
+                    "Could not find variable for start node: " + variableName);
+            }
+            variableScopeInstance.setVariable(variableName, event);
+        }
+        triggerCompleted();
+    }
+    
     public StartNode getStartNode() {
         return (StartNode) getNode();
     }
-
+   
     public void triggerCompleted() {
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
-
-    
 }

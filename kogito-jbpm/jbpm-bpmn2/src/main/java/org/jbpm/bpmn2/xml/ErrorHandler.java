@@ -23,15 +23,11 @@ import java.util.Map;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.jbpm.bpmn2.core.DataStore;
-import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.core.*;
 import org.jbpm.bpmn2.core.Error;
-import org.jbpm.bpmn2.core.Escalation;
-import org.jbpm.bpmn2.core.Interface;
-import org.jbpm.bpmn2.core.ItemDefinition;
-import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.kie.definition.process.Process;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -50,6 +46,7 @@ public class ErrorHandler extends BaseAbstractHandler implements Handler {
             this.validPeers.add(Interface.class);
             this.validPeers.add(Escalation.class);
             this.validPeers.add(Error.class);
+            this.validPeers.add(Signal.class);
             this.validPeers.add(DataStore.class);
             this.validPeers.add(RuleFlowProcess.class);
 
@@ -65,6 +62,7 @@ public class ErrorHandler extends BaseAbstractHandler implements Handler {
 
 		String id = attrs.getValue("id");
 		String errorCode = attrs.getValue("errorCode");
+		String structureRef = attrs.getValue("structureRef");
 
 		ProcessBuildData buildData = (ProcessBuildData) parser.getData();
 		Map<String, Error> errors = (Map<String, Error>) buildData.getMetaData("Errors");
@@ -72,8 +70,9 @@ public class ErrorHandler extends BaseAbstractHandler implements Handler {
         	errors = new HashMap<String, Error>();
             buildData.setMetaData("Errors", errors);
         }
-        Error e = new Error(id, errorCode); 
+        Error e = new Error(id, errorCode, structureRef); 
         errors.put(id, e);
+        
 		return e;
 	}
 

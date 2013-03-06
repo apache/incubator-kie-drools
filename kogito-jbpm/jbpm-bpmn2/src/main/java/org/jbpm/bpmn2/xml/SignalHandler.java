@@ -27,13 +27,26 @@ import org.jbpm.bpmn2.core.*;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.kie.definition.process.Process;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class ItemDefinitionHandler extends BaseAbstractHandler implements Handler {
+/**
+ * This class isn't currently used because we don't really check thrown or caught event content 
+ * (itemDefiniton references) to see if it matches the definition in the process. 
+ * 
+ * </p>In fact, at this moment, the whole <code>&lt;signal&gt;</code> element is ignored because that (specifying
+ * event content) is it's only function. 
+ * 
+ * </p>This handler is just here for two reasons: <ol>
+ * <li>So we can process <code>&lt;signal&gt;</code> elements in process definitions</li>
+ * <li>When we do end up actively supporting event content, we'll need the functionality in this class</li>
+ * </ol> 
+ */
+public class SignalHandler extends BaseAbstractHandler implements Handler {
 	
 	@SuppressWarnings("unchecked")
-	public ItemDefinitionHandler() {
+	public SignalHandler() {
 		if ((this.validParents == null) && (this.validPeers == null)) {
 			this.validParents = new HashSet();
 			this.validParents.add(Definitions.class);
@@ -60,22 +73,19 @@ public class ItemDefinitionHandler extends BaseAbstractHandler implements Handle
 		parser.startElementBuilder(localName, attrs);
 
 		String id = attrs.getValue("id");
-		String type = attrs.getValue("structureRef");
-		if (type == null || type.trim().length() == 0) {
-			type = "java.lang.Object";
-		}
+		String structureRef = attrs.getValue("structureRef");
 
-		ProcessBuildData buildData = (ProcessBuildData) parser.getData();
-		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
-            buildData.getMetaData("ItemDefinitions");
-        if (itemDefinitions == null) {
-            itemDefinitions = new HashMap<String, ItemDefinition>();
-            buildData.setMetaData("ItemDefinitions", itemDefinitions);
+        ProcessBuildData buildData = (ProcessBuildData) parser.getData();
+        Map<String, Signal> signals = (Map<String, Signal>) buildData.getMetaData("Signals");
+        if (signals == null) {
+            signals = new HashMap<String, Signal>();
+            buildData.setMetaData("Signals", signals);
         }
-        ItemDefinition itemDefinition = new ItemDefinition(id); 
-        itemDefinition.setStructureRef(type);
-        itemDefinitions.put(id, itemDefinition);
-		return itemDefinition;
+        
+        Signal s = new Signal(id, structureRef);
+        signals.put(id, s);
+        
+		return s;
 	}
 
 	public Object end(final String uri, final String localName,
@@ -85,7 +95,7 @@ public class ItemDefinitionHandler extends BaseAbstractHandler implements Handle
 	}
 
 	public Class<?> generateNodeFor() {
-		return ItemDefinition.class;
+		return Error.class;
 	}
 
 }

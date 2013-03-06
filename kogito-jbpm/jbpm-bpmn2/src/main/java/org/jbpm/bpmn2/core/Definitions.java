@@ -17,7 +17,7 @@
 package org.jbpm.bpmn2.core;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.*;
 
 public class Definitions implements Serializable {
 	
