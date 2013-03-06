@@ -18,7 +18,7 @@ package org.optaplanner.examples.tsp;
 
 import java.io.File;
 
-import org.drools.planner.config.EnvironmentMode;
+import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.tsp.persistence.TspDaoImpl;

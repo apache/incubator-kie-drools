@@ -18,8 +18,8 @@ package org.optaplanner.examples.nqueens.app;
 
 import java.util.List;
 
-import org.drools.planner.config.SolverFactory;
-import org.drools.planner.config.XmlSolverFactory;
+import org.optaplanner.config.SolverFactory;
+import org.optaplanner.config.XmlSolverFactory;
 import org.optaplanner.core.Solver;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;

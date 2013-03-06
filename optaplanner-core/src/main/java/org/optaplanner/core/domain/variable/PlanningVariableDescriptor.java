@@ -26,7 +26,7 @@ import java.util.List;
 import org.optaplanner.api.domain.value.ValueRange;
 import org.optaplanner.api.domain.value.ValueRanges;
 import org.optaplanner.api.domain.variable.PlanningVariable;
-import org.drools.planner.config.util.ConfigUtils;
+import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.domain.common.PropertyAccessor;
 import org.optaplanner.core.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;

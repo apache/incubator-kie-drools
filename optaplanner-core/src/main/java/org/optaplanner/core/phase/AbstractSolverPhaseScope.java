@@ -19,7 +19,7 @@ package org.optaplanner.core.phase;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.planner.config.EnvironmentMode;
+import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.phase.step.AbstractStepScope;

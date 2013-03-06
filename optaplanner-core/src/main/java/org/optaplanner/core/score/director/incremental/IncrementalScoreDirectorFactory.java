@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.score.director.incremental;
 
-import org.drools.planner.config.util.ConfigUtils;
+import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.score.director.ScoreDirectorFactory;
 

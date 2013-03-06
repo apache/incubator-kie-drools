@@ -30,7 +30,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.config.XmlSolverFactory;
+import org.optaplanner.config.XmlSolverFactory;
 
 public class XmlPlannerBenchmarkFactory {
 

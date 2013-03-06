@@ -26,7 +26,7 @@ import java.util.List;
 import org.optaplanner.benchmark.core.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.core.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.core.statistic.ProblemStatistic;
-import org.drools.planner.config.termination.TerminationConfig;
+import org.optaplanner.config.termination.TerminationConfig;
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.solution.ProblemIO;
 import org.optaplanner.core.solution.Solution;

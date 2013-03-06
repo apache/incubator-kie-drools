@@ -19,7 +19,7 @@ package org.optaplanner.core.heuristic.selector.move.factory;
 import java.util.Iterator;
 import java.util.Random;
 
-import org.drools.planner.config.EnvironmentMode;
+import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.director.ScoreDirector;

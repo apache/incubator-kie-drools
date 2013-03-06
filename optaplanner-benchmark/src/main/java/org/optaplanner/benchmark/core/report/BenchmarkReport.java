@@ -42,7 +42,7 @@ import org.optaplanner.benchmark.core.SingleBenchmark;
 import org.optaplanner.benchmark.core.SolverBenchmark;
 import org.optaplanner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.core.statistic.ProblemStatistic;
-import org.drools.planner.config.SolverFactory;
+import org.optaplanner.config.SolverFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;

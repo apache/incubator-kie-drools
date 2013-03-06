@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.api.domain.variable.PlanningVariable;
-import org.drools.planner.config.util.ConfigUtils;
+import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;

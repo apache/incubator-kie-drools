@@ -29,7 +29,7 @@ import org.optaplanner.benchmark.core.SingleBenchmark;
 import org.optaplanner.benchmark.core.SolverBenchmark;
 import org.optaplanner.benchmark.core.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.core.statistic.ProblemStatisticType;
-import org.drools.planner.config.util.ConfigUtils;
+import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.solution.ProblemIO;
 import org.optaplanner.persistence.xstream.XStreamProblemIO;
 

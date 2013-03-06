@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
+import org.optaplanner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.heuristic.selector.move.factory.MoveListFactory;

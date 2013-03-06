@@ -18,7 +18,7 @@ package org.optaplanner.core.constructionheuristic.greedyFit.decider;
 
 import java.util.Iterator;
 
-import org.drools.planner.config.EnvironmentMode;
+import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.core.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.optaplanner.core.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
 import org.optaplanner.core.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
