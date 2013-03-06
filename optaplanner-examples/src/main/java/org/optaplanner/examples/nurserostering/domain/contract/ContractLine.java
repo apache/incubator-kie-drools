@@ -17,9 +17,14 @@
 package org.optaplanner.examples.nurserostering.domain.contract;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("ContractLine")
+@XStreamInclude({
+        BooleanContractLine.class,
+        MinMaxContractLine.class
+})
 public abstract class ContractLine extends AbstractPersistable {
 
     private Contract contract;

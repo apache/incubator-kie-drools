@@ -17,9 +17,16 @@
 package org.optaplanner.examples.nurserostering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Pattern")
+@XStreamInclude({
+        ShiftType2DaysPattern.class,
+        ShiftType3DaysPattern.class,
+        WorkBeforeFreeSequencePattern.class,
+        FreeBefore2DaysWithAWorkDayPattern.class
+})
 public abstract class Pattern extends AbstractPersistable {
 
     protected String code;
