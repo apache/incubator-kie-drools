@@ -2862,6 +2862,13 @@ Before in *.xml:
 After in *.xml:
     <...>org.optaplanner...</...>
 
+[MAJOR] The logging category org.drools.planner has been renamed to org.optaplanner
+Before in logback*.xml:
+  <logger name="org.drools.planner" level="debug"/>
+After in logback*.xml:
+  <logger name="org.optaplanner" level="debug"/>
+Similar for log4j files.
+
 [MINOR] The github repository has been renamed.
 Before:
   https://github.com/droolsjbpm/drools-planner
