@@ -21,19 +21,19 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.runtime.process.*;
 
 public class ServiceTaskHandler implements WorkItemHandler {
 
+    private boolean logThrownException = true;
+    
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        String i = (String) workItem.getParameter("Interface");
+        String service = (String) workItem.getParameter("Interface");
         String operation = (String) workItem.getParameter("Operation");
         String parameterType = (String) workItem.getParameter("ParameterType");
         Object parameter = workItem.getParameter("Parameter");
         try {
-            Class<?> c = Class.forName(i);
+            Class<?> c = Class.forName(service);
             Object instance = c.newInstance();
             Class<?>[] classes = null;
             Object[] params = null;
@@ -50,21 +50,50 @@ public class ServiceTaskHandler implements WorkItemHandler {
             Map<String, Object> results = new HashMap<String, Object>();
             results.put("Result", result);
             manager.completeWorkItem(workItem.getId(), results);
-        } catch (ClassNotFoundException e) {
-            System.err.println(e);
-        } catch (InstantiationException e) {
-            System.err.println(e);
-        } catch (IllegalAccessException e) {
-            System.err.println(e);
-        } catch (NoSuchMethodException e) {
-            System.err.println(e);
-        } catch (InvocationTargetException e) {
-            System.err.println(e);
+        } catch (ClassNotFoundException cnfe) {
+            handleException(cnfe, service, operation, parameterType, parameter);
+        } catch (InstantiationException ie) {
+            handleException(ie, service, operation, parameterType, parameter);
+        } catch (IllegalAccessException iae) {
+            handleException(iae, service, operation, parameterType, parameter);
+        } catch (NoSuchMethodException nsme) {
+            handleException(nsme, service, operation, parameterType, parameter);
+        } catch (InvocationTargetException ite) {
+            handleException(ite, service, operation, parameterType, parameter);
+        } catch( Throwable cause ) { 
+            handleException(cause, service, operation, parameterType, parameter);
         }
     }
 
+    private void handleException(Throwable cause, String service, String operation, String paramType, Object param) { 
+        if( this.logThrownException ) {
+            String message = this.getClass().getSimpleName() + " failed when calling " + service + "." + operation;
+            System.err.println(message);
+            cause.printStackTrace(System.err);
+        } else { 
+            WorkItemHandlerRuntimeException wihRe;
+            if( cause instanceof InvocationTargetException ) { 
+                Throwable realCause = cause.getCause();
+                wihRe = new WorkItemHandlerRuntimeException(realCause);
+                wihRe.setStackTrace(realCause.getStackTrace());
+            } else { 
+                wihRe = new WorkItemHandlerRuntimeException(cause);
+                wihRe.setStackTrace(cause.getStackTrace());
+            }
+            wihRe.setInformation("Interface", service);
+            wihRe.setInformation("Operation", operation);
+            wihRe.setInformation("ParameterType", paramType);
+            wihRe.setInformation("Parameter", param);
+            wihRe.setInformation(WorkItemHandlerRuntimeException.WORKITEMHANDLERTYPE, this.getClass().getSimpleName());
+            throw wihRe;
+        }
+    }
+    
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
         // Do nothing, cannot be aborted
     }
 
+    public void setLogThrownException(boolean logException) { 
+        this.logThrownException = logException;
+    }
 }

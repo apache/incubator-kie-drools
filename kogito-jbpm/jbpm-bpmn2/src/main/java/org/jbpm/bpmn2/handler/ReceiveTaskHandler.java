@@ -19,22 +19,21 @@ package org.jbpm.bpmn2.handler;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.runtime.process.*;
 
 public class ReceiveTaskHandler implements WorkItemHandler {
     
     // TODO: use correlation instead of message id
     private Map<String, Long> waiting = new HashMap<String, Long>();
-    private KnowledgeRuntime ksession;
+    private ProcessRuntime ksession;
     
-    public ReceiveTaskHandler(KnowledgeRuntime ksession) {
+    public ReceiveTaskHandler(KieSession ksession) {
         this.ksession = ksession;
     }
     
-    public void setKnowledgeRuntime(KnowledgeRuntime ksession) {
+    public void setKnowledgeRuntime(KieSession ksession) {
     	this.ksession = ksession;
     }
 

@@ -3,6 +3,7 @@ package org.jbpm.process.workitem.handler;
 import java.util.Map;
 
 import org.drools.spi.ProcessContext;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.NodeInstance;
@@ -12,7 +13,7 @@ import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.process.WorkflowProcessInstance;
 
-public class JavaHandlerWorkItemHandler implements WorkItemHandler {
+public class JavaHandlerWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
 	private StatefulKnowledgeSession ksession;
 	
@@ -33,16 +34,19 @@ public class JavaHandlerWorkItemHandler implements WorkItemHandler {
 			WorkItemNodeInstance nodeInstance = findNodeInstance(workItem.getId(), processInstance);
 			kcontext.setNodeInstance(nodeInstance);
 			Map<String, Object> results = handler.execute(kcontext);
+			
             manager.completeWorkItem(workItem.getId(), results);
     		return;
-        } catch (ClassNotFoundException e) {
-            System.err.println(e);
-        } catch (InstantiationException e) {
-            System.err.println(e);
-        } catch (IllegalAccessException e) {
-            System.err.println(e);
+        } catch (ClassNotFoundException cnfe) {
+            manager.abortWorkItem(workItem.getId());
+            handleException(cnfe);
+        } catch (InstantiationException ie) {
+            manager.abortWorkItem(workItem.getId());
+            handleException(ie);
+        } catch (IllegalAccessException iae) {
+            manager.abortWorkItem(workItem.getId());
+            handleException(iae);
         }
-        manager.abortWorkItem(workItem.getId());
 	}
 	
 	private WorkItemNodeInstance findNodeInstance(long workItemId, NodeInstanceContainer container) {

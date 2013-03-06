@@ -16,21 +16,18 @@
 
 package org.jbpm.process.workitem.archive;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.utils.IOUtils;
-import org.drools.process.instance.WorkItemHandler;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemManager;
 
-public class ArchiveWorkItemHandler implements WorkItemHandler {
+public class ArchiveWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 		String archive = (String) workItem.getParameter("Archive");
@@ -55,8 +52,8 @@ public class ArchiveWorkItemHandler implements WorkItemHandler {
 	        os.closeArchiveEntry();
 	        os.close();
 			manager.completeWorkItem(workItem.getId(), null);
-		} catch (Throwable t) {
-			t.printStackTrace();
+		} catch (Throwable cause) {
+			handleException(cause);
 			manager.abortWorkItem(workItem.getId());
 		}
 	}
