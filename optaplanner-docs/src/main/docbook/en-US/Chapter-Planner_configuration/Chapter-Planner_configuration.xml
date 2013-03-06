@@ -61,10 +61,10 @@
 
       <para>A solver configuration file looks something like this:</para>
 
-      <programlisting language="xml"><![CDATA[<![CDATA[&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solver&gt;
   &lt;!-- Define the model --&gt;
-  &lt;solutionorg.optaplanner.examples.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
+  &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
   &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
 
   &lt;!-- Define the score function --&gt;
@@ -83,7 +83,7 @@
   &lt;localSearch&gt;
     ...
   &lt;/localSearch&gt;
-&lt;/solver&gt;]]>]]></programlisting>
+&lt;/solver&gt;</programlisting>
 
       <para>Notice the 3 parts in it:</para>
 
@@ -314,11 +314,11 @@ public class Lecture {
 
         <para>The solver configuration also needs to be made aware of each planning entity class:</para>
 
-        <programlisting language="java"><![CDATA[&lt;solver&gt;
+        <programlisting language="java">&lt;solver&gt;
   ...
   &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
   ...
-&lt;/solver&gt;]]></programlisting>
+&lt;/solver&gt;</programlisting>
 
         <para>Some uses cases have multiple planning entity classes. For example: route freight and trains into railway
         network arcs, where each freight can use multiple trains over its journey and each train can carry multiple

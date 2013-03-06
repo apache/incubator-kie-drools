@@ -55,7 +55,7 @@
 
       <para>A basic benchmark configuration file looks something like this:</para>
 
-      <programlisting language="xml"><![CDATA[<![CDATA[<![CDATA[&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;plannerBenchmark&gt;
   &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
   &lt;!--&lt;parallelBenchmarkCount&gt;AUTO&lt;/parallelBenchmarkCount&gt;--&gt;
@@ -63,14 +63,14 @@
 
   &lt;inheritedSolverBenchmark&gt;
     &lt;problemBenchmarks&gt;
-      &lt;xstreamorg.optaplanner.exampless.planner.examples.nqueens.domain.NQueens&lt;/xstreamAnnotatedClass&gt;
+      &lt;xstreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xstreamAnnotatedClass&gt;
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/inputSolutionFile&gt;
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/inputSolutionFile&gt;
       &lt;problemStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/problemStatisticType&gt;
     &lt;/problemBenchmarks&gt;
     &lt;solver&gt;
       &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
-      &lt;planningEntityClaorg.optaplanner.examplesamples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+      &lt;planningEntityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
       &lt;scoreDirectorFactory&gt;
         &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
         &lt;scoreDrl&gt;/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
@@ -133,7 +133,7 @@
       &lt;/localSearch&gt;
     &lt;/solver&gt;
   &lt;/solverBenchmark&gt;
-&lt;/plannerBenchmark&gt;]]>]]>]]></programlisting>
+&lt;/plannerBenchmark&gt;</programlisting>
 
       <para>This <literal>PlannerBenchmark</literal> will try 3 configurations (1 move tabu, 1 entity tabu and 1 value
       tabu) on 2 data sets (32 and 64 queens), so it will run 6 solvers.</para>
@@ -194,11 +194,11 @@
         <para>You need to tell the benchmarker about your <literal>Solution</literal> class which is annotated with
         XStream annotations:</para>
 
-        <programlisting language="xml"><![CDATA[    &lt;problemBenchmarks&gt;
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
       &lt;xstreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xstreamAnnotatedClass&gt;
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/inputSolutionFile&gt;
       ...
-    &lt;/problemBenchmarks&gt;]]></programlisting>
+    &lt;/problemBenchmarks&gt;</programlisting>
 
         <para>Your input files need to have been written with a <literal>XStreamProblemIO</literal> instance, not just
         any <literal>XStream</literal> instance, because the <literal>XStreamProblemIO</literal> uses a customized
@@ -216,11 +216,11 @@
         <para>Alternatively, you can implement your own <literal>ProblemIO</literal> implementation and configure it
         with the <literal>problemIOClass</literal> element:</para>
 
-        <programlisting language="xml"><![CDATA[    &lt;problemBenchmarks&gt;
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
       &lt;problemIOClass&gt;org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentProblemIO&lt;/problemIOClass&gt;
       &lt;inputSolutionFile&gt;data/machinereassignment/input/model_a1_1.txt&lt;/inputSolutionFile&gt;
       ...
-    &lt;/problemBenchmarks&gt;]]></programlisting>
+    &lt;/problemBenchmarks&gt;</programlisting>
 
         <warning>
           <para>A <literal>ProblemIO</literal> implementation must be thread-safe.</para>

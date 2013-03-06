@@ -432,9 +432,9 @@
       value involved and you'll have to apply a <literal>filterClass</literal> on the
       <literal>moveSelector</literal>:</para>
 
-      <programlisting language="xml"><![CDATA[    &lt;swapMoveSelector&gt;
+      <programlisting language="xml">    &lt;swapMoveSelector&gt;
       &lt;filterClass&gt;org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter&lt;/filterClass&gt;
-    &lt;/swapMoveSelector&gt;]]></programlisting>
+    &lt;/swapMoveSelector&gt;</programlisting>
 
       <para>But if possible, apply it on a lower levels, such as a <literal>filterClass</literal> on the
       <literal>entitySelector</literal> or <literal>valueSelector</literal>:</para>
@@ -829,10 +829,10 @@
 
     <para>Advanced configuration:</para>
 
-    <programlisting language="xml"><![CDATA[      &lt;entitySelector&gt;
+    <programlisting language="xml">      &lt;entitySelector&gt;
         ... &lt;!-- Normal selector properties --&gt;
         &lt;entityClass&gt;org.optaplanner.examples.curriculumcourse.domain.Lecture&lt;/entityClass&gt;
-      &lt;/entitySelector&gt;]]></programlisting>
+      &lt;/entitySelector&gt;</programlisting>
 
     <para>The <literal>entityClass</literal> property is only required if it cannot be deduced automatically because
     there are multiple entity classes.</para>
@@ -1088,16 +1088,16 @@
       <para>Simple configuration (which can be nested in a <literal>unionMoveSelector</literal> just like any other
       <literal>MoveSelector</literal>):</para>
 
-      <programlisting language="xml"><![CDATA[    &lt;moveListFactory&gt;
+      <programlisting language="xml">    &lt;moveListFactory&gt;
       &lt;moveListFactoryClass&gt;org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveListFactoryClass&gt;
-    &lt;/moveListFactory&gt;]]></programlisting>
+    &lt;/moveListFactory&gt;</programlisting>
 
       <para>Advanced configuration:</para>
 
-      <programlisting language="xml"><![CDATA[    &lt;moveListFactory&gt;
+      <programlisting language="xml">    &lt;moveListFactory&gt;
       ... &lt;!-- Normal moveSelector properties --&gt;
       &lt;moveListFactoryClass&gt;org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveListFactoryClass&gt;
-    &lt;/moveListFactory&gt;]]></programlisting>
+    &lt;/moveListFactory&gt;</programlisting>
 
       <para>Because the <literal>MoveListFactory</literal> generates all moves at once in a List&lt;Move&gt;, it does
       not support <literal>cacheType</literal> <literal>JUST_IN_TIME</literal>. Therefore,

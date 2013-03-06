@@ -464,10 +464,10 @@
 
       <para>Configure it in your solver configuration:</para>
 
-      <programlisting language="xml"><![CDATA[  &lt;scoreDirectorFactory&gt;
+      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
-  &lt;/scoreDirectorFactory&gt;]]></programlisting>
+  &lt;/scoreDirectorFactory&gt;</programlisting>
 
       <para>Alternatively, build a <literal>SimpleScoreCalculator</literal> instance at runtime and set it with the
       programmatic API:</para>
@@ -657,10 +657,10 @@
 
       <para>Configure it in your solver configuration:</para>
 
-      <programlisting language="xml"><![CDATA[  &lt;scoreDirectorFactory&gt;
+      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;incrementalScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator&lt;/incrementalScoreCalculatorClass&gt;
-  &lt;/scoreDirectorFactory&gt;]]></programlisting>
+  &lt;/scoreDirectorFactory&gt;</programlisting>
 
       <para>Optionally, to get better output when the <literal>IncrementalScoreCalculator</literal> is corrupted in
       <literal>environmentMode</literal> <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT</literal>, you can
@@ -941,7 +941,7 @@ end</programlisting>
       assertions triggered by the <literal>environmentMode</literal>. Just configure it as
       <literal>assertionScoreDirectorFactory</literal>:</para>
 
-      <programlisting language="xml"><![CDATA[  &lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;
+      <programlisting language="xml">  &lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;
   ...
   &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
@@ -949,7 +949,7 @@ end</programlisting>
     &lt;assertionScoreDirectorFactory&gt;
       &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
     &lt;/assertionScoreDirectorFactory&gt;
-  &lt;/scoreDirectorFactory&gt;]]></programlisting>
+  &lt;/scoreDirectorFactory&gt;</programlisting>
     </section>
   </section>
 
