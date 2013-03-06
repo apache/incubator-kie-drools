@@ -1,5 +1,5 @@
-Welcome to Drools Planner
-=========================
+Welcome to OptaPlanner
+======================
 
 Run the examples
 ----------------
@@ -27,7 +27,7 @@ Open menu File, menu item Import, tree item Maven, tree item Existing Maven Proj
 and select "examples/sources/" from the zip, button Finish.
 
 Open menu Run, menu item Run configurations, add new Java Application
-with main class "org.optaplanner.examples.app.DroolsPlannerExamplesApp"
+with main class "org.optaplanner.examples.app.OptaPlannerExamplesApp"
 and VM arguments "-Xms256m -Xmx512m -server", click button Run.
 
 
@@ -37,7 +37,7 @@ Run the examples in IntelliJ
 Open menu File, menu item Open project, select "examples/sources/pom.xml".
 
 Open menu Run, menu item Edit Configurations, add a new Application
-with main class "org.optaplanner.examples.app.DroolsPlannerExamplesApp"
+with main class "org.optaplanner.examples.app.OptaPlannerExamplesApp"
 and VM parameters "-Xms256m -Xmx512m -server" and run that.
 
 
@@ -63,7 +63,7 @@ and follow these instructions:
 Known problems
 --------------
 
-Drools Planner is not backward compatible with previous versions
+OptaPlanner is not backward compatible with previous versions
 and future versions might not be backward compatible either,
 but the upgrade recipe (UpgradeFromPreviousVersionRecipe.txt) makes it easy
 to upgrade your code to every new version as they are released.

@@ -5,7 +5,7 @@ cd `dirname $0`
 
 mainClasspath=
 for i in binaries/*.jar; do mainClasspath=${mainClasspath}:$i; done
-mainClass=org.optaplanner.examples.app.DroolsPlannerExamplesApp
+mainClass=org.optaplanner.examples.app.OptaPlannerExamplesApp
 
 echo "Usage: ./runExamples.sh"
 echo "For example: ./runExamples.sh"

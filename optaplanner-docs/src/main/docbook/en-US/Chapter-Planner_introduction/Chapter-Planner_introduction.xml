@@ -283,7 +283,7 @@ $ runExamples.bat</programlisting>
 
       <itemizedlist>
         <listitem>
-          <para>Main class: <literal>org.optaplanner.examples.app.DroolsPlannerExamplesApp</literal></para>
+          <para>Main class: <literal>org.optaplanner.examples.app.OptaPlannerExamplesApp</literal></para>
         </listitem>
 
         <listitem>

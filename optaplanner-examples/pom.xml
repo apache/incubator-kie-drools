@@ -67,7 +67,7 @@
               <argument>-server</argument>
               <argument>-cp</argument>
               <classpath/>
-              <argument>org.optaplanner.examples.app.DroolsPlannerExamplesApp</argument>
+              <argument>org.optaplanner.examples.app.OptaPlannerExamplesApp</argument>
             </arguments>
           </configuration>
         </plugin>

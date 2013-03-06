@@ -18,14 +18,14 @@ package org.optaplanner.examples.app;
 
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
-public class GeneralDroolsPlannerBenchmarkApp extends CommonBenchmarkApp {
+public class GeneralOptaPlannerBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String DEFAULT_BENCHMARK_CONFIG
-            = "/org/optaplanner/examples/app/benchmark/generalDroolsPlannerBenchmarkConfig.xml";
+            = "/org/optaplanner/examples/app/benchmark/generalOptaPlannerBenchmarkConfig.xml";
 
     public static void main(String[] args) {
         String benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
-        new GeneralDroolsPlannerBenchmarkApp().buildAndBenchmark(benchmarkConfig);
+        new GeneralOptaPlannerBenchmarkApp().buildAndBenchmark(benchmarkConfig);
     }
 
 }
