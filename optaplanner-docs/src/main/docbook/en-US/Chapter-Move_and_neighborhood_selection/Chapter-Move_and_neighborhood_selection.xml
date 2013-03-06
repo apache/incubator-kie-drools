@@ -791,7 +791,7 @@
 
       <para>A <literal>cartesianProductMoveSelector</literal> selects a new <literal>CompositeMove</literal>. It builds
       that <literal>CompositeMove</literal> by selecting 1 <literal>Move</literal> per child
-      <literal>MoveSelector</literal> and adding it to the <literal>CompositiveMove</literal>.</para>
+      <literal>MoveSelector</literal> and adding it to the <literal>CompositeMove</literal>.</para>
 
       <para>Simplest configuration:</para>
 
