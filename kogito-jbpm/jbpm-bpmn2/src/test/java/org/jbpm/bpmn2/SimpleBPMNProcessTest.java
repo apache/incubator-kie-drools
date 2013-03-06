@@ -30,18 +30,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Association;
@@ -108,10 +98,7 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
     protected void setUp() { 
 		String testName = getName();
 		String[] testFailsWithPersistence = {
-			// broken, but should work?!?
-			"testConditionalBoundaryEventInterrupting",
-			"testCallActivityWithBoundaryEvent", 
-			"testMultiInstanceLoopCharacteristicsProcessWithORGateway"
+
 		};
 		for (String testNameBegin : testFailsWithPersistence) {
 			if (testName.startsWith(testNameBegin)) {
@@ -998,18 +985,34 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
        nodeInstance = nodeInstances.iterator().next(); 
        assertTrue(nodeInstance instanceof ForEachNodeInstance);
        
-       nodeInstancesChild = ((ForEachNodeInstance) nodeInstance).getNodeInstances();
-       assertEquals(2, nodeInstancesChild.size());
-       
-       Iterator<NodeInstance> childIterator = nodeInstancesChild.iterator();
-       
-       assertTrue(childIterator.next() instanceof CompositeContextNodeInstance);
-       assertTrue(childIterator.next() instanceof ForEachJoinNodeInstance);
-       
-       ksession.getWorkItemManager().completeWorkItem(workItems.get(2).getId(), null);
-       ksession.getWorkItemManager().completeWorkItem(workItems.get(3).getId(), null);
-       
-       assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       if (persistence) {
+           // when persistence is used there is slightly different behaviour of ContextNodeInstance
+           // it's already tested by SimplePersistenceBPMNProcessTest.testMultiInstanceLoopCharacteristicsProcessWithORGateway
+           nodeInstancesChild = ((ForEachNodeInstance) nodeInstance).getNodeInstances();
+           assertEquals(1, nodeInstancesChild.size());
+           
+           Iterator<NodeInstance> childIterator = nodeInstancesChild.iterator();
+           
+           assertTrue(childIterator.next() instanceof CompositeContextNodeInstance);
+           
+           ksession.getWorkItemManager().completeWorkItem(workItems.get(2).getId(), null);
+           ksession.getWorkItemManager().completeWorkItem(workItems.get(3).getId(), null);
+           
+           assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       } else {
+           nodeInstancesChild = ((ForEachNodeInstance) nodeInstance).getNodeInstances();
+           assertEquals(2, nodeInstancesChild.size());
+           
+           Iterator<NodeInstance> childIterator = nodeInstancesChild.iterator();
+           
+           assertTrue(childIterator.next() instanceof CompositeContextNodeInstance);
+           assertTrue(childIterator.next() instanceof ForEachJoinNodeInstance);
+           
+           ksession.getWorkItemManager().completeWorkItem(workItems.get(2).getId(), null);
+           ksession.getWorkItemManager().completeWorkItem(workItems.get(3).getId(), null);
+           
+           assertProcessInstanceCompleted(processInstance.getId(), ksession);
+       }
        ksession.dispose();
    }
 
@@ -3419,8 +3422,11 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
 //        assertEquals("new timer value",
 //                ((WorkflowProcessInstance) processInstance).getVariable("y"));
+        // first check the parent process executed nodes
         assertNodeTriggered(processInstance.getId(), "StartProcess", "CallActivity", "Boundary event", 
-                "Script Task", "end", "StartProcess2", "User Task");
+                "Script Task", "end");
+        // then check child process executed nodes - is there better way to get child process id than simply increment?
+        assertNodeTriggered(processInstance.getId()+1, "StartProcess2", "User Task");
         ksession.dispose();
     }
     
