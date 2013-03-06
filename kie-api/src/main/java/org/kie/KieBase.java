@@ -25,150 +25,159 @@ import java.util.Set;
 public interface KieBase extends KieBaseEventManager {
 
     /**
-     * Return an immutable collection of the packages that exist in this KieBase.
-     * @return
+     * Returns a collection of the {@link KiePackages}s that exist in this {@link KieBase}.
+     * 
+     * @return an immutable collection of the packages
      */
     Collection<KiePackage> getKiePackages();
     
     /**
-     * Returns a reference to the KnowledgePackage identified by the given name.
+     * Returns a reference to the {@link KiePackage} identified by the given name.
      * 
-     * @param packageName the name of the KnowledgePackage to return
+     * @param packageName the name of the {@link KiePackage} to return
      *  
-     * @return the KnowledgePackage identified by the the given name or null if package not found.
+     * @return the {@link KiePackage} identified by the the given name or null if package not found.
      */
     KiePackage getKiePackage( String packageName );
 
     /**
-     * Remove a KnowledgePackage and all the definitions it contains from the KnowledgeBase.
-     * @param packageName
+     * Removes a {@link KiePackage} and all the definitions it contains from the {@link KieBase}
+     * 
+     * @param packageName the name of the {@link KiePackage} to remove
      */
-    void removeKiePackage(String packageName);
+    void removeKiePackage( String packageName );
 
     /**
-     * Returns a reference to the Rule identified by the given package and rule names.
+     * Returns a reference to the {@link Rule} identified by the given package and rule names.
      * 
-     * @param packageName the package name to which the rule belongs to.
-     * @param ruleName the name of the rule.
+     * @param packageName the package name to which the rule belongs to
+     * @param ruleName the name of the rule
      * 
-     * @return the Rule object or null if not found.
+     * @return the {@link Rule} object or null if not found
      */
     Rule getRule( String packageName, 
                   String ruleName );
     /**
-     * Remove a rule from the specified package.
-     * @param packageName
-     * @param ruleName
+     * Removes a rule from the specified package.
+     * 
+     * @param packageName the package name to which the rule belongs to
+     * @param ruleName the name of the rule
      */
-    void removeRule(String packageName,
-                    String ruleName);
+    void removeRule( String packageName,
+                     String ruleName );
     
     /**
-     * Returns a reference to the Rule identified by the given package and rule names.
+     * Returns a reference to the {@link Query} identified by the given package and query names.
      * 
-     * @param packageName the package name to which the rule belongs to.
-     * @param ruleName the name of the rule.
+     * @param packageName the package name to which the query belongs to
+     * @param queryName the name of the query
      * 
-     * @return the Rule object or null if not found.
+     * @return the {@link Query} object or null if not found.
      */
-    Query getQuery( String packageName, 
-                  String queryName );
+    Query getQuery( String packageName,
+                    String queryName );
     /**
-     * Remove a rule from the specified package.
-     * @param packageName
-     * @param ruleName
+     * Removes a query from the specified package.
+     * 
+     * @param packageName the package name to which the query belongs to
+     * @param queryName the name of the query
      */
-    void removeQuery(String packageName,
-                    String queryName);
+    void removeQuery( String packageName,
+                      String queryName );
     
     /**
-     * Remove a function from the specified package.
-     * @param packageName
-     * @param ruleName
+     * Removes a function from the specified package.
+     * 
+     * @param packageName the package name to which the function belongs to
+     * @param functionName the name of the function
      */
-    void removeFunction(String packageName,
-                        String ruleName);
+    void removeFunction( String packageName,
+                         String funtionName );
 
     /**
-     * Returns the FactType identified by the given package and type names.
+     * Returns a reference to the {@link FactType} identified by the given package and type names.
      * 
-     * @param packageName the name of the package the fact belongs to.
-     * @param typeName the name of the type.
+     * @param packageName the name of the package the fact belongs to
+     * @param typeName the name of the type
      * 
-     * @return the FactType identified by the parameters or null if FactType not found.
+     * @return the {@link FactType} identified by the parameters or null if not found.
      */
-    FactType getFactType( String packageName, 
+    FactType getFactType( String packageName,
                           String typeName );
 
     /**
-     * Returns a referent to the Process identified by the given processId
+     * Returns a reference to the {@link Process} identified by the given processId
      * 
      * @param processId the id of the process
      * 
-     * @return the Process identified by the given processId or null if process not found.
+     * @return the {@link Process} identified by the given processId or null if process not found.
      */
     Process getProcess( String processId );
     
     /**
-     * Remove a process from the specified package.
-     * @param processId
+     * Removes a process from the specified package.
+     * 
+     * @param processId the id of the process
      */
-    void removeProcess(String processId);
+    void removeProcess( String processId );
     
+    /**
+     * Returns a collection of the {@link Process}es that exist in this {@link KieBase}.
+     * 
+     * @return an immutable collection of the processes
+     */
     Collection<Process> getProcesses();
     
     /**
-     * Create a new StatefulKnowledgeSession using the given session configuration and/or environment.
+     * Creates a new {@link KieSession} using the given session configuration and/or environment.
      * Either one can be null and it will use a default.
      * 
-     * Don't forget to dispose() session when you are done.
-     * @param conf
+     * Don't forget to {@link #dispose()} session when you are done.
+     * @param conf session configuration
      * @param environment
-     * @return
-     *     The StatefulKnowledgeSession.
+     * 
+     * @return created {@link KieSession}
      */
-    KieSession newKieSession(KieSessionConfiguration conf, Environment environment);
+    KieSession newKieSession( KieSessionConfiguration conf, Environment environment );
 
     /**
-     * Create a new StatefulKnowledgeSession using the default session configuration.
-     * Don't forget to dispose() session when you are done.
+     * Creates a new {@link KieSession} using the default session configuration.
+     * Don't forget to {@link #dispose()} session when you are done.
      *
-     * @return
-     *     The StatefulKnowledgeSession.
+     * @return created {@link KieSession}
      */
     KieSession newKieSession();
     
     /**
-     * Return a collection of the StatefulKnowledgeSessions that exist in this KnowledgeBase.
+     * Returns a collection of the {@link KieSession}s that exist in this {@link KieBase}.
      * Be careful as sessions are not thread-safe and could be in use elsewhere.
      * 
-     * @return a Collection of StatefulKnowledgeSessions
+     * @return a Collection of {@link KieSession}s
      */
     Collection<? extends KieSession> getKieSessions();
 
     /**
-     * Create a new StatelessKnowledgeSession using the given session configuration.
-     * You do not need to call dispose() on this.
+     * Creates a new {@link StatelessKieSession} using the given session configuration.
+     * You do not need to call {@link #dispose()} on this.
      * 
-     * @param conf
-     * @return
-     *     The StatelessKnowledgeSession.
+     * @param conf session configuration
+     * 
+     * @return created {@link StatelessKieSession}
      */
-    StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf);
+    StatelessKieSession newStatelessKieSession( KieSessionConfiguration conf );
 
     /**
-     * Create a new StatelessKnowledgeSession using the default session configuration.
-     * You do not need to call dispose() on this.
+     * Creates a new {@link StatelessKieSession} using the default session configuration.
+     * You do not need to call @{link #dispose()} on this.
      * 
-     * @return
-     *     The StatelessKnowledgeSession.
+     * @return created {@link StatelessKieSession}
      */
     StatelessKieSession newStatelessKieSession();
 
     /**
-     * Returns the set of the entry points declared and/or used  in this knowledge base
+     * Returns the set of the entry points declared and/or used  in this kie base
      *  
-     * @return
+     * @return a Set of entry points
      */
     Set<String> getEntryPointIds();
     
