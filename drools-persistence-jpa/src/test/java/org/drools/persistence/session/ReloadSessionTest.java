@@ -35,11 +35,14 @@ import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.event.rule.DefaultAgendaEventListener;
+import org.kie.event.rule.DefaultWorkingMemoryEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
@@ -146,4 +149,22 @@ public class ReloadSessionTest {
         assertEquals( 1, list.size() );
     }
 
+    @Test @Ignore
+    public void testListenersAfterSessionReload() {
+        // https://bugzilla.redhat.com/show_bug.cgi?id=826952
+        Environment env = createEnvironment(context);
+        KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+
+        ksession.addEventListener(new DefaultAgendaEventListener());
+        ksession.addEventListener(new DefaultWorkingMemoryEventListener());
+
+        assertEquals(1, ksession.getWorkingMemoryEventListeners().size());
+        assertEquals(1, ksession.getAgendaEventListeners().size());
+
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
+
+        assertEquals(1, ksession.getWorkingMemoryEventListeners().size());
+        assertEquals(1, ksession.getAgendaEventListeners().size());
+    }
 }
