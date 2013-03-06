@@ -236,7 +236,7 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
         </listitem>
       </itemizedlist>
 
-      <para>Of course Drools Planner implements better local searches, such as <emphasis>tabu search</emphasis> and
+      <para>Of course OptaPlanner implements better local searches, such as <emphasis>tabu search</emphasis> and
       <emphasis>simulated annealing</emphasis> which can avoid these problems. We recommend to never use a hill climber,
       unless you're absolutely sure there are no local optima in your planning problem.</para>
     </section>
@@ -311,7 +311,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         <title>Tabu search acceptor</title>
 
         <para>When tabu search takes steps it creates tabu's. It does not accept a move as the next step if that move
-        breaks tabu. Drools Planner implements several tabu types:</para>
+        breaks tabu. OptaPlanner implements several tabu types:</para>
 
         <itemizedlist>
           <listitem>

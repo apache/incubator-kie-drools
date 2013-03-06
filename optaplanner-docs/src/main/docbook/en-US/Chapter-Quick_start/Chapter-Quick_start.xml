@@ -71,7 +71,7 @@
       bigger processes first and assigns the smaller processes to the remaining space. As you can see, it's not optimal,
       because it does not leave enough room to assign the yellow process D.</para>
 
-      <para>Drools Planner does find the more optimal solution fast, by using additional, smarter algorithms. And it
+      <para>OptaPlanner does find the more optimal solution fast, by using additional, smarter algorithms. And it
       scales too: both in data (more processes, more computers) and constraints (more hardware requirements, other
       constraints). So let's take a look how we can use Planner for this.</para>
     </section>
@@ -101,7 +101,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
 
         <listitem>
           <para><literal>Process</literal>: represents a process with a demand. Needs to be assigned to a
-          <literal>Computer</literal> by Drools Planner.</para>
+          <literal>Computer</literal> by OptaPlanner.</para>
         </listitem>
 
         <listitem>

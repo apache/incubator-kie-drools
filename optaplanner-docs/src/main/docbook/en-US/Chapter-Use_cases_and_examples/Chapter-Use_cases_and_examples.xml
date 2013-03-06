@@ -10,7 +10,7 @@
   <section xml:id="examplesOverview">
     <title>Examples overview</title>
 
-    <para>Drools Planner has several examples. In this manual we explain Drools Planner mainly using the n queens
+    <para>OptaPlanner has several examples. In this manual we explain OptaPlanner mainly using the n queens
     example. So it's advisable to read at least the section about that example.</para>
 
     <para>The source code of all these examples is available in the distribution zip under
@@ -408,7 +408,7 @@
 64  has  64 queens with a search space of 10^115.
 256 has 256 queens with a search space of 10^616.</programlisting>
 
-        <para>The Drools Planner implementation of the N queens example has not been optimized because it functions as a
+        <para>The OptaPlanner implementation of the N queens example has not been optimized because it functions as a
         beginner example. Nevertheless, it can easily handle 64 queens. With a few changes it has been shown to easily
         handle 5000 queens and more.</para>
       </section>
@@ -615,7 +615,7 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
         </itemizedlist>
 
         <para>Drools Expert also has the normal miss Manners examples (which is much smaller) and employs a brute force
-        heuristic to solve it. Drools Planner's implementation is far more scalable because it uses heuristics to find
+        heuristic to solve it. OptaPlanner's implementation is far more scalable because it uses heuristics to find
         the best solution and Drools Expert to calculate the score of each solution.</para>
       </section>
 
@@ -1044,7 +1044,7 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
         <para>The problem is defined by <link
         xlink:href="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">the International Timetabling
         Competition 2007 track 1</link>. Geoffrey De Smet finished 4th in that competition with a very early version of
-        Drools Planner. Many improvements have been made since then.</para>
+        OptaPlanner. Many improvements have been made since then.</para>
       </section>
 
       <section>

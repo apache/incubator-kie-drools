@@ -10,12 +10,12 @@
   <section>
     <title>Finding the best <literal>Solver</literal> configuration</title>
 
-    <para>Drools Planner supports several optimization algorithms, but you're probably wondering which is the best one?
+    <para>OptaPlanner supports several optimization algorithms, but you're probably wondering which is the best one?
     Although some optimization algorithms generally perform better than others, it really depends on your problem
     domain. Most solver phases have parameters which can be tweaked. Those parameters can influence the results a lot,
     even though most solver phases work pretty well out-of-the-box.</para>
 
-    <para>Luckily, Drools Planner includes a benchmarker, which allows you to play out different solver phases with
+    <para>Luckily, OptaPlanner includes a benchmarker, which allows you to play out different solver phases with
     different settings against each other, so you can pick the best configuration for your planning problem.</para>
   </section>
 

@@ -10,7 +10,7 @@
   <section>
     <title>Overview</title>
 
-    <para>Solving a planning problem with Drools Planner consists out of 5 steps:</para>
+    <para>Solving a planning problem with OptaPlanner consists out of 5 steps:</para>
 
     <orderedlist>
       <listitem>
@@ -103,7 +103,7 @@
 
       <para>We'll explain these various parts of a configuration later in this manual.</para>
 
-      <para><emphasis role="bold">Drools Planner makes it relatively easy to switch optimization algorithm(s) just by
+      <para><emphasis role="bold">OptaPlanner makes it relatively easy to switch optimization algorithm(s) just by
       changing the configuration.</emphasis> There's even a <literal>Benchmark</literal> utility which allows you to
       play out different configurations against each other and report the most appropriate configuration for your
       problem. You could for example play out tabu search versus simulated annealing, on 4 queens and 64 queens.</para>
@@ -206,9 +206,9 @@
       <literal>Employee</literal>. Vehicle routing is special, because it uses a <link
       linkend="chainedPlanningVariable">chained planning variable</link>.</para>
 
-      <para><emphasis role="bold">In Drools Planner all problems facts and planning entities are plain old JavaBeans
+      <para><emphasis role="bold">In OptaPlanner all problems facts and planning entities are plain old JavaBeans
       (POJO's).</emphasis> You can load them from a database (JDBC/JPA/JDO), an XML file, a data repository, a noSQL
-      cloud, ...: Drools Planner doesn't care.</para>
+      cloud, ...: OptaPlanner doesn't care.</para>
     </section>
 
     <section xml:id="problemFact">

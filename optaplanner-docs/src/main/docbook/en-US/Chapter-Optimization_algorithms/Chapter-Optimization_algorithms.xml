@@ -88,7 +88,7 @@
   <section>
     <title>Architecture overview</title>
 
-    <para>Drools Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score
+    <para>OptaPlanner is the first framework to combine optimization algorithms (metaheuristics, ...) with score
     calculation by a rule engine such as Drools Expert. This combination turns out to be a very efficient,
     because:</para>
 

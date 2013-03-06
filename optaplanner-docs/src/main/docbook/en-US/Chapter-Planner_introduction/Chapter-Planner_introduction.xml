@@ -8,7 +8,7 @@
   <title>Planner introduction</title>
 
   <section>
-    <title>What is Drools Planner?</title>
+    <title>What is OptaPlanner?</title>
 
     <para><emphasis role="bold"><link xlink:href="http://www.optaplanner.org">OptaPlanner</link> is a lightweight,
     embeddable planning engine that optimizes planning problems.</emphasis> It solves use cases, such as:</para>
@@ -196,7 +196,7 @@
       of atoms in the known universe (10^80). Because there is no silver bullet to find the optimal solution, any
       implementation is forced to evaluate at least a subset of all those possible solutions.</para>
 
-      <para>Drools Planner supports several optimization algorithms to efficiently wade through that incredibly large
+      <para>OptaPlanner supports several optimization algorithms to efficiently wade through that incredibly large
       number of possible solutions. Depending on the use case, some optimization algorithms perform better than others,
       but it's impossible to tell in advance. <emphasis role="bold">With Planner, it is easy to switch the optimization
       algorithm</emphasis>, by changing the solver configuration in a few lines of XML or code.</para>
@@ -298,9 +298,9 @@ $ runExamples.bat</programlisting>
     </section>
 
     <section xml:id="useWithMavenGradleEtc">
-      <title>Use Drools Planner with maven, gradle, ivy, buildr or ANT</title>
+      <title>Use OptaPlanner with maven, gradle, ivy, buildr or ANT</title>
 
-      <para>The Drools Planner jars are available in <link
+      <para>The OptaPlanner jars are available in <link
       xlink:href="http://search.maven.org/#search|ga|1|org.optaplanner">the central maven repository</link> (and also
       in <link xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~">the
       JBoss maven repository</link>).</para>
@@ -332,9 +332,9 @@ $ runExamples.bat</programlisting>
     </section>
 
     <section xml:id="buildFromSource">
-      <title>Build Drools Planner from source</title>
+      <title>Build OptaPlanner from source</title>
 
-      <para>You can also easily build Drools Planner from source yourself.</para>
+      <para>You can also easily build OptaPlanner from source yourself.</para>
 
       <para><link xlink:href="http://help.github.com/set-up-git-redirect">Set up Git</link> and clone
       <literal>optaplanner</literal> from GitHub (or alternatively, download <link
@@ -359,9 +359,9 @@ $ mvn exec:exec
   </section>
 
   <section>
-    <title>Status of Drools Planner</title>
+    <title>Status of OptaPlanner</title>
 
-    <para>Drools Planner is production ready. The API is almost stable but backward incompatible changes can occur. With
+    <para>OptaPlanner is production ready. The API is almost stable but backward incompatible changes can occur. With
     the recipe called <link
     xlink:href="https://github.com/droolsjbpm/optaplanner/blob/master/optaplanner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
     you can easily upgrade to a newer version and quickly deal with any backwards incompatible changes. That recipe file
@@ -389,7 +389,7 @@ $ mvn exec:exec
     xlink:href="http://drools.46999.n3.nabble.com/Drools-User-forum-f47000.html">this web forum</link> or <link
     xlink:href="nntp://news.gmane.org/gmane.comp.java.drools.user">this newsgroup</link>.</para>
 
-    <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the Drools Planner code
+    <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the OptaPlanner code
     or for this manual to <link xlink:href="https://issues.jboss.org/browse/PLANNER">our issue tracker</link>.</para>
 
     <para>Pull requests (and patches) are very welcome and get priority treatment! Include the pull request link to a
@@ -397,9 +397,9 @@ $ mvn exec:exec
     improvements, you 'll benefit from our peer review and from our improvements made upon your improvements.</para>
 
     <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link>, Google+(<link
-    xlink:href="https://plus.google.com/112724449845406009021">Drools Planner</link>, <link
+    xlink:href="https://plus.google.com/112724449845406009021">OptaPlanner</link>, <link
     xlink:href="https://plus.google.com/112811208792575157490">Geoffrey De Smet</link>) and twitter (<link
-    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. If Drools Planner
+    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. If OptaPlanner
     helps you solve your problem, don't forget to blog or tweet about it!</para>
   </section>
 </chapter>
