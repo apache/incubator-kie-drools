@@ -25,24 +25,29 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.spi.ProcessContext;
 import org.kie.definition.process.Connection;
 import org.kie.definition.process.Node;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.exclusive.ExclusiveGroup;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.ConstraintEvaluator;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
+import org.jbpm.workflow.instance.node.ActionNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 
 /**
@@ -147,6 +152,29 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     public abstract void internalTrigger(NodeInstance from, String type);
+   
+    /**
+     * This method is used in both instances of the {@link extendednodeinstanceimpl} 
+     * and {@link actionnodeinstance} instances in order to handle 
+     * exceptions thrown when executing actions.
+     * 
+     * @param action An {@link Action} instance.
+     */
+    protected void executeAction(Action action) {
+        ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+        context.setNodeInstance(this);
+        try {
+            action.execute(context);
+        } catch (Exception e) {
+            String exceptionName = e.getClass().getName();
+            ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
+                resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
+            if (exceptionScopeInstance == null) {
+                throw new WorkflowRuntimeException(this, "Unable to execute Action: " + e.getMessage(), e);
+            }
+            exceptionScopeInstance.handleException(exceptionName, e);
+        }
+    }
     
     protected void triggerCompleted(String type, boolean remove) {
         if (remove) {

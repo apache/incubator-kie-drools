@@ -30,6 +30,7 @@ import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.workflow.core.DroolsAction;
@@ -243,7 +244,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     private void triggerTimer(TimerInstance timerInstance) {
     	for (Map.Entry<Timer, DroolsAction> entry: getEventBasedNode().getTimers().entrySet()) {
     		if (entry.getKey().getId() == timerInstance.getTimerId()) {
-    			executeAction(entry.getValue());
+    			executeAction((Action) entry.getValue().getMetaData("Action"));
     			return;
     		}
     	}

@@ -55,26 +55,12 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 		List<DroolsAction> actions = extendedNode.getActions(type);
 		if (actions != null) {
 			for (DroolsAction droolsAction: actions) {
-				executeAction(droolsAction);
+			    Action action = (Action) droolsAction.getMetaData("Action");
+				executeAction(action);
 			}
 		}
 	}
 
-	protected void executeAction(DroolsAction droolsAction) {
-		Action action = (Action) droolsAction.getMetaData("Action");
-		ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
-		context.setNodeInstance(this);
-		try {
-			action.execute(context);
-		} catch (Exception e) {
-			String exceptionName = e.getClass().getName();
-			ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
-				resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
-			if (exceptionScopeInstance == null) {
-				throw new RuntimeException("unable to execute Action: " + e.getMessage(), e);
-			}
-			exceptionScopeInstance.handleException(exceptionName, e);
-		}
-	}
+
 	
 }

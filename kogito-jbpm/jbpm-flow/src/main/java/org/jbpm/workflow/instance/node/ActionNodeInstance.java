@@ -16,11 +16,12 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.kie.runtime.process.NodeInstance;
 import org.drools.spi.ProcessContext;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.kie.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of an action node.
@@ -44,15 +45,21 @@ public class ActionNodeInstance extends NodeInstanceImpl {
 		try {
 		    ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
 		    context.setNodeInstance(this);
-	        action.execute(context);		    
+	        executeAction(action);
+		} catch( WorkflowRuntimeException wre) { 
+		    throw wre;
 		} catch (Exception e) {
-		    throw new RuntimeException("unable to execute Action: " + e.getMessage(), e);
-		}
+		    // for the case that one of the following throws an exception
+		    // - the ProcessContext() constructor 
+		    // - or context.setNodeInstance(this) 
+		    throw new WorkflowRuntimeException(this, "Unable to execute Action: " + e.getMessage(), e);
+		} 
     	triggerCompleted();
     }
 
     public void triggerCompleted() {
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
-    
+
+
 }

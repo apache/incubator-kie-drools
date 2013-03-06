@@ -34,6 +34,7 @@ import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.impl.ConstraintEvaluator;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
+import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 
 /**
@@ -55,6 +56,18 @@ public class SplitInstance extends NodeInstanceImpl {
                 "A Split only accepts default incoming connections!");
         }
         final Split split = getSplit();
+        
+        try { 
+            executeStrategy(split, type);
+        } catch(WorkflowRuntimeException wre) { 
+            throw wre;
+        } catch(Exception e) { 
+           WorkflowRuntimeException wre = new WorkflowRuntimeException(this, "Unable to execute Split: " + e.getMessage(), e); 
+           throw wre;
+        }
+    }
+    
+    protected void executeStrategy(Split split, String type) { 
         // TODO make different strategies for each type
         switch ( split.getType() ) {
             case Split.TYPE_AND :
@@ -196,8 +209,7 @@ public class SplitInstance extends NodeInstanceImpl {
         	        		((InternalProcessRuntime) kruntime.getProcessRuntime())
         	        			.getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
         	        	}
-        	            ((org.jbpm.workflow.instance.NodeInstance) entry.getKey())
-        	        		.trigger(this, entry.getValue());
+        	            ((org.jbpm.workflow.instance.NodeInstance) entry.getKey()).trigger(this, entry.getValue());
         	            if (!hidden) {
         	            	((InternalProcessRuntime) kruntime.getProcessRuntime())
         	            		.getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
