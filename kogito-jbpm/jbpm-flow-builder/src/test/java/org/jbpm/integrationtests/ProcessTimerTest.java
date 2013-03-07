@@ -89,29 +89,11 @@ public class ProcessTimerTest extends TestCase {
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
 		
-		new Thread(new Runnable() {
-			public void run() {
-	        	session.fireUntilHalt();       	
-			}
-        }).start();
-		
         ProcessInstance processInstance = ( ProcessInstance )
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
-        session.halt();
-        
-        final StatefulSession session2 = getSerialisedStatefulSession( session );
-        myList = (List<Message>) session2.getGlobal( "myList" );
-		new Thread(new Runnable() {
-			public void run() {
-	        	session2.fireUntilHalt();       	
-			}
-        }).start();
-        processInstance = ( ProcessInstance ) session2.getProcessInstance( processInstance.getId() );
-        
-        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session2).getProcessRuntime()).getTimerManager().getTimers().size());
 
         // test that the delay works
         try {
@@ -130,7 +112,7 @@ public class ProcessTimerTest extends TestCase {
         assertEquals(5, myList.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         
-        session2.halt();
+        session.dispose();
 	}
 	
 	@SuppressWarnings("unchecked")
