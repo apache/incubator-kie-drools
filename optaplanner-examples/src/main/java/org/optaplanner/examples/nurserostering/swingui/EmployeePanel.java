@@ -22,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -91,19 +92,27 @@ public class EmployeePanel extends JPanel {
     }
 
     private void createUI() {
-        JPanel labelAndDeletePanel = new JPanel(new BorderLayout());
-        labelAndDeletePanel.setPreferredSize(new Dimension(WEST_HEADER_WIDTH, 20));
+        JPanel labelAndDeletePanel = new JPanel(new BorderLayout(5, 0));
+        if (employee != null) {
+            labelAndDeletePanel.add(new JLabel(nurseRosteringPanel.getEmployeeIcon()), BorderLayout.WEST);
+        }
         employeeLabel = new JLabel(getEmployeeLabel());
         employeeLabel.setEnabled(false);
         labelAndDeletePanel.add(employeeLabel, BorderLayout.CENTER);
         if (employee != null) {
-            deleteButton = new JButton(new AbstractAction("X") {
+            JPanel deletePanel = new JPanel(new BorderLayout());
+            deleteButton = new JButton(nurseRosteringPanel.getDeleteEmployeeIcon());
+            deleteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     nurseRosteringPanel.deleteEmployee(employee);
                 }
             });
-            labelAndDeletePanel.add(deleteButton, BorderLayout.EAST);
+            deleteButton.setMargin(new Insets(0, 0, 0, 0));
+            deletePanel.add(deleteButton, BorderLayout.NORTH);
+            labelAndDeletePanel.add(deletePanel, BorderLayout.EAST);
         }
+        labelAndDeletePanel.setPreferredSize(new Dimension(WEST_HEADER_WIDTH,
+                (int) labelAndDeletePanel.getPreferredSize().getHeight()));
         add(labelAndDeletePanel, BorderLayout.WEST);
         resetShiftListPanel();
         numberOfShiftAssignmentsLabel = new JLabel("0 assignments", JLabel.RIGHT);

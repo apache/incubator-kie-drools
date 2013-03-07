@@ -65,8 +65,8 @@ public class CloudComputerPanel extends JPanel {
         this.computer = computer;
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createCompoundBorder(
-                    BorderFactory.createEmptyBorder(1, 2, 1, 2),
-                    BorderFactory.createLineBorder(Color.BLACK)),
+                        BorderFactory.createEmptyBorder(1, 2, 1, 2),
+                        BorderFactory.createLineBorder(Color.BLACK)),
                 BorderFactory.createEmptyBorder(1, 1, 1, 1)));
         createTotalsUI();
         createBarsUI();

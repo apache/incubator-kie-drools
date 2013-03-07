@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -52,6 +53,9 @@ public class NurseRosteringPanel extends SolutionPanel {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/nurserostering/swingui/nurseRosteringLogo.png";
 
+    private final ImageIcon employeeIcon;
+    private final ImageIcon deleteEmployeeIcon;
+
     private JPanel employeeListPanel;
 
     private JTextField planningWindowStartField;
@@ -61,6 +65,8 @@ public class NurseRosteringPanel extends SolutionPanel {
     private Map<ShiftAssignment, EmployeePanel> shiftAssignmentToPanelMap;
 
     public NurseRosteringPanel() {
+        employeeIcon = new ImageIcon(getClass().getResource("employee.png"));
+        deleteEmployeeIcon = new ImageIcon(getClass().getResource("deleteEmployee.png"));
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         createEmployeeListPanel();
@@ -72,6 +78,14 @@ public class NurseRosteringPanel extends SolutionPanel {
                         GroupLayout.PREFERRED_SIZE)
                 .addComponent(employeeListPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE));
+    }
+
+    public ImageIcon getEmployeeIcon() {
+        return employeeIcon;
+    }
+
+    public ImageIcon getDeleteEmployeeIcon() {
+        return deleteEmployeeIcon;
     }
 
     private JPanel createHeaderPanel() {
