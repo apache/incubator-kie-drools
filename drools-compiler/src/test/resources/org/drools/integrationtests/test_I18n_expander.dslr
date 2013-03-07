@@ -1,0 +1,16 @@
+package test
+
+import org.drools.Person
+
+expander test_I18n.dsl
+
+global java.util.List messages;
+
+rule "IDEOGRAPHIC SPACE test"
+    when
+        // Person(name=="山本　太郎")
+        名前が 太郎
+    then
+        // messages.add("メッセージ　ルールにヒットしました");
+         メッセージ "ルールにヒットしました"
+end
