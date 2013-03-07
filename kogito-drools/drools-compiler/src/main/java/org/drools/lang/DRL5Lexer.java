@@ -1,10 +1,10 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/DRL5Lexer.g 2012-10-30 11:35:04
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/DRL5Lexer.g 2013-03-07 16:09:55
 
     package org.drools.lang;
 
-        import org.drools.compiler.DroolsParserException;
+    import org.kie.builder.conf.LanguageLevelOption;
+    import org.drools.compiler.DroolsParserException;
     import org.drools.core.util.StringUtils;
-import org.kie.builder.conf.LanguageLevelOption;
 
 
 import org.antlr.runtime.*;

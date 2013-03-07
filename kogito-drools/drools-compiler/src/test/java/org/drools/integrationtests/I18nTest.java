@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.I18nPerson;
+import org.drools.Person;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
@@ -100,4 +101,53 @@ public class I18nTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test
+    public void testIdeographicSpaceInDSL() throws Exception {
+        // JBRULES-3723
+        String dsl =
+                "// Testing 'IDEOGRAPHIC SPACE' (U+3000)\n" +
+                "[when]名前が {firstName}=Person(name==\"山本　{firstName}\")\n" +
+                "[then]メッセージ {message}=messages.add(\"メッセージ　\" + {message});";
+
+        String dslr =
+                "package test\n" +
+                "\n" +
+                "import org.drools.Person\n" +
+                "\n" +
+                "expander test_I18n.dsl\n" +
+                "\n" +
+                "global java.util.List messages;\n" +
+                "\n" +
+                "rule \"IDEOGRAPHIC SPACE test\"\n" +
+                "    when\n" +
+                "        // Person(name==\"山本　太郎\")\n" +
+                "        名前が 太郎\n" +
+                "    then\n" +
+                "        // messages.add(\"メッセージ　ルールにヒットしました\");\n" +
+                "         メッセージ \"ルールにヒットしました\"\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( dsl.getBytes() ), ResourceType.DSL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( dslr.getBytes() ), ResourceType.DSLR );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        List messages = new ArrayList();
+        ksession.setGlobal( "messages", messages );
+
+        Person person = new Person();
+        person.setName("山本　太郎");
+        ksession.insert(person);
+        ksession.fireAllRules();
+
+        assertTrue(messages.contains("メッセージ　ルールにヒットしました"));
+
+        ksession.dispose();
+    }
 }
