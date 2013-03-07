@@ -200,7 +200,7 @@ following files and resulting screenshot:</para>
 import org.drools.process.core.datatype.impl.type.StringDataType;
 [
   // the Java Node work item located in:
-  // project/src/main/resources/META-INF/JavaNodeDefinition.conf
+  // project/src/main/resources/META-INF/JavaNodeDefinition.wid
   [
     "name" : "JavaNode",
     "parameters" : [
@@ -218,7 +218,7 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 <programlisting>
 // located in: project/src/main/resources/META-INF/drools.rulebase.conf
 //
-  drools.workDefinitions = JavaNodeDefinition.conf WorkDefinitions.conf
+  drools.workDefinitions = JavaNodeDefinition.wid WorkDefinitions.conf
 
 // icon for java.gif located in:
 // project/src/main/resources/icons/java.gif
