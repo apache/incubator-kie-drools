@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(Arquillian.class)
-public class LifeCycleLocalTest extends LifeCycleBaseTest {
+public class CDILifeCycleLocalTest extends LifeCycleBaseTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {

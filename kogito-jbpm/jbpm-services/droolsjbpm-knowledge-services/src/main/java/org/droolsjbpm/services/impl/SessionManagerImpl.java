@@ -132,6 +132,12 @@ public class SessionManagerImpl implements SessionManager {
     public SessionManagerImpl() {
     }
 
+    
+    @PostConstruct
+    public void init(){
+      fileManager = new FileManager();
+       fileManager.setUp();
+    }
 
     public SessionManagerImpl(Domain domain) {
         this.domain = domain;
@@ -141,6 +147,14 @@ public class SessionManagerImpl implements SessionManager {
         this.pm = pm;
     }
 
+    public void setFs(FileService fs) {
+        this.fs = fs;
+    }
+
+    public void setIoService(IOService ioService) {
+        this.ioService = ioService;
+    }
+    
 
     public void setBamProcessListener(CDIBAMProcessEventListener bamProcessListener) {
         this.bamProcessListener = bamProcessListener;
@@ -572,11 +586,7 @@ public class SessionManagerImpl implements SessionManager {
    
    
    
-   @PostConstruct
-   public void init(){
-     fileManager = new FileManager();
-      fileManager.setUp();
-   }
+   
    
    @PreDestroy
    public void destroy(){

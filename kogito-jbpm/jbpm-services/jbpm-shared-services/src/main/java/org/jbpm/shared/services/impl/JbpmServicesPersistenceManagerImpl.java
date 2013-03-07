@@ -104,7 +104,32 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     }
     
     
-   
+    @Override
+    public int executeUpdateString(String updateString) {
+        boolean txOwner = false;
+        boolean operationSuccessful = false;
+        boolean txStarted = false;
+        int result = 0;
+        try {
+            txOwner = beginTransaction();
+            txStarted = true;
+            result = em.createQuery(updateString).executeUpdate();
+            operationSuccessful = true;
+            
+            endTransaction(txOwner);
+        } catch(Exception e) {
+            rollBackTransaction(txOwner);
+            
+            String message; 
+            if( !txStarted ) { message = "Could not start transaction."; }
+            else if( !operationSuccessful ) { message = "Operation failed"; }
+            else { message = "Could not commit transaction"; }
+            
+            throw new RuntimeException(message, e);
+            
+        }
+        return result;
+    }
      
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey) { 
@@ -453,6 +478,8 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         
         return parameters;
     }
+
+    
 
    
 }

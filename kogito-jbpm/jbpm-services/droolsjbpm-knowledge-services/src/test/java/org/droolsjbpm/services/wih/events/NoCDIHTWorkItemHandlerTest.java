@@ -69,7 +69,7 @@ import org.junit.Before;
 
 
 
-public class HTWorkItemHandlerNoCDITest extends HTWorkItemHandlerBaseTest {
+public class NoCDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
 
     
     @Inject

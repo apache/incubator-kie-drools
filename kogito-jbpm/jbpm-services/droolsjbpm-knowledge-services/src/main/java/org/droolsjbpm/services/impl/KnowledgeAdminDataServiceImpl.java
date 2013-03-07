@@ -17,9 +17,9 @@ package org.droolsjbpm.services.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 /**
  *
@@ -28,15 +28,20 @@ import org.jboss.seam.transaction.Transactional;
 @Transactional
 @ApplicationScoped
 public class KnowledgeAdminDataServiceImpl implements KnowledgeAdminDataService{
-    @Inject EntityManager em;
+    @Inject 
+    private JbpmServicesPersistenceManager pm;
+
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
     
     public int removeAllData() {
         int deleted = 0;
-        deleted += em.createQuery("delete from  NodeInstanceDesc nid").executeUpdate();
-        deleted += em.createQuery("delete from  ProcessInstanceDesc pid").executeUpdate();
-        deleted += em.createQuery("delete from  ProcessDesc pd").executeUpdate();
-        deleted += em.createQuery("delete from  VariableStateDesc vsd").executeUpdate();
-        deleted += em.createQuery("delete from  ProcessInputDesc pidesc").executeUpdate();
+        deleted += pm.executeUpdateString("delete from  NodeInstanceDesc nid");
+        deleted += pm.executeUpdateString("delete from  ProcessInstanceDesc pid");
+        deleted += pm.executeUpdateString("delete from  ProcessDesc pd");
+        deleted += pm.executeUpdateString("delete from  VariableStateDesc vsd");
+        deleted += pm.executeUpdateString("delete from  ProcessInputDesc pidesc");
         return deleted;
     }
     

@@ -42,6 +42,8 @@ public interface JbpmServicesPersistenceManager {
    
     Object queryStringWithParametersInTransaction(String queryString,  Map<String, Object> params );
     
+    int executeUpdateString(String updateString);
+    
     HashMap<String, Object> addParametersToMap(Object ... parameterValues);
 
     void remove(Object entity);

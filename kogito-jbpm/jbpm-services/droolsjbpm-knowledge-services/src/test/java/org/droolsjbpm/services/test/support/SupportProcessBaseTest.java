@@ -17,12 +17,9 @@ package org.droolsjbpm.services.test.support;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -31,16 +28,12 @@ import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
-import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.runtime.process.ProcessInstance;
 
 public abstract class SupportProcessBaseTest {
@@ -48,15 +41,15 @@ public abstract class SupportProcessBaseTest {
     @Inject
     protected TaskServiceEntryPoint taskService;
     @Inject
-    private BPMN2DataService bpmn2Service;
+    protected BPMN2DataService bpmn2Service;
     @Inject
     protected KnowledgeDataService dataService;
     @Inject
     protected KnowledgeAdminDataService adminDataService;
     @Inject
-    private FileService fs;
+    protected FileService fs;
     @Inject
-    private SessionManager sessionManager;
+    protected SessionManager sessionManager;
 
  
 

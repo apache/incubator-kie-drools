@@ -17,6 +17,13 @@ public class MVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
 
     @Inject
     private FileService fs;
+
+    public MVELWorkItemHandlerProducer() {
+    }
+
+    public void setFs(FileService fs) {
+        this.fs = fs;
+    }
     
     @SuppressWarnings("unchecked")
     @Override

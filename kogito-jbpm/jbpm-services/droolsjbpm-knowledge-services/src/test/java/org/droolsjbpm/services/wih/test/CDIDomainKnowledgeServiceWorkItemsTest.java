@@ -13,32 +13,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.droolsjbpm.services.wih.events;
+package org.droolsjbpm.services.wih.test;
 
-import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.runner.RunWith;
 
+
 @RunWith(Arquillian.class)
-public class HTWorkItemHandlerCDITest extends HTWorkItemHandlerBaseTest {
+public class CDIDomainKnowledgeServiceWorkItemsTest extends DomainKnowledgeServiceWorkItemsTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class, "jbpm-human-task-wih.jar")
+        return ShrinkWrap.create(JavaArchive.class, "droolsjbpm-knowledge-services.jar")
                 .addPackage("org.jboss.seam.persistence") //seam-persistence
                 .addPackage("org.jboss.seam.transaction") //seam-persistence
-                .addPackage("org.jbpm.shared.services.api")
-                .addPackage("org.jbpm.shared.services.impl")
                 .addPackage("org.jbpm.task")
-                .addPackage("org.jbpm.task.wih") // work items
+                .addPackage("org.jbpm.task.wih") // work items org.jbpm.task.wih
                 .addPackage("org.jbpm.task.annotations")
                 .addPackage("org.jbpm.task.api")
                 .addPackage("org.jbpm.task.impl")
@@ -65,26 +60,13 @@ public class HTWorkItemHandlerCDITest extends HTWorkItemHandlerBaseTest {
                 .addPackage("org.kie.commons.java.nio.fs.jgit")
                 .addPackage("org.droolsjbpm.services.test")
                 .addPackage("org.droolsjbpm.services.impl.event.listeners")
-                .addPackage("org.droolsjbpm.services.impl.example")
-                .addPackage("org.droolsjbpm.services.impl.util")
-                .addPackage("org.jbpm.task.wih")
+                .addPackage("org.droolsjbpm.services.impl.example") 
+                .addPackage("org.droolsjbpm.services.impl.util") 
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
-                .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
+                .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"))
+                .addAsManifestResource("META-INF/services/org.kie.commons.java.nio.file.spi.FileSystemProvider", ArchivePaths.create("org.kie.commons.java.nio.file.spi.FileSystemProvider"));
 
     }
-    @Inject
-    private CDIHTWorkItemHandler htWorkItemHandler;
-    
-    @Before
-    public void setUp() throws Exception {
-        htWorkItemHandler.addSession(ksession);
-        setHandler(htWorkItemHandler);
-    }
 
-    @After
-    public void tearDown() throws Exception {
-        int removeAllTasks = taskService.removeAllTasks();
-
-    }
 }

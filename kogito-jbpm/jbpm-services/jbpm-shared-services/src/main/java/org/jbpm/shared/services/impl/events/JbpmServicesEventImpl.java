@@ -19,9 +19,10 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.event.Event;
@@ -33,42 +34,58 @@ import javax.enterprise.util.TypeLiteral;
  */
 public class JbpmServicesEventImpl<T> implements Event<T>, Serializable {
 
-    List<JbpmServicesEventListener> listeners = new ArrayList<JbpmServicesEventListener>();
-    private List<String> filters = new ArrayList<String>();
+    List<JbpmServicesEventListener> listeners = new CopyOnWriteArrayList<JbpmServicesEventListener>();
+    private List<String> filters = new CopyOnWriteArrayList<String>();
 
     @Override
     public void fire(T t) {
+        Map<JbpmServicesEventListener, List<Method>> invokeMethods = new ConcurrentHashMap<JbpmServicesEventListener, List<Method>>();
         for (JbpmServicesEventListener listener : listeners) {
             Map<Method, List<Annotation>> observerMethods = listener.getObserverMethods();
             for (Method m : observerMethods.keySet()) {
-                
                 for (Annotation a : observerMethods.get(m)) {
                     boolean filtered = false;
                     for(String filter : filters){
                         if(a.annotationType().getCanonicalName().equals(filter)){
                             filtered = true;
                         }
-                        if(filtered){
-                            try {
-                                m.invoke(listener, t);
-                            } catch (IllegalAccessException ex) {
-                                Logger.getLogger(JbpmServicesEventImpl.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(JbpmServicesEventImpl.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InvocationTargetException ex) {
-                                Logger.getLogger(JbpmServicesEventImpl.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
+                        
                     }
+                    if(filtered){
+                            if(invokeMethods.get(listener) == null){
+                                invokeMethods.put(listener, new CopyOnWriteArrayList<Method>());
+                            }
+                            invokeMethods.get(listener).add(m);
+
+                   }
+                   
                 }
 
             }
+            
         }
         filters.clear();
+        for(JbpmServicesEventListener listener : invokeMethods.keySet())
+            for(Method m : invokeMethods.get(listener)){
+                try {   
+                    m.invoke(listener, t);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(JbpmServicesEventImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(JbpmServicesEventImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvocationTargetException ex) {
+                    Logger.getLogger(JbpmServicesEventImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+       }
+       invokeMethods.clear();
     }
 
     public boolean addListener(JbpmServicesEventListener e) {
         return listeners.add(e);
+    }
+    
+    public void clearListeners(){
+        listeners.clear();
     }
 
     @Override

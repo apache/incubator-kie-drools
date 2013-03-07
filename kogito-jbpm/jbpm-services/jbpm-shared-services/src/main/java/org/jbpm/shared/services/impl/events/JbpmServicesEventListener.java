@@ -18,9 +18,9 @@ package org.jbpm.shared.services.impl.events;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.event.Observes;
 
 /**
@@ -30,7 +30,7 @@ import javax.enterprise.event.Observes;
 public abstract class JbpmServicesEventListener<T> {
     public Map<Method, List<Annotation>> getObserverMethods(){
         Method[] methods = this.getClass().getMethods();
-        Map<Method, List<Annotation>> observerMethods = new HashMap<Method, List<Annotation>>();
+        Map<Method, List<Annotation>> observerMethods = new ConcurrentHashMap<Method, List<Annotation>>();
         for(Method m: methods){
             if(m.getParameterAnnotations().length > 0){
                 Annotation[][] annotations = m.getParameterAnnotations();

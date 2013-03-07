@@ -17,13 +17,12 @@ package org.jbpm.task;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.utils.MVELUtils;
@@ -34,7 +33,7 @@ import org.junit.Before;
 
 public abstract class BaseTest {
 
-    protected static Logger logger = LoggerFactory.getLogger(BaseTest.class);
+    protected static Logger logger;
     protected static boolean usersLoaded = false;
     @Inject
     protected TaskServiceEntryPoint taskService;

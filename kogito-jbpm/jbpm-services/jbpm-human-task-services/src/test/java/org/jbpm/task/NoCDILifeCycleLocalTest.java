@@ -64,7 +64,8 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
         EntityManager em = emf.createEntityManager();
         
-        Logger logger = LogManager.getLogManager().getLogger("");
+        
+        logger = LogManager.getLogManager().getLogger("");
         
         JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
         ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
@@ -109,8 +110,6 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         UserGroupCallback userGroupCallback = new MvelUserGroupCallbackImpl();
         
         UserGroupLifeCycleManagerDecorator userGroupLifeCycleDecorator = new UserGroupLifeCycleManagerDecorator();
-        
-        
         userGroupLifeCycleDecorator.setPm(pm);
         userGroupLifeCycleDecorator.setManager(mvelLifeCycleManager);
         userGroupLifeCycleDecorator.setUserGroupCallback(userGroupCallback);
