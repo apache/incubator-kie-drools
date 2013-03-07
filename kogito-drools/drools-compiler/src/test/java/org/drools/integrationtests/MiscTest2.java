@@ -1443,4 +1443,29 @@ public class MiscTest2 extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
         assertTrue( kbuilder.hasErrors() );
     }
+
+    @Test
+    public void testNullValueInFrom() {
+        // DROOLS-71
+        String str =
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $i : Integer( ) from list\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        list.add(1);
+        list.add(null);
+        list.add(2);
+
+        ksession.fireAllRules();
+    }
 }

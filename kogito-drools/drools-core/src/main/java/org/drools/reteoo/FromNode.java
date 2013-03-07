@@ -166,7 +166,7 @@ public class FromNode extends LeftTupleSource
                                                                                context,
                                                                                memory.providerContext ); it.hasNext(); ) {
             final Object object = it.next();
-            if ( !resultClass.isAssignableFrom( object.getClass() ) ) {
+            if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {
                 continue; // skip anything if it not assignable
             }
 
