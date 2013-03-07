@@ -2582,4 +2582,55 @@ public class CepEspTest extends CommonTestMethodBase {
             return stock;
         }
     }
+
+    @Test @Ignore
+    public void testEventExpirationInSlidingWindow() throws Exception {
+        // DROOLS-70
+        String str =
+                "package org.drools.integrationtests\n" +
+                "\n" +
+                "declare Stock\n" +
+                "    @role( event )\n" +
+                "    name : String\n" +
+                "    value : Double\n" +
+                "end\n" +
+                "\n" +
+                "rule \"collect time window contents\"\n" +
+                "when\n" +
+                "    Stock( value == 0.0 ) over window:time(2s)\n" +
+                "then\n" +
+                "    // empty consequence\n" +
+                "end";
+
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(config, str);
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(conf, null);
+
+        final StockFactory stockFactory = new StockFactory(kbase);
+
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
+        final Future sessionFuture = executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                ksession.fireUntilHalt();
+            }
+        });
+
+        try {
+            for (int iteration = 0; iteration < 100; iteration++) {
+                this.populateSessionWithStocks(ksession, stockFactory);
+            }
+            // let the engine finish its job
+            Thread.sleep(5000);
+
+        } finally {
+            ksession.halt();
+            // not to swallow possible exception
+            sessionFuture.get();
+        }
+    }
 }
