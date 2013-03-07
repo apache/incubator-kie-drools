@@ -2,16 +2,13 @@ package org.jbpm.integrationtests;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import junit.framework.TestCase;
 
 import org.drools.io.impl.ReaderResource;
 import org.jbpm.Message;
+import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -20,8 +17,6 @@ import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.FactHandle;
 
 public class ProcessActionTest extends TestCase {
@@ -406,18 +401,6 @@ public class ProcessActionTest extends TestCase {
         assertEquals(1, list.size());
         assertEquals("Action2", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-    }
-	
-	private static class TestWorkItemHandler implements WorkItemHandler {
-        private WorkItem workItem;
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-            this.workItem = workItem;
-        }
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        }
-        public WorkItem getWorkItem() {
-            return workItem;
-        }
     }
 	
 	public static class TestVariable {

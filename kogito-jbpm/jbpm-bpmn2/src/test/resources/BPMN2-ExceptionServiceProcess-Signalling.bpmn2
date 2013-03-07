@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_stringItem" structureRef="String" />
+  
+  <itemDefinition id="_messageType" structureRef="java.lang.String"/>
+  <message id="_message" itemRef="_messageType" />
+  <interface id="_serviceInterface" name="org.jbpm.bpmn2.objects.ExceptionService">
+    <operation id="_serviceOperation" name="throwException">
+      <inMessageRef>_message</inMessageRef>
+    </operation>
+  </interface>
+
+  <signal id="exception-signal" structureRef="_exceptionItem" />
+  <itemDefinition id="_exceptionItem" structureRef="org.kie.runtime.process.WorkItem"/>
+  <message id="_exceptionMessage" itemRef="_exceptionItem" />
+  
+  <interface id="_handlingServiceInterface" name="org.jbpm.bpmn2.objects.ExceptionService">
+    <operation id="_handlingServiceOperation" name="handleException">
+      <inMessageRef>_exceptionMessage</inMessageRef>
+    </operation>
+  </interface>
+
+  <process processType="Private" isExecutable="true" id="ServiceProcess" name="Service Process" >
+
+    <!-- process variables -->
+    <property id="serviceInputItem" itemSubjectRef="_stringItem"/>
+    <property id="exceptionInputItem" itemSubjectRef="_exceptionItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="Start" />
+    <serviceTask id="_2" name="Throw Exception" operationRef="_serviceOperation" implementation="Other" >
+      <ioSpecification>
+        <dataInput id="_2_input" name="Parameter" />
+        <dataOutput id="_2_result" name="Result" />
+        <inputSet>
+          <dataInputRefs>_2_input</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_result</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>serviceInputItem</sourceRef>
+        <targetRef>_2_input</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_result</sourceRef>
+        <targetRef>serviceInputItem</targetRef>
+      </dataOutputAssociation>
+    </serviceTask>
+    <endEvent id="_3" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+
+    <subProcess id="_X" name="Exception Handler" triggeredByEvent="true" >
+      <startEvent id="_X-1" name="subStart" isInterrupting="false">
+        <dataOutput id="_X-1_Output" name="event"/>
+        <dataOutputAssociation>
+          <sourceRef>_X-1_Output</sourceRef>
+          <targetRef>exceptionInputItem</targetRef>
+        </dataOutputAssociation>
+        <signalEventDefinition id="_X-1_ED_1" signalRef="exception-signal" />
+      </startEvent>
+      <serviceTask id="_X-2" name="Handle Exception" operationRef="_handlingServiceOperation" implementation="Other" >
+        <ioSpecification>
+          <dataInput id="_X-2_input" name="Parameter" />
+          <inputSet>
+            <dataInputRefs>_X-2_input</dataInputRefs>
+          </inputSet>
+          <outputSet/>
+        </ioSpecification>
+        <dataInputAssociation>
+          <sourceRef>exceptionInputItem</sourceRef>
+          <targetRef>_X-2_input</targetRef>
+        </dataInputAssociation>
+      </serviceTask>
+      <endEvent id="_X-3" name="subEnd" />
+
+      <sequenceFlow id="_X-1-_X_2" sourceRef="_X-1" targetRef="_X-2"/>
+      <sequenceFlow id="_X-2-_X_3" sourceRef="_X-2" targetRef="_X-3"/>
+    </subProcess>
+
+  </process>
+
+</definitions>

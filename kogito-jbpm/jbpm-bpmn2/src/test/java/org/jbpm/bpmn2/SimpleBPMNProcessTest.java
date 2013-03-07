@@ -41,6 +41,7 @@ import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
+import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -94,7 +95,7 @@ import org.w3c.dom.Element;
 public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 
     private Logger logger = LoggerFactory.getLogger(SimpleBPMNProcessTest.class);
-    
+   
     protected void setUp() { 
 		String testName = getName();
 		String[] testFailsWithPersistence = {
@@ -383,31 +384,18 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 			public void matchCreated(MatchCreatedEvent event) {
 				ksession.fireAllRules();
 			}
-			public void matchCancelled(MatchCancelledEvent event) {
-			}
-			public void beforeRuleFlowGroupDeactivated(
-					org.kie.event.rule.RuleFlowGroupDeactivatedEvent event) {
-			}
-			public void beforeRuleFlowGroupActivated(
-					org.kie.event.rule.RuleFlowGroupActivatedEvent event) {
-			}
-			public void beforeMatchFired(BeforeMatchFiredEvent event) {
-			}
-			public void agendaGroupPushed(
-					org.kie.event.rule.AgendaGroupPushedEvent event) {
-			}
-			public void agendaGroupPopped(
-					org.kie.event.rule.AgendaGroupPoppedEvent event) {
-			}
-			public void afterRuleFlowGroupDeactivated(
-					org.kie.event.rule.RuleFlowGroupDeactivatedEvent event) {
-			}
-			public void afterRuleFlowGroupActivated(
-					org.kie.event.rule.RuleFlowGroupActivatedEvent event) {
+			public void matchCancelled(MatchCancelledEvent event) {}
+			public void beforeRuleFlowGroupDeactivated(org.kie.event.rule.RuleFlowGroupDeactivatedEvent event) {}
+			public void beforeRuleFlowGroupActivated(org.kie.event.rule.RuleFlowGroupActivatedEvent event) {}
+			public void beforeMatchFired(BeforeMatchFiredEvent event) {}
+			public void agendaGroupPushed(org.kie.event.rule.AgendaGroupPushedEvent event) {}
+			public void agendaGroupPopped(org.kie.event.rule.AgendaGroupPoppedEvent event) {}
+			public void afterRuleFlowGroupDeactivated(org.kie.event.rule.RuleFlowGroupDeactivatedEvent event) {}
+			public void afterRuleFlowGroupActivated(org.kie.event.rule.RuleFlowGroupActivatedEvent event) { 
 				ksession.fireAllRules();
 			}
-			public void afterMatchFired(AfterMatchFiredEvent event) {
-			}
+            public void afterMatchFired(AfterMatchFiredEvent event) {}
+			
 		});
         
         Map<String, Object> params = new HashMap<String, Object>();
@@ -3830,45 +3818,31 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
     }
     
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
-		KnowledgeBaseFactory
-				.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
-		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory
-				.newKnowledgeBuilderConfiguration();
+		KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
+		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 		((PackageBuilderConfiguration) conf).initSemanticModules();
-		((PackageBuilderConfiguration) conf)
-				.addSemanticModule(new BPMNSemanticModule());
-		((PackageBuilderConfiguration) conf)
-				.addSemanticModule(new BPMNDISemanticModule());
-		((PackageBuilderConfiguration) conf)
-				.addSemanticModule(new BPMNExtensionsSemanticModule());
+		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
+		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
+		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNExtensionsSemanticModule());
 		// ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
-		XmlProcessReader processReader = new XmlProcessReader(
-				((PackageBuilderConfiguration) conf).getSemanticModules(),
+		XmlProcessReader processReader = new XmlProcessReader(((PackageBuilderConfiguration) conf).getSemanticModules(),
 				getClass().getClassLoader());
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
-				.newKnowledgeBuilder(conf);
-		List<Process> processes = processReader
-				.read(SimpleBPMNProcessTest.class.getResourceAsStream("/"
-						+ process));
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
+		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process));
 		for (Process p : processes) {
 			RuleFlowProcess ruleFlowProcess = (RuleFlowProcess) p;
-			logger.debug(XmlBPMNProcessDumper.INSTANCE
-					.dump(ruleFlowProcess));
+			logger.debug(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess));
 			kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
 					XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess))),
 					ResourceType.BPMN2);
 		}
-		kbuilder.add(ResourceFactory
-				.newReaderResource(new InputStreamReader(
-						SimpleBPMNProcessTest.class.getResourceAsStream("/"
-								+ process))), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory.newReaderResource(new InputStreamReader(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process))), ResourceType.BPMN2);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
 				logger.error(error.toString());
 				System.out.println(error.toString());
 			}
-			throw new IllegalArgumentException(
-					"Errors while parsing knowledge base");
+			throw new IllegalArgumentException("Errors while parsing knowledge base");
 		}
 		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
@@ -3880,20 +3854,14 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory
 				.newKnowledgeBuilderConfiguration();
 		((PackageBuilderConfiguration) conf).initSemanticModules();
-		((PackageBuilderConfiguration) conf)
-				.addSemanticModule(new BPMNSemanticModule());
-		((PackageBuilderConfiguration) conf)
-				.addSemanticModule(new BPMNDISemanticModule());
-		((PackageBuilderConfiguration) conf)
-				.addSemanticModule(new BPMNExtensionsSemanticModule());
+		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
+		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
+		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNExtensionsSemanticModule());
 		// ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
-		XmlProcessReader processReader = new XmlProcessReader(
-				((PackageBuilderConfiguration) conf).getSemanticModules(),
+		XmlProcessReader processReader = new XmlProcessReader(((PackageBuilderConfiguration) conf).getSemanticModules(),
 				getClass().getClassLoader());
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
-				.newKnowledgeBuilder(conf);
-		kbuilder.add(ResourceFactory
-				.newReaderResource(new InputStreamReader(
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
+		kbuilder.add(ResourceFactory.newReaderResource(new InputStreamReader(
 						SimpleBPMNProcessTest.class.getResourceAsStream("/"
 								+ process))), ResourceType.BPMN2);
 		if (!kbuilder.getErrors().isEmpty()) {

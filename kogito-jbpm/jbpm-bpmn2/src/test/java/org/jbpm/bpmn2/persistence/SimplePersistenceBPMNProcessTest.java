@@ -1,68 +1,42 @@
 package org.jbpm.bpmn2.persistence;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.WorkingMemory;
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.command.impl.*;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.*;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.jbpm.bpmn2.JbpmBpmn2TestCase;
-import org.jbpm.bpmn2.SimpleBPMNProcessTest;
+import org.jbpm.bpmn2.*;
 import org.jbpm.bpmn2.objects.Person;
-import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
-import org.jbpm.bpmn2.xml.BPMNSemanticModule;
-import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
+import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.xml.*;
 import org.jbpm.compiler.xml.XmlProcessReader;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
-import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.audit.*;
 import org.jbpm.process.instance.impl.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.ForEachNodeInstance;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.junit.Test;
+import org.kie.*;
+import org.kie.builder.*;
 import org.kie.command.Context;
 import org.kie.definition.process.Process;
+import org.kie.event.process.*;
 import org.kie.event.process.DefaultProcessEventListener;
-import org.kie.event.process.ProcessNodeLeftEvent;
-import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.rule.DebugAgendaEventListener;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.runtime.*;
+import org.kie.runtime.process.*;
 
 public class SimplePersistenceBPMNProcessTest extends JbpmBpmn2TestCase {
 
@@ -642,5 +616,21 @@ public class SimplePersistenceBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(workItems.get(3).getId(), null);
         
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+    
+    @Test
+    public void testErrorSignallingExceptionServiceTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExceptionServiceProcess-ErrorSignalling.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        
+        StandaloneBPMNProcessTest.runTestErrorSignallingExceptionServiceTask(ksession);
+    }
+    
+    @Test
+    public void testSignallingExceptionServiceTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExceptionServiceProcess-Signalling.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        
+        StandaloneBPMNProcessTest.runTestSignallingExceptionServiceTask(ksession);
     }
 }

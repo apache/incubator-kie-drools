@@ -3,6 +3,7 @@ package org.jbpm.bpmn2;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.kie.KnowledgeBase;
 import org.kie.event.process.DefaultProcessEventListener;
 import org.kie.event.process.ProcessStartedEvent;

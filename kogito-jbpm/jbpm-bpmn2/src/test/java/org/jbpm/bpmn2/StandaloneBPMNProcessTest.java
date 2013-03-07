@@ -16,24 +16,23 @@
 
 package org.jbpm.bpmn2;
 
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
-import junit.framework.TestCase;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import junit.framework.Assert;
 
 import org.drools.SessionConfiguration;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.impl.EnvironmentFactory;
+import org.jbpm.bpmn2.handler.*;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
-import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
-import org.jbpm.bpmn2.xml.BPMNSemanticModule;
-import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
+import org.jbpm.bpmn2.objects.*;
+import org.jbpm.bpmn2.xml.*;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.ProcessBaseFactoryService;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
@@ -41,109 +40,120 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.junit.*;
+import org.kie.*;
+import org.kie.builder.*;
 import org.kie.definition.process.Process;
 import org.kie.event.process.DefaultProcessEventListener;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.runtime.KieSession;
+import org.kie.runtime.process.*;
+import org.w3c.dom.Document;
 
-public class StandaloneBPMNProcessTest extends TestCase {
-    
+public class StandaloneBPMNProcessTest extends NewJbpmBpmn2TestBase {
+
+    @After
     public void tearDown() {
         KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(null);
     }
-	
+
+    /**
+     * Tests
+     */
+    
+    @Test
     public void testMinimalProcess() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ProcessInstance processInstance = ksession.startProcess("Minimal");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
+        KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("Minimal");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
-	public void testMinimalProcessWithGraphical() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithGraphical.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ProcessInstance processInstance = ksession.startProcess("Minimal");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
+    @Test
+    public void testMinimalProcessWithGraphical() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithGraphical.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("Minimal");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
-	public void testMinimalProcessWithDIGraphical() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithDIGraphical.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ProcessInstance processInstance = ksession.startProcess("Minimal");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
+    @Test
+    public void testMinimalProcessWithDIGraphical() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithDIGraphical.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("Minimal");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
-	public void testCompositeProcessWithDIGraphical() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-CompositeProcessWithDIGraphical.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ProcessInstance processInstance = ksession.startProcess("Composite");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
+    @Test
+    public void testCompositeProcessWithDIGraphical() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-CompositeProcessWithDIGraphical.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("Composite");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
+    @Test
     public void testScriptTask() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ScriptTask.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ProcessInstance processInstance = ksession.startProcess("ScriptTask");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
+        KieBase kbase = createKnowledgeBase("BPMN2-ScriptTask.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
+    @Test
     public void testDataObject() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataObject.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-DataObject.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("employee", "UserId-12345");
         ProcessInstance processInstance = ksession.startProcess("Evaluation", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 
-	public void testEvaluationProcess() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("RegisterRequest", new SystemOutWorkItemHandler());
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("employee", "UserId-12345");
-		ProcessInstance processInstance = ksession.startProcess("Evaluation", params);
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
+    @Test
+    public void testEvaluationProcess() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("RegisterRequest", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("employee", "UserId-12345");
+        ProcessInstance processInstance = ksession.startProcess("Evaluation", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
-	public void testEvaluationProcess2() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess2.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("employee", "UserId-12345");
-		ProcessInstance processInstance = ksession.startProcess("com.sample.evaluation", params);
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
+    @Test
+    public void testEvaluationProcess2() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess2.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("employee", "UserId-12345");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.evaluation", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
-//	public void testEvaluationProcess3() throws Exception {
-//		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess3.bpmn2");
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-//		ksession.getWorkItemManager().registerWorkItemHandler("RegisterRequest", new SystemOutWorkItemHandler());
-//		Map<String, Object> params = new HashMap<String, Object>();
-//		params.put("employee", "john2");
-//		ProcessInstance processInstance = ksession.startProcess("Evaluation", params);
-//		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-//	}
-	
+    @Test
+    @Ignore
+    public void testEvaluationProcess3() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess3.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("RegisterRequest", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("employee", "john2");
+        ProcessInstance processInstance = ksession.startProcess("Evaluation", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
     public void testUserTask() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-UserTask.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-UserTask.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("UserTask");
@@ -156,9 +166,10 @@ public class StandaloneBPMNProcessTest extends TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
+    @Test
     public void testLane() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-Lane.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-Lane.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("UserTask");
@@ -180,432 +191,424 @@ public class StandaloneBPMNProcessTest extends TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-	private StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean b) {
-		return ksession;
-	}
+    @Test
+    public void testExclusiveSplit() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "First");
+        params.put("y", "Second");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
-	public void testExclusiveSplit() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("x", "First");
-		params.put("y", "Second");
-		ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
-	
-	public void testExclusiveSplitDefault() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("x", "NotFirst");
-		params.put("y", "Second");
-		ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
-	
+    @Test
+    public void testExclusiveSplitDefault() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "NotFirst");
+        params.put("y", "Second");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
     public void testInclusiveSplit() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
         ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
-    
+
+    @Test
     public void testInclusiveSplitDefault() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitDefault.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitDefault.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", -5);
         ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
-    
-//	public void testExclusiveSplitXPath() throws Exception {
-//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath.bpmn2");
-//        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-//        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
-//        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-//            .parse(new ByteArrayInputStream(
-//                "<myDocument><chapter1>BlaBla</chapter1><chapter2>MoreBlaBla</chapter2></myDocument>".getBytes()));
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("x", document);
-//        params.put("y", "SomeString");
-//        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-//        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-//    }
 
-	public void testEventBasedSplit() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-		// Yes
-		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-		// No
-		processInstance = ksession.startProcess("com.sample.test");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-        ksession.signalEvent("No", "NoValue", processInstance.getId());
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-	}
-	
-	public void testEventBasedSplitBefore() throws Exception {
-		// signaling before the split is reached should have no effect
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
-		// Yes
-		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
-        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		// No
-		processInstance = ksession.startProcess("com.sample.test");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
-        ksession.signalEvent("No", "NoValue", processInstance.getId());
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-	}
-	
-	public void testEventBasedSplitAfter() throws Exception {
-		// signaling the other alternative after one has been selected should have no effect
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
-		// Yes
-		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
-        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
-        // No
-		ksession.signalEvent("No", "NoValue", processInstance.getId());
-	}
-	
-	public void testEventBasedSplit2() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit2.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-		// Yes
-		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-		Thread.sleep(800);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+    @Test
+    @Ignore
+    public void testExclusiveSplitXPath() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Document document = DocumentBuilderFactory
+                .newInstance()
+                .newDocumentBuilder()
+                .parse(new ByteArrayInputStream(
+                        "<myDocument><chapter1>BlaBla</chapter1><chapter2>MoreBlaBla</chapter2></myDocument>".getBytes()));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", document);
+        params.put("y", "SomeString");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testEventBasedSplit() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        // Yes
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        // No
+        processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        ksession.signalEvent("No", "NoValue", processInstance.getId());
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    @Test
+    public void testEventBasedSplitBefore() throws Exception {
+        // signaling before the split is reached should have no effect
+        KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
+        // Yes
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
+        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        // No
+        processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
+        ksession.signalEvent("No", "NoValue", processInstance.getId());
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+    }
+
+    @Test
+    public void testEventBasedSplitAfter() throws Exception {
+        // signaling the other alternative after one has been selected should
+        // have no effect
+        KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
+        // Yes
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
+        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
+        // No
+        ksession.signalEvent("No", "NoValue", processInstance.getId());
+    }
+
+    @Test
+    public void testEventBasedSplit2() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit2.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        // Yes
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        Thread.sleep(800);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         // Timer
-		processInstance = ksession.startProcess("com.sample.test");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		Thread.sleep(800);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-	}
-	
-//	public void testEventBasedSplit3() throws Exception {
-//		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit3.bpmn2");
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-//		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-//		Person jack = new Person();
-//		jack.setName("Jack");
-//		// Yes
-//		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-//		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-//		ksession = restoreSession(ksession);
-//		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-//		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-//        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
-//		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-//		// Condition
-//		processInstance = ksession.startProcess("com.sample.test");
-//		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-//		ksession = restoreSession(ksession);
-//		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-//		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-//        ksession.insert(jack);
-//		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-//	}
-	
-	public void testEventBasedSplit4() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit4.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-		// Yes
-		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(800);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    @Test
+    @Ignore
+    public void testEventBasedSplit3() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit3.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        Person jack = new Person();
+        jack.setName("Jack");
+        // Yes
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        ksession.signalEvent("Yes", "YesValue", processInstance.getId());
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        // Condition
+        processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        ksession.insert(jack);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    @Test
+    public void testEventBasedSplit4() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit4.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        // Yes
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.signalEvent("Message-YesMessage", "YesValue", processInstance.getId());
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-		// No
-		processInstance = ksession.startProcess("com.sample.test");
-		ksession.signalEvent("Message-NoMessage", "NoValue", processInstance.getId());
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-	}
-	
-	public void testEventBasedSplit5() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit5.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        // No
+        processInstance = ksession.startProcess("com.sample.test");
+        ksession.signalEvent("Message-NoMessage", "NoValue", processInstance.getId());
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    @Test
+    public void testEventBasedSplit5() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit5.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ReceiveTaskHandler receiveTaskHandler = new ReceiveTaskHandler(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Receive Task", receiveTaskHandler);
-		// Yes
-		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-		receiveTaskHandler.setKnowledgeRuntime(ksession);
-		ksession.getWorkItemManager().registerWorkItemHandler("Receive Task", receiveTaskHandler);
-        receiveTaskHandler.messageReceived("YesMessage", "YesValue");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-        receiveTaskHandler.messageReceived("NoMessage", "NoValue");
-		ksession = restoreSession(ksession, true);
-		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-		receiveTaskHandler.setKnowledgeRuntime(ksession);
+        // Yes
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        receiveTaskHandler.setKnowledgeRuntime(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Receive Task", receiveTaskHandler);
-		// No
-		processInstance = ksession.startProcess("com.sample.test");
-		receiveTaskHandler.messageReceived("NoMessage", "NoValue");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-		receiveTaskHandler.messageReceived("YesMessage", "YesValue");
-	}
-	
-	public void testCallActivity() throws Exception {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivity.bpmn2"), ResourceType.BPMN2);
-		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2);
-		if (!kbuilder.getErrors().isEmpty()) {
-			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
-				System.err.println(error);
-			}
-			throw new IllegalArgumentException("Errors while parsing knowledge base");
-		}
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("x", "oldValue");
-		ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-		assertEquals("new value", ((WorkflowProcessInstance) processInstance).getVariable("y"));
-	}
+        receiveTaskHandler.messageReceived("YesMessage", "YesValue");
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        receiveTaskHandler.messageReceived("NoMessage", "NoValue");
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
+        ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
+        receiveTaskHandler.setKnowledgeRuntime(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Receive Task", receiveTaskHandler);
+        // No
+        processInstance = ksession.startProcess("com.sample.test");
+        receiveTaskHandler.messageReceived("NoMessage", "NoValue");
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        receiveTaskHandler.messageReceived("YesMessage", "YesValue");
+    }
 
-	public void testSubProcess() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-SubProcess.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ProcessInstance processInstance = ksession.startProcess("SubProcess");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
+    @Test
+    public void testCallActivity() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivity.bpmn2"), ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2);
+        if (!kbuilder.getErrors().isEmpty()) {
+            for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+                System.err.println(error);
+            }
+            throw new IllegalArgumentException("Errors while parsing knowledge base");
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        KieSession ksession = createKnowledgeSession(kbase);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "oldValue");
+        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertEquals("new value", ((WorkflowProcessInstance) processInstance).getVariable("y"));
+    }
 
-	public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcess.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		Map<String, Object> params = new HashMap<String, Object>();
-		List<String> myList = new ArrayList<String>();
-		myList.add("First Item");
-		myList.add("Second Item");
-		params.put("list", myList);
-		ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsProcess", params);
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-	}
+    @Test
+    public void testSubProcess() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-SubProcess.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("SubProcess");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
+    @Test
+    public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcess.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> myList = new ArrayList<String>();
+        myList.add("First Item");
+        myList.add("Second Item");
+        params.put("list", myList);
+        ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsProcess", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
     public void testEscalationBoundaryEvent() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEvent.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEvent.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("EscalationBoundaryEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 
+    @Test
     public void testEscalationBoundaryEventInterrupting() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEventInterrupting.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEventInterrupting.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("EscalationBoundaryEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         // TODO: check for cancellation of task
     }
 
+    @Test
     public void testErrorBoundaryEvent() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventInterrupting.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventInterrupting.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("ErrorBoundaryEvent");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-//    public void testTimerBoundaryEvent() throws Exception {
-//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDuration.bpmn2");
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
-//        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
-//        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-//        Thread.sleep(1000);
-//		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-//    }
-//
-//    public void testTimerBoundaryEventInterrupting() throws Exception {
-//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
-//        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
-//        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-//        Thread.sleep(1000);
-//		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-//    }
+    @Test
+    @Ignore
+    public void testTimerBoundaryEvent() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDuration.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(1000);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
 
-//    public void testAdHocSubProcess() throws Exception {
-//		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-//		((PackageBuilderConfiguration) conf).initSemanticModules();
-//		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
-//		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
-////        ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
-//		XmlProcessReader processReader = new XmlProcessReader(
-//	        ((PackageBuilderConfiguration) conf).getSemanticModules());
-//		RuleFlowProcess p = (RuleFlowProcess)
-//		    processReader.read(StandaloneBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcess.bpmn2"));
-//		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
-////		System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
-//		kbuilder.add(ResourceFactory.newReaderResource(
-//            new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
-//		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-AdHocSubProcess.drl"), ResourceType.DRL);
-//		if (!kbuilder.getErrors().isEmpty()) {
-//			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
-//				System.err.println(error);
-//			}
-//			throw new IllegalArgumentException("Errors while parsing knowledge base");
-//		}
-//		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-//		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-//        ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
-//        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-//        WorkItem workItem = workItemHandler.getWorkItem();
-//        assertNull(workItem);
-//        ksession = restoreSession(ksession);
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-//        ksession.fireAllRules();
-//        System.out.println("Signaling Hello2");
-//        ksession.signalEvent("Hello2", null, processInstance.getId());
-//        workItem = workItemHandler.getWorkItem();
-//        assertNotNull(workItem);
-//        ksession = restoreSession(ksession);
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-//        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-//    }
+    @Test
+    @Ignore
+    public void testTimerBoundaryEventInterrupting() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(1000);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
 
-//    public void testAdHocSubProcessAutoComplete() throws Exception {
-//		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-//		((PackageBuilderConfiguration) conf).initSemanticModules();
-//		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
-//		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
-////      ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
-//		XmlProcessReader processReader = new XmlProcessReader(
-//	        ((PackageBuilderConfiguration) conf).getSemanticModules());
-//		RuleFlowProcess p = (RuleFlowProcess)
-//		    processReader.read(StandaloneBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcessAutoComplete.bpmn2"));
-//		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
-////		System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
-//		kbuilder.add(ResourceFactory.newReaderResource(
-//            new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
-//		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-AdHocSubProcess.drl"), ResourceType.DRL);
-//		if (!kbuilder.getErrors().isEmpty()) {
-//			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
-//				System.err.println(error);
-//			}
-//			throw new IllegalArgumentException("Errors while parsing knowledge base");
-//		}
-//		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-//		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-//        ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
-//        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-//        WorkItem workItem = workItemHandler.getWorkItem();
-//        assertNull(workItem);
-//        ksession = restoreSession(ksession);
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-//        ksession.fireAllRules();
-//        workItem = workItemHandler.getWorkItem();
-//        assertNotNull(workItem);
-//        ksession = restoreSession(ksession);
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-//        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-//		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-//    }
-    
+    @Test
+    @Ignore
+    public void testAdHocSubProcess() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-AdHocSubProcess.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNull(workItem);
+        ksession = restoreSession(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ksession.fireAllRules();
+        System.out.println("Signaling Hello2");
+        ksession.signalEvent("Hello2", null, processInstance.getId());
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession = restoreSession(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+    }
+
+    @Test
+    @Ignore
+    public void testAdHocSubProcessAutoComplete() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-AdHocSubProcessAutoComplete.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNull(workItem);
+        ksession = restoreSession(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ksession.fireAllRules();
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession = restoreSession(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    @Test
     public void testIntermediateCatchEventSignal() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
-		ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession, true);
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
         // now signal process instance
-		ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-	}
+        ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
 
+    @Test
     public void testIntermediateCatchEventMessage() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventMessage.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventMessage.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
         // now signal process instance
         ksession.signalEvent("Message-HelloMessage", "SomeValue", processInstance.getId());
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
+    @Test
     public void testIntermediateCatchEventTimer() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
@@ -613,284 +616,293 @@ public class StandaloneBPMNProcessTest extends TestCase {
         Thread.sleep(1000);
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-//    public void testIntermediateCatchEventCondition() throws Exception {
-//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventCondition.bpmn2");
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
-//        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-//        ksession = restoreSession(ksession);
-//        // now activate condition
-//        Person person = new Person();
-//        person.setName("Jack");
-//        ksession.insert(person);
-//		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-//    }
+    @Test
+    @Ignore
+    public void testIntermediateCatchEventCondition() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventCondition.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession);
+        // now activate condition
+        Person person = new Person();
+        person.setName("Jack");
+        ksession.insert(person);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
 
+    @Test
     public void testErrorEndEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorEndEvent.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-ErrorEndEvent.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("ErrorEndEvent");
-		assertProcessInstanceAborted(processInstance.getId(), ksession);
+        assertProcessInstanceAborted(processInstance.getId(), ksession);
     }
 
+    @Test
     public void testEscalationEndEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationEndEvent.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-EscalationEndEvent.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("EscalationEndEvent");
-		assertProcessInstanceAborted(processInstance.getId(), ksession);
+        assertProcessInstanceAborted(processInstance.getId(), ksession);
     }
 
+    @Test
     public void testEscalationIntermediateThrowEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventEscalation.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventEscalation.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("EscalationIntermediateThrowEvent");
-		assertProcessInstanceAborted(processInstance.getId(), ksession);
+        assertProcessInstanceAborted(processInstance.getId(), ksession);
     }
 
+    @Test
     public void testCompensateIntermediateThrowEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventCompensate.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventCompensate.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("CompensateIntermediateThrowEvent");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
+    @Test
     public void testCompensateEndEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-CompensateEndEvent.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-CompensateEndEvent.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("CompensateEndEvent");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
+    @Test
     public void testServiceTask() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john");
-        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-            ksession.startProcess("ServiceProcess", params);
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ServiceProcess", params);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertEquals("Hello john!", processInstance.getVariable("s"));
     }
 
+    @Test
     public void testSendTask() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SendTask.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-SendTask.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Send Task", new SendTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john");
-        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-            ksession.startProcess("SendTask", params);
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("SendTask", params);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
+    @Test
     public void testReceiveTask() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ReceiveTask.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-ReceiveTask.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ReceiveTaskHandler receiveTaskHandler = new ReceiveTaskHandler(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Receive Task", receiveTaskHandler);
-        WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
-            ksession.startProcess("ReceiveTask");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ReceiveTask");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         ksession = restoreSession(ksession, true);
         receiveTaskHandler.messageReceived("HelloMessage", "Hello john!");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-//    public void testConditionalStart() throws Exception {
-//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ConditionalStart.bpmn2");
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//        Person person = new Person();
-//        person.setName("jack");
-//        ksession.insert(person);
-//        ksession.fireAllRules();
-//        person = new Person();
-//        person.setName("john");
-//        ksession.insert(person);
-//        ksession.fireAllRules();
-//    }
-    
-//    public void testTimerStart() throws Exception {
-//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//		final List<Long> list = new ArrayList<Long>();
-//		ksession.addEventListener(new ProcessEventListener() {
-//			public void beforeProcessStarted(ProcessStartedEvent event) {
-//			}
-//			public void beforeProcessCompleted(ProcessCompletedEvent event) {
-//			}
-//			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-//			}
-//			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-//			}
-//			public void afterProcessStarted(ProcessStartedEvent event) {
-//				list.add(event.getProcessInstance().getId());
-//			}
-//			public void afterProcessCompleted(ProcessCompletedEvent event) {
-//			}
-//			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-//			}
-//			public void afterNodeLeft(ProcessNodeLeftEvent event) {
-//			}
-//		});
-//		Thread.sleep(250);
-//		assertEquals(0, list.size());
-//        for (int i = 0; i < 5; i++) {
-//	        Thread.sleep(500);
-//        }
-//        assertEquals(5, list.size());
-//    }
-    
-    public void testSignalStart() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		final List<Long> list = new ArrayList<Long>();
-		ksession.addEventListener(new DefaultProcessEventListener() {
-			public void afterProcessStarted(ProcessStartedEvent event) {
-				list.add(event.getProcessInstance().getId());
-			}
-		});
-        ksession.signalEvent("MySignal", "NewValue");
-		assertEquals(1, list.size());
+    @Test
+    @Ignore
+    public void testConditionalStart() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ConditionalStart.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        Person person = new Person();
+        person.setName("jack");
+        ksession.insert(person);
+        ksession.fireAllRules();
+        person = new Person();
+        person.setName("john");
+        ksession.insert(person);
+        ksession.fireAllRules();
     }
-    
+
+    @Test
+    @Ignore
+    public void testTimerStart() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() { 
+            
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+            
+        });
+        Thread.sleep(250);
+        assertEquals(0, list.size());
+        for (int i = 0; i < 5; i++) {
+            Thread.sleep(500);
+        }
+        assertEquals(5, list.size());
+    }
+
+    @Test
+    public void testSignalStart() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        ksession.signalEvent("MySignal", "NewValue");
+        assertEquals(1, list.size());
+    }
+
+    @Test
     public void testSignalEnd() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalEndEvent.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-SignalEndEvent.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
         ksession.startProcess("SignalEndEvent", params);
     }
-    
+
+    @Test
     public void testMessageStart() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageStart.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-		final List<Long> list = new ArrayList<Long>();
-		ksession.addEventListener(new DefaultProcessEventListener() {
-			public void afterProcessStarted(ProcessStartedEvent event) {
-				list.add(event.getProcessInstance().getId());
-			}
-		});
+        KieBase kbase = createKnowledgeBase("BPMN2-MessageStart.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
         ksession.signalEvent("Message-HelloMessage", "NewValue");
         assertEquals(1, list.size());
     }
-    
+
+    @Test
     public void testMessageEnd() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageEndEvent.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-MessageEndEvent.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Send Task", new SendTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
         ProcessInstance processInstance = ksession.startProcess("MessageEndEvent", params);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-    
+
+    @Test
     public void testMessageIntermediateThrow() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventMessage.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventMessage.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Send Task", new SendTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
         ProcessInstance processInstance = ksession.startProcess("MessageIntermediateEvent", params);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-    
+
+    @Test
     public void testSignalIntermediateThrow() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventSignal.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventSignal.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
         ProcessInstance processInstance = ksession.startProcess("SignalIntermediateEvent", params);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-    
+
+    @Test
     public void testNoneIntermediateThrow() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventNone.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventNone.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("NoneIntermediateEvent", null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
-	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
-		KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new ProcessBaseFactoryService());
-		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-		((PackageBuilderConfiguration) conf).initSemanticModules();
-		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
-		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
-//		ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
-		XmlProcessReader processReader = new XmlProcessReader(
-	        ((PackageBuilderConfiguration) conf).getSemanticModules(), getClass().getClassLoader());
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
-		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process));
-        for (Process p : processes) {
-            RuleFlowProcess ruleFlowProcess = (RuleFlowProcess) p;
-            kbuilder.add(ResourceFactory.newReaderResource(
-                    new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess))), ResourceType.BPMN2);
-        }
-		if (!kbuilder.getErrors().isEmpty()) {
-			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
-				System.err.println(error);
-			}
-			throw new IllegalArgumentException("Errors while parsing knowledge base");
-		}
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-		return kbase;
-	}
+    // dump/reread functionality not (yet) available for this test (mriet, 2013-03-06)
+    @Test
+    public void testErrorSignallingExceptionServiceTask() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ExceptionServiceProcess-ErrorSignalling.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        
+        runTestErrorSignallingExceptionServiceTask(ksession);
+    }
+    
+    public static void runTestErrorSignallingExceptionServiceTask(KieSession ksession) throws Exception {
+        
+        // Setup
+        String eventType = "Error-code";
+        SignallingTaskHandlerWrapper signallingTaskWrapper = new SignallingTaskHandlerWrapper(ServiceTaskHandler.class, eventType, ksession);
+        signallingTaskWrapper.setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", signallingTaskWrapper);
+       
+        Object [] caughtEventObjectHolder = new Object[1];
+        caughtEventObjectHolder[0] = null;
+        ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
+        
+        // Start process
+        Map<String, Object> params = new HashMap<String, Object>();
+        String input = "this is my service input";
+        params.put("serviceInputItem", input );
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ServiceProcess", params);
 
-	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-	    Properties defaultProps = new Properties();
-	    defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-	    defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
-	    SessionConfiguration sessionConfig = new SessionConfiguration(defaultProps);
-	    
-		return kbase.newStatefulKnowledgeSession(sessionConfig, EnvironmentFactory.newEnvironment());
-	}
-	
-	public void assertProcessInstanceCompleted(long processInstanceId, StatefulKnowledgeSession ksession) {
-		assertNull(ksession.getProcessInstance(processInstanceId));
-	}
-	
-	public void assertProcessInstanceAborted(long processInstanceId, StatefulKnowledgeSession ksession) {
-		assertNull(ksession.getProcessInstance(processInstanceId));
-	}
-	
-	public void assertProcessInstanceActive(long processInstanceId, StatefulKnowledgeSession ksession) {
-		assertNotNull(ksession.getProcessInstance(processInstanceId));
-	}
-	
-	public static class TestWorkItemHandler implements WorkItemHandler {
-		
-	    private List<WorkItem> workItems = new ArrayList<WorkItem>();
-	    
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-            workItems.add(workItem);
-        }
+        // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
+        assertTrue( "Event was not passed to Event Subprocess", caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof WorkItem );
+        WorkItem workItem = (WorkItem) caughtEventObjectHolder[0];
+        Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
+        assertTrue( "WorkItem doesn't contain Throwable", throwObj instanceof Throwable );
+        assertTrue("Exception message does not match service input.", ((Throwable) throwObj).getMessage().endsWith(input) );
+
+        // Complete process
+        assertTrue( "Process instance has not been aborted.", processInstance.getState() == ProcessInstance.STATE_ABORTED );
+    }
+    
+    @Test
+    public void testSignallingExceptionServiceTask() throws Exception {
+        // dump/reread functionality seems to work for this test 
+        // .. but I'm pretty sure that's more coincidence than design (mriet, 2013-03-06)
+        KieBase kbase = createKnowledgeBase("BPMN2-ExceptionServiceProcess-Signalling.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        }
+        runTestSignallingExceptionServiceTask(ksession);
+    }
+    
+    public static void runTestSignallingExceptionServiceTask(KieSession ksession) throws Exception {
         
-        public WorkItem getWorkItem() {
-        	if (workItems.size() == 0) {
-        		return null;
-        	}
-        	if (workItems.size() == 1) {
-        		WorkItem result = workItems.get(0);
-        		this.workItems.clear();
-        		return result;
-        	} else {
-        		throw new IllegalArgumentException("More than one work item active");
-        	}
-        }
+        // Setup
+        String eventType = "exception-signal";
+        SignallingTaskHandlerWrapper signallingTaskWrapper = new SignallingTaskHandlerWrapper(ServiceTaskHandler.class, eventType, ksession);
+        signallingTaskWrapper.setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", signallingTaskWrapper);
+       
+        Object [] caughtEventObjectHolder = new Object[1];
+        caughtEventObjectHolder[0] = null;
+        ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
         
-        public List<WorkItem> getWorkItems() {
-        	List<WorkItem> result = new ArrayList<WorkItem>(workItems);
-        	workItems.clear();
-        	return result;
-        }
+        // Start process
+        Map<String, Object> params = new HashMap<String, Object>();
+        String input = "this is my service input";
+        params.put("serviceInputItem", input );
+        ProcessInstance processInstance = ksession.startProcess("ServiceProcess", params);
+
+        // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
+        assertTrue( "Event was not passed to Event Subprocess", caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof WorkItem );
+        WorkItem workItem = (WorkItem) caughtEventObjectHolder[0];
+        Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
+        assertTrue( "WorkItem doesn't contain Throwable", throwObj instanceof Throwable );
+        assertTrue("Exception message does not match service input.", ((Throwable) throwObj).getMessage().endsWith(input) );
+
+        // Complete process
+        assertEquals( "Process instance is not active.", ProcessInstance.STATE_ACTIVE, processInstance.getState() );
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         
-	}
+        processInstance = ksession.getProcessInstance(processInstance.getId());
+        if( processInstance != null ) { 
+            assertEquals( "Process instance is not completed.", ProcessInstance.STATE_COMPLETED, processInstance.getState() );
+        } // otherwise, persistence use => processInstance == null => process is completed
+    }
 }

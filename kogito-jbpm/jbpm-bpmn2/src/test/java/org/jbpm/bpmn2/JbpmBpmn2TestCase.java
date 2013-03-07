@@ -1,15 +1,8 @@
 package org.jbpm.bpmn2;
 
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import junit.framework.TestCase;
 
@@ -18,31 +11,22 @@ import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.impl.EnvironmentFactory;
-import org.jbpm.process.audit.AuditLoggerFactory;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
-import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
-import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.process.audit.*;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.KnowledgeBase;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.*;
 import org.kie.definition.process.Node;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.NodeInstanceContainer;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.runtime.*;
+import org.kie.runtime.process.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base test case for the jbpm-bpmn2 module. 
@@ -61,9 +45,11 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	public StatefulKnowledgeSession ksession;
 	
 	private WorkingMemoryInMemoryLogger logger;
+	private Logger consoleLogger = null;
 
 	public JbpmBpmn2TestCase() {
 		this(true);
+		consoleLogger = LoggerFactory.getLogger(this.getClass());
 	}
 	
 	public JbpmBpmn2TestCase(boolean persistence) {
@@ -92,6 +78,18 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 		for (String p: process) {
 			kbuilder.add(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
 		}
+        
+        // Check for errors
+        if (kbuilder.hasErrors()) {
+            if (kbuilder.getErrors().size() > 0) {
+                boolean errors = false;
+                for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+                    consoleLogger.error(error.toString());
+                    errors = true;
+                }
+                assertFalse("Could not build knowldge base.", errors);
+            }
+        }
 		return kbuilder.newKnowledgeBase();
 	}
 	
@@ -285,38 +283,6 @@ public abstract class JbpmBpmn2TestCase extends TestCase {
 	
 	public TestWorkItemHandler getTestWorkItemHandler() {
 		return workItemHandler;
-	}
-	
-	public static class TestWorkItemHandler implements WorkItemHandler {
-		
-	    private List<WorkItem> workItems = new ArrayList<WorkItem>();
-	    
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-            workItems.add(workItem);
-        }
-        
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        }
-        
-        public WorkItem getWorkItem() {
-        	if (workItems.size() == 0) {
-        		return null;
-        	}
-        	if (workItems.size() == 1) {
-        		WorkItem result = workItems.get(0);
-        		this.workItems.clear();
-        		return result;
-        	} else {
-        		throw new IllegalArgumentException("More than one work item active");
-        	}
-        }
-        
-        public List<WorkItem> getWorkItems() {
-        	List<WorkItem> result = new ArrayList<WorkItem>(workItems);
-        	workItems.clear();
-        	return result;
-        }
-        
 	}
 	
 	public void assertProcessVarExists(ProcessInstance process, String... processVarNames) {

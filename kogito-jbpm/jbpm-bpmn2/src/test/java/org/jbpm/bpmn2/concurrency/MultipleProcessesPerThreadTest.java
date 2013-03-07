@@ -7,24 +7,18 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.jbpm.bpmn2.objects.Status;
+import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.event.process.ProcessCompletedEvent;
-import org.kie.event.process.ProcessEventListener;
-import org.kie.event.process.ProcessNodeLeftEvent;
-import org.kie.event.process.ProcessNodeTriggeredEvent;
-import org.kie.event.process.ProcessStartedEvent;
-import org.kie.event.process.ProcessVariableChangedEvent;
+import org.kie.event.process.*;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,38 +183,6 @@ public class MultipleProcessesPerThreadTest {
 
         public synchronized void join() throws InterruptedException {
             thread.join();
-        }
-
-    }
-
-    public static class TestWorkItemHandler implements WorkItemHandler {
-
-        private List<WorkItem> workItems = new ArrayList<WorkItem>();
-
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-            workItems.add(workItem);
-        }
-
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        }
-
-        public WorkItem getWorkItem() {
-            if (workItems.size() == 0) {
-                return null;
-            }
-            if (workItems.size() == 1) {
-                WorkItem result = workItems.get(0);
-                this.workItems.clear();
-                return result;
-            } else {
-                throw new IllegalArgumentException("More than one work item active");
-            }
-        }
-
-        public List<WorkItem> getWorkItems() {
-            List<WorkItem> result = new ArrayList<WorkItem>(workItems);
-            workItems.clear();
-            return result;
         }
 
     }

@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.bpmn2;
+package org.jbpm.bpmn2.persistence;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import org.jbpm.bpmn2.JbpmBpmn2TestCase;
+import org.jbpm.bpmn2.SimpleBPMNProcessTest;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.builder.*;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -61,9 +62,9 @@ public class BPMN2ProcessTestWithPersistence extends JbpmBpmn2TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertEquals("new value",
                 ((WorkflowProcessInstance) processInstance).getVariable("y"));
-//        enable this as soon as pull request #98 is in as it fixes subprocess instance creation          
-//        List<ProcessInstanceLog> subprocesses = JPAProcessInstanceDbLog.findSubProcessInstances(processInstance.getId());
-//        assertNotNull(subprocesses);
-//        assertEquals(1, subprocesses.size());
+
+        List<ProcessInstanceLog> subprocesses = JPAProcessInstanceDbLog.findSubProcessInstances(processInstance.getId());
+        assertNotNull(subprocesses);
+        assertEquals(1, subprocesses.size());
     }
 }

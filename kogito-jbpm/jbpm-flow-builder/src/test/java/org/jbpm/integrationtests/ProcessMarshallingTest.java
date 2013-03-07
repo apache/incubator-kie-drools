@@ -2,24 +2,18 @@ package org.jbpm.integrationtests;
 
 import static org.jbpm.integrationtests.SerializationHelper.getSerialisedStatefulSession;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
+import org.drools.*;
 import org.drools.compiler.PackageBuilder;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Package;
 import org.jbpm.Person;
+import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -32,9 +26,7 @@ import org.kie.io.ResourceType;
 import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.runtime.process.*;
 
 public class ProcessMarshallingTest extends TestCase {
 
@@ -598,21 +590,6 @@ public class ProcessMarshallingTest extends TestCase {
 
         assertEquals(0, session2.getProcessInstances().size());
         session2.halt();
-    }
-    
-    private static class TestWorkItemHandler implements WorkItemHandler {
-    	private WorkItem workItem;
-    	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-			this.workItem = workItem;
-		}
-		public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-		}
-		public WorkItem getWorkItem() {
-			return workItem;
-		}
-		public void reset() {
-			workItem = null;
-		}
     }
     
     private static class TestListWorkItemHandler implements WorkItemHandler {

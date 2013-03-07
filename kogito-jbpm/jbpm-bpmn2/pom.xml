@@ -152,8 +152,8 @@
             <fileset>
               <directory>${basedir}</directory>
               <includes>
-                <include>btm*</include>
-                <include>JPADroolsFlow.*.db</include>
+                <include>*.tlog</include>
+                <include>*.db</include>
               </includes>
             </fileset>
          </filesets>

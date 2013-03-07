@@ -18,16 +18,19 @@ package org.jbpm.bpmn2.structureref;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbpm.bpmn2.JbpmBpmn2TestCase;
-import org.kie.KnowledgeBase;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.jbpm.bpmn2.NewJbpmBpmn2TestBase;
+import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.junit.Test;
+import org.kie.KieBase;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.process.ProcessInstance;
 
-public class StructureRefTest extends JbpmBpmn2TestCase {
+public class StructureRefTest extends NewJbpmBpmn2TestBase {
 
-    public void testStringStructureRef() {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-StringStructureRef.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+    @Test
+    public void testStringStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-StringStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -42,9 +45,10 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
     
-    public void testBooleanStructureRef() {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-BooleanStructureRef.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+    @Test
+    public void testBooleanStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -59,9 +63,10 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    public void testIntegerStructureRef() {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntegerStructureRef.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+    @Test
+    public void testIntegerStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntegerStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -76,9 +81,10 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
     
-    public void testFloatStructureRef() {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-FloatStructureRef.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+    @Test
+    public void testFloatStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-FloatStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -93,12 +99,13 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
     
-    public void testObjectStructureRef() {
+    @Test
+    public void testObjectStructureRef() throws Exception {
         
         String personAsXml = "<org.jbpm.bpmn2.objects.Person><id>1</id><name>john</name></org.jbpm.bpmn2.objects.Person>";
         
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ObjectStructureRef.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ObjectStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -113,14 +120,13 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
     
+    @Test
     public void testNoStructureRef() {
-        
         try {
-        
-            KnowledgeBase kbase = createKnowledgeBase("BPMN2-NoStructureRef.bpmn2");
+            KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-NoStructureRef.bpmn2");
             fail("Structure ref must be defined for a process");
         } catch (Exception e ) {
-            System.out.println(e.getMessage());
+            assertEquals("Exception about parsing errors missing.", "Errors while parsing knowledge base", e.getMessage());
         }
     }
 }
