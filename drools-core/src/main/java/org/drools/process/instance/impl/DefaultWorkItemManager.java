@@ -96,6 +96,10 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         }
     }
 
+    public WorkItemHandler getWorkItemHandler(String name) {
+    	return this.workItemHandlers.get(name);
+    }
+
     public Set<WorkItem> getWorkItems() {
         return new HashSet<WorkItem>(workItems.values());
     }

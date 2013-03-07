@@ -60,6 +60,10 @@ public class JPAWorkItemManager implements WorkItemManager {
         throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
                                                     workItem.getName() );
     }
+    
+    public WorkItemHandler getWorkItemHandler(String name) {
+    	return this.workItemHandlers.get(name);
+    }
 
     public void internalAbortWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
