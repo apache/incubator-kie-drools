@@ -440,4 +440,19 @@ public class DefaultExpanderTest {
 
         assertEquals( expected, drl );
     }
+
+    @Test(timeout=1000)
+    public void testExpandInfiniteLoop() throws Exception {
+        // DROOLS-73
+        DSLMappingFile file = new DSLTokenizedMappingFile();
+        String dsl = "[when]Foo with {var} bars=Foo( bars == {var} )";
+        file.parseAndLoad( new StringReader( dsl ) );
+        assertEquals( 0, file.getErrors().size() );
+
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping( file.getMapping() );
+        String source = "rule 'dsl rule'\nwhen\n Foo with {var} bars\nthen\n\nend";
+        ex.expand( source );
+        assertFalse( ex.hasErrors() );
+    }
 }
