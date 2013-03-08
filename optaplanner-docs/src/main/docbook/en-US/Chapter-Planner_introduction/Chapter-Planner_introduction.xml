@@ -72,7 +72,7 @@
     <para>OptaPlanner helps normal Java<superscript>TM</superscript> programmers solve planning problems efficiently.
     Under the hood, it combines optimization heuristics and metaheuristics with very efficient score calculation.</para>
 
-    <para>OptaPlanner is <emphasis>open source</emphasis> software under <link
+    <para>OptaPlanner is <emphasis>open source</emphasis> software, released under <link
     xlink:href="http://www.apache.org/licenses/LICENSE-2.0.html">the Apache Software License 2.0</link>. This license is
     very liberal and allows reuse for commercial purposes. Read <link
     xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">the layman's explanation</link>.
