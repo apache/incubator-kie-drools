@@ -81,6 +81,13 @@ import com.google.protobuf.ExtensionRegistry;
 public class ProtobufInputMarshaller {
     // NOTE: all variables prefixed with _ (underscore) are protobuf structs
 
+    /*
+    Toggle to force loading the source stream into memory before unmarshalling with
+    Protobuf. Use this to bypass the Protobuf message size limit when unmarshalling
+    large source streams.
+    */
+    public static boolean unmarshallPreloaded = false;
+
     private static ProcessMarshaller processMarshaller = createProcessMarshaller();
 
     private static ProcessMarshaller createProcessMarshaller() {
@@ -208,8 +215,13 @@ public class ProtobufInputMarshaller {
     private static ProtobufMessages.KnowledgeSession loadAndParseSession(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
         ExtensionRegistry registry = PersisterHelper.buildRegistry( context, processMarshaller );
 
-        ProtobufMessages.Header _header = PersisterHelper.readFromStreamWithHeader( context, registry );
-        
+        ProtobufMessages.Header _header;
+        if (unmarshallPreloaded) {
+            _header = PersisterHelper.readFromStreamWithHeaderPreloaded(context, registry);
+        } else {
+            _header = PersisterHelper.readFromStreamWithHeader( context, registry );
+        }
+ 
         return ProtobufMessages.KnowledgeSession.parseFrom( _header.getPayload(), registry );
     }
 
