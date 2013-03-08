@@ -481,11 +481,16 @@ public class DefaultExpander
                         String foundValue = m.group( vars.get( theKey ) );
                         String theValue = applyFunc( theFunc,
                                                      foundValue );
-                        vp = vp.substring( 0,
-                                           allkeyMat.start() ) + theValue + vp.substring( allkeyMat.end() );
-                        allkeyMat.reset( vp );
+                        String newVp = vp.substring( 0,
+                                                     allkeyMat.start() ) + theValue + vp.substring( allkeyMat.end() );
+                        allkeyMat.reset( newVp );
                         key2value.put( theKey,
                                        foundValue );
+                        if (newVp.equals(vp)) {
+                            break;
+                        } else {
+                            vp = newVp;
+                        }
                     }
                 }
 
