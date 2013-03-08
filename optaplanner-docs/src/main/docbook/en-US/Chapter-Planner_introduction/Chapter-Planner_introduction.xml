@@ -73,9 +73,11 @@
     Under the hood, it combines optimization heuristics and metaheuristics with very efficient score calculation.</para>
 
     <para>OptaPlanner is <emphasis>open source</emphasis> software under <link
-    xlink:href="http://www.apache.org/licenses/LICENSE-2.0">the Apache Software License 2.0</link> (<link
-    xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">layman's explanation</link>). It is
-    100% pure Java<superscript>TM</superscript> and runs on <link xlink:href="compatibility">any JVM</link>.</para>
+    xlink:href="http://www.apache.org/licenses/LICENSE-2.0.html">the Apache Software License 2.0</link>. This license is
+    very liberal and allows reuse for commercial purposes. Read <link
+    xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">the layman's explanation</link>.
+    OptaPlanner is 100% pure Java<superscript>TM</superscript> and runs on <link xlink:href="compatibility">any
+    JVM</link>.</para>
   </section>
 
   <section>
@@ -301,9 +303,9 @@ $ runExamples.bat</programlisting>
       <title>Use OptaPlanner with maven, gradle, ivy, buildr or ANT</title>
 
       <para>The OptaPlanner jars are available in <link
-      xlink:href="http://search.maven.org/#search|ga|1|org.optaplanner">the central maven repository</link> (and also
-      in <link xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~">the
-      JBoss maven repository</link>).</para>
+      xlink:href="http://search.maven.org/#search|ga|1|org.optaplanner">the central maven repository</link> (and also in
+      <link xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~">the JBoss
+      maven repository</link>).</para>
 
       <para>If you use maven, just add a dependency to <literal>optaplanner-core</literal> in your project's
       <filename>pom.xml</filename>:</para>
@@ -389,8 +391,8 @@ $ mvn exec:exec
     xlink:href="http://drools.46999.n3.nabble.com/Drools-User-forum-f47000.html">this web forum</link> or <link
     xlink:href="nntp://news.gmane.org/gmane.comp.java.drools.user">this newsgroup</link>.</para>
 
-    <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the OptaPlanner code
-    or for this manual to <link xlink:href="https://issues.jboss.org/browse/PLANNER">our issue tracker</link>.</para>
+    <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the OptaPlanner code or
+    for this manual to <link xlink:href="https://issues.jboss.org/browse/PLANNER">our issue tracker</link>.</para>
 
     <para>Pull requests (and patches) are very welcome and get priority treatment! Include the pull request link to a
     JIRA issue and optionally send a mail to the dev mailing list to get the issue fixed fast. By open sourcing your
@@ -399,7 +401,7 @@ $ mvn exec:exec
     <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link>, Google+(<link
     xlink:href="https://plus.google.com/112724449845406009021">OptaPlanner</link>, <link
     xlink:href="https://plus.google.com/112811208792575157490">Geoffrey De Smet</link>) and twitter (<link
-    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. If OptaPlanner
-    helps you solve your problem, don't forget to blog or tweet about it!</para>
+    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. If OptaPlanner helps
+    you solve your problem, don't forget to blog or tweet about it!</para>
   </section>
 </chapter>
