@@ -7707,8 +7707,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.315"
-     inkscape:cx="394.09877"
-     inkscape:cy="315.54835"
+     inkscape:cx="400"
+     inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -7728,7 +7728,7 @@
      inkscape:object-paths="false"
      inkscape:snap-intersection-paths="true"
      inkscape:snap-nodes="true"
-     inkscape:snap-global="true"
+     inkscape:snap-global="false"
      inkscape:snap-smooth-nodes="false"
      inkscape:snap-object-midpoints="true"
      inkscape:snap-center="true">
@@ -8212,7 +8212,7 @@
            id="flowPara6230">with less resources</flowPara></flowRoot>    </g>
     <g
        id="g10259"
-       transform="translate(-6.6670274,20.000005)">
+       transform="translate(-6.6670274,2.1724017e-4)">
       <g
          transform="matrix(0.75,0,0,0.75,182.125,-119.03446)"
          id="g6781">
@@ -11133,29 +11133,8 @@
            transform="matrix(0.25,0,0,0.25,68.383425,543.57358)" />
       </g>
     </g>
-    <g
-       id="g8048"
-       transform="translate(40.29819,-189.38048)">
-      <path
-         inkscape:connector-curvature="0"
-         id="path6128-6"
-         d="m 157.16207,701.88255 c -0.64746,0 -1.16869,0.52123 -1.16869,1.16868 l 0,13.58593 -0.99338,0 0,1.3659 1.98676,0 c 0.0582,0.009 0.1146,0.0146 0.17531,0.0146 l 5.76306,0 c 0.0607,0 0.11715,-0.006 0.1753,-0.0146 l 1.96484,0 0,-1.3659 -0.97146,0 0,-7.78635 a 0.35063969,0.35063969 0 0 0 0.0439,-0.0146 c 0,0 0.23738,-0.0552 0.46747,-0.0438 0.11505,0.006 0.22174,0.0351 0.27757,0.0657 0.0558,0.0306 0.0705,0.0419 0.0877,0.11687 0.22734,0.99505 0.12038,1.98114 0.0803,2.95823 -0.04,0.97709 -0.007,1.96808 0.59165,2.85597 0.62251,0.92422 1.53771,1.37673 2.36658,1.29284 0.82887,-0.0839 1.52901,-0.7669 1.60694,-1.81145 0.106,-1.42067 -0.32814,-3.48647 -0.69391,-5.24446 -0.18288,-0.879 -0.35144,-1.68357 -0.43095,-2.24971 -0.0267,-0.19003 -0.0376,-0.34177 -0.0439,-0.46747 0.21557,0.1155 0.50538,0.0958 0.6866,-0.0731 0.22916,-0.21349 0.23645,-0.61888 0.0146,-0.83999 -0.58403,-1.23858 -2.51991,-2.56306 -3.433,-3.24308 -0.11304,-0.0842 -0.25908,0.0573 -0.31409,0.27756 -0.0808,0.20572 0.17636,0.60681 0.32869,0.76694 l 2.13285,2.49076 c -0.022,0.0295 -0.0385,0.0595 -0.0511,0.0876 -0.0502,0.11249 -0.0662,0.21203 -0.0731,0.32138 -0.0138,0.21872 0.0156,0.47672 0.0584,0.78156 0.0856,0.60967 0.25561,1.40839 0.43826,2.28623 0.36529,1.75572 0.77018,3.83639 0.67929,5.05455 -0.0585,0.78398 -0.45676,1.10855 -0.97877,1.16138 -0.522,0.0528 -1.21221,-0.23737 -1.7165,-0.98607 -0.46937,-0.69687 -0.50612,-1.48911 -0.46747,-2.43232 0.0386,-0.94321 0.1646,-2.0121 -0.095,-3.14814 -0.06,-0.26258 -0.24333,-0.47011 -0.43825,-0.57704 -0.19493,-0.10692 -0.39631,-0.13714 -0.57704,-0.14608 -0.24784,-0.0123 -0.43155,0.0203 -0.54782,0.0438 l 0,-5.08376 c 0,-0.64746 -0.52123,-1.16869 -1.16868,-1.16869 l -5.76306,0 z m -0.0731,1.05912 5.86533,0 0,5.03994 -5.86533,0 0,-5.03994 z"
-         style="fill:#000000;fill-opacity:1;stroke:none;display:inline" />
-      <flowRoot
-         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#2e3436;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
-         id="flowRoot6222-8"
-         xml:space="preserve"
-         transform="translate(-273.22803,616.36573)"><flowRegion
-           id="flowRegion6224-46"><rect
-             style="font-size:12px;text-align:end;text-anchor:end;fill:#2e3436"
-             y="85.996445"
-             x="343.22803"
-             height="19.999996"
-             width="80"
-             id="rect6226-2" /></flowRegion><flowPara
-           id="flowPara6230-7">less</flowPara></flowRoot>    </g>
     <flowRoot
-       transform="translate(-152.59764,679.50807)"
+       transform="translate(-172.59764,699.50812)"
        xml:space="preserve"
        id="flowRoot8204"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#2e3436;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Bold"><flowRegion
@@ -11168,7 +11147,7 @@
            style="font-size:16px;font-weight:bold;text-align:center;text-anchor:middle;fill:#2e3436;-inkscape-font-specification:Arial Bold" /></flowRegion><flowPara
          id="flowPara8210">Bin packing</flowPara></flowRoot>    <g
        id="g8551"
-       transform="translate(-368.76517,375.03833)">
+       transform="translate(-388.76517,395.03838)">
       <rect
          ry="5"
          rx="4.999999"
@@ -11477,31 +11456,31 @@
            transform="matrix(0.3,0,0,0.3,-0.0135095,6.5367898)"
            style="fill:#eeeeec"
            id="polygon9-4"
-           points="2.014,31.849 63.214,54.119 63.214,67.976 2.014,45.704 2.014,45.704 " />
+           points="63.214,67.976 2.014,45.704 2.014,45.704 2.014,31.849 63.214,54.119 " />
         <polygon
            transform="matrix(0.3,0,0,0.3,-0.0135095,4.4831698)"
            style="fill:#eeeeec"
            id="polygon9-3"
-           points="63.214,54.119 63.214,67.976 2.014,45.704 2.014,45.704 2.014,31.849 " />
+           points="2.014,45.704 2.014,45.704 2.014,31.849 63.214,54.119 63.214,67.976 " />
         <polygon
            transform="matrix(0.3,0,0,0.3,-0.2546225,6.6475798)"
            style="fill:#d3d7cf"
            id="polygon11-1"
-           points="105.846,24.265 105.846,38.12 63.214,67.976 63.214,54.119 63.214,54.119 " />
+           points="63.214,67.976 63.214,54.119 63.214,54.119 105.846,24.265 105.846,38.12 " />
         <polygon
            transform="matrix(0.3,0,0,0.3,-0.2546225,4.3886008)"
            style="fill:#d3d7cf"
            id="polygon11-9"
-           points="105.846,24.265 105.846,38.12 63.214,67.976 63.214,54.119 63.214,54.119 " />
+           points="63.214,67.976 63.214,54.119 63.214,54.119 105.846,24.265 105.846,38.12 " />
         <polygon
            transform="matrix(0.3,0,0,0.46796091,-0.2261915,-4.7983232)"
            style="fill:#ffffff"
            id="polygon15-0"
-           points="63.718,54.119 63.718,67.623 63.214,67.976 62.711,67.792 62.711,67.792 62.711,54.119 " />
+           points="63.214,67.976 62.711,67.792 62.711,67.792 62.711,54.119 63.718,54.119 63.718,67.623 " />
         <polygon
            style="fill:#ffffff"
            id="polygon13-9"
-           points="2.014,32.391 2.014,31.849 2.512,31.5 2.512,31.5 63.141,53.443 105.332,24.078 105.846,24.265 105.846,24.947 63.288,54.682 "
+           points="2.512,31.5 2.512,31.5 63.141,53.443 105.332,24.078 105.846,24.265 105.846,24.947 63.288,54.682 2.014,32.391 2.014,31.849 "
            transform="matrix(0.29670362,0,0,0.3,-0.02756109,4.4454)" />
         <path
            style="fill:#888a85;stroke:#babdb6;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -11553,33 +11532,33 @@
            d="m 0.4609525,20.415279 -0.068454,-6.503124 12.8693425,-9.1043762 18.345661,6.7084862 0,6.708489 -12.800889,8.967468 z"
            style="fill:#d3d7cf;stroke:none" />
         <polygon
-           points="63.214,54.119 63.214,67.976 2.014,45.704 2.014,45.704 2.014,31.849 "
+           points="2.014,45.704 2.014,45.704 2.014,31.849 63.214,54.119 63.214,67.976 "
            id="polygon8327"
            style="fill:#eeeeec"
            transform="matrix(0.3,0,0,0.3,-0.0135095,6.5367898)" />
         <polygon
-           points="63.214,67.976 2.014,45.704 2.014,45.704 2.014,31.849 63.214,54.119 "
+           points="2.014,45.704 2.014,31.849 63.214,54.119 63.214,67.976 2.014,45.704 "
            id="polygon8329"
            style="fill:#eeeeec"
            transform="matrix(0.3,0,0,0.3,-0.0135095,4.4831698)" />
         <polygon
-           points="105.846,38.12 63.214,67.976 63.214,54.119 63.214,54.119 105.846,24.265 "
+           points="63.214,54.119 63.214,54.119 105.846,24.265 105.846,38.12 63.214,67.976 "
            id="polygon8331"
            style="fill:#d3d7cf"
            transform="matrix(0.3,0,0,0.3,-0.2546225,6.6475798)" />
         <polygon
-           points="105.846,38.12 63.214,67.976 63.214,54.119 63.214,54.119 105.846,24.265 "
+           points="63.214,54.119 63.214,54.119 105.846,24.265 105.846,38.12 63.214,67.976 "
            id="polygon8333"
            style="fill:#d3d7cf"
            transform="matrix(0.3,0,0,0.3,-0.2546225,4.3886008)" />
         <polygon
-           points="63.718,67.623 63.214,67.976 62.711,67.792 62.711,67.792 62.711,54.119 63.718,54.119 "
+           points="62.711,67.792 62.711,67.792 62.711,54.119 63.718,54.119 63.718,67.623 63.214,67.976 "
            id="polygon8335"
            style="fill:#ffffff"
            transform="matrix(0.3,0,0,0.46796091,-0.2261915,-4.7983232)" />
         <polygon
            transform="matrix(0.29670362,0,0,0.3,-0.02756109,4.4454)"
-           points="2.014,31.849 2.512,31.5 2.512,31.5 63.141,53.443 105.332,24.078 105.846,24.265 105.846,24.947 63.288,54.682 2.014,32.391 "
+           points="2.512,31.5 63.141,53.443 105.332,24.078 105.846,24.265 105.846,24.947 63.288,54.682 2.014,32.391 2.014,31.849 2.512,31.5 "
            id="polygon8337"
            style="fill:#ffffff" />
         <path
@@ -12240,5 +12219,53 @@
                y="180" /></flowRegion><flowPara
              id="flowPara9538">N</flowPara></flowRoot>      </g>
     </g>
-  </g>
+    <flowRoot
+       transform="matrix(0.88630517,0.46310165,-0.46310165,0.88630517,242.8895,352.11777)"
+       xml:space="preserve"
+       id="flowRoot6222-1-7"
+       style="font-size:14px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"><flowRegion
+         id="flowRegion6224-5-8"><rect
+           id="rect6226-9-7"
+           width="170"
+           height="29.999996"
+           x="280.52841"
+           y="147.55537"
+           style="font-size:14px;font-style:italic;text-align:center;text-anchor:middle;fill:#a40000;-inkscape-font-specification:Arial Italic" /></flowRegion><flowPara
+         id="flowPara6230-78-4">More assignments!</flowPara></flowRoot>    <flowRoot
+       style="font-size:14px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"
+       id="flowRoot5371"
+       xml:space="preserve"
+       transform="matrix(0.66407574,-0.7476653,0.7476653,0.66407574,-157.50856,840.85101)"><flowRegion
+         id="flowRegion5373"><rect
+           style="font-size:14px;font-style:italic;text-align:center;text-anchor:middle;fill:#a40000;-inkscape-font-specification:Arial Italic"
+           y="147.55537"
+           x="280.52841"
+           height="29.999996"
+           width="170"
+           id="rect5375" /></flowRegion><flowPara
+         id="flowPara5377">Less fuel!</flowPara></flowRoot>    <flowRoot
+       transform="matrix(0.92853591,0.37124259,-0.37124259,0.92853591,20.827247,585.67268)"
+       xml:space="preserve"
+       id="flowRoot5379"
+       style="font-size:14px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"><flowRegion
+         id="flowRegion5381"><rect
+           id="rect5383"
+           width="170"
+           height="29.999996"
+           x="280.52841"
+           y="147.55537"
+           style="font-size:14px;font-style:italic;text-align:center;text-anchor:middle;fill:#a40000;-inkscape-font-specification:Arial Italic" /></flowRegion><flowPara
+         id="flowPara5385">Better allocations!</flowPara></flowRoot>    <flowRoot
+       style="font-size:14px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"
+       id="flowRoot5387"
+       xml:space="preserve"
+       transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,124.05784,973.33407)"><flowRegion
+         id="flowRegion5389"><rect
+           style="font-size:14px;font-style:italic;text-align:center;text-anchor:middle;fill:#a40000;-inkscape-font-specification:Arial Italic"
+           y="147.55537"
+           x="280.52841"
+           height="29.999996"
+           width="170"
+           id="rect5391" /></flowRegion><flowPara
+         id="flowPara5393">Happier employees!</flowPara></flowRoot>  </g>
 </svg>
