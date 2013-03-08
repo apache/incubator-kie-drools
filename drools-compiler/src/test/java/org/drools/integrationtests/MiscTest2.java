@@ -1468,4 +1468,34 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+    @Test @Ignore("mvel does a numerically comparison (when possible), jit a lexicographic one. Which one is correct?")
+    public void testNumberInQuotes() throws Exception {
+        // DROOLS-68
+        String str =
+                "declare A\n" +
+                "    a1 : String\n" +
+                "end\n" +
+                "declare B\n" +
+                "    b1 : String\n" +
+                "end\n" +
+                "\n" +
+                "rule Init salience 10 when \n" +
+                "then\n" +
+                "    insert( new A( \"40\" ) );\n" +
+                "    insert( new A( \"2abc\" ) );\n" +
+                "    insert( new B( \"300\" ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "   A( $a1 : a1 ) \n" +
+                "   B( b1 > $a1 ) \n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        assertEquals(2, ksession.fireAllRules());
+    }
 }
