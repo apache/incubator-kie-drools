@@ -20,6 +20,9 @@
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>
 
+    <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
+    <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
+        
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>          
       <property name="hibernate.max_fetch_depth" value="3"/>

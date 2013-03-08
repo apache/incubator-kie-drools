@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import org.droolsjbpm.services.api.Domain;
+import org.jbpm.shared.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;

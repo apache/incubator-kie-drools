@@ -16,31 +16,24 @@
 package org.jbpm.task.identity;
 
 import java.util.List;
+
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-import org.drools.core.util.StringUtils;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Content;
-import org.jbpm.task.User;
 import org.jbpm.task.api.TaskAttachmentService;
 
 /**
  *
  */
 @Decorator
-public class UserGroupTaskAttachmentDecorator implements TaskAttachmentService {
+public class UserGroupTaskAttachmentDecorator extends AbstractUserGroupCallbackDecorator implements TaskAttachmentService {
 
     @Inject
     @Delegate
     private TaskAttachmentService attachmentService;
 
-    @Inject
-    private UserGroupCallback userGroupCallback;
-    
-    @Inject
-    private JbpmServicesPersistenceManager pm;
     
     public long addAttachment(long taskId, Attachment attachment, Content content) {
         doCallbackOperationForAttachment(attachment);
@@ -65,28 +58,6 @@ public class UserGroupTaskAttachmentDecorator implements TaskAttachmentService {
             if (attachment.getAttachedBy() != null) {
                 doCallbackUserOperation(attachment.getAttachedBy().getId());
             }
-        }
-    }
-
-    private boolean doCallbackUserOperation(String userId) {
-
-        if (userId != null && userGroupCallback.existsUser(userId)) {
-            addUserFromCallbackOperation(userId);
-            return true;
-        }
-        return false;
-
-    }
-    
-    private void addUserFromCallbackOperation(String userId) {
-        try {
-            boolean userExists = pm.find(User.class, userId) != null;
-            if (!StringUtils.isEmpty(userId) && !userExists) {
-                User user = new User(userId);
-                pm.persist(user);
-            }
-        } catch (Throwable t) {
-            //logger.log(Level.SEVERE, "Unable to add user " + userId);
         }
     }
 }

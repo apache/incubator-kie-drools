@@ -15,8 +15,14 @@
  */
 package org.droolsjbpm.services.impl.event.listeners;
 
+import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
 import org.droolsjbpm.services.api.IdentityProvider;
-import org.droolsjbpm.services.api.SessionManager;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.impl.helpers.NodeInstanceDescFactory;
 import org.droolsjbpm.services.impl.helpers.ProcessInstanceDescFactory;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
@@ -51,7 +57,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
 
     private String domainName;
     
-    private SessionManager sessionManager;
+    private ServicesSessionManager sessionManager;
     
     public CDIProcessEventListener() {
     }
@@ -86,7 +92,10 @@ public class CDIProcessEventListener implements ProcessEventListener {
         int sessionId = ((StatefulKnowledgeSession)pce.getKieRuntime()).getId();
         pm.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
         if(sessionManager != null){
-            sessionManager.getProcessInstanceIdKsession().remove(processInstance.getId());
+            List<Long> piIds = sessionManager.getProcessInstanceIdKsession().get(sessionId);
+            if (piIds != null) {
+                piIds.remove(processInstance.getId());
+            }            
         }
     }
 
@@ -139,7 +148,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
         this.domainName = domainName;
     }
 
-    public void setSessionManager(SessionManager sessionManager) {
+    public void setSessionManager(ServicesSessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
     

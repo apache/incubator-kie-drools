@@ -39,6 +39,8 @@ import org.jbpm.task.events.NotificationEvent;
 import org.jbpm.task.identity.MvelUserGroupCallbackImpl;
 import org.jbpm.task.identity.UserGroupCallback;
 import org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator;
+import org.jbpm.task.identity.UserGroupTaskInstanceServiceDecorator;
+import org.jbpm.task.identity.UserGroupTaskQueryServiceDecorator;
 import org.jbpm.task.impl.TaskAdminServiceImpl;
 import org.jbpm.task.impl.TaskContentServiceImpl;
 import org.jbpm.task.impl.TaskDeadlinesServiceImpl;
@@ -107,9 +109,11 @@ public class HumanTaskModule {
         // Persistence and Transactions
         configurePersistenceManager();
 
+        UserGroupCallback userGroupCallback = createUserGroupCallback();
         // Task Query
         configureTaskQueryService(pm);
-        service.setTaskQueryService(queryService);
+        TaskQueryService userGroupQueryServiceDecorator = configureUserGroupQueryServiceDecorator(queryService, userGroupCallback);
+        service.setTaskQueryService(userGroupQueryServiceDecorator);
         
         // Task Identity
         configureTaskIdentityService(pm);
@@ -133,15 +137,15 @@ public class HumanTaskModule {
         configureLifeCycleManager(pm, identityService, queryService, contentService);
         
         // User/Group Callbacks
-        UserGroupCallback userGroupCallback = createUserGroupCallback();
+        
         configureUserGroupLifeCycleManagerDecorator(pm, lifeCycleManager, userGroupCallback);
     
         ((TaskInstanceServiceImpl)instanceService).setLifeCycleManager(userGroupLifeCycleDecorator);
         
-        ((TaskInstanceServiceImpl)instanceService).setUserGroupCallback(userGroupCallback);
+        TaskInstanceService userGroupTaskInstanceServiceDecorator = configureUserGroupTaskInstanceServiceDecorator(instanceService, userGroupCallback);
                 
         // Task Decorators - Sub Tasks
-        SubTaskDecorator subTaskDecorator = createSubTaskDecorator(pm, instanceService, queryService);
+        SubTaskDecorator subTaskDecorator = createSubTaskDecorator(pm, userGroupTaskInstanceServiceDecorator, queryService);
         
         // Task Decorators - Deadlines
         DeadlinesDecorator deadlinesDecorator = createDeadlinesDecorator(pm, queryService, deadlinesService, subTaskDecorator);
@@ -182,6 +186,7 @@ public class HumanTaskModule {
     }
     
     public static void configureTaskQueryService(JbpmServicesPersistenceManager pm){
+        
         ((TaskQueryServiceImpl)queryService).setPm(pm);
     }
     
@@ -202,6 +207,7 @@ public class HumanTaskModule {
         ((TaskDeadlinesServiceImpl)deadlinesService).setPm(pm);
         ((TaskDeadlinesServiceImpl)deadlinesService).setLogger(logger);
         ((TaskDeadlinesServiceImpl)deadlinesService).setNotificationEvents(notificationEvents);
+        ((TaskDeadlinesServiceImpl)deadlinesService).init();
     }
     
     public static void configureTaskInstanceService(JbpmServicesPersistenceManager pm, TaskQueryService queryService){
@@ -227,8 +233,9 @@ public class HumanTaskModule {
     public static void configureUserGroupLifeCycleManagerDecorator(JbpmServicesPersistenceManager pm, 
                                                             LifeCycleManager lifeCycleManager, UserGroupCallback userGroupCallback){
         
-        userGroupLifeCycleDecorator.setPm(pm);
+        
         userGroupLifeCycleDecorator.setManager(lifeCycleManager);
+        userGroupLifeCycleDecorator.setPm(pm);
         userGroupLifeCycleDecorator.setUserGroupCallback(userGroupCallback);
         
     }
@@ -303,6 +310,23 @@ public class HumanTaskModule {
 
     public static void setUserGroupLifeCycleDecorator(UserGroupLifeCycleManagerDecorator userGroupLifeCycleDecorator) {
         HumanTaskModule.userGroupLifeCycleDecorator = userGroupLifeCycleDecorator;
+    }
+
+    private static TaskQueryService configureUserGroupQueryServiceDecorator(TaskQueryService queryService, UserGroupCallback userGroupCallback) {
+        UserGroupTaskQueryServiceDecorator userGroupTaskQueryServiceDecorator = new UserGroupTaskQueryServiceDecorator();
+        userGroupTaskQueryServiceDecorator.setPm(pm);
+        userGroupTaskQueryServiceDecorator.setUserGroupCallback(userGroupCallback);
+        userGroupTaskQueryServiceDecorator.setDelegate(queryService);
+        return userGroupTaskQueryServiceDecorator;
+        
+    }
+
+    private static TaskInstanceService configureUserGroupTaskInstanceServiceDecorator(TaskInstanceService instanceService, UserGroupCallback userGroupCallback) {
+        UserGroupTaskInstanceServiceDecorator userGroupTaskInstanceDecorator = new UserGroupTaskInstanceServiceDecorator();
+        userGroupTaskInstanceDecorator.setPm(pm);
+        userGroupTaskInstanceDecorator.setUserGroupCallback(userGroupCallback);
+        userGroupTaskInstanceDecorator.setDelegate(instanceService);
+        return userGroupTaskInstanceDecorator;
     }
     
     

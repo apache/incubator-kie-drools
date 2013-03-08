@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -37,8 +38,8 @@ import javax.transaction.UserTransaction;
 import org.drools.core.util.FileManager;
 import org.drools.impl.EnvironmentFactory;
 
-import org.droolsjbpm.services.api.Domain;
-import org.droolsjbpm.services.api.SessionManager;
+import org.jbpm.shared.services.api.Domain;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.WorkItemHandlerProducer;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.BAM;
@@ -51,7 +52,6 @@ import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.kie.KieBase;
 import org.kie.KieServices;
@@ -85,7 +85,7 @@ import org.sonatype.aether.repository.RemoteRepository;
  * @author salaboy
  */
 @ApplicationScoped
-public class SessionManagerImpl implements SessionManager {
+public class SessionManagerImpl implements ServicesSessionManager {
 
     @Inject
     private JbpmServicesPersistenceManager pm; 
@@ -122,7 +122,7 @@ public class SessionManagerImpl implements SessionManager {
     // Ksession Name, Ksession Id
     private Map<String, List<Integer>> ksessionIds = new HashMap<String, List<Integer>>();
     // Ksession Id / Process Instance Id 
-    private Map<Integer, Long> processInstanceIdKsession = new HashMap<Integer, Long>();
+    private Map<Integer, List<Long>> processInstanceIdKsession = new HashMap<Integer, List<Long>>();
     // Process Path / Process Id - String 
     private Map<String, List<String>> processDefinitionNamesBySession = new HashMap<String, List<String>>();
     // Ksession Name / List of handlers
@@ -218,7 +218,7 @@ public class SessionManagerImpl implements SessionManager {
   
 
     @Override
-    public Map<Integer, Long> getProcessInstanceIdKsession() {
+    public Map<Integer, List<Long>> getProcessInstanceIdKsession() {
         return processInstanceIdKsession;
     }
 
@@ -226,7 +226,12 @@ public class SessionManagerImpl implements SessionManager {
     @Override
     public void addProcessInstanceIdKsession(Integer ksessionId,
             Long processInstanceId) {
-        this.processInstanceIdKsession.put(ksessionId, processInstanceId);
+        List<Long> piIds = this.processInstanceIdKsession.get(ksessionId);
+        if (piIds == null) {
+            piIds = new CopyOnWriteArrayList<Long>();
+        }
+        piIds.add(processInstanceId);
+        this.processInstanceIdKsession.put(ksessionId, piIds);
     }
 
     @Override
@@ -257,7 +262,8 @@ public class SessionManagerImpl implements SessionManager {
     @Override
     public int getSessionForProcessInstanceId(Long processInstanceId) {
         for (int sessionId : processInstanceIdKsession.keySet()) {
-            if (processInstanceIdKsession.get(sessionId) == processInstanceId) {
+            List<Long> piIds = processInstanceIdKsession.get(sessionId);
+            if (piIds != null && piIds.contains(processInstanceId)) {
                 return sessionId;
             }
         }
@@ -575,12 +581,13 @@ public class SessionManagerImpl implements SessionManager {
   
   //Remove this code, because this should be done by guvnor ng
    private File createKPom(ReleaseId releaseId)  {
-    File pomFile = fileManager.newFile("pom.xml");
-    try {
-      fileManager.write(pomFile, getPom(releaseId));
-    } catch (IOException ex) {
-      Logger.getLogger(SessionManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
-    }
+    File pomFile = null;
+            pomFile = fileManager.newFile("pom.xml");
+        try {
+            fileManager.write(pomFile, getPom(releaseId));
+        } catch (Exception ex) {
+            Logger.getLogger(SessionManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
     return pomFile;
   }
    

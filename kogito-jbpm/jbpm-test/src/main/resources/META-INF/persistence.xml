@@ -21,6 +21,9 @@
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>
     
+    <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
+    <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
+    
     <class>org.jbpm.task.Attachment</class>
     <class>org.jbpm.task.Content</class>
     <class>org.jbpm.task.BooleanExpression</class>

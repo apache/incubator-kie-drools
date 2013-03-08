@@ -64,7 +64,6 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
         
         emf = Persistence.createEntityManagerFactory("org.jbpm.domain");
         
-        
         Logger logger = LogManager.getLogManager().getLogger("");
         
         JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
@@ -83,7 +82,6 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
         HumanTaskModule.addTaskEventListener(externalTaskEventListener);
         
         
-        
         // Session Manager Start up
         SessionManagerModule.setEntityManagerFactory(emf);
         SessionManagerModule.setIdentityProvider(new TestIdentityProvider());
@@ -96,7 +94,6 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
         htWorkItemHandler = new CDIHTWorkItemHandler();
         htWorkItemHandler.setSessionManager(sessionManager);
         htWorkItemHandler.setTaskService(taskService);
-     
         htWorkItemHandler.setTaskEventListener(externalTaskEventListener);
         htWorkItemHandler.addSession(ksession);
         

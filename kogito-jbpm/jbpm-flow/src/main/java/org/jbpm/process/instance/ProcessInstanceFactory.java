@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.kie.definition.process.Process;
+import org.kie.process.CorrelationKey;
 
 /**
  * 
@@ -27,6 +28,7 @@ import org.kie.definition.process.Process;
  */
 public interface ProcessInstanceFactory {
     
-    ProcessInstance createProcessInstance(Process process, InternalKnowledgeRuntime kruntime, Map<String, Object> parameters);
+    ProcessInstance createProcessInstance(Process process, CorrelationKey correlationKey, 
+            InternalKnowledgeRuntime kruntime, Map<String, Object> parameters);
 
 }

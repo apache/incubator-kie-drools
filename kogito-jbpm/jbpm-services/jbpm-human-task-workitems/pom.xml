@@ -20,6 +20,10 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-shared-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-persistence-jpa</artifactId>
     </dependency>
     <dependency>
@@ -88,6 +92,23 @@
       <groupId>org.jboss.arquillian.core</groupId>
       <artifactId>arquillian-core-api</artifactId>
       <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-jgit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-fs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-nio2-model</artifactId>
     </dependency>
   </dependencies>
   <build>

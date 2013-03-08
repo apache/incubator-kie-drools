@@ -18,9 +18,7 @@ package org.droolsjbpm.services.wih.events;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
@@ -37,31 +35,10 @@ import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
 import org.droolsjbpm.services.test.TestIdentityProvider;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskAdminService;
-import org.jbpm.task.api.TaskContentService;
-import org.jbpm.task.api.TaskDeadlinesService;
-import org.jbpm.task.api.TaskIdentityService;
-import org.jbpm.task.api.TaskInstanceService;
-import org.jbpm.task.api.TaskQueryService;
-import org.jbpm.task.deadlines.DeadlinesDecorator;
-import org.jbpm.task.events.NotificationEvent;
-import org.jbpm.task.identity.MvelUserGroupCallbackImpl;
-import org.jbpm.task.identity.UserGroupCallback;
-import org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator;
-import org.jbpm.task.impl.TaskAdminServiceImpl;
-import org.jbpm.task.impl.TaskContentServiceImpl;
-import org.jbpm.task.impl.TaskDeadlinesServiceImpl;
-import org.jbpm.task.impl.TaskIdentityServiceImpl;
-import org.jbpm.task.impl.TaskInstanceServiceImpl;
-import org.jbpm.task.impl.TaskQueryServiceImpl;
-import org.jbpm.task.impl.TaskServiceEntryPointImpl;
-import org.jbpm.task.internals.lifecycle.LifeCycleManager;
-import org.jbpm.task.internals.lifecycle.MVELLifeCycleManager;
-import org.jbpm.task.subtask.SubTaskDecorator;
+import org.jbpm.task.HumanTaskModule;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
 import org.jbpm.task.wih.ExternalTaskEventListener;
 import org.junit.After;
@@ -75,6 +52,7 @@ public class NoCDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
     @Inject
     private CDIHTWorkItemHandler htWorkItemHandler;
     private PoolingDataSource ds;
+    private EntityManagerFactory emf;
     @Before
     public void setUp() throws Exception {
         
@@ -95,84 +73,23 @@ public class NoCDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
         
         // Persistence Manager Start Up
         
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.domain");
-        EntityManager em = emf.createEntityManager();
+        emf = Persistence.createEntityManagerFactory("org.jbpm.domain");
         
         Logger logger = LogManager.getLogManager().getLogger("");
-        
+        JbpmServicesTransactionManager jbpmJTATransactionManager = new JbpmJTATransactionManager();
         JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
-        ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
-        ((JbpmServicesPersistenceManagerImpl)pm).setTransactionManager(new JbpmJTATransactionManager()); 
         
         // Task Service Start up
-        taskService = new TaskServiceEntryPointImpl();
-        Event<Task> taskEvents = new JbpmServicesEventImpl<Task>();
+          
+        HumanTaskModule.setEntityManagerFactory(emf);
+        HumanTaskModule.setJbpmServicesPersistenceManager(pm);
+        HumanTaskModule.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
+        taskService = HumanTaskModule.getService();
+
+        ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
+        externalTaskEventListener.setTaskService(taskService);
         
-        Event<NotificationEvent> notificationEvents = new JbpmServicesEventImpl<NotificationEvent>();
-        
-        TaskQueryService queryService = new TaskQueryServiceImpl();
-        ((TaskQueryServiceImpl)queryService).setPm(pm);
-        taskService.setTaskQueryService(queryService);
-        
-        TaskIdentityService identityService = new TaskIdentityServiceImpl();
-        ((TaskIdentityServiceImpl)identityService).setPm(pm);
-        taskService.setTaskIdentityService(identityService);
-        
-        TaskAdminService adminService = new TaskAdminServiceImpl();
-        ((TaskAdminServiceImpl)adminService).setPm(pm);
-        taskService.setTaskAdminService(adminService);
-        
-        TaskInstanceService instanceService = new TaskInstanceServiceImpl();
-        ((TaskInstanceServiceImpl)instanceService).setPm(pm);
-        ((TaskInstanceServiceImpl)instanceService).setTaskQueryService(queryService);
-        ((TaskInstanceServiceImpl)instanceService).setTaskEvents(taskEvents);
-        
-        
-        TaskContentService contentService = new TaskContentServiceImpl();
-        ((TaskContentServiceImpl)contentService).setPm(pm);
-        taskService.setTaskContentService(contentService);
-        
-        LifeCycleManager mvelLifeCycleManager = new MVELLifeCycleManager();
-        ((MVELLifeCycleManager)mvelLifeCycleManager).setPm(pm);
-        ((MVELLifeCycleManager)mvelLifeCycleManager).setTaskIdentityService(identityService);
-        ((MVELLifeCycleManager)mvelLifeCycleManager).setTaskQueryService(queryService);
-        ((MVELLifeCycleManager)mvelLifeCycleManager).setTaskContentService(contentService);
-        ((MVELLifeCycleManager)mvelLifeCycleManager).setTaskEvents(taskEvents);
-        ((MVELLifeCycleManager)mvelLifeCycleManager).setLogger(logger);
-        ((MVELLifeCycleManager)mvelLifeCycleManager).initMVELOperations();
-        
-        UserGroupCallback userGroupCallback = new MvelUserGroupCallbackImpl();
-        
-        UserGroupLifeCycleManagerDecorator userGroupLifeCycleDecorator = new UserGroupLifeCycleManagerDecorator();
-        
-        
-        userGroupLifeCycleDecorator.setPm(pm);
-        userGroupLifeCycleDecorator.setManager(mvelLifeCycleManager);
-        userGroupLifeCycleDecorator.setUserGroupCallback(userGroupCallback);
-        
-        
-        ((TaskInstanceServiceImpl)instanceService).setLifeCycleManager(userGroupLifeCycleDecorator);
-        
-        ((TaskInstanceServiceImpl)instanceService).setUserGroupCallback(userGroupCallback);
-        
-        TaskDeadlinesService deadlinesService = new TaskDeadlinesServiceImpl();
-        ((TaskDeadlinesServiceImpl)deadlinesService).setPm(pm);
-        ((TaskDeadlinesServiceImpl)deadlinesService).setLogger(logger);
-        ((TaskDeadlinesServiceImpl)deadlinesService).setNotificationEvents(notificationEvents);
-        
-        SubTaskDecorator subTaskDecorator = new SubTaskDecorator();
-        subTaskDecorator.setInstanceService(instanceService);
-        subTaskDecorator.setPm(pm);
-        subTaskDecorator.setQueryService(queryService);
-        
-        DeadlinesDecorator deadlinesDecorator = new DeadlinesDecorator();
-        deadlinesDecorator.setPm(pm);
-        deadlinesDecorator.setQueryService(queryService);
-        deadlinesDecorator.setDeadlineService(deadlinesService);
-        deadlinesDecorator.setQueryService(queryService);
-        deadlinesDecorator.setInstanceService(subTaskDecorator);
-        
-        taskService.setTaskInstanceService(deadlinesDecorator);
+        HumanTaskModule.addTaskEventListener(externalTaskEventListener);
         
         
         // Session Manager Start up
@@ -220,10 +137,9 @@ public class NoCDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
         htWorkItemHandler = new CDIHTWorkItemHandler();
         htWorkItemHandler.setSessionManager(sessionManager);
         htWorkItemHandler.setTaskService(taskService);
-        ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
-        externalTaskEventListener.setTaskService(taskService);
         htWorkItemHandler.setTaskEventListener(externalTaskEventListener);
         htWorkItemHandler.addSession(ksession);
+        
         ((SessionManagerImpl)sessionManager).setHTWorkItemHandler(htWorkItemHandler);
         
         CDIProcessEventListener processEventListener = new CDIProcessEventListener();
@@ -235,7 +151,7 @@ public class NoCDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
         CDIRuleAwareProcessEventListener ruleAwareEventListener = new CDIRuleAwareProcessEventListener();
         ((SessionManagerImpl)sessionManager).setProcessFactsListener(ruleAwareEventListener);
         
-        ((JbpmServicesEventImpl)taskEvents).addListener(externalTaskEventListener);
+        ((SessionManagerImpl)sessionManager).init();
         
         // TEST Start up
         setTaskService(taskService);
@@ -246,6 +162,9 @@ public class NoCDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
     @After
     public void tearDown() throws Exception {
         int removeAllTasks = taskService.removeAllTasks();
+        HumanTaskModule.dispose();
+        
+        emf.close();
         ds.close();
     }
 }

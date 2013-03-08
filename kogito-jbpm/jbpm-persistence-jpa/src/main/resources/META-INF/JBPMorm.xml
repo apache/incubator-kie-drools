@@ -16,4 +16,27 @@ where
           </query>
       </named-query>
       
+      <named-query name="GetProcessInstanceIdByCorrelation">
+          <query>
+select 
+    key.processInstanceId 
+from 
+    CorrelationKeyInfo key left join key.properties props 
+where 
+    size(key.properties) = cast(:elem_count as integer) and 
+    props.value in ( :properties )
+    group by key.id 
+having count(key.id) = :elem_count
+          </query>
+      </named-query>
+       <named-query name="GetCorrelationKeysByProcessInstanceId">
+          <query>     
+select 
+    key 
+from 
+    CorrelationKeyInfo key 
+where 
+    key.processInstanceId = :pId
+      </query>
+      </named-query>
 </entity-mappings>

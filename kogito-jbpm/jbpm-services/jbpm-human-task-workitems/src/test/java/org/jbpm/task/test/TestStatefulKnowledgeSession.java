@@ -271,4 +271,9 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
     @Override
     public void delete(FactHandle fh) {
     }
+
+    @Override
+    public void destroy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

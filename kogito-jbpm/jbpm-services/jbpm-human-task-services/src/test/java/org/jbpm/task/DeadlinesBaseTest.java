@@ -16,6 +16,9 @@
 package org.jbpm.task;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -23,17 +26,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import org.jbpm.task.deadlines.NotificationListener;
 import org.jbpm.task.deadlines.notifications.impl.MockNotificationListener;
-
 import org.jbpm.task.impl.factories.TaskFactory;
-
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.junit.After;
-
-
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 
@@ -55,13 +55,6 @@ public abstract class DeadlinesBaseTest extends BaseTest {
         
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
-        MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(new User("Tony Stark"), "tony@domain.com");
-        userInfo.getEmails().put(new User("Darth Vader"), "darth@domain.com");
-
-        userInfo.getLanguages().put(new User("Tony Stark"), "en-UK");
-        userInfo.getLanguages().put(new User("Darth Vader"), "en-UK");
-        taskService.setUserInfo(userInfo);
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
         Task task = (Task) TaskFactory.evalTask(reader, vars);
@@ -99,22 +92,6 @@ public abstract class DeadlinesBaseTest extends BaseTest {
         assertEquals(1, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         assertEquals(2, ((MockNotificationListener)notificationListener).getEventsRecieved().get(0).getNotification().getRecipients().size());
         
-        //@TODO: validate events content
-//        List<String> list = new ArrayList<String>(2);
-//        list.add(getWiser().getMessages().get(0).getEnvelopeReceiver());
-//        list.add(getWiser().getMessages().get(1).getEnvelopeReceiver());
-//
-//        assertTrue(list.contains("tony@domain.com"));
-//        assertTrue(list.contains("darth@domain.com"));
-//
-//
-//        MimeMessage msg = ((WiserMessage) getWiser().getMessages().get(0)).getMimeMessage();
-//        assertEquals(myBody, msg.getContent());
-//        assertEquals(mySubject, msg.getSubject());
-//        assertEquals("from@domain.com", ((InternetAddress) msg.getFrom()[0]).getAddress());
-//        assertEquals("replyTo@domain.com", ((InternetAddress) msg.getReplyTo()[0]).getAddress());
-//        assertEquals("tony@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[0]).getAddress());
-//        assertEquals("darth@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[1]).getAddress());
     }
     @Test
     public void testDelayedEmailNotificationOnDeadlineContentSingleObject() throws Exception {
@@ -122,12 +99,6 @@ public abstract class DeadlinesBaseTest extends BaseTest {
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
-        MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(new User("Tony Stark"), "tony@domain.com");
-        userInfo.getEmails().put(new User("Darth Vader"), "darth@domain.com");
-        userInfo.getLanguages().put(new User("Tony Stark"), "en-UK");
-        userInfo.getLanguages().put(new User("Darth Vader"), "en-UK");
-        taskService.setUserInfo(userInfo);
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotificationContentSingleObject));
         Task task = (Task) TaskFactory.evalTask(reader, vars);
@@ -160,21 +131,6 @@ public abstract class DeadlinesBaseTest extends BaseTest {
         // 1 email with two recipients should now exist
         assertEquals(1, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
         
-        //@TODO: validate events content
-//        List<String> list = new ArrayList<String>(2);
-//        list.add(getWiser().getMessages().get(0).getEnvelopeReceiver());
-//        list.add(getWiser().getMessages().get(1).getEnvelopeReceiver());
-//
-//        assertTrue(list.contains("tony@domain.com"));
-//        assertTrue(list.contains("darth@domain.com"));
-//
-//        MimeMessage msg = ((WiserMessage) getWiser().getMessages().get(0)).getMimeMessage();
-//        assertEquals("'singleobject'", msg.getContent());
-//        assertEquals("'singleobject'", msg.getSubject());
-//        assertEquals("from@domain.com", ((InternetAddress) msg.getFrom()[0]).getAddress());
-//        assertEquals("replyTo@domain.com", ((InternetAddress) msg.getReplyTo()[0]).getAddress());
-//        assertEquals("tony@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[0]).getAddress());
-//        assertEquals("darth@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[1]).getAddress());
 
     }
     @Test
@@ -183,13 +139,6 @@ public abstract class DeadlinesBaseTest extends BaseTest {
 
          Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
-        MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(new User("Tony Stark"), "tony@domain.com");
-        userInfo.getEmails().put(new User("Darth Vader"), "darth@domain.com");
-
-        userInfo.getLanguages().put(new User("Tony Stark"), "en-UK");
-        userInfo.getLanguages().put(new User("Darth Vader"), "en-UK");
-        taskService.setUserInfo(userInfo);
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
         Task task = (Task) TaskFactory.evalTask(reader, vars, false);
@@ -253,13 +202,6 @@ public abstract class DeadlinesBaseTest extends BaseTest {
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
-        MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(new User("Tony Stark"), "tony@domain.com");
-        userInfo.getEmails().put(new User("Darth Vader"), "darth@domain.com");
-
-        userInfo.getLanguages().put(new User("Tony Stark"), "en-UK");
-        userInfo.getLanguages().put(new User("Darth Vader"), "en-UK");
-        taskService.setUserInfo(userInfo);
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
         Task task = (Task) TaskFactory.evalTask(reader, vars, false);
@@ -320,13 +262,6 @@ public abstract class DeadlinesBaseTest extends BaseTest {
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
-        MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(new User("Tony Stark"), "tony@domain.com");
-        userInfo.getEmails().put(new User("Darth Vader"), "darth@domain.com");
-
-        userInfo.getLanguages().put(new User("Tony Stark"), "en-UK");
-        userInfo.getLanguages().put(new User("Darth Vader"), "en-UK");
-        taskService.setUserInfo(userInfo);
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
         Task task = (Task) TaskFactory.evalTask(reader, vars);
@@ -383,14 +318,6 @@ public abstract class DeadlinesBaseTest extends BaseTest {
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
-        
-        MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(new User("Tony Stark"), "tony@domain.com");
-        userInfo.getEmails().put(new User("Darth Vader"), "darth@domain.com");
-
-        userInfo.getLanguages().put(new User("Tony Stark"), "en-UK");
-        userInfo.getLanguages().put(new User("Darth Vader"), "en-UK");
-        taskService.setUserInfo(userInfo);
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
         Task task = (Task) TaskFactory.evalTask(reader, vars);
@@ -450,17 +377,6 @@ public abstract class DeadlinesBaseTest extends BaseTest {
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
-        MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put(new User("Tony Stark"), "tony@domain.com");
-        userInfo.getEmails().put(new User("Luke Cage"), "luke@domain.com");
-        userInfo.getEmails().put(new User("Bobba Fet"), "luke@domain.com");
-        userInfo.getEmails().put(new User("Jabba Hutt"), "luke@domain.com");
-
-        userInfo.getLanguages().put(new User("Tony Stark"), "en-UK");
-        userInfo.getLanguages().put(new User("Luke Cage"), "en-UK");
-        userInfo.getLanguages().put(new User("Bobba Fet"), "en-UK");
-        userInfo.getLanguages().put(new User("Jabba Hutt"), "en-UK");
-        taskService.setUserInfo(userInfo);
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithReassignment));
         Task task = (Task) TaskFactory.evalTask(reader, vars);

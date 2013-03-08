@@ -4,19 +4,16 @@
  */
 package org.jbpm.task.identity;
 
-import org.jbpm.task.annotations.Mvel;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-import org.drools.core.util.StringUtils;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
-import org.jbpm.task.Group;
+
 import org.jbpm.task.Operation;
-import org.jbpm.task.User;
+import org.jbpm.task.annotations.Mvel;
 import org.jbpm.task.exception.TaskException;
 import org.jbpm.task.internals.lifecycle.LifeCycleManager;
 
@@ -24,17 +21,13 @@ import org.jbpm.task.internals.lifecycle.LifeCycleManager;
  *
  */
 @Decorator
-public class UserGroupLifeCycleManagerDecorator implements LifeCycleManager {
+public class UserGroupLifeCycleManagerDecorator extends AbstractUserGroupCallbackDecorator implements LifeCycleManager {
+
 
     @Inject
     @Delegate
     @Mvel
     private LifeCycleManager manager;
-    @Inject 
-    private JbpmServicesPersistenceManager pm;
-    @Inject
-    private UserGroupCallback userGroupCallback;
-    private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
 
     public UserGroupLifeCycleManagerDecorator() {
     }
@@ -43,19 +36,11 @@ public class UserGroupLifeCycleManagerDecorator implements LifeCycleManager {
         this.manager = manager;
     }
 
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
-    }
-
-    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
-        this.userGroupCallback = userGroupCallback;
-    }
+   
 
     public LifeCycleManager getManager() {
         return manager;
     }
-    
-    
 
     public void taskOperation(Operation operation, long taskId, String userId, String targetEntityId, Map<String, Object> data, List<String> groupIds) throws TaskException {
         groupIds = doUserGroupCallbackOperation(userId, groupIds);
@@ -64,90 +49,4 @@ public class UserGroupLifeCycleManagerDecorator implements LifeCycleManager {
 
     }
 
-    private List<String> doUserGroupCallbackOperation(String userId, List<String> groupIds) {
-
-        doCallbackUserOperation(userId);
-        doCallbackGroupsOperation(userId, groupIds);
-
-        return userGroupCallback.getGroupsForUser(userId, groupIds, null);
-
-    }
-
-    private boolean doCallbackUserOperation(String userId) {
-
-        if (userId != null && userGroupCallback.existsUser(userId)) {
-            addUserFromCallbackOperation(userId);
-            return true;
-        }
-        return false;
-
-    }
-
-    private boolean doCallbackGroupOperation(String groupId) {
-
-        if (groupId != null && userGroupCallback.existsGroup(groupId)) {
-            addGroupFromCallbackOperation(groupId);
-            return true;
-        }
-        return false;
-
-    }
-
-    private void addUserFromCallbackOperation(String userId) {
-        try {
-            boolean userExists = pm.find(User.class, userId) != null;
-            if (!StringUtils.isEmpty(userId) && !userExists) {
-                User user = new User(userId);
-                pm.persist(user);
-            }
-        } catch (Throwable t) {
-            //logger.log(Level.SEVERE, "Unable to add user " + userId);
-        }
-    }
-
-    private void doCallbackGroupsOperation(String userId, List<String> groupIds) {
-
-        if (userId != null) {
-
-            if (groupIds != null && groupIds.size() > 0) {
-
-                List<String> userGroups = userGroupCallback.getGroupsForUser(userId, groupIds, null);
-                for (String groupId : groupIds) {
-
-                    if (userGroupCallback.existsGroup(groupId) && userGroups != null && userGroups.contains(groupId)) {
-                        addGroupFromCallbackOperation(groupId);
-                    }
-                }
-            } else {
-                if (!(userGroupsMap.containsKey(userId) && userGroupsMap.get(userId).booleanValue())) {
-                    List<String> userGroups = userGroupCallback.getGroupsForUser(userId, null, null);
-                    if (userGroups != null && userGroups.size() > 0) {
-                        for (String group : userGroups) {
-                            addGroupFromCallbackOperation(group);
-                        }
-                        userGroupsMap.put(userId, true);
-                    }
-                }
-            }
-        } else {
-            if (groupIds != null) {
-                for (String groupId : groupIds) {
-                    addGroupFromCallbackOperation(groupId);
-                }
-            }
-        }
-
-    }
-
-    private void addGroupFromCallbackOperation(String groupId) {
-        try {
-            boolean groupExists = pm.find(Group.class, groupId) != null;
-            if (!StringUtils.isEmpty(groupId) && !groupExists) {
-                Group group = new Group(groupId);
-                pm.persist(group);
-            }
-        } catch (Throwable t) {
-            //logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
-        }
-    }
 }

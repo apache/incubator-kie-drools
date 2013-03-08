@@ -21,8 +21,9 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.droolsjbpm.services.api.SessionManager;
 import org.droolsjbpm.services.impl.helpers.KieSessionDelegate;
+import org.jbpm.shared.services.api.ServicesSessionManager;
+import org.jbpm.shared.services.api.SessionManager;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.task.AccessType;
@@ -47,12 +48,12 @@ public abstract class HTWorkItemHandlerBaseTest {
     protected TestKieSession ksession = new TestKieSession();
     
     @Inject
-    protected SessionManager sessionManager;
+    protected ServicesSessionManager sessionManager;
 
     @Inject
     protected TaskServiceEntryPoint taskService; 
 
-    public void setSessionManager(SessionManager sessionManager) {
+    public void setSessionManager(ServicesSessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 

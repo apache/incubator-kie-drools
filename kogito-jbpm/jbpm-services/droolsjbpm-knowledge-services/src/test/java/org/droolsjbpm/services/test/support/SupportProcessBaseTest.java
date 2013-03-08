@@ -23,10 +23,10 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.droolsjbpm.services.api.Domain;
+import org.jbpm.shared.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.droolsjbpm.services.api.SessionManager;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.jbpm.shared.services.api.FileException;
@@ -49,7 +49,7 @@ public abstract class SupportProcessBaseTest {
     @Inject
     protected FileService fs;
     @Inject
-    protected SessionManager sessionManager;
+    protected ServicesSessionManager sessionManager;
 
  
 

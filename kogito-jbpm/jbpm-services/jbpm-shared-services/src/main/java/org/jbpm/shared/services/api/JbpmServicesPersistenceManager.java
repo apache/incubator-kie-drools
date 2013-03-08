@@ -17,7 +17,6 @@ package org.jbpm.shared.services.api;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.persistence.Query;
 
 /**
  *

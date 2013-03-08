@@ -16,27 +16,25 @@
 package org.jbpm.task.wih;
 
 import java.util.Date;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.droolsjbpm.services.api.SessionManager;
-import org.droolsjbpm.services.impl.SessionManagerImpl;
+
 import org.jboss.seam.transaction.Transactional;
-
-
-import org.jbpm.task.utils.OnErrorAction;
-import org.jbpm.task.Task;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemManager;
-
+import org.jbpm.shared.services.api.ServicesSessionManager;
+import org.jbpm.shared.services.api.SessionManager;
 import org.jbpm.task.ContentData;
+import org.jbpm.task.Task;
 import org.jbpm.task.annotations.External;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.impl.factories.TaskFactory;
+import org.jbpm.task.utils.OnErrorAction;
 import org.kie.runtime.KieSession;
+import org.kie.runtime.process.WorkItem;
+import org.kie.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @ApplicationScoped
@@ -66,7 +64,7 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
         listener.addSession(ksession, classLoader);
     }
 
-    public void setSessionManager(SessionManager sessionManager) {
+    public void setSessionManager(ServicesSessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
@@ -92,7 +90,10 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
         TaskFactory.initializeTask(task);
         ContentData content = createTaskContentBasedOnWorkItemParams(ksessionById, workItem);
         try {
-            taskService.addTask(task, content);
+            long taskId = taskService.addTask(task, content);
+            if (isAutoClaim(workItem, task)) {
+                taskService.claim(taskId, (String) workItem.getParameter("SwimlaneActorId"));
+            }
         } catch (Exception e) {
             if (action.equals(OnErrorAction.ABORT)) {
                 manager.abortWorkItem(workItem.getId());
@@ -122,6 +123,5 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
             }
         }
     }
-
     
 }

@@ -261,4 +261,33 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                     pm.addParametersToMap("userId", userId, "status", status, "expirationDate", expirationDate, "language", "en-UK")); //@TODO: FIX LANGUANGE
         
     }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language) {
+        List<TaskSummary> tasks = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksByStatusByProcessId",
+                pm.addParametersToMap("processInstanceId", processInstanceId, 
+                                        "status", status,
+                                        "language", language));
+    
+        return tasks;
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName,
+            String language) {
+        List<TaskSummary> tasks = (List<TaskSummary>)pm.queryWithParametersInTransaction("TasksByStatusByProcessIdByTaskName", 
+                pm.addParametersToMap("processInstanceId", processInstanceId,
+                                        "status", status, 
+                                        "taskName", taskName,
+                                        "language", language));
+    
+        return tasks;
+    }
+
+    @Override
+    public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
+        List<Long> tasks = (List<Long>)pm.queryWithParametersInTransaction("TasksByProcessInstanceId",
+                pm.addParametersToMap("processInstanceId", processInstanceId));
+        return tasks;
+    }
 }

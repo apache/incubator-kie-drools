@@ -15,14 +15,34 @@
  */
 package org.jbpm.task.api;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.jbpm.task.Status;
+
 /**
  * The Task Deadlines Service is intended to handle
  *  all the Deadlines associated with a Task
  */
 public interface TaskDeadlinesService {
-
-    public void schedule(long taskId, long deadlineId, long delay);
     
-    public void unschedule(long taskId); 
+    public enum DeadlineType {
+        START(Status.Created, Status.Ready, Status.Reserved),
+        END(Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended);
+        private List<Status> validStatuses;
+        
+        private DeadlineType(Status... statuses) {
+            this.validStatuses = Arrays.asList(statuses);
+        }
+        
+        public boolean isValidStatus(Status status) {
+            return this.validStatuses.contains(status);
+        }
+
+    }
+
+    public void schedule(long taskId, long deadlineId, long delay, DeadlineType type);
+    
+    public void unschedule(long taskId, DeadlineType type); 
     
 }

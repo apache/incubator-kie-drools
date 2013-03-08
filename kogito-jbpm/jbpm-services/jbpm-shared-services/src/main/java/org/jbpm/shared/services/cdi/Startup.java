@@ -1,4 +1,4 @@
-package org.droolsjbpm.services.impl.util;
+package org.jbpm.shared.services.cdi;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

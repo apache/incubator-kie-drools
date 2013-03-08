@@ -15,7 +15,7 @@
  */
 package org.droolsjbpm.services.impl.helpers;
 
-import org.droolsjbpm.services.api.SessionManager;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
@@ -40,6 +40,7 @@ import org.kie.time.SessionClock;
 
 import java.util.Collection;
 import java.util.Map;
+import org.jbpm.shared.services.api.SessionManager;
 import org.kie.KieBase;
 import org.kie.runtime.KieSession;
 
@@ -50,10 +51,10 @@ import org.kie.runtime.KieSession;
 public class KieSessionDelegate implements KieSession{
 
     private KieSession ksession;
-    private SessionManager sessionManager;
+    private ServicesSessionManager sessionManager;
     private String name;
 
-    public KieSessionDelegate(String name, KieSession ksession, SessionManager sessionManager) {
+    public KieSessionDelegate(String name, KieSession ksession, ServicesSessionManager sessionManager) {
         this.name = name;
         this.ksession = ksession;
         this.sessionManager = sessionManager;

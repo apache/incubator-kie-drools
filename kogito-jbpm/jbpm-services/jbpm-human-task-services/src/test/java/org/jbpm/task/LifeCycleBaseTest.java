@@ -393,7 +393,7 @@ public abstract class LifeCycleBaseTest extends BaseTest {
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
         List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-        assertEquals(2, tasksAssignedAsPotentialOwner.size());
+        assertEquals(3, tasksAssignedAsPotentialOwner.size());
         
         taskService.forward(taskId, "salaboy", "Crusaders");
 

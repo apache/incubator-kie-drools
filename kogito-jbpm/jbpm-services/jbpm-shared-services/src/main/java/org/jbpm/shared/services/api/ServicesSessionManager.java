@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.droolsjbpm.services.api;
+package org.jbpm.shared.services.api;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.kie.KieBase;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.process.WorkItemHandler;
 
 /**
- *
+ * Extension of the main <code>SessionManager</code> that provides services specific
+ * enhancements. 
  * @author salaboy
  */
-public interface SessionManager {
+public interface ServicesSessionManager extends org.jbpm.shared.services.api.SessionManager {
 
     void setDomain(Domain domain);
     
@@ -38,15 +38,13 @@ public interface SessionManager {
 
     Map<Integer, KieSession> getKsessionsByName(String ksessionName);
 
-    Map<Integer, Long> getProcessInstanceIdKsession();
-
+    Map<Integer, List<Long>> getProcessInstanceIdKsession();
+    
     KieSession getKsessionById(int ksessionId);
     
     void addKsession(String sessionName, KieSession session);
 
     void addProcessInstanceIdKsession(Integer ksessionId, Long processInstanceId);
-
-    int getSessionForProcessInstanceId(Long processInstanceId);
 
     List<Integer> getSessionIdsByName(String ksessionName);
 

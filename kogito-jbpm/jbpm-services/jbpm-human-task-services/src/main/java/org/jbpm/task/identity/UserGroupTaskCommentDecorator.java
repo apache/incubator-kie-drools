@@ -16,30 +16,24 @@
 package org.jbpm.task.identity;
 
 import java.util.List;
+
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import org.drools.core.util.StringUtils;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+
 import org.jbpm.task.Comment;
-import org.jbpm.task.User;
-import org.jbpm.task.api.TaskAttachmentService;
 import org.jbpm.task.api.TaskCommentService;
 
 /**
  *
  */
 @Decorator
-public class UserGroupTaskCommentDecorator implements TaskCommentService {
+public class UserGroupTaskCommentDecorator extends AbstractUserGroupCallbackDecorator implements TaskCommentService {
 
     @Inject
     @Delegate
     private TaskCommentService commentService;
-    @Inject
-    private UserGroupCallback userGroupCallback;
-    @Inject
-    private JbpmServicesPersistenceManager pm;
+
 
     public long addComment(long taskId, Comment comment) {
         doCallbackOperationForComment(comment);
@@ -67,25 +61,4 @@ public class UserGroupTaskCommentDecorator implements TaskCommentService {
         }
     }
 
-    private boolean doCallbackUserOperation(String userId) {
-
-        if (userId != null && userGroupCallback.existsUser(userId)) {
-            addUserFromCallbackOperation(userId);
-            return true;
-        }
-        return false;
-
-    }
-
-    private void addUserFromCallbackOperation(String userId) {
-        try {
-            boolean userExists = pm.find(User.class, userId) != null;
-            if (!StringUtils.isEmpty(userId) && !userExists) {
-                User user = new User(userId);
-                pm.persist(user);
-            }
-        } catch (Throwable t) {
-            //logger.log(Level.SEVERE, "Unable to add user " + userId);
-        }
-    }
 }

@@ -31,6 +31,8 @@ import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
+import org.jbpm.shared.services.api.ServicesSessionManager;
+import org.jbpm.shared.services.api.SessionManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.task.wih.CDIHTWorkItemHandler;
@@ -41,7 +43,7 @@ import org.jbpm.task.wih.CDIHTWorkItemHandler;
  */
 public class SessionManagerModule {
     
-    private static SessionManager service = new SessionManagerImpl();
+    private static ServicesSessionManager service = new SessionManagerImpl();
     private static boolean configured = false;
     
     private static JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
@@ -57,7 +59,7 @@ public class SessionManagerModule {
     
     private static IdentityProvider identityProvider;
     
-    public static SessionManager getService(){
+    public static ServicesSessionManager getService(){
         if(!configured){
             configure();
         }
