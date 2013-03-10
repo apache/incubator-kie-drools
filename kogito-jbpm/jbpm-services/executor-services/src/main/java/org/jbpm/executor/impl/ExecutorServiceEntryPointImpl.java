@@ -22,6 +22,7 @@ import org.jbpm.executor.entities.RequestInfo;
 public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint {
     @Inject
     private Executor executor;
+    private boolean executorStarted = false;
     @Inject 
     private ExecutorQueryService queryService;
     @Inject
@@ -100,10 +101,16 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
 
     public void init() {
         executor.init();
+        this.executorStarted = true;
     }
 
     public void destroy() {
+    	this.executorStarted = false;
         executor.destroy();
+    }
+    
+    public boolean isActive() {
+    	return executorStarted;
     }
 
     public int getInterval() {
