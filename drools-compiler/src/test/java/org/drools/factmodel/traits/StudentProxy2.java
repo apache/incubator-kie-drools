@@ -19,7 +19,6 @@ package org.drools.factmodel.traits;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class StudentProxy2 extends TraitProxy implements IStudent {
@@ -46,12 +45,12 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
 
         fields = new StudentProxyWrapper2( obj, m );
 
-        if ( obj.getDynamicProperties() == null ) {
-            obj.setDynamicProperties( m );
+        if ( obj._getDynamicProperties() == null ) {
+            obj._setDynamicProperties( m );
         }
 
-        if ( obj.getTraitMap() == null ) {
-            obj.setTraitMap( new VetoableTypedMap( new HashMap() ) );
+        if ( obj._getTraitMap() == null ) {
+            obj._setTraitMap( new TraitTypeMap( new HashMap() ) );
         }
     }
 

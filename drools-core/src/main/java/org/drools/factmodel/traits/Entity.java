@@ -17,9 +17,9 @@
 package org.drools.factmodel.traits;
 
 import java.io.Serializable;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,25 +48,25 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
         this.id = id;
     }
 
-    public Map<String, Object> getDynamicProperties() {
+    public Map<String, Object> _getDynamicProperties() {
 //        if ( __$$dynamic_properties_map$$ == null ) {
 //            __$$dynamic_properties_map$$ = new HashMap<String,Object>(5) ;
 //        }
         return  __$$dynamic_properties_map$$;
     }
 
-    public void setDynamicProperties(Map map) {
+    public void _setDynamicProperties(Map map) {
         __$$dynamic_properties_map$$ = map;
     }
 
 
 
-    public void setTraitMap(Map map) {
-        __$$dynamic_traits_map$$ = new VetoableTypedMap( map );
+    public void _setTraitMap(Map map) {
+        __$$dynamic_traits_map$$ = map;
     }
 
 
-    public Map<String, Thing<Entity>> getTraitMap() {
+    public Map<String, Thing<Entity>> _getTraitMap() {
 //        if ( __$$dynamic_traits_map$$ == null ) {
 //            __$$dynamic_traits_map$$ = new VetoableTypedMap( new HashMap<String, Thing>(5) );
 //        }
@@ -74,20 +74,20 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
     }
 
     public void addTrait(String type, Thing proxy) throws LogicalTypeInconsistencyException {
-       ((VetoableTypedMap) getTraitMap()).putSafe(type, proxy);
+       ((TraitTypeMap) _getTraitMap()).putSafe(type, proxy);
     }
 
     public Thing getTrait(String type) {
-        return getTraitMap().get( type );
+        return _getTraitMap().get( type );
     }
 
     public boolean hasTrait(String type) {
-        return isTraitMapInitialized() && getTraitMap().containsKey(type);
+        return isTraitMapInitialized() && _getTraitMap().containsKey(type);
     }
 
     public Thing removeTrait(String type) {
         if ( isTraitMapInitialized() ) {
-            return getTraitMap().remove( type );    
+            return _getTraitMap().remove( type );
         } else {
             return null;
         }        
@@ -95,18 +95,14 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
 
     public Collection<String> getTraits() {
         if ( isTraitMapInitialized() ) {
-            return getTraitMap().keySet();
+            return _getTraitMap().keySet();
         } else {
             return Collections.emptySet();
         }
     }
 
-    public void denyTrait(Class trait) throws LogicalTypeInconsistencyException {
-        ((VetoableTypedMap) __$$dynamic_traits_map$$).addToVetoable( trait );
-    }
-
-    public void allowTrait(Class trait) {
-        ((VetoableTypedMap) __$$dynamic_traits_map$$).removeFromVetoable(trait);
+    public Collection<Thing> getMostSpecificTraits() {
+        return ((TraitTypeMap) __$$dynamic_traits_map$$).getMostSpecificTraits();
     }
 
     public boolean equals(Object o) {
@@ -125,6 +121,11 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
 
     public boolean isTraitMapInitialized() {
         return __$$dynamic_traits_map$$ != null;
+    }
+
+
+    public void _setBottomTypeCode( BitSet bottomTypeCode ) {
+        ((TraitTypeMap) __$$dynamic_traits_map$$).setBottomCode( bottomTypeCode );
     }
 }
 

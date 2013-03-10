@@ -93,7 +93,7 @@ public class ObjectTypeNode extends ObjectSource
     /**
      * The <code>ObjectType</code> semantic module.
      */
-    private ObjectType                      objectType;
+    protected ObjectType                    objectType;
 
     private boolean                         objectMemoryEnabled;
 
@@ -103,13 +103,13 @@ public class ObjectTypeNode extends ObjectSource
 
     private boolean                         queryNode;
 
-    private CompiledNetwork                 compiledNetwork;
+    protected CompiledNetwork               compiledNetwork;
 
     /* always dirty after serialisation */
-    private transient boolean               dirty;
+    protected transient boolean             dirty;
 
     /* reset counter when dirty */
-    private transient IdGenerator           idGenerator;
+    protected transient IdGenerator         idGenerator;
 
     public int getOtnIdCounter() {
         return idGenerator.otnIdCounter;
@@ -167,7 +167,7 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    public static Id DEFUALT_ID = new Id(Object.class, 0);
+    public static Id DEFAULT_ID = new Id(Object.class, 0);
 
     public static class Id {
 
@@ -234,11 +234,11 @@ public class ObjectTypeNode extends ObjectSource
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
-        out.writeObject( objectType );
-        out.writeBoolean( objectMemoryEnabled );
-        out.writeLong( expirationOffset );
+        out.writeObject(objectType);
+        out.writeBoolean(objectMemoryEnabled);
+        out.writeLong(expirationOffset);
         out.writeBoolean( lrUnlinkingEnabled );
-        out.writeBoolean( queryNode );
+        out.writeBoolean(queryNode);
     }
 
     /**
@@ -271,7 +271,7 @@ public class ObjectTypeNode extends ObjectSource
      * can have the matched facts propagated to them.
      *
      * @param factHandle    The fact handle.
-     * @param object        The object to assert.
+     * @param context       The propagation context.
      * @param workingMemory The working memory session.
      */
     public void assertObject(final InternalFactHandle factHandle,
@@ -325,8 +325,8 @@ public class ObjectTypeNode extends ObjectSource
      * Retract the <code>FactHandleimpl</code> from the <code>Rete</code> network. Also remove the
      * <code>FactHandleImpl</code> from the node memory.
      *
-     * @param rightTuple    The fact handle.
-     * @param object        The object to assert.
+     * @param factHandle    The fact handle.
+     * @param context       The propagation context.
      * @param workingMemory The working memory session.
      */
     public void retractObject(final InternalFactHandle factHandle,
@@ -363,7 +363,7 @@ public class ObjectTypeNode extends ObjectSource
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
         if ( dirty ) {
-            idGenerator.reset();
+            resetIdGenerator();
             updateTupleSinkId( this, this );
             dirty = false;
         }
@@ -379,7 +379,12 @@ public class ObjectTypeNode extends ObjectSource
                                              modifyPreviousTuples,
                                              context.adaptModificationMaskForObjectType(objectType, workingMemory),
                                              workingMemory );
+
         }
+    }
+
+    protected void resetIdGenerator() {
+        idGenerator.reset();
     }
 
     public void updateSink(final ObjectSink sink,
@@ -450,8 +455,8 @@ public class ObjectTypeNode extends ObjectSource
         this.dirty = true;
     }
 
-    private static void updateTupleSinkId( ObjectTypeNode otn,
-                                           ObjectSource source ) {
+    protected static void updateTupleSinkId(ObjectTypeNode otn,
+                                            ObjectSource source) {
         for ( ObjectSink sink : source.sink.getSinks() ) {
             if ( sink instanceof BetaNode ) {
                 ((BetaNode) sink).setRightInputOtnId( otn.nextOtnId() );
@@ -474,7 +479,7 @@ public class ObjectTypeNode extends ObjectSource
      * never removed from the rulebase in the current implementation
      *
      * @inheritDoc
-     * @see org.drools.common.BaseNode#remove(org.drools.reteoo.RuleRemovalContext, org.drools.reteoo.ReteooBuilder, org.drools.common.BaseNode, org.drools.common.InternalWorkingMemory[])
+     * @see org.drools.common.BaseNode#remove(RuleRemovalContext, ReteooBuilder, org.drools.common.InternalWorkingMemory[])
      */
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,
@@ -623,8 +628,7 @@ public class ObjectTypeNode extends ObjectSource
 
         /**
          * @param workingMemory
-         * @param behavior
-         * @param behaviorContext
+         * @param expireAction
          */
         public ExpireJobContext(WorkingMemoryReteExpireAction expireAction,
                                 InternalWorkingMemory workingMemory) {

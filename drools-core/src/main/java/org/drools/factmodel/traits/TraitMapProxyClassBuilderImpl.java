@@ -227,26 +227,26 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
 
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "getDynamicProperties", "()" + Type.getDescriptor( Map.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_getDynamicProperties", "()" + Type.getDescriptor( Map.class ) );
             Label l1 = new Label();
             mv.visitJumpInsn( IFNONNULL, l1 );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitVarInsn( ALOAD, 2 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
             mv.visitLabel( l1 );
 
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "getTraitMap",  "()" + Type.getDescriptor( Map.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_getTraitMap",  "()" + Type.getDescriptor( Map.class ) );
             Label l2 = new Label();
             mv.visitJumpInsn( IFNONNULL, l2 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitTypeInsn( NEW, Type.getInternalName( VetoableTypedMap.class ) );
+            mv.visitTypeInsn( NEW, Type.getInternalName( TraitTypeMap.class ) );
             mv.visitInsn( DUP );
             mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );
             mv.visitInsn( DUP );
             mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashMap.class ), "<init>", "()V" );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( VetoableTypedMap.class ), "<init>", "(" + Type.getDescriptor( Map.class ) + ")V" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitTypeMap.class ), "<init>", "(" + Type.getDescriptor( Map.class ) + ")V" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V" );
             mv.visitLabel( l2 );
 
             mv.visitInsn( RETURN );

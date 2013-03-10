@@ -33,6 +33,7 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.util.HierarchyEncoder;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 
@@ -122,15 +123,20 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         T proxy = null;
         try {
             switch ( mode ) {
-                case MAP    :   proxy = konst.newInstance( core, core.getDynamicProperties() );
+                case MAP    :   proxy = konst.newInstance( core, core._getDynamicProperties() );
                     break;
                 case TRIPLES:   proxy = konst.newInstance( core, ruleBase.getTripleStore(), getTripleFactory() );
                     break;
                 default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
             }
 
+            HierarchyEncoder hier = ruleBase.getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+
+            ((TraitProxy) proxy).setTypeCode( hier.getCode( trait.getName() ) );
+            core._setBottomTypeCode( hier.getBottom() );
 
             core.addTrait( traitName, proxy );
+
             return proxy;
         } catch (InstantiationException e) {
             e.printStackTrace();

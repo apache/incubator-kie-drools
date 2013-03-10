@@ -419,7 +419,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
         mv.visitVarInsn( ALOAD, 1 );
-        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "getDynamicProperties", "()" + Type.getDescriptor( Map.class ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_getDynamicProperties", "()" + Type.getDescriptor( Map.class ) );
         Label l0 = new Label();
         mv.visitJumpInsn( IFNONNULL, l0 );
 
@@ -431,19 +431,19 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 3 );
         mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TripleBasedBean.class ), "<init>",
                             "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( TripleStore.class ) + Type.getDescriptor( TripleFactory.class ) + ")V" );
-        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
+        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
         mv.visitLabel( l0 );
 
 
 
         mv.visitVarInsn( ALOAD, 1 );
-        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "getTraitMap", "()" + Type.getDescriptor( Map.class ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_getTraitMap", "()" + Type.getDescriptor( Map.class ) );
         Label l1 = new Label();
         mv.visitJumpInsn( IFNONNULL, l1 );
 
         mv.visitVarInsn( ALOAD, 1 );
-        mv.visitTypeInsn( NEW, Type.getInternalName( VetoableTypedMap.class ) );
+        mv.visitTypeInsn( NEW, Type.getInternalName( TraitTypeMap.class ) );
         mv.visitInsn( DUP );
         mv.visitTypeInsn( NEW, Type.getInternalName( TripleBasedTypes.class ) );
         mv.visitInsn( DUP );
@@ -452,8 +452,8 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 3 );
         mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TripleBasedTypes.class ), "<init>",
                             "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( TripleStore.class )  + Type.getDescriptor( TripleFactory.class ) + ")V" );
-        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( VetoableTypedMap.class ), "<init>", "(" + Type.getDescriptor( Map.class )+ ")V" );
-        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V" );
+        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitTypeMap.class ), "<init>", "(" + Type.getDescriptor( Map.class )+ ")V" );
+        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
         mv.visitLabel( l1 );
 

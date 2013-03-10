@@ -25,6 +25,10 @@ declare Core
     @Traitable
 end
 
+// legacy "semantic" interface
+declare trait IPerson
+
+end
 
 // legacy "semantic" interface
 declare trait IStudent
@@ -36,11 +40,6 @@ declare trait IRole
 
 end
 
-
-// legacy "semantic" interface
-declare trait IPerson
-
-end
 
 // declared interface
 declare trait Person
@@ -70,15 +69,18 @@ no-loop
 when
     $core: Entity( )
 then
-    IRole r = drools.don( $core, IRole.class, true );
-    IStudent<Entity> s = drools.<IStudent,Entity>don( $core, IStudent.class, true );
-    IPerson<Entity> x = drools.<IPerson,Entity>don( $core, IPerson.class, true );
-    Person<Entity> p = drools.<Person,Entity>don( $core, Person.class, true );
-    Worker<Entity> w = drools.<Worker,Entity>don( $core, Worker.class, true );
-    p.setName( "john" );
-    s.setSchool( "skol" );
-    w.setAge( 30 );
-    r.setRoleName( "john" );
+    IRole r = don( $core, IRole.class, true );
+    IStudent s = don( $core, IStudent.class, true );
+    IPerson x = don( $core, IPerson.class, true );
+    Person p = don( $core, Person.class, true );
+    Worker w = don( $core, Worker.class, true );
+
+
+    modify( p ) { setName( "john" ); }
+    modify( s ) { setSchool( "skol" ); }
+    modify( w ) { setAge( 30 ); }
+    modify( r ) { setRoleName( "john" ); }
+
 
     System.out.println(s);
     System.out.println(p);
@@ -86,12 +88,6 @@ then
     System.out.println(x);
     System.out.println(r);
 
-    update(p);
-    update(w);
-//    not necessary: IStudent instanceof IPerson
-//    update(x);
-    update(s);
-    update(r);
 end
 
 
@@ -100,7 +96,7 @@ when
     $p    : Person( name == "john" )
 then
     System.out.println( "John the Person is here" );
-    list.add("OK");
+    list.add( "OK" );
 end
 
 rule "Cloak 2"
@@ -108,7 +104,7 @@ when
     $p    : Worker( name == "john", age == 30 )
 then
     System.out.println( "John the Worker is here" );
-    list.add("OK2");
+    list.add( "OK2" );
 end
 
 rule "Cloak 3"
@@ -116,7 +112,7 @@ when
     $p    : IPerson( name == "john" )
 then
     System.out.println( "John the IPerson is here" );
-    list.add("OK3");
+    list.add( "OK3" );
 end
 
 rule "Cloak 4"
@@ -124,7 +120,7 @@ when
     $p    : IStudent( name == "john", school == "skol" )
 then
     System.out.println( "John the IStudent is here" );
-    list.add("OK4");
+    list.add( "OK4" );
 end
 
 
@@ -133,5 +129,5 @@ when
     $p    : IRole( roleName == "john" )
 then
     System.out.println( "John the IRole is here" );
-    list.add("OK5");
+    list.add( "OK5" );
 end

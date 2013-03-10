@@ -275,6 +275,10 @@ public class DefaultFactHandle
         return false;
     }
 
+    public boolean isTrait() {
+        return false;
+    }
+
     public RightTuple getFirstRightTuple() {
         return this.firstRightTuple;
     }

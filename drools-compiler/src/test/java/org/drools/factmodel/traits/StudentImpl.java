@@ -16,7 +16,9 @@
 
 package org.drools.factmodel.traits;
 
+import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,19 +88,19 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
                 '}';
     }
 
-    public Map<String, Object> getDynamicProperties() {
+    public Map<String, Object> _getDynamicProperties() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setDynamicProperties(Map<String, Object> map) {
+    public void _setDynamicProperties(Map<String, Object> map) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Map<String, Thing<StudentImpl>> getTraitMap() {
+    public Map<String, Thing<StudentImpl>> _getTraitMap() {
         return traitMap;
     }
 
-    public void setTraitMap(Map<String, Thing<StudentImpl>> map) {
+    public void _setTraitMap(Map<String, Thing<StudentImpl>> map) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -119,14 +121,18 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
     }
 
     public Collection<String> getTraits() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Collections.EMPTY_SET;
     }
 
-    public void denyTrait(Class trait) throws LogicalTypeInconsistencyException {
+    public Collection<Thing> getMostSpecificTraits() {
+        return Collections.EMPTY_SET;
+    }
+
+    public void _setBottomTypeCode(BitSet code) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void allowTrait(Class trait) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public BitSet getBottomTypeCode() {
+        return new BitSet();
     }
 }

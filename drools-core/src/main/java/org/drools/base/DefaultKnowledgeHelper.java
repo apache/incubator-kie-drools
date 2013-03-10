@@ -20,6 +20,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.BitSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -37,11 +39,13 @@ import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
 import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.ObjectTypeConfigurationRegistry;
+import org.drools.common.TraitFactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.traits.CoreWrapper;
 import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.TraitProxy;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -63,6 +67,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.util.HierarchyEncoder;
 
 public class DefaultKnowledgeHelper
     implements
@@ -334,16 +339,61 @@ public class DefaultKnowledgeHelper
         update( handle, Long.MAX_VALUE );
     }
 
-    public void update(final FactHandle handle, long mask, Class<?> modifiedClass) {
+    public void update( final FactHandle handle, long mask, Class<?> modifiedClass ) {
         InternalFactHandle h = (InternalFactHandle) handle;
         ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
                                                                      ((InternalFactHandle)handle).getObject(),
                                                                      mask,
                                                                      modifiedClass,
                                                                      this.activation );
+        if ( h.isTrait() ) {
+            if ( ( (TraitFactHandle) h ).isTraitable() ) {
+                // this is a traitable core object, so its traits must be updated as well
+                updateTraitableCore( h.getObject(), mask, null, modifiedClass );
+            } else {
+                Thing x = (Thing) h.getObject();
+                // in case this is a proxy
+                if ( x != x.getCore() ) {
+                    updateTraitableCore( x.getCore(), mask, x, modifiedClass );
+                }
+            }
+        }
     }
 
-    
+    private void updateTraitableCore( Object object, long mask, Thing originator, Class<?> modifiedClass ) {
+        TraitableBean txBean = (TraitableBean) object;
+
+        Collection<Thing> px = txBean.getMostSpecificTraits();
+        BitSet veto = null;
+        if ( originator != null ) {
+            veto = (BitSet) ((TraitProxy) originator).getTypeCode().clone();
+        }
+
+
+        for ( Thing t : px ) {
+            if ( t != originator ) {
+                TraitProxy proxy = (TraitProxy) t;
+
+                proxy.setTypeFilter( veto );
+                InternalFactHandle h = (InternalFactHandle) getFactHandle( t );
+                ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
+                                                                              t,
+                                                                              mask,
+                                                                              modifiedClass,
+                                                                              this.activation );
+                proxy.setTypeFilter( null );
+
+                BitSet tc = proxy.getTypeCode();
+                if ( veto == null ) {
+                    veto = (BitSet) tc.clone();
+                } else {
+                    veto.and( tc );
+                }
+            }
+        }
+    }
+
+
     public void update( Object object ) {
         update(object, Long.MAX_VALUE, Object.class);
     }
@@ -351,7 +401,7 @@ public class DefaultKnowledgeHelper
     public void update(Object object, long mask, Class<?> modifiedClass) {
         update(getFactHandle(object), mask, modifiedClass);
     }
-    
+
     public void retract(Object object) {
        retract( getFactHandle(object) );
     }
@@ -631,38 +681,6 @@ public class DefaultKnowledgeHelper
             return thing;
         }
     }
-
-    public <T,K> Thing<K> ward( Thing<K> thing, Class<T> trait ) {
-        try {
-            ( (TraitableBean<K,? extends TraitableBean>) thing.getCore() ).denyTrait( trait );
-            return thing;
-        } catch (LogicalTypeInconsistencyException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public <T,K> Thing<K> ward( K core, Class<T> trait ) {
-        Thing<K> thing = don( core, Thing.class );
-        try {
-            ( (TraitableBean<K,? extends TraitableBean>) thing.getCore() ).denyTrait( trait );
-            return thing;
-        } catch ( LogicalTypeInconsistencyException e ) {
-            return null;
-        }
-    }
-
-    public <T,K> Thing<K> grant( Thing<K> thing, Class<T> trait ) {
-        ( (TraitableBean<K,? extends TraitableBean>) thing.getCore() ).allowTrait( trait );
-        return thing;
-    }
-
-    public <T,K> Thing<K> grant( K core, Class<T> trait ) {
-        Thing thing = don( core, Thing.class );
-        ( (TraitableBean<K,? extends TraitableBean>) thing.getCore() ).allowTrait( trait );
-        return thing;
-    }
-
 
     public void modify(Object newObject) {
         // TODO Auto-generated method stub

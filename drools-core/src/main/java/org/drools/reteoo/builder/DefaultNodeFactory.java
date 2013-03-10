@@ -17,6 +17,7 @@
 package org.drools.reteoo.builder;
 
 
+import org.drools.base.ValueType;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.reteoo.AlphaNode;
@@ -31,6 +32,7 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.TerminalNode;
+import org.drools.reteoo.TraitObjectTypeNode;
 import org.drools.rule.From;
 import org.drools.rule.GroupElement;
 import org.drools.rule.QueryElement;
@@ -53,7 +55,11 @@ public class DefaultNodeFactory implements NodeFactory, Serializable {
     }
 
     public ObjectTypeNode buildObjectTypeNode( int id, EntryPointNode objectSource, ObjectType objectType, BuildContext context ) {
-        return new ObjectTypeNode( id, objectSource, objectType, context );
+        if ( objectType.getValueType().equals( ValueType.TRAIT_TYPE ) ) {
+            return new TraitObjectTypeNode( id, objectSource, objectType, context );
+        } else {
+            return new ObjectTypeNode( id, objectSource, objectType, context );
+        }
     }
 
     public JoinNode buildJoinNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context ) {

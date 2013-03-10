@@ -153,7 +153,7 @@ public class JpaPersistenceTraitTest {
             }
         }
         assertNotNull( core );
-        assertEquals( 2, core.getDynamicProperties().size() );
+        assertEquals( 2, core._getDynamicProperties().size() );
         assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak" ) );
@@ -254,7 +254,7 @@ public class JpaPersistenceTraitTest {
             }
         }
         assertNotNull( core );
-        assertEquals( 2, core.getDynamicProperties().size() );
+        assertEquals( 2, core._getDynamicProperties().size() );
         assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask2" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak2" ) );
@@ -349,7 +349,7 @@ public class JpaPersistenceTraitTest {
             }
         }
         assertNotNull( core );
-        assertEquals( 1, core.getDynamicProperties().size() );
+        assertEquals( 1, core._getDynamicProperties().size() );
         assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
 

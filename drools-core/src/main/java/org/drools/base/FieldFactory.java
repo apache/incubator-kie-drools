@@ -182,6 +182,8 @@ public class FieldFactory implements FieldDataFactory, Serializable {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.OBJECT_TYPE ) {
             field = new ObjectFieldImpl( value );
+        } else if ( valueType == ValueType.TRAIT_TYPE ) {
+            field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.BIG_DECIMAL_TYPE ) {
             field = new ObjectFieldImpl( MathUtils.getBigDecimal( value ) );
         } else if ( valueType == ValueType.BIG_INTEGER_TYPE ) {

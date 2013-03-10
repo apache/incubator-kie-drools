@@ -2288,10 +2288,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             Map<String, Method> setters = inspector.getSetterMethods();
             int j = 0;
             for (String fieldName : methods.keySet()) {
-                if ("core".equals( fieldName ) || "fields".equals( fieldName )) {
+                if ( "core".equals( fieldName ) || "fields".equals( fieldName ) ) {
                     continue;
                 }
-                if (!inspector.isNonGetter( fieldName ) && setters.keySet().contains( fieldName )) {
+                if ( !inspector.isNonGetter( fieldName ) && setters.keySet().contains( fieldName ) ) {
 
                     Class ret = methods.get( fieldName ).getReturnType();
                     FieldDefinition field = new FieldDefinition();
@@ -2303,11 +2303,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
 
             Set<String> interfaces = new HashSet<String>();
-            Collections.addAll(interfaces, type.getTypeClassDef().getInterfaces());
-            for (Class iKlass : concrete.getInterfaces()) {
+            Collections.addAll( interfaces, type.getTypeClassDef().getInterfaces() );
+            for ( Class iKlass : concrete.getInterfaces() ) {
                 interfaces.add( iKlass.getName() );
             }
-            type.getTypeClassDef().setInterfaces( interfaces.toArray( new String[interfaces.size()] ) );
+            type.getTypeClassDef().setInterfaces( interfaces.toArray( new String[ interfaces.size() ] ) );
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -2666,7 +2666,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         } else if ( type.getKind().equals( TypeDeclaration.Kind.TRAIT )
                     || typeDescr.getAnnotation( Trait.class.getSimpleName() ) != null ) {
 
-            if ( !type.isNovel() ) {
+            if ( ! type.isNovel() ) {
                 try {
                     PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
                     String availableName = typeDescr.getType().getFullName();
@@ -2727,8 +2727,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     // we already know the class exists
                 }
             } else {
-                if (def.getClassName().endsWith( "_Trait__Extension" )) {
-                    pkgRegistry.getTraitRegistry().addTrait( def.getClassName().replace( "_Trait__Extension",
+                if ( def.getClassName().endsWith( TraitFactory.SUFFIX ) ) {
+                    pkgRegistry.getTraitRegistry().addTrait( def.getClassName().replace( TraitFactory.SUFFIX,
                                                                                       "" ),
                                                           def );
                 } else {

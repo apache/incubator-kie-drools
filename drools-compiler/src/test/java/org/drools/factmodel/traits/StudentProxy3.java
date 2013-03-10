@@ -55,12 +55,12 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
         (( TripleBasedStruct ) fields).setTripleFactory( factory );
 
 
-        if ( obj.getDynamicProperties() == null ) {
-            obj.setDynamicProperties( new TripleBasedBean(obj,m,factory) );
+        if ( obj._getDynamicProperties() == null ) {
+            obj._setDynamicProperties( new TripleBasedBean(obj,m,factory) );
         }
 
-        if ( obj.getTraitMap() == null ) {
-            obj.setTraitMap( new VetoableTypedMap( new TripleBasedTypes(obj,m,factory) ) );
+        if ( obj._getTraitMap() == null ) {
+            obj._setTraitMap( new TraitTypeMap( new TripleBasedTypes(obj,m,factory) ) );
         }
 
     }

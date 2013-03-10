@@ -251,11 +251,9 @@ public class ValueType
             return ValueType.EVENT_TYPE;
         } else if ( clazz == Class.class ) {
             return ValueType.CLASS_TYPE;
-        } 
-//        else if ( Thing.class.isAssignableFrom( clazz )) {
-//            return ValueType.TRAIT_TYPE;
-//        } 
-        else {
+        } else if ( Thing.class.isAssignableFrom( clazz ) ) {
+            return ValueType.TRAIT_TYPE;
+        } else {
             return ValueType.OBJECT_TYPE;
         }
     }
