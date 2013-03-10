@@ -111,7 +111,7 @@ public class ExecutorImpl implements Executor {
         requestInfo.setTime(date);
         requestInfo.setMessage("Ready to execute");
         if (ctx.getData("retries") != null) {
-            requestInfo.setRetries((Integer) ctx.getData("retries"));
+            requestInfo.setRetries(Integer.valueOf(String.valueOf(ctx.getData("retries"))));
         } else {
             requestInfo.setRetries(retries);
         }
