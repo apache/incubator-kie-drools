@@ -91,6 +91,8 @@ public interface KieSession
     /**
      * Destroys session permanently. In case of session state being persisted in data store
      * it will be removed from it otherwise it falls back to default dispose() method. 
+     * NOTE: Name and location of this method will most likely change before 6.0.Final
+     *  as it applies only to persistent sessions
      */
     void destroy();
 }
