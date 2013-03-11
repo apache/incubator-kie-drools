@@ -354,10 +354,11 @@ public class SubNetworkLinkingTest {
         assertTrue( rs2.isRuleLinked() );
         assertTrue( rs3.isRuleLinked() );   
         
-        wm.retract( fha );        
+        wm.retract( fha );
+        wm.fireAllRules(); // need to have rules evalulated, for unlinking to happen
         assertFalse( rs1.isRuleLinked() );
         assertFalse( rs2.isRuleLinked() );
-        assertFalse( rs3.isRuleLinked() );           
+        assertFalse( rs3.isRuleLinked() );
     }
     
     @Test
@@ -416,11 +417,11 @@ public class SubNetworkLinkingTest {
         BetaMemory existsBm = ( BetaMemory ) wm.getNodeMemory( exists1n );
         
         assertEquals( 0, existsBm.getSegmentMemory().getLinkedNodeMask() );
-        
+
         FactHandle fhc = wm.insert(  new C() );
         FactHandle fhd = wm.insert(  new D() );
         
-        assertEquals( 4, existsBm.getSegmentMemory().getLinkedNodeMask() );
+        assertEquals( 1, existsBm.getSegmentMemory().getLinkedNodeMask() );  // exists is start of new segment
         
         wm.retract( fhd );
         assertEquals( 0, existsBm.getSegmentMemory().getLinkedNodeMask() );
@@ -604,44 +605,61 @@ public class SubNetworkLinkingTest {
         PathMemory rs = (PathMemory) wm.getNodeMemory( rtn );
         
         assertFalse( rs.isRuleLinked() ); //E and F are not inserted yet, so rule is unlinked
-        
-        // assert a, b, exists1, and g are same segment, and that segment is the only segment in rule1 memory
+
+        //---
+        // assert a and b in same segment
         assertSame( liaMem.getSegmentMemory(), bMem.getSegmentMemory() );
-        assertSame(  bMem.getSegmentMemory(), exists1Mem.getSegmentMemory() );
+
+        // exists1 and b not in same segment
+        assertNotSame(  bMem.getSegmentMemory(), exists1Mem.getSegmentMemory() );
+
+        // exists1 and b are in same segment
         assertSame(  exists1Mem.getSegmentMemory(), gMem.getSegmentMemory() );
-        assertSame( gMem.getSegmentMemory(), rs.getSegmentMemories()[0] ); 
-        assertEquals( 1, rs.getSegmentMemories().length );
-        assertEquals( 1, rs.getAllLinkedMaskTest() );
-        assertEquals( 0, rs.getLinkedSegmentMask() );
-        
-        assertEquals( 15, liaMem.getSegmentMemory().getAllLinkedMaskTest() );
+
+        // check segment masks
+        assertEquals( 2, rs.getSegmentMemories().length );
+        assertEquals( 3, rs.getAllLinkedMaskTest() );
+        assertEquals( 1, rs.getLinkedSegmentMask() );
+
+        assertEquals( 3, liaMem.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 1, liaMem.getNodePosMaskBit() );
         assertEquals( 2, bMem.getNodePosMaskBit() );
-        assertEquals( 4, exists1Mem.getNodePosMaskBit() );
-        assertEquals( 8, gMem.getNodePosMaskBit() );        
 
-        
+        assertEquals( 3, exists1Mem.getSegmentMemory().getAllLinkedMaskTest() );
+        assertEquals( 1, exists1Mem.getNodePosMaskBit() );
+        assertEquals( 2, gMem.getNodePosMaskBit() );
+
+
         // assert c, d are in the same segment, and that this is the only segment in ria1 memory
-        assertSame( dMem.getSegmentMemory(), cMem.getSegmentMemory() ); 
-        assertSame(  exists2Mem.getSegmentMemory(), dMem.getSegmentMemory() );
-        assertEquals( 2, riaMem1.getRiaPathMemory().getSegmentMemories().length );
+        assertSame( dMem.getSegmentMemory(), cMem.getSegmentMemory() );
+
+        // assert d and exists are not in the same segment
+        assertNotSame(  exists2Mem.getSegmentMemory(), dMem.getSegmentMemory() );
+        assertEquals( 3, riaMem1.getRiaPathMemory().getSegmentMemories().length );
         assertEquals( null, riaMem1.getRiaPathMemory().getSegmentMemories()[0] ); // only needs to know about segments in the subnetwork
         assertEquals( dMem.getSegmentMemory(), riaMem1.getRiaPathMemory().getSegmentMemories()[1] );
         assertEquals( 1, dMem.getSegmentMemory().getPathMemories().size() );
         assertSame( riaMem1.getRiaPathMemory(), cMem.getSegmentMemory().getPathMemories().get(0) );
-        
-        assertEquals( 7, cMem.getSegmentMemory().getAllLinkedMaskTest() );
+
+        assertEquals( 3, cMem.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 3, cMem.getSegmentMemory().getLinkedNodeMask() ); // E and F is not yet inserted, so bit is not set
         assertEquals( 1, cMem.getNodePosMaskBit() );
         assertEquals( 2, dMem.getNodePosMaskBit() );
-        assertEquals( 4, exists2Mem.getNodePosMaskBit() );
-        assertEquals( 2, riaMem1.getRiaPathMemory().getAllLinkedMaskTest() ); // only cares that the segment for c, e and exists1 are set, ignores the outer first segment
-        assertEquals( 0, riaMem1.getRiaPathMemory().getLinkedSegmentMask() ); // E and F is not yet inserted, so bit is not set
-        
+
+        assertEquals( 0, exists2Mem.getNodePosMaskBit() );
+        FactHandle fhE1 = wm.insert(  new E() ); // insert to lazy initialize exists2Mem segment
+        FactHandle fhF1 = wm.insert(  new F() );
+        assertEquals( 1, exists2Mem.getNodePosMaskBit() );
+        assertEquals( 6, riaMem1.getRiaPathMemory().getAllLinkedMaskTest() ); // only cares that the segment for c, E and exists1 are set, ignores the outer first segment
+        assertEquals( 6, riaMem1.getRiaPathMemory().getLinkedSegmentMask() ); // E and F are inerted, so 6
+        wm.delete(fhE1);
+        wm.delete(fhF1);
+        assertEquals( 2, riaMem1.getRiaPathMemory().getLinkedSegmentMask() ); // E deleted
+
         // assert e, f are in the same segment, and that this is the only segment in ria2 memory
         assertNotNull( null, eMem.getSegmentMemory() ); //subnetworks are recursively created, so segment already exists
         assertSame( fMem.getSegmentMemory(), eMem.getSegmentMemory() );
-        
+
         assertEquals( 3, riaMem2.getRiaPathMemory().getSegmentMemories().length );
         assertEquals( null, riaMem2.getRiaPathMemory().getSegmentMemories()[0] ); // only needs to know about segments in the subnetwork
         assertEquals( null, riaMem2.getRiaPathMemory().getSegmentMemories()[1] ); // only needs to know about segments in the subnetwork
@@ -651,33 +669,33 @@ public class SubNetworkLinkingTest {
         assertEquals( 0, eMem.getSegmentMemory().getLinkedNodeMask() );
         assertEquals( 4, riaMem2.getRiaPathMemory().getAllLinkedMaskTest() ); // only cares that the segment for e and f set, ignores the outer two segment
         assertEquals( 0, riaMem2.getRiaPathMemory().getLinkedSegmentMask() ); // E and F is not yet inserted, so bit is not set
-        
-        FactHandle fhE1 = wm.insert(  new E() );
+
+        fhE1 = wm.insert(  new E() );
         wm.insert(  new F() );
-        
+
         assertTrue( rs.isRuleLinked() ); //E and F are now inserted yet, so rule is linked
-        assertEquals( 1, rs.getAllLinkedMaskTest() );
-        assertEquals( 1, rs.getLinkedSegmentMask() );
-        
+        assertEquals( 3, rs.getAllLinkedMaskTest() );
+        assertEquals( 3, rs.getLinkedSegmentMask() );
+
         // retest bits
-        assertEquals( 7, cMem.getSegmentMemory().getAllLinkedMaskTest() );
-        assertEquals( 7, cMem.getSegmentMemory().getLinkedNodeMask() );
-        assertEquals( 2, riaMem1.getRiaPathMemory().getAllLinkedMaskTest() );
-        assertEquals( 2, riaMem1.getRiaPathMemory().getLinkedSegmentMask() );
-        
+        assertEquals( 3, cMem.getSegmentMemory().getAllLinkedMaskTest() );
+        assertEquals( 3, cMem.getSegmentMemory().getLinkedNodeMask() );
+        assertEquals( 6, riaMem1.getRiaPathMemory().getAllLinkedMaskTest() );
+        assertEquals( 6, riaMem1.getRiaPathMemory().getLinkedSegmentMask() );
+
         assertEquals( 3, eMem.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 3, eMem.getSegmentMemory().getLinkedNodeMask() );
         assertEquals( 4, riaMem2.getRiaPathMemory().getAllLinkedMaskTest() );
         assertEquals( 4, riaMem2.getRiaPathMemory().getLinkedSegmentMask() );
-        
+
         wm.delete( fhE1 );
-        
+
         // retest bits
         assertFalse( rs.isRuleLinked() );
-                
-        assertEquals( 3, cMem.getSegmentMemory().getLinkedNodeMask() );       
-        assertEquals( 0, riaMem1.getRiaPathMemory().getLinkedSegmentMask() );
-        
+
+        assertEquals( 3, cMem.getSegmentMemory().getLinkedNodeMask() );
+        assertEquals( 2, riaMem1.getRiaPathMemory().getLinkedSegmentMask() );
+
         assertEquals( 2, eMem.getSegmentMemory().getLinkedNodeMask() );
         assertEquals( 0, riaMem2.getRiaPathMemory().getLinkedSegmentMask() );
     }       

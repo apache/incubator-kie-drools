@@ -262,7 +262,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 // link and notify
                 lm.linkNode( wm );
             } else {
-                // link without notify, when driven by a query, as we don't want ite, placed on the agenda
+                // link without notify, when driven by a query, as we don't want it, placed on the agenda
                 lm.linkNodeWithoutRuleNotify();
             }
             linkOrNotify = false; // we don't need to do any more notifcations
@@ -335,10 +335,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 break;
         }
 
-        if ( linkOrNotify && sm.getStagedLeftTuples().deleteSize() == 0 ) {
-            // staged is empty, so notify rule, to force re-evaluation
-            sm.notifyRuleLinkSegment( wm );
-        }
+//        if ( linkOrNotify && sm.getStagedLeftTuples().deleteSize() == 0 ) {
+//            // staged is empty, so notify rule, to force re-evaluation
+//            sm.notifyRuleLinkSegment( wm );
+//        }
         leftTuple.setPropagationContext( context );
         sm.getStagedLeftTuples().addDelete( leftTuple );
 

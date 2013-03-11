@@ -174,7 +174,8 @@ public class NodeSegmentUnlinkingTest {
         MockTupleSource mockTupleSource = new MockTupleSource( 9 );
 
         // n2 is only node in it's segment
-        BetaNode n1 = new JoinNode( 10, mockTupleSource, mockObjectSource,
+        ObjectTypeNode otn = new ObjectTypeNode( 2, null, new ClassObjectType( String.class ), buildContext );
+        BetaNode n1 = new JoinNode( 10, new LeftInputAdapterNode(3, otn, buildContext ), mockObjectSource,
                                     new EmptyBetaConstraints(), buildContext );
         BetaNode n2 = new JoinNode( 11, n1, mockObjectSource,
                                     new EmptyBetaConstraints(), buildContext );
@@ -205,9 +206,9 @@ public class NodeSegmentUnlinkingTest {
         n5.attach();
        
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
-        BetaMemory bm = createSegmentMemory( n2, wm );
+        createSegmentMemory( n2, wm );
 
-        bm = (BetaMemory) wm.getNodeMemory( n1 );
+        BetaMemory bm = (BetaMemory) wm.getNodeMemory( n1 );
         assertNull( bm.getSegmentMemory() );
 
         bm = (BetaMemory) wm.getNodeMemory( n3 );

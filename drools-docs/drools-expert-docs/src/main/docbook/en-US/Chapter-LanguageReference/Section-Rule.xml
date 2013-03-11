@@ -956,7 +956,7 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
           <para>The operator <literal>contains</literal> is used to check
           whether a field that is a <indexterm>
               <primary>Collection</primary>
-            </indexterm>Collection or array contains the specified
+            </indexterm>Collection or elements contains the specified
           value.</para>
 
           <example>
@@ -976,7 +976,7 @@ CheeseCounter( cheeses contains $var ) // contains with a variable</programlisti
           <para>The operator <literal>not contains</literal> is used to check
           whether a field that is a <indexterm>
               <primary>Collection</primary>
-            </indexterm>Collection or array does <emphasis>not</emphasis>
+            </indexterm>Collection or elements does <emphasis>not</emphasis>
           contain the specified value.</para>
 
           <example>
@@ -1002,7 +1002,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
           <title>The operator <literal>memberOf</literal></title>
 
           <para>The operator <literal>memberOf</literal> is used to check
-          whether a field is a member of a collection or array; that
+          whether a field is a member of a collection or elements; that
           collection must be a variable.</para>
 
           <example>
@@ -1016,7 +1016,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
           <title>The operator <literal>not memberOf</literal></title>
 
           <para>The operator <literal>not memberOf</literal> is used to check
-          whether a field is not a member of a collection or array; that
+          whether a field is not a member of a collection or elements; that
           collection must be a variable.</para>
 
           <example>

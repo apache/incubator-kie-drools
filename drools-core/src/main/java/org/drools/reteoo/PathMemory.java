@@ -108,7 +108,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     public void unlinkedSegment(long mask,
                                 InternalWorkingMemory wm) {
         if ( log.isTraceEnabled() ) {
-            log.trace( "  UnlinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask,getRuleTerminalNode().getRule().getName()  );
+            log.trace( "  UnlinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, this  );
         }
         if ( isRuleLinked() ) {
             doUnlinkRule( wm );

@@ -81,16 +81,17 @@ public class RuleNetworkEvaluator {
             nodeMem = smem.getNodeMemories().getFirst();
         } else {
             // lia is in shared segment, so point to next node
-            LeftTupleSinkPropagator sink = liaNode.getSinkPropagator();
-            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink();
-            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode();
-            if (sink.size() == 2) {
-                // As we check above for segment splits, if the sink size is 2, it must be a subnetwork.
-                // Always take the non riaNode path
-                node = secondSink;
-            } else {
-                node = firstSink;
-            }
+//            LeftTupleSinkPropagator sink = liaNode.getSinkPropagator();
+//            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink();
+//            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode();
+//            if (sink.size() == 2) {
+//                // As we check above for segment splits, if the sink size is 2, it must be a subnetwork.
+//                // Always take the non riaNode path
+//                node = secondSink;
+//            } else {
+//                node = firstSink;
+//            }
+            node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
             nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
         }
 
@@ -168,12 +169,12 @@ public class RuleNetworkEvaluator {
                     trgTuples.addAll(((QueryElementNodeMemory) nodeMem).getResultLeftTuples());
                 }
 
-                if (!stack.isEmpty() && trgTuples.isEmpty()) {
-                    // The root stack entry must always be fully evaluated, as it may have later tuples
-                    // nested rules are only evaluated if they have tuples . This typically only
-                    // happens for 'or' braches, as results lazy add the parent to the queue
-                    continue;
-                }
+//                if (!stack.isEmpty() && trgTuples.isEmpty()) {
+//                    // The root stack entry must always be fully evaluated, as it may have later tuples
+//                    // nested rules are only evaluated if they have tuples . This typically only
+//                    // happens for 'or' braches, as results lazy add the parent to the queue
+//                    continue;
+//                }
 
 
                 LeftTupleSinkNode sink = entry.getSink();
@@ -371,9 +372,9 @@ public class RuleNetworkEvaluator {
                                 smems = qrmem.getSegmentMemories();
                                 smemIndex = 0;
                                 smem = smems[smemIndex]; // 0
-                                LeftInputAdapterNode qliaNode = (LeftInputAdapterNode) smem.getRootNode();
+                                liaNode = (LeftInputAdapterNode) smem.getRootNode();
 
-                                if (qliaNode == smem.getTipNode()) {
+                                if (liaNode == smem.getTipNode()) {
                                     // segment only has liaNode in it
                                     // nothing is staged in the liaNode, so skip to next segment
                                     smem = smems[++smemIndex]; // 1
@@ -381,16 +382,17 @@ public class RuleNetworkEvaluator {
                                     nodeMem = smem.getNodeMemories().getFirst();
                                 } else {
                                     // lia is in shared segment, so point to next node
-                                    LeftTupleSinkPropagator qSink = qliaNode.getSinkPropagator();
-                                    LeftTupleSinkNode firstSink = (LeftTupleSinkNode) qSink.getFirstLeftTupleSink();
-                                    LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode();
-                                    if (qSink.size() == 2) {
-                                        // As we check above for segment splits, if the sink size is 2, it must be a subnetwork.
-                                        // Always take the non riaNode path
-                                        node = secondSink;
-                                    } else {
-                                        node = firstSink;
-                                    }
+                                    //            LeftTupleSinkPropagator sink = liaNode.getSinkPropagator();
+                                    //            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink();
+                                    //            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode();
+                                    //            if (sink.size() == 2) {
+                                    //                // As we check above for segment splits, if the sink size is 2, it must be a subnetwork.
+                                    //                // Always take the non riaNode path
+                                    //                node = secondSink;
+                                    //            } else {
+                                    //                node = firstSink;
+                                    //            }
+                                    node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
                                     nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
                                 }
 
@@ -471,20 +473,20 @@ public class RuleNetworkEvaluator {
         }
 
 
-        if (betaNode.getLeftTupleSource().getSinkPropagator().size() == 2) {
-            // sub network is not part of  share split, so need to handle propagation
-            // this ensures the first LeftTuple is actually the subnetwork node
-            // and the main outer network now receives the peer, notice the swap at the end "srcTuples == peerTuples"
-            LeftTupleSets peerTuples = new LeftTupleSets();
-            SegmentPropagator.processPeers(srcTuples, peerTuples, betaNode);
-            // Make sure subnetwork Segment has tuples to process
-            LeftTupleSets subnetworkStaged = subSmem.getStagedLeftTuples();
-            subnetworkStaged.addAll(srcTuples);
-
-            srcTuples.resetAll();
-
-            srcTuples = peerTuples;
-        }
+//        if (betaNode.getLeftTupleSource().getSinkPropagator().size() == 2) {
+//            // sub network is not part of  share split, so need to handle propagation
+//            // this ensures the first LeftTuple is actually the subnetwork node
+//            // and the main outer network now receives the peer, notice the swap at the end "srcTuples == peerTuples"
+//            LeftTupleSets peerTuples = new LeftTupleSets();
+//            SegmentPropagator.processPeers(srcTuples, peerTuples, betaNode);
+//            // Make sure subnetwork Segment has tuples to process
+//            LeftTupleSets subnetworkStaged = subSmem.getStagedLeftTuples();
+//            subnetworkStaged.addAll(srcTuples);
+//
+//            srcTuples.resetAll();
+//
+//            srcTuples = peerTuples;
+//        }
 
         // Resume the node after the riaNode segment has been processed and the right input memory populated
         StackEntry stackEntry = new StackEntry(liaNode, betaNode, sink, rmem, nodeMem, smems,

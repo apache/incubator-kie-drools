@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.NetworkNode;
@@ -26,6 +27,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     BuildContext       buildContext;
     PropagationContext context;
 
+    LeftInputAdapterNode lian;
     BetaNode           n1;
     BetaNode           n2;
     BetaNode           n3;
@@ -95,10 +97,10 @@ public class RuleUnlinkingWithSegmentMemoryTest {
 
         context = new PropagationContextImpl( 0, PropagationContext.INSERTION, null, null, null );
 
-        MockTupleSource mockTupleSource = new MockTupleSource( 9 );
+        ObjectTypeNode otn = new ObjectTypeNode( 2, null, new ClassObjectType( String.class ), buildContext );
+        lian = new LeftInputAdapterNode(3, otn, buildContext );
 
-        
-        n1 = (BetaNode) createNetworkNode( 10, type, mockTupleSource, null );
+        n1 = (BetaNode) createNetworkNode( 10, type, lian, null );
         n2 = (BetaNode) createNetworkNode( 11, type, n1, null );
         n3 = (BetaNode) createNetworkNode( 12, type, n2, null );        
         rule1 =  new Rule("rule1");
@@ -120,10 +122,10 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         rule3.setActivationListener( "agenda" ); 
         rtn3 = ( RuleTerminalNode ) createNetworkNode( 20, RULE_TERMINAL_NODE, n8, rule3 );
 
-        
-        mockTupleSource.addAssociation( rule1, null );
-        mockTupleSource.addAssociation( rule2, null );
-        mockTupleSource.addAssociation( rule3, null );        
+
+        lian.addAssociation( rule1, null );
+        lian.addAssociation( rule2, null );
+        lian.addAssociation( rule3, null );
         n1.addAssociation( rule1, null );
         n1.addAssociation( rule2, null );
         n1.addAssociation( rule3, null );
@@ -181,11 +183,16 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         PathMemory rtn2Rs = (PathMemory) wm.getNodeMemory( rtn2 );
         PathMemory rtn3Rs = (PathMemory) wm.getNodeMemory( rtn3 );
 
+        // lian
+        SegmentUtilities.createSegmentMemory( lian, wm );
+        LeftInputAdapterNode.LiaNodeMemory lmem = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( lian );
+        assertEquals( 1, lmem.getNodePosMaskBit() );
+
         // n1
         SegmentUtilities.createSegmentMemory( n1, wm );
         bm = (BetaMemory) wm.getNodeMemory( n1 );
-        assertEquals( 1, bm.getNodePosMaskBit() );
-        assertEquals( 7, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertEquals( 2, bm.getNodePosMaskBit() );
+        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 1, bm.getSegmentMemory().getSegmentPosMaskBit() );        
         list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 3, list.size());
@@ -195,8 +202,8 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         
         // n2
         bm = (BetaMemory) wm.getNodeMemory( n2 );
-        assertEquals( 2, bm.getNodePosMaskBit() );
-        assertEquals( 7, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertEquals( 4, bm.getNodePosMaskBit() );
+        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 1, bm.getSegmentMemory().getSegmentPosMaskBit() );        
         list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 3, list.size());
@@ -206,8 +213,8 @@ public class RuleUnlinkingWithSegmentMemoryTest {
        
         // n3
         bm = (BetaMemory) wm.getNodeMemory( n3 );
-        assertEquals( 4, bm.getNodePosMaskBit() );
-        assertEquals( 7, bm.getSegmentMemory().getAllLinkedMaskTest() );
+        assertEquals( 8, bm.getNodePosMaskBit() );
+        assertEquals( 15, bm.getSegmentMemory().getAllLinkedMaskTest() );
         assertEquals( 1, bm.getSegmentMemory().getSegmentPosMaskBit() );        
         list = bm.getSegmentMemory().getPathMemories();
         assertEquals( 3, list.size());
@@ -281,7 +288,8 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         PathMemory rtn3Rs = (PathMemory) wm.getNodeMemory( rtn3 );
         
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
-        
+
+        lian.assertObject( f1, context, wm );
         n1.assertObject( f1, context, wm );
         n3.assertObject( f1, context, wm );
         n4.assertObject( f1, context, wm );

@@ -2,7 +2,7 @@ package org.drools;
 
 global java.util.List list;
 
-rule "contains in array"
+rule "contains in elements"
     salience 10
     when
         Primitives( stringArray contains "test1" )
@@ -10,7 +10,7 @@ rule "contains in array"
         list.add( "ok1" );
 end
 
-rule "excludes in array"
+rule "excludes in elements"
     when
         Primitives( stringArray excludes "test2" )
     then

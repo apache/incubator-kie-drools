@@ -39,7 +39,8 @@ public class SegmentUtilities {
     public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource ,
                                                     final InternalWorkingMemory wm) {
     	// find segment root
-    	while ( SegmentUtilities.parentInSameSegment(tupleSource)  ) {
+    	while ( tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode &&
+                SegmentUtilities.parentInSameSegment(tupleSource)  ) {
     		tupleSource = tupleSource.getLeftTupleSource();
     	}
     	
@@ -62,6 +63,9 @@ public class SegmentUtilities {
                     betaMemory = ( BetaMemory ) smem.createNodeMemory( betaNode, wm );
     
                 }
+                // this must be set first, to avoid recursion as sub networks can be initialised multiple ways
+                // and bm.getSegmentMemory == null check can be used to avoid recursion.
+                betaMemory.setSegmentMemory( smem );
     
                 if ( betaNode.isRightInputIsRiaNode() ) {
                     // Iterate to find outermost rianode
@@ -78,25 +82,28 @@ public class SegmentUtilities {
                     SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
                     if ( subNetworkSegmentMemory == null ) {
                         // we need to stop recursion here
-                        subNetworkSegmentMemory = createSegmentMemory( ( LeftTupleSource ) subnetworkLts, wm );
+                        createSegmentMemory( ( LeftTupleSource ) subnetworkLts, wm );
                     }
 
                     RiaNodeMemory riaMem = ( RiaNodeMemory ) wm.getNodeMemory( (MemoryFactory) riaNode );
                     // riaMem will be initialised as part of the subnetwork createSegmentMemory, if it does not already exist.
                     betaMemory.setRiaRuleMemory(riaMem.getRiaPathMemory());
 
+                    if ( riaMem.getRiaPathMemory().getAllLinkedMaskTest() == 0 ) {
+                        // node's with right inputs that have no beta nodes, need to have their bit's set
+                        smem.linkNode( nodePosMask, wm );
+                    }
+
 //                    SegmentMemory subNetworkSegmentMemory = mem.getSegmentMemory();
 //                    if ( subNetworkSegmentMemory == null ) {
 //                        // we need to stop recursion here
 //                        subNetworkSegmentMemory = createSegmentMemory( ( LeftTupleSource ) riaNode.getLeftTupleSource(), wm );
 //                    }
-//                    betaMemory.setRiaRuleMemory( (RiaPathMemory) ((RiaNodeMemory) mem).getRiaPathMemory() );
+//                    betaMemory.setRiaPathMemory( (RiaPathMemory) ((RiaNodeMemory) mem).getRiaPathMemory() );
 //                    if ( subNetworkSegmentMemory.getAllLinkedMaskTest() == 0 ) {
 //                        smem.linkNode( nodePosMask, wm );
 //                    }
                 }
-                
-                betaMemory.setSegmentMemory( smem );
                 betaMemory.setNodePosMaskBit( nodePosMask );
                 allLinkedTestMask = allLinkedTestMask | nodePosMask;
                 if ( NodeTypeEnums.NotNode == tupleSource.getType() ||  NodeTypeEnums.AccumulateNode == tupleSource.getType())  {
@@ -133,54 +140,79 @@ public class SegmentUtilities {
                 queryNodeMem.setQuerySegmentMemory( querySmem );
                 queryNodeMem.setSegmentMemory( smem );                
             }
-            
-            LeftTupleSinkPropagator sink = tupleSource.getSinkPropagator();
-            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink() ;
-            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode();
-            if ( secondSink == null ) {
-                if ( NodeTypeEnums.isLeftTupleSource( firstSink ) ) {
-                    tupleSource = ( LeftTupleSource ) firstSink;
+
+            if ( tupleSource.getSinkPropagator().size() == 1 ) {
+                LeftTupleSinkNode sink = (LeftTupleSinkNode) tupleSource.getSinkPropagator().getFirstLeftTupleSink() ;
+                if ( NodeTypeEnums.isLeftTupleSource( sink ) ) {
+                    tupleSource = ( LeftTupleSource ) sink;
                 } else {
                     // rtn or rian
                     // While not technically in a segment, we want to be able to iterate easily from the last node memory to the ria/rtn memory
                     // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
-                    if ( firstSink.getType() == NodeTypeEnums.RightInputAdaterNode) {
-                        RiaNodeMemory memory = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
+                    if ( sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
+                        RiaNodeMemory memory = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) sink );
                         smem.getNodeMemories().add( memory.getRiaPathMemory() );
                         memory.getRiaPathMemory().setSegmentMemory( smem );
-                    } else if ( NodeTypeEnums.isTerminalNode( firstSink) ) {             
-                        PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
+                    } else if ( NodeTypeEnums.isTerminalNode( sink) ) {
+                        PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) sink );
                         smem.getNodeMemories().add( rmem );
                         rmem.setSegmentMemory( smem );
-                    }                    
-                    smem.setTipNode( firstSink );
+                    }
+                    smem.setTipNode( sink );
                     break;
                 }
-            } else if ( sink.size() == 2 && 
-                           NodeTypeEnums.isBetaNode( secondSink ) && 
-                               ((BetaNode)secondSink).isRightInputIsRiaNode() ) {
-                // must be a subnetwork split, always take the non riaNode path
-                tupleSource = ( LeftTupleSource )secondSink;
             } else {
                 // not in same segment
                 smem.setTipNode( tupleSource );
                 break;
-            }   
-            
+            }
+//            LeftTupleSinkPropagator sink = tupleSource.getSinkPropagator();
+//            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink() ;
+//            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode();
+//            if ( secondSink == null ) {
+//                if ( NodeTypeEnums.isLeftTupleSource( firstSink ) ) {
+//                    tupleSource = ( LeftTupleSource ) firstSink;
+//                } else {
+//                    // rtn or rian
+//                    // While not technically in a segment, we want to be able to iterate easily from the last node memory to the ria/rtn memory
+//                    // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
+//                    if ( firstSink.getType() == NodeTypeEnums.RightInputAdaterNode) {
+//                        RiaNodeMemory memory = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
+//                        smem.getNodeMemories().add( memory.getRiaPathMemory() );
+//                        memory.getRiaPathMemory().setSegmentMemory( smem );
+//                    } else if ( NodeTypeEnums.isTerminalNode( firstSink) ) {
+//                        PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
+//                        smem.getNodeMemories().add( rmem );
+//                        rmem.setSegmentMemory( smem );
+//                    }
+//                    smem.setTipNode( firstSink );
+//                    break;
+//                }
+//            } else if ( sink.size() == 2 &&
+//                           NodeTypeEnums.isBetaNode( secondSink ) &&
+//                               ((BetaNode)secondSink).isRightInputIsRiaNode() ) {
+//                // must be a subnetwork split, always take the non riaNode path
+//                tupleSource = ( LeftTupleSource )secondSink;
+//            } else {
+//                // not in same segment
+//                smem.setTipNode( tupleSource );
+//                break;
+//            }
+//
     	}		
     	smem.setAllLinkedMaskTest( allLinkedTestMask );    	
     	
     	// iterate to find root and determine the SegmentNodes position in the RuleSegment
-        LeftTupleSource parent = segmentRoot;	
+        LeftTupleSource pathRoot = segmentRoot;
         int ruleSegmentPosMask = 1;
         int counter = 0;
-        while ( parent.getLeftTupleSource() != null ) {
-               if ( !SegmentUtilities.parentInSameSegment( parent ) ) {
+        while ( pathRoot.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+               if ( !SegmentUtilities.parentInSameSegment( pathRoot ) ) {
                    // for each new found segment, increase the mask bit position
                    ruleSegmentPosMask = ruleSegmentPosMask << 1;
                    counter++;
-               }    	        
-           parent = parent.getLeftTupleSource();	          
+               }
+            pathRoot = pathRoot.getLeftTupleSource();
         }
         smem.setSegmentPosMaskBit( ruleSegmentPosMask );
         smem.setPos( counter );
@@ -194,8 +226,8 @@ public class SegmentUtilities {
                                             LeftTupleSinkPropagator sinkProp) {
         for ( LeftTupleSinkNode sink = ( LeftTupleSinkNode ) sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             Memory memory = wm.getNodeMemory( (MemoryFactory ) sink );
-            
-            if ( !( NodeTypeEnums.isTerminalNode( sink  ) || sink.getType() == NodeTypeEnums.RightInputAdaterNode ) ) {
+
+             if ( !( NodeTypeEnums.isTerminalNode( sink  ) || sink.getType() == NodeTypeEnums.RightInputAdaterNode ) ) {
                 if ( memory.getSegmentMemory() == null ) {
                     SegmentUtilities.createSegmentMemory( (LeftTupleSource ) sink, wm );
                 }
@@ -212,10 +244,10 @@ public class SegmentUtilities {
                     rmem.getSegmentMemories()[ rmem.getSegmentMemories().length -1 ] = childSmem;
                     rmem.setSegmentMemory( childSmem );
                     childSmem.getPathMemories().add( rmem );
-                    
+
                     childSmem.setTipNode( sink );
-                    childSmem.setSinkFactory( sink );                    
-                }                
+                    childSmem.setSinkFactory( sink );
+                }
             }
             smem.add( memory.getSegmentMemory() );
         }
@@ -225,7 +257,7 @@ public class SegmentUtilities {
      * Is the LeftTupleSource a node in the sub network for the RightInputAdapterNode
      * To be in the same network, it must be a node is after the two output of the parent
      * and before the rianode.
-     * 
+     *
      * @param riaNode
      * @param leftTupleSource
      * @return
@@ -233,24 +265,24 @@ public class SegmentUtilities {
     public static boolean inSubNetwork(RightInputAdapterNode riaNode, LeftTupleSource leftTupleSource) {
         LeftTupleSource startTupleSource = riaNode.getStartTupleSource();
         LeftTupleSource parent = riaNode.getLeftTupleSource();
-        
+
         while ( parent != startTupleSource ) {
             if ( parent == leftTupleSource) {
                 return true;
             }
             parent = parent.getLeftTupleSource();
         }
-        
+
         return false;
-    }     
+    }
 
     /**
      * This adds the segment memory to the terminal node or ria node's list of memories.
-     * In the case of the terminal node this allows it to know that all segments from 
+     * In the case of the terminal node this allows it to know that all segments from
      * the tip to root are linked.
      * In the case of the ria node its all the segments up to the start of the subnetwork.
      * This is because the rianode only cares if all of it's segments are linked, then
-     * it sets the bit of node it is the right input for. 
+     * it sets the bit of node it is the right input for.
      * @param pos
      * @param lt
      * @param originalLt
@@ -271,7 +303,7 @@ public class SegmentUtilities {
     	             }
     	        }
     	        updateRiaAndTerminalMemory(++pos, ( LeftTupleSource ) sink, originalLt, smem, wm);
-    	    } else if ( sink.getType() == NodeTypeEnums.RightInputAdaterNode) {      
+    	    } else if ( sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
     	        // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
     	        if ( inSubNetwork( (RightInputAdapterNode)sink, originalLt ) ) {
     	            RiaNodeMemory riaMem = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) sink );
@@ -296,16 +328,18 @@ public class SegmentUtilities {
     }
 
     public static boolean parentInSameSegment(LeftTupleSource lt) {
-        LeftTupleSource parent = lt.getLeftTupleSource();        
-        if ( parent != null && ( parent.getSinkPropagator().size() == 1 || 
-               // same segment, if it's a subnetwork split and we are on the non subnetwork side of the split
-             ( parent.getSinkPropagator().size() == 2 && 
-               NodeTypeEnums.isBetaNode( lt ) &&
-               ((BetaNode)lt).isRightInputIsRiaNode() ) ) ) {
-            return true;
-        } else {        
-            return false;
-        }
+        return lt.getLeftTupleSource().getSinkPropagator().size() == 1;
+        // comments out for now, as the optimization to preserve subnetwork segments down one side is troublesome.
+//        LeftTupleSource parent = lt.getLeftTupleSource();
+//        if ( parent != null && ( parent.getSinkPropagator().size() == 1 ||
+//               // same segment, if it's a subnetwork split and we are on the non subnetwork side of the split
+//             ( parent.getSinkPropagator().size() == 2 &&
+//               NodeTypeEnums.isBetaNode( lt ) &&
+//               ((BetaNode)lt).isRightInputIsRiaNode() ) ) ) {
+//            return true;
+//        } else {
+//            return false;
+//        }
     }
     
     public static ObjectTypeNode getQueryOtn(LeftTupleSource lts) {
