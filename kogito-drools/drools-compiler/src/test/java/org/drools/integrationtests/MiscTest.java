@@ -5107,9 +5107,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( "Message3",
                       list.get( 0 ) );
         assertEquals( "Message2",
-                      list.get( 1 ) );
-        assertEquals( "Message1",
                       list.get( 2 ) );
+        assertEquals( "Message1",
+                      list.get( 1 ) );
 
     }
 
@@ -8501,32 +8501,25 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testArrayUsage() {
-        String str = "import org.drools.base.DroolsQuery;\n" +
+        String str = "import org.drools.TestParam;\n" +
                      "\n" +
                      "global java.util.List list;\n" +
                      "\n" +
-                     "query extract( String s )\n" +
-                     "    Object()    \n" +
-                     "end\n" +
-                     "\n" +
                      "rule \"Intercept\"\n" +
                      "when\n" +
-                     "    DroolsQuery( name == \"extract\", $args : elements )\n" +
+                     "    TestParam( value1 == \"extract\", $args : elements )\n" +
                      "    $s : String( this == $args[$s.length() - $s.length()] )\n" +
                      "    $s1 : String( this == $args[0] )\n" +
-                     "    $s2 : String( this == $args[$args.length - $args.length] )\n" +
+                     "    $s2 : String( this == $args[1] )\n" +
+                     "    Integer( this == 2 ) from $args.length\n" +
+                     "    $s3 : String( this == $args[$args.length - $args.length  + 1] )\n" +
                      "then\n" +
-                     "    retract( $s );  \n" +
-                     "    list.add( $s );\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"Exec\"\n" +
-                     "when\n" +
-                     "    $s : String()\n" +
-                     "    ?extract( $s ; )\n" +
-                     "then\n" +
-                     "    \n" +
-                     "end";
+                     "    retract( $s1 );  \n" +
+                     "    retract( $s2 );  \n" +
+                     "    list.add( $s1 ); \n" +
+                     "    list.add( $s2 ); \n" +
+
+                     "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -8536,11 +8529,20 @@ public class MiscTest extends CommonTestMethodBase {
 
         int N = 2;
         for ( int j = 0; j < N; j++ ) {
-            ksession.insert( "x" + j );
+            TestParam o = new TestParam();
+            o.setValue1("extract" );
+            o.setElements(new Object[]{"x1_" + j, "x2_" + j});
+            ksession.insert( "x1_" + j );
+            ksession.insert( "x2_" + j );
+            ksession.insert( o );
             ksession.fireAllRules();
         }
 
-        assertEquals( N, list.size() );
+        assertEquals( 4, list.size() );
+        assertTrue( list.contains( "x1_0"));
+        assertTrue( list.contains( "x1_1"));
+        assertTrue( list.contains( "x2_0"));
+        assertTrue( list.contains( "x2_1"));
 
         ksession.dispose();
     }

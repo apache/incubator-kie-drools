@@ -100,7 +100,7 @@ public class SegmentPropagationTest {
     B b3 = b( 3 );
     B b4 = b( 4 );    
     
-    @Test @Ignore
+    @Test
     public void test1() {
         setupJoinNode();
         

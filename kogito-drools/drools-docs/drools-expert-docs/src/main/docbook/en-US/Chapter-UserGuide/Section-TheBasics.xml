@@ -177,7 +177,7 @@ then
 end
 </programlisting>
 
-    <para>Unfortunately a Java array does not implement the
+    <para>Unfortunately a Java elements does not implement the
     <code>Iterable</code> interface, so we have to use the JDK converter
     method <code>Arrays.asList(...)</code>. The code shown below executes
     against an iterable list, where all collection elements are inserted

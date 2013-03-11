@@ -903,7 +903,7 @@ results.getValue( "Get People" );</programlisting>
         </listitem>
 
         <listitem>
-          <para>Create an array, one element for each possible rule
+          <para>Create an elements, one element for each possible rule
           activation; element position indicates firing order.</para>
         </listitem>
 
@@ -925,20 +925,20 @@ results.getValue( "Get People" );</programlisting>
         </listitem>
 
         <listitem>
-          <para>All resulting Activations should be placed in the array, based
+          <para>All resulting Activations should be placed in the elements, based
           upon the determined sequence number of the Rule. Record the first
           and last populated elements, to reduce the iteration range.</para>
         </listitem>
 
         <listitem>
-          <para>Iterate the array of Activations, executing populated element
+          <para>Iterate the elements of Activations, executing populated element
           in turn.</para>
         </listitem>
 
         <listitem>
           <para>If we have a maximum number of allowed rule executions, we can
           exit our network evaluations early to fire all the rules in the
-          array.</para>
+          elements.</para>
         </listitem>
       </orderedlist>
 
@@ -962,12 +962,12 @@ results.getValue( "Get People" );</programlisting>
       into the right-input memory.</para>
 
       <para>There is no longer an Agenda, with a priority queue to schedule
-      the Tuples; instead, there is simply an array for the number of rules.
+      the Tuples; instead, there is simply an elements for the number of rules.
       The sequence number of the <code>RuleTerminalNode</code> indicates the
-      element within the array where to place the Activation. Once all Command
-      objects have finished we can iterate our array, checking each element in
+      element within the elements where to place the Activation. Once all Command
+      objects have finished we can iterate our elements, checking each element in
       turn, and firing the Activations if they exist. To improve performance,
-      we remember the first and the last populated cell in the array. The
+      we remember the first and the last populated cell in the elements. The
       network is constructed, with each <code>RuleTerminalNode</code> being
       given a sequence number based on a salience number and its order of
       being added to the network.</para>
@@ -1551,7 +1551,7 @@ baos.close();
     </example>
 
     <para>Note that the acceptance checking order is in the natural order of
-    the supplied array.</para>
+    the supplied elements.</para>
 
     <para>Also note that if you are using scheduled activations (i.e. some
     of your rules use timers or calendars) they are marshallable only if,

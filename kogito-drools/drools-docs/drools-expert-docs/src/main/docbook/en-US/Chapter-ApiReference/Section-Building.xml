@@ -31,7 +31,7 @@
 
     <para>The <code>ResourceFactory</code> provides capabilities to load
     resources from a number of sources, such as a java.io.Reader, the classpath,
-    a URL, a java.io.File, or a byte array. Binary files, such as decision tables
+    a URL, a java.io.File, or a byte elements. Binary files, such as decision tables
     (Excel's' .xls files), should not be passed in with Reader, which is only 
     suitable for text based resources.</para>
 

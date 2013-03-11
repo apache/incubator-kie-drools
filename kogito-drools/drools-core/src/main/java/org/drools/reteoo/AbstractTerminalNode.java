@@ -114,35 +114,49 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     
 
     public Memory createMemory(RuleBaseConfiguration config) {
-        int segmentCount = 1; // always atleast one segment
-        
-        if ( getLeftTupleSource().getSinkPropagator().size() > 1 ) {
-            // it's shared, RTN is in it's own segment, so increase segmentCount
-            segmentCount++;
-        }
-        
-        int segmentPosMask = 1;
-        long allLinkedTestMask = 1;        
         PathMemory rmem = new PathMemory(this);
-        LeftTupleSource tupleSource = getLeftTupleSource();
-        boolean updateBitInNewSegment = false; // this is so we can handle segments that don't have betanode's, as their bit will never be set
-        while ( tupleSource.getLeftTupleSource() != null ) {            
-            if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
-                updateBitInNewSegment = true;
-                segmentPosMask = segmentPosMask << 1;  
-                segmentCount++;
-            }
-            
-            if ( updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
-                updateBitInNewSegment = false;
-                allLinkedTestMask = allLinkedTestMask | segmentPosMask;
-            }
-            
-            tupleSource = tupleSource.getLeftTupleSource();            
-        }        
-        rmem.setAllLinkedMaskTest( allLinkedTestMask );
-        rmem.setSegmentMemories( new SegmentMemory[segmentCount] );
+        initPathMemory(rmem, getLeftTupleSource(), null);
         return rmem;
+    }
+
+    /**
+     * Creates and return the node memory
+     */
+    public static void initPathMemory(PathMemory pmem, LeftTupleSource tupleSource, LeftTupleSource startTupleSource) {
+            int counter = 0;
+            long allLinkedTestMask = 0;
+
+            if ( tupleSource.getSinkPropagator().size() > 1 ) {
+                // it's shared, RTN is in it's own segment, so increase segmentCount
+                counter++;
+            }
+            boolean updateBitInNewSegment = true; // avoids more than one isBetaNode check per segment
+            boolean updateAllLinkedTest = true;
+            while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+                if ( updateAllLinkedTest && updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
+                    updateBitInNewSegment = false;
+                    allLinkedTestMask = allLinkedTestMask | 1;
+                }
+
+                if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
+                    updateBitInNewSegment = true;
+                    allLinkedTestMask = allLinkedTestMask << 1;
+                    counter++;
+                }
+
+                tupleSource = tupleSource.getLeftTupleSource();
+                if ( tupleSource == startTupleSource ) {
+                    // stop tracking if we move outside of a subnetwork boundary (if one is set)
+                    updateAllLinkedTest = false;
+                }
+            }
+
+            if ( updateAllLinkedTest && tupleSource.getSinkPropagator().size() > 1 ) {
+                // tupleSource == LeftInputAdapterNode
+                allLinkedTestMask = allLinkedTestMask | 1;
+            }
+            pmem.setAllLinkedMaskTest( allLinkedTestMask );
+            pmem.setSegmentMemories( new SegmentMemory[counter + 1] ); // +1 as arras are zero based.
     }
 
     public LeftTuple createPeer(LeftTuple original) {

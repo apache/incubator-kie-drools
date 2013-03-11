@@ -96,10 +96,6 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
             throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
         }
 
-        if ( bm.getStagedRightTuples().isEmpty() ) {
-
-        }
-
         if ( bm.getRightTupleMemory().size() == 0 && bm.getStagedRightTuples().isEmpty() ) {
             bm.linkNode( wm );
         } else if (  bm.getStagedRightTuples().isEmpty() ) {

@@ -2,20 +2,20 @@ package org.drools;
 
 global java.util.List result;
 
-function boolean testNonEmptyArray(int[] array) {
-   return array != null && array.length > 0;
+function boolean testNonEmptyArray(int[] elements) {
+   return elements != null && elements.length > 0;
 }
 
-function boolean isNonEmptyObjectArray(Object[] array) {
-   return array != null && array.length > 0;
+function boolean isNonEmptyObjectArray(Object[] elements) {
+   return elements != null && elements.length > 0;
 }
 
-rule "Primitive array in function" salience 20
+rule "Primitive elements in function" salience 20
   when
-    Primitives( $array : primitiveIntArray )
-    eval( testNonEmptyArray($array) )
+    Primitives( $elements : primitiveIntArray )
+    eval( testNonEmptyArray($elements) )
   then
-     result.add( new Integer( $array.length ) );
+     result.add( new Integer( $elements.length ) );
 end
 
 rule "Primitive Array with Object in function" salience 10
@@ -28,7 +28,7 @@ end
 
 rule "Test Array" salience 0
   when
-    Primitives( $array : primitiveIntArray, eval(($array != null) && ($array.length > 0)))
+    Primitives( $elements : primitiveIntArray, eval(($elements != null) && ($elements.length > 0)))
   then
-    result.add( new Integer( $array.length ) );
+    result.add( new Integer( $elements.length ) );
 end

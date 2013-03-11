@@ -6,6 +6,7 @@ public class TestParam implements Serializable {
 
     private String value1;
     private String value2;
+    private Object[] elements;
 
     public String getValue1() {
         return this.value1;
@@ -23,4 +24,11 @@ public class TestParam implements Serializable {
         this.value2 = value2;
     }
 
+    public Object[] getElements() {
+        return elements;
+    }
+
+    public void setElements(Object[] elements) {
+        this.elements = elements;
+    }
 }

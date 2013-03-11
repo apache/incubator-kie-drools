@@ -37,7 +37,6 @@ import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.marshalling.impl.ProtobufInputMarshaller;
 import org.drools.marshalling.impl.ProtobufMessages;
-import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
@@ -141,42 +140,9 @@ public class RightInputAdapterNode extends ObjectSource
         RiaNodeMemory rianMem = new RiaNodeMemory();
         
         if ( this.unlinkingEnabled ) {
-            int segmentCount = 1;
-            if ( getLeftTupleSource().getSinkPropagator().size() > 1 ) {
-                // it's shared, RIAN is in it's own segment, so increase segmentCount
-                segmentCount++;
-            }
-            
-            int segmentPosMask = 1;
-            long allLinkedTestMask = 1; // set to one to cover current segment
-            
-            RiaPathMemory rmem = new RiaPathMemory(this);
-            LeftTupleSource tupleSource = getLeftTupleSource();
-            //int associationCount = tupleSource.getAssociations().size();        
-            while ( tupleSource != null && tupleSource != getStartTupleSource() ) {
-                if ( tupleSource.getLeftTupleSource() !=  getStartTupleSource() &&
-                        !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
-                    segmentPosMask = segmentPosMask << 1;                
-                    allLinkedTestMask = allLinkedTestMask | segmentPosMask;  
-                    segmentCount++;
-                }
-                tupleSource = tupleSource.getLeftTupleSource();            
-            }     
-            
-            // now iterate to root, but just shift, don't set
-            // This is because the RIANode mask only cares about nodes in it's subnetwork, 
-            // but offsets are still calculated from root
-            while (tupleSource != null ) {
-                if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
-                    allLinkedTestMask = allLinkedTestMask << 1;   
-                    segmentCount++;
-                }
-                tupleSource = tupleSource.getLeftTupleSource();
-                
-            }           
-            rmem.setAllLinkedMaskTest( allLinkedTestMask ); 
-            rianMem.setRiaRuleMemory( rmem );
-            rmem.setSegmentMemories( new SegmentMemory[segmentCount] );
+            RiaPathMemory pmem = new RiaPathMemory(this);
+            AbstractTerminalNode.initPathMemory(pmem, getLeftTupleSource(), getStartTupleSource() );
+            rianMem.setRiaPathMemory(pmem);
         }
         
         return rianMem;
@@ -508,7 +474,7 @@ public class RightInputAdapterNode extends ObjectSource
             return pathMemory;
         }
 
-        public void setRiaRuleMemory(RiaPathMemory pathMemory) {
+        public void setRiaPathMemory(RiaPathMemory pathMemory) {
             this.pathMemory = pathMemory;
         }
 

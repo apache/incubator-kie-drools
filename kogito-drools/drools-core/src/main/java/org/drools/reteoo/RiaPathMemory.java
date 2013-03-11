@@ -15,6 +15,10 @@ public class RiaPathMemory extends PathMemory {
         super( null );
         this.riaNode = riaNode;
     }
+
+    public RightInputAdapterNode getRightInputAdapterNode() {
+        return this.riaNode;
+    }
     
     
     public void doLinkRule(InternalWorkingMemory wm) {

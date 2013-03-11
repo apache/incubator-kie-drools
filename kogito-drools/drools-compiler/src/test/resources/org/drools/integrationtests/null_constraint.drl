@@ -16,5 +16,5 @@ rule "Raises NPE" salience -10
   when
     Primitives(arrayAttribute == null)
   then
-    messages.add("Null array found");
+    messages.add("Null elements found");
 end

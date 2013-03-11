@@ -16,7 +16,7 @@
 
   <para>The session clock implements a strategy pattern, allowing different
   types of clocks to be plugged and used by the engine. This is very important
-  because the engine may be running in an array of different scenarios that
+  because the engine may be running in an elements of different scenarios that
   may require different clock implementations. Just to mention a few:</para>
 
   <itemizedlist>
