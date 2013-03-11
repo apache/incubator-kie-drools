@@ -37,13 +37,13 @@ import java.util.List;
 public class XLSScorecardParser extends AbstractScorecardParser {
 
     protected XLSEventDataCollector excelDataCollector;
-    private   Scorecard             scorecard;
+    private Scorecard scorecard;
     private PMML pmmlDocument = null;
     List<ScorecardError> parseErrors = new ArrayList<ScorecardError>();
     private HSSFSheet currentWorksheet;
 
     @Override
-    public List<ScorecardError> parseFile(InputStream inStream, String worksheetName) throws ScorecardParseException {
+    public List<ScorecardError>  parseFile(InputStream inStream, String worksheetName) throws ScorecardParseException {
         try {
             excelDataCollector = new XLSEventDataCollector();
             excelDataCollector.setParser(this);
@@ -105,10 +105,10 @@ public class XLSScorecardParser extends AbstractScorecardParser {
     }
 
     public String peekValueAt(int row, int col) {
-        if (currentWorksheet != null) {
-            if (row >= 0 && row < currentWorksheet.getLastRowNum()) {
+        if (currentWorksheet != null){
+            if ( row >= 0 && row < currentWorksheet.getLastRowNum() ) {
                 HSSFRow hssfRow = currentWorksheet.getRow(row);
-                if (hssfRow != null && col >= 0 && col < hssfRow.getLastCellNum()) {
+                if (hssfRow != null && col >= 0 && col < hssfRow.getLastCellNum()){
                     return hssfRow.getCell(col).getStringCellValue();
                 }
             }
