@@ -12,7 +12,7 @@ import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_
 
 public class PMMLDocumentTest {
 
-    private static PMML              pmmlDocument;
+    private static PMML pmmlDocument;
     private static ScorecardCompiler scorecardCompiler;
 
     @Before
@@ -44,21 +44,21 @@ public class PMMLDocumentTest {
         assertNotNull(dataDictionary);
         assertEquals(5, dataDictionary.getNumberOfFields().intValue());
         assertEquals("age", dataDictionary.getDataFields().get(0).getName());
-        assertEquals("occupation", dataDictionary.getDataFields().get(1).getName());
+        assertEquals("occupation",dataDictionary.getDataFields().get(1).getName());
         assertEquals("residenceState", dataDictionary.getDataFields().get(2).getName());
         assertEquals("validLicense", dataDictionary.getDataFields().get(3).getName());
     }
 
     @Test
     public void testMiningSchema() throws Exception {
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
-            if (serializable instanceof Scorecard) {
-                for (Object obj : ((Scorecard) serializable).getExtensionsAndCharacteristicsAndMiningSchemas()) {
-                    if (obj instanceof MiningSchema) {
-                        MiningSchema miningSchema = ((MiningSchema) obj);
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
+            if (serializable instanceof Scorecard){
+                for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
+                    if (obj instanceof MiningSchema){
+                        MiningSchema miningSchema = ((MiningSchema)obj);
                         assertEquals(5, miningSchema.getMiningFields().size());
                         assertEquals("age", miningSchema.getMiningFields().get(0).getName());
-                        assertEquals("occupation", miningSchema.getMiningFields().get(1).getName());
+                        assertEquals("occupation",miningSchema.getMiningFields().get(1).getName());
                         assertEquals("residenceState", miningSchema.getMiningFields().get(2).getName());
                         assertEquals("validLicense", miningSchema.getMiningFields().get(3).getName());
                         return;
@@ -71,22 +71,22 @@ public class PMMLDocumentTest {
 
     @Test
     public void testCharacteristicsAndAttributes() throws Exception {
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
-            if (serializable instanceof Scorecard) {
-                for (Object obj : ((Scorecard) serializable).getExtensionsAndCharacteristicsAndMiningSchemas()) {
-                    if (obj instanceof Characteristics) {
-                        Characteristics characteristics = (Characteristics) obj;
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
+            if (serializable instanceof Scorecard){
+                for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
+                    if (obj instanceof Characteristics){
+                        Characteristics characteristics = (Characteristics)obj;
                         assertEquals(4, characteristics.getCharacteristics().size());
                         assertEquals("AgeScore", characteristics.getCharacteristics().get(0).getName());
                         assertEquals("$B$8", ScorecardPMMLUtils.getExtensionValue(characteristics.getCharacteristics().get(0).getExtensions(), "cellRef"));
 
-                        assertEquals("OccupationScore", characteristics.getCharacteristics().get(1).getName());
+                        assertEquals("OccupationScore",characteristics.getCharacteristics().get(1).getName());
                         assertEquals("$B$16", ScorecardPMMLUtils.getExtensionValue(characteristics.getCharacteristics().get(1).getExtensions(), "cellRef"));
 
-                        assertEquals("ResidenceStateScore", characteristics.getCharacteristics().get(2).getName());
+                        assertEquals("ResidenceStateScore",characteristics.getCharacteristics().get(2).getName());
                         assertEquals("$B$22", ScorecardPMMLUtils.getExtensionValue(characteristics.getCharacteristics().get(2).getExtensions(), "cellRef"));
 
-                        assertEquals("ValidLicenseScore", characteristics.getCharacteristics().get(3).getName());
+                        assertEquals("ValidLicenseScore",characteristics.getCharacteristics().get(3).getName());
                         assertEquals("$B$28", ScorecardPMMLUtils.getExtensionValue(characteristics.getCharacteristics().get(3).getExtensions(), "cellRef"));
                         return;
                     }
@@ -98,11 +98,11 @@ public class PMMLDocumentTest {
 
     @Test
     public void testAgeScoreCharacteristic() throws Exception {
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
-            if (serializable instanceof Scorecard) {
-                for (Object obj : ((Scorecard) serializable).getExtensionsAndCharacteristicsAndMiningSchemas()) {
-                    if (obj instanceof Characteristics) {
-                        Characteristics characteristics = (Characteristics) obj;
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
+            if (serializable instanceof Scorecard){
+                for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
+                    if (obj instanceof Characteristics){
+                        Characteristics characteristics = (Characteristics)obj;
                         assertEquals(4, characteristics.getCharacteristics().size());
                         assertEquals("AgeScore", characteristics.getCharacteristics().get(0).getName());
                         assertEquals("$B$8", ScorecardPMMLUtils.getExtensionValue(characteristics.getCharacteristics().get(0).getExtensions(), "cellRef"));
@@ -135,11 +135,11 @@ public class PMMLDocumentTest {
 
     @Test
     public void testOccupationScoreCharacteristic() throws Exception {
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
-            if (serializable instanceof Scorecard) {
-                for (Object obj : ((Scorecard) serializable).getExtensionsAndCharacteristicsAndMiningSchemas()) {
-                    if (obj instanceof Characteristics) {
-                        Characteristics characteristics = (Characteristics) obj;
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
+            if (serializable instanceof Scorecard){
+                for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
+                    if (obj instanceof Characteristics){
+                        Characteristics characteristics = (Characteristics)obj;
                         assertEquals(4, characteristics.getCharacteristics().size());
 
                         assertNotNull(characteristics.getCharacteristics().get(1).getAttributes());
@@ -168,11 +168,11 @@ public class PMMLDocumentTest {
 
     @Test
     public void testResidenceStateScoreCharacteristic() throws Exception {
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
-            if (serializable instanceof Scorecard) {
-                for (Object obj : ((Scorecard) serializable).getExtensionsAndCharacteristicsAndMiningSchemas()) {
-                    if (obj instanceof Characteristics) {
-                        Characteristics characteristics = (Characteristics) obj;
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
+            if (serializable instanceof Scorecard){
+                for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
+                    if (obj instanceof Characteristics){
+                        Characteristics characteristics = (Characteristics)obj;
                         assertEquals(4, characteristics.getCharacteristics().size());
 
                         assertNotNull(characteristics.getCharacteristics().get(2).getAttributes());
@@ -199,11 +199,11 @@ public class PMMLDocumentTest {
 
     @Test
     public void testValidLicenseScoreCharacteristic() throws Exception {
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
-            if (serializable instanceof Scorecard) {
-                for (Object obj : ((Scorecard) serializable).getExtensionsAndCharacteristicsAndMiningSchemas()) {
-                    if (obj instanceof Characteristics) {
-                        Characteristics characteristics = (Characteristics) obj;
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
+            if (serializable instanceof Scorecard){
+                for (Object obj :((Scorecard)serializable) .getExtensionsAndCharacteristicsAndMiningSchemas()){
+                    if (obj instanceof Characteristics){
+                        Characteristics characteristics = (Characteristics)obj;
                         assertEquals(4, characteristics.getCharacteristics().size());
 
                         assertNotNull(characteristics.getCharacteristics().get(3).getAttributes());
@@ -223,15 +223,14 @@ public class PMMLDocumentTest {
         }
         fail();
     }
-
     @Test
     public void testScorecardWithExtensions() throws Exception {
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
-            if (serializable instanceof Scorecard) {
-                Scorecard scorecard = (Scorecard) serializable;
-                assertEquals("Sample Score", scorecard.getModelName());
-                //                assertNotNull(ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_OBJECT_CLASS));
-                //                assertNotNull(ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_BOUND_VAR_NAME));
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
+            if (serializable instanceof Scorecard){
+                Scorecard scorecard = (Scorecard)serializable;
+                assertEquals("Sample Score",scorecard.getModelName());
+//                assertNotNull(ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_OBJECT_CLASS));
+//                assertNotNull(ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_BOUND_VAR_NAME));
                 return;
             }
         }
@@ -240,12 +239,12 @@ public class PMMLDocumentTest {
 
     @Test
     public void testOutput() throws Exception {
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()) {
-            if (serializable instanceof Scorecard) {
-                Scorecard scorecard = (Scorecard) serializable;
-                for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
-                    if (obj instanceof Output) {
-                        Output output = (Output) obj;
+        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
+            if (serializable instanceof Scorecard){
+                Scorecard scorecard = (Scorecard)serializable;
+                for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
+                    if ( obj instanceof Output) {
+                        Output output = (Output)obj;
                         assertEquals(1, output.getOutputFields().size());
                         assertNotNull(output.getOutputFields().get(0));
                         assertEquals("calculatedScore", output.getOutputFields().get(0).getName());

@@ -33,13 +33,13 @@ class XLSEventDataCollector {
 
     private List<DataExpectation> expectations = new ArrayList<DataExpectation>();
     private List<MergedCellRange> cellRangeList;
-    private Scorecard             scorecard;
-    private Characteristics       characteristics;
-    private Characteristic        _characteristic; //stateMachine variables
-    private Output                output;
-    private List<ScorecardError>  parseErrors;
-    private MiningSchema          miningSchema;
-    private XLSScorecardParser    xlsScorecardParser;
+    private Scorecard scorecard;
+    private Characteristics characteristics;
+    private Characteristic _characteristic; //stateMachine variables
+    private Output output;
+    private List<ScorecardError> parseErrors;
+    private MiningSchema miningSchema;
+    private XLSScorecardParser xlsScorecardParser;
 
     public XLSEventDataCollector() {
         parseErrors = new ArrayList<ScorecardError>();
@@ -55,15 +55,15 @@ class XLSEventDataCollector {
         for (DataExpectation dataExpectation : dataExpectations) {
             try {
                 if (dataExpectation != null && dataExpectation.object != null) {
-                    if (cellValue == null || StringUtils.isEmpty(cellValue.toString())) {
-                        if (dataExpectation.errorMessage != null && !StringUtils.isEmpty(dataExpectation.errorMessage)) {
+                    if ( cellValue == null || StringUtils.isEmpty(cellValue.toString())){
+                        if ( dataExpectation.errorMessage != null && !StringUtils.isEmpty(dataExpectation.errorMessage)) {
                             parseErrors.add(new ScorecardError(cellRef.formatAsString(), dataExpectation.errorMessage));
                             return;
                         }
                     }
                     String setter = "set" + Character.toUpperCase(dataExpectation.property.charAt(0)) + dataExpectation.property.substring(1);
                     Method method = getSuitableMethod(cellValue, expectedClass, dataExpectation, setter);
-                    if (method == null) {
+                    if ( method == null ) {
                         if (cellValue != null && !StringUtils.isEmpty(cellValue.toString())) {
                             parseErrors.add(new ScorecardError(cellRef.formatAsString(), "Unexpected Value! Wrong Datatype?"));
                         }
@@ -93,15 +93,15 @@ class XLSEventDataCollector {
             method = dataExpectation.object.getClass().getMethod(setter, expectedClass);
             return method;
         } catch (NoSuchMethodException e) {
-            if (expectedClass == int.class) {
-                try {
+            if ( expectedClass == int.class) {
+                try{
                     method = dataExpectation.object.getClass().getMethod(setter, Double.class);
                     return method;
-                } catch (NoSuchMethodException e1) {
+                }catch (NoSuchMethodException e1) {
                     //stay silent
                 }
             }
-            if (expectedClass != String.class) {
+            if ( expectedClass != String.class) {
                 try {
                     method = dataExpectation.object.getClass().getMethod(setter, String.class);
                     return method;
@@ -109,7 +109,7 @@ class XLSEventDataCollector {
                     return null;
                 }
             }
-            if ("TRUE".equalsIgnoreCase(cellValue.toString()) || "FALSE".equalsIgnoreCase(cellValue.toString())) {
+            if ("TRUE".equalsIgnoreCase(cellValue.toString()) || "FALSE".equalsIgnoreCase(cellValue.toString())){
                 try {
                     method = dataExpectation.object.getClass().getMethod(setter, Boolean.class);
                     return method;
@@ -151,13 +151,13 @@ class XLSEventDataCollector {
         } else if (XLSKeywords.SCORECARD_BASE_SCORE.equalsIgnoreCase(stringCellValue)) {
             addExpectation(currentRowCtr, currentColCtr + 1, "initialScore", scorecard, null);
 
-            //        } else if (XLSKeywords.SCORECARD_SCORE_VAR.equalsIgnoreCase(stringCellValue)) {
-            //            OutputField outputField = new OutputField();
-            //            outputField.setDataType(DATATYPE.DOUBLE);
-            //            outputField.setDisplayName("Final Score");
-            //            output.getOutputFields().add(outputField);
-            //            outputField.setFeature(RESULTFEATURE.PREDICTED_VALUE);
-            //            addExpectation(currentRowCtr, currentColCtr + 1, "name", outputField, "Final Score Variable is missing!");
+//        } else if (XLSKeywords.SCORECARD_SCORE_VAR.equalsIgnoreCase(stringCellValue)) {
+//            OutputField outputField = new OutputField();
+//            outputField.setDataType(DATATYPE.DOUBLE);
+//            outputField.setDisplayName("Final Score");
+//            output.getOutputFields().add(outputField);
+//            outputField.setFeature(RESULTFEATURE.PREDICTED_VALUE);
+//            addExpectation(currentRowCtr, currentColCtr + 1, "name", outputField, "Final Score Variable is missing!");
 
         } else if (XLSKeywords.SCORECARD_IMPORTS.equalsIgnoreCase(stringCellValue)) {
             Extension extension = new Extension();
@@ -194,15 +194,15 @@ class XLSEventDataCollector {
             addExpectation(currentRowCtr + 1, currentColCtr, "value", extension, "Characteristic (Property) Data Type is missing.");
 
         } else if (XLSKeywords.SCORECARD_CHARACTERISTIC_BASELINE_SCORE.equalsIgnoreCase(stringCellValue)) {
-            String value = xlsScorecardParser.peekValueAt(currentRowCtr, currentColCtr - 2);
-            if ("Name".equalsIgnoreCase(value)) {
+            String value = xlsScorecardParser.peekValueAt(currentRowCtr, currentColCtr-2);
+            if ("Name".equalsIgnoreCase(value)){
                 addExpectation(currentRowCtr + 1, currentColCtr, "baselineScore", _characteristic, null);
             } else {
-                addExpectation(currentRowCtr, currentColCtr + 1, "baselineScore", scorecard, null);
+                addExpectation(currentRowCtr, currentColCtr+1, "baselineScore", scorecard, null);
             }
         } else if (XLSKeywords.SCORECARD_REASONCODE.equalsIgnoreCase(stringCellValue)) {
-            String value = xlsScorecardParser.peekValueAt(currentRowCtr, currentColCtr - 4);
-            if ("Name".equalsIgnoreCase(value)) {
+            String value = xlsScorecardParser.peekValueAt(currentRowCtr, currentColCtr-4);
+            if ("Name".equalsIgnoreCase(value)){
                 //only for characteristics...
                 addExpectation(currentRowCtr + 1, currentColCtr, "reasonCode", _characteristic, null);
             }
@@ -234,7 +234,7 @@ class XLSEventDataCollector {
                     extension.setName("cellRef");
                     addExpectation(r, currentColCtr + 1, "value", extension, null);
                     attribute.getExtensions().add(extension);
-                    addExpectation(r, currentColCtr + 4, "reasonCode", attribute, null);
+                    addExpectation(r, currentColCtr+4, "reasonCode", attribute,null);
                 }
                 MiningField miningField = new MiningField();
                 miningField.setInvalidValueTreatment(INVALIDVALUETREATMENTMETHOD.AS_MISSING);
@@ -315,7 +315,7 @@ class XLSEventDataCollector {
     private MergedCellRange getMergedRegionForCell(int rowInd, int colInd) {
         for (MergedCellRange cellRange : cellRangeList) {
             if ((cellRange.getFirstRow() <= rowInd && rowInd <= cellRange.getLastRow() &&
-                 cellRange.getFirstCol() <= colInd && colInd <= cellRange.getLastCol())) {
+                    cellRange.getFirstCol() <= colInd && colInd <= cellRange.getLastCol())) {
                 return cellRange;
             }
         }
@@ -332,8 +332,8 @@ class XLSEventDataCollector {
 
     class DataExpectation {
 
-        int    row;
-        int    col;
+        int row;
+        int col;
         Object object;
         String property;
         String errorMessage;

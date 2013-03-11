@@ -10,10 +10,10 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class Applicant {
-    int     age;
-    String  occupation;
+    int age;
+    String occupation;
     String  residenceState;
-    double  totalScore;
+    double totalScore;
     boolean validLicense;
 
     public List<String> getReasonCodes() {

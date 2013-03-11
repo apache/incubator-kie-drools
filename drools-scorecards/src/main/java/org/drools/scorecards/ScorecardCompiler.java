@@ -33,10 +33,10 @@ import java.util.List;
 
 public class ScorecardCompiler {
 
-    private             PMML   pmmlDocument       = null;
+    private PMML pmmlDocument = null;
     public static final String DEFAULT_SHEET_NAME = "scorecards";
     private List<ScorecardError> scorecardErrors;
-    private DrlType              drlType;
+    private DrlType drlType;
     private final static Logger logger = LoggerFactory.getLogger(ScorecardCompiler.class);
 
     public ScorecardCompiler(DrlType drlType) {
@@ -48,7 +48,7 @@ public class ScorecardCompiler {
     }
 
     /* method for use from Guvnor */
-    protected void setPMMLDocument(PMML pmmlDocument) {
+    protected void setPMMLDocument(PMML pmmlDocument){
         this.pmmlDocument = pmmlDocument;
     }
 
@@ -80,7 +80,7 @@ public class ScorecardCompiler {
         try {
             AbstractScorecardParser parser = new XLSScorecardParser();
             scorecardErrors = parser.parseFile(stream, worksheetName);
-            if (scorecardErrors.isEmpty()) {
+            if ( scorecardErrors.isEmpty() ) {
                 pmmlDocument = parser.getPMMLDocument();
                 return true;
             }
@@ -96,8 +96,8 @@ public class ScorecardCompiler {
         return pmmlDocument;
     }
 
-    public String getPMML() {
-        if (pmmlDocument == null) {
+    public String getPMML(){
+        if (pmmlDocument == null ) {
             return null;
         }
         // create a JAXBContext for the PMML class
@@ -118,7 +118,7 @@ public class ScorecardCompiler {
         return null;
     }
 
-    public String getDRL() {
+    public String getDRL(){
         if (pmmlDocument != null) {
             if (drlType == DrlType.INTERNAL_DECLARED_TYPES) {
                 return new DeclaredTypesDRLEmitter().emitDRL(pmmlDocument);
@@ -145,7 +145,7 @@ public class ScorecardCompiler {
 
     private void closeStream(final InputStream stream) {
         try {
-            if (stream != null) {
+            if ( stream != null ) {
                 stream.close();
             }
         } catch (final Exception e) {

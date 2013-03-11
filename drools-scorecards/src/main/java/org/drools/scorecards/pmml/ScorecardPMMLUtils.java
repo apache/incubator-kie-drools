@@ -23,14 +23,14 @@ import java.util.List;
 
 public class ScorecardPMMLUtils {
 
-    //    public static String getDataType(org.dmg.pmml_4_1.Characteristic c) {
-    //        for (Extension extension : c.getExtensions()) {
-    //            if (PMMLExtensionNames.CHARACTERTISTIC_DATATYPE.equalsIgnoreCase(extension.getName())) {
-    //                return extension.getValue();
-    //            }
-    //        }
-    //        return null;
-    //    }
+//    public static String getDataType(org.dmg.pmml_4_1.Characteristic c) {
+//        for (Extension extension : c.getExtensions()) {
+//            if (PMMLExtensionNames.CHARACTERTISTIC_DATATYPE.equalsIgnoreCase(extension.getName())) {
+//                return extension.getValue();
+//            }
+//        }
+//        return null;
+//    }
 
     public static String getExtensionValue(List extensions, String extensionName) {
         for (Object obj : extensions) {
@@ -56,7 +56,7 @@ public class ScorecardPMMLUtils {
         return null;
     }
 
-    public static Scorecard createScorecard() {
+    public static Scorecard createScorecard(){
         Scorecard scorecard = new Scorecard();
         //default false, until the spreadsheet enables explicitly.
         scorecard.setUseReasonCodes(Boolean.FALSE);
@@ -66,7 +66,7 @@ public class ScorecardPMMLUtils {
 
     public static String getDataType(PMML pmmlDocument, String fieldName) {
         DataDictionary dataDictionary = pmmlDocument.getDataDictionary();
-        for (DataField dataField : dataDictionary.getDataFields()) {
+        for (DataField dataField : dataDictionary.getDataFields()){
             if (dataField.getName().equalsIgnoreCase(fieldName)) {
                 DATATYPE datatype = dataField.getDataType();
                 if (datatype == DATATYPE.DOUBLE) {
@@ -90,10 +90,10 @@ public class ScorecardPMMLUtils {
             field = scoreAttribute.getSimpleSetPredicate().getField();
         } else if (scoreAttribute.getCompoundPredicate() != null) {
             Object predicate = scoreAttribute.getCompoundPredicate().getSimplePredicatesAndCompoundPredicatesAndSimpleSetPredicates().get(0);
-            if (predicate instanceof SimplePredicate) {
-                field = ((SimplePredicate) predicate).getField();
-            } else if (predicate instanceof SimpleSetPredicate) {
-                field = ((SimpleSetPredicate) predicate).getField();
+            if (predicate instanceof SimplePredicate){
+                field = ((SimplePredicate)predicate).getField();
+            } else if (predicate instanceof SimpleSetPredicate){
+                field = ((SimpleSetPredicate)predicate).getField();
             }
         }
         return field;

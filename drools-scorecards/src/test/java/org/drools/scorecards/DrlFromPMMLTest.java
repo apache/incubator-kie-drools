@@ -13,7 +13,11 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
 
 public class DrlFromPMMLTest {
@@ -23,7 +27,7 @@ public class DrlFromPMMLTest {
     @Before
     public void setUp() throws Exception {
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
-        if (scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_c.xls"))) {
+        if (scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_c.xls")) ) {
             PMML pmmlDocument = scorecardCompiler.getPMMLDocument();
             assertNotNull(pmmlDocument);
             drl = scorecardCompiler.getDRL();
@@ -58,32 +62,32 @@ public class DrlFromPMMLTest {
     public void testDRLExecution() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        for (KnowledgeBuilderError error : kbuilder.getErrors()){
             System.out.println(error.getMessage());
         }
-        assertFalse(kbuilder.hasErrors());
+        assertFalse( kbuilder.hasErrors() );
 
         //BUILD RULEBASE
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         //NEW WORKING MEMORY
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        FactType scorecardType = kbase.getFactType("org.drools.scorecards.example", "SampleScore");
+        FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
         DroolsScorecard scorecard = (DroolsScorecard) scorecardType.newInstance();
         scorecardType.set(scorecard, "age", 10);
-        session.insert(scorecard);
+        session.insert( scorecard );
         session.fireAllRules();
         session.dispose();
         //occupation = 5, age = 25, validLicence -1
-        assertEquals(29.0, scorecard.getCalculatedScore());
+        assertEquals(29.0,scorecard.getCalculatedScore());
 
         session = kbase.newStatefulKnowledgeSession();
         scorecard = (DroolsScorecard) scorecardType.newInstance();
         scorecardType.set(scorecard, "occupation", "SKYDIVER");
         scorecardType.set(scorecard, "age", 0);
-        session.insert(scorecard);
+        session.insert( scorecard );
         session.fireAllRules();
         session.dispose();
         //occupation = -10, age = +10, validLicense = -1;
@@ -95,11 +99,11 @@ public class DrlFromPMMLTest {
         scorecardType.set(scorecard, "occupation", "TEACHER");
         scorecardType.set(scorecard, "age", 20);
         scorecardType.set(scorecard, "validLicense", true);
-        session.insert(scorecard);
+        session.insert( scorecard );
         session.fireAllRules();
         session.dispose();
         //occupation = +10, age = +40, state = -10, validLicense = 1
-        assertEquals(41.0, scorecard.getCalculatedScore());
+        assertEquals(41.0,scorecard.getCalculatedScore());
     }
 
 

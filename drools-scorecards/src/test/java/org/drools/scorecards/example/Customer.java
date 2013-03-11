@@ -8,7 +8,7 @@ package org.drools.scorecards.example;
  */
 public class Customer {
     double customerScore;
-    int    customerAge;
+    int customerAge;
     String placeOfResidence;
 
     public Customer() {
