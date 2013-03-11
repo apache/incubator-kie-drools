@@ -143,7 +143,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         } else {
             // TODO moveSelectorConfigList is only a List because of XStream limitations.
             throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                    + ") must a singleton or empty. Use a single " + UnionMoveSelectorConfig.class
+                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class
                     // TODO + " or " + CartesianProductMoveSelectorConfig.class
                     + " element to nest multiple MoveSelectors.");
         }
