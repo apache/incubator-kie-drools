@@ -26,7 +26,7 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
-
+    
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -57,7 +57,7 @@
               otherwise we get tests failing because of leftover db's -->
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
-          <filesets>
+         <filesets>
             <fileset>
               <directory>${basedir}</directory>
               <includes>
@@ -65,7 +65,7 @@
                 <include>JPADroolsFlow.h2.db</include>
               </includes>
             </fileset>
-          </filesets>
+         </filesets>
         </configuration>
       </plugin>
     </plugins>
@@ -193,7 +193,7 @@
     </dependency>
 
     <!-- Extra test -->
-    <dependency>
+   <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-embedded</artifactId>
       <scope>test</scope>
@@ -211,7 +211,7 @@
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
     <maven.jdbc.db.name/>
     <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/>
+    <maven.jdbc.db.server/>     
     <maven.jdbc.driver.jar/>
     <maven.jdbc.username></maven.jdbc.username>
     <maven.jdbc.password></maven.jdbc.password>
@@ -221,19 +221,19 @@
   <profiles>
     <profile>
       <id>database</id>
-
+       
       <dependencies>
         <!--  Add the downloaded jdbc driver jar for the database to the classpath.
               !: <groupId>, <artifactId> and <version> are just placeholders and DO NOT MATTER! -->
         <dependency>
-          <groupId>org.jbpm</groupId>
-          <artifactId>downloaded-jdbc-driver-jar</artifactId>
-          <version>1.0</version>
-          <scope>system</scope>
-          <systemPath>${maven.jdbc.driver.jar}</systemPath>
-        </dependency>
+           <groupId>org.jbpm</groupId>
+           <artifactId>downloaded-jdbc-driver-jar</artifactId>
+           <version>1.0</version>
+           <scope>system</scope>
+           <systemPath>${maven.jdbc.driver.jar}</systemPath>
+        </dependency>  
       </dependencies>
     </profile>
-  </profiles>
-
+ </profiles>
+    
 </project>

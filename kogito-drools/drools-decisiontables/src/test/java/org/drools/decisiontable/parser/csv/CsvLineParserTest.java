@@ -16,11 +16,12 @@
 
 package org.drools.decisiontable.parser.csv;
 
-import org.junit.Test;
-
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class CsvLineParserTest {
 
@@ -28,48 +29,48 @@ public class CsvLineParserTest {
     public void testSimpleLineParse() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,b,c";
-        final List<String> list = parser.parse(s);
-        assertEquals(3,
-                     list.size());
+        final List<String> list = parser.parse( s );
+        assertEquals( 3,
+                      list.size() );
 
-        assertEquals("a",
-                     list.get(0));
-        assertEquals("b",
-                     list.get(1));
-        assertEquals("c",
-                     list.get(2));
+        assertEquals( "a",
+                      list.get( 0 ) );
+        assertEquals( "b",
+                      list.get( 1 ) );
+        assertEquals( "c",
+                      list.get( 2 ) );
     }
 
     @Test
     public void testLineParse() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"b\",c";
-        final List<String> list = parser.parse(s);
-        assertEquals(3,
-                     list.size());
+        final List<String> list = parser.parse( s );
+        assertEquals( 3,
+                      list.size() );
 
-        assertEquals("a",
-                     list.get(0));
-        assertEquals("b",
-                     list.get(1));
-        assertEquals("c",
-                     list.get(2));
+        assertEquals( "a",
+                      list.get( 0 ) );
+        assertEquals( "b",
+                      list.get( 1 ) );
+        assertEquals( "c",
+                      list.get( 2 ) );
     }
 
     @Test
     public void testDoubleQuotes() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"\"\"b\"\"\",c";
-        final List<String> list = parser.parse(s);
-        assertEquals(3,
-                     list.size());
+        final List<String> list = parser.parse( s );
+        assertEquals( 3,
+                      list.size() );
 
-        assertEquals("a",
-                     list.get(0));
-        assertEquals("\"b\"",
-                     list.get(1));
-        assertEquals("c",
-                     list.get(2));
+        assertEquals( "a",
+                      list.get( 0 ) );
+        assertEquals( "\"b\"",
+                      list.get( 1 ) );
+        assertEquals( "c",
+                      list.get( 2 ) );
     }
 
 }

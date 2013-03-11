@@ -15,65 +15,80 @@
  */
 package org.drools.marshalling.util;
 
-import junit.framework.Assert;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.persistence.info.SessionInfo;
-import org.drools.persistence.info.WorkItemInfo;
-import org.kie.KnowledgeBase;
+import static org.drools.marshalling.util.MarshallingTestUtil.PROCESS_INSTANCE_INFO_CLASS_NAME;
+import static org.drools.marshalling.util.MarshallingTestUtil.STORE_KNOWLEDGE_BASE;
+import static org.drools.marshalling.util.MarshallingTestUtil.byteArrayHashCode;
+import static org.drools.marshalling.util.MarshallingTestUtil.getProcessInstanceInfoByteArray;
+import static org.drools.marshalling.util.MarshallingTestUtil.getTestMethodName;
+import static org.drools.marshalling.util.MarshallingTestUtil.getWorkItemByteArray;
 
-import javax.persistence.*;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.drools.marshalling.util.MarshallingTestUtil.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
+
+import junit.framework.Assert;
+
+import org.drools.core.util.DroolsStreamUtils;
+import org.drools.persistence.info.SessionInfo;
+import org.drools.persistence.info.WorkItemInfo;
+import org.kie.KieBase;
+import org.kie.KnowledgeBase;
 
 @Entity
-@SequenceGenerator(name = "marshalledDataIdSeq", sequenceName = "MARSHALLEDDATA_ID_SEQ")
+@SequenceGenerator(name="marshalledDataIdSeq", sequenceName="MARSHALLEDDATA_ID_SEQ")
 public class MarshalledData {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "marshalledDataIdSeq")
+    @GeneratedValue(strategy=GenerationType.AUTO, generator="marshalledDataIdSeq")
     public Integer id;
-
+    
     @Lob
     public byte[] byteArray;
-
+    
     @Lob
     public byte[] serializedKnowledgeBase;
-
-    public String  testMethodName;
+    
+    public String testMethodName;
     public Integer snapshotNumber;
-
+  
     public String marshalledObjectClassName;
-    public Long   marshalledObjectId;
-
+    public Long marshalledObjectId;
+    
     @Transient
     private static HashMap<String, AtomicInteger> testMethodSnapshotNumMap = new HashMap<String, AtomicInteger>();
-
-    public MarshalledData() {
+    
+    public MarshalledData() { 
         // for the ORM/persistence which requires a default constructor to initialize entity classes
     }
-
-    public MarshalledData(Object marshalledClassInstance) {
+    
+    public MarshalledData(Object marshalledClassInstance) { 
         this.testMethodName = getTestMethodName();
         initializeObject(marshalledClassInstance);
     }
-
-    public MarshalledData(String testMethodName, Object marshalledClassInstance) {
-        if (testMethodName != null) {
+    
+    public MarshalledData(String testMethodName, Object marshalledClassInstance) { 
+        if( testMethodName != null ) { 
             this.testMethodName = getTestMethodName();
-        } else {
+        }
+        else { 
             this.testMethodName = testMethodName;
         }
-
+        
         initializeObject(marshalledClassInstance);
     }
-
-    private void initializeObject(Object marshalledClassInstance) {
+    
+    private void initializeObject(Object marshalledClassInstance) { 
         // snapshot number
-        if (testMethodSnapshotNumMap.get(this.testMethodName) == null) {
+        if( testMethodSnapshotNumMap.get(this.testMethodName) == null ) { 
             testMethodSnapshotNumMap.put(this.testMethodName, new AtomicInteger(-1));
         }
         this.snapshotNumber = testMethodSnapshotNumMap.get(this.testMethodName).incrementAndGet();
@@ -81,71 +96,73 @@ public class MarshalledData {
         // marshalled object class name
         String className = marshalledClassInstance.getClass().getName();
         this.marshalledObjectClassName = className;
-
+       
         // Object specific actions
-        if (className.equals(SessionInfo.class.getName())) {
+        if( className.equals(SessionInfo.class.getName()) ) { 
             SessionInfo sessionInfo = (SessionInfo) marshalledClassInstance;
             this.byteArray = sessionInfo.getData();
             this.marshalledObjectId = sessionInfo.getId().longValue();
-            if (STORE_KNOWLEDGE_BASE) {
-                try {
+            if( STORE_KNOWLEDGE_BASE ) { 
+                try { 
                     storeAssociatedKnowledgeBase(sessionInfo);
-                } catch (IOException ioe) {
-                    Assert.fail("Unable to retrieve marshalled data or id for " + className + " object: ["
-                                + ioe.getClass().getSimpleName() + ", " + ioe.getMessage());
+                } catch(IOException ioe ) { 
+                    Assert.fail("Unable to retrieve marshalled data or id for " + className + " object: [" 
+                            + ioe.getClass().getSimpleName() + ", " + ioe.getMessage() );
                 }
             }
-        } else if (className.equals(WorkItemInfo.class.getName())) {
-            WorkItemInfo workItemInfo = (WorkItemInfo) marshalledClassInstance;
-            this.byteArray = getWorkItemByteArray(workItemInfo);
-            this.marshalledObjectId = workItemInfo.getId();
-        } else if (PROCESS_INSTANCE_INFO_CLASS_NAME.equals(className)) {
+        }
+        else if( className.equals(WorkItemInfo.class.getName()) ) { 
+           WorkItemInfo workItemInfo = (WorkItemInfo) marshalledClassInstance;
+           this.byteArray = getWorkItemByteArray(workItemInfo);
+           this.marshalledObjectId = workItemInfo.getId();
+        }
+        else if( PROCESS_INSTANCE_INFO_CLASS_NAME.equals(className) ) { 
             Class<?> processInstanceInfoClass = null;
             try {
                 this.byteArray = getProcessInstanceInfoByteArray(marshalledClassInstance);
-
+                
                 processInstanceInfoClass = Class.forName(className);
-                Method getIdMethod = processInstanceInfoClass.getMethod("getId", (Class[]) null);
-                Object idObject = getIdMethod.invoke(marshalledClassInstance, (Object[]) null);
+                Method getIdMethod = processInstanceInfoClass.getMethod("getId", (Class []) null);
+                Object idObject = getIdMethod.invoke(marshalledClassInstance, (Object []) null);
                 this.marshalledObjectId = (Long) idObject;
             } catch (Exception e) {
-                Assert.fail("Unable to retrieve marshalled data or id for " + className + " object: ["
-                            + e.getClass().getSimpleName() + ", " + e.getMessage());
-            }
+                Assert.fail("Unable to retrieve marshalled data or id for " + className + " object: [" 
+                        + e.getClass().getSimpleName() + ", " + e.getMessage() );
+            } 
         }
     }
 
-    private void storeAssociatedKnowledgeBase(SessionInfo sessionInfo) throws IOException {
-        KnowledgeBase kbase = sessionInfo.getJPASessionMashallingHelper().getKbase();
-        this.serializedKnowledgeBase = DroolsStreamUtils.streamOut(kbase);
+    private void storeAssociatedKnowledgeBase(SessionInfo sessionInfo) throws IOException { 
+       KieBase kbase = sessionInfo.getJPASessionMashallingHelper().getKbase();
+       this.serializedKnowledgeBase = DroolsStreamUtils.streamOut(kbase);
     }
-
-    public static Integer getCurrentTestMethodSnapshotNumber() {
-        String testMethodName = getTestMethodName();
-        if (testMethodSnapshotNumMap.get(testMethodName) != null) {
-            return testMethodSnapshotNumMap.get(testMethodName).intValue();
-        }
-        return null;
+    
+    public static Integer getCurrentTestMethodSnapshotNumber() { 
+       String testMethodName = getTestMethodName();
+       if( testMethodSnapshotNumMap.get(testMethodName) != null ) { 
+          return testMethodSnapshotNumMap.get(testMethodName).intValue(); 
+       }
+       return null;
     }
-
-    public String getTestMethodAndSnapshotNum() {
-        return this.testMethodName + ":" + this.snapshotNumber;
+    
+    public String getTestMethodAndSnapshotNum() { 
+       return this.testMethodName + ":" + this.snapshotNumber;
     }
-
-    public String toString() {
+    
+    public String toString() { 
         StringBuilder string = new StringBuilder();
-        string.append((id != null ? id : "") + ":");
-        if (byteArray != null) {
+        string.append( (id != null ? id : "") + ":");
+        if( byteArray != null ) { 
             string.append(byteArrayHashCode(byteArray));
         }
-        string.append(":");
-        string.append((testMethodName != null ? testMethodName : "") + ":");
-        string.append((snapshotNumber != null ? snapshotNumber : "") + ":");
-        string.append((marshalledObjectClassName != null ? marshalledObjectClassName : "") + ":");
-        string.append((marshalledObjectId != null ? marshalledObjectId : ""));
-
+        string.append( ":" );
+        string.append( (testMethodName != null ? testMethodName : "") + ":" );
+        string.append( (snapshotNumber != null ? snapshotNumber : "") + ":" );
+        string.append( (marshalledObjectClassName != null ? marshalledObjectClassName : "") + ":" );
+        string.append( (marshalledObjectId != null ? marshalledObjectId : "") );
+       
         return string.toString();
     }
-
+    
 
 }

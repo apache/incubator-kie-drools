@@ -16,6 +16,13 @@
 
 package org.drools.decisiontable;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.decisiontable.parser.xls.ExcelParser;
 import org.drools.template.parser.DataListener;
@@ -25,13 +32,6 @@ import org.drools.template.parser.TemplateDataListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class ExternalSpreadsheetCompiler {
 
     protected static transient Logger logger = LoggerFactory.getLogger(ExternalSpreadsheetCompiler.class);
@@ -40,11 +40,11 @@ public class ExternalSpreadsheetCompiler {
                           final String template,
                           int startRow,
                           int startCol) {
-        return compile(xls,
-                       template,
-                       InputType.XLS,
-                       startRow,
-                       startCol);
+        return compile( xls,
+                        template,
+                        InputType.XLS,
+                        startRow,
+                        startCol );
 
     }
 
@@ -53,13 +53,13 @@ public class ExternalSpreadsheetCompiler {
                           InputType type,
                           int startRow,
                           int startCol) {
-        final InputStream xlsStream = this.getClass().getResourceAsStream(xls);
-        final InputStream templateStream = this.getClass().getResourceAsStream(template);
-        return compile(xlsStream,
-                       templateStream,
-                       type,
-                       startRow,
-                       startCol);
+        final InputStream xlsStream = this.getClass().getResourceAsStream( xls );
+        final InputStream templateStream = this.getClass().getResourceAsStream( template );
+        return compile( xlsStream,
+                        templateStream,
+                        type,
+                        startRow,
+                        startCol );
 
     }
 
@@ -68,13 +68,13 @@ public class ExternalSpreadsheetCompiler {
                           final String template,
                           int startRow,
                           int startCol) {
-        final InputStream xlsStream = this.getClass().getResourceAsStream(xls);
-        final InputStream templateStream = this.getClass().getResourceAsStream(template);
-        return compile(xlsStream,
-                       worksheetName,
-                       templateStream,
-                       startRow,
-                       startCol);
+        final InputStream xlsStream = this.getClass().getResourceAsStream( xls );
+        final InputStream templateStream = this.getClass().getResourceAsStream( template );
+        return compile( xlsStream,
+                        worksheetName,
+                        templateStream,
+                        startRow,
+                        startCol );
 
     }
 
@@ -82,11 +82,11 @@ public class ExternalSpreadsheetCompiler {
                           final InputStream templateStream,
                           int startRow,
                           int startCol) {
-        return compile(xlsStream,
-                       templateStream,
-                       InputType.XLS,
-                       startRow,
-                       startCol);
+        return compile( xlsStream,
+                        templateStream,
+                        InputType.XLS,
+                        startRow,
+                        startCol );
     }
 
     public String compile(final InputStream xlsStream,
@@ -94,13 +94,13 @@ public class ExternalSpreadsheetCompiler {
                           InputType type,
                           int startRow,
                           int startCol) {
-        TemplateContainer tc = new DefaultTemplateContainer(templateStream);
-        closeStream(templateStream);
-        return compile(xlsStream,
-                       type,
-                       new TemplateDataListener(startRow,
-                                                startCol,
-                                                tc));
+        TemplateContainer tc = new DefaultTemplateContainer( templateStream );
+        closeStream( templateStream );
+        return compile( xlsStream,
+                        type,
+                        new TemplateDataListener( startRow,
+                                                  startCol,
+                                                  tc ) );
     }
 
     public String compile(final InputStream xlsStream,
@@ -108,52 +108,54 @@ public class ExternalSpreadsheetCompiler {
                           final InputStream templateStream,
                           int startRow,
                           int startCol) {
-        TemplateContainer tc = new DefaultTemplateContainer(templateStream);
-        closeStream(templateStream);
-        return compile(xlsStream,
-                       worksheetName,
-                       new TemplateDataListener(startRow,
-                                                startCol,
-                                                tc));
+        TemplateContainer tc = new DefaultTemplateContainer( templateStream );
+        closeStream( templateStream );
+        return compile( xlsStream,
+                        worksheetName,
+                        new TemplateDataListener( startRow,
+                                                  startCol,
+                                                  tc ) );
     }
 
     public void compile(final String xls,
                         InputType type,
                         final List<DataListener> listeners) {
-        final InputStream xlsStream = this.getClass().getResourceAsStream(xls);
-        compile(xlsStream,
-                type,
-                listeners);
+        final InputStream xlsStream = this.getClass().getResourceAsStream( xls );
+        compile( xlsStream,
+                 type,
+                 listeners );
     }
 
     public void compile(final String xls,
                         final Map<String, List<DataListener>> listeners) {
-        final InputStream xlsStream = this.getClass().getResourceAsStream(xls);
-        compile(xlsStream,
-                listeners);
+        final InputStream xlsStream = this.getClass().getResourceAsStream( xls );
+        compile( xlsStream,
+                 listeners );
     }
 
     public void compile(final InputStream xlsStream,
                         InputType type,
                         final List<DataListener> listeners) {
-        final DecisionTableParser parser = type.createParser(listeners);
-        parser.parseFile(xlsStream);
-        closeStream(xlsStream);
+        final DecisionTableParser parser = type.createParser( listeners );
+        parser.parseFile( xlsStream );
+        closeStream( xlsStream );
     }
 
     public void compile(final InputStream xlsStream,
                         final Map<String, List<DataListener>> listeners) {
-        final DecisionTableParser parser = new ExcelParser(listeners);
-        parser.parseFile(xlsStream);
-        closeStream(xlsStream);
+        final DecisionTableParser parser = new ExcelParser( listeners );
+        parser.parseFile( xlsStream );
+        closeStream( xlsStream );
     }
 
     /**
      * Generates DRL from the input stream containing the spreadsheet.
-     *
-     * @param xlsStream The stream to the spreadsheet. Uses the first worksheet found
-     *                  for the decision tables, ignores others.
-     * @param type      The type of the file - InputType.CSV or InputType.XLS
+     * 
+     * @param xlsStream
+     *            The stream to the spreadsheet. Uses the first worksheet found
+     *            for the decision tables, ignores others.
+     * @param type
+     *            The type of the file - InputType.CSV or InputType.XLS
      * @param listener
      * @return DRL xml, ready for use in drools.
      * @throws IOException
@@ -162,10 +164,10 @@ public class ExternalSpreadsheetCompiler {
                           final InputType type,
                           final TemplateDataListener listener) {
         ArrayList<DataListener> listeners = new ArrayList<DataListener>();
-        listeners.add(listener);
-        compile(xlsStream,
-                type,
-                listeners);
+        listeners.add( listener );
+        compile( xlsStream,
+                 type,
+                 listeners );
         return listener.renderDRL();
     }
 
@@ -174,19 +176,19 @@ public class ExternalSpreadsheetCompiler {
                           final TemplateDataListener listener) {
         Map<String, List<DataListener>> listeners = new HashMap<String, List<DataListener>>();
         List<DataListener> l = new ArrayList<DataListener>();
-        l.add(listener);
-        listeners.put(worksheetName,
-                      l);
-        compile(xlsStream,
-                listeners);
+        l.add( listener );
+        listeners.put( worksheetName,
+                       l );
+        compile( xlsStream,
+                 listeners );
         return listener.renderDRL();
     }
 
     private void closeStream(final InputStream stream) {
         try {
             stream.close();
-        } catch (final Exception e) {
-            logger.warn("WARNING: Wasn't able to " + "correctly close stream for decision table. " + e.getMessage());
+        } catch ( final Exception e ) {
+            logger.warn( "WARNING: Wasn't able to " + "correctly close stream for decision table. " + e.getMessage() );
         }
     }
 

@@ -7,8 +7,8 @@ import org.kie.runtime.StatefulKnowledgeSession;
 public interface ApplicationScopedPersistenceContext {
 
     StatefulKnowledgeSession loadStatefulKnowledgeSession(long sessionId,
-                                                          KieSessionConfiguration kconf,
-                                                          Environment env);
+            KieSessionConfiguration kconf,
+            Environment env);
 
     void save(StatefulKnowledgeSession internalKnowledgeSession);
 
