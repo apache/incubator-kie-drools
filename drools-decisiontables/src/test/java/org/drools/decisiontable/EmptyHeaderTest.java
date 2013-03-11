@@ -28,25 +28,25 @@ import org.kie.io.ResourceType;
 public class EmptyHeaderTest {
 
     @Test(expected = DecisionTableParseException.class)
-    public void testEmptyConditionInXLS() {
-        DecisionTableConfiguration dtconf = KnowledgeBuilderFactory
-                .newDecisionTableConfiguration();
-        dtconf.setInputType(DecisionTableInputType.XLS);
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
-                .newKnowledgeBuilder();
+	public void testEmptyConditionInXLS() {
+		DecisionTableConfiguration dtconf = KnowledgeBuilderFactory
+				.newDecisionTableConfiguration();
+		dtconf.setInputType(DecisionTableInputType.XLS);
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+				.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource(
                 "emptyCondition.xls", getClass()), ResourceType.DTABLE,
-                     dtconf);
-    }
+                dtconf);
+	}
 
-    @Test(expected = DecisionTableParseException.class)
-    public void testEmptyActionInCSV() {
-        DecisionTableConfiguration dtconf = KnowledgeBuilderFactory
-                .newDecisionTableConfiguration();
-        dtconf.setInputType(DecisionTableInputType.CSV);
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
-                .newKnowledgeBuilder();
+	@Test(expected = DecisionTableParseException.class)
+	public void testEmptyActionInCSV() {
+		DecisionTableConfiguration dtconf = KnowledgeBuilderFactory
+				.newDecisionTableConfiguration();
+		dtconf.setInputType(DecisionTableInputType.CSV);
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+				.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource(
                 "emptyAction.csv", getClass()), ResourceType.DTABLE, dtconf);
-    }
+	}
 }

@@ -15,12 +15,34 @@
  */
 package org.drools.marshalling.util;
 
+import static org.drools.marshalling.util.CompareViaReflectionUtil.compareInstances;
+import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.drools.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
+import static org.drools.marshalling.util.MarshallingTestUtil.unmarshallObject;
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.tearDown;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+
+import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.persistence.EntityManagerFactory;
+
 import org.drools.impl.EnvironmentFactory;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBase;
+import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.Environment;
@@ -31,27 +53,10 @@ import org.kie.runtime.conf.TimerJobFactoryOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManagerFactory;
-import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.drools.marshalling.util.CompareViaReflectionUtil.compareInstances;
-import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.drools.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
-import static org.drools.marshalling.util.MarshallingTestUtil.unmarshallObject;
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.tearDown;
-import static org.junit.Assert.*;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-
 public class TestMarshallingUtilsTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestMarshallingUtilsTest.class);
-
+    
     private static boolean debug = false;
 
     @Test
@@ -69,7 +74,7 @@ public class TestMarshallingUtilsTest {
 
         for (MarshalledData marshalledData : marshalledDataList) {
             String className = marshalledData.marshalledObjectClassName.substring(marshalledData.marshalledObjectClassName
-                                                                                                .lastIndexOf('.') + 1);
+                    .lastIndexOf('.') + 1);
             try {
                 unmarshallObject(marshalledData);
                 logger.debug("- " + className + ": " + marshalledData.getTestMethodAndSnapshotNum());
@@ -94,7 +99,7 @@ public class TestMarshallingUtilsTest {
                 marshalledData = marshalledDataElement;
             }
         }
-
+    
         try {
             Object unmarshalledObject = unmarshallObject(marshalledData);
             assertNotNull(unmarshalledObject);
@@ -110,8 +115,8 @@ public class TestMarshallingUtilsTest {
     @Ignore
     public void testCompareArrays() {
 
-        int[] testA = {1, 3};
-        int[] testB = {1, 3};
+        int[] testA = { 1, 3 };
+        int[] testB = { 1, 3 };
 
         boolean same = compareInstances(testA, testA);
         assertTrue(same);
@@ -120,15 +125,15 @@ public class TestMarshallingUtilsTest {
         // setup for test
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        KnowledgeBase[] testArrA = {kbase};
-        KnowledgeBase[] testArrB = {kbase, null};
+        KnowledgeBase[] testArrA = { kbase };
+        KnowledgeBase[] testArrB = { kbase, null };
 
         same = compareInstances(testArrA, testArrB);
         assertTrue(!same);
         printResult(same, testArrA, testArrB);
 
-        Environment[] testEnvA = {EnvironmentFactory.newEnvironment(), EnvironmentFactory.newEnvironment()};
-        Environment[] testEnvB = {EnvironmentFactory.newEnvironment(), EnvironmentFactory.newEnvironment()};
+        Environment[] testEnvA = { EnvironmentFactory.newEnvironment(), EnvironmentFactory.newEnvironment() };
+        Environment[] testEnvB = { EnvironmentFactory.newEnvironment(), EnvironmentFactory.newEnvironment() };
 
         testEnvA[0].set(DROOLS_PERSISTENCE_UNIT_NAME, DROOLS_PERSISTENCE_UNIT_NAME);
 
@@ -139,7 +144,7 @@ public class TestMarshallingUtilsTest {
         PriorityQueue<Short> priShortA = new PriorityQueue<Short>();
         PriorityQueue<Short> priShortB = new PriorityQueue<Short>();
 
-        short[] shortList = {(short) 6, (short) 8, (short) 6, (short) 1, (short) 8, (short) 5, (short) 9};
+        short[] shortList = { (short) 6, (short) 8, (short) 6, (short) 1, (short) 8, (short) 5, (short) 9 };
         for (int i = 0; i < shortList.length; ++i) {
             priShortA.add(shortList[i]);
             priShortB.add(shortList[i]);
@@ -218,7 +223,7 @@ public class TestMarshallingUtilsTest {
             KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(config);
             KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             ksconf.setOption(ClockTypeOption.get("pseudo"));
-            ksconf.setOption(TimerJobFactoryOption.get("trackable"));
+            ksconf.setOption( TimerJobFactoryOption.get("trackable") );
             ksessionB = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
         }
 

@@ -4,8 +4,8 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class Activator
-        implements
-        BundleActivator {
+    implements
+    BundleActivator {
 
     public void start(BundleContext bc) throws Exception {
     }

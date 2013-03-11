@@ -16,20 +16,26 @@
 
 package org.drools.persistence.jpa;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import org.drools.command.CommandService;
 import org.drools.command.impl.GenericCommand;
-import org.drools.time.*;
+import org.drools.time.InternalSchedulerService;
+import org.drools.time.Job;
+import org.drools.time.JobContext;
+import org.drools.time.SelfRemovalJob;
+import org.drools.time.SelfRemovalJobContext;
+import org.drools.time.Trigger;
 import org.drools.time.impl.DefaultTimerJobInstance;
 import org.drools.time.impl.JDKTimerService;
 import org.drools.time.impl.TimerJobInstance;
 import org.kie.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A default Scheduler implementation that uses the
@@ -38,9 +44,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JpaJDKTimerService extends JDKTimerService {
 
-    private static Logger logger = LoggerFactory.getLogger(JpaTimerJobInstance.class);
-
-    private CommandService commandService;
+    private static Logger logger = LoggerFactory.getLogger( JpaTimerJobInstance.class );
+    
+    private CommandService              commandService;
 
     private Map<Long, TimerJobInstance> timerInstances;
 
@@ -49,12 +55,12 @@ public class JpaJDKTimerService extends JDKTimerService {
     }
 
     public JpaJDKTimerService() {
-        this(1);
+        this( 1 );
         timerInstances = new ConcurrentHashMap<Long, TimerJobInstance>();
     }
 
     public JpaJDKTimerService(int size) {
-        super(size);
+        super( size );
         timerInstances = new ConcurrentHashMap<Long, TimerJobInstance>();
     }
 
@@ -63,15 +69,15 @@ public class JpaJDKTimerService extends JDKTimerService {
                                                Trigger trigger,
                                                JDKJobHandle handle,
                                                InternalSchedulerService scheduler) {
-        JpaJDKCallableJob jobInstance = new JpaJDKCallableJob(new SelfRemovalJob(job),
-                                                              new SelfRemovalJobContext(ctx,
-                                                                                        timerInstances),
-                                                              trigger,
-                                                              handle,
-                                                              scheduler);
+        JpaJDKCallableJob jobInstance = new JpaJDKCallableJob( new SelfRemovalJob( job ),
+                                                               new SelfRemovalJobContext( ctx,
+                                                                                          timerInstances ),
+                                                               trigger,
+                                                               handle,
+                                                               scheduler );
 
-        this.timerInstances.put(handle.getId(),
-                                jobInstance);
+        this.timerInstances.put( handle.getId(),
+                                 jobInstance );
         return jobInstance;
     }
 
@@ -86,22 +92,22 @@ public class JpaJDKTimerService extends JDKTimerService {
                                  Trigger trigger,
                                  JDKJobHandle handle,
                                  InternalSchedulerService scheduler) {
-            super(job,
-                  ctx,
-                  trigger,
-                  handle,
-                  scheduler);
+            super( job,
+                   ctx,
+                   trigger,
+                   handle,
+                   scheduler );
         }
 
         public Void call() throws Exception {
-            try {
-                JDKCallableJobCommand command = new JDKCallableJobCommand(this);
-                commandService.execute(command);
-            } catch (Exception e) {
+            try { 
+                JDKCallableJobCommand command = new JDKCallableJobCommand( this );
+                commandService.execute( command );
+            } catch(Exception e ) { 
                 logger.error("Unable to execute job!", e);
                 throw e;
             }
-
+            
             return null;
         }
 
@@ -111,8 +117,8 @@ public class JpaJDKTimerService extends JDKTimerService {
     }
 
     public static class JDKCallableJobCommand
-            implements
-            GenericCommand<Void> {
+        implements
+        GenericCommand<Void> {
 
         private static final long serialVersionUID = 4L;
 
@@ -125,7 +131,7 @@ public class JpaJDKTimerService extends JDKTimerService {
         public Void execute(Context context) {
             try {
                 return job.internalCall();
-            } catch (Exception e) {
+            } catch ( Exception e ) {
                 e.printStackTrace();
             }
             return null;

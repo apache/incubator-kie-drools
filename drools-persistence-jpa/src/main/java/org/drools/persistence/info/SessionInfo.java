@@ -1,33 +1,43 @@
 package org.drools.persistence.info;
 
-import org.drools.persistence.SessionMarshallingHelper;
-
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@SequenceGenerator(name = "sessionInfoIdSeq", sequenceName = "SESSIONINFO_ID_SEQ")
-public class SessionInfo {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 
-    private
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "sessionInfoIdSeq")
-    Integer id;
+import org.drools.persistence.SessionMarshallingHelper;
+
+@Entity
+@SequenceGenerator(name="sessionInfoIdSeq", sequenceName="SESSIONINFO_ID_SEQ")
+public class SessionInfo {
+    
+    private @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="sessionInfoIdSeq")
+    Integer                        id;
 
     @Version
-    @Column(name = "OPTLOCK")
-    private int version;
+    @Column(name = "OPTLOCK")     
+    private int                version;
 
-    private Date startDate;
-    private Date lastModificationDate;
-
+    private Date               startDate;
+    private Date               lastModificationDate;
+    
     @Lob
-    @Column(length = 2147483647)
-    private byte[] rulesByteArray;
+    @Column(length=2147483647)
+    private byte[]             rulesByteArray;
 
     @Transient
     SessionMarshallingHelper helper;
-
+    
     public SessionInfo() {
         this.startDate = new Date();
     }
@@ -35,7 +45,7 @@ public class SessionInfo {
     public Integer getId() {
         return this.id;
     }
-
+    
     public int getVersion() {
         return this.version;
     }
@@ -47,15 +57,15 @@ public class SessionInfo {
     public SessionMarshallingHelper getJPASessionMashallingHelper() {
         return helper;
     }
-
-    public void setData(byte[] data) {
+    
+    public void setData( byte[] data) {
         this.rulesByteArray = data;
     }
-
+    
     public byte[] getData() {
         return this.rulesByteArray;
     }
-
+    
     public Date getStartDate() {
         return this.startDate;
     }
@@ -67,12 +77,12 @@ public class SessionInfo {
     public void setLastModificationDate(Date date) {
         this.lastModificationDate = date;
     }
+    
 
-
-    @PrePersist
-    @PreUpdate
+    @PrePersist 
+    @PreUpdate 
     public void update() {
-        this.rulesByteArray = this.helper.getSnapshot();
+        this.rulesByteArray  = this.helper.getSnapshot();
     }
 
     public void setId(Integer ksessionId) {
