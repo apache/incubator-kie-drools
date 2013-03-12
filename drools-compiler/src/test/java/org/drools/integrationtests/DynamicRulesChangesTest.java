@@ -174,56 +174,56 @@ public class DynamicRulesChangesTest {
                 "global java.util.List events\n" +
                 "rule \"Raise the alarm when we have one or more fires\" lock-on-active\n" +
                 "when\n" +
-                "    exists org.kie.integrationtests.DynamicRulesChangesTest.Fire()\n" +
+                "    exists org.drools.integrationtests.DynamicRulesChangesTest.Fire()\n" +
                 "then\n" +
-                "    insert( new org.kie.integrationtests.DynamicRulesChangesTest.Alarm() );\n" +
+                "    insert( new org.drools.integrationtests.DynamicRulesChangesTest.Alarm() );\n" +
                 "    events.add( \"Raise the alarm\" );\n" +
-                "    org.kie.integrationtests.DynamicRulesChangesTest.addRule(\"onFire\");\n" +
+                "    org.drools.integrationtests.DynamicRulesChangesTest.addRule(\"onFire\");\n" +
                 "end");
 
        put("onFire",
                "global java.util.List events\n" +
                "rule \"When there is a fire turn on the sprinkler\" lock-on-active\n" +
                "when\n" +
-               "    $fire: org.kie.integrationtests.DynamicRulesChangesTest.Fire($room : room)\n" +
-               "    $sprinkler : org.kie.integrationtests.DynamicRulesChangesTest.Sprinkler( room == $room, on == false )\n" +
+               "    $fire: org.drools.integrationtests.DynamicRulesChangesTest.Fire($room : room)\n" +
+               "    $sprinkler : org.drools.integrationtests.DynamicRulesChangesTest.Sprinkler( room == $room, on == false )\n" +
                "then\n" +
                "    modify( $sprinkler ) { setOn( true ) };\n" +
                "    events.add( \"Turn on the sprinkler for room \" + $room.getName() );\n" +
-               "    org.kie.integrationtests.DynamicRulesChangesTest.addRule(\"fireGone\");\n" +
+               "    org.drools.integrationtests.DynamicRulesChangesTest.addRule(\"fireGone\");\n" +
                "end");
 
         put("fireGone",
                 "global java.util.List events\n" +
                 "rule \"When the fire is gone turn off the sprinkler\" lock-on-active\n" +
                 "when\n" +
-                "    $room : org.kie.integrationtests.DynamicRulesChangesTest.Room( )\n" +
-                "    $sprinkler : org.kie.integrationtests.DynamicRulesChangesTest.Sprinkler( room == $room, on == true )\n" +
-                "    not org.kie.integrationtests.DynamicRulesChangesTest.Fire( room == $room )\n" +
+                "    $room : org.drools.integrationtests.DynamicRulesChangesTest.Room( )\n" +
+                "    $sprinkler : org.drools.integrationtests.DynamicRulesChangesTest.Sprinkler( room == $room, on == true )\n" +
+                "    not org.drools.integrationtests.DynamicRulesChangesTest.Fire( room == $room )\n" +
                 "then\n" +
                 "    modify( $sprinkler ) { setOn( false ) };\n" +
                 "    events.add( \"Turn off the sprinkler for room \" + $room.getName() );\n" +
-                "    org.kie.integrationtests.DynamicRulesChangesTest.addRule(\"cancelAlarm\");\n" +
+                "    org.drools.integrationtests.DynamicRulesChangesTest.addRule(\"cancelAlarm\");\n" +
                 "end");
 
         put("cancelAlarm",
                 "global java.util.List events\n" +
                 "rule \"Cancel the alarm when all the fires have gone\"\n" +
                 "when\n" +
-                "    not org.kie.integrationtests.DynamicRulesChangesTest.Fire()\n" +
-                "    $alarm : org.kie.integrationtests.DynamicRulesChangesTest.Alarm()\n" +
+                "    not org.drools.integrationtests.DynamicRulesChangesTest.Fire()\n" +
+                "    $alarm : org.drools.integrationtests.DynamicRulesChangesTest.Alarm()\n" +
                 "then\n" +
                 "    retract( $alarm );\n" +
                 "    events.add( \"Cancel the alarm\" );\n" +
-                "    org.kie.integrationtests.DynamicRulesChangesTest.addRule(\"status\");\n" +
+                "    org.drools.integrationtests.DynamicRulesChangesTest.addRule(\"status\");\n" +
                 "end");
 
         put("status",
                 "global java.util.List events\n" +
                 "rule \"Status output when things are ok\"\n" +
                 "when\n" +
-                "    not org.kie.integrationtests.DynamicRulesChangesTest.Alarm()\n" +
-                "    not org.kie.integrationtests.DynamicRulesChangesTest.Sprinkler( on == true )\n" +
+                "    not org.drools.integrationtests.DynamicRulesChangesTest.Alarm()\n" +
+                "    not org.drools.integrationtests.DynamicRulesChangesTest.Sprinkler( on == true )\n" +
                 "then\n" +
                 "    events.add( \"Everything is ok\" );\n" +
                 "end");
