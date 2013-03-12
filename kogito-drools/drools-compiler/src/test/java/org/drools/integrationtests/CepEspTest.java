@@ -2583,7 +2583,7 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore
+    @Test 
     public void testEventExpirationInSlidingWindow() throws Exception {
         // DROOLS-70
         String str =

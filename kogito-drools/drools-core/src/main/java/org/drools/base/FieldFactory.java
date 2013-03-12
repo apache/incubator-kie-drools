@@ -17,6 +17,8 @@
 package org.drools.base;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 import org.drools.base.field.BooleanFieldImpl;
@@ -133,31 +135,51 @@ public class FieldFactory implements FieldDataFactory, Serializable {
             }
         } else if ( valueType == ValueType.PSHORT_TYPE ||  valueType == ValueType.SHORT_TYPE ) {
             if( value instanceof String ) {
-                field = new LongFieldImpl( Short.parseShort( (String) value) );
+                try {
+                    field = new LongFieldImpl( NumberFormat.getInstance().parse( (String) value ).shortValue() );
+                } catch ( ParseException e ) {
+                    throw new NumberFormatException( "Error parsing number '"+value+"'" );
+                }
             } else {
                 field = new LongFieldImpl( ((Number) value).shortValue() );
             }
         } else if ( valueType == ValueType.PINTEGER_TYPE || valueType == ValueType.INTEGER_TYPE ) {
             if( value instanceof String ) {
-                field = new LongFieldImpl( Integer.parseInt( stripNumericType( (String) value ) ) );
+                try {
+                    field = new LongFieldImpl( NumberFormat.getInstance().parse( (String) value ).intValue() );
+                } catch ( ParseException e ) {
+                    throw new NumberFormatException( "Error parsing number '"+value+"'" );
+                }
             } else {
                 field = new LongFieldImpl( ((Number) value).intValue() );
             }
         } else if ( valueType == ValueType.PLONG_TYPE || valueType == ValueType.LONG_TYPE ) {
             if( value instanceof String ) {
-                field = new LongFieldImpl( Long.parseLong( stripNumericType( (String) value ) ) );
+                try {
+                    field = new LongFieldImpl( NumberFormat.getInstance().parse( (String) value ).longValue() );
+                } catch ( ParseException e ) {
+                    throw new NumberFormatException( "Error parsing number '"+value+"'" );
+                }
             } else {
                 field = new LongFieldImpl( ((Number) value).longValue() );
             }
         } else if ( valueType == ValueType.PFLOAT_TYPE || valueType == ValueType.FLOAT_TYPE ) {
             if( value instanceof String ) {
-                field = new DoubleFieldImpl( Float.parseFloat( stripNumericType( (String) value ) ) );
+                try {
+                    field = new DoubleFieldImpl( NumberFormat.getInstance().parse( (String) value ).floatValue() );
+                } catch ( ParseException e ) {
+                    throw new NumberFormatException( "Error parsing number '"+value+"'" );
+                }
             } else {
                 field = new DoubleFieldImpl( ((Number) value).floatValue() );
             }
         } else if ( valueType == ValueType.PDOUBLE_TYPE || valueType == ValueType.DOUBLE_TYPE ) {
             if( value instanceof String ) {
-                field = new DoubleFieldImpl( Double.parseDouble( stripNumericType( (String) value ) ) );
+                try {
+                    field = new DoubleFieldImpl( NumberFormat.getInstance().parse( (String) value ).doubleValue() );
+                } catch ( ParseException e ) {
+                    throw new NumberFormatException( "Error parsing number '"+value+"'" );
+                }
             } else {
                 field = new DoubleFieldImpl( ((Number) value).doubleValue() );
             }

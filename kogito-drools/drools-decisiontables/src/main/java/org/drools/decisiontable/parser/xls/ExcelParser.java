@@ -141,7 +141,7 @@ public class ExcelParser
                     if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                         num = cell.getNumericCellValue();
                     }
-                    if ( Math.abs(num) - Math.ceil(num) != 0 ) {
+                    if ( num - Math.round(num) != 0 ) {
                         newCell(listeners, i, cellNum, String.valueOf(num), DataListener.NON_MERGED );
                     } else {
                         newCell( listeners,
