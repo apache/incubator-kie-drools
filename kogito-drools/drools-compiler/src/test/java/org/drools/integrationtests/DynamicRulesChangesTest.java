@@ -48,12 +48,12 @@ public class DynamicRulesChangesTest {
     }
     
     
-    @Test(timeout=10000) @Ignore
+    @Test(timeout=10000)
     public void testConcurrentRuleAdditions() throws Exception {
         parallelExecute(RulesExecutor.getSolvers());
     }
 
-    @Test(timeout=10000) @Ignore
+    @Test(timeout=10000)
     public void testBatchRuleAdditions() throws Exception {
         parallelExecute(BatchRulesExecutor.getSolvers());
     }
