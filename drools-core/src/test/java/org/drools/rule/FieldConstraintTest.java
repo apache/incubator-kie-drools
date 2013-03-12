@@ -16,7 +16,6 @@
 
 package org.drools.rule;
 
-import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
@@ -26,6 +25,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.test.model.Cheese;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightTuple;

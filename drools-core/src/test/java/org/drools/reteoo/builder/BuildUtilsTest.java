@@ -16,11 +16,11 @@
 
 package org.drools.reteoo.builder;
 
-import org.drools.StockTick;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.AfterEvaluatorDefinition;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.test.model.StockTick;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElement.Type;

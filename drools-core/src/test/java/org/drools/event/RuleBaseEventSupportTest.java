@@ -16,7 +16,6 @@
 
 package org.drools.event;
 
-import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -25,6 +24,7 @@ import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
+import org.drools.core.test.model.Cheese;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;

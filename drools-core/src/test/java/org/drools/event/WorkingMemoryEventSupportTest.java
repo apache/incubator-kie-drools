@@ -32,7 +32,7 @@ import org.kie.runtime.rule.FactHandle;
 
 import static org.junit.Assert.*;
 
-import org.drools.Cheese;
+import org.drools.core.test.model.Cheese;
 
 public class WorkingMemoryEventSupportTest {
     @Test

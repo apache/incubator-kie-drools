@@ -25,10 +25,10 @@ import org.kie.internal.utils.ClassLoaderUtil;
 
 import static org.junit.Assert.*;
 
-import org.drools.Address;
-import org.drools.Person;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.core.test.model.Address;
+import org.drools.core.test.model.Person;
 import org.drools.core.util.ClassUtils;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.spi.InternalReadAccessor;

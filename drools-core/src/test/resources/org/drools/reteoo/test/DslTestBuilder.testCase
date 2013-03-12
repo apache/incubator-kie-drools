@@ -1,5 +1,8 @@
 TestCase "Test Case Name"
 
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
+
 Setup  
     LeftTupleSource: left; 
     ObjectSource: right;
@@ -8,11 +11,11 @@ Setup
         col, left, right, java.util.ArrayList;
         source, type, ==, l1;
     Binding:
-        l1, 0, org.drools.Person, likes;
+        l1, 0, Person, likes;
     Facts:
-        org.drools.Person('darth', 35, "brie"), org.drools.Person('bobba', 36, 'stilton'),
-        org.drools.Cheese('brie', 10), org.drools.Cheese('brie', 12),
-        org.drools.Cheese('stilton', 15), org.drools.Cheese('muzzarella', 12);
+        Person('darth', 35, "brie"), Person('bobba', 36, 'stilton'),
+        Cheese('brie', 10), Cheese('brie', 12),
+        Cheese('stilton', 15), Cheese('muzzarella', 12);
 
 TearDown
  

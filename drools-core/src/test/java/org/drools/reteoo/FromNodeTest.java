@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -31,6 +30,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.SingleBetaConstraints;
+import org.drools.core.test.model.Cheese;
 import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;

@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools;
+package org.drools.core.test.model;
 
-public class SecondClass {
+public class FirstClass {
+
     private String item1;
     private String item2;
     private String item3;
     private String item4;
     private String item5;
+
+    private String something;
 
     public String getItem1() {
         return item1;
@@ -53,10 +56,16 @@ public class SecondClass {
     public void setItem5(String item5) {
         this.item5 = item5;
     }
+    public String getSomething() {
+        return something;
+    }
+    public void setSomething(String something) {
+        this.something = something;
+    }
 
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append("SecondClass[");
+        buf.append("FirstClass[");
         buf.append("item1=" + item1 + ", ");
         buf.append("item2=" + item2 + ", ");
         buf.append("item3=" + item3 + ", ");

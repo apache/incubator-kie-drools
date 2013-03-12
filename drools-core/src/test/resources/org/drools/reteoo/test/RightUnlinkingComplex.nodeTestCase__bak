@@ -1,5 +1,8 @@
 TestCase "RightUnlinkingComplex"
 
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
+
 /* 
 * A bit more complex, this test case shows that memories get properly populated
 * when there are loops like the one between Join1 and Join2 here. 
@@ -8,17 +11,17 @@ Setup
 	Config:
 		drools.lrUnlinkingEnabled, true;
 	ObjectTypeNode:
-	    otnLeft1, org.drools.Person;
+	    otnLeft1, Person;
 	LeftInputAdapterNode:
 	    lian0, otnLeft1;
 	ObjectTypeNode:
-	    otnRight1, org.drools.Person;
+	    otnRight1, Person;
 	ObjectTypeNode:
-	    otnRight2, org.drools.Person;
+	    otnRight2, Person;
 	Binding:
-	     p1, 0, org.drools.Person, age;
+	     p1, 0, Person, age;
 	Binding:
-	     p2, 0, org.drools.Person, likes;
+	     p2, 0, Person, likes;
 	JoinNode:
 	    join1, lian0, otnRight1;
 	    age, !=, p1;
@@ -29,10 +32,10 @@ Setup
 	    join3, join2, otnRight2;
 	    age, !=, p1;
 	Facts:
-	    new org.drools.Person('darth', 35, 'stilton'), new org.drools.Person('bobba', 36, 'brie'),
-	    new org.drools.Person('yoda', 37, 'cammembert'), new org.drools.Person('luke', 38, 'minas'),
-	    new org.drools.Person('dave', 33, 'prato'), new org.drools.Person('bob', 32, 'stilton'),
-	    new org.drools.Person('dave', 31, 'parmigiano'), new org.drools.Person('bob', 30, 'minas');
+	    new Person('darth', 35, 'stilton'), new Person('bobba', 36, 'brie'),
+	    new Person('yoda', 37, 'cammembert'), new Person('luke', 38, 'minas'),
+	    new Person('dave', 33, 'prato'), new Person('bob', 32, 'stilton'),
+	    new Person('dave', 31, 'parmigiano'), new Person('bob', 30, 'minas');
 	    
 
 Test "RightUnlinkingComplex"	    

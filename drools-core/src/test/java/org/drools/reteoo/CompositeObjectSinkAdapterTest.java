@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import org.drools.Cheese;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
@@ -30,6 +29,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.core.test.model.Cheese;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.PredicateConstraint;

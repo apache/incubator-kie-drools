@@ -1,16 +1,18 @@
 TestCase "Not Node assert/retract test case"
 
+import org.drools.core.test.model.Person;
+
 Setup
     ObjectTypeNode:
-        otnLeft1, org.drools.Person;
+        otnLeft1, Person;
     LeftInputAdapterNode:
         lian1, otnLeft1;
     ObjectTypeNode:
-        otnRight1, org.drools.Person;
+        otnRight1, Person;
     ObjectTypeNode:
-        otnRight2, org.drools.Person;
+        otnRight2, Person;
     Binding:
-         p1, 0, org.drools.Person, age;
+         p1, 0, Person, age;
     NotNode:
         not1, lian1, otnRight1;
         age, !=, p1;
@@ -18,10 +20,10 @@ Setup
         join2, not1, otnRight2;
         age, !=, p1;
     Facts:
-        new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),
-        new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),
-        new org.drools.Person('dave', 35), new org.drools.Person('bob', 36),
-        new org.drools.Person('obi', 36), new org.drools.Person('han', 37);
+        new Person('darth', 35), new Person('bobba', 35),
+        new Person('yoda', 35), new Person('luke', 35),
+        new Person('dave', 35), new Person('bob', 36),
+        new Person('obi', 36), new Person('han', 37);
 
 Test "assert retract test"	    
     /**

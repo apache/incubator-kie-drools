@@ -1,18 +1,21 @@
 TestCase "Not Node unification test case"
 
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
+
 Setup
     ObjectTypeNode:
         otnLeft1, org.drools.base.DroolsQuery;
     LeftInputAdapterNode:
         lian0, otnLeft1;
     ObjectTypeNode:
-        otnRight1, org.drools.Person;
+        otnRight1, Person;
     ObjectTypeNode:
-        otnRight2, org.drools.Cheese;
+        otnRight2, Cheese;
     Binding:
          v, 0, org.drools.base.DroolsQuery, [0], java.lang.String;
          $age, 0, org.drools.base.DroolsQuery, [1], java.lang.Integer;
-         p1, 1, org.drools.Person, age;
+         p1, 1, Person, age;
     NotNode:
         not1, lian0, otnRight1;
         name, :=,v;
@@ -22,8 +25,8 @@ Setup
         type, :=, v;
     Facts:
         new org.drools.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v, 35], null, true),
-        new org.drools.Person('bobba', 36),
-        new org.drools.Person('yoda', 35);
+        new Person('bobba', 36),
+        new Person('yoda', 35);
 
 Test "assert right then left then add right block"
     /**

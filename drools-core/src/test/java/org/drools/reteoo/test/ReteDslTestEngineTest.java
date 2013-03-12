@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.FactHandle;
-import org.drools.Person;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
@@ -37,6 +36,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.test.model.Person;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.JoinNode;
@@ -85,7 +85,7 @@ public class ReteDslTestEngineTest {
         NodeTestDef test1 = tests.get( 0 );
         assertEquals( "test 1",
                       test1.getName() );
-        assertEquals( 19,
+        assertEquals( 22,
                       test1.getLine() );
         DslStep[] steps = test1.getSteps().toArray( new DslStep[0] );
         assertEquals( 6, 
@@ -121,7 +121,7 @@ public class ReteDslTestEngineTest {
         test1 = tests.get( 1 );
         assertEquals( "another test",
                       test1.getName() );
-        assertEquals( 35,
+        assertEquals( 38,
                       test1.getLine() );
         steps = test1.getSteps().toArray( new DslStep[0] );
         assertEquals( 3, 
@@ -167,7 +167,7 @@ public class ReteDslTestEngineTest {
         int step = 0;
         assertEquals( "LeftTupleSource",
                       steps[step].getName() );
-        assertEquals( 4,
+        assertEquals( 7,
                       steps[step].getLine() );
         assertEquals( 1,
                       steps[step].getCommands().size() );
@@ -179,7 +179,7 @@ public class ReteDslTestEngineTest {
         step = 1;
         assertEquals( "ObjectSource",
                       steps[step].getName() );
-        assertEquals( 5,
+        assertEquals( 8,
                       steps[step].getLine() );
         assertEquals( 1,
                       steps[step].getCommands().size() );
@@ -191,7 +191,7 @@ public class ReteDslTestEngineTest {
         step = 2;
         assertEquals( "LeftTupleSink",
                       steps[step].getName() );
-        assertEquals( 6,
+        assertEquals( 9,
                       steps[step].getLine() );
         assertEquals( 1,
                       steps[step].getCommands().size() );
@@ -204,7 +204,7 @@ public class ReteDslTestEngineTest {
         step = 3;
         assertEquals( "CollectNode",
                       steps[step].getName() );
-        assertEquals( 7,
+        assertEquals( 10,
                       steps[step].getLine() );
         assertEquals( 2,
                       steps[step].getCommands().size() );
@@ -233,7 +233,7 @@ public class ReteDslTestEngineTest {
         step = 4;
         assertEquals( "Binding",
                       steps[step].getName() );
-        assertEquals( 10,
+        assertEquals( 13,
                       steps[step].getLine() );
         assertEquals( 1,
                       steps[step].getCommands().size() );
@@ -243,7 +243,7 @@ public class ReteDslTestEngineTest {
                       steps[step].getCommands().get( 0 )[0] );
         assertEquals( "0",
                       steps[step].getCommands().get( 0 )[1] );
-        assertEquals( "org.drools.Person",
+        assertEquals( "Person",
                       steps[step].getCommands().get( 0 )[2] );
         assertEquals( "likes",
                       steps[step].getCommands().get( 0 )[3] );
@@ -252,15 +252,15 @@ public class ReteDslTestEngineTest {
         step = 5;
         assertEquals( "Facts",
                       steps[step].getName() );
-        assertEquals( 12,
+        assertEquals( 15,
                       steps[step].getLine() );
         assertEquals( 1,
                       steps[step].getCommands().size() );
         assertEquals( 6,
                       steps[step].getCommands().get( 0 ).length );
-        assertEquals( "org.drools.Person('darth', 35, \"brie\")",
+        assertEquals( "Person('darth', 35, \"brie\")",
                       steps[step].getCommands().get( 0 )[0] );
-        assertEquals( "org.drools.Cheese('brie', 12)",
+        assertEquals( "Cheese('brie', 12)",
                       steps[step].getCommands().get( 0 )[3] );
     }
 
@@ -412,7 +412,7 @@ public class ReteDslTestEngineTest {
     public void testWithStep() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "Facts:\n";
-        str += "    1, 2, new org.drools.Person('darth', 35),\n";
+        str += "    1, 2, new org.drools.core.test.model.Person('darth', 35),\n";
         str += "    'good bye', new java.util.ArrayList();\n";
         str += "With:\n";
         str += "    h2, age = 36, city = 'la',\n";
@@ -690,15 +690,15 @@ public class ReteDslTestEngineTest {
     public void testBetaNodeModifyOperations() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn1, org.drools.Person;\n";
+        str += "    otn1, org.drools.core.test.model.Person;\n";
         str += "LeftInputAdapterNode:\n";
         str += "    lian0, otn1;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn2, org.drools.Person;\n";
+        str += "    otn2, org.drools.core.test.model.Person;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn3, org.drools.Person;\n";
+        str += "    otn3, org.drools.core.test.model.Person;\n";
         str += "Binding:\n";
-        str += "     p1, 0, org.drools.Person, age;\n";
+        str += "     p1, 0, org.drools.core.test.model.Person, age;\n";
         str += "JoinNode:\n";
         str += "    join1, lian0, otn2;\n";
         str += "    age, ==, p1;\n";
@@ -706,9 +706,9 @@ public class ReteDslTestEngineTest {
         str += "    join2, join1, otn3;\n";
         str += "    age, ==, p1;\n";
         str += "Facts:\n";
-        str += "    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),\n";
-        str += "    new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),\n";
-        str += "    new org.drools.Person('dave', 36);\n";
+        str += "    new org.drools.core.test.model.Person('darth', 35), new org.drools.core.test.model.Person('bobba', 35),\n";
+        str += "    new org.drools.core.test.model.Person('yoda', 35), new org.drools.core.test.model.Person('luke', 35),\n";
+        str += "    new org.drools.core.test.model.Person('dave', 36);\n";
         str += "assert:\n";
         str += "    otn1, [h1, h3, h4];\n";
         str += "    otn2, [h0, h2];\n";
@@ -762,20 +762,20 @@ public class ReteDslTestEngineTest {
     public void testNotNodeStep() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn0, org.drools.Person;\n";
+        str += "    otn0, org.drools.core.test.model.Person;\n";
         str += "LeftInputAdapterNode:\n";
         str += "    lian0, otn0;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn1, org.drools.Person;\n";
+        str += "    otn1, org.drools.core.test.model.Person;\n";
         str += "Binding:\n";
-        str += "     p1, 0, org.drools.Person, age;\n";
+        str += "     p1, 0, org.drools.core.test.model.Person, age;\n";
         str += "NotNode:\n";
         str += "    not0, lian0, otn1;\n";
         str += "    age, !=, p1;\n";
         str += "LeftTupleSink:\n";
         str += "    sink, not0;\n";
         str += "Facts:\n";
-        str += "    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35);\n";
+        str += "    new org.drools.core.test.model.Person('darth', 35), new org.drools.core.test.model.Person('bobba', 35);\n";
         str += "assert:\n";
         str += "    otn0, [h0];\n";
         str += "    otn1, [h1];\n";

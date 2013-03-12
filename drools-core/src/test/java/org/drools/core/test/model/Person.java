@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools;
+package org.drools.core.test.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;

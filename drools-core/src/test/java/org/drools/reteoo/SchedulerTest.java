@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Agenda;
-import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools;
+package org.drools.core.test.model;
 
 public class Address {
     

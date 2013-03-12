@@ -16,13 +16,13 @@
 
 package org.drools.event.knowledgebase;
 
-import org.drools.Cheese;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
+import org.drools.core.test.model.Cheese;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;

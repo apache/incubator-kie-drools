@@ -21,8 +21,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.drools.DroolsTestCase;
 import org.drools.base.ClassObjectType;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.spi.ObjectType;
 

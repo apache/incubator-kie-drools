@@ -16,8 +16,8 @@
 
 package org.drools.common;
 
-import org.drools.Cheese;
 import org.drools.base.evaluators.Operator;
+import org.drools.core.test.model.Cheese;
 
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.spi.BetaNodeFieldConstraint;

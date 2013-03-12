@@ -29,7 +29,10 @@ public class ObjectTypeNodeStep
     implements
     Step {
 
+    ReteTesterHelper reteTesterHelper;
+
     public ObjectTypeNodeStep(ReteTesterHelper reteTesterHelper) {
+        this.reteTesterHelper = reteTesterHelper;
     }
 
     public void execute(Map<String, Object> context,
@@ -51,10 +54,12 @@ public class ObjectTypeNodeStep
                                                      buildContext.getRuleBase().getRete(),
                                                      buildContext );
             epn.attach(buildContext);
+            
+            Class< ? > clazz = reteTesterHelper.getTypeResolver().resolveType( type );
 
             otn = new ObjectTypeNode( buildContext.getNextId(),
                                       epn,
-                                      new ClassObjectType( Class.forName( type ) ),
+                                      new ClassObjectType( clazz ),
                                       buildContext );
             // we don't attach, as we want to manually propagate and not
             // have the working memory propagate

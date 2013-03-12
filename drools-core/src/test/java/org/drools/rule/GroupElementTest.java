@@ -21,9 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.Person;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
+import org.drools.core.test.model.Person;
 
 public class GroupElementTest {
 
