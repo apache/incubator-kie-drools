@@ -43,7 +43,7 @@ import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.shared.services.impl.TestVFSFileServiceImpl;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
-import org.jbpm.task.HumanTaskModule;
+import org.jbpm.task.HumanTaskServiceFactory;
 import org.jbpm.task.Task;
 import org.jbpm.task.api.TaskAdminService;
 import org.jbpm.task.api.TaskContentService;
@@ -66,7 +66,7 @@ import org.jbpm.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.task.subtask.SubTaskDecorator;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.task.wih.ExternalTaskEventListener;
 import org.junit.After;
 import org.junit.Before;
@@ -110,16 +110,16 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         
           // Task Service Start up
         
-        HumanTaskModule.setEntityManagerFactory(emf);
-        HumanTaskModule.setJbpmServicesPersistenceManager(pm);
+        HumanTaskServiceFactory.setEntityManagerFactory(emf);
+        HumanTaskServiceFactory.setJbpmServicesPersistenceManager(pm);
         
-        HumanTaskModule.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
-        taskService = HumanTaskModule.getService();
+        HumanTaskServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
+        taskService = HumanTaskServiceFactory.getService();
 
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
         
-        HumanTaskModule.addTaskEventListener(externalTaskEventListener);
+        HumanTaskServiceFactory.addTaskEventListener(externalTaskEventListener);
         
         
         // Session Manager Start up
@@ -181,7 +181,7 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         ((SessionManagerImpl)sessionManager).setIoService(ioService);
         
         
-        CDIHTWorkItemHandler htWorkItemHandler = new CDIHTWorkItemHandler();
+        LocalHTWorkItemHandler htWorkItemHandler = new LocalHTWorkItemHandler();
         htWorkItemHandler.setSessionManager(sessionManager);
         htWorkItemHandler.setTaskService(taskService);
         htWorkItemHandler.setTaskEventListener(externalTaskEventListener);

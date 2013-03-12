@@ -35,7 +35,7 @@ import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.jbpm.shared.services.api.SessionManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 
 /**
  *
@@ -54,7 +54,7 @@ public class SessionManagerModule {
     
     private static BPMN2DataService bpmn2DataService = new BPMN2DataServiceImpl();
     
-    private static CDIHTWorkItemHandler htWorkItemHandler;
+    private static LocalHTWorkItemHandler htWorkItemHandler;
     
     
     private static IdentityProvider identityProvider;
@@ -148,7 +148,7 @@ public class SessionManagerModule {
         SessionManagerModule.pm = pm;
     }
 
-    public static void setHtWorkItemHandler(CDIHTWorkItemHandler htWorkItemHandler) {
+    public static void setHtWorkItemHandler(LocalHTWorkItemHandler htWorkItemHandler) {
         SessionManagerModule.htWorkItemHandler = htWorkItemHandler;
     }
 

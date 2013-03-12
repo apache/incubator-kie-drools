@@ -27,6 +27,7 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.annotations.External;
 import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.task.events.AfterTaskAddedEvent;
 import org.jbpm.task.events.AfterTaskCompletedEvent;
 import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.AfterTaskSkippedEvent;
@@ -138,7 +139,8 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         processTaskState(task);
     }
 
-    public void afterTaskAddedEvent(Task ti) {
+    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task task) {
+        
         // DO NOTHING
     }
 

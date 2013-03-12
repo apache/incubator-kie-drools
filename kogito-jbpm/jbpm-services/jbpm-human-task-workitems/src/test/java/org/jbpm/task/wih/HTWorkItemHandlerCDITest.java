@@ -64,7 +64,7 @@ public class HTWorkItemHandlerCDITest extends HTWorkItemHandlerBaseTest {
 
     }
     @Inject
-    private CDIHTWorkItemHandler htWorkItemHandler;
+    private LocalHTWorkItemHandler htWorkItemHandler;
     
     @Inject
     private SessionManager sessionManager;

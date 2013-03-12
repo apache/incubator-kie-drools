@@ -1,0 +1,9 @@
+usersgroups = [ new User('frontDesk') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],  
+                new User('doctor') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],  
+                new User('manager') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],  
+                new User('salaboy') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],  
+                new User('john') : [new Group( "PM" ),  new Group( "manager" )],  
+                new User('mary') : [new Group( "HR" ),  new Group( "manager" )],  
+                new User('Administrator') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )]
+              ];       
+return usersgroups;

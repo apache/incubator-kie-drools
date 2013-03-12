@@ -18,7 +18,6 @@ package org.jbpm.task.events;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.jbpm.task.Content;
 import org.jbpm.task.Notification;
 import org.jbpm.task.Task;
 

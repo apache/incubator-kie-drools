@@ -52,7 +52,7 @@ import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.kie.KieBase;
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
@@ -93,7 +93,7 @@ public class SessionManagerImpl implements ServicesSessionManager {
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject 
-    private CDIHTWorkItemHandler htWorkItemHandler;
+    private LocalHTWorkItemHandler htWorkItemHandler;
     @Inject
     private CDIProcessEventListener processListener;
     @Inject
@@ -164,7 +164,7 @@ public class SessionManagerImpl implements ServicesSessionManager {
         this.bpmn2Service = bpmn2Service;
     }
 
-    public void setHTWorkItemHandler(CDIHTWorkItemHandler htWorkItemHandler) {
+    public void setHTWorkItemHandler(LocalHTWorkItemHandler htWorkItemHandler) {
         this.htWorkItemHandler = htWorkItemHandler;
     }
 

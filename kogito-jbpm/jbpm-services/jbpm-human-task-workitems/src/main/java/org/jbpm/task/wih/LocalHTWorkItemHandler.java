@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 @Transactional
-public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
+public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(CDIHTWorkItemHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalHTWorkItemHandler.class);
     
     @Inject
     private TaskServiceEntryPoint taskService;
@@ -52,16 +52,20 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
     @Inject
     private SessionManager sessionManager;
 
+    private KieSession kieSessionLocal;
     
-    public CDIHTWorkItemHandler() {
+    public LocalHTWorkItemHandler() {
     }
     
     public void addSession(KieSession ksession){
+        kieSessionLocal = ksession;
         addSession(ksession, null);
     }
     
     public void addSession(KieSession ksession, ClassLoader classLoader){
-        listener.addSession(ksession, classLoader);
+        if(listener != null){
+            listener.addSession(ksession, classLoader);
+        }
     }
 
     public void setSessionManager(ServicesSessionManager sessionManager) {
@@ -74,6 +78,7 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     public void setTaskEventListener(ExternalTaskEventListener listener) {
         this.listener = listener;
+        taskService.registerTaskLifecycleEventListener(listener);
     }
 
     public TaskServiceEntryPoint getTaskService() {
@@ -82,9 +87,13 @@ public class CDIHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        
-        int sessionId = sessionManager.getSessionForProcessInstanceId(workItem.getProcessInstanceId());
-        KieSession ksessionById = sessionManager.getKsessionById(sessionId);
+        KieSession ksessionById = null;
+        if(sessionManager != null){
+            int sessionId = sessionManager.getSessionForProcessInstanceId(workItem.getProcessInstanceId());
+            ksessionById = sessionManager.getKsessionById(sessionId);
+        }else{
+            ksessionById = this.kieSessionLocal;
+        }
         
         Task task = createTaskBasedOnWorkItemParams(ksessionById, workItem);
         TaskFactory.initializeTask(task);

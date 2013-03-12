@@ -27,8 +27,8 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.jbpm.task.HumanTaskModule;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
+import org.jbpm.task.HumanTaskServiceFactory;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.task.wih.ExternalTaskEventListener;
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +39,7 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
 
     
     @Inject
-    private CDIHTWorkItemHandler htWorkItemHandler;
+    private LocalHTWorkItemHandler htWorkItemHandler;
     private PoolingDataSource ds;
     private EntityManagerFactory emf;
     @Before
@@ -70,16 +70,16 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
      
         // Task Service Start up
         
-        HumanTaskModule.setEntityManagerFactory(emf);
-        HumanTaskModule.setJbpmServicesPersistenceManager(pm);
+        HumanTaskServiceFactory.setEntityManagerFactory(emf);
+        HumanTaskServiceFactory.setJbpmServicesPersistenceManager(pm);
         JbpmServicesTransactionManager jbpmJTATransactionManager = new JbpmJTATransactionManager();
-        HumanTaskModule.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
-        taskService = HumanTaskModule.getService();
+        HumanTaskServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
+        taskService = HumanTaskServiceFactory.getService();
 
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
         
-        HumanTaskModule.addTaskEventListener(externalTaskEventListener);
+        HumanTaskServiceFactory.addTaskEventListener(externalTaskEventListener);
         
         
         // Session Manager Start up
@@ -91,7 +91,7 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
         
         
         
-        htWorkItemHandler = new CDIHTWorkItemHandler();
+        htWorkItemHandler = new LocalHTWorkItemHandler();
         htWorkItemHandler.setSessionManager(sessionManager);
         htWorkItemHandler.setTaskService(taskService);
         htWorkItemHandler.setTaskEventListener(externalTaskEventListener);
@@ -108,7 +108,7 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
     @After
     public void tearDown() throws Exception {
         int removeAllTasks = taskService.removeAllTasks();
-        HumanTaskModule.dispose();
+        HumanTaskServiceFactory.dispose();
         SessionManagerModule.dispose();
         emf.close();
         ds.close();

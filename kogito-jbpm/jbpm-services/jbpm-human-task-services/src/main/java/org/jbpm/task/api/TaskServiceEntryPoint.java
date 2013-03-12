@@ -7,6 +7,8 @@ package org.jbpm.task.api;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.event.Event;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
@@ -22,7 +24,7 @@ import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
-import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.jbpm.task.events.NotificationEvent;
 import org.jbpm.task.query.TaskSummary;
 
 /**
@@ -275,11 +277,18 @@ public interface TaskServiceEntryPoint {
     
     public Map<String, Object> getTaskContent(long taskId);
     
+    //Listeners NON CDI, CDI Listener will be automatically registered
+    void registerTaskLifecycleEventListener(JbpmServicesEventListener<Task> taskLifecycleEventListener);
     
-    //Listeners
+    void registerTaskNotificationEventListener(JbpmServicesEventListener<NotificationEvent> notificationEventListener);
     
-    TaskLifeCycleEventListener getTaskLifeCycleEventListener();
+    Event<Task> getTaskLifecycleEventListeners();
     
+    Event<NotificationEvent> getTaskNotificationEventListeners();
+    
+    void clearTaskLifecycleEventListeners();
+    
+    void clearTasknotificationEventListeners();
     
     
 }

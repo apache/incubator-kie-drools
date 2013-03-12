@@ -22,7 +22,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -74,7 +74,7 @@ public class CDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
 
     }
     @Inject
-    private CDIHTWorkItemHandler htWorkItemHandler;
+    private LocalHTWorkItemHandler htWorkItemHandler;
     
     @Before
     public void setUp() throws Exception {

@@ -34,8 +34,8 @@ public class NoCDIWithFactoriesLifeCycleLocalTest extends LifeCycleBaseTest {
         
         emf = Persistence.createEntityManagerFactory("org.jbpm.task");
         // Default Configuration for standalone environments
-        HumanTaskModule.setEntityManagerFactory(emf);
-        taskService = HumanTaskModule.getService();
+        HumanTaskServiceFactory.setEntityManagerFactory(emf);
+        taskService = HumanTaskServiceFactory.newTaskService();
 
         super.setUp();
         
@@ -43,7 +43,6 @@ public class NoCDIWithFactoriesLifeCycleLocalTest extends LifeCycleBaseTest {
     
     @After
     public void tearDown(){
-        HumanTaskModule.dispose();
         emf.close();
     }
     

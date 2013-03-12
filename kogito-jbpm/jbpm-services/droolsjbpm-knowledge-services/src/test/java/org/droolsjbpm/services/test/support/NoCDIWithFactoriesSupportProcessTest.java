@@ -18,7 +18,6 @@ package org.droolsjbpm.services.test.support;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.droolsjbpm.services.api.SessionManagerModule;
@@ -26,15 +25,14 @@ import org.droolsjbpm.services.impl.KnowledgeAdminDataServiceImpl;
 import org.droolsjbpm.services.impl.KnowledgeDataServiceImpl;
 import org.droolsjbpm.services.impl.MVELWorkItemHandlerProducer;
 import org.droolsjbpm.services.impl.SessionManagerImpl;
-import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.test.TestIdentityProvider;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.shared.services.impl.TestVFSFileServiceImpl;
-import org.jbpm.task.HumanTaskModule;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
+import org.jbpm.task.HumanTaskServiceFactory;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.task.wih.ExternalTaskEventListener;
 import org.junit.After;
 import org.junit.Before;
@@ -75,16 +73,16 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
         
         // Task Service Start up
         
-        HumanTaskModule.setEntityManagerFactory(emf);
-        HumanTaskModule.setJbpmServicesPersistenceManager(pm);
+        HumanTaskServiceFactory.setEntityManagerFactory(emf);
+        HumanTaskServiceFactory.setJbpmServicesPersistenceManager(pm);
         JbpmServicesTransactionManager jbpmJTATransactionManager = new JbpmJTATransactionManager();
-        HumanTaskModule.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
-        taskService = HumanTaskModule.getService();
+        HumanTaskServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
+        taskService = HumanTaskServiceFactory.getService();
 
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
         
-        HumanTaskModule.addTaskEventListener(externalTaskEventListener);
+        HumanTaskServiceFactory.addTaskEventListener(externalTaskEventListener);
        
         
      
@@ -106,7 +104,7 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
         ((SessionManagerImpl)sessionManager).setIoService(ioService);
         
         
-        CDIHTWorkItemHandler htWorkItemHandler = new CDIHTWorkItemHandler();
+        LocalHTWorkItemHandler htWorkItemHandler = new LocalHTWorkItemHandler();
         htWorkItemHandler.setSessionManager(sessionManager);
         htWorkItemHandler.setTaskService(taskService);
         htWorkItemHandler.setTaskEventListener(externalTaskEventListener);
@@ -136,7 +134,7 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
     public void tearDown() throws Exception {
         int removedTasks = taskService.removeAllTasks();
         int removedLogs = adminDataService.removeAllData();
-        HumanTaskModule.dispose();
+        HumanTaskServiceFactory.dispose();
         SessionManagerModule.dispose();
         emf.close();
         System.out.println(" --> Removed Tasks = "+removedTasks + " - ");

@@ -87,6 +87,10 @@ public class JbpmServicesEventImpl<T> implements Event<T>, Serializable {
     public void clearListeners(){
         listeners.clear();
     }
+    
+    public List<JbpmServicesEventListener> getListeners(){
+        return listeners;
+    }
 
     @Override
     public Event<T> select(Annotation... antns) {

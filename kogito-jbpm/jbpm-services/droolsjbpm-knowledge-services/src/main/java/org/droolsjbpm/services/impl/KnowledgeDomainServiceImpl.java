@@ -35,7 +35,7 @@ import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
 import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
 import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.runtime.KieSession;
@@ -51,7 +51,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
   private Map<String, StatefulKnowledgeSession> ksessions = new HashMap<String, StatefulKnowledgeSession>();
   @Inject
-  private CDIHTWorkItemHandler handler;
+  private LocalHTWorkItemHandler handler;
   @Inject
   private CDIProcessEventListener processListener;
   @Inject
