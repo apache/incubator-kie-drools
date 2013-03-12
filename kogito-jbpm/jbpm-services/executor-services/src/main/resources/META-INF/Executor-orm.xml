@@ -57,5 +57,11 @@
             Select e from ErrorInfo as e 
         </query>
     </named-query>
+    
+    <named-query name="GetRequestsByStatus">
+        <query>
+            Select r from RequestInfo as r where r.status in (:statuses) ORDER BY r.time DESC
+        </query>
+    </named-query>
       
 </entity-mappings>

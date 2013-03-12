@@ -6,9 +6,11 @@ package org.jbpm.executor;
 
 import java.util.Date;
 import java.util.List;
+
 import org.jbpm.executor.api.CommandContext;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.executor.entities.STATUS;
 
 /**
  *
@@ -27,6 +29,8 @@ public interface ExecutorServiceEntryPoint {
     public List<ErrorInfo> getAllErrors();
 
     public List<RequestInfo> getAllRequests();
+    
+    public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses);
 
     public int clearAllRequests();
 

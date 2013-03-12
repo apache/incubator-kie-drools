@@ -14,6 +14,7 @@ import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.api.ExecutorRequestAdminService;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.executor.entities.STATUS;
 
 /**
  *
@@ -83,6 +84,10 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
         return queryService.getAllRequests();
     }
 
+    public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses) {
+    	return queryService.getRequestsByStatus(statuses);
+    }
+    
     public int clearAllRequests() {
         return adminService.clearAllRequests();
     }

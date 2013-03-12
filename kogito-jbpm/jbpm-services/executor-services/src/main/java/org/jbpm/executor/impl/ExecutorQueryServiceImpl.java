@@ -16,6 +16,7 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.executor.entities.STATUS;
 
 /**
  *
@@ -70,7 +71,12 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     	return getEntityManager().createNamedQuery("GetAllRequests", RequestInfo.class).getResultList();
     }
     
-    /*
+	public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses) {
+    	return getEntityManager().createNamedQuery("GetRequestsByStatus", RequestInfo.class).
+    		setParameter("statuses", statuses).getResultList();
+	}
+
+	/*
      * following are supporting methods to allow execution on application startup
      * as at that time RequestScoped entity manager cannot be used so instead
      * use EntityManagerFactory and manage transaction manually
@@ -84,4 +90,5 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
             return em;
         }
     }
+
 }
