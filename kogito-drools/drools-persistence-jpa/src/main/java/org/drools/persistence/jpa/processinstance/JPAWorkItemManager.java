@@ -64,6 +64,18 @@ public class JPAWorkItemManager implements WorkItemManager {
     public WorkItemHandler getWorkItemHandler(String name) {
     	return this.workItemHandlers.get(name);
     }
+    
+    public void retryWorkItem(long workItemId) {
+    	WorkItem workItem = getWorkItem(workItemId);
+    	if (workItem != null) {
+            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
+            if (handler != null) {
+                handler.executeWorkItem(workItem, this);
+            } else {
+                throwWorkItemNotFoundException( workItem );
+            }
+    	}
+    }
 
     public void internalAbortWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
