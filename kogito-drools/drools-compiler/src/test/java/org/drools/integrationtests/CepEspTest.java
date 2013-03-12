@@ -55,6 +55,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -100,6 +101,29 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 53,
                       efh.getDuration() );
 
+    }
+
+    @Test
+    public void testJavaSqlTimestamp() {
+        String rule = "";
+        rule += "package " + Message.class.getPackage().getName() + "\n" +
+                "declare " + Message.class.getCanonicalName() + "\n" +
+                 "   @role( event ) \n" +
+                 "   @timestamp( startTime ) \n" +
+                 "   @duration( duration )\n" +
+                "end\n";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        Message msg = new Message();
+        msg.setStartTime( new Timestamp( 10000 ) );
+        msg.setDuration( 1000l );
+
+        EventFactHandle efh = (EventFactHandle) ksession.insert( msg );
+        assertEquals( 10000,
+                      efh.getStartTimestamp() );
+        assertEquals( 1000,
+                      efh.getDuration() );
     }
 
     @Test
@@ -1771,6 +1795,8 @@ public class CepEspTest extends CommonTestMethodBase {
 
     public static class Message {
         private Properties properties;
+        private Timestamp timestamp;
+        private Long duration;
 
         public Properties getProperties() {
             return properties;
@@ -1778,6 +1804,22 @@ public class CepEspTest extends CommonTestMethodBase {
 
         public void setProperties( Properties properties ) {
             this.properties = properties;
+        }
+
+        public Timestamp getStartTime() {
+            return timestamp;
+        }
+
+        public void setStartTime(Timestamp timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        public Long getDuration() {
+            return duration;
+        }
+
+        public void setDuration(Long duration) {
+            this.duration = duration;
         }
     }
 
