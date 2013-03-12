@@ -1,7 +1,7 @@
 TestCase "Accumulate Node assert/retract test case"
 
-import org.drools.Cheese;
-import org.drools.Person;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
 
 Setup
     Binding:

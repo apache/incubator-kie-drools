@@ -25,8 +25,6 @@ import static org.mockito.Mockito.when;
 
 import java.beans.IntrospectionException;
 
-import org.drools.Cheese;
-import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -36,6 +34,8 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Rule;

@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.drools.DroolsTestCase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
@@ -29,6 +28,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;

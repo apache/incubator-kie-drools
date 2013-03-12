@@ -1,10 +1,10 @@
 TestCase "Join Node modify 2 test case"
 
-import org.drools.Person;
+import org.drools.core.test.model.Person;
 
 Setup
     Binding:
-         p1, 0, org.drools.Person, age;
+         p1, 0, Person, age;
     JoinNode:
         join1, mock(Person), mock(Person);
         age, !=, p1;

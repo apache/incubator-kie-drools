@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools;
+package org.drools.core.test.model;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.common.ArrayAgendaGroupFactory;

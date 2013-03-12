@@ -21,8 +21,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.Agenda;
-import org.drools.Cheese;
-import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -38,6 +36,8 @@ import org.drools.common.NamedEntryPoint;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.TruthMaintenanceSystem;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;

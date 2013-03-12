@@ -25,10 +25,10 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
+import org.drools.core.test.model.Cheese;
 import org.drools.spi.InternalReadAccessor;
 
 public class DeclarationTest {

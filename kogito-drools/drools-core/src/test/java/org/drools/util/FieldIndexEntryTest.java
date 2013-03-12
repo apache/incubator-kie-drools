@@ -16,12 +16,12 @@
 
 package org.drools.util;
 
-import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassFieldReader;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.core.test.model.Cheese;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.SingleIndex;
 import org.drools.core.util.index.RightTupleList;

@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.Cheese;
-import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -41,6 +39,8 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools;
+package org.drools.core.test.model;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+public interface CheeseInterface {
 
-import org.drools.rule.Rule;
+    public String getType();
 
-public class RuleIntegrationExceptionTest {
-    @Test
-    public void testConstruct() {
-        final Rule rule = new Rule( "cheese" );
+    public int getPrice();
 
-        final RuleIntegrationException e = new RuleIntegrationException( rule );
+    /**
+     * @param price the price to set
+     */
+    public void setPrice(final int price);
 
-        assertSame( rule,
-                    e.getRule() );
+    /**
+     * @param type the type to set
+     */
+    public void setType(final String type);
 
-        assertEquals( "cheese cannot be integrated",
-                      e.getMessage() );
-    }
 }

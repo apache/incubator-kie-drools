@@ -27,13 +27,13 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.common.InternalFactHandle;
+import org.drools.core.test.model.Cheese;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;

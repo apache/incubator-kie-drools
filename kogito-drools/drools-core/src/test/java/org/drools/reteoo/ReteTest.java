@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import org.drools.Cheese;
-import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -34,6 +32,8 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;

@@ -16,8 +16,6 @@
 
 package org.drools.reteoo;
 
-import org.drools.Cheese;
-import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
@@ -26,6 +24,8 @@ import org.drools.base.ClassFieldReader;
 import org.drools.base.FieldFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.AlphaNode.AlphaMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.MvelConstraintTestUtil;

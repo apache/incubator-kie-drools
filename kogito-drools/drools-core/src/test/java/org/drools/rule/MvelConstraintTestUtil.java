@@ -1,7 +1,7 @@
 package org.drools.rule;
 
-import org.drools.Cheese;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.test.model.Cheese;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.FieldValue;

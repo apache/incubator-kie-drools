@@ -21,8 +21,8 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.Cheese;
 import org.drools.base.ClassObjectType;
+import org.drools.core.test.model.Cheese;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;

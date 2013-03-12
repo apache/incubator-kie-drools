@@ -18,11 +18,11 @@ package org.drools.reteoo;
 
 import java.util.List;
 
-import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;

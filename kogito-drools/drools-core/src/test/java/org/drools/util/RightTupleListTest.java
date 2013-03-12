@@ -19,9 +19,9 @@ package org.drools.util;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.Cheese;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.core.test.model.Cheese;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.LeftTupleImpl;
 

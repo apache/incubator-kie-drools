@@ -34,9 +34,7 @@ import org.kie.runtime.rule.SessionEntryPoint;
 
 import static org.junit.Assert.*;
 
-import org.drools.Cheese;
 import org.drools.FactHandle;
-import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
@@ -48,6 +46,8 @@ import org.drools.common.NamedEntryPoint;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerWriteContext;

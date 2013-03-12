@@ -18,7 +18,7 @@ package org.drools.reteoo;
 
 import java.lang.reflect.Field;
 
-import org.drools.DroolsTestCase;
+import org.drools.core.test.model.DroolsTestCase;
 
 import org.junit.After;
 import org.junit.Before;

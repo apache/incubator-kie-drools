@@ -19,7 +19,7 @@ package org.drools.event.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.Cheese;
+import org.drools.core.test.model.Cheese;
 
 import org.junit.Test;
 import org.kie.KnowledgeBase;

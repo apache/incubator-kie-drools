@@ -1,7 +1,7 @@
 TestCase "Accumulate Node unification test case"
 
-import org.drools.Cheese;
-import org.drools.Person;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
 
 Setup
     ObjectTypeNode:
@@ -9,7 +9,7 @@ Setup
     LeftInputAdapterNode:
         lian0, otnLeft0;        
     ObjectTypeNode:
-        otnRight1, org.drools.Person;
+        otnRight1, Person;
     Binding:
         v, 0, org.drools.base.DroolsQuery, [0], java.lang.String;
         $age, 0, org.drools.base.DroolsQuery, [1], java.lang.Integer;

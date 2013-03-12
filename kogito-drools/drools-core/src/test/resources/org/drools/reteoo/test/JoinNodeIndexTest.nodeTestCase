@@ -1,16 +1,19 @@
 TestCase "Join Node modify test case"
 
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
+
 Setup
     ObjectTypeNode:
-        otnLeft1, org.drools.Person;
+        otnLeft1, Person;
     LeftInputAdapterNode:
         lian0, otnLeft1;
     ObjectTypeNode:
-        otnRight1, org.drools.Person;
+        otnRight1, Person;
     ObjectTypeNode:
-        otnRight2, org.drools.Person;
+        otnRight2, Person;
     Binding:
-         p1, 0, org.drools.Person, age;
+         p1, 0, Person, age;
     JoinNode:
         join1, lian0, otnRight1;
         age, ==, p1;
@@ -18,9 +21,9 @@ Setup
         join2, join1, otnRight2;
         age, ==, p1;
     Facts:
-        new org.drools.Person('darth', 34), new org.drools.Person('bobba', 34),
-        new org.drools.Person('yoda', 34), new org.drools.Person('luke', 34),
-        new org.drools.Person('dave', 34), new org.drools.Person('bob', 34);
+        new Person('darth', 34), new Person('bobba', 34),
+        new Person('yoda', 34), new Person('luke', 34),
+        new Person('dave', 34), new Person('bob', 34);
 
 Test "Node Index Test"
     /**
