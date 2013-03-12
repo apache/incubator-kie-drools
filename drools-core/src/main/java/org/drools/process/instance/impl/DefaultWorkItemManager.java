@@ -100,6 +100,17 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     	return this.workItemHandlers.get(name);
     }
 
+    public void retryWorkItem(long workItemId) {
+    	WorkItem workItem = workItems.get(workItemId);
+    	if (workItem != null) {
+            WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
+            if (handler != null) {
+                handler.executeWorkItem(workItem, this);
+            } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
+                                                        workItem.getName() );
+    	}
+    }
+
     public Set<WorkItem> getWorkItems() {
         return new HashSet<WorkItem>(workItems.values());
     }
