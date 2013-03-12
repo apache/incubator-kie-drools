@@ -29,7 +29,7 @@ import javax.management.StandardMBean;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteooRuleBase;
 import org.kie.management.KieManagementAgentMBean;
-import org.kie.management.ObjectTypeNodeMonitorMBean;
+import org.kie.management.KieSessionMonitoringMBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,9 +108,14 @@ public class DroolsManagementAgent
 
     public void registerKnowledgeSession(InternalWorkingMemory ksession) {
         KieSessionMonitoringImpl mbean = new KieSessionMonitoringImpl( ksession );
-        registerMBean( ksession, 
-                       mbean,
-                       mbean.getName() );
+        try {
+            final StandardMBean adapter = new StandardMBean( mbean, KieSessionMonitoringMBean.class );
+            registerMBean( ksession,
+                           adapter,
+                           mbean.getName() );
+        } catch ( Exception e ) {
+            logger.error("Unable to instantiate and register KieSessionMonitoringMBean");
+        }
     }
 
     public void unregisterKnowledgeSession(InternalWorkingMemory ksession) {
