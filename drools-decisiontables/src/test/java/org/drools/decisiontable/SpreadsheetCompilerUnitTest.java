@@ -35,6 +35,17 @@ import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;
 import org.junit.Test;
+import org.kie.KnowledgeBase;
+import org.kie.KnowledgeBaseFactory;
+import org.kie.builder.DecisionTableConfiguration;
+import org.kie.builder.DecisionTableInputType;
+import org.kie.builder.KnowledgeBuilder;
+import org.kie.builder.KnowledgeBuilderError;
+import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.io.ResourceFactory;
+import org.kie.io.ResourceType;
+import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  * Some basic unit tests for converter utility. Note that some of this may still
@@ -380,4 +391,53 @@ public class SpreadsheetCompilerUnitTest {
 
     }
 
+    @Test
+    public void testNegativeNumbers() throws Exception {
+        KnowledgeBase kbase = readKnowledgeBase( "/data/DT_WithNegativeNumbers.xls" );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        IntHolder i1 = new IntHolder( 1 );
+        IntHolder i2 = new IntHolder( -1 );
+        ksession.insert( i1 );
+        ksession.insert( i2 );
+        ksession.fireAllRules();
+    }
+    
+    public static class IntHolder {
+        private int value;
+        public IntHolder(int i) {
+            value = i;
+        }
+        public int getValue() {
+            return value;
+        }
+        public void setValue( int value ) {
+            this.value = value;
+        }
+        @Override
+        public String toString()
+        {
+            return "IntHolder [value=" + value + "]";
+        }        
+    }
+    
+    private KnowledgeBase readKnowledgeBase( String resource ) throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        DecisionTableConfiguration config = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        config.setInputType( DecisionTableInputType.XLS );
+        kbuilder.add( ResourceFactory.newClassPathResource( resource, getClass() ), ResourceType.DTABLE,
+                config );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if( errors.size() > 0 )
+        {
+            for( KnowledgeBuilderError error : errors )
+            {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        return kbase;
+    }
+    
 }
