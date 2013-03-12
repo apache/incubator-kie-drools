@@ -326,7 +326,7 @@
   </section>
 
   <section>
-    <title>Toy examples</title>
+    <title>Basic examples</title>
 
     <section xml:id="nQueens">
       <title>N queens</title>

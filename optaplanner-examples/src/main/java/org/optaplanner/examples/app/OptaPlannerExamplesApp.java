@@ -91,25 +91,25 @@ public class OptaPlannerExamplesApp extends JFrame {
         examplesPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         GroupLayout layout = new GroupLayout(examplesPanel);
         examplesPanel.setLayout(layout);
-        JPanel toyExamplesPanel = createToyExamplesPanel();
+        JPanel basicExamplesPanel = createBasicExamplesPanel();
         JPanel realExamplesPanel = createRealExamplesPanel();
         JPanel difficultExamplesPanel = createDifficultExamplesPanel();
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addComponent(toyExamplesPanel)
+                .addComponent(basicExamplesPanel)
                 .addGap(10)
                 .addComponent(realExamplesPanel)
                 .addGap(10)
                 .addComponent(difficultExamplesPanel));
         layout.setVerticalGroup(layout.createParallelGroup()
-                .addComponent(toyExamplesPanel)
+                .addComponent(basicExamplesPanel)
                 .addComponent(realExamplesPanel)
                 .addComponent(difficultExamplesPanel));
         return examplesPanel;
     }
 
-    private JPanel createToyExamplesPanel() {
+    private JPanel createBasicExamplesPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
-        TitledBorder titledBorder = BorderFactory.createTitledBorder("Toy examples");
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Basic examples");
         titledBorder.setTitleColor(TangoColorFactory.CHAMELEON_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));

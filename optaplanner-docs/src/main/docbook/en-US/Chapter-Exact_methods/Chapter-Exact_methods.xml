@@ -11,7 +11,7 @@
     <title>Overview</title>
 
     <para>Exact methods will always find the global optimum and recognize it too. That being said, they don't scale (not
-    even beyond toy problems) and are therefore mostly useless.</para>
+    even beyond toy data sets) and are therefore mostly useless.</para>
   </section>
 
   <section xml:id="bruteForce">
