@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStreamReader;
 
-import org.drools.DroolsTestCase;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.junit.Test;
 

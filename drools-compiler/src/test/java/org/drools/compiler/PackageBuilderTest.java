@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.Cheese;
-import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.Primitives;
 import org.drools.RuleBaseFactory;
@@ -48,6 +47,7 @@ import org.drools.common.LogicalDependency;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
+import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.integrationtests.SerializationHelper;
