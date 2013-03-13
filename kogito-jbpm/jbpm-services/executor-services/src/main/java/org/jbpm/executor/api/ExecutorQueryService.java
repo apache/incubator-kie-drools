@@ -17,6 +17,8 @@ import org.jbpm.executor.entities.STATUS;
 public interface ExecutorQueryService {
     List<RequestInfo> getPendingRequests();
     List<RequestInfo> getPendingRequestById(Long id);
+    RequestInfo getRequestById(Long id);
+    List<ErrorInfo> getErrorsByRequestId(Long id);
     List<RequestInfo> getQueuedRequests();
     List<RequestInfo> getCompletedRequests();
     List<RequestInfo> getInErrorRequests();

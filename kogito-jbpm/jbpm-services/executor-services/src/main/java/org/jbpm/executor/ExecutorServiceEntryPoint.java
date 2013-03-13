@@ -67,4 +67,8 @@ public interface ExecutorServiceEntryPoint {
     public List<RequestInfo> getRunningRequests();
     
     public List<RequestInfo> getFutureQueuedRequests();
+
+	public RequestInfo getRequestById(Long requestId);
+
+	public List<ErrorInfo> getErrorsByRequestId(Long requestId);
 }

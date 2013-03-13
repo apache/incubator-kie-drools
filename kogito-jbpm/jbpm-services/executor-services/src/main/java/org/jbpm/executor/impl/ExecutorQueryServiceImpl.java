@@ -39,6 +39,9 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     public List<RequestInfo> getPendingRequestById(Long id) {
         return getEntityManager().createNamedQuery("PendingRequestById", RequestInfo.class).setParameter("id", id).getResultList();
     }
+    public RequestInfo getRequestById(Long id) {
+    	return getEntityManager().find(RequestInfo.class, id);
+    }
     public List<RequestInfo> getRunningRequests() {
         return getEntityManager().createNamedQuery("RunningRequests", RequestInfo.class).getResultList();
     }
@@ -65,6 +68,11 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 
     public List<ErrorInfo> getAllErrors() {
     	return getEntityManager().createNamedQuery("GetAllErrors", ErrorInfo.class).getResultList();
+    }
+
+    public List<ErrorInfo> getErrorsByRequestId(Long requestId) {
+    	return getEntityManager().createNamedQuery("GetErrorsByRequestId", ErrorInfo.class).
+    		setParameter("id", requestId).getResultList();
     }
 
     public List<RequestInfo> getAllRequests() {

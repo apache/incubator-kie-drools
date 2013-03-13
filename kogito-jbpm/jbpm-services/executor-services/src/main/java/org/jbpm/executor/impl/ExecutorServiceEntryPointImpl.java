@@ -157,8 +157,13 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
     public List<RequestInfo> getRunningRequests() {
         return queryService.getRunningRequests();
     }
-    
-    
-    
+
+	public RequestInfo getRequestById(Long requestId) {
+		return queryService.getRequestById(requestId);
+	}
+
+	public List<ErrorInfo> getErrorsByRequestId(Long requestId) {
+		return queryService.getErrorsByRequestId(requestId);
+	}
     
 }
