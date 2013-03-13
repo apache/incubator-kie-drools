@@ -37,11 +37,12 @@ public class KnowledgeAdminDataServiceImpl implements KnowledgeAdminDataService{
     
     public int removeAllData() {
         int deleted = 0;
-        deleted += pm.executeUpdateString("delete from  NodeInstanceDesc nid");
-        deleted += pm.executeUpdateString("delete from  ProcessInstanceDesc pid");
+        deleted += pm.executeUpdateString("delete from  NodeInstanceLog nid");
+        deleted += pm.executeUpdateString("delete from  ProcessInstanceLog pid");
         deleted += pm.executeUpdateString("delete from  ProcessDesc pd");
-        deleted += pm.executeUpdateString("delete from  VariableStateDesc vsd");
+        deleted += pm.executeUpdateString("delete from  VariableInstanceLog vsd");
         deleted += pm.executeUpdateString("delete from  ProcessInputDesc pidesc");
+
         return deleted;
     }
     

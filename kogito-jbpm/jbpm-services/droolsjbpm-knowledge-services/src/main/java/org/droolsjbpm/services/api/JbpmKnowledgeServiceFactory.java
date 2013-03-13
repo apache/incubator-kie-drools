@@ -17,6 +17,7 @@ package org.droolsjbpm.services.api;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.KnowledgeAdminDataServiceImpl;
 import org.droolsjbpm.services.impl.KnowledgeDataServiceImpl;
@@ -28,8 +29,6 @@ import org.droolsjbpm.services.impl.bpmn2.HumanTaskGetInformationHandler;
 import org.droolsjbpm.services.impl.bpmn2.ProcessDescriptionRepository;
 import org.droolsjbpm.services.impl.bpmn2.ProcessGetInformationHandler;
 import org.droolsjbpm.services.impl.bpmn2.ProcessGetInputHandler;
-import org.droolsjbpm.services.impl.event.listeners.CDIBAMProcessEventListener;
-import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
@@ -96,24 +95,7 @@ public class JbpmKnowledgeServiceFactory {
         
         configureBpmn2DataService();
         
-        ((SessionManagerImpl)service).setBpmn2Service(bpmn2DataService);
-        
-        
-        CDIBAMProcessEventListener bamProcessEventListener = new CDIBAMProcessEventListener();
-        bamProcessEventListener.setPm(pm);
-        
-        bamProcessEventListener.setIdentity(identityProvider);
-        
-        ((SessionManagerImpl)service).setBamProcessListener(bamProcessEventListener);
-        
-        
-        ((SessionManagerImpl)service).setHTWorkItemHandler(htWorkItemHandler);
-        
-        CDIProcessEventListener processEventListener = new CDIProcessEventListener();
-        processEventListener.setPm(pm);
-        processEventListener.setIdentity(identityProvider);
-        
-        ((SessionManagerImpl)service).setProcessListener(processEventListener);
+        ((SessionManagerImpl)service).setBpmn2Service(bpmn2DataService);           
         
         CDIRuleAwareProcessEventListener ruleAwareEventListener = new CDIRuleAwareProcessEventListener();
         ((SessionManagerImpl)service).setProcessFactsListener(ruleAwareEventListener);

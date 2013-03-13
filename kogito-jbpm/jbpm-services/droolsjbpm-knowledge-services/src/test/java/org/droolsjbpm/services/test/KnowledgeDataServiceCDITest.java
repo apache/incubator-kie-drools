@@ -46,6 +46,7 @@ public class KnowledgeDataServiceCDITest extends KnowledgeDataServiceBaseTest {
                 .addPackage("org.droolsjbpm.services.test")
                 .addPackage("org.droolsjbpm.services.impl.event.listeners")
                 .addPackage("org.droolsjbpm.services.impl.example") 
+                .addPackage("org.droolsjbpm.services.impl.audit")
                 .addPackage("org.droolsjbpm.services.impl.util") 
                 .addAsResource("jndi.properties","jndi.properties")
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))

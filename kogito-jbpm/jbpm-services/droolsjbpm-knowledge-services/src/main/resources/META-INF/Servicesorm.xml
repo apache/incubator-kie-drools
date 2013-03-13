@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
+  version="2.0">
+
+  <!-- process definition queries -->
+  <named-query name="getProcessesByDomainName">
+    <query>
+      select 
+        pd 
+      from 
+        ProcessDesc pd 
+      where 
+        pd.domainName=:domainName 
+      GROUP BY
+        pd.id 
+      ORDER BY 
+        pd.dataTimeStamp DESC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessesByFilter">
+    <query>
+    select 
+        pd 
+    from 
+        ProcessDesc pd 
+    where 
+        pd.id like :filter or pd.name like :filter 
+    ORDER BY 
+        pd.dataTimeStamp DESC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcesses">
+    <query>
+    select 
+        pd 
+    from 
+        ProcessDesc pd 
+    ORDER BY 
+        pd.pki DESC, pd.dataTimeStamp DESC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+
+  <!-- process instance queries -->
+  <named-query name="getProcessInstances">
+    <query>
+      select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      ORDER BY
+        log.processId, log.start
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessInstancesByStatus">
+    <query>
+      select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.status in (:states)
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessInstancesByStatusAndInitiator">
+    <query>
+      select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.status in (:states) and log.identity = :initiator
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessInstancesBySessionId">
+    <query>
+      select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.sessionId=:sessionId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessInstancesByProcessDefinition">
+    <query>
+     select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.processId =:processDefId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessInstanceById">
+    <query>
+     select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.processInstanceId =:processId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+
+  <named-query name="getProcessInstancesByProcessIdAndStatus">
+    <query>
+     select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.status in (:states) and log.processId like :processId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessInstancesByProcessIdAndStatusAndInitiator">
+    <query>
+     select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.status in (:states) and log.processId like :processId and log.identity = :initiator
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+<named-query name="getProcessInstancesByProcessNameAndStatus">
+    <query>
+     select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.status in (:states) and log.processName like :processName
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessInstancesByProcessNameAndStatusAndInitiator">
+    <query>
+     select
+      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.sessionId,
+      log.identity
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.status in (:states) and log.processName like :processName and log.identity = :initiator
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <!-- node instance queries -->
+  <named-query name="getProcessInstanceHistory">
+    <query>
+      select
+      new org.droolsjbpm.services.impl.model.NodeInstanceDesc(
+      log.nodeInstanceId,
+      log.nodeId,
+      log.nodeName,
+      log.nodeType,
+      log.sessionId,
+      log.processInstanceId,
+      log.date,
+      log.connection,
+      log.type
+      )
+      from
+        NodeInstanceLog log
+      where
+        log.processInstanceId=:processId AND log.sessionId=:sessionId AND log.type =:type 
+      ORDER BY 
+        log.date DESC
+
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessInstanceFullHistory">
+    <query>
+      select
+      new org.droolsjbpm.services.impl.model.NodeInstanceDesc(
+      log.nodeInstanceId,
+      log.nodeId,
+      log.nodeName,
+      log.nodeType,
+      log.sessionId,
+      log.processInstanceId,
+      log.date,
+      log.connection,
+      log.type
+      )
+      from
+        NodeInstanceLog log
+      where
+        log.processInstanceId=:processId AND log.sessionId=:sessionId 
+      ORDER BY 
+        log.date DESC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+
+  <named-query name="getProcessInstanceActiveNodes">
+    <query>
+      select
+      new org.droolsjbpm.services.impl.model.NodeInstanceDesc(
+      log.nodeInstanceId,
+      log.nodeId,
+      log.nodeName,
+      log.nodeType,
+      log.sessionId,
+      log.processInstanceId,
+      log.date,
+      log.connection,
+      log.type
+      )
+      from
+        NodeInstanceLog log
+      where
+        log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId AND nil.sessionId=:sessionId
+                    GROUP BY nil.nodeInstanceId
+                    HAVING count(nil.nodeInstanceId) = 1)
+        and log.type = 0            
+      order by
+        log.id ASC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getProcessInstanceCompletedNodes">
+    <query>
+      select
+      new org.droolsjbpm.services.impl.model.NodeInstanceDesc(
+      log.nodeInstanceId,
+      log.nodeId,
+      log.nodeName,
+      log.nodeType,
+      log.sessionId,
+      log.processInstanceId,
+      log.date,
+      log.connection,
+      log.type
+      )
+      from
+        NodeInstanceLog log
+      where
+        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.sessionId=:sessionId AND nid.type = 1) 
+      ORDER BY 
+        log.nodeInstanceId, log.id ASC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+
+  <!-- variable instance queries -->
+  <named-query name="getVariablesCurrentState">
+    <query>
+      select
+      new org.droolsjbpm.services.impl.model.VariableStateDesc(
+      log.variableId,
+      log.variableInstanceId,
+      log.oldValue,
+      log.value,
+      log.sessionId,
+      log.processInstanceId,
+      log.date
+      )
+      from
+        VariableInstanceLog log
+      where
+        log.processInstanceId =:processInstanceId AND log.id in (select max(vss.id) FROM VariableInstanceLog vss WHERE vss.processInstanceId =:processInstanceId group by vss.variableId ) order by log.id
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getVariableHistory">
+    <query>
+     select
+      new org.droolsjbpm.services.impl.model.VariableStateDesc(
+      log.variableId,
+      log.variableInstanceId,
+      log.oldValue,
+      log.value,
+      log.sessionId,
+      log.processInstanceId,
+      log.date
+      )
+      from
+        VariableInstanceLog log
+      where
+        log.processInstanceId =:processInstanceId AND log.variableId =:variableId 
+      order by 
+        log.id DESC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  
+</entity-mappings>

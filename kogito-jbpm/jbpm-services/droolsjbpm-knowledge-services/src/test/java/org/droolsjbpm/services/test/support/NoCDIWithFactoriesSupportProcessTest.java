@@ -23,7 +23,9 @@ import javax.persistence.Persistence;
 import org.droolsjbpm.services.api.JbpmKnowledgeServiceFactory;
 import org.droolsjbpm.services.impl.MVELWorkItemHandlerProducer;
 import org.droolsjbpm.services.impl.SessionManagerImpl;
+import org.droolsjbpm.services.impl.audit.IdentityAwareAuditEventBuilder;
 import org.droolsjbpm.services.test.TestIdentityProvider;
+import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.TestVFSFileServiceImpl;
@@ -87,6 +89,12 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
         
         MVELWorkItemHandlerProducer workItemProducer = new MVELWorkItemHandlerProducer();
         workItemProducer.setFs(fs);
+        
+        TestIdentityProvider identityProvider = new TestIdentityProvider();
+        IdentityAwareAuditEventBuilder auditEventBuilder = new IdentityAwareAuditEventBuilder();
+        auditEventBuilder.setIdentityProvider(identityProvider);
+        
+        ((SessionManagerImpl)sessionManager).setAuditEventBuilder(auditEventBuilder);
         
         ((SessionManagerImpl)sessionManager).setWorkItemHandlerProducer(workItemProducer);
         

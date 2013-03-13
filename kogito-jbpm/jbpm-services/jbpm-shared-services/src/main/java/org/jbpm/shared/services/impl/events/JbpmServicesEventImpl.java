@@ -28,10 +28,13 @@ import java.util.logging.Logger;
 import javax.enterprise.event.Event;
 import javax.enterprise.util.TypeLiteral;
 
+import org.jboss.solder.core.Veto;
+
 /**
  *
  * @author salaboy
  */
+@Veto
 public class JbpmServicesEventImpl<T> implements Event<T>, Serializable {
 
     List<JbpmServicesEventListener> listeners = new CopyOnWriteArrayList<JbpmServicesEventListener>();

@@ -15,17 +15,18 @@
  */
 package org.droolsjbpm.services.test.support;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import javax.enterprise.event.Event;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.droolsjbpm.services.impl.KnowledgeAdminDataServiceImpl;
 import org.droolsjbpm.services.impl.KnowledgeDataServiceImpl;
 import org.droolsjbpm.services.impl.MVELWorkItemHandlerProducer;
 import org.droolsjbpm.services.impl.SessionManagerImpl;
+import org.droolsjbpm.services.impl.audit.IdentityAwareAuditEventBuilder;
 import org.droolsjbpm.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.droolsjbpm.services.impl.bpmn2.BPMN2DataServiceSemanticModule;
 import org.droolsjbpm.services.impl.bpmn2.GetReusableSubProcessesHandler;
@@ -33,8 +34,6 @@ import org.droolsjbpm.services.impl.bpmn2.HumanTaskGetInformationHandler;
 import org.droolsjbpm.services.impl.bpmn2.ProcessDescriptionRepository;
 import org.droolsjbpm.services.impl.bpmn2.ProcessGetInformationHandler;
 import org.droolsjbpm.services.impl.bpmn2.ProcessGetInputHandler;
-import org.droolsjbpm.services.impl.event.listeners.CDIBAMProcessEventListener;
-import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
 import org.droolsjbpm.services.test.TestIdentityProvider;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
@@ -42,36 +41,15 @@ import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.shared.services.impl.TestVFSFileServiceImpl;
-import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
 import org.jbpm.task.HumanTaskServiceFactory;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskAdminService;
-import org.jbpm.task.api.TaskContentService;
-import org.jbpm.task.api.TaskDeadlinesService;
-import org.jbpm.task.api.TaskIdentityService;
-import org.jbpm.task.api.TaskInstanceService;
-import org.jbpm.task.api.TaskQueryService;
-import org.jbpm.task.deadlines.DeadlinesDecorator;
-import org.jbpm.task.events.NotificationEvent;
-import org.jbpm.task.identity.MvelUserGroupCallbackImpl;
-import org.jbpm.task.identity.UserGroupCallback;
-import org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator;
-import org.jbpm.task.impl.TaskAdminServiceImpl;
-import org.jbpm.task.impl.TaskContentServiceImpl;
-import org.jbpm.task.impl.TaskDeadlinesServiceImpl;
-import org.jbpm.task.impl.TaskIdentityServiceImpl;
-import org.jbpm.task.impl.TaskInstanceServiceImpl;
-import org.jbpm.task.impl.TaskQueryServiceImpl;
-import org.jbpm.task.impl.TaskServiceEntryPointImpl;
-import org.jbpm.task.internals.lifecycle.LifeCycleManager;
-import org.jbpm.task.internals.lifecycle.MVELLifeCycleManager;
-import org.jbpm.task.subtask.SubTaskDecorator;
-import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.task.wih.ExternalTaskEventListener;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 public class NoCDISupportProcessTest extends SupportProcessBaseTest {
@@ -154,21 +132,6 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         ((SessionManagerImpl)sessionManager).setBpmn2Service(bpmn2Service);
         
         
-        CDIBAMProcessEventListener bamProcessEventListener = new CDIBAMProcessEventListener();
-        bamProcessEventListener.setPm(pm);
-        TestIdentityProvider identityProvider = new TestIdentityProvider();
-        bamProcessEventListener.setIdentity(identityProvider);
-        
-        ((SessionManagerImpl)sessionManager).setBamProcessListener(bamProcessEventListener);
-        
- 
-        
-        CDIProcessEventListener processEventListener = new CDIProcessEventListener();
-        processEventListener.setPm(pm);
-        processEventListener.setIdentity(identityProvider);
-        
-        ((SessionManagerImpl)sessionManager).setProcessListener(processEventListener);
-        
         CDIRuleAwareProcessEventListener ruleAwareEventListener = new CDIRuleAwareProcessEventListener();
         ((SessionManagerImpl)sessionManager).setProcessFactsListener(ruleAwareEventListener);
         
@@ -188,6 +151,12 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         
         MVELWorkItemHandlerProducer workItemProducer = new MVELWorkItemHandlerProducer();
         workItemProducer.setFs(fs);
+        
+        TestIdentityProvider identityProvider = new TestIdentityProvider();
+        IdentityAwareAuditEventBuilder auditEventBuilder = new IdentityAwareAuditEventBuilder();
+        auditEventBuilder.setIdentityProvider(identityProvider);
+        
+        ((SessionManagerImpl)sessionManager).setAuditEventBuilder(auditEventBuilder);
         
         ((SessionManagerImpl)sessionManager).setWorkItemHandlerProducer(workItemProducer);
         

@@ -17,6 +17,10 @@
       <artifactId>seam-persistence</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jboss.solder</groupId>
+      <artifactId>solder-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-core</artifactId>
     </dependency>

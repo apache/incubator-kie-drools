@@ -382,8 +382,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             ExtensionRegistry registry = PersisterHelper.buildRegistry( context, null ); 
             Header _header;
             try {
-                _header = PersisterHelper.readFromStreamWithHeaderPreloaded(context, registry );
-                _header = PersisterHelper.readFromStreamWithHeaderPreloaded( context, registry );
+
+                _header = PersisterHelper.readFromStreamWithHeader(context, registry);
             } catch ( ClassNotFoundException e ) {
                 // Java 5 does not accept [new IOException(String, Throwable)]
                 IOException ioe =  new IOException( "Error deserializing process instance." );

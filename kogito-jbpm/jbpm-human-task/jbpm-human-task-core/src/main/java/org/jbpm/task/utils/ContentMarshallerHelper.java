@@ -112,7 +112,7 @@ public class ContentMarshallerHelper {
                 context.classLoader = ContentMarshallerHelper.class.getClassLoader();
             }
             ExtensionRegistry registry = PersisterHelper.buildRegistry( context, null ); 
-            Header _header = PersisterHelper.readFromStreamWithHeaderPreloaded(context, registry);
+            Header _header = PersisterHelper.readFromStreamWithHeader(context, registry);
             Variable parseFrom = JBPMMessages.Variable.parseFrom(_header.getPayload(), registry);
             Object value = ProtobufProcessMarshaller.unmarshallVariableValue(context, parseFrom);
             

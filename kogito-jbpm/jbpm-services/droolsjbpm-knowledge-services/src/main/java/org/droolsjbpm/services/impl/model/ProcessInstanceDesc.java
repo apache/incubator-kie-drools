@@ -17,69 +17,38 @@ package org.droolsjbpm.services.impl.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
 
-/**
- *
- * @author salaboy
- */
 
-@Entity
 public class ProcessInstanceDesc implements Serializable{
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private long pk;
-    
     private long id;
     private String processId;
     private String processName;
     private String processVersion;
     private int state;
-    private String[] eventTypes;
-    
-    private String processDefId;
-    
-    private int sessionId;
-    
-    private String domainName;
-    
+    private int sessionId;    
     private String initiator;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataTimeStamp;
 
     public ProcessInstanceDesc() {
-        this.dataTimeStamp = new Date();
+    
     }
 
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
-                                int state, String[] eventTypes, String processDefId, 
-                                String domainName, int sessionId, String initiator) {
+                                int state, int sessionId, String initiator) {
         this.id = id;
         this.processId = processId;
         this.processName = processName;
         this.processVersion = processVersion==null?"":processVersion;
         this.state = state;
-        this.eventTypes = eventTypes;
-        this.processDefId = processDefId;
         this.sessionId = sessionId;
-        this.domainName = domainName;
         this.dataTimeStamp = new Date();
         this.initiator = initiator;
     }
     
     public String getProcessId() {
         return processId;
-    }
-
-    public String getProcessDefId() {
-        return processDefId;
     }
 
     public long getId() {
@@ -94,10 +63,6 @@ public class ProcessInstanceDesc implements Serializable{
         return state;
     }
 
-    public String[] getEventTypes() {
-        return eventTypes;
-    }
-
     public int getSessionId() {
         return sessionId;
     }
@@ -106,13 +71,9 @@ public class ProcessInstanceDesc implements Serializable{
         return dataTimeStamp;
     }
 
-    public String getDomainName() {
-        return domainName;
-    }
-
     @Override
     public String toString() {
-        return "ProcessInstanceDesc["+dataTimeStamp.toString()+"]{" + "pk=" + pk + ", id=" + id + ", processId=" + processId + ", processName=" + processName + ", state=" + state + ", eventTypes=" + eventTypes + ", processDefId=" + processDefId + ", sessionId=" + sessionId + ", domainName=" + domainName + '}';
+        return "ProcessInstanceDesc["+dataTimeStamp.toString()+"]{id=" + id + ", processId=" + processId + ", processName=" + processName + ", state=" + state + ", sessionId=" + sessionId +"'}'";
     }
 
     public String getProcessVersion() {

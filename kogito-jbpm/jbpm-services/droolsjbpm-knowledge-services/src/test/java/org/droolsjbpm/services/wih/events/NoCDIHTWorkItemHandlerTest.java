@@ -15,14 +15,16 @@
  */
 package org.droolsjbpm.services.wih.events;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.SessionManagerImpl;
+import org.droolsjbpm.services.impl.audit.IdentityAwareAuditEventBuilder;
 import org.droolsjbpm.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.droolsjbpm.services.impl.bpmn2.BPMN2DataServiceSemanticModule;
 import org.droolsjbpm.services.impl.bpmn2.GetReusableSubProcessesHandler;
@@ -30,8 +32,6 @@ import org.droolsjbpm.services.impl.bpmn2.HumanTaskGetInformationHandler;
 import org.droolsjbpm.services.impl.bpmn2.ProcessDescriptionRepository;
 import org.droolsjbpm.services.impl.bpmn2.ProcessGetInformationHandler;
 import org.droolsjbpm.services.impl.bpmn2.ProcessGetInputHandler;
-import org.droolsjbpm.services.impl.event.listeners.CDIBAMProcessEventListener;
-import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
 import org.droolsjbpm.services.test.TestIdentityProvider;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
@@ -39,10 +39,12 @@ import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.task.HumanTaskServiceFactory;
-import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.task.wih.ExternalTaskEventListener;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 
@@ -124,28 +126,19 @@ public class NoCDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
         
         ((SessionManagerImpl)sessionManager).setBpmn2Service(bpmn2DataService);
         
-        
-        CDIBAMProcessEventListener bamProcessEventListener = new CDIBAMProcessEventListener();
-        bamProcessEventListener.setPm(pm);
-        TestIdentityProvider identityProvider = new TestIdentityProvider();
-        bamProcessEventListener.setIdentity(identityProvider);
-        
-        ((SessionManagerImpl)sessionManager).setBamProcessListener(bamProcessEventListener);
-        
-        
         htWorkItemHandler = new LocalHTWorkItemHandler();
         htWorkItemHandler.setSessionManager(sessionManager);
         htWorkItemHandler.setTaskService(taskService);
         htWorkItemHandler.setTaskEventListener(externalTaskEventListener);
         htWorkItemHandler.addSession(ksession);
         
-        ((SessionManagerImpl)sessionManager).setHTWorkItemHandler(htWorkItemHandler);
+        ((SessionManagerImpl)sessionManager).setHTWorkItemHandler(htWorkItemHandler);    
         
-        CDIProcessEventListener processEventListener = new CDIProcessEventListener();
-        processEventListener.setPm(pm);
-        processEventListener.setIdentity(identityProvider);
+        TestIdentityProvider identityProvider = new TestIdentityProvider();
+        IdentityAwareAuditEventBuilder auditEventBuilder = new IdentityAwareAuditEventBuilder();
+        auditEventBuilder.setIdentityProvider(identityProvider);
         
-        ((SessionManagerImpl)sessionManager).setProcessListener(processEventListener);
+        ((SessionManagerImpl)sessionManager).setAuditEventBuilder(auditEventBuilder);
         
         CDIRuleAwareProcessEventListener ruleAwareEventListener = new CDIRuleAwareProcessEventListener();
         ((SessionManagerImpl)sessionManager).setProcessFactsListener(ruleAwareEventListener);

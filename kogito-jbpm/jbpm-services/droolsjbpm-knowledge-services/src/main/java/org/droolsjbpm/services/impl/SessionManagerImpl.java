@@ -15,6 +15,8 @@
  */
 package org.droolsjbpm.services.impl;
 
+import static org.kie.scanner.MavenRepository.getMavenRepository;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -26,28 +28,31 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
+
 import org.drools.core.util.FileManager;
 import org.drools.impl.EnvironmentFactory;
+
 
 import org.jbpm.shared.services.api.Domain;
 import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.WorkItemHandlerProducer;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
-import org.droolsjbpm.services.impl.event.listeners.BAM;
-import org.droolsjbpm.services.impl.event.listeners.CDIBAMProcessEventListener;
-import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventListener;
 import org.droolsjbpm.services.impl.helpers.KieSessionDelegate;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
+import org.jbpm.process.audit.AbstractAuditLogger;
+import org.jbpm.process.audit.AuditLoggerFactory;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
+import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
@@ -77,7 +82,6 @@ import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.scanner.MavenRepository;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
 import org.sonatype.aether.repository.RemoteRepository;
 
 
@@ -93,12 +97,7 @@ public class SessionManagerImpl implements ServicesSessionManager {
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject 
-    private LocalHTWorkItemHandler htWorkItemHandler;
-    @Inject
-    private CDIProcessEventListener processListener;
-    @Inject
-    @BAM
-    private CDIBAMProcessEventListener bamProcessListener;
+    private LocalHTWorkItemHandler htWorkItemHandler;    
     @Inject
     private CDIRuleAwareProcessEventListener processFactsListener;
  
@@ -107,6 +106,9 @@ public class SessionManagerImpl implements ServicesSessionManager {
     
     @Inject
     private FileService fs;
+    
+    @Inject
+    private AuditEventBuilder auditEventBuilder;
     
     protected FileManager fileManager;
     
@@ -154,11 +156,6 @@ public class SessionManagerImpl implements ServicesSessionManager {
     public void setIoService(IOService ioService) {
         this.ioService = ioService;
     }
-    
-
-    public void setBamProcessListener(CDIBAMProcessEventListener bamProcessListener) {
-        this.bamProcessListener = bamProcessListener;
-    }
 
     public void setBpmn2Service(BPMN2DataService bpmn2Service) {
         this.bpmn2Service = bpmn2Service;
@@ -166,10 +163,6 @@ public class SessionManagerImpl implements ServicesSessionManager {
 
     public void setHTWorkItemHandler(LocalHTWorkItemHandler htWorkItemHandler) {
         this.htWorkItemHandler = htWorkItemHandler;
-    }
-
-    public void setProcessListener(CDIProcessEventListener processListener) {
-        this.processListener = processListener;
     }
 
     public void setProcessFactsListener(CDIRuleAwareProcessEventListener processFactsListener) {
@@ -180,7 +173,9 @@ public class SessionManagerImpl implements ServicesSessionManager {
         this.workItemHandlerProducer = workItemHandlerProducer;
     }
 
-    
+    public void setAuditEventBuilder(AuditEventBuilder auditEventBuilder) {
+        this.auditEventBuilder = auditEventBuilder;
+    }
     
     @Override
     public void setDomain(Domain domain) {
@@ -370,13 +365,8 @@ public class SessionManagerImpl implements ServicesSessionManager {
 
                 entityManager.persist(processDesc);
           }
-
-          ksession.addEventListener(processListener);
-
-          ksession.addEventListener(bamProcessListener);
-
-          //KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
-
+          AbstractAuditLogger auditLogger = AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
+          auditLogger.setBuilder(auditEventBuilder);
           htWorkItemHandler.addSession(ksession);
 
           // Register the same handler for all the ksessions
@@ -439,10 +429,6 @@ public class SessionManagerImpl implements ServicesSessionManager {
         // ENDS REDUNDANT  
         loadedProcesses.removeAll(existingProcesses);
         if (!loadedProcesses.isEmpty()) {  
-        
-          processListener.setDomainName(getDomain().getName());
-          processListener.setSessionManager(this);
-
 
           KieServices ks = KieServices.Factory.get();
           ReleaseId releaseId = ks.newReleaseId("org.jbpm", sessionName, "1.0-SNAPSHOT");
@@ -477,12 +463,7 @@ public class SessionManagerImpl implements ServicesSessionManager {
 
                 entityManager.persist(processDesc);
           }
-
-          ksession.addEventListener(processListener);
-
-          ksession.addEventListener(bamProcessListener);
-
-          //KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+          AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
 
           htWorkItemHandler.addSession(ksession);
 

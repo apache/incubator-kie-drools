@@ -33,6 +33,9 @@
     <class>org.jbpm.task.SubTasksStrategy</class>
     <class>org.jbpm.task.User</class>
     
+    <!--BAM for task service -->
+    <class>org.jbpm.task.impl.model.BAMTaskSummary</class>    
+    
     <!-- Event Classes -->
     <class>org.jbpm.task.TaskEvent</class>
    

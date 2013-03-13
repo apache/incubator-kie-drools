@@ -23,43 +23,34 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 
-/**
- *
- * @author salaboy
- */
-@Entity
+
 public class VariableStateDesc implements Serializable{
-    @Id
-    @GeneratedValue()
-    private long pk;
+
     private String variableId;
     private String variableInstanceId;
     @Column(length = 5000)
     private String oldValue;
     @Column(length = 5000)
     private String newValue;
-    private String domainName;
     private int sessionId;
     private long processInstanceId;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataTimeStamp;
 
     public VariableStateDesc() {
-        this.dataTimeStamp = new Date();
+     
     }
     
     
 
-    public VariableStateDesc(String variableId, String variableInstanceId, String oldValue, String newValue, String domainName, int sessionId, long processInstanceId) {
+    public VariableStateDesc(String variableId, String variableInstanceId, String oldValue, String newValue, int sessionId, long processInstanceId, Date date) {
         this.variableId = variableId;
         this.variableInstanceId = variableInstanceId;
         this.oldValue = oldValue;
         this.newValue = newValue;
         this.sessionId = sessionId;
         this.processInstanceId = processInstanceId;
-        this.domainName = domainName;
-        this.dataTimeStamp = new Date();
+        this.dataTimeStamp = date;
     }
 
    
@@ -91,13 +82,9 @@ public class VariableStateDesc implements Serializable{
         return dataTimeStamp;
     }
 
-    public String getDomainName() {
-        return domainName;
-    }
-
     @Override
     public String toString() {
-        return "VariableStateDesc["+dataTimeStamp.toString()+"]{" + "pk=" + pk + ", variableId=" + variableId + ", variableInstanceId=" + variableInstanceId + ", oldValue=" + oldValue + ", newValue=" + newValue + ", domainName=" + domainName + ", sessionId=" + sessionId + ", processInstanceId=" + processInstanceId + '}';
+        return "VariableStateDesc["+dataTimeStamp.toString()+"]{variableId=" + variableId + ", variableInstanceId=" + variableInstanceId + ", oldValue=" + oldValue + ", newValue=" + newValue + ", sessionId=" + sessionId + ", processInstanceId=" + processInstanceId + '}';
     }
     
     

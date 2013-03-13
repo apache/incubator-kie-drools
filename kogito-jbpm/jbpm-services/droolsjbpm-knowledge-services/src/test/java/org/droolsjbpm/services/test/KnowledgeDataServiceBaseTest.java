@@ -145,14 +145,14 @@ public abstract class KnowledgeDataServiceBaseTest {
         
         assertNotNull(startNode);
         assertEquals("StartProcess", startNode.getName());
-        assertEquals("StartEvent_1", startNode.getNodeUniqueId());
+        assertEquals("StartEvent_1", startNode.getNodeId());
         assertEquals(null, startNode.getConnection());
         
         startNode = executedNodes.get(1);
         
         assertNotNull(startNode);
         assertEquals("StartProcess", startNode.getName());
-        assertEquals("StartEvent_1", startNode.getNodeUniqueId());
+        assertEquals("StartEvent_1", startNode.getNodeId());
         assertNotNull(startNode.getConnection());
         assertEquals("StartEvent_1-IntermediateCatchEvent_1", startNode.getConnection());
         
@@ -169,14 +169,14 @@ public abstract class KnowledgeDataServiceBaseTest {
         
         assertNotNull(startNode);
         assertEquals("StartProcess", startNode.getName());
-        assertEquals("StartEvent_1", startNode.getNodeUniqueId());
+        assertEquals("StartEvent_1", startNode.getNodeId());
         assertEquals(null, startNode.getConnection());
         
         startNode = completed.get(1);
         
         assertNotNull(startNode);
         assertEquals("StartProcess", startNode.getName());
-        assertEquals("StartEvent_1", startNode.getNodeUniqueId());
+        assertEquals("StartEvent_1", startNode.getNodeId());
         assertNotNull(startNode.getConnection());
         assertEquals("StartEvent_1-IntermediateCatchEvent_1", startNode.getConnection());
         
@@ -185,7 +185,7 @@ public abstract class KnowledgeDataServiceBaseTest {
         
         assertNotNull(signalNode);
         assertEquals("Catch", signalNode.getName());
-        assertEquals("IntermediateCatchEvent_1", signalNode.getNodeUniqueId());
+        assertEquals("IntermediateCatchEvent_1", signalNode.getNodeId());
         assertNotNull(signalNode.getConnection());
         assertEquals("StartEvent_1-IntermediateCatchEvent_1", signalNode.getConnection());
         
@@ -193,43 +193,43 @@ public abstract class KnowledgeDataServiceBaseTest {
         
         assertNotNull(signalNode);
         assertEquals("Catch", signalNode.getName());
-        assertEquals("IntermediateCatchEvent_1", signalNode.getNodeUniqueId());
+        assertEquals("IntermediateCatchEvent_1", signalNode.getNodeId());
         assertNotNull(signalNode.getConnection());
         assertEquals("IntermediateCatchEvent_1-ScriptTask_1", signalNode.getConnection());
         
         
         //script
-        NodeInstanceDesc scriptNode = completed.get(6);
+        NodeInstanceDesc scriptNode = completed.get(4);
         
         assertNotNull(scriptNode);
         assertEquals("Script Task", scriptNode.getName());
-        assertEquals("ScriptTask_1", scriptNode.getNodeUniqueId());
+        assertEquals("ScriptTask_1", scriptNode.getNodeId());
         assertNotNull(scriptNode.getConnection());
         assertEquals("IntermediateCatchEvent_1-ScriptTask_1", scriptNode.getConnection());
         
-        scriptNode = completed.get(7);
+        scriptNode = completed.get(5);
         
         assertNotNull(scriptNode);
         assertEquals("Script Task", scriptNode.getName());
-        assertEquals("ScriptTask_1", scriptNode.getNodeUniqueId());
+        assertEquals("ScriptTask_1", scriptNode.getNodeId());
         assertNotNull(scriptNode.getConnection());
         assertEquals("ScriptTask_1-EndEvent_1", scriptNode.getConnection());
         
         
         //end
-        NodeInstanceDesc endNode = completed.get(4);
+        NodeInstanceDesc endNode = completed.get(6);
         
         assertNotNull(endNode);
         assertEquals("EndProcess", endNode.getName());
-        assertEquals("EndEvent_1", endNode.getNodeUniqueId());
+        assertEquals("EndEvent_1", endNode.getNodeId());
         assertNotNull(endNode.getConnection());
         assertEquals("ScriptTask_1-EndEvent_1", endNode.getConnection());
         
-        endNode = completed.get(5);
+        endNode = completed.get(7);
         
         assertNotNull(endNode);
         assertEquals("EndProcess", endNode.getName());
-        assertEquals("EndEvent_1", endNode.getNodeUniqueId());
+        assertEquals("EndEvent_1", endNode.getNodeId());
         assertNull(endNode.getConnection());
        
         
@@ -250,7 +250,7 @@ public abstract class KnowledgeDataServiceBaseTest {
         
         assertNotNull(signalNode);
         assertEquals("Catch", signalNode.getName());
-        assertEquals("IntermediateCatchEvent_1", signalNode.getNodeUniqueId());
+        assertEquals("IntermediateCatchEvent_1", signalNode.getNodeId());
         assertNotNull(signalNode.getConnection());
         assertEquals("StartEvent_1-IntermediateCatchEvent_1", signalNode.getConnection());
         

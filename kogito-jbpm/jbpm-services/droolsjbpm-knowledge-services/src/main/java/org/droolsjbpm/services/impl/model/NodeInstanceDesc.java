@@ -22,62 +22,39 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 
-/**
- *
- * @author salaboy
- */
-@Entity
 public class NodeInstanceDesc implements Serializable{
-    @Id
-    @GeneratedValue()
-    private long pk;
     
     private long id;
-    private long nodeId;
-    private String nodeUniqueId;
+    private String nodeId;
     private String name;
-    private String domainName;
     private int sessionId;
     private long processInstanceId;
-    private String type;
-    private boolean completed;
+    private String nodeType;
     private String connection;
+    private int type;
     
-    
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataTimeStamp;
 
     public NodeInstanceDesc() {
-        this.dataTimeStamp = new Date();
     }
 
-    public NodeInstanceDesc(long id, long nodeId, String name, String uniqueId, String type, 
-                            String domainName, int sessionId, long processInstanceId, String connection){
-        this(id, nodeId, name, uniqueId,  type, domainName, sessionId, processInstanceId, connection, false);
-        
-    } 
-    public NodeInstanceDesc(long id, long nodeId, String name, String uniqueId, String type,
-                            String domainName, int sessionId, long processInstanceId, String connection, 
-                            boolean completed) {
-        this.id = id;
-        this.nodeId = nodeId;
+
+    public NodeInstanceDesc(String id, String nodeId, String name, String nodeType,
+                            int sessionId, long processInstanceId, Date date, 
+                            String connection, int type) {
+        this.id = Long.parseLong(id);
         this.name = name;
-        this.nodeUniqueId = uniqueId;
-        this.type = type;
+        this.nodeId = nodeId;
+        this.nodeType = nodeType;
         this.sessionId = sessionId;
         this.processInstanceId = processInstanceId;
-        this.domainName = domainName;
-        this.completed = completed;
-        this.dataTimeStamp = new Date();
+        this.dataTimeStamp = date;
         this.connection = connection;
+        this.type = type;
     }
 
     public long getId() {
         return id;
-    }
-
-    public long getNodeId() {
-        return nodeId;
     }
 
     public String getName() {
@@ -96,33 +73,26 @@ public class NodeInstanceDesc implements Serializable{
         return dataTimeStamp;
     }
 
-    public String getDomainName() {
-        return domainName;
+    public String getNodeType() {
+        return nodeType;
     }
 
-    public String getType() {
-        return type;
+    public String getNodeId() {
+        return nodeId;
     }
 
-    public String getNodeUniqueId() {
-        return nodeUniqueId;
-    }
-
-    public void setNodeUniqueId(String nodeUniqueId) {
-        this.nodeUniqueId = nodeUniqueId;
+    public void setNodeId(String nodeUniqueId) {
+        this.nodeId = nodeUniqueId;
     }
 
     public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+        return (this.type==1);
     }
     
     @Override
     public String toString() {
-        return "NodeInstanceDesc{" + "pk=" + pk + ", id=" + id + ", nodeId=" + nodeId + ", nodeUniqueId=" + nodeUniqueId + ", name=" + name + ", domainName=" + domainName + ", sessionId=" + sessionId + ", processInstanceId=" + processInstanceId + ", type=" + type + ", completed=" + completed + ", dataTimeStamp=" + dataTimeStamp + '}';
+        return "NodeInstanceDesc{" + "id=" + id + ", nodeId=" + nodeId + ", nodeUniqueId=" + nodeId + ", name=" + name + ", sessionId=" + sessionId + ", processInstanceId="
+                + processInstanceId + ", type=" + nodeType + ", completed=" + isCompleted() + ", dataTimeStamp=" + dataTimeStamp + '}';
     }
 
     public String getConnection() {

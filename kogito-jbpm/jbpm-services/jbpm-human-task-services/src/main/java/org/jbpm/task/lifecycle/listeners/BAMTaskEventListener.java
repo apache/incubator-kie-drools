@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.droolsjbpm.services.impl.event.listeners;
+package org.jbpm.task.lifecycle.listeners;
 
 import java.util.Date;
 import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
-import org.droolsjbpm.services.impl.model.BAMProcessSummary;
-import org.droolsjbpm.services.impl.model.BAMTaskSummary;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Task;
@@ -35,21 +36,16 @@ import org.jbpm.task.events.AfterTaskExitedEvent;
 import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.AfterTaskStartedEvent;
 import org.jbpm.task.events.AfterTaskStoppedEvent;
-import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.jbpm.task.impl.model.BAMTaskSummary;
 
-/**
- *
- * @author salaboy
- */
-@Singleton
+@ApplicationScoped
 @Transactional
-@BAM
-public class CDIBAMTaskEventListener implements TaskLifeCycleEventListener {
+public class BAMTaskEventListener implements TaskLifeCycleEventListener {
 
     @Inject
     private JbpmServicesPersistenceManager pm;
 
-    public CDIBAMTaskEventListener() {
+    public BAMTaskEventListener() {
     }
 
     public void afterTaskStartedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStartedEvent Task ti) {
