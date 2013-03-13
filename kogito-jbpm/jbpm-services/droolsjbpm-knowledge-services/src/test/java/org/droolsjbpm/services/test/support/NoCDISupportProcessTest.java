@@ -111,15 +111,13 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
           // Task Service Start up
         
         HumanTaskServiceFactory.setEntityManagerFactory(emf);
-        HumanTaskServiceFactory.setJbpmServicesPersistenceManager(pm);
         
         HumanTaskServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
-        taskService = HumanTaskServiceFactory.getService();
+        taskService = HumanTaskServiceFactory.newTaskService();
 
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
         
-        HumanTaskServiceFactory.addTaskEventListener(externalTaskEventListener);
         
         
         // Session Manager Start up

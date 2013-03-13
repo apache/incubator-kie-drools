@@ -74,15 +74,15 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
         // Task Service Start up
         
         HumanTaskServiceFactory.setEntityManagerFactory(emf);
-        HumanTaskServiceFactory.setJbpmServicesPersistenceManager(pm);
+       
         JbpmServicesTransactionManager jbpmJTATransactionManager = new JbpmJTATransactionManager();
         HumanTaskServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
-        taskService = HumanTaskServiceFactory.getService();
+        taskService = HumanTaskServiceFactory.newTaskService();
 
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
         
-        HumanTaskServiceFactory.addTaskEventListener(externalTaskEventListener);
+      
        
         
      
@@ -134,7 +134,6 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
     public void tearDown() throws Exception {
         int removedTasks = taskService.removeAllTasks();
         int removedLogs = adminDataService.removeAllData();
-        HumanTaskServiceFactory.dispose();
         SessionManagerModule.dispose();
         emf.close();
         System.out.println(" --> Removed Tasks = "+removedTasks + " - ");

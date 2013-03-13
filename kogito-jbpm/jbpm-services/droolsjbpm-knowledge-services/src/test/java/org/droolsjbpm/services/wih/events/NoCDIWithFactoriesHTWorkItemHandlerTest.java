@@ -71,15 +71,13 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
         // Task Service Start up
         
         HumanTaskServiceFactory.setEntityManagerFactory(emf);
-        HumanTaskServiceFactory.setJbpmServicesPersistenceManager(pm);
+        
         JbpmServicesTransactionManager jbpmJTATransactionManager = new JbpmJTATransactionManager();
         HumanTaskServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
-        taskService = HumanTaskServiceFactory.getService();
+        taskService = HumanTaskServiceFactory.newTaskService();
 
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
-        
-        HumanTaskServiceFactory.addTaskEventListener(externalTaskEventListener);
         
         
         // Session Manager Start up
@@ -108,7 +106,6 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
     @After
     public void tearDown() throws Exception {
         int removeAllTasks = taskService.removeAllTasks();
-        HumanTaskServiceFactory.dispose();
         SessionManagerModule.dispose();
         emf.close();
         ds.close();
