@@ -16,7 +16,6 @@
 
 package org.jbpm.process.audit;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.naming.InitialContext;
@@ -30,13 +29,16 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.drools.WorkingMemory;
-import org.drools.audit.event.LogEvent;
-import org.drools.audit.event.RuleFlowLogEvent;
-import org.drools.audit.event.RuleFlowNodeLogEvent;
-import org.drools.audit.event.RuleFlowVariableLogEvent;
-import org.jbpm.process.audit.event.ExtendedRuleFlowLogEvent;
-import org.kie.event.KnowledgeRuntimeEventManager;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.runtime.process.InternalProcessRuntime;
+import org.kie.event.process.ProcessCompletedEvent;
+import org.kie.event.process.ProcessEventListener;
+import org.kie.event.process.ProcessNodeLeftEvent;
+import org.kie.event.process.ProcessNodeTriggeredEvent;
+import org.kie.event.process.ProcessStartedEvent;
+import org.kie.event.process.ProcessVariableChangedEvent;
 import org.kie.runtime.EnvironmentName;
+import org.kie.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,94 +55,102 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
     
     private boolean isJTA = true;
     private boolean sharedEM = false;
+    
+    private EntityManagerFactory emf;
 
+    /*
+     * for backward compatibility
+     */
     public JPAWorkingMemoryDbLogger(WorkingMemory workingMemory) {
         super(workingMemory);
+        InternalProcessRuntime processRuntime = ((InternalWorkingMemory) workingMemory).getProcessRuntime();
+        if (processRuntime != null) {
+            processRuntime.addEventListener( (ProcessEventListener) this );
+        }
     }
     
-    public JPAWorkingMemoryDbLogger(KnowledgeRuntimeEventManager session) {
+    public JPAWorkingMemoryDbLogger(KieSession session) {
     	super(session);
         Boolean bool = (Boolean) env.get("IS_JTA_TRANSACTION");
         if (bool != null) {
         	isJTA = bool.booleanValue();
         }
+        session.addEventListener(this);
+    }
+    /*
+     * end of backward compatibility
+     */
+
+    public JPAWorkingMemoryDbLogger(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 
-    public void logEventCreated(LogEvent logEvent) {
-        switch (logEvent.getType()) {
-            case LogEvent.BEFORE_RULEFLOW_CREATED:
-                RuleFlowLogEvent processEvent = (RuleFlowLogEvent) logEvent;
-                addProcessLog(processEvent);
-                break;
-            case LogEvent.AFTER_RULEFLOW_COMPLETED:
-            	processEvent = (RuleFlowLogEvent) logEvent;
-                updateProcessLog(processEvent);
-                break;
-            case LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED:
-            	RuleFlowNodeLogEvent nodeEvent = (RuleFlowNodeLogEvent) logEvent;
-            	addNodeEnterLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId(), nodeEvent.getNodeName());
-                break;
-            case LogEvent.BEFORE_RULEFLOW_NODE_EXITED:
-            	nodeEvent = (RuleFlowNodeLogEvent) logEvent;
-            	addNodeExitLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId(), nodeEvent.getNodeName());
-                break;
-            case LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED:
-            	RuleFlowVariableLogEvent variableEvent = (RuleFlowVariableLogEvent) logEvent;
-            	addVariableLog(variableEvent.getProcessInstanceId(), variableEvent.getProcessId(), variableEvent.getVariableInstanceId(), variableEvent.getVariableId(), variableEvent.getObjectToString());
-                break;
-            default:
-                // ignore all other events
-        }
-    }
-
-    protected void addProcessLog(RuleFlowLogEvent processEvent) {
-        ProcessInstanceLog log = new ProcessInstanceLog(processEvent.getProcessInstanceId(), processEvent.getProcessId());
-        if (processEvent instanceof ExtendedRuleFlowLogEvent) {
-            log.setParentProcessInstanceId(((ExtendedRuleFlowLogEvent) processEvent).getParentProcessInstanceId());
-        }
+    @Override
+    public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+        NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event);
         persist(log);
     }
 
-    @SuppressWarnings("unchecked")
-    protected void updateProcessLog(RuleFlowLogEvent processEvent) {
-    	 EntityManager em = getEntityManager();
-         UserTransaction ut = joinTransaction(em);
-         List<ProcessInstanceLog> result = em.createQuery(
-         "from ProcessInstanceLog as log where log.processInstanceId = ? and log.end is null")
-             .setParameter(1, processEvent.getProcessInstanceId()).getResultList();
-         
-         if (result != null && result.size() != 0) {
-            ProcessInstanceLog log = result.get(result.size() - 1);
-            log.setEnd(new Date());
-            if (processEvent instanceof ExtendedRuleFlowLogEvent) {
-                log.setStatus(((ExtendedRuleFlowLogEvent) processEvent).getProcessInstanceState());
-                log.setOutcome(((ExtendedRuleFlowLogEvent) processEvent).getOutcome());
-            }
-            
-            em.merge(log);   
+    @Override
+    public void afterNodeLeft(ProcessNodeLeftEvent event) {
+        NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event, null);
+        persist(log);   
+    }
+
+    @Override
+    public void afterVariableChanged(ProcessVariableChangedEvent event) {
+        VariableInstanceLog log = (VariableInstanceLog) builder.buildEvent(event);
+        persist(log);   
+    }
+
+    @Override
+    public void beforeProcessStarted(ProcessStartedEvent event) {
+        ProcessInstanceLog log = (ProcessInstanceLog) builder.buildEvent(event);
+        persist(log);
+        
+    }
+
+    @Override
+    public void afterProcessCompleted(ProcessCompletedEvent event) {
+        long processInstanceId = event.getProcessInstance().getId();
+        EntityManager em = getEntityManager();
+        UserTransaction ut = joinTransaction(em);
+        List<ProcessInstanceLog> result = em.createQuery(
+        "from ProcessInstanceLog as log where log.processInstanceId = ? and log.end is null")
+            .setParameter(1, processInstanceId).getResultList();
+        
+        if (result != null && result.size() != 0) {
+           ProcessInstanceLog log = result.get(result.size() - 1);
+           
+           log = (ProcessInstanceLog) builder.buildEvent(event, log);
+           em.merge(log);   
         }
         if (!sharedEM) {
-        	flush(em, ut);
+            flush(em, ut);
         }
     }
-
-    protected void addNodeEnterLog(long processInstanceId, String processId, String nodeInstanceId, String nodeId, String nodeName) {
-        NodeInstanceLog log = new NodeInstanceLog(
-    		NodeInstanceLog.TYPE_ENTER, processInstanceId, processId, nodeInstanceId, nodeId, nodeName);
-    	persist(log);
+    
+    @Override
+    public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+        
     }
 
-    protected void addNodeExitLog(long processInstanceId,
-            String processId, String nodeInstanceId, String nodeId, String nodeName) {
-        NodeInstanceLog log = new NodeInstanceLog(
-            NodeInstanceLog.TYPE_EXIT, processInstanceId, processId, nodeInstanceId, nodeId, nodeName);
-    	persist(log);
+    @Override
+    public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+
+        
+    }
+    @Override
+    public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+        
+    }
+    @Override
+    public void afterProcessStarted(ProcessStartedEvent event) {
+        
     }
 
-    protected void addVariableLog(long processInstanceId, String processId, String variableInstanceId, String variableId, String objectToString) {
-    	VariableInstanceLog log = new VariableInstanceLog(
-    		processInstanceId, processId, variableInstanceId, variableId, objectToString);
-    	persist(log);
+    @Override
+    public void beforeProcessCompleted(ProcessCompletedEvent event) {
     }
 
     public void dispose() {
@@ -150,14 +160,18 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
      * This method creates a entity manager. 
      */
     private EntityManager getEntityManager() {
-    	EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
-    	if (em != null) {
-    		sharedEM = true;
-    		return em;
-    	}
-        EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-        if (emf != null) {
-        	return emf.createEntityManager();
+        if (env != null) {
+            EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        	if (em != null) {
+        		sharedEM = true;
+        		return em;
+        	}
+            EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+            if (emf != null) {
+            	return emf.createEntityManager();
+            }
+        } else {
+            return emf.createEntityManager();
         }
         throw new RuntimeException("Could not find EntityManager, both command-scoped EM and EMF in environment are null");
     }
@@ -269,4 +283,5 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
         	return null;
         }
     }
+
 }

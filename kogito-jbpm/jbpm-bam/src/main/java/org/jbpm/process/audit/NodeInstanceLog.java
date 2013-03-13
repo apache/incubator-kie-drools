@@ -28,9 +28,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.jbpm.process.audit.event.AuditEvent;
+
 @Entity
 @SequenceGenerator(name="nodeInstanceLogIdSeq", sequenceName="NODE_INST_LOG_ID_SEQ", allocationSize=1)
-public class NodeInstanceLog implements Serializable {
+public class NodeInstanceLog implements Serializable, AuditEvent {
     
 	public static final int TYPE_ENTER = 0;
 	public static final int TYPE_EXIT = 1;
@@ -50,6 +52,11 @@ public class NodeInstanceLog implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "log_date")
     private Date date;
+    
+    private String nodeType;
+    private Long workItemId;    
+    private String connection;
+    private Integer sessionId;
     
     NodeInstanceLog() {
     }
@@ -147,6 +154,14 @@ public class NodeInstanceLog implements Serializable {
 				+ ((processId == null) ? 0 : processId.hashCode());
 		result = prime * result	+ (int) processInstanceId;
 		result = prime * result + type;
+		result = prime * result
+                + ((nodeType == null) ? 0 : nodeType.hashCode());
+		result = prime * result
+                + ((workItemId == null) ? 0 : workItemId.hashCode());
+		result = prime * result
+                + ((connection == null) ? 0 : connection.hashCode());
+		result = prime * result
+                + ((sessionId == null) ? 0 : sessionId.hashCode());
 		return result;
 	}
 
@@ -185,7 +200,63 @@ public class NodeInstanceLog implements Serializable {
 			return false;
 		if (type != other.type)
 			return false;
+		
+		if (nodeType == null) {
+            if (other.nodeType != null)
+                return false;
+        } else if (!nodeType.equals(other.nodeType))
+            return false;
+		
+		if (workItemId == null) {
+            if (other.workItemId != null)
+                return false;
+        } else if (!workItemId.equals(other.workItemId))
+            return false;
+		
+		if (connection == null) {
+            if (other.connection != null)
+                return false;
+        } else if (!connection.equals(other.connection))
+            return false;
+		
+		if (sessionId == null) {
+            if (other.sessionId != null)
+                return false;
+        } else if (!sessionId.equals(other.sessionId))
+            return false;
 		return true;
 	}
+
+    public Long getWorkItemId() {
+        return workItemId;
+    }
+
+    public void setWorkItemId(Long workItemId) {
+        this.workItemId = workItemId;
+    }
+
+    public String getConnection() {
+        return connection;
+    }
+
+    public void setConnection(String connection) {
+        this.connection = connection;
+    }
+
+    public int getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(int sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
   	
 }

@@ -9,6 +9,7 @@ import javax.naming.NamingException;
 
 import org.jbpm.process.audit.jms.AsyncAuditLogProducer;
 import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.runtime.KieSession;
 
 /**
  * Factory for producing support audit loggers. Currently two types are available:
@@ -47,7 +48,7 @@ public class AuditLoggerFactory {
      * @param properties - optional properties for the type of logger to initialize it
      * @return new instance of AbstractAuditLogger
      */
-    public static AbstractAuditLogger newInstance(Type type, KnowledgeRuntimeEventManager ksession, Map<String, Object> properties) {
+    public static AbstractAuditLogger newInstance(Type type, KieSession ksession, Map<String, Object> properties) {
         AbstractAuditLogger logger = null;
         switch (type) {
             case JPA:

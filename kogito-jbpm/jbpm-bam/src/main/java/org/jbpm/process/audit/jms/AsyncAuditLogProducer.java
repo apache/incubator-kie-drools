@@ -1,8 +1,5 @@
 package org.jbpm.process.audit.jms;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -11,10 +8,16 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.drools.WorkingMemory;
-import org.drools.audit.event.LogEvent;
 import org.jbpm.process.audit.AbstractAuditLogger;
-import org.kie.event.KnowledgeRuntimeEventManager;
+import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.audit.VariableInstanceLog;
+import org.kie.event.process.ProcessCompletedEvent;
+import org.kie.event.process.ProcessNodeLeftEvent;
+import org.kie.event.process.ProcessNodeTriggeredEvent;
+import org.kie.event.process.ProcessStartedEvent;
+import org.kie.event.process.ProcessVariableChangedEvent;
+import org.kie.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +31,8 @@ import com.thoughtworks.xstream.XStream;
  *  <li>Queue - JMS destination where messages should be placed</li>
  * </ul>
  * 
- * It sends TextMessages with content of RuleFlowEvent serialized by Xstream. 
+ * It sends TextMessages with content of *Log classes (ProcessInstanceLog,
+ * NodeInstanceLog, VaraiableInstanceLog) serialized by Xstream. 
  * Such serialization allows:
  * <ul>
  *  <li>use of message selectors to filter which types of events should be processed by different consumer</li>
@@ -41,25 +45,16 @@ import com.thoughtworks.xstream.XStream;
 public class AsyncAuditLogProducer extends AbstractAuditLogger {
     
     private static Logger logger = LoggerFactory.getLogger(AsyncAuditLogProducer.class);
-    
-    private static final List<Integer> SUPPORTED_EVENTS = Arrays.asList(new Integer[]{LogEvent.BEFORE_RULEFLOW_CREATED,
-                                                    LogEvent.AFTER_RULEFLOW_COMPLETED,
-                                                    LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED,
-                                                    LogEvent.BEFORE_RULEFLOW_NODE_EXITED,
-                                                    LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED}); 
 
     private ConnectionFactory connectionFactory;    
     private Queue queue;
     private boolean transacted = true;
-    
-    public AsyncAuditLogProducer(WorkingMemory workingMemory, boolean transacted) {
-        super(workingMemory);
-        this.transacted = transacted;
-    }
 
-    public AsyncAuditLogProducer(KnowledgeRuntimeEventManager session, boolean transacted) {
+
+    public AsyncAuditLogProducer(KieSession session, boolean transacted) {
         super(session);
         this.transacted = transacted;
+        session.addEventListener(this);
     }
 
     public ConnectionFactory getConnectionFactory() {
@@ -77,16 +72,62 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
     public void setQueue(Queue queue) {
         this.queue = queue;
     }
+    
+    @Override
+    public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+        NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event);
+        sendMessage(log, BEFORE_NODE_ENTER_EVENT_TYPE);
+    }
 
     @Override
-    public void logEventCreated(LogEvent logEvent) {
-        if (SUPPORTED_EVENTS.contains(logEvent.getType())) {
-            sendMessage(logEvent);
-        }
+    public void afterNodeLeft(ProcessNodeLeftEvent event) {
+        NodeInstanceLog log = (NodeInstanceLog) builder.buildEvent(event, null);
+        sendMessage(log, AFTER_NODE_LEFT_EVENT_TYPE);   
+    }
+
+    @Override
+    public void afterVariableChanged(ProcessVariableChangedEvent event) {
+        VariableInstanceLog log = (VariableInstanceLog) builder.buildEvent(event);
+        sendMessage(log, AFTER_VAR_CHANGE_EVENT_TYPE);   
+    }
+
+    @Override
+    public void beforeProcessStarted(ProcessStartedEvent event) {
+        ProcessInstanceLog log = (ProcessInstanceLog) builder.buildEvent(event);
+        sendMessage(log, BEFORE_START_EVENT_TYPE);
         
     }
+
+    @Override
+    public void afterProcessCompleted(ProcessCompletedEvent event) {
+        ProcessInstanceLog log = (ProcessInstanceLog) builder.buildEvent(event, null);
+        sendMessage(log, AFTER_COMPLETE_EVENT_TYPE);
+    }
     
-    protected void sendMessage(Object messageContent) {
+    @Override
+    public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+        
+    }
+
+    @Override
+    public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+
+        
+    }
+    @Override
+    public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+        
+    }
+    @Override
+    public void afterProcessStarted(ProcessStartedEvent event) {
+        
+    }
+
+    @Override
+    public void beforeProcessCompleted(ProcessCompletedEvent event) {
+    }
+    
+    protected void sendMessage(Object messageContent, Integer eventType) {
         if (connectionFactory == null && queue == null) {
             throw new IllegalStateException("ConnectionFactory and Queue cannot be null");
         }
@@ -100,7 +141,7 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
             XStream xstream = new XStream();
             String eventXml = xstream.toXML(messageContent);
             TextMessage message = queueSession.createTextMessage(eventXml);
-            
+            message.setIntProperty("EventType", eventType);
             producer = queueSession.createProducer(queue);            
             producer.send(message);
         } catch (Exception e) {

@@ -28,9 +28,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.jbpm.process.audit.event.AuditEvent;
+
 @Entity
 @SequenceGenerator(name="processInstanceLogIdSeq", sequenceName="PROC_INST_LOG_ID_SEQ", allocationSize=1)
-public class ProcessInstanceLog implements Serializable {
+public class ProcessInstanceLog implements Serializable, AuditEvent {
     
 	private static final long serialVersionUID = 510l;
 	
@@ -48,11 +50,16 @@ public class ProcessInstanceLog implements Serializable {
     private Date end;
     
     @Column(nullable=true)
-    private int status;
+    private Integer status;
     @Column(nullable=true)
-    private long parentProcessInstanceId;
+    private Long parentProcessInstanceId;
     @Column(nullable=true)
-    private String outcome;
+    private String outcome;    
+    private Long duration;    
+    private String identity;    
+    private Integer sessionId;
+    private String processVersion;
+    private String processName;
     
     ProcessInstanceLog() {
     }
@@ -117,9 +124,14 @@ public class ProcessInstanceLog implements Serializable {
 				+ ((processId == null) ? 0 : processId.hashCode());
 		result = prime * result	+ (int) processInstanceId;
 		result = prime * result + ((start == null) ? 0 : start.hashCode());
-		result = prime * result   + (int) parentProcessInstanceId;
-		result = prime * result +  status;
+		result = prime * result   + ((parentProcessInstanceId == null) ? 0 : parentProcessInstanceId.hashCode());
+		result = prime * result +  ((status == null) ? 0 : status.hashCode());
 		result = prime * result + ((outcome == null) ? 0 : outcome.hashCode());
+		result = prime * result + ((duration == null) ? 0 : duration.hashCode());
+		result = prime * result + ((identity == null) ? 0 : identity.hashCode());
+		result = prime * result + ((sessionId == null) ? 0 : sessionId.hashCode());
+		result = prime * result + ((processVersion == null) ? 0 : processVersion.hashCode());
+		result = prime * result + ((processName == null) ? 0 : processName.hashCode());
 		return result;
 	}
 
@@ -152,9 +164,16 @@ public class ProcessInstanceLog implements Serializable {
 		} else if (!start.equals(other.start))
 			return false;
 		
-		if (parentProcessInstanceId != other.parentProcessInstanceId)
+		if (parentProcessInstanceId == null) {
+            if (other.parentProcessInstanceId != null)
+                return false;
+        } else if (!parentProcessInstanceId.equals(other.parentProcessInstanceId))
             return false;
-		if (status != other.status)
+		
+		if (status == null) {
+            if (other.status != null)
+                return false;
+        } else if (!status.equals(other.status))
             return false;
 		
 		if (outcome == null) {
@@ -162,6 +181,36 @@ public class ProcessInstanceLog implements Serializable {
                 return false;
         } else if (!outcome.equals(other.outcome))
             return false;
+		
+        if (duration == null) {
+            if (other.duration != null)
+                return false;
+        } else if (!duration.equals(other.duration))
+            return false;	
+        
+        if (identity == null) {
+            if (other.identity != null)
+                return false;
+        } else if (!identity.equals(other.identity))
+            return false;  
+        
+        if (sessionId == null) {
+            if (other.sessionId != null)
+                return false;
+        } else if (!sessionId.equals(other.sessionId))
+            return false;
+        
+        if (processVersion == null) {
+            if (other.processVersion != null)
+                return false;
+        } else if (!processVersion.equals(other.processVersion))
+            return false;
+        
+        if (processName == null) {
+            if (other.processName != null)
+                return false;
+        } else if (!processName.equals(other.processName))
+            return false; 
 		return true;
 	}
 
@@ -187,5 +236,45 @@ public class ProcessInstanceLog implements Serializable {
 
 	public void setOutcome(String errorCode) {
         this.outcome = errorCode;
+    }
+
+    public Long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
+    public Integer getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Integer sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getProcessVersion() {
+        return processVersion;
+    }
+
+    public void setProcessVersion(String version) {
+        this.processVersion = version;
+    }
+
+    public String getProcessName() {
+        return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
     }
 }

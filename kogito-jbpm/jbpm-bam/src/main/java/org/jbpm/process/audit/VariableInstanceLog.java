@@ -28,9 +28,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.jbpm.process.audit.event.AuditEvent;
+
 @Entity
 @SequenceGenerator(name="variableInstanceLogIdSeq", sequenceName="VAR_INST_LOG_ID_SEQ", allocationSize=1)
-public class VariableInstanceLog implements Serializable {
+public class VariableInstanceLog implements Serializable, AuditEvent {
     
 	private static final long serialVersionUID = 510l;
 	
@@ -43,20 +45,23 @@ public class VariableInstanceLog implements Serializable {
     private String variableInstanceId;
     private String variableId;
     private String value;
+    private String oldValue;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "log_date")
     private Date date;
+    private Integer sessionId;
     
     VariableInstanceLog() {
     }
     
 	public VariableInstanceLog(long processInstanceId, String processId,
-			               	   String variableInstanceId, String variableId, String value) {
+			               	   String variableInstanceId, String variableId, String value, String oldValue) {
         this.processInstanceId = processInstanceId;
         this.processId = processId;
 		this.variableInstanceId = variableInstanceId;
 		this.variableId = variableId;
 		setValue(value);
+		setOldValue(oldValue);
         this.date = new Date();
     }
 	
@@ -110,6 +115,17 @@ public class VariableInstanceLog implements Serializable {
 		}
 		this.value = value;
 	}
+	
+    public String getOldValue() {
+        return oldValue;
+    }
+
+    public void setOldValue(String oldValue) {
+        if (oldValue != null && oldValue.length() > 255) {
+            oldValue = oldValue.substring(0, 255);
+        }
+        this.oldValue = oldValue;
+    }
 
 	public Date getDate() {
         return date;
@@ -118,6 +134,14 @@ public class VariableInstanceLog implements Serializable {
 	void setDate(Date date) {
 		this.date = date;
 	}
+	
+    public Integer getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Integer sessionId) {
+        this.sessionId = sessionId;
+    }
 
     public String toString() {
         return "Change variable '" + 
@@ -130,16 +154,13 @@ public class VariableInstanceLog implements Serializable {
 		int result = 1;
 		result = prime * result + ((date == null) ? 0 : date.hashCode());
 		result = prime * result + (int) id;
-		result = prime * result
-				+ ((processId == null) ? 0 : processId.hashCode());
+		result = prime * result + ((processId == null) ? 0 : processId.hashCode());
 		result = prime * result + (int) processInstanceId;
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		result = prime * result
-				+ ((variableId == null) ? 0 : variableId.hashCode());
-		result = prime
-				* result
-				+ ((variableInstanceId == null) ? 0 : variableInstanceId
-						.hashCode());
+		result = prime * result + ((oldValue == null) ? 0 : oldValue.hashCode());
+		result = prime * result + ((variableId == null) ? 0 : variableId.hashCode());
+		result = prime * result + ((variableInstanceId == null) ? 0 : variableInstanceId.hashCode());
+		result = prime * result + ((sessionId == null) ? 0 : sessionId.hashCode());
 		return result;
 	}
 
@@ -171,6 +192,11 @@ public class VariableInstanceLog implements Serializable {
 				return false;
 		} else if (!value.equals(other.value))
 			return false;
+		if (oldValue == null) {
+            if (other.oldValue != null)
+                return false;
+        } else if (!oldValue.equals(other.oldValue))
+            return false;
 		if (variableId == null) {
 			if (other.variableId != null)
 				return false;
@@ -181,6 +207,13 @@ public class VariableInstanceLog implements Serializable {
 				return false;
 		} else if (!variableInstanceId.equals(other.variableInstanceId))
 			return false;
+		if (sessionId == null) {
+            if (other.sessionId != null)
+                return false;
+        } else if (!sessionId.equals(other.sessionId))
+            return false;
 		return true;
 	}
+	
+
 }

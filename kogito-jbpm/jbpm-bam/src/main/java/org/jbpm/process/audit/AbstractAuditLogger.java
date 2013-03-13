@@ -1,28 +1,39 @@
 package org.jbpm.process.audit;
 
 import org.drools.WorkingMemory;
-import org.drools.audit.WorkingMemoryLogger;
-import org.drools.audit.event.LogEvent;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
-import org.jbpm.process.audit.event.ExtendedRuleFlowLogEvent;
-import org.jbpm.process.instance.impl.ProcessInstanceImpl;
-import org.kie.event.KnowledgeRuntimeEventManager;
-import org.kie.event.process.ProcessCompletedEvent;
-import org.kie.event.process.ProcessStartedEvent;
+import org.jbpm.process.audit.event.AuditEventBuilder;
+import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
+import org.kie.event.process.ProcessEventListener;
 import org.kie.runtime.Environment;
+import org.kie.runtime.KieSession;
 import org.kie.runtime.KnowledgeRuntime;
 
-public abstract class AbstractAuditLogger extends WorkingMemoryLogger {
+public abstract class AbstractAuditLogger implements ProcessEventListener {
+    
+    public static final int BEFORE_START_EVENT_TYPE = 0;
+    public static final int AFTER_START_EVENT_TYPE = 1;
+    public static final int BEFORE_COMPLETE_EVENT_TYPE = 2;
+    public static final int AFTER_COMPLETE_EVENT_TYPE = 3;
+    public static final int BEFORE_NODE_ENTER_EVENT_TYPE = 4;
+    public static final int AFTER_NODE_ENTER_EVENT_TYPE = 5;
+    public static final int BEFORE_NODE_LEFT_EVENT_TYPE = 6;
+    public static final int AFTER_NODE_LEFT_EVENT_TYPE = 7;
+    public static final int BEFORE_VAR_CHANGE_EVENT_TYPE = 8;
+    public static final int AFTER_VAR_CHANGE_EVENT_TYPE = 9;
+    
+    protected AuditEventBuilder builder = new DefaultAuditEventBuilderImpl();
     
     protected Environment env;
     
+    /*
+     * for backward compatibility
+     */
     public AbstractAuditLogger(WorkingMemory workingMemory) {
-        super(workingMemory);
         env = workingMemory.getEnvironment();
     }
     
-    public AbstractAuditLogger(KnowledgeRuntimeEventManager session) {
-        super(session);
+    public AbstractAuditLogger(KieSession session) {
         if (session instanceof KnowledgeRuntime) {
             env = ((KnowledgeRuntime) session).getEnvironment();
         } else if (session instanceof StatelessKnowledgeSessionImpl) {
@@ -32,38 +43,19 @@ public abstract class AbstractAuditLogger extends WorkingMemoryLogger {
                 "Not supported session in logger: " + session.getClass());
         }
     }
+    /*
+     * end of backward compatibility
+     */
     
-    public void beforeProcessStarted(ProcessStartedEvent event) {
-        long parentProcessInstanceId = -1;
-        try {
-            ProcessInstanceImpl processInstance = (ProcessInstanceImpl) event.getProcessInstance();
-            parentProcessInstanceId = (Long) processInstance.getMetaData().get("ParentProcessInstanceId");
-        } catch (Exception e) {
-            //in case of problems with getting hold of parentProcessInstanceId don't break the operation
-        }
-        LogEvent logEvent =  new ExtendedRuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_CREATED,
-                event.getProcessInstance().getProcessId(),
-                event.getProcessInstance().getProcessName(),
-                event.getProcessInstance().getId(), parentProcessInstanceId) ;
+    public AbstractAuditLogger() {
         
-        // filters are not available from super class, TODO make fireLogEvent protected instead of private in WorkinMemoryLogger
-        logEventCreated( logEvent );
     }
 
-    public void afterProcessCompleted(ProcessCompletedEvent event) {
-        String outcome = null;
-        try {
-            ProcessInstanceImpl processInstance = (ProcessInstanceImpl) event.getProcessInstance();
-            outcome = processInstance.getOutcome();
-        } catch (Exception e) {
-            //in case of problems with getting hold of parentProcessInstanceId don't break the operation
-        }
-        LogEvent logEvent =  new ExtendedRuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_COMPLETED,
-                event.getProcessInstance().getProcessId(),
-                event.getProcessInstance().getProcessName(),
-                event.getProcessInstance().getId(), event.getProcessInstance().getState(), outcome) ;
-        
-        // filters are not available from super class, TODO make fireLogEvent protected instead of private in WorkinMemoryLogger
-        logEventCreated( logEvent );
+    public AuditEventBuilder getBuilder() {
+        return builder;
+    }
+
+    public void setBuilder(AuditEventBuilder builder) {
+        this.builder = builder;
     }
 }
