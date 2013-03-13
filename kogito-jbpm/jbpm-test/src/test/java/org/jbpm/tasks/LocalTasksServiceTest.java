@@ -1,13 +1,5 @@
 package org.jbpm.tasks;
 
-import static junit.framework.Assert.fail;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Reader;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +8,9 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.drools.io.impl.ClassPathResource;
 import org.jbpm.persistence.objects.MockUserInfo;
-import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.ContentData;
 import org.jbpm.task.Group;
 import org.jbpm.task.HumanTaskServiceFactory;
 import org.jbpm.task.User;
@@ -36,21 +24,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceType;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
-import org.mvel2.MVEL;
-import org.mvel2.ParserContext;
-import org.mvel2.compiler.ExpressionCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

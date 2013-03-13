@@ -93,8 +93,9 @@ public class SubTaskDecorator implements TaskInstanceService {
     }
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
-        instanceService.complete(taskId, userId, data);
         checkSubTaskStrategies(taskId, userId, data);
+        instanceService.complete(taskId, userId, data);
+        
     }
 
     public void delegate(long taskId, String userId, String targetUserId) {
@@ -169,7 +170,7 @@ public class SubTaskDecorator implements TaskInstanceService {
     }
     
     private void checkSubTaskStrategies(long taskId, String userId, Map<String, Object> data){
-        Task task = pm.find(Task.class, taskId);
+        Task task = queryService.getTaskInstanceById(taskId);
         Task parentTask = null;
         if(task.getTaskData().getParentId() != -1){
             parentTask = pm.find(Task.class, task.getTaskData().getParentId());
@@ -177,9 +178,9 @@ public class SubTaskDecorator implements TaskInstanceService {
         if(parentTask != null){
             if(parentTask.getSubTaskStrategy().equals(SubTasksStrategy.EndParentOnAllSubTasksEnd)){
                 List<TaskSummary> subTasks = queryService.getSubTasksByParent(parentTask.getId());
-
-                    if (subTasks.isEmpty()) {
-                        // Completing parent task if all the sub task has being completed
+                    // If there are no more sub tasks or if the last sub task is the one that we are completing now
+                    if (subTasks.isEmpty() || (subTasks.size() == 1 && subTasks.get(0).getId() == taskId)) {
+                        // Completing parent task if all the sub task has being completed, including the one that we are completing now
                         complete(parentTask.getId(), "Administrator", data);
                     }
             }

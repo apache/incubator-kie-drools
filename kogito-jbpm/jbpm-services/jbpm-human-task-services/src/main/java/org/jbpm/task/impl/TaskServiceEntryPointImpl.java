@@ -77,9 +77,9 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     private TaskLifeCycleEventListener taskLifeCycleEventListener;
     
     // External NON CDI event Listeners for Task Lifecycle
-    private static Event<Task> taskEvents = new JbpmServicesEventImpl<Task>();
+    private Event<Task> taskEvents = new JbpmServicesEventImpl<Task>();
     // External NON CDI event listener for Task Deadline and Email notifications
-    private static Event<NotificationEvent> taskNotificationEvents = new JbpmServicesEventImpl<NotificationEvent>();
+    private Event<NotificationEvent> taskNotificationEvents = new JbpmServicesEventImpl<NotificationEvent>();
     
     private UserInfo userInfo;
     

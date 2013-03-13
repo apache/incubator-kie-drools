@@ -26,7 +26,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitTestCase {
         setPersistence(true);
     }
 
-    @Test @Ignore
+    @Test 
     public void testProcess() throws Exception {
         StatefulKnowledgeSession ksession = createKnowledgeSession("HumanTaskOnLane.bpmn2");
         TaskServiceEntryPoint taskService = getTaskService(ksession);

@@ -56,7 +56,6 @@ public abstract class BaseTest {
     @After
     public void tearDown() {
         int removeAllTasks = taskService.removeAllTasks();
-        System.out.println(" XXX Cleaning up "+removeAllTasks+" tasks generated in the previous test");
     }
     
     @AfterClass

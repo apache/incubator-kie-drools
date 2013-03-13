@@ -606,4 +606,10 @@ public abstract class JbpmJUnitTestCase extends Assert {
     public PoolingDataSource getDs() {
         return ds;
     }
+
+    public EntityManagerFactory getEmf() {
+        return emf;
+    }
+    
+    
 }

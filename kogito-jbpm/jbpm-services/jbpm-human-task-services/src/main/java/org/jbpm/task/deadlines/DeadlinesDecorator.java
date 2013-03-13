@@ -106,8 +106,8 @@ public class DeadlinesDecorator implements TaskInstanceService {
     }
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
-        instanceService.complete(taskId, userId, data);
         clearDeadlines(taskId, true, true);
+        instanceService.complete(taskId, userId, data);
     }
 
     public void delegate(long taskId, String userId, String targetUserId) {
@@ -128,8 +128,9 @@ public class DeadlinesDecorator implements TaskInstanceService {
     }
 
     public void fail(long taskId, String userId, Map<String, Object> faultData) {
-        instanceService.fail(taskId, userId, faultData);
         clearDeadlines(taskId, true, true);
+        instanceService.fail(taskId, userId, faultData);
+        
     }
 
     public void forward(long taskId, String userId, String targetEntityId) {
@@ -166,8 +167,9 @@ public class DeadlinesDecorator implements TaskInstanceService {
     }
 
     public void start(long taskId, String userId) {
-        instanceService.start(taskId, userId);
         clearDeadlines(taskId, true, false);
+        instanceService.start(taskId, userId);
+        
     }
 
     public void stop(long taskId, String userId) {

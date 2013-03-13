@@ -8,6 +8,7 @@ import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.jbpm.task.DefaultUserInfo;
 
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
@@ -19,7 +20,9 @@ import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
 
 import org.jbpm.test.JbpmJUnitTestCase;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
@@ -32,64 +35,40 @@ import org.slf4j.LoggerFactory;
 public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
 
     private static Logger logger = LoggerFactory.getLogger(AdminAPIsWithListenerTest.class);
-    private HashMap<String, Object> context;
-//    private EntityManagerFactory emf;
-//    private EntityManagerFactory emfDomain;
+
     private EntityManagerFactory emfTasks;
-    protected Map<String, User> users;
-    protected Map<String, Group> groups;
     protected UserInfo userInfo;
     protected Properties conf;
 
-    //    @Before
-    //    public void setUp() throws Exception {
-    //        context = setupWithPoolingDataSource("org.jbpm.runtime", false);
-    //        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
-    //
-    ////        conf = new Properties();
-    ////        conf.setProperty("mail.smtp.host", "localhost");
-    ////        conf.setProperty("mail.smtp.port", "1125");
-    ////        conf.setProperty("from", "from@domain.com");
-    ////        conf.setProperty("replyTo", "replyTo@domain.com");
-    ////        conf.setProperty("defaultLanguage", "en-UK");
-    ////
-    ////        SendIcal.initInstance(conf);
-    //
-    //        // Use persistence.xml configuration
-    //
-    //        emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
-    //
-    //        userInfo = new DefaultUserInfo(null);
-    //
-    //
-    //
-    //
-    //
-    //    }
-    //
-    //    @After
-    //    public void tearDown() throws Exception {
-    //        cleanUp(context);
-    //
-    //
-    ////        admin.dispose();
-    //
-    //        if(emfTasks != null && emfTasks.isOpen()){
-    //            emfTasks.close();
-    //        }
-    //    }
     public AdminAPIsWithListenerTest() {
         super(true);
         setPersistence(true);
     }
 
+    
+    
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
+        userInfo = new DefaultUserInfo(null);
+    }
+    
 
-    @Test @Ignore
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+        if (emfTasks != null && emfTasks.isOpen()) {
+            emfTasks.close();
+        }
+    }
+
+ 
+
+    @Test
     public void automaticCleanUpTest() throws Exception {
 
 
-        emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
-        
         KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
@@ -162,16 +141,13 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
         Assert.assertEquals(0, em.createQuery("select c from Content c").getResultList().size());
         em.close();
-        emfTasks.close();
     }
 
-    @Test @Ignore
+    @Test
     public void automaticCleanUpTestAbortProcess() throws Exception {
 
-        emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
-         
-        KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession("patient-appointment.bpmn");
         KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 
         TaskServiceEntryPoint taskService = getTaskService(ksession);
@@ -236,8 +212,5 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
         Assert.assertEquals(0, em.createQuery("select c from Content c").getResultList().size());
         em.close();
-        emfTasks.close();
     }
-
-  
 }

@@ -139,7 +139,7 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         processTaskState(task);
     }
 
-    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task task) {
+    public void afterTaskAddedEvent(Task ti) {
         
         // DO NOTHING
     }
