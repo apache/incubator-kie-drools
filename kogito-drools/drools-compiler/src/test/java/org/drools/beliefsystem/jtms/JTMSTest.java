@@ -16,6 +16,7 @@ import org.drools.common.NamedEntryPoint;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -425,7 +426,7 @@ public class JTMSTest {
         assertEquals( 1, ep.getTruthMaintenanceSystem().getEqualityKeyMap().size() );
     }  
     
-    @Test
+    @Test @Ignore
     public void testConflictStrict() {
         StatefulKnowledgeSession kSession = getSessionFromFile( "posNegConflict.drl" );
 
