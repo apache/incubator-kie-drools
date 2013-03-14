@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.droolsjbpm.services.api;
+package org.droolsjbpm.services;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

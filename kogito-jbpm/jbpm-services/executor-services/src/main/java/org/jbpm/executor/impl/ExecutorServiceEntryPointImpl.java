@@ -6,6 +6,7 @@ package org.jbpm.executor.impl;
 
 import java.util.Date;
 import java.util.List;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import org.jbpm.executor.ExecutorServiceEntryPoint;
 import org.jbpm.executor.api.CommandContext;
@@ -15,6 +16,8 @@ import org.jbpm.executor.api.ExecutorRequestAdminService;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.executor.entities.STATUS;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 
 /**
  *
@@ -28,6 +31,9 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
     private ExecutorQueryService queryService;
     @Inject
     private ExecutorRequestAdminService adminService;
+    
+    // External NON CDI event Listeners for the executor service
+    private Event<RequestInfo> executorEvents = new JbpmServicesEventImpl<RequestInfo>();
 
     public ExecutorServiceEntryPointImpl() {
     }
@@ -158,12 +164,26 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
         return queryService.getRunningRequests();
     }
 
-	public RequestInfo getRequestById(Long requestId) {
-		return queryService.getRequestById(requestId);
-	}
+    public RequestInfo getRequestById(Long requestId) {
+            return queryService.getRequestById(requestId);
+    }
 
-	public List<ErrorInfo> getErrorsByRequestId(Long requestId) {
-		return queryService.getErrorsByRequestId(requestId);
-	}
+    public List<ErrorInfo> getErrorsByRequestId(Long requestId) {
+            return queryService.getErrorsByRequestId(requestId);
+    }
+
+    @Override
+    public void registerExecutorEventListener(JbpmServicesEventListener<RequestInfo> executorEventListener) {
+        ((JbpmServicesEventImpl<RequestInfo>)executorEvents).addListener(executorEventListener);
+    }
+
+    @Override
+    public Event<RequestInfo> getExecutorEventListeners() {
+        return executorEvents;
+    }
+
+  
+    
+    
     
 }

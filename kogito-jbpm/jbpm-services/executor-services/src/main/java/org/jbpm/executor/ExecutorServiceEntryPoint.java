@@ -6,11 +6,13 @@ package org.jbpm.executor;
 
 import java.util.Date;
 import java.util.List;
+import javax.enterprise.event.Event;
 
 import org.jbpm.executor.api.CommandContext;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.executor.entities.STATUS;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 
 /**
  *
@@ -71,4 +73,10 @@ public interface ExecutorServiceEntryPoint {
     public RequestInfo getRequestById(Long requestId);
 
     public List<ErrorInfo> getErrorsByRequestId(Long requestId);
+    
+    //Listeners NON CDI, CDI Listener will be automatically registered
+    public void registerExecutorEventListener(JbpmServicesEventListener<RequestInfo> executorEventListener);
+    
+    public Event<RequestInfo> getExecutorEventListeners();
+    
 }
