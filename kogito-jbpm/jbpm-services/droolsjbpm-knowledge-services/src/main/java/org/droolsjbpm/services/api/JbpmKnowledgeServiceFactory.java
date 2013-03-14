@@ -18,6 +18,8 @@ package org.droolsjbpm.services.api;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
+import org.droolsjbpm.services.impl.KnowledgeAdminDataServiceImpl;
+import org.droolsjbpm.services.impl.KnowledgeDataServiceImpl;
 import org.droolsjbpm.services.impl.SessionManagerImpl;
 import org.droolsjbpm.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.droolsjbpm.services.impl.bpmn2.BPMN2DataServiceSemanticModule;
@@ -32,7 +34,6 @@ import org.droolsjbpm.services.impl.event.listeners.CDIRuleAwareProcessEventList
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.api.ServicesSessionManager;
-import org.jbpm.shared.services.api.SessionManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.task.wih.LocalHTWorkItemHandler;
@@ -41,10 +42,9 @@ import org.jbpm.task.wih.LocalHTWorkItemHandler;
  *
  * @author salaboy
  */
-public class SessionManagerModule {
+public class JbpmKnowledgeServiceFactory {
     
     private static ServicesSessionManager service = new SessionManagerImpl();
-    private static boolean configured = false;
     
     private static JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
     
@@ -54,17 +54,39 @@ public class SessionManagerModule {
     
     private static BPMN2DataService bpmn2DataService = new BPMN2DataServiceImpl();
     
+    
     private static LocalHTWorkItemHandler htWorkItemHandler;
     
     
     private static IdentityProvider identityProvider;
     
-    public static ServicesSessionManager getService(){
-        if(!configured){
-            configure();
-        }
+    private static KnowledgeDataService dataService = new KnowledgeDataServiceImpl();
+        
+    private static KnowledgeAdminDataService adminDataService = new KnowledgeAdminDataServiceImpl();
+        
+    
+    public static ServicesSessionManager newServicesSessionManager(){
+        configure();
         return service;
     }
+    
+    public static BPMN2DataService newBPMN2DataService(){
+        configurePersistenceManager();
+        configureBpmn2DataService();
+        return bpmn2DataService;
+    }
+    
+    public static KnowledgeDataService newKnowledgeDataService(){
+        configurePersistenceManager();
+        configureKnowledgeDataService();
+        return dataService;
+    }
+    
+    public static KnowledgeAdminDataService newKnowledgeAdminDataService(){
+        configureKnowledgeAdminDataService();
+        return adminDataService;
+    }
+    
 
     private static void configure() {
         
@@ -95,14 +117,10 @@ public class SessionManagerModule {
         
         CDIRuleAwareProcessEventListener ruleAwareEventListener = new CDIRuleAwareProcessEventListener();
         ((SessionManagerImpl)service).setProcessFactsListener(ruleAwareEventListener);
-        
-        configured = true;
+
     }
     
-     public static void dispose(){
-        SessionManagerModule.configured = false;
-        
-    }
+   
     
     public static void configurePersistenceManager(){
         EntityManager em = emf.createEntityManager();
@@ -141,32 +159,36 @@ public class SessionManagerModule {
     }
     
     public static void setIdentityProvider(IdentityProvider identityProvider) {
-        SessionManagerModule.identityProvider = identityProvider;
-    }
-
-    public static void setJbpmServicesPersistenceManager(JbpmServicesPersistenceManager pm) {
-        SessionManagerModule.pm = pm;
+        JbpmKnowledgeServiceFactory.identityProvider = identityProvider;
     }
 
     public static void setHtWorkItemHandler(LocalHTWorkItemHandler htWorkItemHandler) {
-        SessionManagerModule.htWorkItemHandler = htWorkItemHandler;
+        JbpmKnowledgeServiceFactory.htWorkItemHandler = htWorkItemHandler;
     }
 
     public static void setJbpmServicesTransactionManager(JbpmServicesTransactionManager txmgr){
-        SessionManagerModule.jbpmTransactionManager = txmgr;
+        JbpmKnowledgeServiceFactory.jbpmTransactionManager = txmgr;
     }
     
     
     public static void setEntityManagerFactory(EntityManagerFactory emf){
-        SessionManagerModule.emf = emf;
+        JbpmKnowledgeServiceFactory.emf = emf;
     }
     
     public static EntityManagerFactory getEntityManagerFactory(){
-        return SessionManagerModule.emf;
+        return JbpmKnowledgeServiceFactory.emf;
     }
 
     public static BPMN2DataService getBpmn2DataService() {
         return bpmn2DataService;
+    }
+
+    private static void configureKnowledgeDataService() {
+        ((KnowledgeDataServiceImpl)dataService).setPm(pm);
+    }
+
+    private static void configureKnowledgeAdminDataService() {
+        ((KnowledgeAdminDataServiceImpl)adminDataService).setPm(pm);
     }
     
     

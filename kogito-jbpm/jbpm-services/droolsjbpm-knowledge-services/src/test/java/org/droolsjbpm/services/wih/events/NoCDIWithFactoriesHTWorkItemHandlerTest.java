@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.droolsjbpm.services.api.SessionManagerModule;
+import org.droolsjbpm.services.api.JbpmKnowledgeServiceFactory;
 import org.droolsjbpm.services.test.TestIdentityProvider;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
@@ -81,11 +81,10 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
         
         
         // Session Manager Start up
-        SessionManagerModule.setEntityManagerFactory(emf);
-        SessionManagerModule.setIdentityProvider(new TestIdentityProvider());
-        SessionManagerModule.setJbpmServicesPersistenceManager(pm);
-        SessionManagerModule.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
-        sessionManager = SessionManagerModule.getService();
+        JbpmKnowledgeServiceFactory.setEntityManagerFactory(emf);
+        JbpmKnowledgeServiceFactory.setIdentityProvider(new TestIdentityProvider());
+        JbpmKnowledgeServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
+        sessionManager = JbpmKnowledgeServiceFactory.newServicesSessionManager();
         
         
         
@@ -94,8 +93,7 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
         htWorkItemHandler.setTaskService(taskService);
         htWorkItemHandler.setTaskEventListener(externalTaskEventListener);
         htWorkItemHandler.addSession(ksession);
-        
-        
+ 
         
         // TEST Start up
         setTaskService(taskService);
@@ -106,7 +104,6 @@ public class NoCDIWithFactoriesHTWorkItemHandlerTest extends HTWorkItemHandlerBa
     @After
     public void tearDown() throws Exception {
         int removeAllTasks = taskService.removeAllTasks();
-        SessionManagerModule.dispose();
         emf.close();
         ds.close();
     }

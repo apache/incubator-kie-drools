@@ -20,20 +20,16 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.droolsjbpm.services.api.SessionManagerModule;
-import org.droolsjbpm.services.impl.KnowledgeAdminDataServiceImpl;
-import org.droolsjbpm.services.impl.KnowledgeDataServiceImpl;
+import org.droolsjbpm.services.api.JbpmKnowledgeServiceFactory;
 import org.droolsjbpm.services.impl.MVELWorkItemHandlerProducer;
 import org.droolsjbpm.services.impl.SessionManagerImpl;
 import org.droolsjbpm.services.test.TestIdentityProvider;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.shared.services.impl.TestVFSFileServiceImpl;
 import org.jbpm.task.HumanTaskServiceFactory;
 import org.jbpm.task.wih.LocalHTWorkItemHandler;
-import org.jbpm.task.wih.ExternalTaskEventListener;
+import org.jbpm.task.wih.HTWorkItemHandlerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.commons.io.IOService;
@@ -51,7 +47,6 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
         ds = new PoolingDataSource();
         ds.setUniqueName("jdbc/testDS1");
 
-
         //NON XA CONFIGS
         ds.setClassName("org.h2.jdbcx.JdbcDataSource");
         ds.setMaxPoolSize(3);
@@ -64,38 +59,21 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
         
         IOService ioService = new IOServiceNio2WrapperImpl();
         // Persistence Manager Start Up
-        
         emf = Persistence.createEntityManagerFactory("org.jbpm.domain");
         
         Logger logger = LogManager.getLogManager().getLogger("");
         
-        JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
-        
         // Task Service Start up
-        
         HumanTaskServiceFactory.setEntityManagerFactory(emf);
-       
         JbpmServicesTransactionManager jbpmJTATransactionManager = new JbpmJTATransactionManager();
         HumanTaskServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
         taskService = HumanTaskServiceFactory.newTaskService();
-
-        ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
-        externalTaskEventListener.setTaskService(taskService);
-        
-      
-       
-        
-     
         
         // Session Manager Start up
-        SessionManagerModule.setEntityManagerFactory(emf);
-        SessionManagerModule.setIdentityProvider(new TestIdentityProvider());
-        SessionManagerModule.setJbpmServicesPersistenceManager(pm);
-        SessionManagerModule.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
-        sessionManager = SessionManagerModule.getService();
-        
-      
-       
+        JbpmKnowledgeServiceFactory.setEntityManagerFactory(emf);
+        JbpmKnowledgeServiceFactory.setIdentityProvider(new TestIdentityProvider());
+        JbpmKnowledgeServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
+        sessionManager = JbpmKnowledgeServiceFactory.newServicesSessionManager();
         
         this.fs = new TestVFSFileServiceImpl();
         fs.init();
@@ -103,11 +81,7 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
         ((SessionManagerImpl)sessionManager).setFs(fs);
         ((SessionManagerImpl)sessionManager).setIoService(ioService);
         
-        
-        LocalHTWorkItemHandler htWorkItemHandler = new LocalHTWorkItemHandler();
-        htWorkItemHandler.setSessionManager(sessionManager);
-        htWorkItemHandler.setTaskService(taskService);
-        htWorkItemHandler.setTaskEventListener(externalTaskEventListener);
+        LocalHTWorkItemHandler htWorkItemHandler = HTWorkItemHandlerFactory.newHandler(sessionManager, taskService);
         
         ((SessionManagerImpl)sessionManager).setHTWorkItemHandler(htWorkItemHandler);
         
@@ -117,16 +91,12 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
         ((SessionManagerImpl)sessionManager).setWorkItemHandlerProducer(workItemProducer);
         
         ((SessionManagerImpl)sessionManager).init();
+
+        dataService = JbpmKnowledgeServiceFactory.newKnowledgeDataService();
         
+        adminDataService = JbpmKnowledgeServiceFactory.newKnowledgeAdminDataService();
         
-        
-        dataService = new KnowledgeDataServiceImpl();
-        ((KnowledgeDataServiceImpl)dataService).setPm(pm);
-        
-        adminDataService = new KnowledgeAdminDataServiceImpl();
-        ((KnowledgeAdminDataServiceImpl)adminDataService).setPm(pm);
-        
-        bpmn2Service = SessionManagerModule.getBpmn2DataService();
+        bpmn2Service = JbpmKnowledgeServiceFactory.getBpmn2DataService();
       
     }
 
@@ -134,7 +104,6 @@ public class NoCDIWithFactoriesSupportProcessTest extends SupportProcessBaseTest
     public void tearDown() throws Exception {
         int removedTasks = taskService.removeAllTasks();
         int removedLogs = adminDataService.removeAllData();
-        SessionManagerModule.dispose();
         emf.close();
         System.out.println(" --> Removed Tasks = "+removedTasks + " - ");
         System.out.println(" --> Removed Logs = "+removedLogs + " - ");
