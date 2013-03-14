@@ -49,6 +49,10 @@
     <developerConnection>scm:git:git@github.com:droolsjbpm/optaplanner.git</developerConnection>
     <url>https://github.com/droolsjbpm/optaplanner</url>
   </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.jboss.org/browse/PLANNER</url>
+  </issueManagement>
 
   <modules>
     <module>optaplanner-core</module>
