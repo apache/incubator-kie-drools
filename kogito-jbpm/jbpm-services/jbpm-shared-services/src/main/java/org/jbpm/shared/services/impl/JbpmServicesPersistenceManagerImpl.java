@@ -16,20 +16,20 @@
 package org.jbpm.shared.services.impl;
 
 
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Inject;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+
 import org.jboss.seam.transaction.Transactional;
-
-
+import org.jboss.weld.context.ContextNotActiveException;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 
 /**
  * From the Hibernate docs: 
@@ -78,7 +78,14 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     }
 
     public EntityManager getEm() {
-        return em;
+        try {
+            this.em.toString();          
+            return this.em;
+        } catch (ContextNotActiveException e) {
+            this.em = this.emf.createEntityManager();
+            return this.em;
+        }
+
     }
 
     public EntityManagerFactory getEmf() {
@@ -113,7 +120,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         try {
             txOwner = beginTransaction();
             txStarted = true;
-            result = em.createQuery(updateString).executeUpdate();
+            result = getEm().createQuery(updateString).executeUpdate();
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -140,7 +147,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         try {
             txOwner = beginTransaction();
             txStarted = true;
-            find = em.find(entityClass, primaryKey);
+            find = getEm().find(entityClass, primaryKey);
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -167,7 +174,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         try {
             txOwner = beginTransaction();
             txStarted = true;
-            em.remove(entity);
+            getEm().remove(entity);
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -193,7 +200,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         try {
             txOwner = beginTransaction();
             txStarted = true;
-            em.persist(entity);
+            getEm().persist(entity);
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -221,7 +228,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
             txOwner = beginTransaction();
             txStarted = true;
             
-            mergedEntity = em.merge(entity);
+            mergedEntity = getEm().merge(entity);
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -337,17 +344,17 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
 */
         	return;
         }
-        boolean closeEm = em.isOpen();
+        boolean closeEm = getEm().isOpen();
         if ( closeEm  ) { 
             try { 
                 ttxm.dispose();
-                em.clear();
+                getEm().clear();
             }
             catch( Throwable t ) { 
                 // Don't worry about it, we're cleaning up. 
             }
             try { 
-                em.close();
+            	getEm().close();
             }
             catch( Exception e ) { 
                 // Don't worry about it, we're cleaning up.
@@ -416,7 +423,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
      * @return The result of the query. 
      */
     private Object queryWithParameters(String queryName, Map<String, Object> params, boolean singleResult) { 
-        Query query = em.createNamedQuery(queryName);
+        Query query = getEm().createNamedQuery(queryName);
         if( params != null && ! params.isEmpty() ) { 
             for( String name : params.keySet() ) { 
                 if( FIRST_RESULT.equals(name) ) {
@@ -438,7 +445,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     
     
     private Object queryStringWithParameters(String string, Map<String, Object> params, boolean singleResult) { 
-        Query query = em.createQuery(string);
+        Query query = getEm().createQuery(string);
         if( params != null && ! params.isEmpty() ) { 
             for( String name : params.keySet() ) { 
                 if( FIRST_RESULT.equals(name) ) {
