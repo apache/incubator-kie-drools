@@ -7,16 +7,14 @@ package org.jbpm.executor.impl;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.executor.entities.STATUS;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 /**
  *
@@ -26,77 +24,62 @@ import org.jbpm.executor.entities.STATUS;
 public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 
     @Inject
-    private EntityManager em;
-    @Inject
-    private EntityManagerFactory emf;
-
+    private JbpmServicesPersistenceManager pm;
+   
     public ExecutorQueryServiceImpl() {
     }
 
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
+    
     public List<RequestInfo> getPendingRequests() {
-        return getEntityManager().createNamedQuery("PendingRequests", RequestInfo.class).setParameter("now", new Date()).getResultList();
+        return (List<RequestInfo>)pm.queryWithParametersInTransaction("PendingRequests", pm.addParametersToMap("now", new Date()));
     }
     public List<RequestInfo> getPendingRequestById(Long id) {
-        return getEntityManager().createNamedQuery("PendingRequestById", RequestInfo.class).setParameter("id", id).getResultList();
+        return (List<RequestInfo>)pm.queryWithParametersInTransaction("PendingRequestById", pm.addParametersToMap("id", id));
     }
     public RequestInfo getRequestById(Long id) {
-    	return getEntityManager().find(RequestInfo.class, id);
+    	return pm.find(RequestInfo.class, id);
     }
     public List<RequestInfo> getRunningRequests() {
-        return getEntityManager().createNamedQuery("RunningRequests", RequestInfo.class).getResultList();
+        return (List<RequestInfo>)pm.queryInTransaction("RunningRequests");
     }
 
     public List<RequestInfo> getQueuedRequests() {
-        return getEntityManager().createNamedQuery("QueuedRequests", RequestInfo.class).getResultList();
+        return (List<RequestInfo>)pm.queryInTransaction("QueuedRequests");
     }
     
     public List<RequestInfo> getFutureQueuedRequests() {
-        return getEntityManager().createNamedQuery("FutureQueuedRequests", RequestInfo.class).setParameter("now", new Date()).getResultList();
+        return (List<RequestInfo>)pm.queryWithParametersInTransaction("FutureQueuedRequests", pm.addParametersToMap("now", new Date()));
     }
 
     public List<RequestInfo> getCompletedRequests() {
-        return getEntityManager().createNamedQuery("CompletedRequests", RequestInfo.class).getResultList();
+        return (List<RequestInfo>)pm.queryInTransaction("CompletedRequests");
     }
 
     public List<RequestInfo> getInErrorRequests() {
-        return getEntityManager().createNamedQuery("InErrorRequests", RequestInfo.class).getResultList();
+        return (List<RequestInfo>)pm.queryInTransaction("InErrorRequests");
     }
 
     public List<RequestInfo> getCancelledRequests() {
-        return getEntityManager().createNamedQuery("CancelledRequests", RequestInfo.class).getResultList();
+        return (List<RequestInfo>)pm.queryInTransaction("CancelledRequests");
     }
 
     public List<ErrorInfo> getAllErrors() {
-    	return getEntityManager().createNamedQuery("GetAllErrors", ErrorInfo.class).getResultList();
+    	return (List<ErrorInfo>)pm.queryInTransaction("GetAllErrors");
     }
 
     public List<ErrorInfo> getErrorsByRequestId(Long requestId) {
-    	return getEntityManager().createNamedQuery("GetErrorsByRequestId", ErrorInfo.class).
-    		setParameter("id", requestId).getResultList();
+    	return (List<ErrorInfo>)pm.queryWithParametersInTransaction("GetErrorsByRequestId", pm.addParametersToMap("id", requestId));
     }
 
     public List<RequestInfo> getAllRequests() {
-    	return getEntityManager().createNamedQuery("GetAllRequests", RequestInfo.class).getResultList();
+    	return (List<RequestInfo>)pm.queryInTransaction("GetAllRequests");
     }
-    
-	public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses) {
-    	return getEntityManager().createNamedQuery("GetRequestsByStatus", RequestInfo.class).
-    		setParameter("statuses", statuses).getResultList();
-	}
+    public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses) {
+    	return (List<RequestInfo>)pm.queryWithParametersInTransaction("GetRequestsByStatus",pm.addParametersToMap("statuses", statuses));
+    }
 
-	/*
-     * following are supporting methods to allow execution on application startup
-     * as at that time RequestScoped entity manager cannot be used so instead
-     * use EntityManagerFactory and manage transaction manually
-     */
-    protected EntityManager getEntityManager() {
-        try {
-            this.em.toString();          
-            return this.em;
-        } catch (ContextNotActiveException e) {
-            EntityManager em = this.emf.createEntityManager();
-            return em;
-        }
-    }
 
 }

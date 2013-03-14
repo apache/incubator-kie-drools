@@ -15,6 +15,6 @@ public interface ExecutorEventListener {
     public void onRequestPending(RequestInfo r);
     public void onRequestRunning(RequestInfo r);
     public void onRequestCancelled(RequestInfo r);
-    public void onRequestOnError(RequestInfo r);
-    public void onError(ErrorInfo e);
+//    public void onRequestOnError(RequestInfo r);
+//    public void onError(ErrorInfo e);
 }

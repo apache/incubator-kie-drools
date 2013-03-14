@@ -14,6 +14,28 @@
   <name>Executor Service</name>
 
   <dependencies>
+      
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-shared-services</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-shared-services</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency> 
+    <dependency>
+      <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-io</artifactId>
+    </dependency>  
     <dependency>
       <groupId>org.jboss.seam.persistence</groupId>
       <artifactId>seam-persistence</artifactId>

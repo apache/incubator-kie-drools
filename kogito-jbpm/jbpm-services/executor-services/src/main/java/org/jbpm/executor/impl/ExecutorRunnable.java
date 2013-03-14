@@ -17,21 +17,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.executor.annotations.Completed;
-import org.jbpm.executor.annotations.OnError;
-import org.jbpm.executor.annotations.Running;
 import org.jbpm.executor.api.Command;
 import org.jbpm.executor.api.CommandCallback;
 import org.jbpm.executor.api.CommandContext;
@@ -40,43 +31,53 @@ import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.executor.entities.STATUS;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 /**
  *
  * @author salaboy
  */
 public class ExecutorRunnable implements Runnable {
-    @Inject 
+
+    @Inject
     private Logger logger;
     @Inject
-    private EntityManager em;
-    @Inject
-    private EntityManagerFactory emf;
-    @Inject
-    private BeanManager beanManager;
+    private JbpmServicesPersistenceManager pm;
+   
     //@Inject
     //private Event<RequestInfo> requestEvents;
     //@Inject
     //private Event<ErrorInfo> errorEvents;
-    @Inject 
+    @Inject
     private ExecutorQueryService queryService;
-    
     private final Map<String, Command> commandCache = new HashMap<String, Command>();
     private final Map<String, CommandCallback> callbackCache = new HashMap<String, CommandCallback>();
-    
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
+
+    public void setQueryService(ExecutorQueryService queryService) {
+        this.queryService = queryService;
+    }
+
     @Transactional
     public void run() {
         logger.log(Level.INFO, " >>> Executor Thread {0} Waking Up!!!", this.toString());
         List<?> resultList = queryService.getPendingRequests();
         logger.log(Level.INFO, " >>> Pending Requests = {0}", resultList.size());
-        EntityManager entityManager = getEntityManager();
+
         if (resultList.size() > 0) {
             RequestInfo r = null;
             Throwable exception = null;
             try {
                 r = (RequestInfo) resultList.get(0);
                 r.setStatus(STATUS.RUNNING);
-                entityManager.merge(r);
+                pm.merge(r);
                 // CDI Contexts are not propagated to new threads
                 //requestEvents.select(new AnnotationLiteral<Running>(){}).fire(r); 
                 logger.log(Level.INFO, " >> Processing Request Id: {0}", r.getId());
@@ -121,17 +122,17 @@ public class ExecutorRunnable implements Runnable {
                     }
                 }
             } catch (InterruptedException e) {
-            	Thread.currentThread().interrupt();
+                Thread.currentThread().interrupt();
             } catch (Throwable e) {
                 e.printStackTrace();
                 exception = e;
             }
-            
+
             if (exception != null) {
                 logger.log(Level.SEVERE, "{0} >>> Before - Error Handling!!!{1}", new Object[]{System.currentTimeMillis(), exception.getMessage()});
-                
 
-                
+
+
                 ErrorInfo errorInfo = new ErrorInfo(exception.getMessage(), ExceptionUtils.getFullStackTrace(exception.fillInStackTrace()));
                 errorInfo.setRequestInfo(r);
                 // CDI Contexts are not propagated to new threads
@@ -150,67 +151,70 @@ public class ExecutorRunnable implements Runnable {
                     r.setExecutions(r.getExecutions() + 1);
                 }
 
-                entityManager.merge(r);
+                pm.merge(r);
 
 
                 logger.severe(" >>> After - Error Handling!!!");
 
 
             } else {
-                
+
                 r.setStatus(STATUS.DONE);
-                entityManager.merge(r);
+                pm.merge(r);
                 // CDI Contexts are not propagated to new threads
                 //requestEvents.select(new AnnotationLiteral<Completed>(){}).fire(r);
             }
         }
     }
 
-    /*
-     * following are supporting methods to allow execution on application startup
-     * as at that time RequestScoped entity manager cannot be used so instead
-     * use EntityManagerFactory and manage transaction manually
-     */
-    protected EntityManager getEntityManager() {
-        try {
-            this.em.toString();          
-            return this.em;
-        } catch (ContextNotActiveException e) {
-            EntityManager em = this.emf.createEntityManager();
-            return em;
-        }
-    }
-
-    
+//    /*
+//     * following are supporting methods to allow execution on application startup
+//     * as at that time RequestScoped entity manager cannot be used so instead
+//     * use EntityManagerFactory and manage transaction manually
+//     */
+//    protected EntityManager getEntityManager() {
+//        try {
+//            this.em.toString();          
+//            return this.em;
+//        } catch (ContextNotActiveException e) {
+//            EntityManager em = this.emf.createEntityManager();
+//            return em;
+//        }
+//    }
     private Command findCommand(String name) {
-
         synchronized (commandCache) {
-            if (!commandCache.containsKey(name)) {
-                Set<Bean<?>> beans = beanManager.getBeans(name);
-                if (!beans.iterator().hasNext()){
-                    throw new IllegalArgumentException("Unknown Command implemenation with name '"+name+"'");
+            
+                if (!commandCache.containsKey(name)) {
+                    try {
+                        Command commandInstance = (Command) Class.forName(name).newInstance();
+                        commandCache.put(name, commandInstance);
+                    } catch (Exception ex) {
+                        logger.severe(" EEE: Unknown Command implemenation with name '" + name + "'");
+                        throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
+                    }
+
                 }
-                Bean<?> bean = beans.iterator().next();
-                commandCache.put(name, (Command) beanManager.getReference(bean, Command.class, beanManager.createCreationalContext(bean)));
-            }
+
+       
         }
-        
         return commandCache.get(name);
     }
-    
-    private CommandCallback findCommandCallback(String name) {
 
+    private CommandCallback findCommandCallback(String name) {
         synchronized (callbackCache) {
-            if (!callbackCache.containsKey(name)) {
-                Set<Bean<?>> beans = beanManager.getBeans(name);
-                if (!beans.iterator().hasNext()){
-                    throw new IllegalArgumentException("Unknown CommandCallback implemenation with name '"+name+"'");
-                }
-                Bean<?> bean = beans.iterator().next();
-                callbackCache.put(name, (CommandCallback) beanManager.getReference(bean, CommandCallback.class, beanManager.createCreationalContext(bean)));
-            }
+            
+                    if (!callbackCache.containsKey(name)) {
+                        try {
+                            CommandCallback commandCallbackInstance = (CommandCallback) Class.forName(name).newInstance();
+                            callbackCache.put(name, commandCallbackInstance);
+                        } catch (Exception ex) {
+                            logger.severe(" EEE: Unknown CommandCallback implemenation with name '" + name + "'");
+                            throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
+                        }
+
+                    }
+
         }
-        
         return callbackCache.get(name);
     }
 }

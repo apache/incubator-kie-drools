@@ -18,13 +18,16 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-public class ArquillianCDISimpleExecutorTest extends BasicExecutorBaseTest {
+public class CDISimpleExecutorTest extends BasicExecutorBaseTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "executor-service.jar")
                 .addPackage("org.jboss.seam.persistence") //seam-persistence
                 .addPackage("org.jboss.seam.transaction") //seam-persistence
+                .addPackage("org.jbpm.shared.services.api")
+                .addPackage("org.jbpm.shared.services.impl")
+                .addPackage("org.kie.commons.java.nio.fs.jgit")
                 .addPackage("org.jbpm.executor")
                 .addPackage("org.jbpm.executor.api")
                 .addPackage("org.jbpm.executor.impl")

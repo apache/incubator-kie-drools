@@ -30,6 +30,7 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.executor.annotations.Cancelled;
 import org.jbpm.executor.annotations.Pending;
 import org.jbpm.executor.api.ExecutorQueryService;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 /**
  *
@@ -41,9 +42,9 @@ public class ExecutorImpl implements Executor {
     @Inject
     private Logger logger;
     @Inject
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
     @Inject
-    private ExecutorRunnable task;
+    private ExecutorRunnable runnableTask;
     @Inject
     private Event<RequestInfo> requestEvents;
     @Inject
@@ -57,6 +58,28 @@ public class ExecutorImpl implements Executor {
 
     public ExecutorImpl() {
     }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
+
+    public void setExecutorRunnable(ExecutorRunnable runnableTask) {
+        this.runnableTask = runnableTask;
+    }
+
+    public void setRequestEvents(Event<RequestInfo> requestEvents) {
+        this.requestEvents = requestEvents;
+    }
+
+    public void setQueryService(ExecutorQueryService queryService) {
+        this.queryService = queryService;
+    }
+    
+    
 
     public int getInterval() {
         return interval;
@@ -89,7 +112,7 @@ public class ExecutorImpl implements Executor {
                 new Object[]{threadPoolSize, interval, retries});
 
         scheduler = Executors.newScheduledThreadPool(threadPoolSize);
-        handle = scheduler.scheduleAtFixedRate(task, 2, interval, TimeUnit.SECONDS);
+        handle = scheduler.scheduleAtFixedRate(runnableTask, 2, interval, TimeUnit.SECONDS);
     }
 
     @Override
@@ -128,7 +151,7 @@ public class ExecutorImpl implements Executor {
         }
 
 
-        em.persist(requestInfo);
+        pm.persist(requestInfo);
 
         requestEvents.select(new AnnotationLiteral<Pending>(){}).fire(requestInfo);
         
@@ -145,10 +168,8 @@ public class ExecutorImpl implements Executor {
         }
         RequestInfo r = (RequestInfo) result.iterator().next();
 
-
-        //em.lock(r, LockModeType.READ);
         r.setStatus(STATUS.CANCELLED);
-        em.merge(r);
+        pm.merge(r);
 
         requestEvents.select(new AnnotationLiteral<Cancelled>(){}).fire(r);
         
