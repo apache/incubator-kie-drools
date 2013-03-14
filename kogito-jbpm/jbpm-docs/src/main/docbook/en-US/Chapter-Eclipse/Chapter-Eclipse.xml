@@ -7,7 +7,7 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Eclipse BPMN 2.0 Plugin</title>
+  <title id="ch.eclipse-bpmn-plugin.title">Eclipse BPMN 2.0 Plugin</title>
 
   <para>We are working on a new BPMN 2.0 Eclipse editor that allows you to
   specify business processes, choreographies, etc. using the BPMN 2.0 XML
@@ -125,7 +125,6 @@
         </imageobject>
       </mediaobject>
     </figure>
-  </section>
 
   <section>
     <title>Filtering elements and attributes</title>
@@ -151,6 +150,66 @@
         </imageobject>
       </mediaobject>
     </figure>
+  </section>
+
+  <section id="sec.eclipse.task-nodes">
+    <title id="sec.eclipse.task-nodes.title">Adding custom task nodes</title>
+
+<para>When creating and adding <code>&lt;task&gt;</code> or other <code>&lt;task&gt;</code> 
+type nodes to a process, you might want to add input and output parameters to the node. Furthermore, 
+you can configure jBPM to use custom <code>WorkItemHandler</code> implementations in conjunction 
+with these nodes. These <code>WorkItemHandler</code> instances will then be used when your service 
+node is reached.</para>
+
+<para>The concept of customizing <code>&lt;task&gt;</code> and other <code>&lt;task&gt;</code>-type 
+nodes and using custom <code>WorkItemHandler</code> implementations with these nodes is referred to 
+as creating <emphasis>custom work items</emphasis> within jBPM. More information about this can be 
+found in the <link linkend='ch.domain-specific-processes' endterm='ch.domain-specific-processes.title'/> 
+chapter.</para>
+
+<para>The following sections cover the following node types:
+  <itemizedlist>
+    <listitem>Task</listitem>
+    <listitem>Service Task</listitem>
+    <listitem>Send Task</listitem>
+    <listitem>Receive Task</listitem>
+    <listitem>Manual Task*</listitem>
+  </itemizedlist>
+</para>
+
+  <tip>
+<para>A <emphasis>Manual Task</emphasis> should be used to represent a human activity that is 
+<emphasis>not</emphasis> managed by the process engine or the human-task component. In this case,
+you would probably create a custom <code>WorkItemHandler</code> implementation that would interface
+with a technical component that the actor would use to indicate completion of the task.</para>
+<literallayout>  
+</literallayout>
+<para>However, if you were using a human task server, such as the jBPM human-task component, then you would
+use a <emphasis>User Task</emphasis> node instead.</para>
+  </tip>
+
+      <section>
+        <title>Configuring the input and output parameters</title>
+
+<para>WRITE MORE: what they are, example for notification?</para>
+
+      </section>
+
+      <section>
+        <title>Configuring the node to be handled by a <code>WorkItemHandler</code></title>
+
+<para>WRITE MORE: add tns:taskname as an attribute to the element</para>
+
+<para>When your process is actually run by the engine, you'll have to first register your
+<code>WorkItemHandler</code> with jBPM. See the <link linkend='sec.workitemhandler.overview' 
+endterm='sec.workitemhandler.overview.title'/> section for an overview and the 
+<link linkend='sec.notifications.workitemhandler.overview' 
+endterm='sec.notifications.workitemhandler.overview.title'/> sections for an example.</para>
+
+      </section>
+
+    </section>
+
   </section>
 
   <section>

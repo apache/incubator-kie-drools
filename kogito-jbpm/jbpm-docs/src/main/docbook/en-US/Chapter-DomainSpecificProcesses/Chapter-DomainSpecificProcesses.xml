@@ -10,47 +10,50 @@
 <section>
   <title>Introduction</title>
 
-<para>One of the goals of jBPM is to allow users to extend the default process constructs with 
-domain-specific extensions that simplify development in a particular application domain.  This
-tutorial describes how to take your first steps towards domain-specific processes.  Note that you
-don't need to be a jBPM expert to define your own domain-specific nodes, this should be considered
-integration code that a normal developer with some experience in jBPM can do himself.</para>
+<para>jBPM provides the ability to create and use domain-specific task nodes in your business 
+processes. This simplifies development when you're creating business processes that contain tasks 
+dealing with other technical systems.</para>
 
-<para>Most process languages offer some generic action (node) construct that allows plugging in
-custom user actions.  However, these actions are usually low-level, where the user is required
-to write custom code to implement the work that should be incorporated in the process.  The code
-is also closely linked to a specific target environment, making it difficult to reuse the process
-in different contexts.</para>
-
-<para>Domain-specific languages are targeted to one particular application domain and therefore
-can offer constructs that are closely related to the problem the user is trying to solve.  This
-makes the processes and easier to understand and self-documenting.  We will show you how to 
-define domain-specific work items (also called service nodes), which represent atomic units of
-work that need to be executed.  These service nodes specify the work that should be executed in
-the context of a process in a declarative manner, i.e. specifying what should be executed (and
- not how) on a higher level (no code) and hiding implementation details.</para>
-
-<para>So we want service nodes that are:
-  <orderedlist>
-    <listitem>
-      <para>domain-specific</para>
-    </listitem>
-    <listitem>
-      <para>declarative (what, not how)</para>
-    </listitem>
-    <listitem>
-      <para>high-level (no code)</para>
-    </listitem>
-    <listitem>
-      <para>customizable to the context</para>
-    </listitem>
-  </orderedlist>
+<para>When using jBPM, we call these domain-specific task nodes "<emphasis>custom work 
+items</emphasis>" or (custom) "<emphasis>service nodes</emphasis>". There are two separate aspects 
+to creating and using custom work items: 
+  <itemizedlist>
+    <listitem>Adding a node with a custom work item to a process definition using the eclipse 
+    editor or jBPM designer.</listitem>
+    <listitem>Creating a custom <emphasis>work item handler</emphasis> that the jBPM engine will 
+    use when executing the custom work item in a running process.</listitem>
+  </itemizedlist>
 </para>
 
-<para>Users can easily define their own set of domain-specific service nodes and integrate them
-in our process language.  For example, the next figure shows an example of a process in a 
-healthcare context.  The process includes domain-specific service nodes for ordering nursing
-tasks (e.g. measuring blood pressure), prescribing medication and notifying care providers.</para>
+<para>With regards to a BPMN2 process, custom work items are certain types of 
+<code>&lt;task&gt;</code> nodes. In most cases, custom work items are <code>&lt;task&gt;</code> 
+nodes in a BPMN2 process definition, although they can also be used with certain other task type 
+nodes such as, among others, <code>&lt;serviceTask&gt;</code> or 
+<code>&lt;sendTask&gt;</code> nodes.</para>
+
+  <tip>
+<para>When creating custom work items, it's important to separate the data associated with the 
+work item, from how the work item should be handled. In other words, separate the 
+<emphasis>what</emphasis> from the <emphasis>how</emphasis>. That means that custom work items 
+should be:
+<itemizedlist>
+    <listitem>declarative (what, not how)</listitem>
+    <listitem>high-level (no code)</listitem>
+</itemizedlist>
+On the other hand, custom work item <emphasis>handlers</emphasis>, which are java classes, 
+should be:
+<itemizedlist>
+    <listitem>procedural (how, not what)</listitem>
+    <listitem>low-level (because it's code!)</listitem>
+</itemizedlist>
+Work item handlers should almost never contain any data.</para>
+  </tip>
+
+<para>Users can thus easily define their own set of domain-specific service nodes and integrate 
+them with the process language. For example, the next figure shows an example of a 
+healtchare-related BPMN2 process. The process includes domain-specific service nodes for measuring 
+blood pressure, prescribing medication, notifying care providers and following-up on the patient.
+</para>
 
 <mediaobject>
   <imageobject>
@@ -60,37 +63,142 @@ tasks (e.g. measuring blood pressure), prescribing medication and notifying care
 </mediaobject>
 </section>
 
-  <section>
-    <title>Example: Notifications</title>
+<section>
+  <title>Overview</title>
 
-<para>Let's start by showing you how to include a simple work item for sending notifications.
-A work item represent an atomic unit of work in a declarative way.  It is defined by a unique
-name and additional parameters that can be used to describe the work in more detail.  Work items
-can also return information after they have been executed, specified as results.  Our notification
-work item could thus be defined using a work definition with four parameters and no results:</para>
+<para>Before moving on to an example, this section explains what custom work items and custom 
+work item handlers are.</para> 
 
-<programlisting>
-  Name: "Notification"
-  Parameters
-  From [String]
-  To [String]
-  Message [String]
-  Priority [String]
+  <section id="sec.workitemdefinition.overview">
+    <title id="sec.workitemdefinition.overview.title">Work Item Definitions</title>
+
+<para>In short, we use the term <emphasis>custom work item</emphasis> when we're describing a node 
+in your process that represents a domain-specific task and as such, contains extra properties and 
+is handled by a <code>WorkItemHandler</code> implementation.</para>
+
+<para>Because it's a domain-specific <emphasis>task</emphasis>, that means that a <emphasis>custom 
+work item</emphasis> is equivalent to a <code>&lt;task&gt;</code> or <code>&lt;task&gt;</code>-type 
+node in BPMN2. However, a <emphasis><code>WorkItem</code></emphasis> is also Java class instance 
+that's used when a <code>WorkItemHandler</code> instance is called to complete the task or work 
+item.</para>
+
+<para>Depending on the BPMN2 editor you're using, you can create a custom work item definition in 
+one of two ways: 
+  <itemizedlist>
+    <listitem>If you're using <emphasis>Designer</emphasis>, then this means creating a MVEL based 
+    definition and adding the definition in Designer itself. A description of this can be
+    found in the <link linkend='sec.designer.workitems' endterm="sec.designer.workitems.title"/> 
+    section in the <link linkend='ch.designer' endterm="ch.designer.title"/> chapter. Once this is
+    done, a new service node will appear on the BPMN 2.0 palette.</listitem>
+    <listitem>If you're using the <emphasis>eclipse BPMN 2.0 modeler plugin</emphasis> (which can 
+    be found <ulink url="http://eclipse.org/bpmn2-modeler/">here</ulink>), then you'll can modify 
+    the BPMN2 <code>&lt;task&gt;</code> or <code>&lt;task&gt;</code>-type element to work with 
+    <code>WorkItemHandler</code> implementations. See the <link linkend='sec.eclipse.task-nodes' 
+    endterm="sec.eclipse.task-nodes.title"/> section in the <link linkend='ch.eclipse-bpmn-plugin' 
+    endterm="ch.eclipse-bpmn-plugin.title"/> chapter.</listitem>
+  </itemizedlist>
+</para>
+
+  </section>
+
+  <section id="sec.workitemhandler.overview" >
+    <title id="sec.workitemhandler.overview.title" >Work Item Handlers</title>
+
+<para>A <emphasis>work item handler</emphasis> is a Java class used to execute (or abort) work 
+items. That also means that the class implements the <code>org.kie.runtime.instance.WorkItemHandler</code> 
+interface. While jBPM provides some custom <code>WorkItemHandler</code> instances (listed below), 
+a Java developer with a minimal knowledge of jBPM can easily create a new work item handler class 
+with it's own custom business logic.</para>
+
+<para>Among others, jBPM offers the following <code>WorkItemHandler</code> implementations:
+  <itemizedlist>
+    <listitem>In the <filename>jbpm-bpmn2</filename> module, <code>org.jbpm.bpmn2.handler</code> 
+    package:<itemizedlist>
+      <listitem>ReceiveTaskHandler (for use with BPMN element <code>&lt;receiveTask&gt;</code>)</listitem>
+      <listitem>SendTaskHandler (for use with BPMN element <code>&lt;sendTask&gt;</code>)</listitem>
+      <listitem>ServiceTaskHandler (for use with BPMN element <code>&lt;serviceTask&gt;</code>)</listitem>
+    </itemizedlist></listitem>
+    <listitem>In the <filename>jbpm-workitems</filename> module, in various packages under
+    the <code>org.jbpm.process.workitem</code> package:<itemizedlist>
+      <listitem>ArchiveWorkItemHandler</listitem>
+    </itemizedlist></listitem>
+  </itemizedlist>
+
+There are a many more <code>WorkItemHandler</code> implementations present in the
+<filename>jbpm-workitems</filename> module. If you're looking for specific integration logic with
+Twitter, for example, we recommend you take a look at the classes made available there.</para>
+
+<para>In general, a <code>WorkItemHandler</code>'s <code>.executeWorkItem(...)</code> and
+<code>.abortWorkItem(...)</code> methods will do the following:
+  <orderedlist>
+    <listitem>Extract information about the task being executed (or aborted) from the
+    <code>WorkItem</code> instance</listitem>
+    <listitem>Execute the necessary business logic. This might be mean interacting with a web
+    service, database, or other technical component.</listitem>
+    <listitem>Inform the process engine that the work item has been completed (or aborted) by
+    calling one of the following two mtehods on the <code>WorkItemManager</code> instance passed 
+    to the method:
+    </listitem>
+  </orderedlist>
+</para>
+
+<programlisting language="java">WorkItemManager.completeWorkItem(long workItemId, Map&lt;String, Object&gt; results)
+WorkItemManager.abortWorkItem(long workItemId)
 </programlisting>
 
+<para>In order to make sure that your custom work item handler is used for a particular process
+instance, it's necessary to register the work item handler before starting the process. This makes
+the engine aware of your <code>WorkItemHandler</code> so that the engine can use it for the proper
+node. For example:</para> 
+
+<programlisting language="java">ksession.getWorkItemManager().registerWorkItemHandler("Notification", new NotificationWorkItemHandler());
+</programlisting>
+
+<para>The <code>ksession</code> variable above is a <code>StatefulKnowledgeSession</code> (and also 
+a <code>KieSession</code>) instance. The example code above comes from the example that we will go 
+through in the next session.</para>
+
+  <tip>
+<para>You can use different work item handlers for the same process depending on the
+system on which it runs: by registering different work item handlers on different systems, you can
+customize how a custom work item is processed on a particular system. You can also substitute mock
+<code>WorkItemHandler</code> instances when testing.</para>  
+  </tip>
+
+  </section>
+</section>
+
+<section id="sec.example.notifications">
+  <title id="sec.example.notifications.title" >Example: Notifications</title>
+
+<para>Let's start by showing you how to include a simple work item for sending notifications.
+A work item is defined by a unique name and includes additional parameters that describe the work 
+in more detail. Work items can also return information after they have been executed, specified 
+as results.</para>
+
+<para>Our notification work item could be defined using a work definition with four parameters and 
+no results. For example: 
+  <itemizedlist>
+    <listitem>Name: "Notification"</listitem>
+    <listitem>Parameters:<itemizedlist>
+      <listitem>From [String type]</listitem>
+      <listitem>To [String type]</listitem>
+      <listitem>Message [String type]</listitem>
+      <listitem>Priority [String type]</listitem>
+    </itemizedlist></listitem>
+  </itemizedlist>
+</para>
+
   <section>
-    <title>Creating the work definition</title>
+    <title>The Notification Work Item Definition</title>
 
-<para>All work definitions must be specified in one or more configuration files in the project
-classpath, where all the properties are specified as name-value pairs. Parameters and results are
-maps where each parameter name is also mapped to the expected data type. Note that this
-configuration file also includes some additional user interface information, like the icon
-and the display name of the work item.</para>
+    <section>
+      <title>Creating the work item definition</title>
 
-<para> In our example we will use MVEL for reading in the configuration file,
-which allows us to do more advanced configuration files. This file must be placed in the project
-classpath in a directory called META-INF. Our MyWorkDefinitions.wid file
-looks like this:</para>
+<para>In our example we will create a MVEL work item definition that defines a "Notification" work
+item. Using MVEL is the default way to This file will be placed in the project classpath in a directory called 
+<filename>META-INF</filename>. The work item configuration file for this example, 
+<filename>MyWorkDefinitions.wid</filename>, will look like this:</para>
 
 <programlisting>
   import org.drools.core.process.core.datatype.impl.type.StringDataType;
@@ -113,51 +221,48 @@ looks like this:</para>
 
 <para>The project directory structure could then look something like this:</para>
 
-<programlisting>
-project/src/main/resources/META-INF/MyWorkDefinitions.wid
-</programlisting>
+<programlisting>project/src/main/resources/META-INF/MyWorkDefinitions.wid</programlisting>
 
-<para>You might now want to create your own icons to go along with your new work definition.
-To add these you will need .gif or .png images with a pixel size of 16x16. Place them in a directory
-outside of the META-INF directory, for example as follows:</para>
+<para>We also want to <emphasis>add</emphasis> a specific icon to be used in the process editor 
+with the work item.  To add this, you will need <filename>.gif</filename> or 
+<filename>.png</filename> images with a pixel size of 16x16. We put them in a directory outside 
+of the <filename>META-INF</filename> directory, for example, here:</para>
 
-<programlisting>
-project/src/main/resources/icons/notification.gif
-</programlisting>
+<programlisting>project/src/main/resources/icons/notification.gif</programlisting>
 
-  </section>
+    </section>
 
-  <section>
-    <title>Registering the work definition</title>
+    <section>
+      <title>Registering the work definition</title>
 
-<para>The configuration API can be used to register work definition files for your project
-using the drools.workDefinitions property, which represents a list of files containing work
-definitions (separated usings spaces). For example, include a drools.rulebase.conf file in
-the META-INF directory of your project and add the following line:</para>
+<para>The jBPM eclipse editor uses the configuration mechanisms supplied by Drools to register work item definition 
+files. That means adding a <code>drools.workDefinitions</code> property to the
+<filename>drools.rulebase.conf</filename> file in the <filename>META-INF</filename>.</para>
 
-<programlisting>
-  drools.workDefinitions = MyWorkDefinitions.wid
-</programlisting>
+<para>The <code>drools.workDefinitions</code> property represents a list of files containing work 
+item definitions, separated usings spaces. If you want to <emphasis>exclude</emphasis> all other 
+work item definitions and only use your definition, you could use the following:</para>
 
-<para>This will replace the default domain specific node types EMAIL and LOG with the newly 
-defined NOTIFICATION node in the process editor. Should you wish to just add a newly created
-node definition to the existing palette nodes, adjust the drools.workDefinitions property
-as follows including the default set configuration file:</para>
+<programlisting>drools.workDefinitions = MyWorkDefinitions.wid</programlisting>
+
+<para>However, if you only want to add the newly created node definition to the existing palette 
+nodes, you can define the <code>drools.workDefinitions</code> property as follows:</para>
 
 <programlisting>
   drools.workDefinitions = MyWorkDefinitions.wid WorkDefinitions.conf
 </programlisting>
 
-<para>It is recommended to use extension .wid for your own definitions of domain specific nodes.
-Do not be confused with extension .conf, it is used only for backward compatibility.</para>
+<para>We recommended that you use the extension <code>.wid</code> for your own definitions of 
+domain specific nodes. The <code>.conf</code> extension used with the default definition file, 
+<filename>WorkDefinitions.conf</filename>, for backward compatibility reasons.</para>
 
-  </section>
+    </section>
 
-  <section>
-    <title>Using your new work item in your processes</title>
+    <section>
+      <title>Using your new work item in your processes</title>
 
-<para>Once our work definition has been created and registered, we can start using it in
-our processes.  The process editor contains a separate section in the palette where the
+<para>We've created our work item definition and configured it, so now we can start using it in
+our processes. The process editor contains a separate section in the palette where the
 different service nodes that have been defined for the project appear.</para>
 
 <mediaobject>
@@ -170,31 +275,31 @@ different service nodes that have been defined for the project appear.</para>
 <para>Using drag and drop, a notification node can be created inside your process.  The
 properties can be filled in using the properties view.</para>
 
-<para>Apart from the properties defined by this work item, all work items also have
-these three properties:</para>
+<para>Besides any custom properties, the following three properties are available for all work 
+items:</para>
 <orderedlist>
   <listitem>
-    <para>Parameter Mapping: Allows you to map the value of a variable in the process to a
-    parameter of the work item.  This allows you to customize the work item based on the
+    <para><code>Parameter Mapping</code>: Allows you to map the value of a variable in the process 
+    to a parameter of the work item.  This allows you to customize the work item based on the
     current state of the actual process instance (for example, the priority of the
     notification could be dependent of some process-specific information).</para>
   </listitem>
   <listitem>
-    <para>Result Mapping: Allows you to map a result (returned once a work item has been
+    <para><code>Result Mapping</code>: Allows you to map a result (returned once a work item has been
     executed) to a variable of the process.  This allows you to use results in the remainder
     of the process.</para>
   </listitem>
   <listitem>
-    <para>Wait for completion: By default, the process waits until the requested work
+    <para><code>Wait for completion</code>: By default, the process waits until the requested work
     item has been completed before continuing with the process.  It is also possible to
     continue immediately after the work item has been requested (and not waiting for the
-    results) by setting "wait for completion" to false.</para>
-  </listitem>
+    results) by setting <code>wait for completion</code> to false.</para>
+  </listitem>h
 </orderedlist>
 
 <para>Here is an example that creates a domain specific node to execute Java, asking for
-the class and method parameters. It includes a custom java.gif icon and consists of the 
-following files and resulting screenshot:</para>
+the class and method parameters. It includes a custom <filename>java.gif</filename> icon and 
+consists of the following files and resulting screenshot:</para>
 
 <programlisting>
   import org.drools.core.process.core.datatype.impl.type.StringDataType;
@@ -221,7 +326,7 @@ following files and resulting screenshot:</para>
   drools.workDefinitions = JavaNodeDefinition.wid WorkDefinitions.conf
 
 // icon for java.gif located in:
-// project/src/main/resources/icons/java.gif
+//  project/src/main/resources/icons/java.gif
 </programlisting>
 
 <mediaobject>
@@ -232,80 +337,155 @@ following files and resulting screenshot:</para>
   </imageobject>
 </mediaobject>
 
+    </section>
 
   </section>
 
-  <section>
-    <title>Executing service nodes</title>
+  <section id="sec.example.notifications.workitemhandler">
+    <title id="sec.example.notifications.workitemhandler.title" >The <code>NotificationWorkItemHandler</code></title>
 
-<para>The jBPM engine contains a WorkItemManager that is responsible for executing 
-work items whenever necessary.  The WorkItemManager is responsible for delegating the
-work items to WorkItemHandlers that execute the work item and notify the WorkItemManager
-when the work item has been completed.  For executing notification work items, a 
-NotificationWorkItemHandler should be created (implementing the WorkItemHandler interface):</para>
+    <section>
+      <title>Creating a new work item handler</title>
 
-<programlisting language="java">package com.sample;
+<para>Once we've created our <code>Notification</code> work item definition (see the sections 
+above), we can then create a custom implementation of a <emphasis>work item handler</emphasis> that 
+will contain the logic to send the notification.</para>
 
-  import org.kie.api.runtime.process.WorkItem;
-  import org.kie.api.runtime.process.WorkItemHandler;
-  import org.kie.api.runtime.process.WorkItemManager;
+<para>In order to execute our <emphasis>Notification</emphasis> work items, we first create a  
+<code>NotificationWorkItemHandler</code> that implements the <code>WorkItemHandler</code> 
+interface:</para>
 
-  public class NotificationWorkItemHandler implements WorkItemHandler {
+<programlistingco>
+  <areaspec>
+    <area id="wih.service.ex" coords='18' />
+    <area id="wih.mgr.completion" coords='22' />
+  </areaspec>
+  <programlisting language="java">
+package com.sample;
+
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
+
+public class NotificationWorkItemHandler implements WorkItemHandler {
 
   public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-  // extract parameters
-  String from = (String) workItem.getParameter("From");
-  String to = (String) workItem.getParameter("To");
-  String message = (String) workItem.getParameter("Message");
-  String priority = (String) workItem.getParameter("Priority");
-  // send email
-  EmailService service = ServiceRegistry.getInstance().getEmailService();
-  service.sendEmail(from, to, "Notification", message);
-  // notify manager that work item has been completed
-  manager.completeWorkItem(workItem.getId(), null);
+    // extract parameters
+    String from = (String) workItem.getParameter("From");
+    String to = (String) workItem.getParameter("To");
+    String message = (String) workItem.getParameter("Message");
+    String priority = (String) workItem.getParameter("Priority");
+
+    // send email
+    EmailService service = ServiceRegistry.getInstance().getEmailService();
+    service.sendEmail(from, to, "Notification", message);
+
+    // notify manager that work item has been completed
+    manager.completeWorkItem(workItem.getId(), null);
   }
 
   public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
   // Do nothing, notifications cannot be aborted
   }
 
-  }
+} </programlisting>
+  <calloutlist>
+    <callout arearefs="wih.service.ex">
+      <para>The <code>ServiceRegistry</code> class is simply a made-up class that we're using for
+      this example. In your own <code>WorkItemHandler</code> implementations, the code containing 
+      your domain-specific logic would go here.</para>
+    </callout>
+    <callout arearefs="wih.mgr.completion">
+      <para>Notifying the <emphasis><code>WorkItemManager</code></emphasis> instance when your 
+      a work item has been completed is crucial. For many synchronous actions, like sending an
+      email in this case, the <code>WorkItemHandler</code> implementation will notify the 
+      <code>WorkItemManager</code> in the <code>executeWorkItem(...)</code> method.</para>
+    </callout>
+  </calloutlist>
+</programlistingco>
+
+<para>This <code>WorkItemHandler</code> sends a notification as an email and then 
+notifies the WorkItemManager that the work item has been completed.</para>
+
+<para>Note that not all work items can be completed directly. In cases where executing a work item 
+takes some time, execution can continue <emphasis>asynchronously</emphasis> and the work item 
+manager can be notified later.</para>
+
+<para>In these situations, it might also be possible that a work item is <emphasis>aborted</emphasis>
+before it has been completed. The <code>WorkItemHandler.abortWorkItem(...)</code> method can be 
+used to specify how to abort such work items.</para>
+
+  <tip>
+<para> Remember, if the <code>WorkItemManager</code> is not notified about the completion, the 
+process engine will never be notified that your service node has completed.</para>
+  </tip>
+
+    </section>
+
+    <section>
+      <title>Registering the work item handler</title>
+
+<para><code>WorkItemHandler</code> instances need to  be registered with the 
+<code>WorkItemManager</code> in order to be used. In this case, we need to register an instance of
+our <code>NotificationWorkItemHandler</code> in order to use it with our process containing a 
+<code>Notification</code> work item. We can do that like this:</para>
+
+<programlistingco>
+  <areaspec>
+    <area id="wih.reg.taskname" coords="4" />
+    <area id="wih.reg.handler" coords="5" />
+  </areaspec>
+
+  <programlisting language="java">
+StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ksession.getWorkItemManager().registerWorkItemHandler(
+  "Notification", 
+  new NotificationWorkItemHandler()
+);
+  </programlisting>
+  <calloutlist>
+    <callout arearefs="wih.reg.taskname" >
+      <para>This is the drools name of the <code>&lt;task&gt;</code> (or other task type) node. See
+      below for an example.</para>
+    </callout>  
+    <callout arearefs="wih.reg.handler" >
+      <para>This is the instance of our custom work item handler instance!</para>
+    </callout>  
+  </calloutlist>
+</programlistingco>
+
+<para>If we were to look at the BPMN2 syntax for our process with the <code>Notification</code> 
+process, we would see something like the following example. Note the use of the 
+<code>tns:taskName</code> attribute in the <code>&lt;task&gt;</code> node. This is necessary for the 
+<code>WorkItemManager</code> to be able to see which <code>WorkItemHandler</code> instance should
+be used with which task or work item.</para>
+
+<programlisting language="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+&lt;definitions id="Definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+...
+             xmlns:tns="http://www.jboss.org/drools"&gt;
+
+...
+
+  &lt;process isExecutable="true" id="myCustomProcess" name="Domain-Specific Process" &gt;
+
+...
+
+    &lt;task id="_5" name="Notification Task" tns:taskName="Notification" &gt;
+
+...
 </programlisting>
 
-<para>This WorkItemHandler sends a notification as an email and then immediately notifies
-the WorkItemManager that the work item has been completed.  Note that not all work items
-can be completed directly.  In cases where executing a work item takes some time, execution
-can continue asynchronously and the work item manager can be notified later.  In these
-situations, it might also be possible that a work item is being aborted before it has 
-been completed.  The abort method can be used to specify how to abort such work items.</para>
+  <tip>
+<para>Different work item handlers could be used depending on the context. For example, during 
+testing or simulation, it might not be necessary to actually execute the work items. In this case 
+specialized dummy work item handlers could be used during testing.</para>
+  </tip>
 
-<para>WorkItemHandlers should be registered at the WorkItemManager, using the following API:</para>
-
-<programlisting language="java">ksession.getWorkItemManager().registerWorkItemHandler(
-    "Notification", new NotificationWorkItemHandler());
-</programlisting>
-
-<para>Decoupling the execution of work items from the process itself has the following advantages:</para>
-<orderedlist>
-  <listitem>
-    <para>The process is more declarative, specifying what should be executed, not how.</para>
-  </listitem>
-  <listitem>
-    <para>Changes to the environment can be implemented by adapting the work item handler.
-    The process itself should not be changed.  It is also possible to use the same process
-    in different environments, where the work item handler is responsible for integrating
-    with the right services.</para>
-  </listitem>
-  <listitem>
-    <para>It is easy to share work item handlers across processes and projects (which would
-    be more difficult if the code would be embedded in the process itself).</para>
-  </listitem>
-  <listitem>
-    <para>Different work item handlers could be used depending on the context.  For example,
-    during testing or simulation, it might not be necessary to actually execute the work items.
-    In this case specialized dummy work item handlers could be used during testing.</para>
-  </listitem>
-</orderedlist>
+    </section>
 
   </section>
 
@@ -373,9 +553,11 @@ been completed.  The abort method can be used to specify how to abort such work 
 <section>
   <title>Public jBPM service repository</title>
   
-  <para>We are building a public service repository that contains predefined services that people can
-  use out-of-the-box if they want to:</para>
+  <para>We are building a public service repository that contains predefined services that people 
+  can use out-of-the-box if they want to:</para>
+
   <para><ulink url="http://people.redhat.com/kverlaen/repository">http://people.redhat.com/kverlaen/repository</ulink></para>
+
   <para>This repository contains some integrations for common services like Twitter integration or
   file system operations that you can import.  Simply point the import wizard to this URL to start
   browsing the repository.</para>

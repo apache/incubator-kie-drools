@@ -6,7 +6,7 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
-  <title>Designer</title>
+  <title id="ch.designer.title" >Designer</title>
 
   <para>Web-based process editing is possible using the jBPM Designer. The designer is fully integrated into Drools Guvnor, the knowledge repository where you can store all your BPM assets such as of course your BPMN2 processes as well as rules, process images, workitem configurations, and process forms. The Designer can be used to create, view or update BPMN2 based processes which are executable in the jBPM runtime environment.</para>
   
@@ -135,8 +135,8 @@
   </figure>
   </section>  
   
-  <section>
-    <title>Support for Domain-specific service nodes</title>
+  <section id="sec.designer.workitems">
+    <title id="sec.designer.workitems.title">Support for domain-specific service nodes</title>
 
     <para>Designer has full support for jBPM domain-specific service nodes. To include your service nodes in the Designer jBPM BPMN2 stencil set,
     you can either upload your existing service node definitions into Guvnor, or use the the new service node configuration editor which we added 
@@ -297,7 +297,7 @@ designer.profile=jbpm
     </mediaobject>
   </figure>
   
-  <para>In order for process and task forms to be generated you have to make sure that your process has it's id 
+  <para>In order for process and task forms to be generated you have to make sure that your process has its id 
   parameter set, as well that each of your human tasks have the TaskName parameter set. Task forms contain pure
   HTML, CSS, and JavaScript, so they are easily editable in any HTML editor. Please note that there is no edit
   feature available currently in Designer, so each time you generate forms, existing ones will be overwritten.</para>
@@ -383,7 +383,7 @@ designer.profile=jbpm
     	</mediaobject>
  		 </figure>
  		 
- 		 <para>The feature allows users to select the location of their processdefinition file, and the location of it's gpd.xml file. Designer then uses the <ulink url="https://github.com/droolsjbpm/jbpmmigration">jbpmmigration tool</ulink> to 
+ 		 <para>The feature allows users to select the location of their processdefinition file, and the location of its gpd.xml file. Designer then uses the <ulink url="https://github.com/droolsjbpm/jbpmmigration">jbpmmigration tool</ulink> to 
  		 convert the jBPM 3.2 based processes to BPMN2 and displays it onto the designer canvas:</para>
  		 
  		 <figure>

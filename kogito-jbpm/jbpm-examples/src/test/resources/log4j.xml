@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-4r %d{dd/MM HH:mm:ss,SSS}[%t] %-5p %c{3}.%M %x - %m%n"/>
+		</layout>
+	</appender>
+
+	<logger name="org.jbpm">
+		<level value="INFO"/>
+	</logger>
+
+    <!-- bitronix -->	
+    <logger name="bitronix.tm.twopc.Preparer">
+        <level value="ERROR"/>
+    </logger>
+    
+    <!--  hibernate  -->	
+    <logger name="org.hibernate">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.cfg.search">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.cfg.annotations">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.cfg.AnnotationBinder">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.cfg.SettingsFactory">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.tool.hbm2ddl">
+        <level value="WARN"/>
+    </logger>
+
+	<root>
+		<priority value="INFO"/>
+		<appender-ref ref="CONSOLE"/>
+	</root>
+</log4j:configuration>
