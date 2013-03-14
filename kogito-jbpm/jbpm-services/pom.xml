@@ -19,7 +19,7 @@
         <module>droolsjbpm-knowledge-services</module>
         <module>form-services</module>
         <module>executor-services</module>
-    </modules>
+  </modules>
 
     <properties>
         <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>

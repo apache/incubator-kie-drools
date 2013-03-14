@@ -28,11 +28,9 @@ import org.drools.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.io.impl.ByteArrayResource;
-import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jbpm.task.TaskDef;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -47,18 +45,24 @@ import org.kie.io.ResourceType;
 public class BPMN2DataServiceImpl implements BPMN2DataService {
 
     @Inject
-    private TaskServiceEntryPoint taskService;
-    @Inject
-    private KnowledgeDomainService knolwedgeService;
-    @Inject
     private BPMN2DataServiceSemanticModule module;
-    private BPMN2ProcessProvider provider;
+    
     @Inject
     private ProcessDescriptionRepository repo;
+    
+    private BPMN2ProcessProvider provider;
     
     public BPMN2DataServiceImpl() {
     }
 
+    public void setSemanticModule(BPMN2DataServiceSemanticModule module) {
+        this.module = module;
+    }
+
+    public void setRepository(ProcessDescriptionRepository repo) {
+        this.repo = repo;
+    }
+    
     @PostConstruct
     public void init() {
         provider = new BPMN2ProcessProvider() {

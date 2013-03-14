@@ -50,6 +50,8 @@
     <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
     <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
     
+    <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
+    <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
    
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />

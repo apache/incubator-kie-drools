@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.Task;
@@ -35,21 +35,25 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 public class TaskContentServiceImpl implements TaskContentService {
 
     @Inject
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
 
     public TaskContentServiceImpl() {
     }
 
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
+    
     public long addContent(long taskId, Map<String, Object> params) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         long outputContentId = task.getTaskData().getOutputContentId();
-        Content outputContent = em.find(Content.class, outputContentId);
+        Content outputContent = pm.find(Content.class, outputContentId);
         
         long contentId = -1;
         if (outputContent == null) {
             ContentData outputContentData = ContentMarshallerHelper.marshal(params, null);
             Content content = new Content(outputContentData.getContent());
-            em.persist(content);
+            pm.persist(content);
             
             task.getTaskData().setOutput(content.getId(), outputContentData);
             contentId = content.getId();
@@ -67,17 +71,17 @@ public class TaskContentServiceImpl implements TaskContentService {
     }
 
     public long addContent(long taskId, Content content) {
-        Task task = em.find(Task.class, taskId);
-        em.persist(content);
+        Task task = pm.find(Task.class, taskId);
+        pm.persist(content);
         task.getTaskData().setDocumentContentId(content.getId());
         return content.getId();
     }
 
     public void deleteContent(long taskId, long contentId) {
-        Task task = em.find(Task.class, taskId);
+        Task task = pm.find(Task.class, taskId);
         task.getTaskData().setDocumentContentId(-1);
-        Content content = em.find(Content.class, contentId);
-        em.remove(content);
+        Content content = pm.find(Content.class, contentId);
+        pm.remove(content);
 
     }
 
@@ -86,6 +90,6 @@ public class TaskContentServiceImpl implements TaskContentService {
     }
 
     public Content getContentById(long contentId) {
-        return em.find(Content.class, contentId);
+        return pm.find(Content.class, contentId);
     }
 }

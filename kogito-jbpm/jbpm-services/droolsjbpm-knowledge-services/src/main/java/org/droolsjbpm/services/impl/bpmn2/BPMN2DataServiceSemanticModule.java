@@ -34,14 +34,32 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
         super();
         
     }
+
+    public void setTaskHandler(HumanTaskGetInformationHandler taskHandler) {
+        this.taskHandler = taskHandler;
+    }
+
+    public void setProcessHandler(ProcessGetInformationHandler processHandler) {
+        this.processHandler = processHandler;
+    }
+
+    public void setProcessInputHandler(ProcessGetInputHandler processInputHandler) {
+        this.processInputHandler = processInputHandler;
+    }
+
+    public void setReusableSubprocessHandler(GetReusableSubProcessesHandler reusableSubprocessHandler) {
+        this.reusableSubprocessHandler = reusableSubprocessHandler;
+    }
+    
+    
     
     @PostConstruct
     public void init(){
         ProcessDescRepoHelper repoHelper = new ProcessDescRepoHelper();
-        taskHandler.setRepo(repoHelper);
-        processHandler.setRepo(repoHelper);
-        processInputHandler.setRepo(repoHelper);
-        reusableSubprocessHandler.setRepo(repoHelper);
+        taskHandler.setRepositoryHelper(repoHelper);
+        processHandler.setRepositoryHelper(repoHelper);
+        processInputHandler.setRepositoryHelper(repoHelper);
+        reusableSubprocessHandler.setRepositoryHelper(repoHelper);
         
         addHandler("userTask", taskHandler);
         addHandler("process", processHandler);

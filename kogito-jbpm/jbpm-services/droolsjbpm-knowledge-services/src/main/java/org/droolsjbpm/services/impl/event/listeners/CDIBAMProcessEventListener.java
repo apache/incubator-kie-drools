@@ -18,7 +18,7 @@ package org.droolsjbpm.services.impl.event.listeners;
 import java.util.Date;
 import java.util.List;
 import org.droolsjbpm.services.api.IdentityProvider;
-import org.droolsjbpm.services.api.SessionManager;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.jboss.seam.transaction.Transactional;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;
@@ -31,9 +31,9 @@ import org.kie.runtime.process.ProcessInstance;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.droolsjbpm.services.impl.model.BAMProcessSummary;
 import org.droolsjbpm.services.impl.model.StateHelper;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 /**
  *
@@ -44,18 +44,30 @@ import org.droolsjbpm.services.impl.model.StateHelper;
 @BAM
 public class CDIBAMProcessEventListener implements ProcessEventListener {
     @Inject
-    private EntityManager em; 
+    private JbpmServicesPersistenceManager pm; 
     
     @Inject
     private IdentityProvider identity;
 
     private String domainName;
     
-    private SessionManager sessionManager;
+    private ServicesSessionManager sessionManager;
   
-    
     public CDIBAMProcessEventListener() {
     }
+
+    public void setIdentity(IdentityProvider identity) {
+        this.identity = identity;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+    
 
     @Override
     public void beforeProcessStarted(ProcessStartedEvent pse) {
@@ -71,7 +83,7 @@ public class CDIBAMProcessEventListener implements ProcessEventListener {
 //            processSummaryById.setStatus(StateHelper.getProcessState(processInstance.getState()));
 //            em.merge(processSummaryById);
             // FIXME this will record state pending so we might hard code it as Active to keep the right state in bam
-            em.persist(new BAMProcessSummary(processInstance.getId(), processInstance.getProcessName(), StateHelper.getProcessState(processInstance.getState()), new Date(), identity.getName(), version));
+            pm.persist(new BAMProcessSummary(processInstance.getId(), processInstance.getProcessName(), StateHelper.getProcessState(processInstance.getState()), new Date(), identity.getName(), version));
 //        }
     }
 
@@ -82,8 +94,8 @@ public class CDIBAMProcessEventListener implements ProcessEventListener {
 
     public void beforeProcessCompleted(ProcessCompletedEvent pce) {
         ProcessInstance processInstance = pce.getProcessInstance();
-        List<BAMProcessSummary> summaries = (List<BAMProcessSummary>)em.createQuery("select bps from BAMProcessSummary bps where bps.processInstanceId =:processId")
-                                                    .setParameter("processId", processInstance.getId()).getResultList();
+        List<BAMProcessSummary> summaries = (List<BAMProcessSummary>)pm.queryStringWithParametersInTransaction("select bps from BAMProcessSummary bps where bps.processInstanceId =:processId",
+                            pm.addParametersToMap("processId", processInstance.getId()));
         if(summaries.size() == 1){
           BAMProcessSummary processSummaryById = (BAMProcessSummary) summaries.get(0);
           processSummaryById.setStatus(StateHelper.getProcessState(processInstance.getState()));
@@ -91,7 +103,7 @@ public class CDIBAMProcessEventListener implements ProcessEventListener {
           Date startDate = processSummaryById.getStartDate();
           processSummaryById.setEndDate(completedDate);
           processSummaryById.setDuration(completedDate.getTime() - startDate.getTime() );
-          em.merge(processSummaryById);
+          pm.merge(processSummaryById);
         }else{
           // Log
           System.out.print("EEEE: Something went wrong with the BAM Listener");
@@ -130,13 +142,15 @@ public class CDIBAMProcessEventListener implements ProcessEventListener {
         
     }
 
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
+
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
     }
 
-    public void setSessionManager(SessionManager sessionManager) {
+    public void setSessionManager(ServicesSessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
+    
     
     
     

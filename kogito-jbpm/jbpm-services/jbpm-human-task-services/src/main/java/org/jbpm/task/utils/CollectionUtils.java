@@ -83,7 +83,8 @@ public class CollectionUtils {
         final int prime = 31;
         int result = 1;        
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            result = prime * result + it.next().hashCode();
+            Object next = it.next();
+            result = prime * result + ((next == null)? 0 : next.hashCode());
         }        
         return result;
     }       

@@ -7,9 +7,8 @@ package org.jbpm.task.impl;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskDefService;
 
@@ -22,26 +21,25 @@ import org.jbpm.task.api.TaskDefService;
 public class TaskDefServiceImpl implements TaskDefService{
     
     @Inject 
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
 
     public TaskDefServiceImpl() {
     }
 
     public void deployTaskDef(TaskDef def) {
-        em.persist(def);    
+        pm.persist(def);    
     }
 
     public List<TaskDef> getAllTaskDef(String filter) {
-        List<TaskDef> resultList = em.createQuery("select td from TaskDef td").getResultList(); 
+        List<TaskDef> resultList = (List<TaskDef>) pm.queryStringInTransaction("select td from TaskDef td"); 
         return resultList;
     }
 
     public TaskDef getTaskDefById(String name) {
         //TODO: FIX LOGIC
         
-        List<TaskDef> resultList = em.createQuery("select td from TaskDef td where td.name = :name")
-                                 .setParameter("name", name)
-                                 .getResultList();
+        List<TaskDef> resultList =  (List<TaskDef>)pm.queryStringWithParametersInTransaction("select td from TaskDef td where td.name = :name", pm.addParametersToMap("name", name));
+                                 
         
         if(resultList.size() > 0){
             return resultList.get(0);
@@ -52,7 +50,7 @@ public class TaskDefServiceImpl implements TaskDefService{
     
     public void undeployTaskDef(String name) {
         TaskDef taskDef = getTaskDefById(name);
-        em.remove(taskDef);    
+        pm.remove(taskDef);    
     }
     
 }

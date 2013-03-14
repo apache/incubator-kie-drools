@@ -15,8 +15,14 @@
  */
 package org.droolsjbpm.services.impl.event.listeners;
 
+import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
 import org.droolsjbpm.services.api.IdentityProvider;
-import org.droolsjbpm.services.api.SessionManager;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.impl.helpers.NodeInstanceDescFactory;
 import org.droolsjbpm.services.impl.helpers.ProcessInstanceDescFactory;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
@@ -34,7 +40,7 @@ import org.kie.runtime.process.ProcessInstance;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 /**
  *
@@ -44,23 +50,31 @@ import javax.persistence.EntityManager;
 @Transactional
 public class CDIProcessEventListener implements ProcessEventListener {
     @Inject
-    private EntityManager em; 
+    private JbpmServicesPersistenceManager pm; 
     
     @Inject
     private IdentityProvider identity;
 
     private String domainName;
     
-    private SessionManager sessionManager;
+    private ServicesSessionManager sessionManager;
     
     public CDIProcessEventListener() {
+    }
+
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
+    }
+
+    public void setIdentity(IdentityProvider identity) {
+        this.identity = identity;
     }
 
     public void beforeProcessStarted(ProcessStartedEvent pse) {
         //do nothing
         ProcessInstance processInstance = pse.getProcessInstance();
         int sessionId = ((StatefulKnowledgeSession)pse.getKieRuntime()).getId();
-        em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
+        pm.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
     }
 
     public void afterProcessStarted(ProcessStartedEvent pse) {
@@ -69,16 +83,19 @@ public class CDIProcessEventListener implements ProcessEventListener {
         if (currentState == ProcessInstance.STATE_ACTIVE) {
             ProcessInstance processInstance = pse.getProcessInstance();
             int sessionId = ((StatefulKnowledgeSession)pse.getKieRuntime()).getId();
-            em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
+            pm.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
         }
     }
 
     public void beforeProcessCompleted(ProcessCompletedEvent pce) {
         ProcessInstance processInstance = pce.getProcessInstance();
         int sessionId = ((StatefulKnowledgeSession)pce.getKieRuntime()).getId();
-        em.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
+        pm.persist(ProcessInstanceDescFactory.newProcessInstanceDesc(domainName, sessionId, processInstance, identity.getName()));
         if(sessionManager != null){
-            sessionManager.getProcessInstanceIdKsession().remove(processInstance.getId());
+            List<Long> piIds = sessionManager.getProcessInstanceIdKsession().get(sessionId);
+            if (piIds != null) {
+                piIds.remove(processInstance.getId());
+            }            
         }
     }
 
@@ -91,7 +108,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
         long processInstanceId = pnte.getProcessInstance().getId();
         NodeInstance nodeInstance = pnte.getNodeInstance();
         String connection = (String)((NodeInstanceImpl)nodeInstance).getMetaData().get("IncomingConnection");
-        em.persist(NodeInstanceDescFactory.newNodeInstanceDesc(domainName, sessionId, processInstanceId, nodeInstance, false, connection));
+        pm.persist(NodeInstanceDescFactory.newNodeInstanceDesc(domainName, sessionId, processInstanceId, nodeInstance, false, connection));
     }
 
     public void afterNodeTriggered(ProcessNodeTriggeredEvent pnte) {
@@ -107,7 +124,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
         long processInstanceId = pnle.getProcessInstance().getId();
         NodeInstance nodeInstance = pnle.getNodeInstance();
         String connection = (String)((NodeInstanceImpl)nodeInstance).getMetaData().get("OutgoingConnection");
-        em.persist(NodeInstanceDescFactory.newNodeInstanceDesc(domainName, sessionId, processInstanceId, nodeInstance, true, connection));
+        pm.persist(NodeInstanceDescFactory.newNodeInstanceDesc(domainName, sessionId, processInstanceId, nodeInstance, true, connection));
     }
 
     public void beforeVariableChanged(ProcessVariableChangedEvent pvce) {
@@ -118,7 +135,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
         String variableInstanceId = pvce.getVariableInstanceId();
         String oldValue = (pvce.getOldValue() != null)?pvce.getOldValue().toString():"";
         String newValue = (pvce.getNewValue() != null)?pvce.getNewValue().toString():"";
-        em.persist(new VariableStateDesc(variableId, variableInstanceId, oldValue, 
+        pm.persist(new VariableStateDesc(variableId, variableInstanceId, oldValue, 
                                         newValue, domainName, sessionId, processInstanceId));
     }
 
@@ -131,7 +148,7 @@ public class CDIProcessEventListener implements ProcessEventListener {
         this.domainName = domainName;
     }
 
-    public void setSessionManager(SessionManager sessionManager) {
+    public void setSessionManager(ServicesSessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
     

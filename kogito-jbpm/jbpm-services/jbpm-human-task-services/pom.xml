@@ -14,6 +14,10 @@
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-shared-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-persistence-jpa</artifactId>
     </dependency>
     <dependency>
@@ -105,6 +109,19 @@
       <groupId>org.jboss.arquillian.core</groupId>
       <artifactId>arquillian-core-api</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.subethamail</groupId>
+      <artifactId>subethasmtp-wiser</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-shared-services</artifactId>
     </dependency>
   </dependencies>
   <build>

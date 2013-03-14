@@ -28,8 +28,8 @@ import org.xml.sax.SAXException;
 
 public class ProcessGetInputHandler extends PropertyHandler implements Handler {
 
+    private ProcessDescRepoHelper repositoryHelper;
     
-    private ProcessDescRepoHelper repo;
     @Inject
     private ProcessDescriptionRepository repository;
     
@@ -42,7 +42,7 @@ public class ProcessGetInputHandler extends PropertyHandler implements Handler {
     public Object start(final String uri, final String localName,
                     final Attributes attrs, final ExtensibleXmlParser parser)
                     throws SAXException {
-        String mainProcessId = repo.getProcess().getId();
+        String mainProcessId = repositoryHelper.getProcess().getId();
         
         Object result = super.start(uri, localName, attrs, parser);
         if(result instanceof Variable){
@@ -52,8 +52,12 @@ public class ProcessGetInputHandler extends PropertyHandler implements Handler {
         return result;
     }
 
-    public void setRepo(ProcessDescRepoHelper repo) {
-        this.repo = repo;
+    public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
+        this.repositoryHelper = repositoryHelper;
+    }
+
+    public void setRepository(ProcessDescriptionRepository repository) {
+        this.repository = repository;
     }
     
     

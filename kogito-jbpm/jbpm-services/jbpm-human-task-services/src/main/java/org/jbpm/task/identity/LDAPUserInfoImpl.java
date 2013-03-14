@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -37,9 +39,11 @@ import org.jbpm.task.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@ApplicationScoped
 public class LDAPUserInfoImpl implements UserInfo {
     
-private static final Logger logger = LoggerFactory.getLogger(LDAPUserInfoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(LDAPUserInfoImpl.class);
     
     protected static final String DEFAULT_PROPERTIES_NAME = "/jbpm.user.info.properties";
     

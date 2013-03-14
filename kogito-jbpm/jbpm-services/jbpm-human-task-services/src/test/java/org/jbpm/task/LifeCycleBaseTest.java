@@ -33,9 +33,6 @@ public abstract class LifeCycleBaseTest extends BaseTest {
     
     @Test
     public void testNewTaskWithNoPotentialOwners() {
-        
-        
-        
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
@@ -107,7 +104,7 @@ public abstract class LifeCycleBaseTest extends BaseTest {
         Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         assertEquals("content", unmarshalledObject.toString());
     }
-
+    @Test
     public void testNewTaskWithMapContent() {
         
         
@@ -396,7 +393,7 @@ public abstract class LifeCycleBaseTest extends BaseTest {
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.Reserved, task1.getTaskData().getStatus());
         List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-        assertEquals(2, tasksAssignedAsPotentialOwner.size());
+        assertEquals(3, tasksAssignedAsPotentialOwner.size());
         
         taskService.forward(taskId, "salaboy", "Crusaders");
 

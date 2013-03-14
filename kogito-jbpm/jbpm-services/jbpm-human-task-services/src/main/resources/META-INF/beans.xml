@@ -24,9 +24,14 @@
        xmlns:task="urn:java:org.jbpm.task.annotations"
        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd">
     
-   
+    <alternatives>
+        <class>org.jbpm.task.identity.PropertyUserInfoImpl</class>
+    </alternatives>
     <decorators>
+        <class>org.jbpm.task.identity.UserGroupTaskQueryServiceDecorator</class>
+        <class>org.jbpm.task.identity.UserGroupTaskInstanceServiceDecorator</class>
         <class>org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator</class>
+        <class>org.jbpm.task.deadlines.DeadlinesDecorator</class>
         <class>org.jbpm.task.subtask.SubTaskDecorator</class>
     </decorators>
    

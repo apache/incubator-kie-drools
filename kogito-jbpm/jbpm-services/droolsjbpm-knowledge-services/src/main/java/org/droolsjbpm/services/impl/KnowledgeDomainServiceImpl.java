@@ -21,21 +21,21 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.droolsjbpm.services.api.Domain;
+import org.jbpm.shared.services.api.Domain;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.FileService;
+import org.jbpm.shared.services.cdi.Startup;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.RulesNotificationService;
-import org.droolsjbpm.services.api.SessionManager;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.event.listeners.CDIProcessEventListener;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
 import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
-import org.droolsjbpm.services.impl.util.Startup;
 import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.wih.CDIHTWorkItemHandler;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.runtime.KieSession;
@@ -51,7 +51,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
 
   private Map<String, StatefulKnowledgeSession> ksessions = new HashMap<String, StatefulKnowledgeSession>();
   @Inject
-  private CDIHTWorkItemHandler handler;
+  private LocalHTWorkItemHandler handler;
   @Inject
   private CDIProcessEventListener processListener;
   @Inject
@@ -63,7 +63,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
   @Inject
   private TaskServiceEntryPoint taskService;
   @Inject
-  private SessionManager sessionManager;
+  private ServicesSessionManager sessionManager;
   @Inject
   private MoveFileWorkItemHandler moveFilesWIHandler;
   @Inject

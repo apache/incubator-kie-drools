@@ -29,6 +29,8 @@
         
     </alternatives>
     <decorators>
+        <class>org.jbpm.task.identity.UserGroupTaskQueryServiceDecorator</class>
+        <class>org.jbpm.task.identity.UserGroupTaskInstanceServiceDecorator</class>
         <class>org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator</class>
         <class>org.jbpm.task.subtask.SubTaskDecorator</class>
     </decorators>

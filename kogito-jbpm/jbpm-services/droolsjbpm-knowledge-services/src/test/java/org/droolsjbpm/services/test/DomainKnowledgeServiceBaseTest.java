@@ -31,12 +31,12 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import org.droolsjbpm.services.api.Domain;
+import org.jbpm.shared.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
-import org.droolsjbpm.services.impl.CDISessionManager;
+import org.droolsjbpm.services.impl.SessionManagerImpl;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
@@ -72,7 +72,7 @@ public abstract class DomainKnowledgeServiceBaseTest {
     @Inject
     private FileService fs;
     @Inject
-    private CDISessionManager sessionManager;
+    private SessionManagerImpl sessionManager;
     
     @Inject
     private KnowledgeDomainService domainService;

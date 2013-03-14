@@ -155,7 +155,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
     
     protected boolean isAutoClaim(WorkItem workItem, Task task) {
         String swimlaneUser = (String) workItem.getParameter("SwimlaneActorId");
-        if (swimlaneUser != null  && !"".equals(swimlaneUser) && task.getPeopleAssignments().getPotentialOwners().size() > 1) {
+        if (swimlaneUser != null  && !"".equals(swimlaneUser)) {
             return true;
         }
         

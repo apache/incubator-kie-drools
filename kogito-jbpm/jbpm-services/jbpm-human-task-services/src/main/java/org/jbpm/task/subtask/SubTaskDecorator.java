@@ -20,16 +20,14 @@ import java.util.List;
 import java.util.Map;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
-import org.jbpm.task.TaskDef;
 import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.task.query.TaskSummary;
@@ -44,7 +42,7 @@ public class SubTaskDecorator implements TaskInstanceService {
     private TaskInstanceService instanceService;
     
     @Inject
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
     
     @Inject 
     private TaskQueryService queryService;
@@ -52,18 +50,20 @@ public class SubTaskDecorator implements TaskInstanceService {
     public SubTaskDecorator() {
     }
 
-    public long newTask(String name, Map<String, Object> params) {
-        return instanceService.newTask(name, params);
+    public void setInstanceService(TaskInstanceService instanceService) {
+        this.instanceService = instanceService;
     }
 
-    public long newTask(TaskDef def, Map<String, Object> params) {
-        return instanceService.newTask(def, params);
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
     }
 
-    public long newTask(TaskDef def, Map<String, Object> params, boolean deploy) {
-        return instanceService.newTask(def, params, deploy);
+    public void setQueryService(TaskQueryService queryService) {
+        this.queryService = queryService;
     }
 
+    
+    
     public long addTask(Task task, Map<String, Object> params) {
         return instanceService.addTask(task, params);
     }
@@ -93,8 +93,9 @@ public class SubTaskDecorator implements TaskInstanceService {
     }
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
-        instanceService.complete(taskId, userId, data);
         checkSubTaskStrategies(taskId, userId, data);
+        instanceService.complete(taskId, userId, data);
+        
     }
 
     public void delegate(long taskId, String userId, String targetUserId) {
@@ -169,17 +170,17 @@ public class SubTaskDecorator implements TaskInstanceService {
     }
     
     private void checkSubTaskStrategies(long taskId, String userId, Map<String, Object> data){
-        Task task = em.find(Task.class, taskId);
+        Task task = queryService.getTaskInstanceById(taskId);
         Task parentTask = null;
         if(task.getTaskData().getParentId() != -1){
-            parentTask = em.find(Task.class, task.getTaskData().getParentId());
+            parentTask = pm.find(Task.class, task.getTaskData().getParentId());
         }
         if(parentTask != null){
             if(parentTask.getSubTaskStrategy().equals(SubTasksStrategy.EndParentOnAllSubTasksEnd)){
                 List<TaskSummary> subTasks = queryService.getSubTasksByParent(parentTask.getId());
-
-                    if (subTasks.isEmpty()) {
-                        // Completing parent task if all the sub task has being completed
+                    // If there are no more sub tasks or if the last sub task is the one that we are completing now
+                    if (subTasks.isEmpty() || (subTasks.size() == 1 && subTasks.get(0).getId() == taskId)) {
+                        // Completing parent task if all the sub task has being completed, including the one that we are completing now
                         complete(parentTask.getId(), "Administrator", data);
                     }
             }

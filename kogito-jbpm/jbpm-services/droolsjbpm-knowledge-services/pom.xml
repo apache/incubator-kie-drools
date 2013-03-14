@@ -20,7 +20,6 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-shared-services</artifactId>
-      <version>${project.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -33,13 +32,11 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-workitems</artifactId>
-      <version>${project.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>form-services</artifactId>
-      <version>${project.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -202,7 +199,15 @@
    
   </dependencies>
   <build>
-    <plugins>
+    <plugins>    
+      <plugin>
+      <!-- we need to fork always as we have mixture of both arquillian tests and regular 
+    and to avoid clashing between them as both need to setup data source and bound it to JNDI -->
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>always</forkMode>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>

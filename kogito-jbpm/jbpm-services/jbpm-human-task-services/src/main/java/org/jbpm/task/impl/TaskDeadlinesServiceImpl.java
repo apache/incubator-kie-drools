@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright 2012 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,10 @@
  */
 package org.jbpm.task.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +32,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.shared.services.cdi.Startup;
 import org.jbpm.task.Content;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.Escalation;
@@ -44,6 +53,9 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.api.TaskDeadlinesService;
 import org.jbpm.task.events.NotificationEvent;
+import org.jbpm.task.query.DeadlineSummary;
+import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.runtime.Environment;
 
 /**
  *
@@ -51,93 +63,157 @@ import org.jbpm.task.events.NotificationEvent;
  */
 @Transactional
 @ApplicationScoped
+@Startup
 public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(3);
-    private Map<Long, List<ScheduledFuture<ScheduledTaskDeadline>>> scheduledTaskDeadlines = new ConcurrentHashMap<Long, List<ScheduledFuture<ScheduledTaskDeadline>>>();
-    protected List<Status> validStatuses = new ArrayList<Status>();
+    private Map<Long, List<ScheduledFuture<ScheduledTaskDeadline>>> startScheduledTaskDeadlines = new ConcurrentHashMap<Long, List<ScheduledFuture<ScheduledTaskDeadline>>>();
+    private Map<Long, List<ScheduledFuture<ScheduledTaskDeadline>>> endScheduledTaskDeadlines = new ConcurrentHashMap<Long, List<ScheduledFuture<ScheduledTaskDeadline>>>();
+
     @Inject 
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
+ 
     @Inject
     private Event<NotificationEvent> notificationEvents;
-    @Inject 
-    private Logger logger;
+    
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+
     
     public TaskDeadlinesServiceImpl() {
     }
 
-    @PostConstruct
-    public void init() {
-        setValidStatuses();
-//        long now = System.currentTimeMillis();
-//        List<DeadlineSummary> resultList = em.createNamedQuery("UnescalatedDeadlines").getResultList();
-//        for (DeadlineSummary summary : resultList) {
-//            long delay = summary.getDate().getTime() - now;
-//            schedule(summary.getTaskId(), summary.getDeadlineId(), delay);
-//        }
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
     }
 
-    private void executeEscalatedDeadline(long taskId, long deadlineId) {
-        Task task = (Task) em.find(Task.class, taskId);
-        Deadline deadline = (Deadline) em.find(Deadline.class, deadlineId);
+    public void setNotificationEvents(Event<NotificationEvent> notificationEvents) {
+        this.notificationEvents = notificationEvents;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+    
+    
+
+    @PostConstruct
+    public void init() {
+
+       // UserTransaction ut = setupEnvironment();
+        
+        long now = System.currentTimeMillis();
+        List<DeadlineSummary> resultList = (List<DeadlineSummary>)pm.queryInTransaction("UnescalatedStartDeadlines");
+        for (DeadlineSummary summary : resultList) {
+            long delay = summary.getDate().getTime() - now;
+            schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.START);
+
+        }
+        
+        resultList = (List<DeadlineSummary>)pm.queryInTransaction("UnescalatedEndDeadlines");
+        for (DeadlineSummary summary : resultList) {
+            long delay = summary.getDate().getTime() - now;
+            schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.END);
+        }
+        //completeOperation(ut,((JbpmServicesPersistenceManagerImpl)pm).getEm());
+    }
+
+    private void executeEscalatedDeadline(long taskId, long deadlineId, DeadlineType type) {
+       // UserTransaction ut = setupEnvironment();
+       // EntityManager entityManager = getEntityManager();
+        
+        Task task = (Task) pm.find(Task.class, taskId);
+        Deadline deadline = (Deadline) pm.find(Deadline.class, deadlineId);
 
         TaskData taskData = task.getTaskData();
-        Content content = null;
+        
+        
         if (taskData != null) {
-            content = (Content) em.find(Content.class, taskData.getDocumentContentId());
-        }
-        if (deadline == null || deadline.getEscalations() == null || !isInValidStatus(task)) {
-            return;
-        }
+            // check if task is still in valid status
+            if (type.isValidStatus(taskData.getStatus())) {
+                Map<String, Object> variables = null;
 
-        for (Escalation escalation : deadline.getEscalations()) {
 
-            // we won't impl constraints for now
-            //escalation.getConstraints()
+                    Content content = (Content) pm.find(Content.class, taskData.getDocumentContentId());
 
-            // run reassignment first to allow notification to be send to new potential owners
-            if (!escalation.getReassignments().isEmpty()) {
-                // get first and ignore the rest.
-                Reassignment reassignment = escalation.getReassignments().get(0);
+                    if (content != null) {
+                        Object objectFromBytes = ContentMarshallerHelper.unmarshall(content.getContent(), getEnvironment(), getClassLoader());
 
-                task.getTaskData().setStatus(Status.Ready);
-                List potentialOwners = new ArrayList(reassignment.getPotentialOwners());
-                task.getPeopleAssignments().setPotentialOwners(potentialOwners);
-                task.getTaskData().setActualOwner(null);
+                        if (objectFromBytes instanceof Map) {
+                            variables = (Map) objectFromBytes;
 
-            }
-            for (Notification notification : escalation.getNotifications()) {
-                if (notification.getNotificationType() == NotificationType.Email) {
-                    logger.log(Level.INFO, " ### Sending an Email");
-                    //@TODO: this should only send an event and a specific NotificationObserver 
-                    //     should be implemented for Email Notifications
-                    //executeEmailNotification((EmailNotification) notification, task, content);
-                    notificationEvents.fire(new NotificationEvent(notification, task, content));
+                        } else {
+
+                            variables = new HashMap<String, Object>();
+                            variables.put("content", objectFromBytes);
+                        }
+                    } else {
+                        variables = Collections.emptyMap();
+                    }
+
+                if (deadline == null || deadline.getEscalations() == null ) {
+                    return;
+                }
+
+                for (Escalation escalation : deadline.getEscalations()) {
+
+                    // we won't impl constraints for now
+                    //escalation.getConstraints()
+
+                    // run reassignment first to allow notification to be send to new potential owners
+                    if (!escalation.getReassignments().isEmpty()) {
+                        // get first and ignore the rest.
+                        Reassignment reassignment = escalation.getReassignments().get(0);
+
+                        task.getTaskData().setStatus(Status.Ready);
+                        List potentialOwners = new ArrayList(reassignment.getPotentialOwners());
+                        task.getPeopleAssignments().setPotentialOwners(potentialOwners);
+                        task.getTaskData().setActualOwner(null);
+
+                    }
+                    for (Notification notification : escalation.getNotifications()) {
+                        if (notification.getNotificationType() == NotificationType.Email) {
+                            logger.log(Level.INFO, " ### Sending an Email");
+                            notificationEvents.fire(new NotificationEvent(notification, task, variables));
+                        }
+                    }
                 }
             }
         }
-
+       // completeOperation(ut, entityManager);
         deadline.setEscalated(true);
     }
 
-    public void schedule(long taskId, long deadlineId, long delay) {
-        ScheduledFuture<ScheduledTaskDeadline> scheduled = scheduler.schedule(new ScheduledTaskDeadline(taskId, deadlineId),
-                delay,
-                TimeUnit.MILLISECONDS);
-        List<ScheduledFuture<ScheduledTaskDeadline>> knownFutures = scheduledTaskDeadlines.get(taskId);
+    public void schedule(long taskId, long deadlineId, long delay, DeadlineType type) {
+        ScheduledFuture<ScheduledTaskDeadline> scheduled = scheduler.schedule(new ScheduledTaskDeadline(taskId, deadlineId, type), delay, TimeUnit.MILLISECONDS);
+        
+        List<ScheduledFuture<ScheduledTaskDeadline>> knownFutures = null;
+        if (type == DeadlineType.START) {
+            knownFutures = this.startScheduledTaskDeadlines.get(taskId);
+        } else if (type == DeadlineType.END) {
+            knownFutures = this.endScheduledTaskDeadlines.get(taskId);
+        }
         if (knownFutures == null) {
             knownFutures = new CopyOnWriteArrayList<ScheduledFuture<ScheduledTaskDeadline>>();
         }
         knownFutures.add(scheduled);
-        this.scheduledTaskDeadlines.put(taskId, knownFutures);
+        if (type == DeadlineType.START) {
+            this.startScheduledTaskDeadlines.put(taskId, knownFutures);
+        } else if (type == DeadlineType.END) {
+            this.endScheduledTaskDeadlines.put(taskId, knownFutures);
+        }
     }
 
-    public void unschedule(long taskId) {
-        List<ScheduledFuture<ScheduledTaskDeadline>> knownFeatures = scheduledTaskDeadlines.remove(taskId);
-        if (knownFeatures == null) {
+    public void unschedule(long taskId, DeadlineType type) {
+        List<ScheduledFuture<ScheduledTaskDeadline>> knownFutures = null;
+        if (type == DeadlineType.START) {
+            knownFutures = this.startScheduledTaskDeadlines.get(taskId);
+        } else if (type == DeadlineType.END) {
+            knownFutures = this.endScheduledTaskDeadlines.get(taskId);
+        }
+        if (knownFutures == null) {
             return;
         }
-        Iterator<ScheduledFuture<ScheduledTaskDeadline>> it = knownFeatures.iterator();
+        Iterator<ScheduledFuture<ScheduledTaskDeadline>> it = knownFutures.iterator();
         while (it.hasNext()) {
             ScheduledFuture<ScheduledTaskDeadline> scheduled = it.next();
             try {
@@ -150,130 +226,29 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             }
         }
     }
+    
+    protected Environment getEnvironment() {
+        return null;
+    }
+    
+    protected ClassLoader getClassLoader() {
+        return null;
+    }
 
-//     public void executeEmailNotification(EmailNotification notification,
-//                                         Task task,
-//                                         Content content) {
-//
-//        // group users into languages
-//        Map<String, List<User>> users = new HashMap<String, List<User>>();
-//        for ( OrganizationalEntity entity : notification.getBusinessAdministrators() ) {
-//            if ( entity instanceof Group ) {
-//                buildMapByLanguage( users,
-//                                    (Group) entity );
-//            } else {
-//                buildMapByLanguage( users,
-//                                    (User) entity );
-//            }
-//        }
-//
-//        for ( OrganizationalEntity entity : notification.getRecipients() ) {
-//            if ( entity instanceof Group ) {
-//                buildMapByLanguage( users,
-//                                    (Group) entity );
-//            } else {
-//                buildMapByLanguage( users,
-//                                    (User) entity );
-//            }
-//        }
-//
-//        Map<String, Object> doc = null;
-//        if ( content != null ) {
-//            Object objectFromBytes = null;
-//            try {
-//                objectFromBytes = ContentMarshallerHelper.unmarshall( content.getContent(), environment, classLoader);
-//
-//            } catch (Exception e) {
-//                //objectFromBytes = TaskService.eval( new InputStreamReader(new ByteArrayInputStream(content.getContent())) );
-//            }
-//            if (objectFromBytes instanceof Map) {
-//                doc = (Map)objectFromBytes;
-//
-//            } else {
-//
-//                doc = new HashMap<String, Object>();
-//                doc.put("content", objectFromBytes);
-//            }
-//        } else {
-//            doc = Collections.emptyMap();
-//        }
-//
-//        Map<Language, EmailNotificationHeader> headers = notification.getEmailHeaders();
-//        
-//        for ( Iterator<Map.Entry<String, List<User>>> it = users.entrySet().iterator(); it.hasNext(); ) {
-//            Map.Entry<String, List<User>> entry = it.next();
-//            EmailNotificationHeader header = headers.get( new Language(entry.getKey())  );
-//
-//            Map<String, Object> email = new HashMap<String, Object>();
-//            StringBuilder to = new StringBuilder();
-//            boolean first = true;
-//            for ( User user : entry.getValue() ) {
-//                if ( !first ) {
-//                    to.append( ';' );
-//                }
-//                String emailAddress = userInfo.getEmailForEntity( user );
-//                to.append( emailAddress );
-//                first = false;
-//            }
-//            email.put( "To",
-//                       to.toString() );
-//
-//            if ( header.getFrom() != null && header.getFrom().trim().length() > 0 ) {
-//                email.put( "From",
-//                           header.getFrom() );
-//            } else {
-//                email.put( "From",
-//                           from );
-//            }
-//
-//            if ( header.getReplyTo() != null && header.getReplyTo().trim().length() > 0 ) {
-//                email.put( "Reply-To",
-//                           header.getReplyTo() );
-//            } else {
-//                email.put( "Reply-To",
-//                           replyTo );
-//            }
-//
-//            Map<String, Object> vars = new HashMap<String, Object>();
-//            vars.put( "doc",
-//                      doc );
-//            // add internal items to be able to reference them in templates
-//            vars.put("processInstanceId", task.getTaskData().getProcessInstanceId());
-//            vars.put("processSessionId", task.getTaskData().getProcessSessionId());
-//            vars.put("workItemId", task.getTaskData().getWorkItemId());            
-//            vars.put("expirationTime", task.getTaskData().getExpirationTime());
-//            vars.put("taskId", task.getId());
-//            vars.put("owners", task.getPeopleAssignments().getPotentialOwners());
-//            
-//            String subject = (String) TemplateRuntime.eval( header.getSubject(),
-//                                                            vars );
-//            String body = (String) TemplateRuntime.eval( header.getBody(),
-//                                                         vars );
-//
-//            email.put( "Subject",
-//                       subject );
-//            email.put( "Body",
-//                       body );
-//
-//            WorkItemImpl workItem = new WorkItemImpl();
-//            workItem.setParameters( email );
-//
-//            handler.executeWorkItem( workItem,
-//                                     manager );
-//        }
-//    }
-    public class ScheduledTaskDeadline
-            implements
-            Callable {
+    public class ScheduledTaskDeadline implements
+            Callable, Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         private long taskId;
         private long deadlineId;
+        private DeadlineType type;
 
         public ScheduledTaskDeadline(long taskId,
-                long deadlineId) {
+                long deadlineId, DeadlineType type) {
             this.taskId = taskId;
             this.deadlineId = deadlineId;
-
+            this.type = type;
         }
 
         public long getTaskId() {
@@ -283,11 +258,14 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         public long getDeadlineId() {
             return deadlineId;
         }
+        
+        public DeadlineType getType() {
+            return this.type;
+        }
 
         public Object call() throws Exception {
 
-            executeEscalatedDeadline(taskId,
-                    deadlineId);
+            executeEscalatedDeadline(taskId, deadlineId, type);
 
             return null;
         }
@@ -298,6 +276,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             int result = 1;
             result = prime * result + (int) (deadlineId ^ (deadlineId >>> 32));
             result = prime * result + (int) (taskId ^ (taskId >>> 32));
+            result = prime * result + type.hashCode();
             return result;
         }
 
@@ -319,49 +298,68 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             if (taskId != other.taskId) {
                 return false;
             }
+            if (type == null) {
+                if (other.getType() != null) {
+                    return false;
+                }
+            } else if (type.equals(other.getType())) {
+                return false;
+            }
             return true;
         }
     }
 
-//     private void buildMapByLanguage(Map<String, List<User>> map,
-//                                    Group group) {
-//        for ( Iterator<OrganizationalEntity> it = userInfo.getMembersForGroup( group ); it.hasNext(); ) {
-//            OrganizationalEntity entity = it.next();
-//            if ( entity instanceof Group ) {
-//                buildMapByLanguage( map,
-//                                    (Group) entity );
-//            } else {
-//                buildMapByLanguage( map,
-//                                    (User) entity );
+    
+    /*
+     * following are supporting methods to allow execution on application startup
+     * as at that time RequestScoped entity manager cannot be used so instead
+     * use EntityMnagerFactory and manage transaction manually
+     */
+//    protected EntityManager getEntityManager() {
+//        try {
+//            ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().toString();          
+//            return ((JbpmServicesPersistenceManagerImpl)this.pm).getEm();
+//        } catch (ContextNotActiveException e) {
+//            EntityManager em = ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().getEntityManagerFactory().createEntityManager();
+//            return em;
+//        }
+//    }
+//    
+//    protected UserTransaction setupEnvironment() {
+//        UserTransaction ut = null;
+//        try {
+//            ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().toString();
+//        } catch (ContextNotActiveException e) {
+//            try {
+//                ut = InitialContext.doLookup("java:comp/UserTransaction");
+//            } catch (Exception ex) {
+//                try {
+//                    ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
+//                    
+//                } catch (Exception e1) {
+//                    throw new RuntimeException("Cannot find UserTransaction", e1);
+//                }
+//            }
+//            try {
+//                ut.begin();
+//            } catch (Exception ex) {
+//                
+//            }
+//        }
+//        
+//        return ut;
+//    }
+//    protected void completeOperation(UserTransaction ut, EntityManager entityManager) {
+//        if (ut != null) {
+//            try {
+//                ut.commit();
+//                if (entityManager != null) {
+//                    entityManager.clear();
+//                    entityManager.close();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
 //            }
 //        }
 //    }
-//
-//    private void buildMapByLanguage(Map<String, List<User>> map,
-//                                    User user) {
-//        String language = userInfo.getLanguageForEntity( user );
-//        List<User> list = map.get( language );
-//        if ( list == null ) {
-//            list = new ArrayList<User>();
-//            map.put( language,
-//                     list );
-//        }
-//        list.add( user );
-//    }
-    protected void setValidStatuses() {
-        validStatuses.add(Status.Created);
-        validStatuses.add(Status.Ready);
-        validStatuses.add(Status.Reserved);
-        validStatuses.add(Status.InProgress);
-        validStatuses.add(Status.Suspended);
-    }
-
-    protected boolean isInValidStatus(Task task) {
-
-        if (this.validStatuses.contains(task.getTaskData().getStatus())) {
-            return true;
-        }
-        return false;
-
-    }
 }

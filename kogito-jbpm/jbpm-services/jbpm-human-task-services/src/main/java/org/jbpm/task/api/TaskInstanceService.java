@@ -13,7 +13,6 @@ import org.jbpm.task.I18NText;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
-import org.jbpm.task.TaskDef;
 
 /**
  * The Task Instance Service is in charge of
@@ -27,12 +26,6 @@ public interface TaskInstanceService {
      * LIFECYCLE METHODS
      *
      */
-    long newTask(String name, Map<String, Object> params);
-
-    long newTask(TaskDef def, Map<String, Object> params);
-
-    long newTask(TaskDef def, Map<String, Object> params, boolean deploy);
-
     long addTask(Task task, Map<String, Object> params);
 
     long addTask(Task task, ContentData data);

@@ -7,6 +7,8 @@ package org.jbpm.task.api;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.event.Event;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
@@ -22,7 +24,7 @@ import org.jbpm.task.TaskDef;
 import org.jbpm.task.TaskEvent;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
-import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.jbpm.task.events.NotificationEvent;
 import org.jbpm.task.query.TaskSummary;
 
 /**
@@ -56,7 +58,15 @@ public interface TaskServiceEntryPoint {
     void setTaskQueryService(TaskQueryService queryService);
 
     void setTaskEventsService(TaskEventsService eventsService);
+    
+    void setTaskContentService(TaskContentService taskContentService);
 
+    void setTaskCommentService(TaskCommentService taskCommentService);
+
+    void setTaskAttachmentService(TaskAttachmentService taskAttachmentService);
+
+    void setTaskStatisticService(TaskStatisticsService taskStatisticService);
+    
     // Delegates
     void activate(long taskId, String userId);
 
@@ -152,15 +162,15 @@ public interface TaskServiceEntryPoint {
     
     List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate);
     
+    List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language);
+
+    List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
+    
+    List<Long> getTasksByProcessInstanceId(long processInstanceId);
+    
     User getUserById(String userId);
 
     List<User> getUsers();
-
-    long newTask(String name, Map<String, Object> params);
-
-    long newTask(TaskDef def, Map<String, Object> params);
-
-    long newTask(TaskDef def, Map<String, Object> params, boolean deploy);
 
     long addTask(Task task, Map<String, Object> params);
 
@@ -267,11 +277,18 @@ public interface TaskServiceEntryPoint {
     
     public Map<String, Object> getTaskContent(long taskId);
     
+    //Listeners NON CDI, CDI Listener will be automatically registered
+    void registerTaskLifecycleEventListener(JbpmServicesEventListener<Task> taskLifecycleEventListener);
     
-    //Listeners
+    void registerTaskNotificationEventListener(JbpmServicesEventListener<NotificationEvent> notificationEventListener);
     
-    TaskLifeCycleEventListener getTaskLifeCycleEventListener();
+    Event<Task> getTaskLifecycleEventListeners();
     
+    Event<NotificationEvent> getTaskNotificationEventListeners();
+    
+    void clearTaskLifecycleEventListeners();
+    
+    void clearTasknotificationEventListeners();
     
     
 }

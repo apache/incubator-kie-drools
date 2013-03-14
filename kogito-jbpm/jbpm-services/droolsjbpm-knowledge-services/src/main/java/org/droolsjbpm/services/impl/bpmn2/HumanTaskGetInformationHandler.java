@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import org.jbpm.bpmn2.xml.UserTaskHandler;
 import org.jbpm.task.TaskDef;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 
 import org.w3c.dom.Element;
@@ -32,7 +31,7 @@ import org.w3c.dom.Node;
 @ApplicationScoped
 public class HumanTaskGetInformationHandler extends UserTaskHandler {
 
-    private ProcessDescRepoHelper repo;
+    private ProcessDescRepoHelper repositoryHelper;
     
     @Inject
     private ProcessDescriptionRepository repository;
@@ -87,7 +86,7 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         for (Map.Entry<String, String> out : dataOutputs.entrySet()) {
             outputParams.put(out.getKey(), out.getValue());
         }
-        String mainProcessId = repo.getProcess().getId();
+        String mainProcessId = repositoryHelper.getProcess().getId();
 
         repository.getProcessDesc(mainProcessId).getTasks().put(task.getName(), task);
         repository.getProcessDesc(mainProcessId).getTaskInputMappings().put(task.getName(), inputParams);
@@ -97,12 +96,18 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
     @Override
     protected String readPotentialOwner(org.w3c.dom.Node xmlNode, HumanTaskNode humanTaskNode) {
         String userOrGroup = xmlNode.getFirstChild().getFirstChild().getFirstChild().getTextContent();
-        String mainProcessId = repo.getProcess().getId();
+        String mainProcessId = repositoryHelper.getProcess().getId();
         repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(), userOrGroup);
         return userOrGroup;
     }
 
-    public void setRepo(ProcessDescRepoHelper repo) {
-        this.repo = repo;
+    public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
+        this.repositoryHelper = repositoryHelper;
     }
+
+    public void setRepository(ProcessDescriptionRepository repository) {
+        this.repository = repository;
+    }
+    
+    
 }

@@ -14,19 +14,24 @@ public class GetReusableSubProcessesHandler extends CallActivityHandler {
     @Inject
     private ProcessDescriptionRepository repository;
     
-    private ProcessDescRepoHelper repo;
+    private ProcessDescRepoHelper repositoryHelper;
     
     @Override
     protected void handleNode(Node node, Element element, String uri,
             String localName, ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-        String mainProcessId = repo.getProcess().getId();
+        String mainProcessId = repositoryHelper.getProcess().getId();
         SubProcessNode subProcess = (SubProcessNode) node;
         repository.getProcessDesc(mainProcessId).getReusableSubProcesses().add(subProcess.getProcessId());
     }
 
     
-    public void setRepo(ProcessDescRepoHelper repo) {
-        this.repo = repo;
+    public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
+        this.repositoryHelper = repositoryHelper;
     }
+
+    public void setRepository(ProcessDescriptionRepository repository) {
+        this.repository = repository;
+    }
+    
 }

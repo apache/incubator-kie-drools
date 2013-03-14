@@ -9,8 +9,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
@@ -37,6 +40,7 @@ import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.api.TaskStatisticsService;
+import org.jbpm.task.events.NotificationEvent;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.utils.ContentMarshallerHelper;
@@ -65,15 +69,17 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     private TaskContentService taskContentService;
     @Inject
     private TaskCommentService taskCommentService;
-    
     @Inject
     private TaskAttachmentService taskAttachmentService;
-    
     @Inject 
     private TaskStatisticsService taskStatisticService;
-    
     @Inject
     private TaskLifeCycleEventListener taskLifeCycleEventListener;
+    
+    // External NON CDI event Listeners for Task Lifecycle
+    private Event<Task> taskEvents = new JbpmServicesEventImpl<Task>();
+    // External NON CDI event listener for Task Deadline and Email notifications
+    private Event<NotificationEvent> taskNotificationEvents = new JbpmServicesEventImpl<NotificationEvent>();
     
     private UserInfo userInfo;
     
@@ -85,7 +91,31 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public TaskDefService getTaskDefService() {
         return taskDefService;
     }
+    
+    public void registerTaskLifecycleEventListener(JbpmServicesEventListener<Task> taskLifecycleEventListener){
+        ((JbpmServicesEventImpl<Task>)taskEvents).addListener(taskLifecycleEventListener);
+    }
 
+    public void registerTaskNotificationEventListener(JbpmServicesEventListener<NotificationEvent> notificationEventListener){
+        ((JbpmServicesEventImpl<NotificationEvent>)taskNotificationEvents).addListener(notificationEventListener);
+    }
+    
+    public void setTaskContentService(TaskContentService taskContentService) {
+        this.taskContentService = taskContentService;
+    }
+
+    public void setTaskCommentService(TaskCommentService taskCommentService) {
+        this.taskCommentService = taskCommentService;
+    }
+
+    public void setTaskAttachmentService(TaskAttachmentService taskAttachmentService) {
+        this.taskAttachmentService = taskAttachmentService;
+    }
+
+    public void setTaskStatisticService(TaskStatisticsService taskStatisticService) {
+        this.taskStatisticService = taskStatisticService;
+    }
+    
     @Override
     public TaskInstanceService getTaskInstanceService() {
         return taskInstanceService;
@@ -188,10 +218,6 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
 
     public Group getGroupById(String groupId) {
         return taskIdentityService.getGroupById(groupId);
-    }
-
-    public long newTask(String name, Map<String, Object> params) {
-        return taskInstanceService.newTask(name, params);
     }
 
     public void activate(long taskId, String userId) {
@@ -361,14 +387,6 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
 
     public List<TaskEvent> getTaskEventsById(long taskId) {
         return taskEventsService.getTaskEventsById(taskId);
-    }
-
-    public long newTask(TaskDef def, Map<String, Object> params) {
-        return taskInstanceService.newTask(def, params);
-    }
-    
-    public long newTask(TaskDef def, Map<String, Object> params, boolean deploy) {
-        return taskInstanceService.newTask(def, params, deploy);
     }
 
     public long addTask(Task task, Map<String, Object> params){
@@ -576,6 +594,44 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     @Override
     public List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> statuses, Date expirationDate) {
         return taskQueryService.getTasksOwnedByExpirationDateOptional(userId, statuses, expirationDate);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessId(
+            long processInstanceId, List<Status> status, String language) {
+        return taskQueryService.getTasksByStatusByProcessId(processInstanceId, status, language);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(
+            long processInstanceId, List<Status> status, String taskName,
+            String language) {
+        return taskQueryService.getTasksByStatusByProcessIdByTaskName(processInstanceId, status, taskName, language);
+    }
+
+    @Override
+    public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
+        return taskQueryService.getTasksByProcessInstanceId(processInstanceId);
+    }
+
+    @Override
+    public Event<Task> getTaskLifecycleEventListeners() {
+        return taskEvents;
+    }
+
+    @Override
+    public Event<NotificationEvent> getTaskNotificationEventListeners() {
+        return taskNotificationEvents;
+    }
+
+    @Override
+    public void clearTaskLifecycleEventListeners() {
+        ((JbpmServicesEventImpl)taskEvents).clearListeners();
+    }
+
+    @Override
+    public void clearTasknotificationEventListeners() {
+        ((JbpmServicesEventImpl)taskNotificationEvents).clearListeners();
     }
     
     

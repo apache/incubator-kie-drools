@@ -20,10 +20,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.task.Content;
-import org.jbpm.task.ContentData;
 import org.jbpm.task.FaultData;
 import org.jbpm.task.Group;
 import org.jbpm.task.Operation;
@@ -35,7 +34,6 @@ import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.annotations.Internal;
 import org.jbpm.task.api.TaskContentService;
-import org.jbpm.task.api.TaskDefService;
 import org.jbpm.task.api.TaskIdentityService;
 import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.task.events.AfterTaskActivatedEvent;
@@ -82,9 +80,7 @@ import org.mvel2.ParserContext;
 public class MVELLifeCycleManager implements LifeCycleManager {
     
     @Inject 
-    private EntityManager em;
-    @Inject
-    private TaskDefService taskDefService;
+    private JbpmServicesPersistenceManager pm;
     @Inject
     private TaskQueryService taskQueryService;
     @Inject
@@ -104,12 +100,30 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     public MVELLifeCycleManager() {
     }
 
-    public MVELLifeCycleManager(TaskDefService taskDefService, TaskQueryService taskQueryService, TaskIdentityService taskIdentityService, TaskLifeCycleEventListener eventListener) {
-        this.taskDefService = taskDefService;
-        this.taskQueryService = taskQueryService;
-        this.taskIdentityService = taskIdentityService;
-        this.eventListener = eventListener;
+    public void setPm(JbpmServicesPersistenceManager pm) {
+        this.pm = pm;
     }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+    
+    public void setTaskEvents(Event<Task> taskEvents) {
+        this.taskEvents = taskEvents;
+    }
+    
+    public void setTaskQueryService(TaskQueryService taskQueryService) {
+        this.taskQueryService = taskQueryService;
+    }
+
+    public void setTaskIdentityService(TaskIdentityService taskIdentityService) {
+        this.taskIdentityService = taskIdentityService;
+    }
+
+    public void setTaskContentService(TaskContentService taskContentService) {
+        this.taskContentService = taskContentService;
+    }
+    
 
     void evalCommand(final Operation operation, final List<OperationCommand> commands, final Task task,
             final User user, final OrganizationalEntity targetEntity,
@@ -163,10 +177,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
     private boolean isAllowed(final OperationCommand command, final Task task, final User user,
             List<String> groupIds) {
-        //@TODO: Include TaskDef Lookup
-//        if(task.getTaskType() != null && !task.getTaskType().equals("")){
-//            TaskDef taskDef = taskDefService.getTaskDefById(task.getTaskType()); 
-//        }
+
 
         boolean operationAllowed = false;
         for (Allowed allowed : command.getAllowed()) {
@@ -226,11 +237,6 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
     private void commands(final OperationCommand command, final Task task, final User user,
             final OrganizationalEntity targetEntity) {
-
-        //@TODO: Include TaskDef Lookup
-//        if(task.getTaskType() != null && !task.getTaskType().equals("")){
-//            TaskDef taskDef = taskDefService.getTaskDefById(task.getTaskType()); 
-//        }
 
 
         final PeopleAssignments people = task.getPeopleAssignments();
@@ -321,7 +327,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                         FaultData faultData = ContentMarshallerHelper.marshalFault(data, null);
                         Content content = new Content();
                         content.setContent(faultData.getContent());
-                        em.persist(content);
+                        pm.persist(content);
                         task.getTaskData().setFault(content.getId(), faultData);
 
 
@@ -523,8 +529,8 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     }
 
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
-        final Task task = em.find(Task.class, taskId);
-        final User user = em.find(User.class, userId);
+        final Task task = pm.find(Task.class, taskId);
+        final User user = pm.find(User.class, userId);
         if (isAllowed(user, null, task.getPeopleAssignments().getBusinessAdministrators())) {
 
 

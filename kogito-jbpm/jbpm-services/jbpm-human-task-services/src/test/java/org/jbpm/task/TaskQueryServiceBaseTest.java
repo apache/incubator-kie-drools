@@ -639,4 +639,65 @@ public abstract class TaskQueryServiceBaseTest extends BaseTest {
         List<TaskSummary> tasks = taskService.getTasksAssignedByGroupsByExpirationDateOptional(groupIds, "en-UK", new Date());
         assertEquals(1, tasks.size());
     }
+    
+    @Test
+    public void testGetTasksByProcessInstanceId() {
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 99 } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 100 } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
+        str += "names = [ new I18NText( 'en-UK', 'Another name')] })";
+        task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        List<Long> tasks = taskService.getTasksByProcessInstanceId(99L);
+        assertEquals(1, tasks.size());
+    }
+    
+    @Test
+    public void testGetTasksByStatusByProcessId() {
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 99 } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 100 } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
+        str += "names = [ new I18NText( 'en-UK', 'Another name')] })";
+        task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        List<Status> statuses = new ArrayList<Status>();      
+        statuses.add(Status.Reserved);
+        List<TaskSummary> tasks = taskService.getTasksByStatusByProcessId(99L, statuses, "en-UK");
+        assertEquals(1, tasks.size());
+    }
+    
+    @Test
+    public void testGetTasksByStatusByProcessIdByTaskName() {
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 99 } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 100 } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
+        str += "names = [ new I18NText( 'en-UK', 'Another name')] })";
+        task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        List<Status> statuses = new ArrayList<Status>();      
+        statuses.add(Status.Reserved);
+        List<TaskSummary> tasks = taskService.getTasksByStatusByProcessIdByTaskName(99L, statuses, "This is my task name", "en-UK");
+        assertEquals(1, tasks.size());
+    }
 }

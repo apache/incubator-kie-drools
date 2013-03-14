@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Status;
 import org.jbpm.task.api.TaskQueryService;

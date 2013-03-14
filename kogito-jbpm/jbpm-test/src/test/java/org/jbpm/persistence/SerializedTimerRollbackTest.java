@@ -1,6 +1,5 @@
 package org.jbpm.persistence;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -15,12 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.marshalling.impl.MarshallingConfigurationImpl;
@@ -28,243 +21,186 @@ import org.drools.marshalling.impl.ProtobufMarshaller;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
-import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
-import org.jbpm.task.identity.UserGroupCallbackManager;
+
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.local.LocalTaskService;
-import org.jbpm.task.utils.OnErrorAction;
-import org.junit.After;
-import org.junit.Before;
+
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.SystemEventListenerFactory;
 import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderError;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
-import org.kie.io.ResourceType;
-import org.kie.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 
 import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
+import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.test.JbpmJUnitTestCase;
+import org.junit.Before;
+import org.junit.Ignore;
+
+public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
+
+    public SerializedTimerRollbackTest() {
+        super(true);
+        setPersistence(true);
+    }
 
 
-public class SerializedTimerRollbackTest {
-
-    private PoolingDataSource ds;
-    private EntityManagerFactory emf;
-    
     @Before
-    public void setup() {
-        ds = new PoolingDataSource();
-        ds.setUniqueName( "jdbc/jbpm-ds" );
-        ds.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds.setMaxPoolSize( 3 );
-        ds.setAllowLocalTransactions( true );
-        ds.getDriverProperties().put( "user", "sa" );
-        ds.getDriverProperties().put( "password", "sasa" );
-        ds.getDriverProperties().put( "URL", "jdbc:h2:mem:mydb" );
-        ds.init();
-        UserGroupCallbackManager.getInstance().setCallback(null);
-        
-        emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
+    public void setUp() throws Exception {
+        super.setUp();
         try {
             UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
             ut.begin();
-            EntityManager em = emf.createEntityManager().getEntityManagerFactory().createEntityManager();
+            EntityManager em = getEmf().createEntityManager();
             em.createQuery("delete from SessionInfo").executeUpdate();
             em.close();
             ut.commit();
         } catch (Exception e) {
-            
+            System.out.println(" >>> Something went wrong deleting the Session Info");
         }
+
     }
-    
-    @After
-    public void tearDown() {
-        emf.close();
-        ds.close();
-    }
-    
+
     @Test
     public void testSerizliableTestsWithExternalRollback() {
         try {
 
-            Environment env = KnowledgeBaseFactory.newEnvironment();
-            
             TransactionManager tm = TransactionManagerServices.getTransactionManager();
-            env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
-            env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
-            TaskService taskService = new org.jbpm.task.service.TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+
+            StatefulKnowledgeSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
+            System.out.println("Created knowledge session");
+
+            TaskServiceEntryPoint taskService = getTaskService(sesion);
             Map<String, User> users = new HashMap<String, User>();
             users.put("Administrator", new User("Administrator"));
             users.put("john", new User("john"));
             Map<String, Group> groups = new HashMap<String, Group>();
             taskService.addUsersAndGroups(users, groups);
-            org.jbpm.task.TaskService humanTaskClient = new LocalTaskService(taskService);;
-            
-            System.out.println("Task service created");
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add(ResourceFactory.newClassPathResource("HumanTaskWithBoundaryTimer.bpmn"),ResourceType.BPMN2);
-            if (kbuilder.getErrors()!=null){
-                for(KnowledgeBuilderError error: kbuilder.getErrors()){
-                    System.err.println(error.toString());
-                }
-            }
-            System.out.println("BPMN process knowledge acquired");
-            
-            KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-            StatefulKnowledgeSession sesion = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-            System.out.println("Created knowledge session");
-            
-            LocalHTWorkItemHandler localHTWorkItemHandler = new LocalHTWorkItemHandler(humanTaskClient, sesion, OnErrorAction.RETHROW);
-            localHTWorkItemHandler.connect();
-            sesion.getWorkItemManager().registerWorkItemHandler("Human Task", localHTWorkItemHandler);
+
+
+
             System.out.println("Attached human task work item handler");
             List<Long> committedProcessInstanceIds = new ArrayList<Long>();
-            for(int i=0;i<10;i++){
+            for (int i = 0; i < 10; i++) {
                 tm.begin();
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("test", "john");
-                System.out.println("Creating process instance: "+ i);
+                System.out.println("Creating process instance: " + i);
                 ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
-                if (i%2 == 0) {
+                if (i % 2 == 0) {
                     committedProcessInstanceIds.add(pi.getId());
                     tm.commit();
                 } else {
                     tm.rollback();
                 }
             }
-            
-            Connection c = ds.getConnection();
+
+            Connection c = getDs().getConnection();
             Statement st = c.createStatement();
             ResultSet rs = st.executeQuery("select rulesbytearray from sessioninfo");
             rs.next();
             Blob b = rs.getBlob("rulesbytearray");
             assertNotNull(b);
-            
+
             KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            ProtobufMarshaller marshaller = new ProtobufMarshaller(builder.newKnowledgeBase(),new MarshallingConfigurationImpl());
+            ProtobufMarshaller marshaller = new ProtobufMarshaller(builder.newKnowledgeBase(), new MarshallingConfigurationImpl());
             StatefulKnowledgeSession session = marshaller.unmarshall(b.getBinaryStream());
             assertNotNull(session);
-            
-            TimerManager timerManager = ((InternalProcessRuntime)((InternalKnowledgeRuntime)session).getProcessRuntime()).getTimerManager();
+
+            TimerManager timerManager = ((InternalProcessRuntime) ((InternalKnowledgeRuntime) session).getProcessRuntime()).getTimerManager();
             assertNotNull(timerManager);
-            
+
             Collection<TimerInstance> timers = timerManager.getTimers();
             assertNotNull(timers);
             assertEquals(5, timers.size());
-            
+
             for (TimerInstance timerInstance : timers) {
                 assertTrue(committedProcessInstanceIds.contains(timerInstance.getProcessInstanceId()));
                 sesion.abortProcessInstance(timerInstance.getProcessInstanceId());
             }
-            LocalTaskService lts = new LocalTaskService(taskService);
-            List<TaskSummary> tasks = lts.getTasksAssignedAsPotentialOwner("john", "en-UK");
-            lts.dispose();
+
+            List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
             assertEquals(0, tasks.size());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             fail("Exception thrown");
         }
-        
+
     }
-    
+
     @Test
+    @Ignore
     public void testSerizliableTestsWithEngineRollback() {
         try {
-
-            Environment env = KnowledgeBaseFactory.newEnvironment();            
-            env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
-            env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
-            TaskService taskService = new org.jbpm.task.service.TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+    
+            StatefulKnowledgeSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
+            System.out.println("Created knowledge session");
+             
+            TaskServiceEntryPoint taskService = getTaskService(sesion);
+            System.out.println("Task service created");
             Map<String, User> users = new HashMap<String, User>();
             users.put("Administrator", new User("Administrator"));
             users.put("john", new User("john"));
             Map<String, Group> groups = new HashMap<String, Group>();
             taskService.addUsersAndGroups(users, groups);
-            org.jbpm.task.TaskService humanTaskClient = new LocalTaskService(taskService);;
-            
-            System.out.println("Task service created");
-            
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add(ResourceFactory.newClassPathResource("HumanTaskWithBoundaryTimer.bpmn"),ResourceType.BPMN2);
-            if (kbuilder.getErrors()!=null){
-                for(KnowledgeBuilderError error: kbuilder.getErrors()){
-                    System.err.println(error.toString());
-                }
-            }
-            System.out.println("BPMN process knowledge acquired");
-            
-            KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-            StatefulKnowledgeSession sesion = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-            System.out.println("Created knowledge session");
-            
-            LocalHTWorkItemHandler localHTWorkItemHandler = new LocalHTWorkItemHandler(humanTaskClient, sesion, OnErrorAction.RETHROW);
-            localHTWorkItemHandler.connect();
-            sesion.getWorkItemManager().registerWorkItemHandler("Human Task", localHTWorkItemHandler);
+
+
             System.out.println("Attached human task work item handler");
             List<Long> committedProcessInstanceIds = new ArrayList<Long>();
-            for(int i=0;i<10;i++){
-                if (i%2 == 0) {
+            for (int i = 0; i < 10; i++) {
+                if (i % 2 == 0) {
                     Map<String, Object> params = new HashMap<String, Object>();
                     params.put("test", "john");
-                    System.out.println("Creating process instance: "+ i);
+                    System.out.println("Creating process instance: " + i);
                     ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
-                
+
                     committedProcessInstanceIds.add(pi.getId());
-                
+
                 } else {
                     try {
                         Map<String, Object> params = new HashMap<String, Object>();
                         params.put("test", "test");
-                        System.out.println("Creating process instance: "+ i);
+                        System.out.println("Creating process instance: " + i);
                         ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
                     } catch (Exception e) {
                         System.out.println("Process rolled back");
                     }
                 }
             }
-            
-            Connection c = ds.getConnection();
+
+            Connection c = getDs().getConnection();
             Statement st = c.createStatement();
             ResultSet rs = st.executeQuery("select rulesbytearray from sessioninfo");
             rs.next();
             Blob b = rs.getBlob("rulesbytearray");
             assertNotNull(b);
-            
+
             KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            ProtobufMarshaller marshaller = new ProtobufMarshaller(builder.newKnowledgeBase(),new MarshallingConfigurationImpl());
+            ProtobufMarshaller marshaller = new ProtobufMarshaller(builder.newKnowledgeBase(), new MarshallingConfigurationImpl());
             StatefulKnowledgeSession session = marshaller.unmarshall(b.getBinaryStream());
             assertNotNull(session);
-            
-            TimerManager timerManager = ((InternalProcessRuntime)((InternalKnowledgeRuntime)session).getProcessRuntime()).getTimerManager();
+
+            TimerManager timerManager = ((InternalProcessRuntime) ((InternalKnowledgeRuntime) session).getProcessRuntime()).getTimerManager();
             assertNotNull(timerManager);
-            
+
             Collection<TimerInstance> timers = timerManager.getTimers();
             assertNotNull(timers);
             assertEquals(5, timers.size());
-            
+
             for (TimerInstance timerInstance : timers) {
                 assertTrue(committedProcessInstanceIds.contains(timerInstance.getProcessInstanceId()));
                 sesion.abortProcessInstance(timerInstance.getProcessInstanceId());
             }
-            LocalTaskService lts = new LocalTaskService(taskService);
-            List<TaskSummary> tasks = lts.getTasksAssignedAsPotentialOwner("john", "en-UK");
-            lts.dispose();
+            List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
             assertEquals(0, tasks.size());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             fail("Exception thrown");
         }
     }
-    
 }

@@ -4,8 +4,9 @@ import java.util.List;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
+import org.jbpm.task.api.TaskServiceEntryPoint;
 
-import org.jbpm.task.TaskService;
+
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
     @Test
     public void testProcess() throws Exception {
         StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        TaskServiceEntryPoint taskService = getTaskService(ksession);
 
         ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 
@@ -70,7 +71,7 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
     @Test
     public void testTransactions() throws Exception {
         StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        TaskServiceEntryPoint taskService = getTaskService(ksession);
 
         UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
