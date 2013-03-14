@@ -45,8 +45,6 @@ import org.drools.rule.Pattern;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -713,7 +711,7 @@ public abstract class BetaNode extends LeftTupleSource
         this.concurrentRightTupleMemory = concurrentRightTupleMemory;
     }
     
-    public Memory createMemory(RuleBaseConfiguration config) {
+    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return constraints.createBetaMemory(config, getType());
     }
 

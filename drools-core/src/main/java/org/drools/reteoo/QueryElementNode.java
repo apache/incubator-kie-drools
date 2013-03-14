@@ -774,7 +774,7 @@ public class QueryElementNode extends LeftTupleSource
         return true;
     }
 
-    public Memory createMemory(RuleBaseConfiguration config) {
+    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new QueryElementNodeMemory(this);
     }
     

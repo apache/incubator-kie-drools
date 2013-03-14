@@ -62,7 +62,7 @@ public class RiaPathMemory extends PathMemory {
                 findAndAddTN( ( LeftTupleSink ) childSink, terminalNodeNames);
             }
         } else {
-            for ( LeftTupleSink childLtSink : ((BetaNode)ltsink).getSinkPropagator().getSinks() )  {
+            for ( LeftTupleSink childLtSink : ((LeftTupleSource)ltsink).getSinkPropagator().getSinks() )  {
                 findAndAddTN(childLtSink, terminalNodeNames);
             }
         }

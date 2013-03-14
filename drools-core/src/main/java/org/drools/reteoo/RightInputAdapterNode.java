@@ -136,12 +136,12 @@ public class RightInputAdapterNode extends ObjectSource
     /**
      * Creates and return the node memory
      */    
-    public Memory createMemory(final RuleBaseConfiguration config) {
+    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         RiaNodeMemory rianMem = new RiaNodeMemory();
         
         if ( this.unlinkingEnabled ) {
             RiaPathMemory pmem = new RiaPathMemory(this);
-            AbstractTerminalNode.initPathMemory(pmem, getLeftTupleSource(), getStartTupleSource() );
+            AbstractTerminalNode.initPathMemory(pmem, getLeftTupleSource(), getStartTupleSource(), wm );
             rianMem.setRiaPathMemory(pmem);
         }
         

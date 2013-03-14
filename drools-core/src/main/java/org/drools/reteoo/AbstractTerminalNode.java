@@ -10,6 +10,7 @@ import org.drools.common.MemoryFactory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
@@ -113,16 +114,16 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public abstract Rule getRule();
     
 
-    public Memory createMemory(RuleBaseConfiguration config) {
+    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         PathMemory rmem = new PathMemory(this);
-        initPathMemory(rmem, getLeftTupleSource(), null);
+        initPathMemory(rmem, getLeftTupleSource(), null, wm );
         return rmem;
     }
 
     /**
      * Creates and return the node memory
      */
-    public static void initPathMemory(PathMemory pmem, LeftTupleSource tupleSource, LeftTupleSource startTupleSource) {
+    public static void initPathMemory(PathMemory pmem, LeftTupleSource tupleSource, LeftTupleSource startTupleSource, InternalWorkingMemory wm) {
             int counter = 0;
             long allLinkedTestMask = 0;
 
@@ -135,7 +136,19 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
                 if ( updateAllLinkedTest && updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
                     updateBitInNewSegment = false;
-                    allLinkedTestMask = allLinkedTestMask | 1;
+                    BetaNode bn = ( BetaNode) tupleSource;
+                    if ( bn.isRightInputIsRiaNode() ) {
+                        // only ria's without reactive subnetworks can be disabled and thus need checking
+                        // The getNodeMemory will call this method recursive for sub networks it reaches
+                        RiaNodeMemory rnmem = ( RiaNodeMemory ) wm.getNodeMemory((MemoryFactory) bn.getRightInput());
+                        if ( rnmem.getRiaPathMemory().getAllLinkedMaskTest() != 0 ) {
+                            allLinkedTestMask = allLinkedTestMask | 1;
+                        }
+                    } else if ( ( !(NodeTypeEnums.NotNode == bn.getType() && !((NotNode)bn).isEmptyBetaConstraints()) &&
+                                 NodeTypeEnums.AccumulateNode != bn.getType()) )  {
+                        // non empty not nodes and accumulates can never be disabled and thus don't need checking
+                        allLinkedTestMask = allLinkedTestMask | 1;
+                    }
                 }
 
                 if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {

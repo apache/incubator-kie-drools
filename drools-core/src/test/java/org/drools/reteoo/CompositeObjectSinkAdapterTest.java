@@ -760,8 +760,8 @@ public class CompositeObjectSinkAdapterTest {
                                          boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
         }
-        public Memory createMemory(RuleBaseConfiguration config) {
-            return super.createMemory( config );
+        public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
+            return super.createMemory( config, wm);
         }
 
         @Override

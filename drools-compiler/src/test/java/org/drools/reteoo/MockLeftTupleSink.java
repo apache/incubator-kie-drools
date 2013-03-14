@@ -202,7 +202,7 @@ public class MockLeftTupleSink extends LeftTupleSource
         return null;
     }
 
-    public Memory createMemory(RuleBaseConfiguration config) {
+    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return null;
     }
 

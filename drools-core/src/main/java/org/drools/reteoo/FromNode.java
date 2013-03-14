@@ -508,7 +508,7 @@ public class FromNode extends LeftTupleSource
         }
     }
 
-    public Memory createMemory(final RuleBaseConfiguration config) {
+    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         BetaMemory beta = new BetaMemory( new LeftTupleList(),
                                           null,
                                           this.betaConstraints.createContext(),
