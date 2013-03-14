@@ -59,14 +59,14 @@ public class ConcurrentNodeMemories implements NodeMemories {
      *
      * @see org.kie.common.NodeMemories#getNodeMemory(org.kie.common.MemoryFactory)
      */
-    public Memory getNodeMemory( MemoryFactory node ) {
+    public Memory getNodeMemory(MemoryFactory node, InternalWorkingMemory wm) {
         if( node.getId() >= this.memories.length() ) {
             resize( node );
         }
         Memory memory = this.memories.get( node.getId() );
 
         if( memory == null ) {
-            memory = createNodeMemory( node );
+            memory = createNodeMemory( node, wm );
         }
 
         return memory;
@@ -81,14 +81,15 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * @param node
      * @return
      */
-    private Memory createNodeMemory( MemoryFactory node ) {
+    private Memory createNodeMemory( MemoryFactory node,
+                                     InternalWorkingMemory wm ) {
         try {
             this.lock.lock();
             // need to try again in a synchronized code block to make sure
             // it was not created yet
             Memory memory = this.memories.get( node.getId() );
             if( memory == null ) {
-                memory = node.createMemory( this.rulebase.getConfiguration() );
+                memory = node.createMemory( this.rulebase.getConfiguration(), wm );
 
                 if( !this.memories.compareAndSet( node.getId(), null, memory ) ) {
                     memory = this.memories.get( node.getId() );

@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -317,7 +316,7 @@ public class WindowNode extends ObjectSource
     /**
      * Creates the WindowNode's memory.
      */
-    public Memory createMemory(final RuleBaseConfiguration config) {
+    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         WindowMemory memory = new WindowMemory();
         memory.context = new ContextEntry[this.constraints.size()];
         int index = 0;

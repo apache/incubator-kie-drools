@@ -265,7 +265,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return this.tupleSource.equals( other.tupleSource ) && this.branchEvaluator.equals( other.branchEvaluator );
     }
 
-    public Memory createMemory(final RuleBaseConfiguration config) {
+    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new ConditionalBranchMemory( branchEvaluator.createContext() );
     }
     

@@ -951,7 +951,7 @@ public abstract class AbstractWorkingMemory
      * @return The node's memory.
      */
     public Memory getNodeMemory(final MemoryFactory node) {
-        return nodeMemories.getNodeMemory( node );
+        return nodeMemories.getNodeMemory( node, this );
     }
 
     public void clearNodeMemory(final MemoryFactory node) {

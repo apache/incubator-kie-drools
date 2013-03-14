@@ -22,7 +22,7 @@ package org.drools.common;
  */
 public interface NodeMemories {
 
-    public Memory getNodeMemory( MemoryFactory node );
+    public Memory getNodeMemory(MemoryFactory node, InternalWorkingMemory wm);
 
     public void clearNodeMemory( MemoryFactory node );
 

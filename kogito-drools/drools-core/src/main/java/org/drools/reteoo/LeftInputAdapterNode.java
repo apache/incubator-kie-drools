@@ -24,7 +24,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleSets;
 import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
-import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
@@ -699,7 +698,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return null;
     }
 
-    public Memory createMemory(RuleBaseConfiguration config) {
+    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new LiaNodeMemory();
     }    
     

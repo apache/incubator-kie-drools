@@ -294,7 +294,7 @@ public class PropagationQueuingNode extends ObjectSource
         throw new UnsupportedOperationException( "PropagationQueueingNode must have its node memory enabled." );
     }
 
-    public Memory createMemory( RuleBaseConfiguration config ) {
+    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new PropagationQueueingNodeMemory();
     }
     

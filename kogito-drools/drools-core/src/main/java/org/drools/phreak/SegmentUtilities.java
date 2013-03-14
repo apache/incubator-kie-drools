@@ -38,14 +38,23 @@ public class SegmentUtilities {
      */
     public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource ,
                                                     final InternalWorkingMemory wm) {
+        boolean initRtn = false;
+        if ( tupleSource.getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+            initRtn = true;
+        }
+
     	// find segment root
     	while ( tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode &&
                 SegmentUtilities.parentInSameSegment(tupleSource)  ) {
     		tupleSource = tupleSource.getLeftTupleSource();
     	}
-    	
+
     	LeftTupleSource segmentRoot = tupleSource;
-    	
+
+        if ( initRtn ) {
+            initialiseRtnMemory(segmentRoot, wm);
+        }
+
     	SegmentMemory smem = new SegmentMemory(segmentRoot);
     
     	// Iterate all nodes on the same segment, assigning their position as a bit mask value
@@ -55,17 +64,17 @@ public class SegmentUtilities {
     	
     	while ( true ) {
             if ( NodeTypeEnums.isBetaNode( tupleSource ) ) {
-                BetaMemory betaMemory;
+                BetaMemory bm;
                 BetaNode betaNode = ( BetaNode ) tupleSource;
                 if ( NodeTypeEnums.AccumulateNode == tupleSource.getType() ) {       
-                    betaMemory = (( AccumulateMemory ) smem.createNodeMemory( ( AccumulateNode ) tupleSource, wm  )).getBetaMemory();
+                    bm = (( AccumulateMemory ) smem.createNodeMemory( ( AccumulateNode ) tupleSource, wm  )).getBetaMemory();
                 } else {                    
-                    betaMemory = ( BetaMemory ) smem.createNodeMemory( betaNode, wm );
+                    bm = ( BetaMemory ) smem.createNodeMemory( betaNode, wm );
     
                 }
                 // this must be set first, to avoid recursion as sub networks can be initialised multiple ways
                 // and bm.getSegmentMemory == null check can be used to avoid recursion.
-                betaMemory.setSegmentMemory( smem );
+                bm.setSegmentMemory(smem);
     
                 if ( betaNode.isRightInputIsRiaNode() ) {
                     // Iterate to find outermost rianode
@@ -86,29 +95,21 @@ public class SegmentUtilities {
                     }
 
                     RiaNodeMemory riaMem = ( RiaNodeMemory ) wm.getNodeMemory( (MemoryFactory) riaNode );
-                    // riaMem will be initialised as part of the subnetwork createSegmentMemory, if it does not already exist.
-                    betaMemory.setRiaRuleMemory(riaMem.getRiaPathMemory());
-
-                    if ( riaMem.getRiaPathMemory().getAllLinkedMaskTest() == 0 ) {
-                        // node's with right inputs that have no beta nodes, need to have their bit's set
-                        smem.linkNode( nodePosMask, wm );
+                    bm.setRiaRuleMemory(riaMem.getRiaPathMemory());
+                    if ( riaMem.getRiaPathMemory().getAllLinkedMaskTest() > 0 ) {
+                        // only ria's with reactive subnetworks can be disabled and thus need checking
+                        allLinkedTestMask = allLinkedTestMask | nodePosMask;
                     }
+                } else if ( ( !(NodeTypeEnums.NotNode == tupleSource.getType() && !((NotNode)tupleSource).isEmptyBetaConstraints()) &&
+                           NodeTypeEnums.AccumulateNode != tupleSource.getType()) ) {
+                        // non empty not nodes and accumulates can never be disabled and thus don't need checking
+                        allLinkedTestMask = allLinkedTestMask | nodePosMask;
 
-//                    SegmentMemory subNetworkSegmentMemory = mem.getSegmentMemory();
-//                    if ( subNetworkSegmentMemory == null ) {
-//                        // we need to stop recursion here
-//                        subNetworkSegmentMemory = createSegmentMemory( ( LeftTupleSource ) riaNode.getLeftTupleSource(), wm );
-//                    }
-//                    betaMemory.setRiaPathMemory( (RiaPathMemory) ((RiaNodeMemory) mem).getRiaPathMemory() );
-//                    if ( subNetworkSegmentMemory.getAllLinkedMaskTest() == 0 ) {
-//                        smem.linkNode( nodePosMask, wm );
-//                    }
                 }
-                betaMemory.setNodePosMaskBit( nodePosMask );
-                allLinkedTestMask = allLinkedTestMask | nodePosMask;
-                if ( NodeTypeEnums.NotNode == tupleSource.getType() ||  NodeTypeEnums.AccumulateNode == tupleSource.getType())  {
-                    // NotNode's and Accumulate are initialised as linkedin
-                    smem.linkNode( nodePosMask, wm );
+                bm.setNodePosMaskBit(nodePosMask);
+                if ( NodeTypeEnums.NotNode == tupleSource.getType() ) {
+                    // not nodes start up linked in
+                    smem.linkNodeWithoutRuleNotify(bm.getNodePosMaskBit());
                 }
                 nodePosMask = nodePosMask << 1;
             } else if ( tupleSource.getType() == NodeTypeEnums.LeftInputAdapterNode ) {                
@@ -217,7 +218,7 @@ public class SegmentUtilities {
         smem.setSegmentPosMaskBit( ruleSegmentPosMask );
         smem.setPos( counter );
     	
-    	SegmentUtilities.updateRiaAndTerminalMemory( 0, tupleSource, tupleSource, smem, wm );
+    	updateRiaAndTerminalMemory( tupleSource, tupleSource, smem, wm );
     	return smem;
     }
 
@@ -283,26 +284,25 @@ public class SegmentUtilities {
      * In the case of the ria node its all the segments up to the start of the subnetwork.
      * This is because the rianode only cares if all of it's segments are linked, then
      * it sets the bit of node it is the right input for.
-     * @param pos
      * @param lt
      * @param originalLt
      * @param smem
      * @param wm
      */
-    public static void updateRiaAndTerminalMemory(int pos, LeftTupleSource lt,
+    public static void updateRiaAndTerminalMemory(LeftTupleSource lt,
                                                   LeftTupleSource originalLt,
                                                   SegmentMemory smem,
                                                   InternalWorkingMemory wm) {
         for ( LeftTupleSink sink : lt.getSinkPropagator().getSinks() ) {
     	    if (NodeTypeEnums.isLeftTupleSource( sink ) ) {
-    	        if ( sink.getType() == NodeTypeEnums.NotNode ) {
+                if ( NodeTypeEnums.NotNode == sink.getType() && ((NotNode)sink).isEmptyBetaConstraints() ) {
     	            BetaMemory bm = ( BetaMemory) wm.getNodeMemory( (MemoryFactory) sink );
     	             if ( bm.getSegmentMemory() == null ) {
     	                 // Not nodes must be initialised
     	                 createSegmentMemory( (NotNode) sink, wm );
     	             }
     	        }
-    	        updateRiaAndTerminalMemory(++pos, ( LeftTupleSource ) sink, originalLt, smem, wm);
+    	        updateRiaAndTerminalMemory(( LeftTupleSource ) sink, originalLt, smem, wm);
     	    } else if ( sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
     	        // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
     	        if ( inSubNetwork( (RightInputAdapterNode)sink, originalLt ) ) {
@@ -310,20 +310,28 @@ public class SegmentUtilities {
     	            PathMemory rmem = (PathMemory) riaMem.getRiaPathMemory();
                     smem.getPathMemories().add( rmem );
                     rmem.getSegmentMemories()[smem.getPos()] = smem;
-                    if ( smem.getAllLinkedMaskTest() != 0 & smem.isSegmentLinked() ) {
-                        // only happens for segments with only a 'not' node
-                        rmem.linkSegment(smem.getSegmentPosMaskBit(), wm);
-                    }
     	        }
     	    } else if ( NodeTypeEnums.isTerminalNode( sink) ) {    	        
     	        PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) sink );
                 smem.getPathMemories().add( rmem );
                 rmem.getSegmentMemories()[smem.getPos()] = smem;
-                if ( smem.getAllLinkedMaskTest() != 0 & smem.isSegmentLinked() ) {
-                    // only happens for segments with only a 'not' node
-                    rmem.linkSegment(smem.getSegmentPosMaskBit(), wm);
+                if ( smem.isSegmentLinked() ) {
+                    // not's can cause segments to be linked, and the rules need to be notified for evaluation
+                    smem.notifyRuleLinkSegment(wm);
                 }
     	    }
+        }
+    }
+
+    public static void initialiseRtnMemory(LeftTupleSource lt,
+                                           InternalWorkingMemory wm) {
+        for ( LeftTupleSink sink : lt.getSinkPropagator().getSinks() ) {
+            if (NodeTypeEnums.isLeftTupleSource( sink ) ) {
+                initialiseRtnMemory((LeftTupleSource) sink, wm);
+            } else  if ( NodeTypeEnums.isTerminalNode( sink) ) {
+                // getting will cause an initialization of rtn, which will recursively initialise rians too.
+                PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) sink );
+            }
         }
     }
 

@@ -262,7 +262,7 @@ public class EvalConditionNode extends LeftTupleSource
         return this.leftInput.equals( other.leftInput ) && this.condition.equals( other.condition );
     }
 
-    public Memory createMemory(final RuleBaseConfiguration config) {
+    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new EvalMemory( this.condition.createContext() );
     }
 

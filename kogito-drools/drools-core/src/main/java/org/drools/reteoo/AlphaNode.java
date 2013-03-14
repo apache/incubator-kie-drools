@@ -15,7 +15,6 @@
  */
 
 package org.drools.reteoo;
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -31,7 +30,6 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.Pattern;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -214,7 +212,7 @@ public class AlphaNode extends ObjectSource
     /**
      * Creates a HashSet for the AlphaNode's memory.
      */
-    public Memory createMemory(final RuleBaseConfiguration config) {
+    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         AlphaMemory memory = new AlphaMemory();
         memory.context = this.constraint.createContextEntry();
         return memory;

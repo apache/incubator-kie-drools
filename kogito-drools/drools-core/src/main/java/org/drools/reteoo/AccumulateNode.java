@@ -31,7 +31,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.RightTupleSets;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.ArrayUtils;
 import org.drools.core.util.FastIterator;
@@ -842,7 +841,7 @@ public class AccumulateNode extends BetaNode {
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
-    public Memory createMemory( final RuleBaseConfiguration config ) {
+    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         AccumulateMemory memory = new AccumulateMemory();
         memory.betaMemory = this.constraints.createBetaMemory( config,
                                                                NodeTypeEnums.AccumulateNode );
