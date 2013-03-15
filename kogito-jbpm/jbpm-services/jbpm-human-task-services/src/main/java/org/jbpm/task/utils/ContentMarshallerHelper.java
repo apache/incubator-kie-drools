@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
-import org.drools.marshalling.impl.*;
-import org.drools.marshalling.impl.ProtobufMessages.Header;
+import org.drools.core.marshalling.impl.*;
+import org.drools.core.marshalling.impl.ProtobufMessages.Header;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.jbpm.marshalling.impl.JBPMMessages;

@@ -17,7 +17,7 @@
 		<level value="INFO"/>
 	</logger>
   
-	<logger name="org.drools.marshalling.util">
+	<logger name="org.drools.core.marshalling.util">
 		<level value="DEBUG"/>
 	</logger>
 

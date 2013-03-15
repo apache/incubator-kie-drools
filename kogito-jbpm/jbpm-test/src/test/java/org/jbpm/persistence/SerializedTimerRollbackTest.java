@@ -16,8 +16,8 @@ import java.util.Map;
 
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.marshalling.impl.MarshallingConfigurationImpl;
-import org.drools.marshalling.impl.ProtobufMarshaller;
+import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
+import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;

@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.marshalling.impl.InputMarshaller;
-import org.drools.marshalling.impl.MarshallerReaderContext;
-import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.PersisterEnums;
-import org.drools.marshalling.impl.ProcessMarshaller;
+import org.drools.core.marshalling.impl.InputMarshaller;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.PersisterEnums;
+import org.drools.core.marshalling.impl.ProcessMarshaller;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.kie.runtime.process.ProcessInstance;

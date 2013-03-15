@@ -10,10 +10,10 @@ import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.impl.MarshallerReaderContext;
-import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.ProcessMarshaller;
-import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProcessMarshaller;
+import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.kie.runtime.process.ProcessInstance;

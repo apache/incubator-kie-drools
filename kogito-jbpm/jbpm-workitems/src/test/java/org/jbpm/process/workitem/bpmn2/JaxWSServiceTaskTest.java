@@ -13,7 +13,7 @@ import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
-import org.drools.marshalling.impl.ProcessMarshallerFactory;
+import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
 import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;

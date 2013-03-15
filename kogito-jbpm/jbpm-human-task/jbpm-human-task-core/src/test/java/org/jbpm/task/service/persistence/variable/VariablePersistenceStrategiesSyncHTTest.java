@@ -25,8 +25,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.impl.EnvironmentFactory;
-import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;

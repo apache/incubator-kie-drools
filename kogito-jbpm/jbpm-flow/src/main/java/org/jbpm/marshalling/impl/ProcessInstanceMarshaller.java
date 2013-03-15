@@ -18,9 +18,9 @@ package org.jbpm.marshalling.impl;
 
 import java.io.IOException;
 
-import org.drools.marshalling.impl.InputMarshaller;
-import org.drools.marshalling.impl.MarshallerReaderContext;
-import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.InputMarshaller;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
 import org.kie.runtime.process.ProcessInstance;
@@ -32,7 +32,7 @@ import org.kie.runtime.process.WorkflowProcessInstance;
  * InputMarshaller, that delegates in a ProcessInstanceMarshaller to stream in/out runtime
  * information.
  * 
- * @see org.drools.marshalling.impl.OutputMarshaller
+ * @see org.drools.core.marshalling.impl.OutputMarshaller
  * @see InputMarshaller
  * @see ProcessMarshallerRegistry
  * 

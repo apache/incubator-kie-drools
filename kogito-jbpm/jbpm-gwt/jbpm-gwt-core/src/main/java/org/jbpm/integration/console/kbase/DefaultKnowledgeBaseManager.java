@@ -24,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.drools.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.ProcessBuilderFactory;
-import org.drools.marshalling.impl.ProcessMarshallerFactory;
+import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
 import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
 import org.jbpm.integration.console.shared.GuvnorConnectionUtils;
