@@ -94,7 +94,7 @@ public class ReteooBuilder
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
-    ReteooBuilder( final InternalRuleBase ruleBase ) {
+    public ReteooBuilder( final InternalRuleBase ruleBase ) {
         this.ruleBase = ruleBase;
         this.rules = new HashMap<String, BaseNode[]>();
         this.namedWindows = new HashMap<String, WindowNode>();
@@ -119,7 +119,7 @@ public class ReteooBuilder
      *             the <code>Rule</code>.
      * @throws InvalidPatternException
      */
-    synchronized void addRule(final Rule rule) throws InvalidPatternException {
+    public synchronized void addRule(final Rule rule) throws InvalidPatternException {
         final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule,
                                                                        this.ruleBase,
                                                                        this.idGenerator );
