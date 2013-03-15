@@ -187,7 +187,7 @@ public class ServiceRegistryImpl
         addDefault(  "org.kie.SystemEventListenerService",
                      "org.drools.impl.SystemEventListenerServiceImpl" );
         addDefault(  KieMarshallers.class,
-                     "org.drools.marshalling.impl.MarshallerProviderImpl");
+                     "org.drools.core.marshalling.impl.MarshallerProviderImpl");
         addDefault(  KieExecutors.class,
                      "org.drools.core.concurrent.ExecutorProviderImpl");
         addDefault(  KieServices.class,

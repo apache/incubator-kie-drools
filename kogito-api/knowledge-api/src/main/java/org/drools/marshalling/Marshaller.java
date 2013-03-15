@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.marshalling;
+package org.drools.core.marshalling;
 
 import java.io.IOException;
 import java.io.InputStream;

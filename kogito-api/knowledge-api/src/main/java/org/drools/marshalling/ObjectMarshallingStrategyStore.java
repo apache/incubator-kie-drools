@@ -1,4 +1,4 @@
-package org.drools.marshalling;
+package org.drools.core.marshalling;
 
 
 public interface ObjectMarshallingStrategyStore {

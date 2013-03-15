@@ -40,7 +40,7 @@ import org.drools.SystemEventListenerService;
 import org.drools.core.builder.KnowledgeBuilderFactoryService;
 import org.drools.core.concurrent.ExecutorProvider;
 import org.drools.io.ResourceFactoryService;
-import org.drools.marshalling.MarshallerProvider;
+import org.drools.core.marshalling.MarshallerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,7 +182,7 @@ public class ServiceRegistryImpl
         addDefault(  SystemEventListenerService.class,
                      "org.drools.impl.SystemEventListenerServiceImpl" );
         addDefault(  MarshallerProvider.class,
-                     "org.drools.marshalling.impl.MarshallerProviderImpl");
+                     "org.drools.core.marshalling.impl.MarshallerProviderImpl");
         addDefault(  ExecutorProvider.class,
                      "org.drools.core.concurrent.ExecutorProviderImpl");
 //        addDefault( SystemE.class,
