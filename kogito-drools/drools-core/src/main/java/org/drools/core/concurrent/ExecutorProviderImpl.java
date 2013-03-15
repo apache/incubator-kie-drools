@@ -1,12 +1,10 @@
-package org.drools.concurrent;
+package org.drools.core.concurrent;
 
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-
-import javax.inject.Singleton;
 
 import org.kie.concurrent.KieExecutors;
 
