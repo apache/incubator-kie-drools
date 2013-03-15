@@ -41,7 +41,7 @@ public class DepthConflictResolver
     public static ConflictResolver getInstance() {
         return DepthConflictResolver.INSTANCE;
     }
-    
+
     /**
      * @see ConflictResolver
      */
@@ -55,7 +55,7 @@ public class DepthConflictResolver
                              final Activation adding) {
         final int s1 = existing.getSalience();
         final int s2 = adding.getSalience();
-        
+
         if ( s1 > s2 ) {
             return 1;
         } else if ( s1 < s2 ) {
@@ -71,11 +71,11 @@ public class DepthConflictResolver
                 return -1;
             }
         }
-        
+
         if ( existing.isRuleNetworkEvaluatorActivation()) {
             return +1;
         } else {
-            return -1;
+            return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );
         }
     }
 

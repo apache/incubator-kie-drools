@@ -218,19 +218,21 @@ public class SegmentCreationTest {
         wm.insert( new B() );
         wm.insert( new C() );
         
-        // LiaNode and Rule are in same segment
+        // LiaNode is in it's own segment
         LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
         SegmentMemory smem = liaMem.getSegmentMemory();
         assertEquals( liaNode, smem.getRootNode() );
-        assertEquals( rtn1, smem.getTipNode() );
+        assertEquals( liaNode, smem.getTipNode() );
         assertNull( smem.getNext() );
-        assertNull( smem.getFirst() );
+        smem =  smem.getFirst();
         
         SegmentMemory bSmem = wm.getNodeMemory( bNode ).getSegmentMemory(); // it's nested inside of smem, so lookup from wm
+        assertEquals( smem, bSmem );
         assertEquals( bNode, bSmem.getRootNode() );
         assertEquals( riaNode, bSmem.getTipNode() ); 
         
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( notNode );
+        assertEquals( bm.getSegmentMemory(), smem.getNext() );
         assertEquals(bSmem, bm.getRiaRuleMemory().getSegmentMemory() ); // check subnetwork ref was made
     }        
 

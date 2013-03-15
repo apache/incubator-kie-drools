@@ -496,8 +496,13 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    results.add( $a.getType().toUpperCase() );\n" +
                 "end\n";
 
+//        Cheese stilton = new Cheese( "stilton", 5 );
+//        Cheese cheddar = new Cheese( "cheddar", 7 );
+//        Cheese brie = new Cheese( "brie", 5 );
+
         List<String> results = executeTestWithDRL(str);
 
+        System.out.println( results );
         assertEquals( 1, results.size() );
         assertTrue( results.contains( "STILTON" ) );
     }

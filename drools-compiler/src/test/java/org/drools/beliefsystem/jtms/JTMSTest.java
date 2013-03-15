@@ -426,7 +426,7 @@ public class JTMSTest {
         assertEquals( 1, ep.getTruthMaintenanceSystem().getEqualityKeyMap().size() );
     }  
     
-    @Test @Ignore
+    @Test
     public void testConflictStrict() {
         StatefulKnowledgeSession kSession = getSessionFromFile( "posNegConflict.drl" );
 
