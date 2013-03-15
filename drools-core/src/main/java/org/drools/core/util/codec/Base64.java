@@ -16,7 +16,7 @@
 
 //This class is copied from Apache Commons Codec.
 
-package org.drools.util.codec;
+package org.drools.core.util.codec;
 
 import java.math.BigInteger;
 
