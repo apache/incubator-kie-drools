@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.marshalling;
+package org.drools.core.marshalling;
 
 import org.drools.KnowledgeBase;
 import org.drools.Service;

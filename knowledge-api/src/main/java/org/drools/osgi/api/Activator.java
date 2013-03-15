@@ -21,7 +21,7 @@ import java.util.Hashtable;
 import java.util.concurrent.Callable;
 
 import org.drools.Service;
-import org.drools.marshalling.MarshallerProvider;
+import org.drools.core.marshalling.MarshallerProvider;
 import org.drools.util.ServiceRegistry;
 import org.drools.util.ServiceRegistryImpl;
 import org.osgi.framework.BundleActivator;
