@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.osgi.core;
+package org.drools.core.osgi;
 
-import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
@@ -24,16 +23,11 @@ import org.drools.io.impl.ResourceFactoryServiceImpl;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
 import org.kie.KnowledgeBaseFactoryService;
 import org.kie.Service;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.io.KieResources;
 import org.kie.marshalling.KieMarshallers;
-import org.kie.osgi.api.Activator.BundleContextInstantiator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
