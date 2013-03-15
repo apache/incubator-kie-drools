@@ -84,13 +84,13 @@ import org.drools.builder.conf.KnowledgeBuilderOptionsConfiguration;
  * <p>
  * Available pre-configured Accumulate functions are:
  * <ul>
- * <li>drools.accumulate.function.average = org.drools.base.accumulators.AverageAccumulateFunction</li>
- * <li>drools.accumulate.function.max = org.drools.base.accumulators.MaxAccumulateFunction</li>
- * <li>drools.accumulate.function.min = org.drools.base.accumulators.MinAccumulateFunction</li>
- * <li>drools.accumulate.function.count = org.drools.base.accumulators.CountAccumulateFunction</li>
- * <li>drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction</li>
- * <li>drools.accumulate.function.collectSet = org.drools.base.accumulators.CollectSetAccumulateFunction</li>
- * <li>drools.accumulate.function.collectList = org.drools.base.accumulators.CollectListAccumulateFunction</li>
+ * <li>drools.accumulate.function.average = org.drools.core.base.accumulators.AverageAccumulateFunction</li>
+ * <li>drools.accumulate.function.max = org.drools.core.base.accumulators.MaxAccumulateFunction</li>
+ * <li>drools.accumulate.function.min = org.drools.core.base.accumulators.MinAccumulateFunction</li>
+ * <li>drools.accumulate.function.count = org.drools.core.base.accumulators.CountAccumulateFunction</li>
+ * <li>drools.accumulate.function.sum = org.drools.core.base.accumulators.SumAccumulateFunction</li>
+ * <li>drools.accumulate.function.collectSet = org.drools.core.base.accumulators.CollectSetAccumulateFunction</li>
+ * <li>drools.accumulate.function.collectList = org.drools.core.base.accumulators.CollectListAccumulateFunction</li>
  * </ul>
  * </p>
  */
