@@ -18,7 +18,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTupleImpl;
-import org.drools.reteoo.MockLeftTupleSink;
+import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.rule.Accumulate;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;

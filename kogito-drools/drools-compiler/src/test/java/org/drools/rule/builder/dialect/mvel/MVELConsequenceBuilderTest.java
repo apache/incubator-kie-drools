@@ -24,7 +24,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.CompositeObjectSinkAdapterTest;
 import org.drools.reteoo.LeftTupleImpl;
-import org.drools.reteoo.MockLeftTupleSink;
+import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;

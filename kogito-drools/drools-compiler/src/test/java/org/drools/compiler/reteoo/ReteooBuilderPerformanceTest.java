@@ -1,10 +1,12 @@
-package org.drools.reteoo;
+package org.drools.compiler.reteoo;
 
 import java.io.IOException;
 import java.io.StringReader;
 
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.reteoo.ReteooBuilder;
+import org.drools.reteoo.ReteooRuleBase;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -22,7 +22,7 @@ import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTupleImpl;
-import org.drools.reteoo.MockLeftTupleSink;
+import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.MVELDialectRuntimeData;

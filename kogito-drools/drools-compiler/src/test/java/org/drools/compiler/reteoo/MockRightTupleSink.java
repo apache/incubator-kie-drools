@@ -1,7 +1,11 @@
-package org.drools.reteoo;
+package org.drools.compiler.reteoo;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.reteoo.NodeTypeEnums;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.RightTuple;
+import org.drools.reteoo.RightTupleSink;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleComponent;
 import org.kie.definition.rule.Rule;
@@ -15,7 +19,7 @@ import java.util.Map;
 
 public class MockRightTupleSink
     implements
-    RightTupleSink {
+        RightTupleSink {
     
     private final List        retracted        = new ArrayList();
 
