@@ -1,25 +1,27 @@
-package org.drools.kproject.models;
+package org.drools.compiler.kproject.models;
 
 import org.drools.core.util.AbstractXStreamConverter;
+import org.kie.builder.model.ListenerModel;
 import org.kie.builder.model.QualifierModel;
-import org.kie.builder.model.WorkItemHandlerModel;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
-public class WorkItemHandlerModelImpl implements WorkItemHandlerModel {
+public class ListenerModelImpl implements ListenerModel {
 
     private KieSessionModelImpl kSession;
     private String type;
+    private ListenerModel.Kind kind;
     private QualifierModel qualifier;
 
-    public WorkItemHandlerModelImpl() { }
+    public ListenerModelImpl() { }
 
-    public WorkItemHandlerModelImpl(KieSessionModelImpl kSession, String type) {
+    public ListenerModelImpl(KieSessionModelImpl kSession, String type, ListenerModel.Kind kind) {
         this.kSession = kSession;
         this.type = type;
+        this.kind = kind;
     }
 
     public String getType() {
@@ -28,6 +30,14 @@ public class WorkItemHandlerModelImpl implements WorkItemHandlerModel {
 
     private void setType(String type) {
         this.type = type;
+    }
+
+    public ListenerModel.Kind getKind() {
+        return kind;
+    }
+
+    void setKind(ListenerModel.Kind kind) {
+        this.kind = kind;
     }
 
     public QualifierModel getQualifierModel() {
@@ -52,17 +62,17 @@ public class WorkItemHandlerModelImpl implements WorkItemHandlerModel {
         this.kSession = kSession;
     }
 
-    public static class WorkItemHandelerConverter extends AbstractXStreamConverter {
+    public static class ListenerConverter extends AbstractXStreamConverter {
 
-        public WorkItemHandelerConverter() {
-            super(WorkItemHandlerModelImpl.class);
+        public ListenerConverter() {
+            super(ListenerModelImpl.class);
         }
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-            WorkItemHandlerModelImpl wih = (WorkItemHandlerModelImpl) value;
-            writer.addAttribute("type", wih.getType());
+            ListenerModelImpl listener = (ListenerModelImpl) value;
+            writer.addAttribute("type", listener.getType());
             /* TODO make qualifiers working properly before readd them to the xml
-            QualifierModelImpl qualifier = (QualifierModelImpl)wih.getQualifierModel();
+            QualifierModelImpl qualifier = (QualifierModelImpl)listener.getQualifierModel();
             if (qualifier != null) {
                 if (qualifier.isSimple()) {
                     writer.addAttribute("qualifier", qualifier.getType());
@@ -74,12 +84,12 @@ public class WorkItemHandlerModelImpl implements WorkItemHandlerModel {
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
-            final WorkItemHandlerModelImpl wih = new WorkItemHandlerModelImpl();
-            wih.setType(reader.getAttribute("type"));
+            final ListenerModelImpl listener = new ListenerModelImpl();
+            listener.setType(reader.getAttribute("type"));
             /* TODO make qualifiers working properly before readd them to the xml
             String qualifierType = reader.getAttribute("qualifier");
             if (qualifierType != null) {
-                wih.newQualifierModel(qualifierType);
+                listener.newQualifierModel(qualifierType);
             }
 
             readNodes( reader, new AbstractXStreamConverter.NodeReader() {
@@ -88,12 +98,12 @@ public class WorkItemHandlerModelImpl implements WorkItemHandlerModel {
                                    String value) {
                     if ( "qualifier".equals( name ) ) {
                         QualifierModelImpl qualifier = readObject(reader, context, QualifierModelImpl.class);
-                        wih.setQualifierModel(qualifier);
+                        listener.setQualifierModel(qualifier);
                     }
                 }
             } );
             */
-            return wih;
+            return listener;
         }
     }
 }

@@ -1,4 +1,4 @@
-package org.drools.kproject;
+package org.drools.compiler.kproject;
 
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
@@ -9,7 +9,7 @@ import org.drools.compiler.compiler.io.Resource;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
-import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.builder.ReleaseId;
@@ -225,7 +225,7 @@ public class AbstractKnowledgeTest {
                 "import " + KPTest.class.getName() + ";\n" +
 
                 "@KPTest(\"" + namespace + "\") \n" +
-                "public class KProjectTestClass" + namespace + " implements org.drools.kproject.KProjectTestClass {\n" +
+                "public class KProjectTestClass" + namespace + " implements KProjectTestClass {\n" +
                 "    private @Inject @KBase(\"" + namespace + ".KBase1\")  " +
                 "    KieBase kBase1; \n" +
                 "    public KieBase getKBase1() {\n" +

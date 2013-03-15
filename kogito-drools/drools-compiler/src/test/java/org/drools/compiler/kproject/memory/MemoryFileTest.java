@@ -1,4 +1,4 @@
-package org.drools.kproject.memory;
+package org.drools.compiler.kproject.memory;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;

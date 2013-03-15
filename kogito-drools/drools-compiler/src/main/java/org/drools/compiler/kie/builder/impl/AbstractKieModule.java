@@ -2,7 +2,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.StringUtils;
-import org.drools.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.model.KieModuleModel;

@@ -1,7 +1,7 @@
-package org.drools.kproject;
+package org.drools.compiler.kproject;
 
-import org.drools.kproject.models.KieBaseModelImpl;
-import org.drools.kproject.models.KieSessionModelImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.junit.Test;
 import org.kie.KieServices;
 import org.kie.builder.model.KieBaseModel;
@@ -18,7 +18,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static org.drools.kproject.models.KieModuleModelImpl.fromXML;
+import static org.drools.compiler.kproject.models.KieModuleModelImpl.fromXML;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 

@@ -1,7 +1,7 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.KieFileSystem;
 import org.kie.io.Resource;
