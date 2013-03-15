@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.pipeline.impl;
+package org.drools.compiler.runtime.pipeline.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FilterOutputStream;
