@@ -19,5 +19,5 @@ package org.drools.runtime;
 import java.util.List;
 
 public interface BatchRequestMessage {
-    List<org.drools.command.Command> getCommands();
+    List<org.drools.core.command.Command> getCommands();
 }

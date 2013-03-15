@@ -16,9 +16,7 @@
 
 package org.drools.fluent.test;
 
-import java.util.Map;
-
-import org.drools.command.Context;
+import org.drools.core.command.Context;
 
 public interface ReflectiveMatcherAssert {
 

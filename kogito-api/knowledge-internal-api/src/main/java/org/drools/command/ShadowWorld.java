@@ -1,4 +1,4 @@
-package org.drools.command;
+package org.drools.core.command;
 
 import org.drools.runtime.ExecutionResults;
 
