@@ -16,8 +16,8 @@
  package org.drools.persistence.jpa;
 
 import org.drools.SessionConfiguration;
-import org.drools.command.CommandService;
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.CommandService;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;

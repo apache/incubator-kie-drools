@@ -21,7 +21,7 @@ import static org.junit.Assert.fail;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.command.impl.GenericCommand;
+import org.drools.core.command.impl.GenericCommand;
 import org.kie.command.Context;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;

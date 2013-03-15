@@ -23,13 +23,13 @@ import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.command.CommandService;
-import org.drools.command.Interceptor;
-import org.drools.command.impl.DefaultCommandService;
-import org.drools.command.impl.FixedKnowledgeCommandContext;
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.command.runtime.DisposeCommand;
+import org.drools.core.command.CommandService;
+import org.drools.core.command.Interceptor;
+import org.drools.core.command.impl.DefaultCommandService;
+import org.drools.core.command.impl.FixedKnowledgeCommandContext;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 
 public class SingleSessionCommandService
     implements
-    org.drools.command.SingleSessionCommandService {
+    org.drools.core.command.SingleSessionCommandService {
 
     Logger                             logger           = LoggerFactory.getLogger( getClass() );
 

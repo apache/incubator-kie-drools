@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.command.builder.KnowledgeBuilderAddCommand;
-import org.drools.command.builder.KnowledgeBuilderGetErrorsCommand;
-import org.drools.command.builder.KnowledgeBuilderGetKnowledgePackagesCommand;
-import org.drools.command.builder.KnowledgeBuilderHasErrorsCommand;
-import org.drools.command.builder.NewKnowledgeBuilderCommand;
+import org.drools.core.command.builder.KnowledgeBuilderAddCommand;
+import org.drools.core.command.builder.KnowledgeBuilderGetErrorsCommand;
+import org.drools.core.command.builder.KnowledgeBuilderGetKnowledgePackagesCommand;
+import org.drools.core.command.builder.KnowledgeBuilderHasErrorsCommand;
+import org.drools.core.command.builder.NewKnowledgeBuilderCommand;
 import org.drools.compiler.integrationtests.DroolsTest.Bar;
 import org.drools.compiler.integrationtests.DroolsTest.Foo;
 import org.junit.After;

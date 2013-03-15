@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.rule.impl.InternalAgenda;
@@ -42,7 +42,6 @@ import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class RuleFlowGroupRollbackTest {
     
