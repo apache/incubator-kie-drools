@@ -173,7 +173,7 @@ public class ServiceRegistryImpl
 
     private void init() {
         addDefault( "org.kie.builder.KnowledgeBuilderFactoryService",
-                    "org.drools.core.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
+                    "org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
 
         addDefault( "org.kie.builder.KnowledgeContainerFactoryService",
                     "org.drools.core.builder.impl.KnowledgeContainerFactoryServiceImpl" );
@@ -191,9 +191,9 @@ public class ServiceRegistryImpl
         addDefault(  KieExecutors.class,
                      "org.drools.core.concurrent.ExecutorProviderImpl");
         addDefault(  KieServices.class,
-                     "org.kie.builder.impl.KieServicesImpl");
+                     "org.drools.compiler.kie.builder.impl.KieServicesImpl");
         addDefault( KieScanner.class,
-                    "org.kie.scanner.KieRepositoryScannerImpl");
+                    "org.drools.scanner.KieRepositoryScannerImpl");
         addDefault( KieStoreServices.class,
                     "org.drools.persistence.jpa.KnowledgeStoreServiceImpl");
         addDefault( CorrelationKeyFactory.class,
