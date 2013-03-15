@@ -1,4 +1,4 @@
-package org.drools.cdi.example;
+package org.drools.compiler.cdi.example;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -14,5 +14,5 @@ import javax.inject.Qualifier;
 @Qualifier
 @Target({TYPE, METHOD, PARAMETER, FIELD})
 @Retention(RUNTIME)
-public  @interface Msg1 {
+public  @interface Msg2 {
 }

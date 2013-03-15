@@ -1,6 +1,6 @@
 package org.drools.kproject;
 
-import org.drools.cdi.CDITestRunner;
+import org.drools.compiler.cdi.CDITestRunner;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.jboss.weld.environment.se.Weld;
@@ -74,19 +74,19 @@ public class KieProjectCDITest extends AbstractKnowledgeTest {
                 System.out.println( url );
             }
 
-            Class cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar1" );
+            Class cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar1" );
             assertNotNull( cls );
-            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar2" );
+            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar2" );
             assertNotNull( cls );
-            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar3" );
+            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar3" );
             assertNotNull( cls );
             
             Weld weld = CDITestRunner.createWeld(KProjectTestClass.class.getName(), 
                                                  KPTestLiteral.class.getName(),
-                                                 "org.drools.cdi.test.KProjectTestClassjar1",
-                                                 "org.drools.cdi.test.KProjectTestClassjar2",
-                                                 "org.drools.cdi.test.KProjectTestClassjar3",
-                                                 "org.drools.cdi.test.KProjectTestClassfol4");
+                                                 "org.drools.compiler.cdi.test.KProjectTestClassjar1",
+                                                 "org.drools.compiler.cdi.test.KProjectTestClassjar2",
+                                                 "org.drools.compiler.cdi.test.KProjectTestClassjar3",
+                                                 "org.drools.compiler.cdi.test.KProjectTestClassfol4");
             ((KieServicesImpl) KieServices.Factory.get()).nullKieClasspathContainer();
             WeldContainer container = weld.initialize();            
             

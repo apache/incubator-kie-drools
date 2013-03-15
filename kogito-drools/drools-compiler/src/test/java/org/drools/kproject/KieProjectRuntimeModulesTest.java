@@ -71,11 +71,11 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
         KieBase kBase = kContainer.getKieBase( "jar1.KBase1" );
         ClassLoader cl = ((InternalRuleBase) ((KnowledgeBaseImpl) kBase).getRuleBase()).getRootClassLoader();
 
-        Class cls = cl.loadClass( "org.drools.cdi.test.KProjectTestClassjar1" );
+        Class cls = cl.loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar1" );
         assertNotNull( cls );
-        cls = cl.loadClass( "org.drools.cdi.test.KProjectTestClassjar2" );
+        cls = cl.loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar2" );
         assertNotNull( cls );
-        cls = cl.loadClass( "org.drools.cdi.test.KProjectTestClassjar3" );
+        cls = cl.loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar3" );
         assertNotNull( cls );
 
         testEntry( new KProjectTestClassImpl( "jar1",

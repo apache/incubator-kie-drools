@@ -1,4 +1,4 @@
-package org.drools.cdi.example;
+package org.drools.compiler.cdi.example;
 
 @Msg2
 public class Message2Impl2 implements Message2 {

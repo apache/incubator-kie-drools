@@ -1,4 +1,4 @@
-package org.drools.cdi.test;
+package org.drools.compiler.cdi.test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

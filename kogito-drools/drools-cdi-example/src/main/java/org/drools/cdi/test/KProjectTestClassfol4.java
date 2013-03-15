@@ -1,4 +1,4 @@
-package org.drools.cdi.test;
+package org.drools.compiler.cdi.test;
 
 import org.kie.KnowledgeBase;
 import org.kie.cdi.KBase;
@@ -9,7 +9,7 @@ import org.kie.runtime.StatelessKnowledgeSession;
 import javax.inject.Inject;
 
 
-public class KProjectTestClassfol4 implements org.drools.cdi.test.KProjectTestClass {
+public class KProjectTestClassfol4 implements org.drools.compiler.cdi.test.KProjectTestClass {
     private
     @Inject
     @KBase("fol4.test1.KBase1")
