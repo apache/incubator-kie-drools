@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance;
 
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;

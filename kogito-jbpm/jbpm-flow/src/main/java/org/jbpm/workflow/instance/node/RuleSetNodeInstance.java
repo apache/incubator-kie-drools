@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.process.core.datatype.DataType;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.StatefulKnowledgeSession;

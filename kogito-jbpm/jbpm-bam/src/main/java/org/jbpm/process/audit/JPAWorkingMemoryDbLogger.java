@@ -29,7 +29,7 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;

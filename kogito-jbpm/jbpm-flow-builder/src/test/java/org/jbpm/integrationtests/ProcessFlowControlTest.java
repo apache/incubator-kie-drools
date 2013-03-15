@@ -12,7 +12,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.common.DefaultAgenda;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilder.PackageMergeException;
 import org.drools.event.ActivationCancelledEvent;

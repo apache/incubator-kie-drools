@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.marshalling.impl.ProtobufMarshaller;
 import org.jbpm.process.instance.InternalProcessRuntime;

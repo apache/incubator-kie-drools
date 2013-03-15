@@ -17,7 +17,7 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.Declaration;
 import org.drools.runtime.rule.impl.InternalAgenda;

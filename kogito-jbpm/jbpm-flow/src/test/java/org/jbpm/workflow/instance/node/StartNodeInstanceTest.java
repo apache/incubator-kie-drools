@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.NodeInstance;
 import org.jbpm.process.instance.ProcessInstance;

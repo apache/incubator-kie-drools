@@ -1,6 +1,6 @@
 package org.jbpm.persistence.processinstance;
 
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;

@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.common.AbstractWorkingMemory;
-import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.event.ProcessEventSupport;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.rule.Rule;

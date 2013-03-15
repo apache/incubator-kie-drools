@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.event.rule.MatchCancelledEvent;
 import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.AfterMatchFiredEvent;

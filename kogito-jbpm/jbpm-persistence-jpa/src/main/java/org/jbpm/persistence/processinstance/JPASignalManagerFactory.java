@@ -1,6 +1,6 @@
 package org.jbpm.persistence.processinstance;
 
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.event.SignalManager;
 import org.jbpm.process.instance.event.SignalManagerFactory;
 

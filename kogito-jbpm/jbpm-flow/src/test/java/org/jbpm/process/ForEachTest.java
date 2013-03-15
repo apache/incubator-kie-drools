@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.AbstractRuleBase;
+import org.drools.core.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.core.datatype.impl.type.ListDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;

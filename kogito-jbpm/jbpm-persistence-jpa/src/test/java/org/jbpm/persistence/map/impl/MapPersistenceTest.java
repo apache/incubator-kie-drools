@@ -2,7 +2,7 @@ package org.jbpm.persistence.map.impl;
 
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.drools.common.AbstractRuleBase;
+import org.drools.core.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.process.instance.WorkItemHandler;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -13,7 +13,6 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 public abstract class MapPersistenceTest {
 

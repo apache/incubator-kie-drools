@@ -8,13 +8,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.ProcessMarshaller;
 import org.drools.marshalling.impl.ProtobufMessages;
-import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.kie.runtime.process.ProcessInstance;

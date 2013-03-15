@@ -27,7 +27,7 @@ import javax.transaction.UserTransaction;
 
 import junit.framework.Assert;
 
-import org.drools.common.AbstractRuleBase;
+import org.drools.core.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;

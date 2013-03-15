@@ -20,7 +20,7 @@ import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.event.ProcessEventSupport;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.process.instance.WorkItemManager;

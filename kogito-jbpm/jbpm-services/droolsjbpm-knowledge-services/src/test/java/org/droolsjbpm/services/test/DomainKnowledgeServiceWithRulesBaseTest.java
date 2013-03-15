@@ -71,7 +71,7 @@ public abstract class DomainKnowledgeServiceWithRulesBaseTest {
     private transient RulesNotificationService rulesNotificationService;
 
     
-    @Test @Ignore // FIX java.lang.ClassCastException: org.drools.common.DefaultFactHandle cannot be cast to org.drools.common.EventFactHandle
+    @Test @Ignore // FIX java.lang.ClassCastException: org.drools.core.common.DefaultFactHandle cannot be cast to org.drools.core.common.EventFactHandle
                   // in CDIRuleAwareProcessEventListener line 40
     public void testReleaseProcessWithRules() throws FileException, InterruptedException {
         Domain myDomain = new SimpleDomainImpl("myDomain");

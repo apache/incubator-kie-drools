@@ -21,11 +21,9 @@ import junit.framework.TestCase;
 
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;

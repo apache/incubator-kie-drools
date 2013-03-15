@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.definition.process.Connection;
 import org.kie.definition.process.Node;
 import org.kie.runtime.process.NodeInstance;
