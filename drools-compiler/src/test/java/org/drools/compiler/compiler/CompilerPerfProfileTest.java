@@ -1,4 +1,4 @@
-package org.drools.compiler;
+package org.drools.compiler.compiler;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

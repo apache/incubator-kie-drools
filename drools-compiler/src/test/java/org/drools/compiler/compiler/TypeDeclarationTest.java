@@ -1,4 +1,4 @@
-package org.drools.compiler;
+package org.drools.compiler.compiler;
 
 import junit.framework.Assert;
 import org.drools.definitions.impl.KnowledgePackageImp;
@@ -428,8 +428,8 @@ public class TypeDeclarationTest {
     public void testTypeDeclarationMetadata() {
         String str = "";
         str += "package org.drools.test; \n" +
-                "import org.drools.compiler.TypeDeclarationTest.KlassAnnotation; \n" +
-                "import org.drools.compiler.TypeDeclarationTest.FieldAnnotation; \n" +
+                "import org.drools.compiler.compiler.TypeDeclarationTest.KlassAnnotation; \n" +
+                "import org.drools.compiler.compiler.TypeDeclarationTest.FieldAnnotation; \n" +
                 "import org.drools.Person\n" +
                 "\n" +
                 "declare Bean \n" +
@@ -459,7 +459,7 @@ public class TypeDeclarationTest {
 
         assertEquals( 1, bean.getClassAnnotations().size() );
         Annotation ann = bean.getClassAnnotations().get( 0 );
-        assertEquals( "org.drools.compiler.TypeDeclarationTest$KlassAnnotation", ann.getName() );
+        assertEquals( "org.drools.compiler.compiler.TypeDeclarationTest$KlassAnnotation", ann.getName() );
         assertEquals( "klass", ann.getPropertyValue( "value" ) );
         assertEquals( String.class, ann.getPropertyType( "value" ) );
 
@@ -471,7 +471,7 @@ public class TypeDeclarationTest {
         assertEquals( 1, field.getFieldAnnotations().size() );
         Annotation fnn = field.getFieldAnnotations().get( 0 );
 
-        assertEquals( "org.drools.compiler.TypeDeclarationTest$FieldAnnotation", fnn.getName() );
+        assertEquals( "org.drools.compiler.compiler.TypeDeclarationTest$FieldAnnotation", fnn.getName() );
         assertEquals( "fld", fnn.getPropertyValue( "prop" ) );
         assertEquals( String.class, fnn.getPropertyType( "prop" ) );
 

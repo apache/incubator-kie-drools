@@ -2,7 +2,7 @@ package org.drools.lang.descr;
 
 import org.drools.lang.descr.ConnectiveDescr.RestrictionConnectiveType;
 import org.junit.Test;
-import static org.drools.compiler.xml.rules.DumperTestHelper.assertEqualsIgnoreWhitespace;
+import static org.drools.compiler.compiler.xml.rules.DumperTestHelper.assertEqualsIgnoreWhitespace;
 
 public class ConnectiveDescrTest {
 
