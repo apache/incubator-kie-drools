@@ -16,7 +16,7 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.BaseDescr;
 
 public class ActionError extends DroolsError {

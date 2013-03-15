@@ -14,18 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.drools.commons.jci.readers;
-
-import java.util.Collection;
+package org.drools.compiler.commons.jci.stores;
 
 /**
- * A ResourceReader provide access to resource like e.g. source code
+ * A Store is where the compilers are storing the results
  */
-public interface ResourceReader {
+public interface ResourceStore {
 
-    boolean isAvailable( final String pResourceName );
-    byte[] getBytes( final String pResourceName );
-    public Collection<String> getFileNames();
-
+    void write( final String pResourceName, final byte[] pResourceData );
+    byte[] read( final String pResourceName );
+    //FIXME: return the result of the remove
+    void remove( final String pResourceName );
 }

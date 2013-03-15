@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.drools.commons.jci.problems;
+package org.drools.compiler.commons.jci.problems;
 
 
 /**

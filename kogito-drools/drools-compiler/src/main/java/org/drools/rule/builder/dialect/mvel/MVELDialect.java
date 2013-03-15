@@ -3,7 +3,7 @@ package org.drools.rule.builder.dialect.mvel;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.commons.jci.readers.MemoryResourceReader;
+import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;

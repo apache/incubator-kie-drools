@@ -27,7 +27,7 @@ import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.common.InternalRuleBase;
-import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.DeepCloneable;
