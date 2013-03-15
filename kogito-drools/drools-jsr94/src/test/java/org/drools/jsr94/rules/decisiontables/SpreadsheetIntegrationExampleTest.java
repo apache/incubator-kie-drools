@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.decisiontable;
+package org.drools.jsr94.rules.decisiontables;
 
 import java.util.ArrayList;
 import java.util.HashMap;
