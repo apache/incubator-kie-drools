@@ -42,13 +42,13 @@ end
 
 
 
-rule "Init +"
+rule "Init plus"
 when
 then
     insertLogical( new Matter( 0, "plus" ) );
 end
 
-rule "Init -"
+rule "Init minus"
 salience -1
 when
 then

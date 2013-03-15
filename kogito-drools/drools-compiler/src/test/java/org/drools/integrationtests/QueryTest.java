@@ -41,6 +41,7 @@ import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.Package;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ObjectType;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -620,6 +621,7 @@ public class QueryTest extends CommonTestMethodBase {
     }
 
     @Test
+    @Ignore("Ingored for Phreak, as test is order sensitive")
     public void testOpenQuery() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
