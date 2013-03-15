@@ -19,7 +19,7 @@ package org.drools.agent;
 import java.util.Properties;
 
 import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.core.builder.KnowledgeBuilderConfiguration;
 
 /**
  * KnowledgeAgentProvider is used by the KnowledgeAgentFactory to "provide" its concrete implementation.

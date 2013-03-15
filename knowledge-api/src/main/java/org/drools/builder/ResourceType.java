@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.builder;
+package org.drools.core.builder;
 
 import java.io.Serializable;
 import java.util.Collections;

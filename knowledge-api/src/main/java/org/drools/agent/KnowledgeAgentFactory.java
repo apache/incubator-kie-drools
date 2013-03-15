@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.core.builder.KnowledgeBuilderConfiguration;
 import org.drools.io.ResourceFactory;
 
 /**

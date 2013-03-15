@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.builder;
+package org.drools.core.builder;
 
 /**
  * This interface is a marker interface and should be implemented by any class

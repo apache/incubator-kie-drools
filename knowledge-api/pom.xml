@@ -53,7 +53,7 @@
             </group>
             <group>
               <title>Builder API</title>
-              <packages>org.drools.builder</packages>
+              <packages>org.drools.core.builder</packages>
             </group>
             <group>
               <title>Definition API</title>

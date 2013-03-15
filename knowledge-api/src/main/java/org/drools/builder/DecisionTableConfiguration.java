@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.builder;
+package org.drools.core.builder;
 
 /**
  * ResourceConfiguration for decision tables. It allows for the type of the decision, XLS or CSV, to be specified

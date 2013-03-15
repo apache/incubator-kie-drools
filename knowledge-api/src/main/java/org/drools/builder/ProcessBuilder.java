@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.builder;
+package org.drools.core.builder;
 
 /**
  * This is a mixin style interface who's role is to provide process specific methods to the KnowledgeBuilder, currently there are none.

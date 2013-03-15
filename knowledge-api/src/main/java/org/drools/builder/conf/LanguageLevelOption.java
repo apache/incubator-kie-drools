@@ -1,4 +1,4 @@
-package org.drools.builder.conf;
+package org.drools.core.builder.conf;
 
 /**
  * A class for the language level configuration.

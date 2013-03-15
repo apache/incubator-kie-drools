@@ -37,7 +37,7 @@ import java.util.concurrent.Callable;
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.Service;
 import org.drools.SystemEventListenerService;
-import org.drools.builder.KnowledgeBuilderFactoryService;
+import org.drools.core.builder.KnowledgeBuilderFactoryService;
 import org.drools.concurrent.ExecutorProvider;
 import org.drools.io.ResourceFactoryService;
 import org.drools.marshalling.MarshallerProvider;
@@ -171,7 +171,7 @@ public class ServiceRegistryImpl
 
     private void init() {
         addDefault( KnowledgeBuilderFactoryService.class,
-                    "org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
+                    "org.drools.core.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
 
         addDefault( KnowledgeBaseFactoryService.class,
                     "org.drools.impl.KnowledgeBaseFactoryServiceImpl" );

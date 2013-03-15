@@ -18,7 +18,7 @@ package org.drools.event.knowledgeagent;
 
 import org.drools.ChangeSet;
 import org.drools.agent.KnowledgeAgent.ResourceStatus;
-import org.drools.builder.ResourceType;
+import org.drools.core.builder.ResourceType;
 import org.drools.io.Resource;
 
 public class BeforeResourceProcessedEvent extends ChangeSetProcessingEvent{

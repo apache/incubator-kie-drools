@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.builder.conf;
+package org.drools.core.builder.conf;
 
 import org.drools.conf.SingleValueKnowledgeBaseOption;
 
