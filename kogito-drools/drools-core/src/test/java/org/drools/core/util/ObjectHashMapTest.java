@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.util;
+package org.drools.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +31,6 @@ import static org.junit.Assert.*;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.test.model.Cheese;
-import org.drools.core.util.Entry;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 
 public class ObjectHashMapTest {

@@ -21,13 +21,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.util.asm.BeanInherit;
-import org.drools.util.asm.InterfaceChild;
-import org.drools.util.asm.TestAbstract;
-import org.drools.util.asm.TestAbstractImpl;
-import org.drools.util.asm.TestBean;
-import org.drools.util.asm.TestInterface;
-import org.drools.util.asm.TestInterfaceImpl;
+import org.drools.core.util.asm.BeanInherit;
+import org.drools.core.util.asm.InterfaceChild;
+import org.drools.core.util.asm.TestAbstract;
+import org.drools.core.util.asm.TestAbstractImpl;
+import org.drools.core.util.asm.TestBean;
+import org.drools.core.util.asm.TestInterface;
+import org.drools.core.util.asm.TestInterfaceImpl;
 
 public class ClassFieldAccessorTest {
 

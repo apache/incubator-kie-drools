@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util.asm;
 
-public interface InterfaceChild
-    extends
-    InterfaceParent,
-    InterfaceParent2 {
+public class BaseBean {
 
-    public String getBar();
+    private final String text   = "hola";
+    private int          number = 42;
+
+    public String getText() {
+        return this.text;
+    }
+
+    public int getNumber() {
+        return this.number;
+    }
+
+    public void setNumber(final int number) {
+        this.number = number;
+    }
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.util;
+package org.drools.core.util;
 
 import org.junit.Test;
 import static org.junit.Assert.*;

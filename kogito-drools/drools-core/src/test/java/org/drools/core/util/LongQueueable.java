@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util;
 
-public interface InterfaceParent2 {
+public class LongQueueable extends BaseQueueable
+    implements
+    Comparable {
+    private final Long value;
 
-    public int getBaz();
+    public LongQueueable(Queue queue,
+                         final long value) {
+        super( queue );
+        this.value = new Long( value );
+    }
 
-    public String getURI();
+    public int compareTo(final Object object) {
+        return this.value.compareTo( ((LongQueueable) object).value );
+    }
 
+    public String toString() {
+        return this.value.toString();
+    }
 }

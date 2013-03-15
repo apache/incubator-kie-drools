@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,32 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util.asm;
 
-public interface InterfaceParent {
+public abstract class AbstractClass {
+    public String HTML;
 
-    public int getFoo();
+    public AbstractClass() {
+
+    }
+
+    public AbstractClass(final String HTML) {
+        super();
+        this.HTML = HTML;
+    }
+
+    /**
+     * @return the uRI
+     */
+    public String getHTML() {
+        return this.HTML;
+    }
+
+    /**
+     * @param uri the uRI to set
+     */
+    public void setHTML(final String HTML) {
+        this.HTML = HTML;
+    }
 
 }

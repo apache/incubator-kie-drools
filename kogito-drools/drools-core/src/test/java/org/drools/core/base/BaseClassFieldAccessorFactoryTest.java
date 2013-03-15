@@ -21,11 +21,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.spi.InternalReadAccessor;
-import org.drools.util.asm.BeanInherit;
-import org.drools.util.asm.TestAbstract;
-import org.drools.util.asm.TestAbstractImpl;
-import org.drools.util.asm.TestInterface;
-import org.drools.util.asm.TestInterfaceImpl;
+import org.drools.core.util.asm.BeanInherit;
+import org.drools.core.util.asm.TestAbstract;
+import org.drools.core.util.asm.TestAbstractImpl;
+import org.drools.core.util.asm.TestInterface;
+import org.drools.core.util.asm.TestInterfaceImpl;
 
 public class BaseClassFieldAccessorFactoryTest {
 

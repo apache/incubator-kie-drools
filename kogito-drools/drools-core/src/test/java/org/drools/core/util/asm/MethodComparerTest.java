@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util.asm;
 
 import java.io.InputStream;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.core.util.asm.MethodComparator;
 import org.mvel2.asm.ClassReader;
 
 public class MethodComparerTest {

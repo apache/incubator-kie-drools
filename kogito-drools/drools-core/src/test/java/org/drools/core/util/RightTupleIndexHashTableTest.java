@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.util;
+package org.drools.core.util;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
@@ -22,9 +22,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.test.model.Cheese;
-import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.Entry;
 import org.drools.core.util.index.RightTupleIndexHashTable;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.LeftTupleImpl;

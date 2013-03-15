@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util.asm;
 
-public class BeanInherit extends BaseBean {
+public class TestInterfaceImpl
+    implements
+    TestInterface {
+
+    public String getSomething() {
+        return "foo";
+    }
+
+    public int getAnother() {
+        return 42;
+    }
 
 }

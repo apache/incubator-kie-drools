@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util.asm;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.core.util.asm.ClassFieldInspector;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

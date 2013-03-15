@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.util;
+package org.drools.core.util;
 
-import org.drools.core.util.ClassUtils;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -28,21 +24,21 @@ public class ClassUtilsTest {
     @Test
     public void testCanonicalNameSimpleClass() {
         String name = ClassUtils.canonicalName( ClassUtilsTest.class );
-        assertEquals( "org.drools.util.ClassUtilsTest",
+        assertEquals( "org.drools.core.util.ClassUtilsTest",
                       name );
     }
 
     @Test
     public void testCanonicalNameInnerClass() {
         String name = ClassUtils.canonicalName( A.class );
-        assertEquals( "org.drools.util.ClassUtilsTest.A",
+        assertEquals( "org.drools.core.util.ClassUtilsTest.A",
                       name );
     }
     
     @Test
     public void testCanonicalNameInnerInnerClass() {
         String name = ClassUtils.canonicalName( A.B.class );
-        assertEquals( "org.drools.util.ClassUtilsTest.A.B",
+        assertEquals( "org.drools.core.util.ClassUtilsTest.A.B",
                       name );
     }
     
@@ -63,7 +59,7 @@ public class ClassUtilsTest {
     @Test
     public void testCanonicalNameMultiIndexArrayInnerClass() {
         String name = ClassUtils.canonicalName( A.B[][][].class );
-        assertEquals( "org.drools.util.ClassUtilsTest.A.B[][][]",
+        assertEquals( "org.drools.core.util.ClassUtilsTest.A.B[][][]",
                       name );
     }
     
