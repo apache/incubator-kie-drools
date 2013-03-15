@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss by Red Hat.
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package org.droolsjbpm.services;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.droolsjbpm.services.api.IdentityProvider;
+import org.droolsjbpm.services.api.KnowledgeAdminDataService;
+import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.KnowledgeAdminDataServiceImpl;
 import org.droolsjbpm.services.impl.KnowledgeDataServiceImpl;
