@@ -5,7 +5,6 @@ import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.*;
-import org.drools.lang.descr.*;
 import org.drools.reteoo.*;
 import org.drools.rule.*;
 import org.drools.rule.builder.*;

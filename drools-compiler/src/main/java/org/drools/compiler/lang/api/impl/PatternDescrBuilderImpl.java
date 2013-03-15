@@ -21,7 +21,6 @@ import org.drools.compiler.lang.api.BehaviorDescrBuilder;
 import org.drools.compiler.lang.api.DescrBuilder;
 import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.api.SourceDescrBuilder;
-import org.drools.lang.api.*;
 import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
