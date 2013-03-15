@@ -112,7 +112,7 @@ public final class GeneratorHelper {
         return createInvokerClassGenerator(className, stub, classLoader, getTypeResolver(stub, workingMemory, classLoader));
     }
 
-    static ClassGenerator createInvokerClassGenerator(final String className,
+    public static ClassGenerator createInvokerClassGenerator(final String className,
                                                               final InvokerDataProvider data,
                                                               final CompositeClassLoader classLoader,
                                                               final TypeResolver typeResolver) {
