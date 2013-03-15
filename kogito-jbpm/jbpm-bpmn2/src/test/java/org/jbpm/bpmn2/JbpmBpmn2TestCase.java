@@ -7,9 +7,9 @@ import java.util.*;
 import junit.framework.TestCase;
 
 import org.drools.SessionConfiguration;
-import org.drools.audit.WorkingMemoryInMemoryLogger;
-import org.drools.audit.event.LogEvent;
-import org.drools.audit.event.RuleFlowNodeLogEvent;
+import org.drools.core.audit.WorkingMemoryInMemoryLogger;
+import org.drools.core.audit.event.LogEvent;
+import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.impl.EnvironmentFactory;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.audit.*;

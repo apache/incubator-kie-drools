@@ -15,7 +15,7 @@
  */
 package org.jbpm.process.audit.event;
 
-import org.drools.audit.event.RuleFlowLogEvent;
+import org.drools.core.audit.event.RuleFlowLogEvent;
 
 public class ExtendedRuleFlowLogEvent extends RuleFlowLogEvent {
 
