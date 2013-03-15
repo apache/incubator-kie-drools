@@ -1,6 +1,6 @@
 package org.drools.reteoo;
 
-import org.drools.Message;
+import org.drools.compiler.Message;
  
 rule "Hello World 1"
     when

@@ -1,6 +1,6 @@
 package org.drools.integrationtests
  
-import org.drools.Message
+import org.drools.compiler.Message
 import org.drools.compiler.Message;
 
 dialect "mvel" 

@@ -3,8 +3,8 @@ package org.drools.compiler
 dialect "mvel"
 
 
-import org.drools.Person
-import org.drools.Address
+import org.drools.compiler.Person
+import org.drools.compiler.Address
 
 
 

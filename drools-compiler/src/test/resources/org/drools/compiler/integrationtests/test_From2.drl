@@ -2,8 +2,8 @@ package org.drools.test;
  
 //we don't use the import, as class is fully qualified below
 //import org.drools.integrationtests.helloworld.Message
-import org.drools.Cheese;
-import org.drools.Cheesery;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
 import java.util.List;
 
 global List list1;

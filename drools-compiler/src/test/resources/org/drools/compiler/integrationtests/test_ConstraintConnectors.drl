@@ -1,6 +1,6 @@
 package org.drools
 
-import org.drools.Person;
+import org.drools.compiler.Person;
 
 global java.util.List results;
 

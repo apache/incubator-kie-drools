@@ -1,6 +1,6 @@
 package org.test;
 
-import org.drools.Person
+import org.drools.compiler.Person
 
 declare trait Student
     school : String

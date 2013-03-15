@@ -1,6 +1,6 @@
 package org.drools.package2
 
-import org.drools.Cheese
+import org.drools.compiler.Cheese
 
 global java.util.List results;
 

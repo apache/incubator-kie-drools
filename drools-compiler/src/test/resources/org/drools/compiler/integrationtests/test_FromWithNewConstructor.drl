@@ -1,8 +1,8 @@
 package org.drools.compiler
 
-import org.drools.Query;
-import org.drools.Results;
-import org.drools.Storage;
+import org.drools.compiler.Query;
+import org.drools.compiler.Results;
+import org.drools.compiler.Storage;
 
 rule "Verify_1"
     when

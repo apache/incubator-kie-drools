@@ -1,6 +1,6 @@
 package org.drools.test
 
-import org.drools.Person;
+import org.drools.compiler.Person;
 import java.math.BigDecimal;
 
 global java.util.List list;
