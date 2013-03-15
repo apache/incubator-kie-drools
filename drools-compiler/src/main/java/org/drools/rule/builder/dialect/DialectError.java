@@ -1,6 +1,6 @@
 package org.drools.rule.builder.dialect;
 
-import org.drools.compiler.DroolsError;
+import org.drools.compiler.compiler.DroolsError;
 import org.kie.io.Resource;
 
 public class DialectError extends DroolsError {

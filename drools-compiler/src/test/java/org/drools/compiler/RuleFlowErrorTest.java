@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.ProcessLoadError;
 import org.junit.Test;
 
 

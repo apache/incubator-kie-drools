@@ -4,13 +4,13 @@ import org.drools.base.EvaluatorWrapper;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.commons.jci.readers.MemoryResourceReader;
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.ImportError;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageRegistry;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.ImportError;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -83,7 +83,7 @@ import static org.drools.rule.builder.dialect.DialectUtil.getUniqueLegalName;
 
 public class MVELDialect
     implements
-    Dialect,
+        Dialect,
     Externalizable {
 
     private String                                   id                             = "mvel";
@@ -139,7 +139,7 @@ public class MVELDialect
     protected Package                                      pkg;
     private MVELDialectConfiguration                       configuration;
 
-    private final PackageBuilder                           pkgBuilder;
+    private final PackageBuilder pkgBuilder;
 
     private PackageRegistry                                packageRegistry;
 

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.CompositeKnowledgeBuilderImpl;
-import org.drools.compiler.DroolsWarning;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.CompositeKnowledgeBuilderImpl;
+import org.drools.compiler.compiler.DroolsWarning;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.impl.BaseResource;
 import org.drools.rule.Package;

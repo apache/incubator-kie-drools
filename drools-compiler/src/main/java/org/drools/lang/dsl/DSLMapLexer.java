@@ -3,15 +3,11 @@
     package org.drools.lang.dsl;
     import java.util.List;
     import java.util.ArrayList;
-    import org.drools.compiler.ParserError;
+    import org.drools.compiler.compiler.ParserError;
 
 
 import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+
 public class DSLMapLexer extends Lexer {
     public static final int EOF=-1;
     public static final int VT_DSL_GRAMMAR=4;

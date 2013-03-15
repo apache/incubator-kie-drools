@@ -2,8 +2,8 @@ package org.drools.reteoo.compiled;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageRegistry;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.builder.dialect.java.JavaDialect;

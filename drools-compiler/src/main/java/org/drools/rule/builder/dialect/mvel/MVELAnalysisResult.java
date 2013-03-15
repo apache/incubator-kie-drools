@@ -18,12 +18,11 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
 
 /**
  * An analysis result implementation for the MVEL dialect

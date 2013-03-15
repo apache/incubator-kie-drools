@@ -8,6 +8,7 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BindingDescr;

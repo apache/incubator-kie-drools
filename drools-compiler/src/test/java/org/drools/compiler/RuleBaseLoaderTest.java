@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.drools.RuleBase;
+import org.drools.compiler.compiler.RuleBaseLoader;
 import org.drools.integrationtests.DslTest;
 import org.junit.Test;
 

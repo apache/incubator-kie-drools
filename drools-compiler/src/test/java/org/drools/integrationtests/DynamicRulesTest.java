@@ -49,9 +49,9 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
 import org.drools.common.InternalFactHandle;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.EnvironmentFactory;
@@ -1089,7 +1089,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test
     public void testSharedLIANodeRemoval() throws IOException,
-                                          DroolsParserException {
+            DroolsParserException {
         String str = "global java.util.List list;\n";
         str += "rule \"test\"\n";
         str += "when\n";

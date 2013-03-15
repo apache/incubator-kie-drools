@@ -5,9 +5,8 @@ import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELSalienceExpression;
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -35,7 +34,7 @@ public class MVELSalienceBuilder
             MVELAnalysisResult analysis = ( MVELAnalysisResult) dialect.analyzeExpression( context,
                                                                                            context.getRuleDescr(),
                                                                                            (String) context.getRuleDescr().getSalience(),
-                                                                                           new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
+                                                                                           new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
                                                                                                                 context.getPackageBuilder().getGlobals() ) );
             context.setTypesafe( analysis.isTypesafe() );
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();

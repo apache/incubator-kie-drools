@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import org.drools.CommonTestMethodBase;
 import org.drools.StockTick;
 import org.drools.StockTickInterface;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

@@ -6,8 +6,8 @@ import static org.junit.Assert.fail;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.junit.Test;

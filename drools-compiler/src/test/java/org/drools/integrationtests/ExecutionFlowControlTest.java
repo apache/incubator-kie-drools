@@ -28,7 +28,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.RuleFlowGroupImpl;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;

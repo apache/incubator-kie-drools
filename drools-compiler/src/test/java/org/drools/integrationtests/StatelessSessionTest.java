@@ -19,7 +19,7 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.base.ReferenceOriginalGlobalExporter;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.spi.GlobalResolver;
 import org.junit.Test;

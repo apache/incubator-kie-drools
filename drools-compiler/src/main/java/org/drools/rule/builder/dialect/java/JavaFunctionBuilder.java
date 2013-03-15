@@ -2,7 +2,7 @@ package org.drools.rule.builder.dialect.java;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.TypeResolver;
-import org.drools.compiler.FunctionError;
+import org.drools.compiler.compiler.FunctionError;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;

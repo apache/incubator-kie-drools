@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;

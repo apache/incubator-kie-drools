@@ -29,9 +29,8 @@ import junit.framework.TestCase;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonTokenStream;
 import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.compiler.DrlParser;
+import org.drools.compiler.compiler.DrlParser;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
@@ -67,7 +66,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.builder.conf.LanguageLevelOption;
 
-import static org.drools.compiler.DRLFactory.buildParser;
+import static org.drools.compiler.compiler.DRLFactory.buildParser;
 
 @Ignore("problem during phreak work")
 public class RuleParserTest extends TestCase {

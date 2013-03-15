@@ -5,12 +5,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageRegistry;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.PackageDescr;

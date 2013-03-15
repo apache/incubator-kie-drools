@@ -17,8 +17,8 @@
  */
 package org.drools.rule.builder.dialect.java;
 
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 

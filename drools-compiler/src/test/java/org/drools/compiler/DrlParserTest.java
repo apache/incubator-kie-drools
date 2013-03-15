@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import java.io.StringReader;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.compiler.compiler.DrlParser;
 import org.drools.lang.Expander;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;

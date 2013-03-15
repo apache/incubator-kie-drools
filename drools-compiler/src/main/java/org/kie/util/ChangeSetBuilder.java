@@ -23,7 +23,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.compiler.DrlParser;
+import org.drools.compiler.compiler.DrlParser;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;

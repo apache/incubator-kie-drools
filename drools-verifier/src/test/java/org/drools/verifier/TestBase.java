@@ -11,8 +11,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.jar.JarInputStream;
 
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Variable;

@@ -36,7 +36,7 @@ import org.drools.StockTick;
 import org.drools.Triangle;
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryConsoleLogger;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.time.SessionPseudoClock;

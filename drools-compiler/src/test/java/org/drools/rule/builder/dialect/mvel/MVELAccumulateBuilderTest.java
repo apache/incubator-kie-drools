@@ -1,7 +1,8 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import org.junit.After;
-import org.junit.Before;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -11,9 +12,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalFactHandle;
-import org.drools.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;

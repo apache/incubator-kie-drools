@@ -1,11 +1,10 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -19,11 +18,9 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageRegistry;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTupleImpl;

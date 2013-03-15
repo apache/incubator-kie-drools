@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import org.drools.compiler.DecisionTableFactory;
+import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.rule.Rule;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

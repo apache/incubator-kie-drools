@@ -4,22 +4,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.junit.After;
-import org.junit.Before;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-import org.drools.integrationtests.SerializationHelper;
 import org.drools.integrationtests.eventgenerator.Event.EventType;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.rule.Package;
 
 
 public class SimpleEventGeneratorTest extends CommonTestMethodBase {

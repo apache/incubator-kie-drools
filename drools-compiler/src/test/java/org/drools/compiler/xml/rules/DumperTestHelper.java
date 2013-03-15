@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.xml.XmlDumper;
-import org.drools.compiler.xml.XmlPackageReader;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.xml.XmlDumper;
+import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
 import org.kie.builder.conf.LanguageLevelOption;

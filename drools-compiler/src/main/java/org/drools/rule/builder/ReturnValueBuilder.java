@@ -1,9 +1,7 @@
 package org.drools.rule.builder;
 
-import java.util.List;
-
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.ReturnValueRestriction;

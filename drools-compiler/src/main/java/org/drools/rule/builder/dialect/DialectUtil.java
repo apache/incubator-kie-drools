@@ -1,9 +1,9 @@
 package org.drools.rule.builder.dialect;
 
 import org.drools.commons.jci.readers.ResourceReader;
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.factmodel.ClassDefinition;
@@ -54,7 +54,6 @@ import java.util.regex.Pattern;
 import static org.drools.core.util.ClassUtils.findClass;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
-import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.core.util.StringUtils.splitStatements;
 

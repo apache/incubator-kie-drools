@@ -2,18 +2,16 @@ package org.drools.lang;
 
 import java.util.LinkedList;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.builder.conf.LanguageLevelOption;
 
-import static org.drools.compiler.DRLFactory.buildParser;
+import static org.drools.compiler.compiler.DRLFactory.buildParser;
 import static org.junit.Assert.*;
 
 public class DRLContextTest {

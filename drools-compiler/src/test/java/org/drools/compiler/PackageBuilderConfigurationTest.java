@@ -13,6 +13,15 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.base.TypeResolver;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.DialectConfiguration;
+import org.drools.compiler.compiler.DuplicateFunction;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -269,7 +278,7 @@ public class PackageBuilderConfigurationTest {
 
     public static class MockDialectConfiguration
         implements
-        DialectConfiguration {
+            DialectConfiguration {
         private PackageBuilderConfiguration conf;
 
         public Dialect newDialect( PackageBuilder pkgBuilder,
@@ -292,7 +301,7 @@ public class PackageBuilderConfigurationTest {
 
     public static class MockDialect
         implements
-        Dialect {
+            Dialect {
         private PackageBuilder builder;
         private Package        pkg;
         private RuleDescr      ruleDescr;

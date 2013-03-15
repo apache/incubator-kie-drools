@@ -3,7 +3,7 @@ package org.drools.lang;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.descr.PackageDescr;

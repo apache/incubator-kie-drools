@@ -25,7 +25,7 @@ import javax.rules.admin.RuleAdministrator;
 import javax.rules.admin.RuleExecutionSet;
 import javax.rules.admin.RuleExecutionSetProvider;
 
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.jsr94.rules.RuleEngineTestBase;
 import org.drools.rule.Package;
 

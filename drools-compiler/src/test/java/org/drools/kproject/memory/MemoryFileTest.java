@@ -7,10 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.drools.compiler.io.File;
-import org.drools.compiler.io.FileSystem;
-import org.drools.compiler.io.Folder;
-import org.drools.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.compiler.io.File;
+import org.drools.compiler.compiler.io.FileSystem;
+import org.drools.compiler.compiler.io.Folder;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;

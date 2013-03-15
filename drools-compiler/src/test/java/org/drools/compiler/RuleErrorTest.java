@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.junit.Test;

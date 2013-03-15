@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
-import org.drools.compiler.DrlExprParser;
+import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.lang.MVELDumper.MVELDumperContext;
 import org.drools.lang.descr.AtomicExprDescr;
 import org.drools.lang.descr.BindingDescr;

@@ -20,8 +20,8 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl;
-import org.drools.compiler.BPMN2ProcessProvider;
-import org.drools.compiler.DecisionTableProvider;
+import org.drools.compiler.compiler.BPMN2ProcessProvider;
+import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.Service;
@@ -60,7 +60,7 @@ public class Activator
         this.dtableTracker = new ServiceTracker( bc,
                                                  bc.createFilter( "(|(" + 
                                                                   Constants.OBJECTCLASS + "=" + 
-                                                                  DecisionTableProvider.class.getName() + ")(" + 
+                                                                  DecisionTableProvider.class.getName() + ")(" +
                                                                   Constants.OBJECTCLASS + "=" + 
                                                                   BPMN2ProcessProvider.class.getName() +") )"),
                                                  new DroolsServiceTracker( bc,

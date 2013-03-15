@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
-import org.drools.compiler.PackageBuilderErrors;
+import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.Verifier;
