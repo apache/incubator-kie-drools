@@ -24,6 +24,7 @@ import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RuleTerminalNode;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
@@ -2367,6 +2368,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     }
 
     @Test(timeout = 5000)
+    @Ignore("disabled during phreak work")
     public void testTypeDeclarationInitializationForPropertyReactive() {
         // JBRULES-3686
         String rule = "package org.drools\n" +
