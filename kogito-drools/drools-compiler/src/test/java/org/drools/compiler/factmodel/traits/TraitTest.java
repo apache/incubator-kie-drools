@@ -36,8 +36,8 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
@@ -1503,7 +1503,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     protected void manyTraits( TraitFactory.VirtualPropertyMode mode ) {
         String source = "" +
-                "import org.drools.Message;" +
+                "import org.drools.compiler.Message;" +
                 "" +
                 "global java.util.List list; \n" +
                 "" +
@@ -1613,7 +1613,7 @@ public class TraitTest extends CommonTestMethodBase {
     // BZ #748752
     public void traitsInBatchExecution( TraitFactory.VirtualPropertyMode mode ) {
         String str = "package org.jboss.qa.brms.traits\n" +
-                "import org.drools.Person;\n" +
+                "import org.drools.compiler.Person;\n" +
                 "import org.drools.factmodel.traits.Traitable;\n" +
                 "" +
                 "global java.util.List list;" +
@@ -1700,7 +1700,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     public void manyTraitsStateless( TraitFactory.VirtualPropertyMode mode ) {
         String source = "" +
-                "import org.drools.Message;" +
+                "import org.drools.compiler.Message;" +
                 "" +
                 "global java.util.List list; \n" +
                 "" +
@@ -1948,7 +1948,7 @@ public class TraitTest extends CommonTestMethodBase {
     public void testTMSConsistencyWithNonTraitableBeans() {
 
         String s1 = "package org.drools.test;\n" +
-                "import org.drools.Person; \n" +
+                "import org.drools.compiler.Person; \n" +
                 "rule \"Init\"\n" +
                 "when\n" +
                 "then\n" +
@@ -1994,7 +1994,7 @@ public class TraitTest extends CommonTestMethodBase {
     public void traitWard( TraitFactory.VirtualPropertyMode mode ) {
 
         String s1 = "package org.drools.test;\n" +
-                "import org.drools.Person; \n" +
+                "import org.drools.compiler.Person; \n" +
                 "import org.drools.factmodel.traits.Thing; \n" +
                 "rule \"Init\"\n" +
                 "when\n" +
@@ -2056,7 +2056,7 @@ public class TraitTest extends CommonTestMethodBase {
     public void traitGrant( TraitFactory.VirtualPropertyMode mode ) {
 
         String s1 = "package org.drools.test;\n" +
-                "import org.drools.Person; \n" +
+                "import org.drools.compiler.Person; \n" +
                 "import org.drools.factmodel.traits.Thing; \n" +
                 "rule \"Init\"\n" +
                 "when\n" +
@@ -2228,7 +2228,7 @@ public class TraitTest extends CommonTestMethodBase {
     public void traitWardOnHierarchy( TraitFactory.VirtualPropertyMode mode ) {
 
         String s1 = "package org.drools.test;\n" +
-                "import org.drools.Person; \n" +
+                "import org.drools.compiler.Person; \n" +
                 "import org.drools.factmodel.traits.Thing; \n" +
                 "rule \"Init\"\n" +
                 "when\n" +

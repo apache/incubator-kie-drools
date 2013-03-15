@@ -183,7 +183,7 @@
                     &lt;return-value-restriction evaluator="==" &gt;a4 + 1&lt;/return-value-restriction&gt;
                     &lt;variable-restriction evaluator="&gt;" identifier="a4" /&gt;
                     &lt;qualified-identifier-restriction evaluator="=="&gt;
-                        org.drools.Bar.BAR_ENUM_VALUE
+                        org.drools.compiler.Bar.BAR_ENUM_VALUE
                     &lt;/qualified-identifier-restriction&gt;
                 &lt;/or-restriction-connective&gt;
             &lt;/field-constraint&gt;            

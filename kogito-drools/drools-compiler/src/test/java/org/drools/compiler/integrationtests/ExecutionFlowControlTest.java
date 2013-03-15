@@ -9,21 +9,21 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.drools.Cell;
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.FactA;
+import org.drools.compiler.Cell;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.FactA;
 import org.drools.FactHandle;
-import org.drools.Father;
-import org.drools.Foo;
-import org.drools.Message;
-import org.drools.Neighbor;
-import org.drools.Person;
-import org.drools.PersonInterface;
-import org.drools.Pet;
+import org.drools.compiler.Father;
+import org.drools.compiler.Foo;
+import org.drools.compiler.Message;
+import org.drools.compiler.Neighbor;
+import org.drools.compiler.Person;
+import org.drools.compiler.PersonInterface;
+import org.drools.compiler.Pet;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.TotalHolder;
+import org.drools.compiler.TotalHolder;
 import org.drools.WorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalWorkingMemoryActions;
@@ -1085,7 +1085,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         // JBRULES-3234
 
         String str = "package org.kie.test \n"
-                     + "import org.drools.Person; \n"
+                     + "import org.drools.compiler.Person; \n"
                      + "rule 'Rule 1' agenda-group 'g1' lock-on-active	when \n"
                      + "		$p : Person( age != 35 ) \n"
                      + "	then \n"

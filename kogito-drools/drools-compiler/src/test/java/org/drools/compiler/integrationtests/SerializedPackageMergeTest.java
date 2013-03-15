@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import org.drools.Message;
+import org.drools.compiler.Message;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

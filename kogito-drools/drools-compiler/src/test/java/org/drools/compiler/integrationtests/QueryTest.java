@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.Address;
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.DomainObject;
-import org.drools.InsertedObject;
-import org.drools.Interval;
-import org.drools.Person;
-import org.drools.Worker;
+import org.drools.compiler.Address;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.DomainObject;
+import org.drools.compiler.InsertedObject;
+import org.drools.compiler.Interval;
+import org.drools.compiler.Person;
+import org.drools.compiler.Worker;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.common.AbstractWorkingMemory;
@@ -143,7 +143,7 @@ public class QueryTest extends CommonTestMethodBase {
     public void testQueryWithMultipleResultsOnKnowledgeApi() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
-        str += "import org.drools.Cheese \n";
+        str += "import org.drools.compiler.Cheese \n";
         str += "query cheeses \n";
         str += "    stilton : Cheese(type == 'stilton') \n";
         str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
@@ -405,7 +405,7 @@ public class QueryTest extends CommonTestMethodBase {
     public void testQueriesWithVariableUnification() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
-        str += "import org.drools.Person \n";
+        str += "import org.drools.compiler.Person \n";
         str += "query peeps( String $name, String $likes, int $age ) \n";
         str += "    $p : Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
@@ -502,7 +502,7 @@ public class QueryTest extends CommonTestMethodBase {
     public void testQueriesWithVariableUnificationOnPatterns() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
-        str += "import org.drools.Person \n";
+        str += "import org.drools.compiler.Person \n";
         str += "query peeps( Person $p, String $name, String $likes, int $age ) \n";
         str += "    $p := Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
@@ -560,7 +560,7 @@ public class QueryTest extends CommonTestMethodBase {
     public void testQueriesWithVariableUnificationOnNestedFields() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
-        str += "import org.drools.Person \n";
+        str += "import org.drools.compiler.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
@@ -608,7 +608,7 @@ public class QueryTest extends CommonTestMethodBase {
     public void testOpenQuery() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
-        str += "import org.drools.Cheese \n";
+        str += "import org.drools.compiler.Cheese \n";
         str += "query cheeses(String $type1, String $type2) \n";
         str += "    stilton : Cheese(type == $type1, $sprice : price) \n";
         str += "    cheddar : Cheese(type == $type2, $cprice : price == stilton.price) \n";

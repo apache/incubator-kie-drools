@@ -1,7 +1,6 @@
 package org.drools.compiler.integrationtests;
 
-import org.drools.Message;
-import org.junit.Ignore;
+import org.drools.compiler.Message;
 import org.junit.Test;
 import org.kie.KieServices;
 import org.kie.builder.IncrementalResults;

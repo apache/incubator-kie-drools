@@ -3,7 +3,7 @@ package org.drools.compiler.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.common.ActiveActivationIterator;
 import org.drools.core.util.Iterator;
 import org.drools.impl.StatefulKnowledgeSessionImpl;

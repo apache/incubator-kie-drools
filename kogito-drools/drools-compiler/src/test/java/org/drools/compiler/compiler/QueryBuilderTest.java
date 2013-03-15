@@ -2,8 +2,8 @@ package org.drools.compiler.compiler;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drools.Cheese;
-import org.drools.Person;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;

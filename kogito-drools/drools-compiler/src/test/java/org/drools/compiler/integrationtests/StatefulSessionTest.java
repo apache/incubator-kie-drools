@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -33,7 +33,7 @@ public class StatefulSessionTest extends CommonTestMethodBase {
     public void testInsertObject() throws Exception {
         String str = "";
         str += "package org.kie \n";
-        str += "import org.drools.Cheese \n";
+        str += "import org.drools.compiler.Cheese \n";
         str += "rule rule1 \n";
         str += "  when \n";
         str += "    $c : Cheese() \n";

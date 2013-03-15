@@ -23,10 +23,9 @@ import static org.mockito.Mockito.verify;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.StockTick;
-import org.drools.compiler.lang.api.DescrFactory;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.StockTick;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.Test;

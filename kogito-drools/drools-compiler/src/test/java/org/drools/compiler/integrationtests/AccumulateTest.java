@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.Cheese;
-import org.drools.Cheesery;
-import org.drools.CommonTestMethodBase;
-import org.drools.Order;
-import org.drools.OrderItem;
-import org.drools.OuterClass;
-import org.drools.Person;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Order;
+import org.drools.compiler.OrderItem;
+import org.drools.compiler.OuterClass;
+import org.drools.compiler.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
@@ -842,8 +842,8 @@ public class AccumulateTest extends CommonTestMethodBase {
         // once this compils, update it to actually assert on correct outputs.
         
         String rule = "package org.drools.test;\n" +
-                      "import org.drools.Cheese;\n" +
-                      "import org.drools.Person;\n" +
+                      "import org.drools.compiler.Cheese;\n" +
+                      "import org.drools.compiler.Person;\n" +
                         
                       "rule \"Class cast causer\"\n" +
                       "    when\n" +
@@ -866,8 +866,8 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testAccumulateWithSameSubnetwork() throws Exception {
         String rule = "package org.drools.test;\n" +
-                "import org.drools.Cheese;\n" +
-                "import org.drools.Person;\n" +
+                "import org.drools.compiler.Cheese;\n" +
+                "import org.drools.compiler.Person;\n" +
                 "global java.util.List list; \n" +
                 "rule r1 salience 100 \n" +
                 "    when\n" +
@@ -1779,7 +1779,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testAccumulateMinMax() throws Exception {
         String drl = "package org.drools.test \n" +
-                     "import org.drools.Cheese \n" +
+                     "import org.drools.compiler.Cheese \n" +
                      "global java.util.List results \n " +
                      "rule minMax \n" +
                      "when \n" +

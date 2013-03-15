@@ -1,7 +1,8 @@
 package org.drools.test;
 
 import org.drools.Person;
-import java.util.List;
+import java.util.List
+import org.drools.compiler.Person;
 
 global Person a;
 global List l;
@@ -11,7 +12,7 @@ rule "r"
     when
         not Person()
     then
-           l.add(new Person("0"));
+           l.add(new org.drools.compiler.Person("0"));
            if (l.size() > 2)
         {
            kcontext.getKieRuntime().halt();

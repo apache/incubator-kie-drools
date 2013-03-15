@@ -5,8 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import org.drools.Message;
-import org.junit.Assert;
+import org.drools.compiler.Message;
 import org.junit.Test;
 import org.kie.KieServices;
 import org.kie.builder.KieBuilder;
@@ -19,14 +18,13 @@ import org.kie.logger.KieRuntimeLogger;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;
 import static org.mockito.Mockito.*;
-import static org.mockito.Matchers.*;
 
 public class KieLoggersTest {
 
     @Test
     public void testKieConsoleLogger() throws Exception {
         String drl = "package org.drools.integrationtests\n" + 
-        		"import org.drools.Message;\n" + 
+        		"import org.drools.compiler.Message;\n" +
         		"rule \"Hello World\"\n" + 
         		"    when\n" + 
         		"        m : Message( myMessage : message )\n" + 
@@ -49,7 +47,7 @@ public class KieLoggersTest {
     @Test
     public void testKieConsoleLoggerStateless() throws Exception {
         String drl = "package org.drools.integrationtests\n" + 
-                "import org.drools.Message;\n" + 
+                "import org.drools.compiler.Message;\n" +
                 "rule \"Hello World\"\n" + 
                 "    when\n" + 
                 "        m : Message( myMessage : message )\n" + 
@@ -75,7 +73,7 @@ public class KieLoggersTest {
     @Test
     public void testKieFileLogger() throws Exception {
         String drl = "package org.drools.integrationtests\n" + 
-                "import org.drools.Message;\n" + 
+                "import org.drools.compiler.Message;\n" +
                 "rule \"Hello World\"\n" + 
                 "    when\n" + 
                 "        m : Message( myMessage : message )\n" + 

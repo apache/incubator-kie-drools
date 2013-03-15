@@ -8,7 +8,7 @@ import static org.junit.Assert.fail;
 import java.io.StringReader;
 import java.util.List;
 
-import org.drools.Person;
+import org.drools.compiler.Person;
 import org.drools.base.ClassObjectType;
 import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.common.InternalRuleBase;
@@ -39,7 +39,7 @@ public class JavaDialectTest {
         // Tests evals are generated and executed with Java dialect
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.drools.Person\n";
+        drl += "import org.drools.compiler.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
         drl += "when\n";
@@ -90,7 +90,7 @@ public class JavaDialectTest {
         
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.drools.Person\n";
+        drl += "import org.drools.compiler.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
         drl += "when\n";

@@ -3,9 +3,9 @@ package org.drools.compiler.rule.builder.dialect.java;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -62,7 +62,7 @@ public class AsmGeneratorTest extends CommonTestMethodBase {
     public void testAllGeneratedConstructs() {
         String s = 
             "package org.kie.test\n" +
-            "import org.drools.Person\n" +
+            "import org.drools.compiler.Person\n" +
             "global java.util.List list\n" +
             "rule r1 when\n" +
             "    s1 : String( this == 's1' )\n" +
@@ -110,8 +110,8 @@ public class AsmGeneratorTest extends CommonTestMethodBase {
     public void testOr() {
         String s = 
             "package org.kie.test\n" +
-            "import org.drools.Person\n" +
-            "import org.drools.Cheese\n" +
+            "import org.drools.compiler.Person\n" +
+            "import org.drools.compiler.Cheese\n" +
             "global java.util.List list\n" +
             "rule r1 when\n" +
             "    s1 : String( this == 's1' )\n" +

@@ -16,9 +16,9 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.Address;
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
+import org.drools.compiler.Address;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.common.DefaultFactHandle;
 import org.drools.core.util.FileManager;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -71,7 +71,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         // JBRULES-3604
         String str = "package inheritance\n" +
                 "\n" +
-                "import org.drools.Address\n" +
+                "import org.drools.compiler.Address\n" +
                 "\n" +
                 "rule \"Parent\"\n" +
                 "    enabled false\n" +
@@ -271,7 +271,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testReuseAgendaAfterException() throws Exception {
         // JBRULES-3677
 
-        String str = "import org.drools.Person;\n" +
+        String str = "import org.drools.compiler.Person;\n" +
                 "global java.util.List results;" +
                 "rule R1\n" +
                 "ruleflow-group \"test\"\n" +
@@ -391,7 +391,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     @Test
     public void testBigDecimalComparison() throws Exception {
         // JBRULES-3715
-        String str = "import org.drools.Person;\n" +
+        String str = "import org.drools.compiler.Person;\n" +
                 "rule \"Big Decimal Comparison\"\n" +
                 "    dialect \"mvel\"\n" +
                 "when\n" +

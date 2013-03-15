@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.BeliefSystemType;
-import org.drools.Person;
+import org.drools.compiler.Person;
 import org.drools.SessionConfiguration;
 import org.drools.beliefsystem.jtms.JTMSBeliefSet;
 import org.drools.beliefsystem.jtms.JTMSBeliefSystem;
@@ -18,7 +18,6 @@ import org.drools.common.NamedEntryPoint;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -166,7 +165,7 @@ public class JTMSTest {
                 "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
                 "import org.drools.common.AgendaItem;" +
-                "import org.drools.Person;" +
+                "import org.drools.compiler.Person;" +
                 "global java.util.List list;\n" + 
                 "\n" + 
                 "rule \"go1\"\n" + 
@@ -258,7 +257,7 @@ public class JTMSTest {
                 "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
                 "import org.drools.common.AgendaItem;" +
-                "import org.drools.Person;" +
+                "import org.drools.compiler.Person;" +
                 "global java.util.List list;\n" + 
                 "\n" + 
                 "rule \"go1\"\n" + 

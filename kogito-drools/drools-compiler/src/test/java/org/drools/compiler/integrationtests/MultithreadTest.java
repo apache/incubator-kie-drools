@@ -25,8 +25,8 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import org.drools.CommonTestMethodBase;
-import org.drools.StockTick;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.StockTick;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

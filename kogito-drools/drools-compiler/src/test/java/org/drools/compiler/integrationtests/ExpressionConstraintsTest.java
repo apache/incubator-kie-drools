@@ -1,9 +1,9 @@
 package org.drools.compiler.integrationtests;
 
-import org.drools.CommonTestMethodBase;
-import org.drools.Mailbox;
-import org.drools.Mailbox.FolderType;
-import org.drools.Message;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Mailbox;
+import org.drools.compiler.Mailbox.FolderType;
+import org.drools.compiler.Message;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
@@ -17,7 +17,7 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
     @Test
     public void testExpressionConstraints1() {
         String drl = "package org.drools\n" +
-        		     "import org.drools.Mailbox.FolderType;\n" +
+        		     "import org.drools.compiler.Mailbox.FolderType;\n" +
         		     "rule R1\n" + 
         		     "        dialect \"mvel\"\n" + 
         		     "    when\n" + 
@@ -52,7 +52,7 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
     @Test
     public void testExpressionConstraints2() {
         String drl = "package org.drools\n" +
-                     "import org.drools.Mailbox.FolderType;\n" +
+                     "import org.drools.compiler.Mailbox.FolderType;\n" +
                      "rule R1\n" + 
                      "    dialect \"mvel\"\n" + 
                      "    when\n" + 
@@ -92,15 +92,15 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
     @Test
     public void testExpressionConstraints3() {
         String drl = "package org.drools\n" +
-                     "import org.drools.Mailbox.FolderType\n" +
+                     "import org.drools.compiler.Mailbox.FolderType\n" +
                      "rule R1\n" + 
                      "    dialect \"mvel\"\n" + 
                      "    when\n" + 
                      "        $m : Mailbox( \n" + 
                      "                $type1 : FolderType.INBOX,\n" + 
-                     "                $type2 : org.drools.Mailbox$FolderType.INBOX,\n" +
+                     "                $type2 : org.drools.compiler.Mailbox$FolderType.INBOX,\n" +
                      "                $work1 : getFolder(null),\n" + 
-                     "                $work2 : getFolder(org.drools.Mailbox$FolderType.INBOX),\n" +
+                     "                $work2 : getFolder(org.drools.compiler.Mailbox$FolderType.INBOX),\n" +
                      "                $work3 : getFolder(FolderType.INBOX),\n" + 
                      "                getFolder($type1) != null,\n" + 
                      "                getFolder($type1).size() > 0,\n" + 
@@ -108,7 +108,7 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
                      "                $work6 : folders,\n" + 
                      "                $work7 : folders.size,\n" + 
                      "                //folders.containsKey(FolderType.INBOX),\n" + 
-                     "                folders.containsKey(org.drools.Mailbox$FolderType.INBOX),\n" +
+                     "                folders.containsKey(org.drools.compiler.Mailbox$FolderType.INBOX),\n" +
                      "                folders.containsKey($type2),\n" + 
                      "                !folders.isEmpty,\n" + 
                      "                getFolder(FolderType.INBOX) != null,\n" + 

@@ -1,8 +1,8 @@
 package org.drools.compiler.integrationtests;
 
-import org.drools.Address;
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
+import org.drools.compiler.Address;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.runtime.StatefulKnowledgeSession;

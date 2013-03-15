@@ -1,8 +1,8 @@
 package org.drools.compiler.integrationtests;
 
-import org.drools.CommonTestMethodBase;
-import org.drools.Order;
-import org.drools.OrderItem;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Order;
+import org.drools.compiler.OrderItem;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

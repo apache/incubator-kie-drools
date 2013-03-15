@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.Address;
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.Address;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.InitialFact;
-import org.drools.Person;
+import org.drools.compiler.Person;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -63,7 +63,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testQueryPositional() throws Exception {
         String str = "" +
                      "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, int $age ) \n" +
                      "    Person( $name := name, $likes := likes, $age := age; ) \n" +
@@ -197,7 +197,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testQueryNamed() throws Exception {
         String str = "" +
                      "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, int $age ) \n" +
                      "    Person( $name := name, $likes := likes, $age := age ) \n" +
@@ -318,7 +318,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testQueryMixed() throws Exception {
         String str = "" +
                      "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, int $age ) \n" +
                      "    Person( $name := name, $likes := likes, $age := age; ) \n" +
@@ -439,7 +439,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testQueryPatternBindingAsResult() throws Exception {
         String str = "" +
                      "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
                      "    $p := Person( $name := name, $likes := likes, $age := age; ) \n" +
@@ -512,7 +512,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testQueriesWithNestedAcecssorsAllOutputs() throws Exception {
         String str = "" +
                      "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, String $street ) \n" +
                      "   Person( $name := name, $likes := likes, $street := address.street ) \n" +
@@ -561,7 +561,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testQueriesWithNestedAcecssorsMixedArgs() throws Exception {
         String str = "" +
                      "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, String $street ) \n" +
                      "   Person( $name := name, $likes := likes, $street := address.street ) \n" +
@@ -618,7 +618,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testQueryWithDynamicData() throws Exception {
         String str = "" +
                      "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
                      "    $p := Person( ) from new Person( $name, $likes, $age ) \n" +
@@ -677,7 +677,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testQueryWithDyanmicInsert() throws Exception {
         String str = "" +
                      "package org.drools.test  \n" +
-                     "import org.drools.Person \n" +
+                     "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
                      "    $p := Person( ) from new Person( $name, $likes, $age ) \n" +
@@ -1883,7 +1883,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
-                     "import org.drools.Person\n" +
+                     "import org.drools.compiler.Person\n" +
 
                      "global List list\n" +
 

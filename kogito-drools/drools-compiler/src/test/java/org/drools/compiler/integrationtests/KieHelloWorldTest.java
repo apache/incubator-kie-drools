@@ -1,7 +1,7 @@
 package org.drools.compiler.integrationtests;
 
-import org.drools.CommonTestMethodBase;
-import org.drools.Message;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Message;
 import org.junit.Test;
 import org.kie.KieServices;
 import org.kie.builder.ReleaseId;

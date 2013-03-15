@@ -6,7 +6,7 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.Properties;
 
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

@@ -1,9 +1,9 @@
 package org.drools.compiler.integrationtests.sequential;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.Message;
-import org.drools.Person;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Message;
+import org.drools.compiler.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatelessSession;
@@ -121,7 +121,7 @@ public class SequentialTest extends CommonTestMethodBase {
     public void testKnowledgeRuntimeAccess() throws Exception {
         String str = "";
         str += "package org.test\n";
-        str +="import org.drools.Message\n";
+        str +="import org.drools.compiler.Message\n";
         str +="rule \"Hello World\"\n";
         str +="when\n";
         str +="    Message( )\n";
@@ -152,7 +152,7 @@ public class SequentialTest extends CommonTestMethodBase {
     public void testEvents() throws Exception {
         String str = "";
         str += "package org.test\n";
-        str +="import org.drools.Message\n";
+        str +="import org.drools.compiler.Message\n";
         str +="rule \"Hello World\"\n";
         str +="when\n";
         str +="    Message( )\n";

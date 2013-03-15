@@ -3,8 +3,8 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilderConfiguration;

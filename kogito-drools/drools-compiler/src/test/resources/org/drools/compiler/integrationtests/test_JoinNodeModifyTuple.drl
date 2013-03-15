@@ -1,6 +1,8 @@
 package TrafficControl
 
 import org.drools.*
+import org.drools.compiler.Close
+import org.drools.compiler.Approach
 
 rule "Target Retract"
     salience -100

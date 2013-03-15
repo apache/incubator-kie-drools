@@ -14,17 +14,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.Cheese;
-import org.drools.CheeseEqual;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CheeseEqual;
 import org.drools.ClassObjectFilter;
-import org.drools.CommonTestMethodBase;
-import org.drools.Father;
-import org.drools.Person;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Father;
+import org.drools.compiler.Person;
 import org.drools.RuleBase;
-import org.drools.Sensor;
+import org.drools.compiler.Sensor;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.YoungestFather;
+import org.drools.compiler.YoungestFather;
 import org.drools.beliefsystem.BeliefSet;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
@@ -1108,8 +1108,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         String str =""+
                 "package org.drools.test;\n" +
                 "\n" +
-                "import org.drools.Father;\n" +
-                "import org.drools.YoungestFather;\n" +
+                "import org.drools.compiler.Father;\n" +
+                "import org.drools.compiler.YoungestFather;\n" +
                 "\n" +
                 "rule \"findMarriedCouple\"\n" +
                 "when\n" +

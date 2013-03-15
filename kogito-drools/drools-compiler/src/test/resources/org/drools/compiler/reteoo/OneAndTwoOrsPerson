@@ -220,9 +220,9 @@ SGVsbG8gV29ybGQgMnB4</byte-elements>
         </org.drools.rule.PackageCompilationData>
         <string>org.drools.reteoo</string>
         <list>
-          <string>org.drools.Message</string>
-          <string>org.drools.Cheese</string>
-          <string>org.drools.Person</string>
+          <string>org.drools.compiler.Message</string>
+          <string>org.drools.compiler.Cheese</string>
+          <string>org.drools.compiler.Person</string>
           <string>org.drools.reteoo.*</string>
           <string>java.lang.*</string>
         </list>

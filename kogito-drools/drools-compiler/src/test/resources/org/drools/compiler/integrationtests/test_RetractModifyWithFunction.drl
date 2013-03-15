@@ -1,4 +1,5 @@
 package org.drools;
+import org.drools.compiler.Cheese
  
 function Cheese getMin(Cheese c1, Cheese c2) {
  if (c1.getPrice() < c2.getPrice()) return c1;

@@ -3,7 +3,7 @@ package org.drools.compiler.compiler.xml.rules;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.core.util.StringUtils;
@@ -334,7 +334,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.List",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.drools.Person",
+        assertEquals( "org.drools.compiler.Person",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );

@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.CommonTestMethodBase;
-import org.drools.Message;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Message;
 import org.drools.base.mvel.MVELDebugHandler;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

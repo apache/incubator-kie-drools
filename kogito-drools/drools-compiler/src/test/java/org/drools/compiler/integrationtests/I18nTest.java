@@ -19,9 +19,9 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.CommonTestMethodBase;
-import org.drools.I18nPerson;
-import org.drools.Person;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.I18nPerson;
+import org.drools.compiler.Person;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
@@ -112,7 +112,7 @@ public class I18nTest extends CommonTestMethodBase {
         String dslr =
                 "package test\n" +
                 "\n" +
-                "import org.drools.Person\n" +
+                "import org.drools.compiler.Person\n" +
                 "\n" +
                 "expander test_I18n.dsl\n" +
                 "\n" +

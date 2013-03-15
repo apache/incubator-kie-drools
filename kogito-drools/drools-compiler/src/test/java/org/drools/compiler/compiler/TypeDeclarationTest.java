@@ -430,7 +430,7 @@ public class TypeDeclarationTest {
         str += "package org.drools.test; \n" +
                 "import org.drools.compiler.compiler.TypeDeclarationTest.KlassAnnotation; \n" +
                 "import org.drools.compiler.compiler.TypeDeclarationTest.FieldAnnotation; \n" +
-                "import org.drools.Person\n" +
+                "import org.drools.compiler.Person\n" +
                 "\n" +
                 "declare Bean \n" +
                 "@role(event) \n" +
