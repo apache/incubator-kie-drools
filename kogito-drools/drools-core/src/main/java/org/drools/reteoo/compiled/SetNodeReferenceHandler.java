@@ -29,7 +29,7 @@ import org.drools.rule.ContextEntry;
  * <li>{@link LeftInputAdapterNode}s</li>
  * <li>{@link BetaNode}s</li>
  */
-class SetNodeReferenceHandler extends AbstractCompilerHandler {
+public class SetNodeReferenceHandler extends AbstractCompilerHandler {
 
     private static final String PARAM_TYPE = NetworkNode.class.getName();
     private static final String PARAM_NAME = "node";
@@ -38,7 +38,7 @@ class SetNodeReferenceHandler extends AbstractCompilerHandler {
 
     private final StringBuilder builder;
 
-    SetNodeReferenceHandler(StringBuilder builder) {
+    public SetNodeReferenceHandler(StringBuilder builder) {
         this.builder = builder;
     }
 

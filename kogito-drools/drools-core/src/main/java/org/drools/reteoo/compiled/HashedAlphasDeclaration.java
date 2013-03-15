@@ -29,7 +29,7 @@ import java.util.Collections;
  *
  * @see org.kie.reteoo.compiled.DeclarationsHandler
  */
-class HashedAlphasDeclaration {
+public class HashedAlphasDeclaration {
     private final String variableName;
     private final ValueType valueType;
 
@@ -44,11 +44,11 @@ class HashedAlphasDeclaration {
         this.valueType = valueType;
     }
 
-    ValueType getValueType() {
+    public ValueType getValueType() {
         return valueType;
     }
 
-    String getVariableName() {
+    public String getVariableName() {
         return variableName;
     }
 
@@ -56,11 +56,11 @@ class HashedAlphasDeclaration {
         hashedValuesToNodeIds.put(hashedValue,  nodeId);
     }
 
-    Collection<Object> getHashedValues() {
+    public Collection<Object> getHashedValues() {
         return Collections.unmodifiableSet(hashedValuesToNodeIds.keySet());
     }
 
-    String getNodeId(Object hashedValue) {
+    public String getNodeId(Object hashedValue) {
         return hashedValuesToNodeIds.get(hashedValue);
     }
 }

@@ -35,7 +35,7 @@ import java.util.*;
  * <li>A {@link Map} for each set of hashed {@link AlphaNode}s. The keys are the hashed values, and the values are
  * the IDs of the alphas</li>
  */
-class DeclarationsHandler extends AbstractCompilerHandler {
+public class DeclarationsHandler extends AbstractCompilerHandler {
     private static final String PRIVATE_MODIFIER = "private";
 
     /**
@@ -54,7 +54,7 @@ class DeclarationsHandler extends AbstractCompilerHandler {
      */
     private final Collection<HashedAlphasDeclaration> hashedAlphaDeclarations;
 
-    DeclarationsHandler(StringBuilder builder) {
+    public DeclarationsHandler(StringBuilder builder) {
         this.builder = builder;
         this.hashedAlphaDeclarations = new LinkedList<HashedAlphasDeclaration>();
     }
@@ -95,7 +95,7 @@ class DeclarationsHandler extends AbstractCompilerHandler {
                 + " = new " + createType.getName() + "();";
     }
 
-    Collection<HashedAlphasDeclaration> getHashedAlphaDeclarations() {
+    public Collection<HashedAlphasDeclaration> getHashedAlphaDeclarations() {
         return Collections.unmodifiableCollection(hashedAlphaDeclarations);
     }
 
