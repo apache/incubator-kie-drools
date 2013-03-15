@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.kie.definition.process.Node;
 import org.kie.definition.process.Process;
-import org.drools.lang.descr.ProcessDescr;
+import org.drools.compiler.lang.descr.ProcessDescr;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;

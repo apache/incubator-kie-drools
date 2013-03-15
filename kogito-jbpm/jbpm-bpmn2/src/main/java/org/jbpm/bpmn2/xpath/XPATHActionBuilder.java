@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.lang.descr.ActionDescr;
+import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.rule.builder.PackageBuildContext;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.core.ContextResolver;

@@ -3,8 +3,8 @@ package org.jbpm.process.builder.dialect.java;
 import java.util.Iterator;
 
 import org.kie.definition.process.Process;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ProcessDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.jbpm.process.builder.ActionBuilder;

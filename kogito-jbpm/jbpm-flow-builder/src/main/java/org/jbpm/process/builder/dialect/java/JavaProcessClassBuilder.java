@@ -19,7 +19,7 @@ package org.jbpm.process.builder.dialect.java;
 import java.util.Iterator;
 
 import org.drools.core.util.StringUtils;
-import org.drools.lang.descr.ProcessDescr;
+import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.rule.ImportDeclaration;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ProcessClassBuilder;
@@ -33,7 +33,7 @@ public class JavaProcessClassBuilder
     ProcessClassBuilder {
 
     /* (non-Javadoc)
-     * @see org.drools.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.drools.rule.builder.BuildContext, org.drools.rule.builder.dialect.java.BuildUtils, org.drools.lang.descr.RuleDescr)
+     * @see org.drools.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.drools.rule.builder.BuildContext, org.drools.rule.builder.dialect.java.BuildUtils, RuleDescr)
      */
     public String  buildRule(final ProcessBuildContext context) {
         // If there is no compiled code, return

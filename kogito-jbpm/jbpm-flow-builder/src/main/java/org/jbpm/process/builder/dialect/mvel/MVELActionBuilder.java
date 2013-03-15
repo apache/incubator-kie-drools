@@ -7,7 +7,7 @@ import java.util.Set;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.lang.descr.ActionDescr;
+import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;

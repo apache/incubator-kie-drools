@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.jbpm.process.core.Context;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;

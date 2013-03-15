@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.kie.definition.process.Node;
 import org.kie.definition.process.Process;
-import org.drools.lang.descr.ActionDescr;
-import org.drools.lang.descr.ProcessDescr;
+import org.drools.compiler.lang.descr.ActionDescr;
+import org.drools.compiler.lang.descr.ProcessDescr;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.workflow.core.DroolsAction;

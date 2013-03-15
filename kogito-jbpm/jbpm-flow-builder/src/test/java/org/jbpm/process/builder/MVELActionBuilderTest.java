@@ -12,7 +12,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.lang.descr.ActionDescr;
+import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
