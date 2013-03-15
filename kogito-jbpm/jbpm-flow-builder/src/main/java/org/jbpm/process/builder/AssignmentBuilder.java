@@ -1,6 +1,6 @@
 package org.jbpm.process.builder;
 
-import org.drools.rule.builder.PackageBuildContext;
+import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.workflow.core.node.Assignment;
 

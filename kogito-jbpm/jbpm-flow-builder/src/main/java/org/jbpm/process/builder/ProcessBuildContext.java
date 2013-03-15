@@ -7,7 +7,7 @@ import org.kie.definition.process.Process;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
-import org.drools.rule.builder.PackageBuildContext;
+import org.drools.compiler.rule.builder.PackageBuildContext;
 
 public class ProcessBuildContext extends PackageBuildContext {
 	

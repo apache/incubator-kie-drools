@@ -13,7 +13,7 @@ import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
-import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.process.builder.dialect.java.JavaReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
