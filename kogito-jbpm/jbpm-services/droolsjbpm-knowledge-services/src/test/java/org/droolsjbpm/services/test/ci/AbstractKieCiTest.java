@@ -7,17 +7,14 @@ import org.kie.builder.KieFileSystem;
 import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.model.KieSessionModel;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;
 
 import java.io.IOException;
-import org.drools.kproject.models.KieSessionModelImpl;
-import org.drools.kproject.models.WorkItemHandlerModelImpl;
 
 import static org.junit.Assert.assertTrue;
-import org.kie.builder.model.WorkItemHandlerModel;
 
 public class AbstractKieCiTest {
 

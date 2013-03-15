@@ -18,7 +18,6 @@ package org.droolsjbpm.services.impl;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,7 +64,7 @@ import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieScanner;
 import org.kie.builder.Message;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.model.KieSessionModel;
