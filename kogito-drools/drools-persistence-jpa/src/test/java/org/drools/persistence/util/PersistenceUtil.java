@@ -15,7 +15,7 @@
  */
 package org.drools.persistence.util;
 
-import static org.drools.marshalling.util.MarshallingDBUtil.initializeTestDb;
+import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeTestDb;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
@@ -36,8 +36,8 @@ import javax.transaction.UserTransaction;
 
 import org.drools.base.MapGlobalResolver;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.marshalling.util.EntityManagerFactoryProxy;
-import org.drools.marshalling.util.UserTransactionProxy;
+import org.drools.persistence.marshalling.util.EntityManagerFactoryProxy;
+import org.drools.persistence.marshalling.util.UserTransactionProxy;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.junit.Assert;

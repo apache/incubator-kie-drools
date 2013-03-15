@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.marshalling.util;
+package org.drools.persistence.marshalling.util;
 
-import static org.drools.marshalling.util.MarshallingTestUtil.PROCESS_INSTANCE_INFO_CLASS_NAME;
-import static org.drools.marshalling.util.MarshallingTestUtil.getProcessInstanceInfoByteArray;
-import static org.drools.marshalling.util.MarshallingTestUtil.getWorkItemByteArray;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.PROCESS_INSTANCE_INFO_CLASS_NAME;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.getProcessInstanceInfoByteArray;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.getWorkItemByteArray;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;

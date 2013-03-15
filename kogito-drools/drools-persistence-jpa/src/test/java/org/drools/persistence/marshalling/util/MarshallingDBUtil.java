@@ -1,4 +1,4 @@
-package org.drools.marshalling.util;
+package org.drools.persistence.marshalling.util;
 
 /*
  * Copyright 2011 Red Hat Inc.
@@ -220,13 +220,13 @@ public class MarshallingDBUtil {
         
         String path = generatePathToTestDb(testClass);
         path = path.replace("target" + File.separatorChar + 
-                "test-classes" + File.separatorChar + 
+                "test-classes" + File.separatorChar +
                 "marshalling" + File.separatorChar + 
                 "testData",
                 "src" + File.separatorChar + 
                 "test" + File.separatorChar + 
-                "resources" + File.separatorChar + 
-                "marshalling" + File.separatorChar
+                "resources" + File.separatorChar +
+                        "marshalling" + File.separatorChar
                 );
         File marshallingDir = new File(path);
         

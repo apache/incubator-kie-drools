@@ -1,7 +1,7 @@
-package org.drools.marshalling.util;
+package org.drools.persistence.marshalling.util;
 
-import static org.drools.marshalling.util.EntityManagerFactoryProxy.getAllInterfaces;
-import static org.drools.marshalling.util.EntityManagerFactoryProxy.updateManagedObjects;
+import static org.drools.persistence.marshalling.util.EntityManagerFactoryProxy.getAllInterfaces;
+import static org.drools.persistence.marshalling.util.EntityManagerFactoryProxy.updateManagedObjects;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;

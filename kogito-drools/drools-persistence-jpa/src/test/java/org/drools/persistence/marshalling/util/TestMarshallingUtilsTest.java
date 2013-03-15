@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.marshalling.util;
+package org.drools.persistence.marshalling.util;
 
-import static org.drools.marshalling.util.CompareViaReflectionUtil.compareInstances;
-import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.drools.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
-import static org.drools.marshalling.util.MarshallingTestUtil.unmarshallObject;
+import static org.drools.persistence.marshalling.util.CompareViaReflectionUtil.compareInstances;
+import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.unmarshallObject;
 import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.PersistenceUtil.tearDown;
 import static org.junit.Assert.assertEquals;

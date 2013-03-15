@@ -1,4 +1,4 @@
-package org.drools.command;
+package org.drools.persistence.command;
 
 import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.PersistenceUtil.cleanUp;
