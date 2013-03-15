@@ -983,7 +983,7 @@ public class MiscTest extends CommonTestMethodBase {
                        "    height : double\n" +
                        "end\n";
         String file2 = "package a.b.c\n" +
-                       "import org.drools.*\n" +
+                       "import org.drools.compiler.*\n" +
                        "declare Holder\n" +
                        "    person : Person\n" +
                        "end\n" +
