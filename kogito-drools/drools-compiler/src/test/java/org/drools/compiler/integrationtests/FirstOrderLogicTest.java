@@ -35,7 +35,7 @@ import org.drools.StatefulSession;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.Triangle;
 import org.drools.WorkingMemory;
-import org.drools.audit.WorkingMemoryConsoleLogger;
+import org.drools.core.audit.WorkingMemoryConsoleLogger;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;

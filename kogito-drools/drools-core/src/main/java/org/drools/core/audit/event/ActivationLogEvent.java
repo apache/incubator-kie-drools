@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.audit.event;
+package org.drools.core.audit.event;
 
 import java.io.IOException;
 import java.io.ObjectInput;

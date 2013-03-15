@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.audit;
+package org.drools.core.audit;
 
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.audit.event.LogEvent;
+import org.drools.core.audit.event.LogEvent;
 import org.kie.event.KnowledgeRuntimeEventManager;
 
 import com.thoughtworks.xstream.XStream;

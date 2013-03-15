@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.audit;
+package org.drools.core.audit;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -27,15 +27,15 @@ import java.util.Map;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEventManager;
-import org.drools.audit.event.ActivationLogEvent;
-import org.drools.audit.event.ILogEventFilter;
-import org.drools.audit.event.LogEvent;
-import org.drools.audit.event.ObjectLogEvent;
-import org.drools.audit.event.RuleBaseLogEvent;
-import org.drools.audit.event.RuleFlowGroupLogEvent;
-import org.drools.audit.event.RuleFlowLogEvent;
-import org.drools.audit.event.RuleFlowNodeLogEvent;
-import org.drools.audit.event.RuleFlowVariableLogEvent;
+import org.drools.core.audit.event.ActivationLogEvent;
+import org.drools.core.audit.event.ILogEventFilter;
+import org.drools.core.audit.event.LogEvent;
+import org.drools.core.audit.event.ObjectLogEvent;
+import org.drools.core.audit.event.RuleBaseLogEvent;
+import org.drools.core.audit.event.RuleFlowGroupLogEvent;
+import org.drools.core.audit.event.RuleFlowLogEvent;
+import org.drools.core.audit.event.RuleFlowNodeLogEvent;
+import org.drools.core.audit.event.RuleFlowVariableLogEvent;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalFactHandle;
