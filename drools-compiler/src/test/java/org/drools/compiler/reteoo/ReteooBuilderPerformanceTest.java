@@ -12,7 +12,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.integrationtests.LargeRuleBase;
+import org.drools.compiler.integrationtests.LargeRuleBase;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 

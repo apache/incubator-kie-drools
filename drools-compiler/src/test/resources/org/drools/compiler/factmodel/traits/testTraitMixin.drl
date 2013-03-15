@@ -1,0 +1,39 @@
+package org.test;
+
+import org.drools.factmodel.traits.Entity;
+
+import org.drools.factmodel.traits.ISomethingWithBehaviour
+import org.drools.compiler.factmodel.traits.ISomethingWithBehaviour;
+
+
+global java.util.List list;
+
+
+declare trait ISomethingWithBehaviour
+
+end
+ 
+ 
+
+rule "Init"
+when 
+then 
+    Entity core = new Entity();
+    insert( core );
+end
+
+
+rule "Mixin'"
+dialect "java"
+when
+    $core: Entity( )
+then
+    ISomethingWithBehaviour x = don( $core, ISomethingWithBehaviour.class );
+    x.setName( "john" );
+    x.setAge( 22 );
+
+    x.doAnotherTask();
+    list.add( x.doSomething( 5 ) );
+end
+
+ 
