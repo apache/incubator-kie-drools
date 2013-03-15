@@ -16,9 +16,9 @@
 
 package org.jbpm.integration.console;
 
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.context.variable.VariableScope;

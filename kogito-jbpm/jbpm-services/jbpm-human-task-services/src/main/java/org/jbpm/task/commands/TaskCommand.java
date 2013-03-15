@@ -16,7 +16,7 @@
 package org.jbpm.task.commands;
 
 import java.util.List;
-import org.drools.command.impl.GenericCommand;
+import org.drools.core.command.impl.GenericCommand;
 
 /**
  *

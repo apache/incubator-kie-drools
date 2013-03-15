@@ -33,8 +33,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.core.audit.WorkingMemoryLogger;
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.jbpm.integration.console.HumanTaskService;
 import org.jbpm.integration.console.TaskClientFactory;

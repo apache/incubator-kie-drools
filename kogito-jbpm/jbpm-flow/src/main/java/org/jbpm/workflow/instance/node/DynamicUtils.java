@@ -16,10 +16,10 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.drools.command.CommandService;
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.CommandService;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.event.ProcessEventSupport;
 import org.drools.impl.StatefulKnowledgeSessionImpl;

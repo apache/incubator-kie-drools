@@ -1,15 +1,12 @@
 package org.jbpm.bpmn2.persistence;
 
-import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 
 import java.util.HashMap;
 
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
@@ -19,8 +16,6 @@ import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
@@ -35,7 +30,6 @@ import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
-import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;
 

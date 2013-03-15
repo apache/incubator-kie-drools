@@ -16,8 +16,8 @@ import java.util.List;
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.WorkingMemory;
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
@@ -31,7 +31,6 @@ import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.jbpm.process.audit.AuditLoggerFactory;
-import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.junit.After;
 import org.junit.Before;
