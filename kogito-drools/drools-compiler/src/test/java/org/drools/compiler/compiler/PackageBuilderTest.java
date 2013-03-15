@@ -85,7 +85,7 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
-import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;

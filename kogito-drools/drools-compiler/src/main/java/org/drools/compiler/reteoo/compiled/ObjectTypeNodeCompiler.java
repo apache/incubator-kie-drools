@@ -12,7 +12,7 @@ import org.drools.reteoo.compiled.DeclarationsHandler;
 import org.drools.reteoo.compiled.HashedAlphasDeclaration;
 import org.drools.reteoo.compiled.ObjectTypeNodeParser;
 import org.drools.reteoo.compiled.SetNodeReferenceHandler;
-import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 
 import java.util.Collection;
 
