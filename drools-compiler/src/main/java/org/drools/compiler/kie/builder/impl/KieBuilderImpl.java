@@ -1,6 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;

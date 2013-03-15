@@ -1,4 +1,4 @@
-package org.drools.builder.xml;
+package org.drools.compiler.builder.xml;
 
 import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
