@@ -21,14 +21,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.AgendaItem;
-import org.drools.reteoo.TerminalNode;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 
 public class DepthConflictResolver
-    implements
-    ConflictResolver, Externalizable {
+        implements
+        ConflictResolver, Externalizable {
     private static final long                 serialVersionUID = 510l;
     public static final DepthConflictResolver INSTANCE         = new DepthConflictResolver();
 
@@ -62,21 +60,8 @@ public class DepthConflictResolver
             return -1;
         }
 
-        if ( existing.getRule() != adding.getRule() ) {
-            int id1 = ((TerminalNode)((AgendaItem)existing).getTerminalNode()).getId();
-            int id2 = ((TerminalNode)((AgendaItem)adding).getTerminalNode()).getId();
-            if ( id1 > id2 ) {
-                return 1;
-            } else if ( id1 < id2 ) {
-                return -1;
-            }
-        }
-
-        if ( existing.isRuleNetworkEvaluatorActivation()) {
-            return +1;
-        } else {
-            return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );
-        }
+        // we know that no two activations will have the same number
+        return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );
     }
 
 }
