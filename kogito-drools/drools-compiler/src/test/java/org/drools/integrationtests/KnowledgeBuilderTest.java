@@ -23,6 +23,7 @@ import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.rule.Package;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
