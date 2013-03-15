@@ -83,7 +83,7 @@
       (exits != exists). Let's take a look at next example:</para>
 
       <example>
-        <programlisting>1: package org.drools;
+        <programlisting>1: package org.drools.examples;
 2: rule
 3:   when
 4:     Object()
@@ -172,7 +172,7 @@
       <para>The following code generates more than one error message:</para>
 
       <example>
-        <programlisting>1: package org.drools;
+        <programlisting>1: package org.drools.examples;
 2:
 3: rule "Avoid NPE on wrong syntax"
 4:   when
