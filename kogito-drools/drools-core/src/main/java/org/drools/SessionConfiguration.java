@@ -16,7 +16,7 @@
 
 package org.drools;
 
-import org.drools.command.CommandService;
+import org.drools.core.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.process.instance.WorkItemManagerFactory;

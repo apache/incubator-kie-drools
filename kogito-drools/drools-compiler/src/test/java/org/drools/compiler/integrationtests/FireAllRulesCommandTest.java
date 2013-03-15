@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.Cheese;
-import org.drools.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

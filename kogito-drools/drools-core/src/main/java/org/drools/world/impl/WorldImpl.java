@@ -16,9 +16,9 @@
 
 package org.drools.world.impl;
 
-import org.drools.command.GetDefaultValue;
-import org.drools.command.impl.ContextImpl;
-import org.drools.command.impl.GenericCommand;
+import org.drools.core.command.GetDefaultValue;
+import org.drools.core.command.impl.ContextImpl;
+import org.drools.core.command.impl.GenericCommand;
 import org.kie.command.Command;
 import org.kie.command.Context;
 import org.kie.command.World;

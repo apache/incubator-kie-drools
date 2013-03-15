@@ -32,7 +32,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.transaction.UserTransaction;
 
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;

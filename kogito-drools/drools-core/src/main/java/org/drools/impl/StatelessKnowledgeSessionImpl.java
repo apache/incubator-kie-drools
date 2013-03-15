@@ -23,11 +23,11 @@ import java.util.Map;
 
 import org.drools.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.command.impl.ContextImpl;
-import org.drools.command.impl.FixedKnowledgeCommandContext;
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.runtime.BatchExecutionCommandImpl;
-import org.drools.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.command.impl.ContextImpl;
+import org.drools.core.command.impl.FixedKnowledgeCommandContext;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.event.AgendaEventSupport;

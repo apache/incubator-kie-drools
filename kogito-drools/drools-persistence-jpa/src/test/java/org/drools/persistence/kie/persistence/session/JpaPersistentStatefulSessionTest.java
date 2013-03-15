@@ -17,9 +17,9 @@ package org.drools.persistence.kie.persistence.session;
 
 import org.drools.compiler.Person;
 import org.drools.SessionConfiguration;
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.command.impl.FireAllRulesInterceptor;
-import org.drools.command.impl.LoggingInterceptor;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.FireAllRulesInterceptor;
+import org.drools.core.command.impl.LoggingInterceptor;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;

@@ -20,10 +20,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import org.drools.command.CommandService;
-import org.drools.command.impl.GenericCommand;
+import org.drools.core.command.CommandService;
+import org.drools.core.command.impl.GenericCommand;
 import org.drools.time.InternalSchedulerService;
 import org.drools.time.Job;
 import org.drools.time.JobContext;

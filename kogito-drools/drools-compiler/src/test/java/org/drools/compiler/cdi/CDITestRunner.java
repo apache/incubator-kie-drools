@@ -13,7 +13,7 @@ import java.util.List;
 
 import java.io.File;
 
-import org.drools.command.impl.CommandFactoryServiceImpl;
+import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
 import org.drools.io.impl.ResourceFactoryServiceImpl;

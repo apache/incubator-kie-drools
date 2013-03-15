@@ -1,6 +1,6 @@
 package org.drools.persistence.jpa;
 
-import org.drools.command.CommandService;
+import org.drools.core.command.CommandService;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.InternalSchedulerService;
 import org.drools.time.Job;

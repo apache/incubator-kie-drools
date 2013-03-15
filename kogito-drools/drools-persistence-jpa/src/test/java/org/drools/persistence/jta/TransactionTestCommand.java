@@ -24,8 +24,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.impl.EnvironmentFactory;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
