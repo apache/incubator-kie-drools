@@ -1,4 +1,4 @@
-package org.drools.core.reteoo;
+package org.drools.core.util;
 
 import org.drools.spi.Consequence;
 import org.hamcrest.BaseMatcher;
@@ -12,14 +12,14 @@ import org.kie.runtime.rule.FactHandle;
 
 import static org.junit.Assert.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.ActivationNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
-import org.drools.common.LogicalDependency;
-import org.drools.core.reteoo.*;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
@@ -124,7 +124,6 @@ public class BinaryHeapQueueTest {
         /**
          * Construct an <code>AgendaGroup</code> with the given name.
          *
-         * @param name
          * The <AgendaGroup> name.
          */
         public Group() {
@@ -162,7 +161,6 @@ public class BinaryHeapQueueTest {
          * Iterates a PriorityQueue removing empty entries until it finds a populated entry and return true,
          * otherwise it returns false;
          *
-         * @param priorityQueue
          * @return
          */
         public boolean isEmpty() {
