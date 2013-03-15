@@ -20,7 +20,6 @@ import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.EnumDeclarationDescrBuilder;
 import org.drools.compiler.lang.api.EnumLiteralDescrBuilder;
 import org.drools.compiler.lang.descr.EnumLiteralDescr;
-import org.drools.lang.api.*;
 
 
 public class EnumLiteralDescrBuilderImpl extends BaseDescrBuilderImpl<EnumDeclarationDescrBuilder, EnumLiteralDescr>
