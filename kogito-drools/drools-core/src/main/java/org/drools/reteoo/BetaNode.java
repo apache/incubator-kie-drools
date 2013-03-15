@@ -632,7 +632,7 @@ public abstract class BetaNode extends LeftTupleSource
             modifyPreviousTuples.removeRightTuple();
                         
             // we skipped this node, due to alpha hashing, so retract now
-            rightTuple.setPropagationContext( context );
+            //rightTuple.setPropagationContext( context ); pctx is no longer updated, as it conflcits with no-loop, leaving commented code for future reference
             if ( isUnlinkingEnabled() ) {
                 BetaMemory bm  = getBetaMemory( (BetaNode) rightTuple.getRightTupleSink(), wm );
                 doDeleteRightTuple( rightTuple, wm, bm );
@@ -647,7 +647,7 @@ public abstract class BetaNode extends LeftTupleSource
         if ( rightTuple != null && rightTuple.getRightTupleSink().getRightInputOtnId().equals(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
-            rightTuple.setPropagationContext( context );
+            //rightTuple.setPropagationContext( context ); pctx is no longer updated, as it conflcits with no-loop, leaving commented code for future reference
             if ( intersect( context.getModificationMask(), rightInferredMask ) ) {
                 // RightTuple previously existed, so continue as modify     
                 if ( isUnlinkingEnabled() ) {

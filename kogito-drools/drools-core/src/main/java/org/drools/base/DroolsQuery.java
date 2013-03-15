@@ -64,6 +64,13 @@ public final class DroolsQuery extends ArrayElements {
     public DroolsQuery(final String name,
                        final Object[] params,
                        final InternalViewChangedEventListener resultsCollector,
+                       final boolean open) {
+        this( name, params, resultsCollector, open, null, null, null, null );
+    }
+
+    public DroolsQuery(final String name,
+                       final Object[] params,
+                       final InternalViewChangedEventListener resultsCollector,
                        final boolean open,
                        final RuleNetworkEvaluator.StackEntry stackEntry,
                        final List<PathMemory> rmems,

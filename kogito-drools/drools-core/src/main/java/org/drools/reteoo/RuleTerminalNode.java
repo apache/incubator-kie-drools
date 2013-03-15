@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.base.SalienceInteger;
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.base.mvel.MVELSalienceExpression;
@@ -25,13 +24,10 @@ import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.common.TruthMaintenanceSystemHelper;
 import org.drools.common.UpdateContext;
-import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
@@ -580,8 +576,9 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
+                                     PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
-        return new RuleTerminalNodeLeftTuple( leftTuple, sink, leftTupleMemoryEnabled );
+        return new RuleTerminalNodeLeftTuple( leftTuple, sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

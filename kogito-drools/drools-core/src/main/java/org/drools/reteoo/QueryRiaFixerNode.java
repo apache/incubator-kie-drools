@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
@@ -274,8 +273,8 @@ public class QueryRiaFixerNode extends LeftTupleSource
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return this.betaNode.createLeftTuple( leftTuple, this.betaNode, leftTupleMemoryEnabled  );
+                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
+        return this.betaNode.createLeftTuple( leftTuple, this.betaNode, pctx, leftTupleMemoryEnabled);
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

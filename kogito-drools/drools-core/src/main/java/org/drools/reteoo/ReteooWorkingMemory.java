@@ -184,10 +184,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
 
             BaseNode[] tnodes = evalQuery(queryName, queryObject, handle, pCtx);
-            
+
             List<Map<String, Declaration>> decls = new ArrayList<Map<String, Declaration>>();
-            for ( BaseNode node : tnodes ) {
-                decls.add( ((QueryTerminalNode) node).getSubRule().getOuterDeclarations() );
+            if ( tnodes != null ) {
+                for ( BaseNode node : tnodes ) {
+                    decls.add( ((QueryTerminalNode) node).getSubRule().getOuterDeclarations() );
+                }
             }
 
             executeQueuedActions();

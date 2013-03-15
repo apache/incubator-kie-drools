@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
+import org.drools.spi.PropagationContext;
 
 public class FromNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;
@@ -44,8 +45,9 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
 
     public FromNodeLeftTuple(final LeftTuple leftTuple,
                              final LeftTupleSink sink,
+                             final PropagationContext pctx,
                              final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, sink, leftTupleMemoryEnabled );
+        super( leftTuple, sink, pctx, leftTupleMemoryEnabled );
     }
     
     public FromNodeLeftTuple(final LeftTuple leftTuple,

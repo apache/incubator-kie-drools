@@ -112,6 +112,8 @@ public abstract class LeftTupleSource extends BaseNode
         out.writeLong( leftInferredMask );
         out.writeLong( leftNegativeMask );
     }
+
+    public abstract short getType();
     
     public abstract LeftTuple createPeer(LeftTuple original);
     
@@ -287,8 +289,7 @@ public abstract class LeftTupleSource extends BaseNode
         while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() != null &&
                 leftTuple.getLeftTupleSink().getLeftInputOtnId().before( leftInputOtnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
-            leftTuple.setPropagationContext( context );
-            
+
             // we skipped this node, due to alpha hashing, so retract now
             ((LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource()).retractLeftTuple( leftTuple,
                                                                                                          context,
@@ -301,8 +302,7 @@ public abstract class LeftTupleSource extends BaseNode
              leftTuple.getLeftTupleSink().getLeftInputOtnId().equals( leftInputOtnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.reAdd();
-            leftTuple.setPropagationContext( context );
-            if ( intersect( context.getModificationMask(), leftInferredMask ) ) {                
+            if ( intersect( context.getModificationMask(), leftInferredMask ) ) {
                 // LeftTuple previously existed, so continue as modify, unless it's currently staged
                 sink.modifyLeftTuple( leftTuple,
                                       context,
@@ -310,12 +310,11 @@ public abstract class LeftTupleSource extends BaseNode
             }
         } else {
             if ( intersect( context.getModificationMask(), leftInferredMask ) ) {
-                // LeftTuple does not exist, so create and continue as assert                
+                // LeftTuple does not exist, so create and continue as assert
                 LeftTuple newLeftTuple = sink.createLeftTuple( factHandle,
                                                                sink,
                                                                true );
-                newLeftTuple.setPropagationContext( context );
-                
+
                 sink.assertLeftTuple( newLeftTuple,
                                       context,
                                       workingMemory );

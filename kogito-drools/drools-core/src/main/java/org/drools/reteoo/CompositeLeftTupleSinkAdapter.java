@@ -107,7 +107,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                         sink,
                                         sink.createLeftTuple( tuple,
                                                               sink,
-                                                              leftTupleMemoryEnabled ) );
+                                                              context, leftTupleMemoryEnabled) );
         }
     }
 

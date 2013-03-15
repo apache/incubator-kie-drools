@@ -630,7 +630,7 @@ public class InputMarshaller {
                     LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
                     LeftTuple childLeftTuple = childSink.createLeftTuple( parentLeftTuple,
                                                                           childSink,
-                                                                          true );
+                                                                          parentLeftTuple.getPropagationContext(), true);
                     readLeftTuple( childLeftTuple,
                                    context );
                 }
@@ -648,7 +648,7 @@ public class InputMarshaller {
                         LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
                         LeftTuple childLeftTuple = childSink.createLeftTuple( parentLeftTuple,
                                                                               childSink,
-                                                                              true );
+                                                                              parentLeftTuple.getPropagationContext(), true);
                         readLeftTuple( childLeftTuple,
                                        context );
                     }
@@ -683,7 +683,7 @@ public class InputMarshaller {
                         LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
                         LeftTuple childLeftTuple = childSink.createLeftTuple( parentLeftTuple,
                                                                               childSink,
-                                                                              true );
+                                                                              parentLeftTuple.getPropagationContext(), true);
                         readLeftTuple( childLeftTuple,
                                        context );
                     }

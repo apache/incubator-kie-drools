@@ -40,7 +40,7 @@ import org.kie.runtime.conf.KieSessionOption;
  * in drools-persistence-jpa.
  */
 public class CommonTestMethodBase extends Assert {    
-    private static LRUnlinkingOption preak = LRUnlinkingOption.ENABLED;
+    private static LRUnlinkingOption preak = LRUnlinkingOption.DISABLED;
 
     // ***********************************************
     // METHODS TO BE REMOVED FOR 6.0.0

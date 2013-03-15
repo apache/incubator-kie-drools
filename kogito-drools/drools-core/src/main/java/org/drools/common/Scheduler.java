@@ -115,7 +115,7 @@ public final class Scheduler {
                     postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getLeftParent(), item.getTuple().getRightParent(), null, null, item.getTuple().getSink(), true );                  
                 } else {
                     // eval nodes have no right parent
-                    postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), true );
+                    postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), item.getTuple().getPropagationContext(), true);
                 }
 //              
 //                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), false );

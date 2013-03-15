@@ -17,6 +17,7 @@
 package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
+import org.drools.spi.PropagationContext;
 
 public class QueryRiaFixerNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;
@@ -29,33 +30,35 @@ public class QueryRiaFixerNodeLeftTuple extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public QueryRiaFixerNodeLeftTuple(final InternalFactHandle factHandle,
-                             LeftTupleSink sink,
-                             boolean leftTupleMemoryEnabled) {
+                                      final LeftTupleSink sink,
+                                      final boolean leftTupleMemoryEnabled) {
         super( factHandle, 
                sink, 
                leftTupleMemoryEnabled );
     }
 
     public QueryRiaFixerNodeLeftTuple(final LeftTuple leftTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
+                                      final LeftTupleSink sink,
+                                      final PropagationContext pctx,
+                                      final boolean leftTupleMemoryEnabled) {
         super( leftTuple, 
-               sink, 
+               sink,
+               pctx,
                leftTupleMemoryEnabled );
     }
 
     public QueryRiaFixerNodeLeftTuple(final LeftTuple leftTuple,
-            RightTuple rightTuple,
-            LeftTupleSink sink) {
+                                      final RightTuple rightTuple,
+                                      final LeftTupleSink sink) {
         super( leftTuple, 
                rightTuple, 
                sink );
     }
 
     public QueryRiaFixerNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
+                                      final RightTuple rightTuple,
+                                      final LeftTupleSink sink,
+                                      final boolean leftTupleMemoryEnabled) {
         this( leftTuple,
               rightTuple,
               null,
@@ -65,11 +68,11 @@ public class QueryRiaFixerNodeLeftTuple extends BaseLeftTuple {
     }
 
     public QueryRiaFixerNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTuple currentLeftChild,
-            final LeftTuple currentRightChild,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
+                                      final RightTuple rightTuple,
+                                      final LeftTuple currentLeftChild,
+                                      final LeftTuple currentRightChild,
+                                      final LeftTupleSink sink,
+                                      final boolean leftTupleMemoryEnabled) {
         super( leftTuple, 
                rightTuple, 
                currentLeftChild, 

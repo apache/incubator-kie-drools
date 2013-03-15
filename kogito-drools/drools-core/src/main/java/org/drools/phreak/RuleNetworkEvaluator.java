@@ -15,7 +15,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleSets;
 import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
 import org.drools.common.NetworkNode;
 import org.drools.common.RightTupleSets;
 import org.drools.core.util.AbstractBaseLinkedListNode;
@@ -32,7 +31,6 @@ import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
-import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.rule.Accumulate;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
@@ -1234,7 +1232,7 @@ public class RuleNetworkEvaluator {
 
                     trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                  sink,
-                                                                 useLeftMemory));
+                                                                 leftTuple.getPropagationContext(), useLeftMemory)); // use leftTuple pctx here, as no right input caused the trigger anway
                 }
                 leftTuple.clearStaged();
                 leftTuple = next;
@@ -1299,6 +1297,7 @@ public class RuleNetworkEvaluator {
                         LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
                         if (childLeftTuple != null) { // NotNode only has one child
+                            childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                             childLeftTuple = deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                         }
                     }
@@ -1383,10 +1382,11 @@ public class RuleNetworkEvaluator {
 
                     if (leftTuple.getBlocker() != null) {
                         // blocked
-                        if (leftTuple.getFirstChild() != null) {
+                        if (childLeftTuple != null) {
                             // blocked, with previous children, so must have not been previously blocked, so retract
                             // no need to remove, as we removed at the start
                             // to be matched against, as it's now blocked
+                            childLeftTuple.setPropagationContext(leftTuple.getBlocker().getPropagationContext()); // we have the righttuple, so use it for the pctx
                             deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                         } // else: it's blocked now and no children so blocked before, thus do nothing             
                     } else if (childLeftTuple == null) {
@@ -1394,7 +1394,8 @@ public class RuleNetworkEvaluator {
                         ltm.add(leftTuple); // add to memory so other fact handles can attempt to match
                         trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                      sink,
-                                                                     true));
+                                                                     leftTuple.getPropagationContext(), true)); // use leftTuple for the pctx here, as the right one is not available
+                                                                                                                // this won't cause a problem, as the trigger tuple (to the left) will be more recent anwyay
                     } else {
                         switch (childLeftTuple.getStagedType()) {
                             // handle clash with already staged entries
@@ -1407,7 +1408,7 @@ public class RuleNetworkEvaluator {
                         }
                         // not blocked, with children, so wasn't previous blocked and still isn't so modify                
                         ltm.add(leftTuple); // add to memory so other fact handles can attempt to match
-                        trgLeftTuples.addUpdate(childLeftTuple);
+                        trgLeftTuples.addUpdate(childLeftTuple); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                         childLeftTuple.reAddLeft();
                     }
                 }
@@ -1475,8 +1476,10 @@ public class RuleNetworkEvaluator {
                         // this is now blocked so remove from memory
                         ltm.remove(leftTuple);
 
-                        if (leftTuple.getFirstChild() != null) {
-                            deleteRightChild(leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples);
+                        LeftTuple childLeftTuple = leftTuple.getFirstChild();
+                        if ( childLeftTuple != null) {
+                            childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
+                            deleteRightChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                         }
                     }
 
@@ -1543,7 +1546,7 @@ public class RuleNetworkEvaluator {
                             // subclasses like ForallNotNode might override this propagation
                             trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                          sink,
-                                                                         true));
+                                                                         rightTuple.getPropagationContext(), true));
                         }
 
                         leftTuple = temp;
@@ -1581,7 +1584,7 @@ public class RuleNetworkEvaluator {
                     LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
                     if (childLeftTuple != null) { // NotNode only has one child
-                        deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                        deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                     }
                 } else {
                     blocker.removeBlocked(leftTuple);
@@ -1655,7 +1658,7 @@ public class RuleNetworkEvaluator {
 
                             trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                          sink,
-                                                                         true));
+                                                                         rightTuple.getPropagationContext(), true));
                         }
 
                         leftTuple = temp;
@@ -1746,7 +1749,7 @@ public class RuleNetworkEvaluator {
                     // tuple is not blocked to propagate
                     trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                  sink,
-                                                                 useLeftMemory));
+                                                                 leftTuple.getBlocker().getPropagationContext(), useLeftMemory));
                 } else if (useLeftMemory) {
                     // LeftTuple is not blocked, so add to memory so other RightTuples can match
                     ltm.add(leftTuple);
@@ -1799,7 +1802,7 @@ public class RuleNetworkEvaluator {
 
                         trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                      sink,
-                                                                     true));
+                                                                     rightTuple.getPropagationContext(), true));
                     }
 
                     leftTuple = temp;
@@ -1882,6 +1885,7 @@ public class RuleNetworkEvaluator {
                             LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
                             if (childLeftTuple != null) {
+                                // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                                 childLeftTuple = deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                             }
                         }
@@ -1891,7 +1895,7 @@ public class RuleNetworkEvaluator {
                     // blocked, with no previous children, insert
                     trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                  sink,
-                                                                 tupleMemory));
+                                                                 leftTuple.getBlocker().getPropagationContext(), tupleMemory));
                 } else {
                     // blocked, with previous children, modify
                     if (leftTuple.getFirstChild() != null) {
@@ -1909,6 +1913,7 @@ public class RuleNetworkEvaluator {
                             }
 
                             // update, childLeftTuple is updated
+                            childLeftTuple.setPropagationContext( leftTuple.getBlocker().getPropagationContext() );
                             trgLeftTuples.addUpdate(childLeftTuple);
                             childLeftTuple.reAddRight();
                             childLeftTuple = childLeftTuple.getLeftParentNext();
@@ -1969,7 +1974,7 @@ public class RuleNetworkEvaluator {
                         // subclasses like ForallNotNode might override this propagation
                         trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                      sink,
-                                                                     true));
+                                                                     rightTuple.getPropagationContext(), true));
                     }
 
                     leftTuple = temp;
@@ -2035,6 +2040,7 @@ public class RuleNetworkEvaluator {
 
                             LeftTuple childLeftTuple = leftTuple.getFirstChild();
                             if (childLeftTuple != null) {
+                                childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                                 childLeftTuple = deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                             }
                         }
@@ -2073,6 +2079,7 @@ public class RuleNetworkEvaluator {
                         LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
                         if (childLeftTuple != null) {
+                            // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                             childLeftTuple = deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                         }
                     }
@@ -2148,6 +2155,7 @@ public class RuleNetworkEvaluator {
 
                             LeftTuple childLeftTuple = leftTuple.getFirstChild();
                             if (childLeftTuple != null) {
+                                childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                                 childLeftTuple = deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                             }
                         }
@@ -3093,7 +3101,7 @@ public class RuleNetworkEvaluator {
 
                     trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                  sink,
-                                                                 useLeftMemory));
+                                                                 leftTuple.getPropagationContext(), useLeftMemory));
                 }
 
                 leftTuple.clearStaged();
@@ -3137,7 +3145,7 @@ public class RuleNetworkEvaluator {
                         // assert
                         trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                      sink,
-                                                                     true));
+                                                                     leftTuple.getPropagationContext(), true));
                     }
                 } else {
                     if (wasPropagated) {
@@ -3386,7 +3394,7 @@ public class RuleNetworkEvaluator {
                     RuleTerminalNode rtn = (RuleTerminalNode) conditionalExecution.getSink().getFirstLeftTupleSink();
                     LeftTuple branchedLeftTuple = rtn.createLeftTuple(leftTuple,
                                                                       rtn,
-                                                                      useLeftMemory);
+                                                                      leftTuple.getPropagationContext(), useLeftMemory);
 
                     leftTuple.setObject(branchedLeftTuple);
 
@@ -3397,7 +3405,7 @@ public class RuleNetworkEvaluator {
                 if (!breaking) {
                     trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                  sink,
-                                                                 useLeftMemory));
+                                                                 leftTuple.getPropagationContext(), useLeftMemory));
                 }
 
                 leftTuple.clearStaged();
@@ -3450,7 +3458,7 @@ public class RuleNetworkEvaluator {
 
                         rtnLeftTuple = newRtn.createLeftTuple(leftTuple,
                                                               newRtn,
-                                                              true);
+                                                              leftTuple.getPropagationContext(), true);
 
                         leftTuple.setObject(rtnLeftTuple);
                         newRtn.assertLeftTuple(rtnLeftTuple, rtnLeftTuple.getPropagationContext(), wm);
@@ -3460,7 +3468,7 @@ public class RuleNetworkEvaluator {
                     // old does not exist, new exists, so insert
                     rtnLeftTuple = newRtn.createLeftTuple(leftTuple,
                                                           newRtn,
-                                                          true);
+                                                          leftTuple.getPropagationContext(), true);
 
                     leftTuple.setObject(rtnLeftTuple);
                     newRtn.assertLeftTuple(rtnLeftTuple, rtnLeftTuple.getPropagationContext(), wm);
@@ -3489,7 +3497,7 @@ public class RuleNetworkEvaluator {
                     // child didn't exist, new one does, so insert
                     trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                  sink,
-                                                                 true));
+                                                                 leftTuple.getPropagationContext(), true));
                 }
 
                 leftTuple.clearStaged();

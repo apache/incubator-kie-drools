@@ -1174,8 +1174,9 @@ public class AccumulateNode extends BetaNode {
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
+                                     PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
-        return new FromNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+        return new FromNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

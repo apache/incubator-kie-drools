@@ -19,16 +19,17 @@ package org.drools.reteoo;
 import java.util.Arrays;
 
 import org.drools.common.InternalFactHandle;
+import org.drools.spi.PropagationContext;
 
 public class EvalNodeLeftTuple extends BaseLeftTuple {
 
     private static final long serialVersionUID = 540l;
 
-    private RightTuple        blocker;
+    private RightTuple blocker;
 
-    private LeftTuple         blockedPrevious;
+    private LeftTuple blockedPrevious;
 
-    private LeftTuple         blockedNext;
+    private LeftTuple blockedNext;
 
     public EvalNodeLeftTuple() {
         // constructor needed for serialisation
@@ -38,53 +39,55 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public EvalNodeLeftTuple(final InternalFactHandle factHandle,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( factHandle, 
-               sink, 
-               leftTupleMemoryEnabled );
-    }
-
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, 
-               sink, 
-               leftTupleMemoryEnabled );
-    }
-
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
-            RightTuple rightTuple,
-            LeftTupleSink sink) {
-        super( leftTuple, 
-               rightTuple, 
-               sink );
-    }
-
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        this( leftTuple,
-              rightTuple,
-              null,
-              null,
+                             final LeftTupleSink sink,
+                             final boolean leftTupleMemoryEnabled) {
+        super(factHandle,
               sink,
-              leftTupleMemoryEnabled );
+              leftTupleMemoryEnabled);
     }
 
     public EvalNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTuple currentLeftChild,
-            final LeftTuple currentRightChild,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, 
-               rightTuple, 
-               currentLeftChild, 
-               currentRightChild, 
-               sink, 
-               leftTupleMemoryEnabled );
+                             final LeftTupleSink sink,
+                             final PropagationContext pctx,
+                             final boolean leftTupleMemoryEnabled) {
+        super(leftTuple,
+              sink,
+              pctx,
+              leftTupleMemoryEnabled);
+    }
+
+    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+                             RightTuple rightTuple,
+                             LeftTupleSink sink) {
+        super(leftTuple,
+              rightTuple,
+              sink);
+    }
+
+    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+                             final RightTuple rightTuple,
+                             final LeftTupleSink sink,
+                             final boolean leftTupleMemoryEnabled) {
+        this(leftTuple,
+             rightTuple,
+             null,
+             null,
+             sink,
+             leftTupleMemoryEnabled);
+    }
+
+    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+                             final RightTuple rightTuple,
+                             final LeftTuple currentLeftChild,
+                             final LeftTuple currentRightChild,
+                             final LeftTupleSink sink,
+                             final boolean leftTupleMemoryEnabled) {
+        super(leftTuple,
+              rightTuple,
+              currentLeftChild,
+              currentRightChild,
+              sink,
+              leftTupleMemoryEnabled);
     }
 
     /* (non-Javadoc)
@@ -102,17 +105,17 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
         super.unlinkFromRightParent();
         this.blocker = null;
     }
-    
+
     public void clearBlocker() {
         this.blockedPrevious = null;
         this.blockedNext = null;
-        this.blocker= null;
+        this.blocker = null;
     }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
      */
-    public void setBlocker( RightTuple blocker ) {
+    public void setBlocker(RightTuple blocker) {
         this.blocker = blocker;
     }
 
@@ -133,7 +136,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlockedPrevious(org.kie.reteoo.LeftTuple)
      */
-    public void setBlockedPrevious( LeftTuple blockerPrevious ) {
+    public void setBlockedPrevious(LeftTuple blockerPrevious) {
         this.blockedPrevious = blockerPrevious;
     }
 
@@ -147,7 +150,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlockedNext(org.kie.reteoo.LeftTuple)
      */
-    public void setBlockedNext( LeftTuple blockerNext ) {
+    public void setBlockedNext(LeftTuple blockerNext) {
         this.blockedNext = blockerNext;
     }
 
@@ -160,7 +163,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
         LeftTuple entry = this;
         while (entry != null) {
             //buffer.append( entry.handle );
-            buffer.append( entry.getHandle() ).append( "\n" );
+            buffer.append(entry.getHandle()).append("\n");
             entry = entry.getParent();
         }
         return buffer.toString();
@@ -168,20 +171,20 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
 
     protected String toExternalString() {
         StringBuilder builder = new StringBuilder();
-        builder.append( String.format( "%08X",
-                                       System.identityHashCode( this ) ) ).append( ":" );
+        builder.append(String.format("%08X",
+                                     System.identityHashCode(this))).append(":");
         int[] ids = new int[getIndex() + 1];
         LeftTuple entry = this;
         while (entry != null) {
             ids[entry.getIndex()] = entry.getLastHandle().getId();
             entry = entry.getParent();
         }
-        builder.append( Arrays.toString( ids ) )
-                .append( " activation=" )
-                .append( getObject() != null ? getObject() : "null" )
-                .append( " sink=" )
-                .append( getSink().getClass().getSimpleName() )
-                .append( "(" ).append( getSink().getId() ).append( ")" );
+        builder.append(Arrays.toString(ids))
+               .append(" activation=")
+               .append(getObject() != null ? getObject() : "null")
+               .append(" sink=")
+               .append(getSink().getClass().getSimpleName())
+               .append("(").append(getSink().getId()).append(")");
         return builder.toString();
     }
 

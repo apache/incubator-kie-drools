@@ -235,7 +235,7 @@ public class ArrayAgendaGroup
     }
     @Override
     public Activation peekNext() {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     

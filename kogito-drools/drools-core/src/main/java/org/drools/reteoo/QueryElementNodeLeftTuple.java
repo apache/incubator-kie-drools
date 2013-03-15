@@ -17,9 +17,10 @@
 package org.drools.reteoo;
 
 import org.drools.common.InternalFactHandle;
+import org.drools.spi.PropagationContext;
 
 public class QueryElementNodeLeftTuple extends BaseLeftTuple {
-    private static final long  serialVersionUID = 540l;
+    private static final long serialVersionUID = 540l;
 
     public QueryElementNodeLeftTuple() {
         // constructor needed for serialisation
@@ -29,52 +30,54 @@ public class QueryElementNodeLeftTuple extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public QueryElementNodeLeftTuple(final InternalFactHandle factHandle,
-                             LeftTupleSink sink,
-                             boolean leftTupleMemoryEnabled) {
-        super( factHandle, 
-               sink, 
-               leftTupleMemoryEnabled );
-    }
-
-    public QueryElementNodeLeftTuple(final LeftTuple leftTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, 
-               sink, 
-               leftTupleMemoryEnabled );
-    }
-
-    public QueryElementNodeLeftTuple(final LeftTuple leftTuple,
-            RightTuple rightTuple,
-            LeftTupleSink sink) {
-        super( leftTuple, 
-               rightTuple, 
-               sink );
-    }
-
-    public QueryElementNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        this( leftTuple,
-              rightTuple,
-              null,
-              null,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        super(factHandle,
               sink,
-              leftTupleMemoryEnabled );
+              leftTupleMemoryEnabled);
     }
 
     public QueryElementNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTuple currentLeftChild,
-            final LeftTuple currentRightChild,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, 
-               rightTuple, 
-               currentLeftChild, 
-               currentRightChild, 
-               sink, 
-               leftTupleMemoryEnabled );
+                                     final LeftTupleSink sink,
+                                     final PropagationContext pctx,
+                                     final boolean leftTupleMemoryEnabled) {
+        super(leftTuple,
+              sink,
+              pctx,
+              leftTupleMemoryEnabled);
+    }
+
+    public QueryElementNodeLeftTuple(final LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        super(leftTuple,
+              rightTuple,
+              sink);
+    }
+
+    public QueryElementNodeLeftTuple(final LeftTuple leftTuple,
+                                     final RightTuple rightTuple,
+                                     final LeftTupleSink sink,
+                                     final boolean leftTupleMemoryEnabled) {
+        this(leftTuple,
+             rightTuple,
+             null,
+             null,
+             sink,
+             leftTupleMemoryEnabled);
+    }
+
+    public QueryElementNodeLeftTuple(final LeftTuple leftTuple,
+                                     final RightTuple rightTuple,
+                                     final LeftTuple currentLeftChild,
+                                     final LeftTuple currentRightChild,
+                                     final LeftTupleSink sink,
+                                     final boolean leftTupleMemoryEnabled) {
+        super(leftTuple,
+              rightTuple,
+              currentLeftChild,
+              currentRightChild,
+              sink,
+              leftTupleMemoryEnabled);
     }
 }

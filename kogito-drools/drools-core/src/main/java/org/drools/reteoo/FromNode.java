@@ -622,8 +622,9 @@ public class FromNode extends LeftTupleSource
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new FromNodeLeftTuple(leftTuple, sink, leftTupleMemoryEnabled );
+                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
+        return new FromNodeLeftTuple(leftTuple, sink, pctx,
+                                     leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
