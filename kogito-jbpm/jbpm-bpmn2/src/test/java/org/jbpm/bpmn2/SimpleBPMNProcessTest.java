@@ -30,7 +30,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.instance.impl.WorkItemImpl;

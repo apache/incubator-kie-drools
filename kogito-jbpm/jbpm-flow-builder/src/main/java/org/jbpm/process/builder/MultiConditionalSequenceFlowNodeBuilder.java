@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.compiler.ReturnValueDescr;
+import org.drools.compiler.compiler.ReturnValueDescr;
 import org.kie.definition.process.Connection;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.Process;

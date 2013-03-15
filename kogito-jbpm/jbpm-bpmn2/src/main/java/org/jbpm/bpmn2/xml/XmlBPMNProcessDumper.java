@@ -19,7 +19,7 @@ package org.jbpm.bpmn2.xml;
 import java.io.StringReader;
 import java.util.*;
 
-import org.drools.compiler.xml.XmlDumper;
+import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.rule.builder.dialect.java.JavaDialect;
@@ -39,7 +39,6 @@ import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.process.core.impl.XmlProcessDumper;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;

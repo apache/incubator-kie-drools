@@ -19,7 +19,7 @@ package org.jbpm.bpmn2.xpath;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.rule.builder.PackageBuildContext;
 import org.jbpm.process.builder.ActionBuilder;

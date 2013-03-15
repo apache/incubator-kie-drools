@@ -3,7 +3,7 @@ package org.jbpm.osgi.flow.compiler;
 import java.util.Hashtable;
 
 import org.kie.Service;
-import org.drools.compiler.ProcessBuilderFactoryService;
+import org.drools.compiler.compiler.ProcessBuilderFactoryService;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

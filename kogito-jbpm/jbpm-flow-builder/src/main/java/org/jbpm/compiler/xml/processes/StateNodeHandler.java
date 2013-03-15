@@ -2,7 +2,7 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.Map;
 
-import org.drools.compiler.xml.XmlDumper;
+import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.xml.ExtensibleXmlParser;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;

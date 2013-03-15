@@ -3,7 +3,7 @@ package org.jbpm.compiler.xml;
 import java.io.StringReader;
 import java.util.List;
 
-import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.xml.SemanticModules;
 import org.jbpm.process.core.impl.XmlProcessDumper;
 import org.kie.definition.process.Process;

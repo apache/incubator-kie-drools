@@ -9,8 +9,8 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.kie.runtime.process.ProcessInstance;
 
 public class ProcessMultiThreadTest extends TestCase {

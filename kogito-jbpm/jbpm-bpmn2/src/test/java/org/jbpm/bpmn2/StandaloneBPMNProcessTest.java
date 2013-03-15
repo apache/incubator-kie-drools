@@ -17,33 +17,20 @@
 package org.jbpm.bpmn2;
 
 import java.io.ByteArrayInputStream;
-import java.io.StringReader;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import junit.framework.Assert;
-
-import org.drools.SessionConfiguration;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.impl.EnvironmentFactory;
 import org.jbpm.bpmn2.handler.*;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.objects.*;
-import org.jbpm.bpmn2.xml.*;
-import org.jbpm.compiler.xml.XmlProcessReader;
-import org.jbpm.process.ProcessBaseFactoryService;
-import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
-import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.junit.*;
 import org.kie.*;
 import org.kie.builder.*;
-import org.kie.definition.process.Process;
 import org.kie.event.process.DefaultProcessEventListener;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.io.ResourceFactory;

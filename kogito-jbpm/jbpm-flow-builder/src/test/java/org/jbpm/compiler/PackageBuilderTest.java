@@ -22,7 +22,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;

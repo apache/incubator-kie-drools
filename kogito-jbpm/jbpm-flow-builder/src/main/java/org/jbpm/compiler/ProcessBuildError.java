@@ -1,6 +1,6 @@
 package org.jbpm.compiler;
 
-import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.kie.definition.process.Process;
 import org.drools.lang.descr.BaseDescr;
 

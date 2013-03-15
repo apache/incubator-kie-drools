@@ -19,7 +19,7 @@ package org.jbpm.bpmn2.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.xml.XmlDumper;
+import org.drools.compiler.compiler.xml.XmlDumper;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ForEachNode;

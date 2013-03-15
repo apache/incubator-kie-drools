@@ -3,7 +3,7 @@ package org.jbpm.compiler.xml.processes;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.xml.XmlDumper;
+import org.drools.compiler.compiler.xml.XmlDumper;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.workflow.core.Node;

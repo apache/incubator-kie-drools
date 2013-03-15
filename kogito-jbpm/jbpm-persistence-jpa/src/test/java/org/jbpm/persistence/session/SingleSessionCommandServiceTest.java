@@ -25,7 +25,7 @@ import org.drools.TimerJobFactoryType;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JpaJDKTimerService;

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.xml.XmlDumper;
+import org.drools.compiler.compiler.xml.XmlDumper;
 import org.kie.definition.process.Connection;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.WorkflowProcess;

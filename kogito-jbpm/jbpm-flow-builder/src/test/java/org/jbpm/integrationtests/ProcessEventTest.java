@@ -10,7 +10,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;

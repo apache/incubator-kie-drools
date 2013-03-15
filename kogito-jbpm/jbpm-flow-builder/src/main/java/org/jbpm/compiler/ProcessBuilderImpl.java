@@ -26,17 +26,13 @@ import java.util.Map;
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageRegistry;
-import org.drools.compiler.ParserError;
-import org.drools.compiler.ProcessBuilder;
-import org.drools.compiler.ProcessLoadError;
-import org.drools.io.internal.InternalResource;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.*;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.compiler.ParserError;
+import org.drools.compiler.compiler.ProcessLoadError;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.builder.dialect.java.JavaDialect;
@@ -83,7 +79,7 @@ import org.kie.io.Resource;
  * A ProcessBuilder can be used to build processes based on XML files
  * containing a process definition.
  */
-public class ProcessBuilderImpl implements ProcessBuilder {
+public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessBuilder {
 
     private PackageBuilder                packageBuilder;
     private final List<DroolsError>       errors                         = new ArrayList<DroolsError>();

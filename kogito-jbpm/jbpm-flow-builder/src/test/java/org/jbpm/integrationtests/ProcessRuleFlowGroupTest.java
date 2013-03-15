@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.jbpm.Person;
 import org.jbpm.process.instance.ProcessInstance;

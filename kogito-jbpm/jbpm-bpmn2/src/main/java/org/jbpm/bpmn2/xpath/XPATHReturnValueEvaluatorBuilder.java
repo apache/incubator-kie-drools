@@ -16,8 +16,8 @@
 
 package org.jbpm.bpmn2.xpath;
 
-import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.ReturnValueDescr;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.rule.builder.PackageBuildContext;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.core.ContextResolver;

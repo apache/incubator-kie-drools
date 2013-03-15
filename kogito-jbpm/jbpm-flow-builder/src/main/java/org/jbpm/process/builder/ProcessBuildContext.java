@@ -1,8 +1,8 @@
 package org.jbpm.process.builder;
 
-import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.kie.definition.process.Process;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ProcessDescr;

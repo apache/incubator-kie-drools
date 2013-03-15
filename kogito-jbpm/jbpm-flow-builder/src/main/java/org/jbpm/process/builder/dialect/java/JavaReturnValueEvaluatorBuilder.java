@@ -16,16 +16,13 @@
 
 package org.jbpm.process.builder.dialect.java;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.ReturnValueDescr;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.jbpm.process.builder.ProcessBuildContext;
