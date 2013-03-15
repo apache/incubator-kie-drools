@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.reteoo;
+package org.drools.compiler.reteoo;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
@@ -24,6 +24,18 @@ import org.drools.common.Memory;
 import org.drools.common.MemoryFactory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
+import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.LeftTupleSinkNode;
+import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.ModifyPreviousTuples;
+import org.drools.reteoo.NodeSet;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ReteooBuilder;
+import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.RightTuple;
+import org.drools.reteoo.RuleRemovalContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
@@ -33,7 +45,7 @@ import java.util.List;
 
 public class MockLeftTupleSink extends LeftTupleSource
     implements
-    LeftTupleSinkNode,
+        LeftTupleSinkNode,
     MemoryFactory {
     private static final long serialVersionUID = 510l;
     private final List        asserted         = new ArrayList();

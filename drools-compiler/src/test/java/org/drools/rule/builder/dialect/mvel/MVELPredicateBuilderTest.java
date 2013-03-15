@@ -24,7 +24,7 @@ import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTupleImpl;
-import org.drools.reteoo.MockLeftTupleSink;
+import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;

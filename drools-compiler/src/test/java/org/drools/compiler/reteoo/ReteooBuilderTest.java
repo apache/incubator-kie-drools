@@ -1,4 +1,4 @@
-package org.drools.reteoo;
+package org.drools.compiler.reteoo;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -7,6 +7,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.ObjectSink;
+import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.ReteooRuleBase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -81,7 +86,7 @@ public class ReteooBuilderTest {
                       object1,
                       object2 );
 
-        if ( object1 instanceof ObjectSource ) {
+        if ( object1 instanceof ObjectSource) {
             final ObjectSource source1 = (ObjectSource) object1;
             final ObjectSource source2 = (ObjectSource) object2;
 
@@ -96,7 +101,7 @@ public class ReteooBuilderTest {
                 nodesEquals( list1[i],
                              list2[i] );
             }
-        } else if ( object1 instanceof LeftTupleSource ) {
+        } else if ( object1 instanceof LeftTupleSource) {
             final LeftTupleSource source1 = (LeftTupleSource) object1;
             final LeftTupleSource source2 = (LeftTupleSource) object2;
 

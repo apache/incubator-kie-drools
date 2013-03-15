@@ -1,4 +1,4 @@
-package org.drools.reteoo.compiled;
+package org.drools.compiler.reteoo.compiled;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
@@ -6,6 +6,12 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.compiled.AssertHandler;
+import org.drools.reteoo.compiled.CompiledNetwork;
+import org.drools.reteoo.compiled.DeclarationsHandler;
+import org.drools.reteoo.compiled.HashedAlphasDeclaration;
+import org.drools.reteoo.compiled.ObjectTypeNodeParser;
+import org.drools.reteoo.compiled.SetNodeReferenceHandler;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 
 import java.util.Collection;
