@@ -1,4 +1,4 @@
-package org.drools.cdi;
+package org.drools.compiler.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

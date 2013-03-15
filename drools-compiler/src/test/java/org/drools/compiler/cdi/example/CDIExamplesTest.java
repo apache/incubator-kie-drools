@@ -1,14 +1,12 @@
-package org.drools.cdi.example;
+package org.drools.compiler.cdi.example;
 
 
 import static org.junit.Assert.assertEquals;
 import javax.inject.Inject;
 
-import org.drools.cdi.CDIScopeTest;
-import org.drools.cdi.CDITestRunner;
+import org.drools.compiler.cdi.CDITestRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

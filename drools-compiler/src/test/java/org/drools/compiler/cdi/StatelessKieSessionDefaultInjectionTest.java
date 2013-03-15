@@ -1,4 +1,4 @@
-package org.drools.cdi;
+package org.drools.compiler.cdi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,19 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.drools.kproject.AbstractKnowledgeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.KieBase;
 import org.kie.KieServices;
-import org.kie.cdi.KBase;
 import org.kie.cdi.KReleaseId;
 import org.kie.command.KieCommands;
-import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;
 
 @RunWith(CDITestRunner.class)

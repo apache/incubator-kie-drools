@@ -1,4 +1,4 @@
-package org.drools.cdi;
+package org.drools.compiler.cdi;
 
 import javax.inject.Inject;
 

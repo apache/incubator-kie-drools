@@ -1,4 +1,4 @@
-package org.drools.cdi;
+package org.drools.compiler.cdi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -16,54 +16,51 @@ import javax.inject.Inject;
 import org.drools.kproject.AbstractKnowledgeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.KieServices;
+import org.kie.KieBase;
+import org.kie.cdi.KBase;
 import org.kie.cdi.KReleaseId;
-import org.kie.cdi.KSession;
-import org.kie.command.KieCommands;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatelessKieSession;
 
 @RunWith(CDITestRunner.class)
-public class StatelessKieSessionInjectionTest {
-    public static AbstractKnowledgeTest helper;
+public class KieBaseInjectionTest {
+    public static AbstractKnowledgeTest helper;  
     
     @Inject
-    @KSession("jar1.KSession1")  
+    @KBase("jar1.KBase1") 
     @KReleaseId( groupId    = "jar1",
                  artifactId = "art1", 
-                 version    = "1.0" )
-    private StatelessKieSession kbase1ksession1v10;
+                 version    = "1.0")
+    private KieBase jar1KBase1v10;
     
     @Inject
-    @KSession("jar1.KSession1")  
-    @KReleaseId( groupId    = "jar1",
-                 artifactId = "art1", 
-                 version    = "1.1" )
-    private StatelessKieSession kbase1ksession1v11;   
-    
-    @Inject   
-    @KSession(value="jar1.KSession1", name="sks1")
-    @KReleaseId( groupId    = "jar1",
-                 artifactId = "art1", 
-                 version    = "1.0" )
-    private StatelessKieSession kbase1ksession1sks1;
+    @KBase("jar1.KBase1") 
+    @KReleaseId(groupId    = "jar1",
+                artifactId = "art1", 
+                version    = "1.1")
+    private KieBase jar1KBase1v11;      
     
     @Inject
-    @KSession(value="jar1.KSession1", name="sks2")    
+    @KBase(value="jar1.KBase1", name="kb1")
     @KReleaseId( groupId    = "jar1",
                  artifactId = "art1", 
-                 version    = "1.0" )
-    private StatelessKieSession kbase1ksession1sks2  ;  
-    
+                 version    = "1.0")
+    private KieBase jar1KBase1kb1;
+
+    @Inject  
+    @KBase(value="jar1.KBase1", name="kb2")    
+    @KReleaseId( groupId    = "jar1",
+                 artifactId = "art1", 
+                 version    = "1.0")
+    private KieBase jar1KBase1kb2;    
+
     @Inject
-    @KSession(value="jar1.KSession1", name="sks2")    
+    @KBase(value="jar1.KBase1", name="kb2")    
     @KReleaseId( groupId    = "jar1",
                  artifactId = "art1", 
-                 version    = "1.0" )      
-    private StatelessKieSession kbase1ksession1sks22;      
+                 version    = "1.0")
+    private KieBase jar1KBase1kb22;      
     
     @BeforeClass
     public static void beforeClass() {  
@@ -78,12 +75,13 @@ public class StatelessKieSessionInjectionTest {
             helper.createKieModule( "jar1", true, "1.0" );
             helper.createKieModule( "jar1", true, "1.1" );
         } catch ( Exception e ) {
+            e.printStackTrace();
             fail( "Unable to build dynamic KieModules:\n" + e.toString() );
         }
-
+        
         CDITestRunner.setUp( );
 
-        CDITestRunner.weld = CDITestRunner.createWeld( StatelessKieSessionInjectionTest.class.getName() );
+        CDITestRunner.weld = CDITestRunner.createWeld( KieBaseInjectionTest.class.getName() );
 
         CDITestRunner.container = CDITestRunner.weld.initialize();
     }
@@ -97,58 +95,60 @@ public class StatelessKieSessionInjectionTest {
         } catch ( Exception e ) {
             fail( e.getMessage() );
         }
-    }     
+    }         
     
     @Test
-    public void testDynamicStatelessKieSessionReleaseId() throws IOException, ClassNotFoundException, InterruptedException {
-        assertNotNull( kbase1ksession1v10 );
-        assertNotNull( kbase1ksession1v10 );
+    public void testDynamicKieBaseReleaseId() throws IOException, ClassNotFoundException, InterruptedException {
+        assertNotNull( jar1KBase1v10 );
+        assertNotNull( jar1KBase1v11 );
         
-        KieCommands cmds  = KieServices.Factory.get().getCommands();
-                
+        KieSession kSession = jar1KBase1v10.newKieSession();
         List<String> list = new ArrayList<String>();
-        kbase1ksession1v10.setGlobal( "list", list );
-        kbase1ksession1v10.execute( cmds.newFireAllRules() );
+        kSession.setGlobal( "list", list );
+        kSession.fireAllRules();
         
         assertEquals( 2, list.size() );
         assertTrue( list.get(0).endsWith( "1.0" ) );
         assertTrue( list.get(1).endsWith( "1.0" ) );
+
         
+        kSession = jar1KBase1v11.newKieSession();
         list = new ArrayList<String>();
-        kbase1ksession1v11.setGlobal( "list", list );
-        kbase1ksession1v11.execute( cmds.newFireAllRules() );
-        
+        kSession.setGlobal( "list", list );
+        kSession.fireAllRules();
+
         assertEquals( 2, list.size() );
         assertTrue( list.get(0).endsWith( "1.1" ) );
         assertTrue( list.get(1).endsWith( "1.1" ) );        
     }    
     
     @Test
-    public void testNamedStatelessKieSessions() throws IOException, ClassNotFoundException, InterruptedException {
-        assertNotNull(kbase1ksession1sks1);
-        assertNotNull(kbase1ksession1sks2);
-        assertNotNull(kbase1ksession1sks22);
+    public void testNamedKieBases() throws IOException, ClassNotFoundException, InterruptedException {
+        assertNotNull(jar1KBase1kb1);
+        assertNotNull(jar1KBase1kb2);
+        assertNotNull(jar1KBase1kb22);
         
-        assertNotSame(kbase1ksession1sks1, kbase1ksession1sks2);
-        assertSame( kbase1ksession1sks2, kbase1ksession1sks22);     
+        assertNotSame(jar1KBase1kb1, jar1KBase1kb2);
+        assertSame( jar1KBase1kb2, jar1KBase1kb22);
         
-        KieCommands cmds  = KieServices.Factory.get().getCommands();
-        
+        KieSession kSession = jar1KBase1kb1.newKieSession();
         List<String> list = new ArrayList<String>();
-        kbase1ksession1sks1.setGlobal( "list", list );
-        kbase1ksession1sks1.execute( cmds.newFireAllRules() );
+        kSession.setGlobal( "list", list );
+        kSession.fireAllRules();
         
         assertEquals( 2, list.size() );
         assertTrue( list.get(0).endsWith( "1.0" ) );
         assertTrue( list.get(1).endsWith( "1.0" ) );
+
         
+        kSession = jar1KBase1kb2.newKieSession();
         list = new ArrayList<String>();
-        kbase1ksession1sks2.setGlobal( "list", list );
-        kbase1ksession1sks2.execute( cmds.newFireAllRules() );
-        
+        kSession.setGlobal( "list", list );
+        kSession.fireAllRules();
+
         assertEquals( 2, list.size() );
         assertTrue( list.get(0).endsWith( "1.0" ) );
-        assertTrue( list.get(1).endsWith( "1.0" ) );          
+        assertTrue( list.get(1).endsWith( "1.0" ) );        
     }   
           
 }

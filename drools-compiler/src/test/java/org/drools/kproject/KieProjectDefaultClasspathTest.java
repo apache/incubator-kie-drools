@@ -40,11 +40,11 @@ public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
             Thread.currentThread().setContextClassLoader( urlClassLoader );
 
 
-            Class cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar1" );
+            Class cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar1" );
             assertNotNull( cls );
-            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar2" );
+            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar2" );
             assertNotNull( cls );
-            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.cdi.test.KProjectTestClassjar3" );
+            cls = Thread.currentThread().getContextClassLoader().loadClass( "org.drools.compiler.cdi.test.KProjectTestClassjar3" );
             assertNotNull( cls );
             
             ClasspathKieProject kProject =  new ClasspathKieProject();

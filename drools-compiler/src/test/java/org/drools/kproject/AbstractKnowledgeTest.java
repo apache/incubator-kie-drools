@@ -211,7 +211,7 @@ public class AbstractKnowledgeTest {
     public String generateKProjectTestClass(KieModuleModel kproject,
                                             String namespace) {
 
-        return "package org.drools.cdi.test;\n" +
+        return "package org.drools.compiler.cdi.test;\n" +
                 "import javax.inject.Named;\n" +
                 "import javax.inject.Inject;\n" +
                 "import javax.inject.Inject;\n" +

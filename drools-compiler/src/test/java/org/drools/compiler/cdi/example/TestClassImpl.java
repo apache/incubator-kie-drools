@@ -1,9 +1,6 @@
-package org.drools.cdi.example;
-
-import javax.inject.Inject;
+package org.drools.compiler.cdi.example;
 
 import org.kie.KnowledgeBase;
-import org.kie.cdi.KBase;
 
 
 public class TestClassImpl implements TestClass {
