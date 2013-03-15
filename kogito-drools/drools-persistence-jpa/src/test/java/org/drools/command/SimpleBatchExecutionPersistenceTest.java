@@ -21,6 +21,7 @@ import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
 
 import java.util.HashMap;
 
+import org.drools.compiler.command.SimpleBatchExecutionTest;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.kie.KnowledgeBase;
