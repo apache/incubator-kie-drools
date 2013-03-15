@@ -1643,7 +1643,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testImport() throws Exception {
         // Same package as this test
         String rule = "";
-        rule += "package org.drools.integrationtests;\n";
+        rule += "package org.drools.compiler.integrationtests;\n";
         rule += "import java.lang.Math;\n";
         rule += "rule \"Test Rule\"\n";
         rule += "  dialect \"mvel\"\n";

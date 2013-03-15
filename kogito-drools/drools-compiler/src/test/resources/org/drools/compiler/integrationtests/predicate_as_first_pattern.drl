@@ -1,6 +1,6 @@
 package SamplePackage
  
-import org.drools.Cheese
+import org.drools.compiler.Cheese
 
 rule "Using Predicate as first pattern"
   when

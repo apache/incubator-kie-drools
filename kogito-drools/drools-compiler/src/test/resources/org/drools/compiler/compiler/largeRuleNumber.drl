@@ -3,9 +3,9 @@ package org.drools.test
 
 
 //list any import classes here.
-import org.drools.Cheese;
-import org.drools.Person;
-import org.drools.Cheesery;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
+import org.drools.compiler.Cheesery;
 
 global java.util.List list;
 

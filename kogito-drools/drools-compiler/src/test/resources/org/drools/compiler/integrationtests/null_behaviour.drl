@@ -1,6 +1,6 @@
 package org.drools.test;
 
-import org.drools.Person;
+import org.drools.compiler.Person;
 
 rule "pair with same name (or null name)"
   when

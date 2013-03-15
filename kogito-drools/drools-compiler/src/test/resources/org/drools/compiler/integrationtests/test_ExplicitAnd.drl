@@ -1,7 +1,7 @@
 package HelloWorld
  
-import org.drools.Message
-import org.drools.Cheese;
+import org.drools.compiler.Message
+import org.drools.compiler.Cheese;
 
 global java.util.List list;
 

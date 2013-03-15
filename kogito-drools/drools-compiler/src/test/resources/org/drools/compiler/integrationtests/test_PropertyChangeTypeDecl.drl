@@ -1,6 +1,6 @@
 package org.drools.test;
 
-import org.drools.State;
+import org.drools.compiler.State;
 
 global java.util.List list
 

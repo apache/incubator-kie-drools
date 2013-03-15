@@ -5,7 +5,7 @@ import java.lang.Float;
 import java.lang.Double;
 import java.lang.Short;
 import java.lang.String;
-import org.drools.CheeseEqual;
+import org.drools.compiler.CheeseEqual;
 
 global java.lang.String ga;
 global java.lang.String gb;

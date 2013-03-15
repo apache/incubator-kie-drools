@@ -1,8 +1,8 @@
 package org.drools.reteoo;
 
-import org.drools.Message
-import org.drools.Cheese
-import org.drools.Person
+import org.drools.compiler.Message
+import org.drools.compiler.Cheese
+import org.drools.compiler.Person
  
 rule "Hello World 1"
     when
