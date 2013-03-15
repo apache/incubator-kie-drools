@@ -1,4 +1,4 @@
-package org.drools;
+package org.drools.maven.plugin;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.junit.After;
