@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.builder;
+package org.drools.core.builder;
 
 import org.drools.PropertiesConfiguration;
-import org.drools.builder.conf.KnowledgeBuilderOptionsConfiguration;
+import org.drools.core.builder.conf.KnowledgeBuilderOptionsConfiguration;
 
 /**
  * <p>

@@ -173,10 +173,10 @@ public class ServiceRegistryImpl
 
     private void init() {
         addDefault( "org.kie.builder.KnowledgeBuilderFactoryService",
-                    "org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
+                    "org.drools.core.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
 
         addDefault( "org.kie.builder.KnowledgeContainerFactoryService",
-                    "org.drools.builder.impl.KnowledgeContainerFactoryServiceImpl" );
+                    "org.drools.core.builder.impl.KnowledgeContainerFactoryServiceImpl" );
 
         addDefault( "org.kie.KnowledgeBaseFactoryService",
                     "org.drools.impl.KnowledgeBaseFactoryServiceImpl" );

@@ -17,8 +17,8 @@
 package org.drools.event.knowledgeagent;
 
 import java.util.EventObject;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.ResourceType;
+import org.drools.core.builder.KnowledgeBuilder;
+import org.drools.core.builder.ResourceType;
 import org.drools.io.Resource;
 
 public class ResourceCompilationFailedEvent extends EventObject{

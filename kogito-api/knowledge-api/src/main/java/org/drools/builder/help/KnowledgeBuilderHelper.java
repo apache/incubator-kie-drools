@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.builder.help;
+package org.drools.core.builder.help;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -24,8 +24,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.core.builder.KnowledgeBuilder;
+import org.drools.core.builder.KnowledgeBuilderFactory;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 

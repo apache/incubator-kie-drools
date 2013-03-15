@@ -1,4 +1,4 @@
-package org.drools.builder;
+package org.drools.core.builder;
 
 import org.drools.KBaseUnit;
 import org.drools.KnowledgeBase;

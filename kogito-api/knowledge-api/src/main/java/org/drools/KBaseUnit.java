@@ -1,7 +1,7 @@
 package org.drools;
 
 import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.core.builder.KnowledgeBuilderErrors;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 
