@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.marshalling.util;
+package org.drools.persistence.marshalling.util;
 
-import static org.drools.marshalling.util.MarshallingTestUtil.PROCESS_INSTANCE_INFO_CLASS_NAME;
-import static org.drools.marshalling.util.MarshallingTestUtil.STORE_KNOWLEDGE_BASE;
-import static org.drools.marshalling.util.MarshallingTestUtil.byteArrayHashCode;
-import static org.drools.marshalling.util.MarshallingTestUtil.getProcessInstanceInfoByteArray;
-import static org.drools.marshalling.util.MarshallingTestUtil.getTestMethodName;
-import static org.drools.marshalling.util.MarshallingTestUtil.getWorkItemByteArray;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.PROCESS_INSTANCE_INFO_CLASS_NAME;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.STORE_KNOWLEDGE_BASE;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.byteArrayHashCode;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.getProcessInstanceInfoByteArray;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.getTestMethodName;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.getWorkItemByteArray;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -41,7 +41,6 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 import org.kie.KieBase;
-import org.kie.KnowledgeBase;
 
 @Entity
 @SequenceGenerator(name="marshalledDataIdSeq", sequenceName="MARSHALLEDDATA_ID_SEQ")

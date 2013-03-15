@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.persistence.session;
+package org.drools.persistence.kie.persistence.session;
 
 import org.drools.compiler.Person;
 import org.drools.SessionConfiguration;

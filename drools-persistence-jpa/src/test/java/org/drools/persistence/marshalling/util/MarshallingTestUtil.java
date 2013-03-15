@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.marshalling.util;
+package org.drools.persistence.marshalling.util;
 
-import static org.drools.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
-import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.drools.persistence.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
+import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
 import static org.drools.persistence.util.PersistenceUtil.cleanUp;
 import static org.drools.persistence.util.PersistenceUtil.getDatasourceProperties;
 import static org.junit.Assert.assertNotNull;
@@ -61,7 +61,6 @@ import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

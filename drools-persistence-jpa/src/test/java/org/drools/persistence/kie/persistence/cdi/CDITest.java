@@ -1,4 +1,4 @@
-package org.kie.persistence.cdi;
+package org.drools.persistence.kie.persistence.cdi;
 
 import org.drools.persistence.util.PersistenceUtil;
 import org.jboss.weld.environment.se.Weld;

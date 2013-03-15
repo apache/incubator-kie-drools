@@ -1,4 +1,4 @@
-package org.drools.timer.integrationtests;
+package org.drools.persistence.timer.integrationtests;
 
 import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
