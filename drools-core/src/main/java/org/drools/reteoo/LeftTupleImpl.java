@@ -21,13 +21,14 @@ import java.util.Arrays;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
+import org.drools.spi.PropagationContext;
 
 public class LeftTupleImpl extends BaseLeftTuple {
-    private static final long  serialVersionUID = 540l;
+    private static final long serialVersionUID = 540l;
 
-    private RightTuple         blocker;
-    private LeftTuple          blockedPrevious;
-    private LeftTuple          blockedNext;
+    private RightTuple blocker;
+    private LeftTuple  blockedPrevious;
+    private LeftTuple  blockedNext;
 
     public LeftTupleImpl() {
         // constructor needed for serialisation
@@ -39,53 +40,55 @@ public class LeftTupleImpl extends BaseLeftTuple {
     public LeftTupleImpl(final InternalFactHandle factHandle,
                          LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
-        super( factHandle, 
-               sink, 
-               leftTupleMemoryEnabled );
-    }
-
-    public LeftTupleImpl(final LeftTuple leftTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, 
-               sink, 
-               leftTupleMemoryEnabled );
-    }
-
-    public LeftTupleImpl(final LeftTuple leftTuple,
-            RightTuple rightTuple,
-            LeftTupleSink sink) {
-        super( leftTuple, 
-               rightTuple, 
-               sink );
-    }
-
-    public LeftTupleImpl(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        this( leftTuple,
-              rightTuple,
-              null,
-              null,
+        super(factHandle,
               sink,
-              leftTupleMemoryEnabled );
+              leftTupleMemoryEnabled);
     }
 
     public LeftTupleImpl(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTuple currentLeftChild,
-            final LeftTuple currentRightChild,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, 
-               rightTuple, 
-               currentLeftChild, 
-               currentRightChild, 
-               sink, 
-               leftTupleMemoryEnabled );
+                         final LeftTupleSink sink,
+                         final PropagationContext pctx,
+                         final boolean leftTupleMemoryEnabled) {
+        super(leftTuple,
+              sink,
+              pctx,
+              leftTupleMemoryEnabled);
     }
-    
+
+    public LeftTupleImpl(final LeftTuple leftTuple,
+                         RightTuple rightTuple,
+                         LeftTupleSink sink) {
+        super(leftTuple,
+              rightTuple,
+              sink);
+    }
+
+    public LeftTupleImpl(final LeftTuple leftTuple,
+                         final RightTuple rightTuple,
+                         final LeftTupleSink sink,
+                         final boolean leftTupleMemoryEnabled) {
+        this(leftTuple,
+             rightTuple,
+             null,
+             null,
+             sink,
+             leftTupleMemoryEnabled);
+    }
+
+    public LeftTupleImpl(final LeftTuple leftTuple,
+                         final RightTuple rightTuple,
+                         final LeftTuple currentLeftChild,
+                         final LeftTuple currentRightChild,
+                         final LeftTupleSink sink,
+                         final boolean leftTupleMemoryEnabled) {
+        super(leftTuple,
+              rightTuple,
+              currentLeftChild,
+              currentRightChild,
+              sink,
+              leftTupleMemoryEnabled);
+    }
+
 
     @Override
     public void unlinkFromLeftParent() {
@@ -104,9 +107,9 @@ public class LeftTupleImpl extends BaseLeftTuple {
     public void clearBlocker() {
         this.blockedPrevious = null;
         this.blockedNext = null;
-        this.blocker= null;
+        this.blocker = null;
     }
-    
+
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
      */
@@ -151,20 +154,20 @@ public class LeftTupleImpl extends BaseLeftTuple {
 
     protected String toExternalString() {
         StringBuilder builder = new StringBuilder();
-        builder.append( String.format( "%08X", System.identityHashCode( this ) ) ).append( ":" );
-        int[] ids = new int[getIndex()+1];
+        builder.append(String.format("%08X", System.identityHashCode(this))).append(":");
+        int[] ids = new int[getIndex() + 1];
         LeftTuple entry = this;
-        while( entry != null ) {
+        while (entry != null) {
             ids[entry.getIndex()] = entry.getLastHandle().getId();
             entry = entry.getParent();
         }
-        builder.append( Arrays.toString( ids ) )
-               .append( " activation=" )
-               .append( getObject() != null ? getObject() : "null" )
-               .append( " sink=" )
-               .append( getSink().getClass().getSimpleName() )
-               .append( "(" ).append( getSink().getId() ).append( ")" );
-        return  builder.toString();
+        builder.append(Arrays.toString(ids))
+               .append(" activation=")
+               .append(getObject() != null ? getObject() : "null")
+               .append(" sink=")
+               .append(getSink().getClass().getSimpleName())
+               .append("(").append(getSink().getId()).append(")");
+        return builder.toString();
     }
 
 }

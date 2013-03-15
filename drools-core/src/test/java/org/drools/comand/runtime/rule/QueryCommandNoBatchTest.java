@@ -81,7 +81,7 @@ public class QueryCommandNoBatchTest {
         SetVariableCommandFromCommand setVariableCmd = new SetVariableCommandFromCommand("__TEMP__", "query123", queryCommand);
         
         KnowledgeContextResolveFromContextCommand resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(setVariableCmd,
-                null, null, "ksession", "localResults");
+                                                                                                                            null, null, "ksession", "localResults");
         ExecutionResults results = (ExecutionResults) commandService.execute(resolveFromContextCommand);
 
         // I'm not expecting any results here

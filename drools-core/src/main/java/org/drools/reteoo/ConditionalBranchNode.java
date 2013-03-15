@@ -367,8 +367,8 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new EvalNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
+        return new EvalNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

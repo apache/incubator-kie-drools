@@ -288,6 +288,7 @@ public class ReteDslTestEngine {
                     stepImpl.execute( context,
                                       step.getCommands() );
                 } catch ( Exception e ) {
+                    e.printStackTrace();
                     throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute step " + step,
                                                         e );
                 }

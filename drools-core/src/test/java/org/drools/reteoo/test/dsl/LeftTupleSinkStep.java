@@ -25,6 +25,7 @@ import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.RightTuple;
+import org.drools.spi.PropagationContext;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -59,11 +60,11 @@ public class LeftTupleSinkStep
             });
                         
             
-            Mockito.when( mockedSink.createLeftTuple( (LeftTuple) anyObject(), (LeftTupleSink) anyObject(), anyBoolean() ) ).thenAnswer( new Answer() {
+            Mockito.when( mockedSink.createLeftTuple( (LeftTuple) anyObject(), (LeftTupleSink) anyObject(),  (PropagationContext) anyObject(), anyBoolean()) ).thenAnswer( new Answer() {
 
                 public Object answer(InvocationOnMock invocation) throws Throwable {
                     Object[] args = invocation.getArguments();                   
-                    return new LeftTupleImpl((LeftTuple)args[0], (LeftTupleSink)args[1], ((Boolean)args[2]).booleanValue()  );
+                    return new LeftTupleImpl((LeftTuple)args[0], (LeftTupleSink)args[1], (PropagationContext) args[2] , ((Boolean)args[3]).booleanValue()  );
                 }
             });      
             

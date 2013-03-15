@@ -63,8 +63,6 @@ public class RightInputAdapterNode extends ObjectSource
 
     private boolean           unlinkingEnabled;
 
-    private boolean           queryRule;
-
     public RightInputAdapterNode() {
     }
 
@@ -88,15 +86,6 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;        
         this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();
-        this.queryRule = isQuery( startTupleSource );
-    }
-
-    public static boolean isQuery(LeftTupleSource lts) {
-        while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
-            lts = lts.getLeftTupleSource();
-        }
-
-        return lts.getObjectType().getValueType() == ValueType.QUERY_TYPE;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -108,7 +97,6 @@ public class RightInputAdapterNode extends ObjectSource
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         startTupleSource = ( LeftTupleSource ) in.readObject();
         unlinkingEnabled = in.readBoolean();
-        this.queryRule = isQuery( startTupleSource );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -119,7 +107,7 @@ public class RightInputAdapterNode extends ObjectSource
         out.writeObject( nextTupleSinkNode );
         out.writeObject( startTupleSource );
         out.writeBoolean( unlinkingEnabled );
-    }    
+    }
 
     public LeftTupleSource getStartTupleSource() {
         return startTupleSource;
@@ -128,11 +116,6 @@ public class RightInputAdapterNode extends ObjectSource
     public void setStartTupleSource(LeftTupleSource startTupleSource) {
         this.startTupleSource = startTupleSource;
     }
-
-    public boolean isQueryRule() {
-        return this.queryRule;
-    }
-
     /**
      * Creates and return the node memory
      */    
@@ -419,8 +402,9 @@ public class RightInputAdapterNode extends ObjectSource
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
+                                     PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+        return new JoinNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

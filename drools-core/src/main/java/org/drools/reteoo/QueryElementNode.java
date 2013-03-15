@@ -720,9 +720,10 @@ public class QueryElementNode extends LeftTupleSource
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
-                                     boolean leftTupleMemoryEnabled) {
+                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new QueryElementNodeLeftTuple( leftTuple,
                                               sink,
+                                              pctx,
                                               leftTupleMemoryEnabled );
     }
 

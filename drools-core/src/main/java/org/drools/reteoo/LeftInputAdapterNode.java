@@ -392,7 +392,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         LeftTupleSets leftTuples = sm.getStagedLeftTuples();
                        
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink() ;  
-        leftTuple.setPropagationContext( context );                      
+        //leftTuple.setPropagationContext( context ); pctx is no longer updated, as it conflcits with no-loop, leaving commented code for future reference
         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
             // if LeftTuple is already staged, leave it there
             long mask = sink.getLeftInferredMask();
@@ -416,8 +416,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 // iterate for peers segment memory
                 leftTuple = leftTuple.getPeer();
                 leftTuples = sm.getStagedLeftTuples();
-                
-                leftTuple.setPropagationContext( context );
+
+                //leftTuple.setPropagationContext( context ); pctx is no longer updated, as it conflcits with no-loop, leaving commented code for future reference
                 if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
                     // if LeftTuple is already staged, leave it there
                     long mask =  ((LeftTupleSink) sm.getRootNode()).getLeftInferredMask();

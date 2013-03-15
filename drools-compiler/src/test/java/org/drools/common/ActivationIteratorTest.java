@@ -451,7 +451,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule2 salience 1020 when\n" +
+                     "rule rule2 salience (1020 + Integer.parseInt( $s1 ) ) when\n" +
                      "    $s1 : String( )\n" +
                      "then\n" +
                      "    kcontext.getKieRuntime().halt();\n" +

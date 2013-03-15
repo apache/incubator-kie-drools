@@ -19,13 +19,14 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
+import org.drools.spi.PropagationContext;
 
 public class NotNodeLeftTuple extends BaseLeftTuple {
-    private static final long  serialVersionUID = 540l;
+    private static final long serialVersionUID = 540l;
 
-    private RightTuple         blocker;
-    private LeftTuple          blockedPrevious;
-    private LeftTuple          blockedNext;
+    private RightTuple blocker;
+    private LeftTuple  blockedPrevious;
+    private LeftTuple  blockedNext;
 
     public NotNodeLeftTuple() {
         // constructor needed for serialisation
@@ -35,55 +36,57 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public NotNodeLeftTuple(final InternalFactHandle factHandle,
-                         LeftTupleSink sink,
-                         boolean leftTupleMemoryEnabled) {
-        super( factHandle, 
-               sink, 
-               leftTupleMemoryEnabled );
-    }
-
-    public NotNodeLeftTuple(final LeftTuple leftTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, 
-               sink, 
-               leftTupleMemoryEnabled );
-    }
-
-    public NotNodeLeftTuple(final LeftTuple leftTuple,
-            RightTuple rightTuple,
-            LeftTupleSink sink) {
-        super( leftTuple, 
-               rightTuple, 
-               sink );
-    }
-
-    public NotNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        this( leftTuple,
-              rightTuple,
-              null,
-              null,
+                            LeftTupleSink sink,
+                            boolean leftTupleMemoryEnabled) {
+        super(factHandle,
               sink,
-              leftTupleMemoryEnabled );
+              leftTupleMemoryEnabled);
     }
 
     public NotNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTuple currentLeftChild,
-            final LeftTuple currentRightChild,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, 
-               rightTuple, 
-               currentLeftChild, 
-               currentRightChild, 
-               sink, 
-               leftTupleMemoryEnabled );
+                            final LeftTupleSink sink,
+                            final PropagationContext pctx,
+                            final boolean leftTupleMemoryEnabled) {
+        super(leftTuple,
+              sink,
+              pctx,
+              leftTupleMemoryEnabled);
     }
-    
+
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
+                            RightTuple rightTuple,
+                            LeftTupleSink sink) {
+        super(leftTuple,
+              rightTuple,
+              sink);
+    }
+
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
+                            final RightTuple rightTuple,
+                            final LeftTupleSink sink,
+                            final boolean leftTupleMemoryEnabled) {
+        this(leftTuple,
+             rightTuple,
+             null,
+             null,
+             sink,
+             leftTupleMemoryEnabled);
+    }
+
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
+                            final RightTuple rightTuple,
+                            final LeftTuple currentLeftChild,
+                            final LeftTuple currentRightChild,
+                            final LeftTupleSink sink,
+                            final boolean leftTupleMemoryEnabled) {
+        super(leftTuple,
+              rightTuple,
+              currentLeftChild,
+              currentRightChild,
+              sink,
+              leftTupleMemoryEnabled);
+    }
+
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#unlinkFromLeftParent()
      */
@@ -99,7 +102,7 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
         super.unlinkFromRightParent();
         this.blocker = null;
     }
-    
+
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#getMemory()
      */
@@ -141,12 +144,12 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     public Entry getNext() {
         return this.next;
     }
-    
+
     public void clearBlocker() {
         this.blockedPrevious = null;
         this.blockedNext = null;
-        this.blocker= null;
-    }    
+        this.blocker = null;
+    }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
@@ -189,5 +192,5 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     public void setBlockedNext(LeftTuple blockerNext) {
         this.blockedNext = blockerNext;
     }
-  
+
 }

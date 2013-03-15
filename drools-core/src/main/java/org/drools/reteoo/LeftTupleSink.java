@@ -76,6 +76,7 @@ public interface LeftTupleSink
     
     LeftTuple createLeftTuple(LeftTuple leftTuple,
                               LeftTupleSink sink,
+                              PropagationContext pctx,
                               boolean leftTupleMemoryEnabled);
     
     LeftTuple createLeftTuple(LeftTuple leftTuple,

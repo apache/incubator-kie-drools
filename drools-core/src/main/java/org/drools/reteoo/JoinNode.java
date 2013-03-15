@@ -21,7 +21,6 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.RightTupleSets;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;
@@ -465,8 +464,9 @@ public class JoinNode extends BetaNode {
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
+                                     PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+        return new JoinNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

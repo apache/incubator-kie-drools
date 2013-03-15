@@ -523,7 +523,7 @@ public class ExistsNode extends BetaNode {
             while ( leftTuple != null ) {
                 sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
                                                             sink,
-                                                            true ),
+                                                            context, true),
                                       context,
                                       workingMemory );
                 leftTuple = leftTuple.getBlockedNext();
@@ -551,8 +551,9 @@ public class ExistsNode extends BetaNode {
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
+                                     PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
-        return new NotNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+        return new NotNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

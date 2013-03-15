@@ -27,7 +27,6 @@ import org.drools.spi.PropagationContext;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.definition.rule.Rule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -280,11 +279,11 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // an eval node always has at least a LIAN before it, so, tuples that reach it 
         // always have at least one tuple parent
         final LeftTupleImpl parentTuple = new LeftTupleImpl( f0,
-                                                     null,
-                                                     true );
+                                                        null,
+                                                        true );
         final LeftTuple tuple0 = sink.createLeftTuple( parentTuple,
                                                        sink,
-                                                       true );
+                                                       null, true);
 
         // Tuple should pass and propagate 
         node.assertLeftTuple( tuple0,

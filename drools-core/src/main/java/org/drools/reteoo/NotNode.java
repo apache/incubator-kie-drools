@@ -546,7 +546,7 @@ public class NotNode extends BetaNode {
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
             sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
                                                         sink,
-                                                        true ),
+                                                        context, true),
                                   context,
                                   workingMemory );
         }
@@ -571,8 +571,8 @@ public class NotNode extends BetaNode {
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new NotNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

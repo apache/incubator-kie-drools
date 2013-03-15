@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
+import org.drools.spi.PropagationContext;
 
 public class JoinNodeLeftTuple extends BaseLeftTuple {
 
@@ -32,47 +33,48 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public JoinNodeLeftTuple(final InternalFactHandle factHandle,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( factHandle, sink, leftTupleMemoryEnabled );
+                             final LeftTupleSink sink,
+                             final boolean leftTupleMemoryEnabled) {
+        super(factHandle, sink, leftTupleMemoryEnabled);
     }
 
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, sink, leftTupleMemoryEnabled );
+                             final LeftTupleSink sink,
+                             final PropagationContext pctx,
+                             final boolean leftTupleMemoryEnabled) {
+        super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTupleSink sink) {
-        super( leftTuple, rightTuple, sink );
+                             final RightTuple rightTuple,
+                             final LeftTupleSink sink) {
+        super(leftTuple, rightTuple, sink);
     }
 
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        this( leftTuple,
+                             final RightTuple rightTuple,
+                             final LeftTupleSink sink,
+                             final boolean leftTupleMemoryEnabled) {
+        this(leftTuple,
+             rightTuple,
+             null,
+             null,
+             sink,
+             leftTupleMemoryEnabled);
+    }
+
+    public JoinNodeLeftTuple(final LeftTuple leftTuple,
+                             final RightTuple rightTuple,
+                             final LeftTuple currentLeftChild,
+                             final LeftTuple currentRightChild,
+                             final LeftTupleSink sink,
+                             final boolean leftTupleMemoryEnabled) {
+        super(leftTuple,
               rightTuple,
-              null,
-              null,
+              currentLeftChild,
+              currentRightChild,
               sink,
-              leftTupleMemoryEnabled );
-    }
-
-    public JoinNodeLeftTuple(final LeftTuple leftTuple,
-            final RightTuple rightTuple,
-            final LeftTuple currentLeftChild,
-            final LeftTuple currentRightChild,
-            final LeftTupleSink sink,
-            final boolean leftTupleMemoryEnabled) {
-        super( leftTuple, 
-               rightTuple, 
-               currentLeftChild, 
-               currentRightChild, 
-               sink, 
-               leftTupleMemoryEnabled );
+              leftTupleMemoryEnabled);
     }
 
     /* (non-Javadoc)

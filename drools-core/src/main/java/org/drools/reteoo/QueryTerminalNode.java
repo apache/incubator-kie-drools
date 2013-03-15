@@ -308,8 +308,9 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
+                                     PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
-        return new RuleTerminalNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+        return new RuleTerminalNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

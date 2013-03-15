@@ -100,12 +100,13 @@ public class BaseLeftTuple
 }    
 
     public BaseLeftTuple(final LeftTuple leftTuple,
-                             final LeftTupleSink sink,
-                             final boolean leftTupleMemoryEnabled) {
+                         final LeftTupleSink sink,
+                         final PropagationContext pctx,
+                         final boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex();
         this.parent = leftTuple.getParent();
         this.handle = leftTuple.getHandle();
-        this.propagationContext = leftTuple.getPropagationContext();
+        this.propagationContext = pctx;
 
         if ( leftTupleMemoryEnabled ) {
             this.leftParent = leftTuple;

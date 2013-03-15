@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.reteoo.TupleIterator.OnLeaf;
 
+import org.drools.spi.PropagationContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,33 +33,33 @@ public class TupleIterationTest {
     @Test
     public void testRootTraversal() {
         LeftTupleImpl t0 = new LeftTupleImpl();
-        LeftTupleImpl t1 = new LeftTupleImpl(t0, null, true);
-        LeftTupleImpl t2 = new LeftTupleImpl(t0, null, true);
-        LeftTupleImpl t3 = new LeftTupleImpl(t0, null, true);
+        LeftTupleImpl t1 = new LeftTupleImpl(t0, null, (PropagationContext) null, true);
+        LeftTupleImpl t2 = new LeftTupleImpl(t0, null, (PropagationContext) null,true);
+        LeftTupleImpl t3 = new LeftTupleImpl(t0, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t1_1 = new LeftTupleImpl(t1, null, true);
-        LeftTupleImpl t1_2 = new LeftTupleImpl(t1, null, true);
+        LeftTupleImpl t1_1 = new LeftTupleImpl(t1, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_2 = new LeftTupleImpl(t1, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t1_1_1 = new LeftTupleImpl(t1_1, null, true);
-        LeftTupleImpl t1_1_1_1 = new LeftTupleImpl(t1_1_1, null, true);
-        LeftTupleImpl t1_1_1_2 = new LeftTupleImpl(t1_1_1, null, true);
-        LeftTupleImpl t1_1_1_3 = new LeftTupleImpl(t1_1_1, null, true);
+        LeftTupleImpl t1_1_1 = new LeftTupleImpl(t1_1, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_1_1_1 = new LeftTupleImpl(t1_1_1, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_1_1_2 = new LeftTupleImpl(t1_1_1, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_1_1_3 = new LeftTupleImpl(t1_1_1, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t1_2_1 = new LeftTupleImpl(t1_2, null, true);
+        LeftTupleImpl t1_2_1 = new LeftTupleImpl(t1_2, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t1_2_2 = new LeftTupleImpl(t1_2, null, true);
-        LeftTupleImpl t1_2_2_1 = new LeftTupleImpl(t1_2_2, null, true);
+        LeftTupleImpl t1_2_2 = new LeftTupleImpl(t1_2, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_2_2_1 = new LeftTupleImpl(t1_2_2, null,(PropagationContext) null, true);
 
-        LeftTupleImpl t1_2_3 = new LeftTupleImpl(t1_2, null, true);
+        LeftTupleImpl t1_2_3 = new LeftTupleImpl(t1_2, null, (PropagationContext) null,true);
 
-        LeftTupleImpl t2_1 = new LeftTupleImpl(t2, null, true);
-        LeftTupleImpl t2_2 = new LeftTupleImpl(t2, null, true);
-        LeftTupleImpl t2_3 = new LeftTupleImpl(t2, null, true);
+        LeftTupleImpl t2_1 = new LeftTupleImpl(t2, null, (PropagationContext) null,true);
+        LeftTupleImpl t2_2 = new LeftTupleImpl(t2, null,(PropagationContext) null, true);
+        LeftTupleImpl t2_3 = new LeftTupleImpl(t2, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t2_3_1 = new LeftTupleImpl(t2_3, null, true);
-        LeftTupleImpl t2_3_1_1 = new LeftTupleImpl(t2_3_1, null, true);
+        LeftTupleImpl t2_3_1 = new LeftTupleImpl(t2_3, null, (PropagationContext) null,true);
+        LeftTupleImpl t2_3_1_1 = new LeftTupleImpl(t2_3_1, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t2_3_2 = new LeftTupleImpl(t2_3, null, true);
+        LeftTupleImpl t2_3_2 = new LeftTupleImpl(t2_3, null, (PropagationContext) null,true);
 
         
         LeftTupleImpl[] leafs = new LeftTupleImpl[] {
@@ -85,39 +86,39 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
     @Test
     public void testMidTraversal() {
         LeftTupleImpl tm2 = new LeftTupleImpl();
-        LeftTupleImpl tm1 = new LeftTupleImpl(tm2, null, true);
-        LeftTuple tm1_1 = new LeftTupleImpl(tm1, null, true); // this leaf will not be included
+        LeftTupleImpl tm1 = new LeftTupleImpl(tm2, null, (PropagationContext) null,true);
+        LeftTuple tm1_1 = new LeftTupleImpl(tm1, null, (PropagationContext) null,true); // this leaf will not be included
         
-        LeftTupleImpl t0 = new LeftTupleImpl(tm1, null, true); // insert two nodes before our root traversal position
+        LeftTupleImpl t0 = new LeftTupleImpl(tm1, null, (PropagationContext) null,true); // insert two nodes before our root traversal position
         
         
-        LeftTupleImpl t1 = new LeftTupleImpl(t0, null, true);
-        LeftTupleImpl t2 = new LeftTupleImpl(t0, null, true);
-        LeftTupleImpl t3 = new LeftTupleImpl(t0, null, true);
+        LeftTupleImpl t1 = new LeftTupleImpl(t0, null, (PropagationContext) null,true);
+        LeftTupleImpl t2 = new LeftTupleImpl(t0, null, (PropagationContext) null,true);
+        LeftTupleImpl t3 = new LeftTupleImpl(t0, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t1_1 = new LeftTupleImpl(t1, null, true);
-        LeftTupleImpl t1_2 = new LeftTupleImpl(t1, null, true);
+        LeftTupleImpl t1_1 = new LeftTupleImpl(t1, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_2 = new LeftTupleImpl(t1, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t1_1_1 = new LeftTupleImpl(t1_1, null, true);
-        LeftTupleImpl t1_1_1_1 = new LeftTupleImpl(t1_1_1, null, true);
-        LeftTupleImpl t1_1_1_2 = new LeftTupleImpl(t1_1_1, null, true);
-        LeftTupleImpl t1_1_1_3 = new LeftTupleImpl(t1_1_1, null, true);
+        LeftTupleImpl t1_1_1 = new LeftTupleImpl(t1_1, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_1_1_1 = new LeftTupleImpl(t1_1_1, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_1_1_2 = new LeftTupleImpl(t1_1_1, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_1_1_3 = new LeftTupleImpl(t1_1_1, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t1_2_1 = new LeftTupleImpl(t1_2, null, true);
+        LeftTupleImpl t1_2_1 = new LeftTupleImpl(t1_2, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t1_2_2 = new LeftTupleImpl(t1_2, null, true);
-        LeftTupleImpl t1_2_2_1 = new LeftTupleImpl(t1_2_2, null, true);
+        LeftTupleImpl t1_2_2 = new LeftTupleImpl(t1_2, null, (PropagationContext) null,true);
+        LeftTupleImpl t1_2_2_1 = new LeftTupleImpl(t1_2_2, null, (PropagationContext) null,true);
 
-        LeftTupleImpl t1_2_3 = new LeftTupleImpl(t1_2, null, true);
+        LeftTupleImpl t1_2_3 = new LeftTupleImpl(t1_2, null, (PropagationContext) null,true);
 
-        LeftTupleImpl t2_1 = new LeftTupleImpl(t2, null, true);
-        LeftTupleImpl t2_2 = new LeftTupleImpl(t2, null, true);
-        LeftTupleImpl t2_3 = new LeftTupleImpl(t2, null, true);
+        LeftTupleImpl t2_1 = new LeftTupleImpl(t2, null, (PropagationContext) null,true);
+        LeftTupleImpl t2_2 = new LeftTupleImpl(t2, null, (PropagationContext) null,true);
+        LeftTupleImpl t2_3 = new LeftTupleImpl(t2, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t2_3_1 = new LeftTupleImpl(t2_3, null, true);
-        LeftTupleImpl t2_3_1_1 = new LeftTupleImpl(t2_3_1, null, true);
+        LeftTupleImpl t2_3_1 = new LeftTupleImpl(t2_3, null, (PropagationContext) null,true);
+        LeftTupleImpl t2_3_1_1 = new LeftTupleImpl(t2_3_1, null, (PropagationContext) null,true);
         
-        LeftTupleImpl t2_3_2 = new LeftTupleImpl(t2_3, null, true);
+        LeftTupleImpl t2_3_2 = new LeftTupleImpl(t2_3, null, (PropagationContext) null,true);
 
         
         LeftTupleImpl[] leafs = new LeftTupleImpl[] {
