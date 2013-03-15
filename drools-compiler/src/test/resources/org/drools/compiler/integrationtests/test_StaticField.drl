@@ -1,8 +1,8 @@
 package org.drools.test
 
-import org.drools.Person
-import org.drools.Cheesery
-import org.drools.Cheesery.Maturity
+import org.drools.compiler.Person
+import org.drools.compiler.Cheesery
+import org.drools.compiler.Cheesery.Maturity
 
 global java.util.List list
 
