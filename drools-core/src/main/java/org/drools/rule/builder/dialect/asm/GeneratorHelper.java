@@ -203,7 +203,7 @@ public final class GeneratorHelper {
             String readMethod = declaration.getNativeReadMethodName();
             boolean isObject = readMethod.equals("getValue");
             String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationType);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
+            mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/core/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
             if (isObject) {
                 InternalReadAccessor extractor = declaration.getExtractor();
                 if (extractor != null) {
