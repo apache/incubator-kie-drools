@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.conflict;
+package org.drools.core.conflict;
 
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 
 /**
- * <code>ConflictResolver</code> that orders rules on a First-In-First-Out
- * basis.
+ * <code>ConflictResolver</code> that uses the salience of rules to resolve
+ * conflict.
  * 
  * @see #getInstance
+ * @see org.kie.rule.Rule#getSalience
  * 
  *
- * @version $Id: RandomConflictResolver.java,v 1.1 2004/06/25 01:55:16 mproctor
- *          Exp $
+ * @version $Id: SalienceConflictResolver.java,v 1.3 2004/06/25 02:46:39
+ *          mproctor Exp $
  */
-public class FifoConflictResolver extends AbstractConflictResolver {
+public class SalienceConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
-    private static final long                 serialVersionUID = 510l;
+    private static final long                     serialVersionUID = 510l;
     /** Singleton instance. */
-    private static final FifoConflictResolver INSTANCE         = new FifoConflictResolver();
+    private static final SalienceConflictResolver INSTANCE         = new SalienceConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -48,7 +49,7 @@ public class FifoConflictResolver extends AbstractConflictResolver {
      * @return The singleton instance.
      */
     public static ConflictResolver getInstance() {
-        return FifoConflictResolver.INSTANCE;
+        return SalienceConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -58,7 +59,7 @@ public class FifoConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public FifoConflictResolver() {
+    public SalienceConflictResolver() {
         // intentionally left blank
     }
 
@@ -69,6 +70,15 @@ public class FifoConflictResolver extends AbstractConflictResolver {
      */
     public int compare(final Activation lhs,
                        final Activation rhs) {
-        return (int) (lhs.getActivationNumber() - rhs.getActivationNumber());
+        final int s1 = lhs.getSalience();
+        final int s2 = rhs.getSalience();
+
+        if ( s1 > s2 ) {
+            return -1;
+        } else if ( s1 < s2 ) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

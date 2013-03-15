@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.conflict;
+package org.drools.core.conflict;
 
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;

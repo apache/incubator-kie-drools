@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.conflict;
+package org.drools.core.conflict;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.spi.Activation;
