@@ -33,7 +33,7 @@ import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.rule.Package;
-import org.drools.rule.builder.DroolsCompilerComponentFactory;
+import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.xml.ChangeSetSemanticModule;
 import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;

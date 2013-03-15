@@ -32,11 +32,11 @@ import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 
 import static org.drools.core.util.ClassUtils.findClass;
 import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
-import static org.drools.rule.builder.dialect.DialectUtil.findClassByName;
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
 
 public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter {
     

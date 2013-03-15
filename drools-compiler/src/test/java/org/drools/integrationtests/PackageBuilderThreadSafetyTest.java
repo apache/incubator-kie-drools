@@ -13,7 +13,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.junit.Test;
 
 public class PackageBuilderThreadSafetyTest {
