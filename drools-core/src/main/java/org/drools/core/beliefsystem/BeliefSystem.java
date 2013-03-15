@@ -1,10 +1,9 @@
-package org.drools.beliefsystem;
+package org.drools.core.beliefsystem;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 

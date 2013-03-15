@@ -16,16 +16,11 @@
 
 package org.drools;
 
-import org.drools.beliefsystem.BeliefSystem;
-import org.drools.beliefsystem.jtms.JTMSBeliefSet;
-import org.drools.beliefsystem.jtms.JTMSBeliefSystem;
-import org.drools.beliefsystem.simple.SimpleBeliefSystem;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
+import org.drools.core.beliefsystem.simple.SimpleBeliefSystem;
 import org.drools.common.NamedEntryPoint;
 import org.drools.common.TruthMaintenanceSystem;
-import org.drools.time.impl.JDKTimerService;
-import org.drools.time.impl.PseudoClockScheduler;
-import org.kie.time.SessionClock;
 
 /**
  * This enum represents all engine supported clocks

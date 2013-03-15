@@ -27,7 +27,7 @@ import java.util.Map;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;

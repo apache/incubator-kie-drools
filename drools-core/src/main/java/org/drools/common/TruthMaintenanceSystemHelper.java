@@ -1,9 +1,8 @@
 package org.drools.common;
 
 import org.drools.FactException;
-import org.drools.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;

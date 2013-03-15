@@ -20,11 +20,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.drools.beliefsystem.BeliefSet;
-import org.drools.core.util.Entry;
+import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.util.LinkedList;
 
 /**

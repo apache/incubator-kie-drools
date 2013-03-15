@@ -21,10 +21,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.FactException;
-import org.drools.beliefsystem.BeliefSet;
-import org.drools.beliefsystem.BeliefSystem;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
+import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -37,7 +35,6 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
-import org.kie.runtime.rule.FactHandle;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly

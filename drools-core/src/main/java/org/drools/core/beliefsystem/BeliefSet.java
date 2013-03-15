@@ -1,4 +1,4 @@
-package org.drools.beliefsystem;
+package org.drools.core.beliefsystem;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.WorkingMemoryAction;
