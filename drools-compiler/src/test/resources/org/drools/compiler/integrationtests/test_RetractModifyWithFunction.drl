@@ -1,4 +1,4 @@
-package org.drools;
+package org.drools.compiler
 import org.drools.compiler.Cheese
  
 function Cheese getMin(Cheese c1, Cheese c2) {
