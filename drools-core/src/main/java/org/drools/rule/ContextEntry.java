@@ -18,8 +18,8 @@ package org.drools.rule;
 
 import java.io.Externalizable;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 
 public interface ContextEntry

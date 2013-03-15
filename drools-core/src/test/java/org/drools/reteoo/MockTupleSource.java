@@ -16,9 +16,9 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.RuleBasePartitionId;
-import org.drools.common.UpdateContext;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 

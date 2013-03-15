@@ -16,12 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.LeftTupleSets;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
-import org.drools.common.NetworkNode;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.spi.PropagationContext;
 

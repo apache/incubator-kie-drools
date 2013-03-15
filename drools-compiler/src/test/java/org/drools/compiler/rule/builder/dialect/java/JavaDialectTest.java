@@ -11,7 +11,7 @@ import java.util.List;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.mvel.MVELPredicateExpression;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;

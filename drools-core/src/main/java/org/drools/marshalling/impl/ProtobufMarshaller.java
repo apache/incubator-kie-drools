@@ -24,9 +24,9 @@ import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Scheduler.ActivationTimerInputMarshaller;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Scheduler.ActivationTimerInputMarshaller;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;

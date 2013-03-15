@@ -22,8 +22,8 @@ import java.io.ObjectOutput;
 import java.util.Arrays;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.ArrayUtils;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;

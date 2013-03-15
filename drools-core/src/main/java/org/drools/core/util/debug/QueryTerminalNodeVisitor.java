@@ -16,10 +16,9 @@
 
 package org.drools.core.util.debug;
 
-import java.util.LinkedList;
 import java.util.Stack;
 
-import org.drools.common.NetworkNode;
+import org.drools.core.common.NetworkNode;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.rule.Rule;
 

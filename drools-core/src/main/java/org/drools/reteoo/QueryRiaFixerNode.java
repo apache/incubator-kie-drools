@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.LeftTupleIterator;
-import org.drools.common.PropagationContextImpl;
-import org.drools.common.UpdateContext;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.LeftTupleIterator;
+import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.ReteooWorkingMemory.QueryRiaFixerNodeFixer;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;

@@ -1,8 +1,8 @@
 package org.drools.reteoo;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.reteoo.builder.BuildContext;

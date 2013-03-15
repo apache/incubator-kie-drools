@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.core.base.ClassObjectType;
-import org.drools.common.*;
+import org.drools.core.common.*;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.phreak.RuleNetworkEvaluatorActivation;

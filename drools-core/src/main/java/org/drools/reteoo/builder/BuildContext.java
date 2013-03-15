@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Stack;
 
-import org.drools.common.BaseNode;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;

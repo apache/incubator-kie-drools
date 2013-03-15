@@ -12,7 +12,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.junit.Test;

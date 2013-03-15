@@ -30,7 +30,7 @@ import java.util.Random;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.drools.common.DefaultFactHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;

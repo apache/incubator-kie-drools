@@ -8,10 +8,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.FactHandle;
-import org.drools.common.ActivationGroupNode;
-import org.drools.common.ActivationNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.LogicalDependency;
+import org.drools.core.common.ActivationGroupNode;
+import org.drools.core.common.ActivationNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.event.AfterActivationFiredEvent;

@@ -17,10 +17,10 @@
 package org.drools.reteoo;
 
 import org.drools.core.base.DroolsQuery;
-import org.drools.common.BetaConstraints;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
+import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;

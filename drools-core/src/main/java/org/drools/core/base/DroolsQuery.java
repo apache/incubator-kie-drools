@@ -19,8 +19,8 @@ package org.drools.core.base;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.common.LeftTupleSets;
-import org.drools.common.WorkingMemoryAction;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.phreak.RuleNetworkEvaluator;
 import org.drools.reteoo.LeftTupleSink;

@@ -18,11 +18,11 @@ package org.drools.reteoo;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ShadowProxy;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.common.PropagationContextImpl;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;

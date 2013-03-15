@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.NetworkNode;
+import org.drools.core.common.NetworkNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;

@@ -1,8 +1,7 @@
 package org.drools.reteoo.builder;
 
 import org.drools.ActivationListenerFactory;
-import org.drools.common.BaseNode;
-import org.drools.common.UpdateContext;
+import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
 import org.drools.rule.GroupElement;

@@ -23,8 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.common.NetworkNode;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;

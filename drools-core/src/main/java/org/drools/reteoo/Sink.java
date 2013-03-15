@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.NetworkNode;
+import org.drools.core.common.NetworkNode;
 
 /**
  * A simple markup interfaces for Sink types

@@ -23,10 +23,10 @@ import java.io.ObjectStreamClass;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.marshalling.impl.ProtobufInputMarshaller.PBActivationsFilter;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;

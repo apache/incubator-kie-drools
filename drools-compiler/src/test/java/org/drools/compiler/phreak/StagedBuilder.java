@@ -1,6 +1,6 @@
 package org.drools.compiler.phreak;
 
-import org.drools.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSets;
 import org.drools.reteoo.SegmentMemory;
 
 public class StagedBuilder extends BaseLeftTuplesBuilder<StagedBuilder> {

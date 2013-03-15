@@ -32,7 +32,7 @@ import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.common.AbstractRuleBase;
+import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
 import org.drools.core.util.asm.ClassFieldInspector;

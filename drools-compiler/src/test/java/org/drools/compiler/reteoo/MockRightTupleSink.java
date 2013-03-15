@@ -1,7 +1,7 @@
 package org.drools.compiler.reteoo;
 
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.RightTuple;

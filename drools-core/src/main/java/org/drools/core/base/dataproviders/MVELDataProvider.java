@@ -27,7 +27,7 @@ import java.util.Iterator;
 
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.ArrayIterator;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;

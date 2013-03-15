@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.kie.command.Context;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.ObjectFilter;

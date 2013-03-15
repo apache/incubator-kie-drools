@@ -18,7 +18,7 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 
 /**

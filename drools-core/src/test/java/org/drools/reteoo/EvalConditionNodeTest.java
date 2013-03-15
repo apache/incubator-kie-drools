@@ -18,8 +18,8 @@ package org.drools.reteoo;
 
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.PropagationContextImpl;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;

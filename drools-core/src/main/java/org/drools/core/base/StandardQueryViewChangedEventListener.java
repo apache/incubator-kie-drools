@@ -19,9 +19,9 @@ package org.drools.core.base;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.rule.Rule;

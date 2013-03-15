@@ -16,17 +16,8 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-import org.drools.common.BetaConstraints;
-import org.drools.common.TupleStartEqualsConstraint;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.NotNode;
-import org.drools.reteoo.ObjectSource;
-import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.rule.Behavior;
 import org.drools.rule.Forall;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;

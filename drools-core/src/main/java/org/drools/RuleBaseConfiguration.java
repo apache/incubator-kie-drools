@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.common.AgendaGroupFactory;
-import org.drools.common.ArrayAgendaGroupFactory;
-import org.drools.common.PriorityQueueAgendaGroupFactory;
+import org.drools.core.common.AgendaGroupFactory;
+import org.drools.core.common.ArrayAgendaGroupFactory;
+import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;

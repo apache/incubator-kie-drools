@@ -18,12 +18,12 @@ package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
-import org.drools.common.WorkingMemoryAction;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.WorkingMemoryAction;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;

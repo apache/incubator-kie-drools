@@ -29,8 +29,8 @@ import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
 
 public class Collect extends ConditionalElement
     implements

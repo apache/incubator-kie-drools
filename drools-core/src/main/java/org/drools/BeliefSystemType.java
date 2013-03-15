@@ -19,8 +19,8 @@ package org.drools;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.beliefsystem.simple.SimpleBeliefSystem;
-import org.drools.common.NamedEntryPoint;
-import org.drools.common.TruthMaintenanceSystem;
+import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.TruthMaintenanceSystem;
 
 /**
  * This enum represents all engine supported clocks

@@ -27,7 +27,7 @@ import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.FieldFactory;
-import org.drools.common.EmptyBetaConstraints;
+import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Query;

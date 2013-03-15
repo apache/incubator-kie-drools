@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;

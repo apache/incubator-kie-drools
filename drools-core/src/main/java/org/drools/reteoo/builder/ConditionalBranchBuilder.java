@@ -1,6 +1,6 @@
 package org.drools.reteoo.builder;
 
-import org.drools.common.UpdateContext;
+import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.ConditionalBranchEvaluator;
 import org.drools.reteoo.ConditionalBranchNode;
 import org.drools.reteoo.LeftTupleSource;

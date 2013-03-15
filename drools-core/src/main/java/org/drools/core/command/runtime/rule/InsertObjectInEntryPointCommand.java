@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlElement;
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.common.DefaultFactHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.command.Context;
 import org.kie.runtime.rule.FactHandle;

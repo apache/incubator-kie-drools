@@ -17,8 +17,8 @@
 package org.drools.reteoo.compiled;
 
 import org.drools.core.base.ClassFieldReader;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftInputAdapterNode;

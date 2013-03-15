@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.spi.PropagationContext;
 
 public class QueryElementNodeLeftTuple extends BaseLeftTuple {

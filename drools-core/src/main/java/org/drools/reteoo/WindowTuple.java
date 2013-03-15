@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 
 /**
  * A specialisation of RightTuples that also belong to a window

@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.drools.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.PropagationContextImpl;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;

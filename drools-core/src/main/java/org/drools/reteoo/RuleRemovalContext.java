@@ -16,8 +16,8 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.BaseNode;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalWorkingMemory;
 
 import java.io.Externalizable;
 import java.io.IOException;

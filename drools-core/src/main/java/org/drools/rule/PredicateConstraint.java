@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Evaluator;

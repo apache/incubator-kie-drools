@@ -21,10 +21,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.EventFactHandle;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PropagationContextImpl;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.WindowNode.WindowMemory;
 import org.drools.reteoo.WindowTupleList;

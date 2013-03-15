@@ -19,7 +19,7 @@ package org.drools.impl;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.event.AfterFunctionRemovedEvent;

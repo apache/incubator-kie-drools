@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.EventFactHandle;
+import org.drools.core.common.EventFactHandle;
 
 /**
  * A class to hold a list of the right tuples that belong to a 

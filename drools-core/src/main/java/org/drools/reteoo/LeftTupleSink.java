@@ -16,8 +16,8 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
 import java.io.Externalizable;

@@ -16,8 +16,8 @@
 
 package org.drools.reteoo.compiled;
 
-import org.drools.common.NetworkNode;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.reteoo.*;
 
 import java.io.IOException;

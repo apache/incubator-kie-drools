@@ -32,11 +32,11 @@ import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.common.DefaultBetaConstraints;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.EmptyBetaConstraints;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.PropagationContextImpl;
+import org.drools.core.common.DefaultBetaConstraints;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.EmptyBetaConstraints;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.reteoo.builder.BuildContext;

@@ -18,10 +18,8 @@ package org.drools.reteoo.builder;
 
 import java.util.List;
 
-import org.drools.common.BetaConstraints;
-import org.drools.reteoo.FromNode;
+import org.drools.core.common.BetaConstraints;
 import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.From;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;

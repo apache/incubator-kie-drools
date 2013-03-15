@@ -2,12 +2,12 @@ package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;

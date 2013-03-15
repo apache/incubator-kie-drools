@@ -24,10 +24,9 @@ import java.util.Iterator;
 
 import org.drools.QueryResults;
 import org.drools.StatelessSessionResult;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.ObjectStore;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ObjectStore;
 import org.drools.spi.GlobalResolver;
-import org.kie.runtime.ObjectFilter;
 
 public class ReteStatelessSessionResult
     implements

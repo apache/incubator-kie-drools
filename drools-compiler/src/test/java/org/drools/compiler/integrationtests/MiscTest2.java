@@ -19,7 +19,7 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.common.DefaultFactHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.util.FileManager;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;

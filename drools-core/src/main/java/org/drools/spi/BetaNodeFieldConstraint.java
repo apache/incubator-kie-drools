@@ -16,7 +16,7 @@
 
 package org.drools.spi;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 

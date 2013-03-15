@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.InternalAgenda;
+import org.drools.core.common.InternalAgenda;
 import org.kie.runtime.rule.AgendaGroup;
 
 public class AgendaGroupImpl implements AgendaGroup, Externalizable {

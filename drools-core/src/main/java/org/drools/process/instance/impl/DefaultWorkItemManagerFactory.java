@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.WorkItemManagerFactory;
 

@@ -24,11 +24,11 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.common.BaseNode;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Scheduler.ActivationTimerJobContext;
-import org.drools.common.Scheduler.ActivationTimerOutputMarshaller;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Scheduler.ActivationTimerJobContext;
+import org.drools.core.common.Scheduler.ActivationTimerOutputMarshaller;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerOutputMarshaller;

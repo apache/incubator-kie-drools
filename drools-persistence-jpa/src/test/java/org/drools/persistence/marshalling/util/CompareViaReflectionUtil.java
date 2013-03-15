@@ -41,8 +41,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.common.AbstractRuleBase;
-import org.drools.common.AbstractWorkingMemory;
+import org.drools.core.common.AbstractRuleBase;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.process.instance.impl.WorkItemImpl;

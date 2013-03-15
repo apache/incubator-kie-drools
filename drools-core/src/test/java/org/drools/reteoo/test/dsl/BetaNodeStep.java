@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;

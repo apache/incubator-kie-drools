@@ -18,7 +18,7 @@ package org.drools.core.util;
 
 import java.util.NoSuchElementException;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.kie.runtime.ObjectFilter;
 

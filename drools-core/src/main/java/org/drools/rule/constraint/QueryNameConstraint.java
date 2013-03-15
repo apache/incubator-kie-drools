@@ -7,8 +7,8 @@ import java.io.ObjectOutput;
 
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.field.ObjectFieldImpl;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.rule.ContextEntry;

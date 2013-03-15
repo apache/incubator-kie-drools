@@ -18,12 +18,12 @@ package org.drools.compiler.reteoo;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
-import org.drools.common.RuleBasePartitionId;
-import org.drools.common.UpdateContext;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.LeftTupleSink;

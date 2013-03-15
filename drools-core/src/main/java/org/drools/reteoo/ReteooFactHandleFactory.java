@@ -17,13 +17,12 @@
 package org.drools.reteoo;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import org.drools.common.AbstractFactHandleFactory;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.EventFactHandle;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.AbstractFactHandleFactory;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.kie.runtime.rule.SessionEntryPoint;

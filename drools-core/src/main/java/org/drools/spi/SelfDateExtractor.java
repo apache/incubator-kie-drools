@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseDateClassFieldReader;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 
 public class SelfDateExtractor extends BaseDateClassFieldReader
     implements

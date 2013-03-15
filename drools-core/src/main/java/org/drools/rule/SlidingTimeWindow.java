@@ -22,12 +22,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.PriorityQueue;
 
-import org.drools.common.EventFactHandle;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.PropagationContextImpl;
-import org.drools.common.WorkingMemoryAction;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.WorkingMemoryAction;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;

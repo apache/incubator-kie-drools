@@ -19,7 +19,7 @@ package org.drools.spi;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 
 public interface InternalReadAccessor
     extends

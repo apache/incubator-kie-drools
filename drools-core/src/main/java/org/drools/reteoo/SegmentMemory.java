@@ -3,11 +3,11 @@ package org.drools.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
-import org.drools.common.NetworkNode;
-import org.drools.common.LeftTupleSets;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;

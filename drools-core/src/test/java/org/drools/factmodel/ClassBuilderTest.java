@@ -67,7 +67,7 @@ public class ClassBuilderTest {
     }
     
     /*
-     * Test method for 'org.drools.common.asm.ClassBuilder.buildClass(ClassDefinition)'
+     * Test method for 'org.drools.core.common.asm.ClassBuilder.buildClass(ClassDefinition)'
      */
     @Test
     public void testBuildClass() {

@@ -18,8 +18,7 @@ package org.drools.spi;
 
 import java.util.Iterator;
 
-import org.drools.common.ActivationGroupNode;
-import org.drools.core.util.Entry;
+import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.util.LinkedList;
 
 public interface ActivationGroup

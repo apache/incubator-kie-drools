@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
-import org.drools.common.AgendaItem;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.AgendaItem;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;

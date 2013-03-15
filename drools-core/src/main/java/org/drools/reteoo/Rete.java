@@ -16,13 +16,13 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.common.RuleBasePartitionId;
-import org.drools.common.UpdateContext;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;

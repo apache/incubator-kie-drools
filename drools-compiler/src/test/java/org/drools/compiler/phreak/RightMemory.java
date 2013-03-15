@@ -3,9 +3,9 @@ package org.drools.compiler.phreak;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PropagationContextImpl;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.RightTuple;

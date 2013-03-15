@@ -38,10 +38,10 @@ import junit.framework.Assert;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.common.AbstractRuleBase;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.AbstractRuleBase;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.factmodel.traits.Entity;
 import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.MapWrapper;

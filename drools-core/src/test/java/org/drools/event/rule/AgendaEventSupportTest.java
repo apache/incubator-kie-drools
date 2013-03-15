@@ -32,7 +32,7 @@ import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.FieldFactory;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.test.model.Cheese;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.MvelConstraintTestUtil;
