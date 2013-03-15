@@ -1,4 +1,4 @@
-package org.drools.kproject.models;
+package org.drools.compiler.kproject.models;
 
 import java.util.HashMap;
 import java.util.Map;

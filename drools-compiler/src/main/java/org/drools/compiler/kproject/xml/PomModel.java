@@ -1,4 +1,4 @@
-package org.drools.kproject.xml;
+package org.drools.compiler.kproject.xml;
 
 import org.kie.builder.ReleaseId;
 

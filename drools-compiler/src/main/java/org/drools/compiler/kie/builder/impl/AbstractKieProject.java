@@ -1,7 +1,7 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.kproject.models.KieBaseModelImpl;
-import org.drools.kproject.models.KieSessionModelImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.model.KieModuleModel;

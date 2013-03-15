@@ -1,4 +1,4 @@
-package org.drools.kproject;
+package org.drools.compiler.kproject;
 
 import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;

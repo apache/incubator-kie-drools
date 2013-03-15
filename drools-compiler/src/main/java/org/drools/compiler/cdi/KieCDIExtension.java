@@ -25,7 +25,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
 
 import org.drools.core.util.StringUtils;
-import org.drools.kproject.models.KieSessionModelImpl;
+import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
 import org.kie.KieServices;
 import org.kie.builder.model.KieBaseModel;

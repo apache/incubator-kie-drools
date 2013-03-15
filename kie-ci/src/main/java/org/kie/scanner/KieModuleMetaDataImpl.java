@@ -1,8 +1,8 @@
 package org.kie.scanner;
 
 import org.drools.core.util.ClassUtils;
-import org.drools.kproject.ReleaseIdImpl;
-import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.rule.TypeMetaInfo;
 import org.kie.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;

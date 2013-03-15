@@ -1,11 +1,6 @@
 package org.drools.compiler.kie.util;
 
-import org.drools.compiler.kie.util.ChangeSetBuilder;
-import org.drools.compiler.kie.util.ChangeType;
-import org.drools.compiler.kie.util.KieJarChangeSet;
-import org.drools.compiler.kie.util.ResourceChange;
-import org.drools.compiler.kie.util.ResourceChangeSet;
-import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.junit.Test;
 import org.kie.KieServices;
 import org.kie.builder.ReleaseId;

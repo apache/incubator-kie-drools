@@ -1,4 +1,4 @@
-package org.drools.kproject.memory;
+package org.drools.compiler.kproject.memory;
 
 import java.io.IOException;
 import java.net.URL;

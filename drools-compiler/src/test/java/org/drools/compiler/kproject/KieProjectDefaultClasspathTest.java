@@ -1,4 +1,4 @@
-package org.drools.kproject;
+package org.drools.compiler.kproject;
 
 import static org.junit.Assert.assertNotNull;
 

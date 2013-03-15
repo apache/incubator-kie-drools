@@ -1,7 +1,7 @@
 package org.drools.builder.xml;
 
-import org.drools.kproject.xml.MinimalPomParser;
-import org.drools.kproject.xml.PomModel;
+import org.drools.compiler.kproject.xml.MinimalPomParser;
+import org.drools.compiler.kproject.xml.PomModel;
 import org.junit.Test;
 import org.kie.builder.ReleaseId;
 

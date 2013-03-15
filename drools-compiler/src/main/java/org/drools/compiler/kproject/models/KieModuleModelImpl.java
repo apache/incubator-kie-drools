@@ -1,4 +1,4 @@
-package org.drools.kproject.models;
+package org.drools.compiler.kproject.models;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;

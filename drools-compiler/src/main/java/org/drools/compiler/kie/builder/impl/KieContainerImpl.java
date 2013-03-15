@@ -1,8 +1,8 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.impl.InternalKnowledgeBase;
-import org.drools.kproject.models.KieBaseModelImpl;
-import org.drools.kproject.models.KieSessionModelImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.kie.KieBase;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;

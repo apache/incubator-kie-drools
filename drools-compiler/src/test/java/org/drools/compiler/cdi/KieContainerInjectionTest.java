@@ -12,7 +12,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.drools.kproject.AbstractKnowledgeTest;
+import org.drools.compiler.kproject.AbstractKnowledgeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

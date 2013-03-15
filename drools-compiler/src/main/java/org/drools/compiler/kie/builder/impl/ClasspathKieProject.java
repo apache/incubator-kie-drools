@@ -1,10 +1,10 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.core.util.StringUtils;
-import org.drools.kproject.ReleaseIdImpl;
-import org.drools.kproject.models.KieModuleModelImpl;
-import org.drools.kproject.xml.MinimalPomParser;
-import org.drools.kproject.xml.PomModel;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.MinimalPomParser;
+import org.drools.compiler.kproject.xml.PomModel;
 import org.kie.KieServices;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.model.KieModuleModel;

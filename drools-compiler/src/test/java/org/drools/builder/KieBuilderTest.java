@@ -3,8 +3,8 @@ package org.drools.builder;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
-import org.drools.kproject.ReleaseIdImpl;
-import org.drools.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

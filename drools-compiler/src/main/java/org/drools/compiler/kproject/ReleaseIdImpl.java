@@ -1,4 +1,4 @@
-package org.drools.kproject;
+package org.drools.compiler.kproject;
 
 import java.io.IOException;
 import java.io.StringReader;

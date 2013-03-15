@@ -1,4 +1,4 @@
-package org.drools.kproject;
+package org.drools.compiler.kproject;
 
 import org.kie.KieBase;
 import org.kie.runtime.KieSession;

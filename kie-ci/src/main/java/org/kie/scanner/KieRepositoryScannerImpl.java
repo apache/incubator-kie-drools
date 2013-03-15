@@ -1,6 +1,6 @@
 package org.kie.scanner;
 
-import org.drools.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieScanner;
