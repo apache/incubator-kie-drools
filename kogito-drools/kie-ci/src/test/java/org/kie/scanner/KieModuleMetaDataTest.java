@@ -5,7 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieServices;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -5,11 +5,11 @@ import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieScanner;
 import org.kie.builder.Message;
-import org.kie.builder.impl.InternalKieModule;
-import org.kie.builder.impl.InternalKieScanner;
-import org.kie.builder.impl.MemoryKieModule;
-import org.kie.builder.impl.ResultsImpl;
-import org.kie.builder.impl.ZipKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieScanner;
+import org.drools.compiler.kie.builder.impl.MemoryKieModule;
+import org.drools.compiler.kie.builder.impl.ResultsImpl;
+import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.kie.builder.model.KieModuleModel;
 import org.kie.runtime.KieContainer;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
-import static org.kie.builder.impl.KieBuilderImpl.buildKieModule;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 
 public class KieRepositoryScannerImpl implements InternalKieScanner {
 

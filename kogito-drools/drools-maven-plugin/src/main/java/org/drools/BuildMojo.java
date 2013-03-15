@@ -7,9 +7,9 @@ import org.kie.KieServices;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
 import org.kie.builder.Message;
-import org.kie.builder.impl.KieContainerImpl;
-import org.kie.builder.impl.KieProject;
-import org.kie.builder.impl.ResultsImpl;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieProject;
+import org.drools.compiler.kie.builder.impl.ResultsImpl;
 
 import java.io.File;
 import java.net.MalformedURLException;

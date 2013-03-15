@@ -7,7 +7,7 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;
 import org.kie.KieServices;
-import org.kie.builder.impl.KieServicesImpl;
+import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.AnnotationLiteral;
