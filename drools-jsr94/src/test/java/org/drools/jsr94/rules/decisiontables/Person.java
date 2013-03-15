@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.decisiontable;
+package org.drools.jsr94.rules.decisiontables;
 
 public class Person {
     private String name;

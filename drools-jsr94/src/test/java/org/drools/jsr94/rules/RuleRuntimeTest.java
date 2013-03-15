@@ -73,7 +73,7 @@ import javax.rules.admin.RuleAdministrator;
 import javax.rules.admin.RuleExecutionSet;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.decisiontable.SpreadsheetIntegrationExampleTest;
+import org.drools.jsr94.rules.decisiontables.SpreadsheetIntegrationExampleTest;
 
 import org.junit.Before;
 import org.junit.Test;
