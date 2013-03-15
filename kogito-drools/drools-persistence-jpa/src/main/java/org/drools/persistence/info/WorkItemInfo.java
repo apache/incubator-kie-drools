@@ -17,10 +17,10 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.drools.core.common.InternalRuleBase;
-import org.drools.marshalling.impl.InputMarshaller;
-import org.drools.marshalling.impl.MarshallerReaderContext;
-import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.OutputMarshaller;
+import org.drools.core.marshalling.impl.InputMarshaller;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.OutputMarshaller;
 import org.drools.process.instance.WorkItem;
 import org.kie.runtime.Environment;
 

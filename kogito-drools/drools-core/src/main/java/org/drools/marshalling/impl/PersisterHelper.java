@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.marshalling.impl;
+package org.drools.core.marshalling.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,8 +32,8 @@ import org.drools.core.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.common.TruthMaintenanceSystem.LogicalCallback;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.KeyStoreHelper;
-import org.drools.marshalling.impl.ProtobufMessages.Header;
-import org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder;
+import org.drools.core.marshalling.impl.ProtobufMessages.Header;
+import org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;

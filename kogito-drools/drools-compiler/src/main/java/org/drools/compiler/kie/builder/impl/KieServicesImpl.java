@@ -6,7 +6,7 @@ import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.io.impl.ResourceFactoryServiceImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.marshalling.impl.MarshallerProviderImpl;
+import org.drools.core.marshalling.impl.MarshallerProviderImpl;
 import org.kie.KieServices;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.KieBuilder;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.marshalling.impl;
+package org.drools.core.marshalling.impl;
 
 import org.kie.Service;
 

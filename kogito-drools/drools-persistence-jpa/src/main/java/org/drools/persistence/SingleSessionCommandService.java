@@ -33,7 +33,7 @@ import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.marshalling.impl.MarshallingConfigurationImpl;
+import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;

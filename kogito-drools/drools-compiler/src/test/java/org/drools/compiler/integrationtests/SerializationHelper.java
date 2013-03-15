@@ -10,7 +10,7 @@ import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.marshalling.impl.ProtobufMarshaller;
+import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;

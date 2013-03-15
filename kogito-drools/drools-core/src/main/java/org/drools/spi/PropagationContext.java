@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import org.drools.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.WindowTupleList;
 import org.drools.rule.EntryPoint;

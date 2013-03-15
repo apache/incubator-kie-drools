@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.marshalling.impl;
+package org.drools.core.marshalling.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,10 +51,10 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
-import org.drools.marshalling.impl.ProtobufMessages.ProcessData.Builder;
-import org.drools.marshalling.impl.ProtobufMessages.Timers;
-import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
+import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
+import org.drools.core.marshalling.impl.ProtobufMessages.ProcessData.Builder;
+import org.drools.core.marshalling.impl.ProtobufMessages.Timers;
+import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.FromNode.FromMemory;
@@ -133,7 +133,7 @@ public class ProtobufOutputMarshaller {
         writeNodeMemories( context, _ruleData );
 
         for ( SessionEntryPoint wmep : wm.getEntryPoints().values() ) {
-            org.drools.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
+            org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
             _epb.setEntryPointId( wmep.getEntryPointId() );
             writeFactHandles( context,
                               _epb,
@@ -187,20 +187,20 @@ public class ProtobufOutputMarshaller {
         InternalWorkingMemory wm = context.wm;
         DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
 
-        org.drools.marshalling.impl.ProtobufMessages.Agenda.Builder _ab = ProtobufMessages.Agenda.newBuilder();
+        org.drools.core.marshalling.impl.ProtobufMessages.Agenda.Builder _ab = ProtobufMessages.Agenda.newBuilder();
 
         AgendaGroup[] agendaGroups = (AgendaGroup[]) agenda.getAgendaGroupsMap().values().toArray( new AgendaGroup[agenda.getAgendaGroupsMap().size()] );
         Arrays.sort( agendaGroups,
                      AgendaGroupSorter.instance );
         for ( AgendaGroup group : agendaGroups ) {
-            org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.Builder _agb = ProtobufMessages.Agenda.AgendaGroup.newBuilder();
+            org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.Builder _agb = ProtobufMessages.Agenda.AgendaGroup.newBuilder();
             _agb.setName( group.getName() );
             _agb.setIsActive( group.isActive() );
             _ab.addAgendaGroup( _agb.build() );
 
         }
 
-        org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack.Builder _fsb = ProtobufMessages.Agenda.FocusStack.newBuilder();
+        org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack.Builder _fsb = ProtobufMessages.Agenda.FocusStack.newBuilder();
         LinkedList<AgendaGroup> focusStack = agenda.getStackList();
         for ( Iterator<AgendaGroup> it = focusStack.iterator(); it.hasNext(); ) {
             AgendaGroup group = it.next();
@@ -212,14 +212,14 @@ public class ProtobufOutputMarshaller {
         Arrays.sort( ruleFlowGroups,
                      RuleFlowGroupSorter.instance );
         for ( RuleFlowGroupImpl group : ruleFlowGroups ) {
-            org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.Builder _rfgb = ProtobufMessages.Agenda.RuleFlowGroup.newBuilder();
+            org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.Builder _rfgb = ProtobufMessages.Agenda.RuleFlowGroup.newBuilder();
             _rfgb.setName( group.getName() );
             _rfgb.setIsActive( group.isActive() );
             _rfgb.setIsAutoDeactivate( group.isAutoDeactivate() );
 
             Map<Long, String> nodeInstances = group.getNodeInstances();
             for ( Map.Entry<Long, String> entry : nodeInstances.entrySet() ) {
-                org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder _nib = ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.newBuilder();
+                org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder _nib = ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.newBuilder();
                 _nib.setProcessInstanceId( entry.getKey() );
                 _nib.setNodeInstanceId( entry.getValue() );
                 _rfgb.addNodeInstance( _nib.build() );
@@ -502,7 +502,7 @@ public class ProtobufOutputMarshaller {
 
     private static void writeBeliefSet(MarshallerWriteContext context,
                                        BeliefSet beliefSet,
-                                       org.drools.marshalling.impl.ProtobufMessages.EqualityKey.Builder _key) throws IOException {
+                                       org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey.Builder _key) throws IOException {
         
         ProtobufMessages.BeliefSet.Builder _beliefSet = ProtobufMessages.BeliefSet.newBuilder();
         _beliefSet.setHandleId( beliefSet.getFactHandle().getId() );
@@ -559,7 +559,7 @@ public class ProtobufOutputMarshaller {
     }
 
     private static void writeFactHandles(MarshallerWriteContext context,
-                                         org.drools.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb,
+                                         org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb,
                                          ObjectStore objectStore) throws IOException {
         ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
 

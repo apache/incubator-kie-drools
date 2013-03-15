@@ -10,12 +10,12 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.drools.compiler.integrationtests.marshalling.util.OldOutputMarshallerMethods;
-import org.drools.marshalling.impl.InputMarshaller;
-import org.drools.marshalling.impl.MarshallerProviderImpl;
-import org.drools.marshalling.impl.MarshallerReaderContext;
-import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
-import org.drools.marshalling.impl.OutputMarshaller;
+import org.drools.core.marshalling.impl.InputMarshaller;
+import org.drools.core.marshalling.impl.MarshallerProviderImpl;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
+import org.drools.core.marshalling.impl.OutputMarshaller;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.junit.Test;

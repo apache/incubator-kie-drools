@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.marshalling.impl;
+package org.drools.core.marshalling.impl;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -45,10 +45,10 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance;
-import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
-import org.drools.marshalling.impl.ProtobufMessages.RuleData;
-import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
+import org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance;
+import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
+import org.drools.core.marshalling.impl.ProtobufMessages.RuleData;
+import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
@@ -376,7 +376,7 @@ public class ProtobufInputMarshaller {
                                   DefaultAgenda agenda) {
         ProtobufMessages.Agenda _agenda = _ruleData.getAgenda();
 
-        for ( org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup _agendaGroup : _agenda.getAgendaGroupList() ) {
+        for ( org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup _agendaGroup : _agenda.getAgendaGroupList() ) {
             InternalAgendaGroup group = (InternalAgendaGroup) agenda.getAgendaGroup( _agendaGroup.getName(), context.ruleBase );
             group.setActive( _agendaGroup.getIsActive() );
             agenda.getAgendaGroupsMap().put( group.getName(),
@@ -420,7 +420,7 @@ public class ProtobufInputMarshaller {
     }
 
     public static void readFactHandles(MarshallerReaderContext context,
-                                       org.drools.marshalling.impl.ProtobufMessages.EntryPoint _ep,
+                                       org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint _ep,
                                        ObjectStore objectStore) throws IOException,
                                                                ClassNotFoundException {
         InternalWorkingMemory wm = context.wm;

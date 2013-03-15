@@ -19,8 +19,8 @@ package org.drools.core.common;
 import java.io.Externalizable;
 import java.io.IOException;
 
-import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProtobufMessages;
 
 public interface WorkingMemoryAction
     extends
