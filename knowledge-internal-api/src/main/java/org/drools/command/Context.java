@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.command;
+package org.drools.core.command;
 
 public interface Context {
     

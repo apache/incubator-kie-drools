@@ -16,7 +16,7 @@
 
 package org.drools.runtime;
 
-import org.drools.command.Command;
+import org.drools.core.command.Command;
 
 /**
  * <p>

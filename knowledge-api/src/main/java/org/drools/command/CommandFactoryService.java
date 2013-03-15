@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.command;
+package org.drools.core.command;
 
 import java.util.Collection;
 import java.util.List;

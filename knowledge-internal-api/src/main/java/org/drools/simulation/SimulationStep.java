@@ -16,10 +16,9 @@
 
 package org.drools.simulation;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.drools.command.Command;
+import org.drools.core.command.Command;
 
 public interface SimulationStep {
 

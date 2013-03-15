@@ -16,7 +16,7 @@
 
 package org.drools.fluent;
 
-import org.drools.command.Command;
+import org.drools.core.command.Command;
 import org.drools.fluent.CommandScript;
 import org.drools.simulation.Simulation;
 
