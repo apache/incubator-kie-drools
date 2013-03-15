@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.builder.conf.impl;
+package org.drools.core.builder.conf.impl;
 
 import java.util.Properties;
 

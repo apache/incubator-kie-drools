@@ -10,7 +10,7 @@
   <title>Building</title>
 
   <figure>
-    <title>org.drools.builder</title>
+    <title>org.drools.core.builder</title>
 
     <mediaobject>
       <imageobject>
@@ -268,7 +268,7 @@ if ( kbuilder.hasErrors() ) {
                   use="optional"/&gt;
   &lt;/xs:complexType&gt;
 
-  <!-- according to org.drools.builder.ResourceType -->
+  <!-- according to org.drools.core.builder.ResourceType -->
   &lt;xs:simpleType name="ResourceType"&gt;
     &lt;xs:restriction base="xs:string"&gt;
       &lt;xs:enumeration value="DRL"/&gt;
@@ -283,7 +283,7 @@ if ( kbuilder.hasErrors() ) {
     &lt;/xs:restriction&gt;
   &lt;/xs:simpleType&gt;
 
-  <!-- according to org.drools.builder.DecisionTableInputType -->
+  <!-- according to org.drools.core.builder.DecisionTableInputType -->
   &lt;xs:simpleType name="DecTabInpType"&gt;
     &lt;xs:restriction base="xs:string"&gt;
       &lt;xs:enumeration value="XLS"/&gt;

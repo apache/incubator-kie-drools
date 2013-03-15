@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.builder.conf.impl;
+package org.drools.core.builder.conf.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,11 +22,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.kie.builder.DecisionTableInputType;
 import org.kie.builder.JaxbConfiguration;
 import org.kie.io.ResourceConfiguration;
 import org.slf4j.Logger;
