@@ -92,7 +92,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     String readMethod = declarations[i].getNativeReadMethodName();
                     boolean isObject = readMethod.equals("getValue");
                     String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarations[i].getTypeName());
-                    mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
+                    mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/core/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
                     if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarations[i].getTypeName()));
                     offset += store(objPos, declarations[i].getTypeName()); // obj[i]
 
