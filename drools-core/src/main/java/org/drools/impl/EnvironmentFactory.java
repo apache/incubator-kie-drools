@@ -16,8 +16,8 @@
 
 package org.drools.impl;
 
-import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;

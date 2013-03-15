@@ -48,8 +48,8 @@ import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.GlobalResolver;
 

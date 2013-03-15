@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.marshalling.impl;
+package org.drools.core.marshalling.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.marshalling.impl.ProtobufInputMarshaller.PBActivationsFilter;
+import org.drools.core.marshalling.impl.ProtobufInputMarshaller.PBActivationsFilter;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;

@@ -33,9 +33,9 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.marshalling.impl.PersisterHelper;
-import org.drools.marshalling.impl.ProtobufInputMarshaller;
-import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.core.marshalling.impl.PersisterHelper;
+import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
