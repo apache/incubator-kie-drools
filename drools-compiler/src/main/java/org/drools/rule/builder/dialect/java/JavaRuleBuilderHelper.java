@@ -4,16 +4,25 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.util.*;
-import org.drools.reteoo.*;
-import org.drools.rule.*;
-import org.drools.rule.builder.*;
-import org.drools.spi.*;
-import org.mvel2.*;
-import org.mvel2.integration.impl.*;
-import org.mvel2.templates.*;
+import org.drools.core.util.StringUtils;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.rule.Declaration;
+import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.rule.Rule;
+import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.AcceptsClassObjectType;
+import org.drools.spi.KnowledgeHelper;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateCompiler;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public final class JavaRuleBuilderHelper {
