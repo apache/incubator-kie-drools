@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.util;
+package org.drools.core.util;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;

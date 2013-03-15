@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.util;
+package org.drools.core.util;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -28,9 +28,6 @@ import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
-import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.Entry;
-import org.drools.core.util.Iterator;
 import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.core.util.index.LeftTupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.core.util.index.LeftTupleList;

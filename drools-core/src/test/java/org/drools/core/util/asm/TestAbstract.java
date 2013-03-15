@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util.asm;
 
 public abstract class TestAbstract {
 

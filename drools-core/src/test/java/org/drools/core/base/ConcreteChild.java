@@ -16,7 +16,7 @@
 
 package org.drools.core.base;
 
-import org.drools.util.asm.InterfaceChild;
+import org.drools.core.util.asm.InterfaceChild;
 
 public class ConcreteChild
     implements

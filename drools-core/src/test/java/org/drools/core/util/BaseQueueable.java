@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.util;
+package org.drools.core.util;
 
 import java.util.List;
 
@@ -23,10 +23,6 @@ import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListNode;
-import org.drools.core.util.Queue;
-import org.drools.core.util.Queueable;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;

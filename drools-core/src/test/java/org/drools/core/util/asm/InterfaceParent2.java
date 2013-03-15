@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util.asm;
 
-public class MethodCompareA {
+public interface InterfaceParent2 {
 
-    public boolean evaluate(final String foo) {
-        if ( foo == null || foo.startsWith( "42" ) ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    public int getBaz();
 
-    public boolean askew(final Integer a) {
-        return false;
-    }
-
-    public boolean evaluate2(final String foo) {
-        if ( foo == null || foo.startsWith( "43" ) ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    public String getURI();
 
 }

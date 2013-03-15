@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.util;
+package org.drools.core.util;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.core.util.BinaryHeapQueue;
-import org.drools.core.util.Queue;
-import org.drools.core.util.Queueable;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class BinaryHeapPriorityQueueTest {
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util.asm;
 
-public class TestInterfaceImpl
-    implements
-    TestInterface {
+public class MethodCompareB {
 
-    public String getSomething() {
-        return "foo";
-    }
+    public boolean evaluate(final String foox) {
+        if ( foox == null || foox.startsWith( "42" ) ) {
 
-    public int getAnother() {
-        return 42;
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

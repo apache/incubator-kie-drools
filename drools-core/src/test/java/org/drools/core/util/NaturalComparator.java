@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.util.asm;
+package org.drools.core.util;
 
-public class TestAbstractImpl extends TestAbstract {
+import java.util.Comparator;
 
-    public String getSomething() {
-        return "foo";
+public final class NaturalComparator
+    implements
+    Comparator {
+    public static final NaturalComparator INSTANCE = new NaturalComparator();
+
+    private NaturalComparator() {
     }
 
+    public int compare(final Object a,
+                       final Object b) {
+        return ((Comparable) a).compareTo( b );
+    }
 }
