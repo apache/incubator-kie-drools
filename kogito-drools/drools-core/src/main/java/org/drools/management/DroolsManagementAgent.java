@@ -26,7 +26,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteooRuleBase;
 import org.kie.management.KieManagementAgentMBean;
 import org.kie.management.KieSessionMonitoringMBean;

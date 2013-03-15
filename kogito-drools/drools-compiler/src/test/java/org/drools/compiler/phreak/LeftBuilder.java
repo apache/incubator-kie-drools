@@ -1,9 +1,9 @@
 package org.drools.compiler.phreak;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.PropagationContextImpl;
-import org.drools.common.LeftTupleSets;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.LeftTupleSets;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.SegmentMemory;

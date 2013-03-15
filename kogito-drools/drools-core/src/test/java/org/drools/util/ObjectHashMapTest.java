@@ -29,7 +29,7 @@ import org.kie.runtime.rule.FactHandle;
 
 import static org.junit.Assert.*;
 
-import org.drools.common.DefaultFactHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;

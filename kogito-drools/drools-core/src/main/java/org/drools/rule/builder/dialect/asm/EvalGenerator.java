@@ -2,7 +2,7 @@ package org.drools.rule.builder.dialect.asm;
 
 import org.drools.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.CompiledInvoker;

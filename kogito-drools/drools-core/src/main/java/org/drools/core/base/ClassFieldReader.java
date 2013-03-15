@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.spi.InternalReadAccessor;
 

@@ -19,7 +19,7 @@ package org.drools.event;
 import java.util.Iterator;
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.RuleFlowGroup;

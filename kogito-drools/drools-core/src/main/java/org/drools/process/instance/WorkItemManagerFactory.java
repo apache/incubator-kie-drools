@@ -16,7 +16,7 @@
 
 package org.drools.process.instance;
 
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 
 public interface WorkItemManagerFactory {
 

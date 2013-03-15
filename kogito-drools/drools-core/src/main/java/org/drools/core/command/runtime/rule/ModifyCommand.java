@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.common.DisconnectedFactHandle;
+import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.command.Context;
 import org.kie.command.Setter;
 import org.kie.runtime.KieSession;

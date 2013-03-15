@@ -11,7 +11,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;

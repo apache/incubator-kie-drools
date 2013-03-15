@@ -16,7 +16,7 @@
 
 package org.drools.core.base;
 
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MathUtils;
 

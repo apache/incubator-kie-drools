@@ -26,9 +26,9 @@ import java.util.List;
 
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
-import org.drools.common.InternalAgenda;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseUpdateListener;

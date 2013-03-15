@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemoryActions;
+import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.impl.StatefulKnowledgeSessionImpl;

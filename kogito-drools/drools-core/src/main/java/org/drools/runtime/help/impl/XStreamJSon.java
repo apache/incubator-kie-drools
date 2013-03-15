@@ -44,7 +44,7 @@ import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
-import org.drools.common.DefaultFactHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.util.StringUtils;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.impl.FlatQueryResults;

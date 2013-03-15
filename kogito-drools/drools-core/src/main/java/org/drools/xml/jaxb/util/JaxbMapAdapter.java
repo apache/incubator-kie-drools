@@ -18,16 +18,12 @@ package org.drools.xml.jaxb.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.drools.FactHandle;
-import org.drools.common.DisconnectedFactHandle;
-import org.drools.common.InternalFactHandle;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 

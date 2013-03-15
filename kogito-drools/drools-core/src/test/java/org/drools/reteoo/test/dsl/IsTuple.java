@@ -19,7 +19,7 @@ package org.drools.reteoo.test.dsl;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;

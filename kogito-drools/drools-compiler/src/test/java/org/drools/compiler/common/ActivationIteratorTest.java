@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.common.ActivationIterator;
+import org.drools.core.common.ActivationIterator;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

@@ -32,7 +32,7 @@ import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.base.mvel.MVELDebugHandler;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;

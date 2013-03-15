@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.EventFactHandle;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
-import org.drools.common.PropagationContextImpl;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.builder.BuildContext;

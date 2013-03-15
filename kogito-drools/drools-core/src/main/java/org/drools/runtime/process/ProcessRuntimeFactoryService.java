@@ -16,7 +16,7 @@
 
 package org.drools.runtime.process;
 
-import org.drools.common.AbstractWorkingMemory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.kie.Service;
 
 /**

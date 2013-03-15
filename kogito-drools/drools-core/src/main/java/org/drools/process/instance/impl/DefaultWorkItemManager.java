@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.WorkItemHandlerNotFoundException;
-import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.kie.runtime.process.ProcessInstance;

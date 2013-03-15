@@ -16,9 +16,8 @@
 
 package org.drools.reteoo.compiled;
 
-import org.drools.common.NetworkNode;
+import org.drools.core.common.NetworkNode;
 import org.drools.reteoo.*;
-import org.drools.rule.ContextEntry;
 
 /**
  * This handler is used to create the member variable assignment statements section of a generated subclass of a

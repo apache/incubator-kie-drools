@@ -27,8 +27,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.InternalSchedulerService;
 import org.drools.time.Job;
@@ -37,7 +37,6 @@ import org.drools.time.JobHandle;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
-import org.kie.SystemEventListenerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

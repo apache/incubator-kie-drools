@@ -18,7 +18,7 @@ package org.drools.spi;
 
 import java.util.Iterator;
 
-import org.drools.common.ActivationNode;
+import org.drools.core.common.ActivationNode;
 
 public interface RuleFlowGroup extends org.kie.runtime.rule.RuleFlowGroup, Iterable<ActivationNode> {
 

@@ -19,7 +19,7 @@ package org.drools.reteoo.test.dsl;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.LeftTupleSink;

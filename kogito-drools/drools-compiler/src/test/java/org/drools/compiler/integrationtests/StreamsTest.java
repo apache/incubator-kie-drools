@@ -37,7 +37,7 @@ import org.drools.SessionConfiguration;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
 import org.drools.core.base.ClassObjectType;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ObjectTypeNode;

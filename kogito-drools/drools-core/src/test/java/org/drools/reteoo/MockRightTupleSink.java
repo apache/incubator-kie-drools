@@ -16,8 +16,8 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleComponent;
 import org.kie.definition.rule.Rule;

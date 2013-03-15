@@ -17,10 +17,10 @@
 package org.drools.reteoo;
 
 import org.drools.core.base.DroolsQuery;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.PropagationContextImpl;
-import org.drools.common.UpdateContext;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;

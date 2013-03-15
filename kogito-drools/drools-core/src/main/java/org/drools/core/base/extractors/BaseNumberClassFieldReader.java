@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import org.drools.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 
 public abstract class BaseNumberClassFieldReader extends BaseClassFieldReader {
 

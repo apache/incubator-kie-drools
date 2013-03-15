@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
 
-import org.drools.common.EndOperationListener;
-import org.drools.common.EventSupport;
-import org.drools.common.InternalWorkingMemoryActions;
-import org.drools.common.WorkingMemoryAction;
+import org.drools.core.common.EndOperationListener;
+import org.drools.core.common.EventSupport;
+import org.drools.core.common.InternalWorkingMemoryActions;
+import org.drools.core.common.WorkingMemoryAction;
 import org.drools.spi.AgendaFilter;
 import org.kie.event.process.ProcessEventManager;
 import org.kie.runtime.Channel;

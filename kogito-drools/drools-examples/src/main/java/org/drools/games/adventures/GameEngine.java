@@ -1,7 +1,7 @@
 package org.drools.games.adventures;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;

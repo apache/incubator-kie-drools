@@ -17,7 +17,7 @@
 package org.drools.event.rule.impl;
 
 import org.drools.FactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.kie.event.rule.ObjectUpdatedEvent;
 
 import java.io.IOException;

@@ -32,7 +32,7 @@ import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
-import org.drools.common.DefaultFactHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 import org.drools.world.impl.WorldImpl;

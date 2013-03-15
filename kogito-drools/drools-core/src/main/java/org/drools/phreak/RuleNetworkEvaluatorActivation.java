@@ -1,7 +1,7 @@
 package org.drools.phreak;
 
-import org.drools.common.AgendaItem;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.AgendaItem;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.*;
 import org.drools.reteoo.PathMemory;
 import org.drools.spi.PropagationContext;

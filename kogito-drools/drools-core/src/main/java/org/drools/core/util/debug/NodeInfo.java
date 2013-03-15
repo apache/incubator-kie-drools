@@ -19,8 +19,8 @@ package org.drools.core.util.debug;
 import java.util.Collection;
 import java.util.Set;
 
-import org.drools.common.NetworkNode;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.rule.Rule;
 
 public interface NodeInfo {

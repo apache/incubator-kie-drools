@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.RuleBasePartitionId;
 
 /**
  * An abstract super class for ObjectSinks

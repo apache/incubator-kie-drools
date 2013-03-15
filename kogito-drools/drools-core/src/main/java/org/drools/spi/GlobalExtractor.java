@@ -27,7 +27,7 @@ import java.math.BigInteger;
 import org.drools.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseDateClassFieldReader;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.facttemplates.Fact;
 

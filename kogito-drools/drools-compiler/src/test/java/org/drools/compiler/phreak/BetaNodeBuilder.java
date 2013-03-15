@@ -4,9 +4,9 @@ import java.beans.IntrospectionException;
 
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
-import org.drools.common.BetaConstraints;
-import org.drools.common.EmptyBetaConstraints;
-import org.drools.common.SingleBetaConstraints;
+import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.EmptyBetaConstraints;
+import org.drools.core.common.SingleBetaConstraints;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ExistsNode;

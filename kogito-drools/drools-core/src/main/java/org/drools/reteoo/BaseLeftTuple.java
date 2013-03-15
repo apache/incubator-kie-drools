@@ -16,8 +16,8 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.EventFactHandle;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.rule.Declaration;

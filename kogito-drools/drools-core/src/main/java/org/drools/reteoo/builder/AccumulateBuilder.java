@@ -19,8 +19,8 @@ package org.drools.reteoo.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.common.BetaConstraints;
-import org.drools.common.TupleStartEqualsConstraint;
+import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;

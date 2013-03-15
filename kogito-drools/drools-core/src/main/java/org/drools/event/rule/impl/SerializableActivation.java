@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.common.AgendaItem;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.AgendaItem;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.kie.definition.rule.Rule;
 import org.kie.runtime.rule.FactHandle;

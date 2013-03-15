@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Restriction;
 

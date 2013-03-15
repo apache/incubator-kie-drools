@@ -18,7 +18,7 @@ package org.drools.core.util.debug;
 
 import java.util.Stack;
 
-import org.drools.common.NetworkNode;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;

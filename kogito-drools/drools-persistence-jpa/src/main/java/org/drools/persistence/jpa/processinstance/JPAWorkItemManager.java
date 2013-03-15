@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.WorkItemHandlerNotFoundException;
-import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;

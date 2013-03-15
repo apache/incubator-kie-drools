@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.builder.BuildContext;
 

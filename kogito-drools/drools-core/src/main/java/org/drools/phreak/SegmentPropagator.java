@@ -1,21 +1,11 @@
 package org.drools.phreak;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
-
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
-import org.drools.common.LeftTupleSets;
-import org.drools.reteoo.CompositeLeftTupleSinkAdapter;
-import org.drools.reteoo.EvalConditionNode;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.LeftTupleSets;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.LeftTupleSinkNode;
-import org.drools.reteoo.LeftTupleSinkNodeList;
 import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.SegmentMemory;
-import org.drools.reteoo.EvalConditionNode.EvalMemory;
 
 public class SegmentPropagator {
 

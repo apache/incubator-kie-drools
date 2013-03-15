@@ -24,8 +24,8 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Collect;
 import org.drools.rule.Declaration;

@@ -16,9 +16,9 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.Memory;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.RightTupleSets;
+import org.drools.core.common.Memory;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RightTupleSets;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.rule.ContextEntry;
 

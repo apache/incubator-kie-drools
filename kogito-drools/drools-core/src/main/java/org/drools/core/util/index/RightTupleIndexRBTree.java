@@ -1,6 +1,6 @@
 package org.drools.core.util.index;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;

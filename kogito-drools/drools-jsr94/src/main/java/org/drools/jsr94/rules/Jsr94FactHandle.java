@@ -42,7 +42,7 @@ package org.drools.jsr94.rules;
 
 import javax.rules.Handle;
 
-import org.drools.common.DefaultFactHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.kie.runtime.rule.SessionEntryPoint;
 
 /**

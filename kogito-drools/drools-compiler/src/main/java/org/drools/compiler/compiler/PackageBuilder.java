@@ -26,7 +26,7 @@ import org.drools.core.base.TypeResolver;
 import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.core.util.ClassUtils;

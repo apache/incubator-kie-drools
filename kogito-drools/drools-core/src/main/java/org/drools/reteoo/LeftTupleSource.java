@@ -17,10 +17,10 @@
 package org.drools.reteoo;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Pattern;
 import org.drools.spi.ClassWireable;

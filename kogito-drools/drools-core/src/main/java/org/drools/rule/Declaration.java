@@ -41,7 +41,7 @@ package org.drools.rule;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.core.base.ValueType;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 

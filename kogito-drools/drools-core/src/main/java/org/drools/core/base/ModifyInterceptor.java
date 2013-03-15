@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.KnowledgeHelper;

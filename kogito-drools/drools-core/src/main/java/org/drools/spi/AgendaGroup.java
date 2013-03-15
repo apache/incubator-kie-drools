@@ -16,10 +16,7 @@
 
 package org.drools.spi;
 
-import java.io.Externalizable;
-import java.util.Collection;
-
-import org.drools.common.DefaultAgenda;
+import org.drools.core.common.DefaultAgenda;
 import org.kie.runtime.rule.Match;
 
 /**

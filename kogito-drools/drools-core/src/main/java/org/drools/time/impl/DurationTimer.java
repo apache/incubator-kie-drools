@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.NumberUtils;
 import org.drools.spi.Activation;
 import org.drools.time.Trigger;

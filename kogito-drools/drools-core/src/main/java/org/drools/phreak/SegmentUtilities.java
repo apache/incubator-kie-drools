@@ -1,8 +1,8 @@
 package org.drools.phreak;
 
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
-import org.drools.common.MemoryFactory;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.common.MemoryFactory;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.reteoo.*;

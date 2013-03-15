@@ -1,6 +1,6 @@
 package org.drools.reteoo;
 
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 
 import java.util.ArrayList;
 import java.util.List;

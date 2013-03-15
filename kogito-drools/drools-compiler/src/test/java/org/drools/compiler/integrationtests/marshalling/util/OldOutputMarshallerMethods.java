@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.common.EventFactHandle;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.process.instance.WorkItem;
 import org.kie.marshalling.ObjectMarshallingStrategy;

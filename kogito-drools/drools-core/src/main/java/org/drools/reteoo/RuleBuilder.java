@@ -1,7 +1,7 @@
 package org.drools.reteoo;
 
 
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
 

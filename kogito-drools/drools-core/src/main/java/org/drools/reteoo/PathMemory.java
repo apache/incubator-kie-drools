@@ -1,13 +1,10 @@
 package org.drools.reteoo;
 
-import java.util.List;
-
-import org.drools.common.InternalAgenda;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Memory;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.phreak.RuleNetworkEvaluatorActivation;
-import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

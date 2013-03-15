@@ -19,8 +19,8 @@ package org.drools.core.test.model;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.SequentialAgenda;
-import org.drools.common.ArrayAgendaGroupFactory;
-import org.drools.common.PriorityQueueAgendaGroupFactory;
+import org.drools.core.common.ArrayAgendaGroupFactory;
+import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.junit.Test;
 
 import java.util.Properties;

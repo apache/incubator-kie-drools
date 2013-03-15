@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Accumulator;
 import org.drools.spi.CompiledInvoker;

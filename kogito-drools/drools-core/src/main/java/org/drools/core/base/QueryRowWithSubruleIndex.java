@@ -1,6 +1,6 @@
 package org.drools.core.base;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 
 
 public class QueryRowWithSubruleIndex {

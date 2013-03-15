@@ -20,10 +20,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.reteoo.builder.BuildContext;

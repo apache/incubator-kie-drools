@@ -16,7 +16,7 @@
 
 package org.drools.conflict;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 

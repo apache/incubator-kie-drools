@@ -1,7 +1,7 @@
 package org.drools.reteoo;
 
 import org.drools.WorkingMemory;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.Tuple;
 

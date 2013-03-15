@@ -1,7 +1,7 @@
 package org.drools.core.beliefsystem;
 
-import org.drools.common.InternalFactHandle;
-import org.drools.common.WorkingMemoryAction;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.LinkedListNode;
 import org.drools.spi.PropagationContext;
 

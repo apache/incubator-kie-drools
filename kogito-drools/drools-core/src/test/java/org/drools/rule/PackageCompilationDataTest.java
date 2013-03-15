@@ -27,7 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;

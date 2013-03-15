@@ -23,7 +23,7 @@ import static junit.framework.Assert.fail;
 
 import java.util.Date;
 
-import org.drools.common.AbstractRuleBase;
+import org.drools.core.common.AbstractRuleBase;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.factmodel.traits.TraitProxy;

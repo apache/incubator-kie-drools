@@ -19,7 +19,7 @@ package org.drools.event;
 import java.util.Iterator;
 
 import org.drools.FactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
 public class WorkingMemoryEventSupport extends AbstractEventSupport<WorkingMemoryEventListener> {

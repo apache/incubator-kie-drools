@@ -2,9 +2,9 @@ package org.drools.core.beliefsystem.simple;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.LogicalDependency;
-import org.drools.common.WorkingMemoryAction;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LogicalDependency;
+import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.spi.PropagationContext;

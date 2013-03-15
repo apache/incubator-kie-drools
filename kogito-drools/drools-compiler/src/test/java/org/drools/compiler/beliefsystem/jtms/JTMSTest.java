@@ -13,8 +13,8 @@ import org.drools.compiler.Person;
 import org.drools.SessionConfiguration;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSet;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
-import org.drools.common.EqualityKey;
-import org.drools.common.NamedEntryPoint;
+import org.drools.core.common.EqualityKey;
+import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -74,7 +74,7 @@ public class JTMSTest {
         		"\n" + 
         		"import org.kie.event.rule.ActivationUnMatchListener;\n" +
         		"import java.util.List \n" +
-        		"import org.drools.common.AgendaItem;" +
+        		"import org.drools.core.common.AgendaItem;" +
         		"global java.util.List list;\n" + 
         		"\n" + 
         		"rule \"go1\"\n" + 
@@ -164,7 +164,7 @@ public class JTMSTest {
                 "\n" + 
                 "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
-                "import org.drools.common.AgendaItem;" +
+                "import org.drools.core.common.AgendaItem;" +
                 "import org.drools.compiler.Person;" +
                 "global java.util.List list;\n" + 
                 "\n" + 
@@ -256,7 +256,7 @@ public class JTMSTest {
                 "\n" + 
                 "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
-                "import org.drools.common.AgendaItem;" +
+                "import org.drools.core.common.AgendaItem;" +
                 "import org.drools.compiler.Person;" +
                 "global java.util.List list;\n" + 
                 "\n" + 
@@ -358,7 +358,7 @@ public class JTMSTest {
                 "\n" + 
                 "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
-                "import org.drools.common.AgendaItem;" +
+                "import org.drools.core.common.AgendaItem;" +
                 "global java.util.List list;\n" + 
                 "\n" + 
                 "rule \"go1_1\"\n" + 

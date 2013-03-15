@@ -1,7 +1,7 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBase;
-import org.drools.common.BaseNode;
+import org.drools.core.common.BaseNode;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.kie.KnowledgeBase;

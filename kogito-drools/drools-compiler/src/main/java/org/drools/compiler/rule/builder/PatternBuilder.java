@@ -24,7 +24,7 @@ import org.drools.core.base.mvel.ActivationPropertyHandler;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.common.AgendaItem;
+import org.drools.core.common.AgendaItem;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;

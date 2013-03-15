@@ -16,9 +16,9 @@
 
 package org.drools.jsr94.rules;
 
-import org.drools.common.AbstractFactHandleFactory;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.AbstractFactHandleFactory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;

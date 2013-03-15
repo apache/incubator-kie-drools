@@ -15,7 +15,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.AlphaNode;

@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.spi.FieldValue;
 

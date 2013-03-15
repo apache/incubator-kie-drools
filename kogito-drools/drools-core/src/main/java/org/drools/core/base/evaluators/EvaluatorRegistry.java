@@ -26,7 +26,7 @@ import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.core.base.ValueType;
-import org.drools.common.DroolsObjectInput;
+import org.drools.core.common.DroolsObjectInput;
 import org.drools.spi.Evaluator;
 
 /**

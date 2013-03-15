@@ -19,11 +19,10 @@ package org.drools.util;
 import java.util.List;
 
 import org.drools.FactHandle;
-import org.drools.common.ActivationGroupNode;
-import org.drools.common.ActivationNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.LogicalDependency;
-import org.drools.common.LogicalDependency;
+import org.drools.core.common.ActivationGroupNode;
+import org.drools.core.common.ActivationNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.Queue;
@@ -34,7 +33,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.Consequence;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 public class BaseQueueable
     implements

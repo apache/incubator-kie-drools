@@ -17,8 +17,8 @@
 package org.drools.reteoo.builder;
 
 
-import org.drools.common.BaseNode;
-import org.drools.common.BetaConstraints;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.BetaConstraints;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.FromNode;

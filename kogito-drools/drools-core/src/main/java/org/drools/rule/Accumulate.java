@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.spi.Accumulator;
 import org.drools.spi.CompiledInvoker;

@@ -12,7 +12,7 @@ import java.io.StringReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.common.DroolsObjectOutputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;

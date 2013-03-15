@@ -18,10 +18,10 @@ package org.drools.reteoo;
 
 import java.io.Externalizable;
 
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.RuleBasePartitionId;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 public interface ObjectSinkPropagator

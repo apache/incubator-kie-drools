@@ -1,6 +1,6 @@
 package org.drools.reteoo;
 
-import org.drools.common.BaseNode;
+import org.drools.core.common.BaseNode;
 
 import java.util.ArrayList;
 import java.util.HashSet;

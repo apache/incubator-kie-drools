@@ -19,7 +19,7 @@ package org.drools.core.base.extractors;
 import org.drools.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 
 import java.lang.reflect.Method;

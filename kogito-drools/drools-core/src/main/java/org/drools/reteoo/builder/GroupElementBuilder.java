@@ -22,10 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.BetaConstraints;
-import org.drools.common.TupleStartEqualsConstraint;
+import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.ExistsNode;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.NotNode;

@@ -1,6 +1,6 @@
 package org.drools.compiler.phreak;
 
-import org.drools.common.InternalFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.junit.Test;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBase;

@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.drools.common.EventFactHandle;
+import org.drools.core.common.EventFactHandle;
 import org.drools.factmodel.traits.Thing;
 import org.drools.facttemplates.FactTemplate;
 

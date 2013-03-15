@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.time.Trigger;
 import org.kie.runtime.Calendars;
