@@ -189,7 +189,7 @@ public class ServiceRegistryImpl
         addDefault(  KieMarshallers.class,
                      "org.drools.marshalling.impl.MarshallerProviderImpl");
         addDefault(  KieExecutors.class,
-                     "org.drools.concurrent.ExecutorProviderImpl");
+                     "org.drools.core.concurrent.ExecutorProviderImpl");
         addDefault(  KieServices.class,
                      "org.kie.builder.impl.KieServicesImpl");
         addDefault( KieScanner.class,

@@ -1,8 +1,7 @@
-package org.drools.concurrent;
+package org.drools.core.concurrent;
 
 import org.drools.Service;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 
