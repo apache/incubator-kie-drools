@@ -2,8 +2,8 @@ package org.drools.compiler.builder.impl;
 
 import java.util.Properties;
 
-import org.drools.builder.conf.impl.DecisionTableConfigurationImpl;
-import org.drools.builder.conf.impl.JaxbConfigurationImpl;
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.impl.KnowledgeBaseImpl;
