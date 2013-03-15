@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-package org.drools.conflict;
+package org.drools.core.conflict;
 
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 
 /**
- * A conflict resolver that compares the total recency of a tuple when 
- * determining firing order.
+ * <code>ConflictResolver</code> that orders rules on a First-In-First-Out
+ * basis.
+ * 
+ * @see #getInstance
  * 
  *
- * @version $Id$
+ * @version $Id: RandomConflictResolver.java,v 1.1 2004/06/25 01:55:16 mproctor
+ *          Exp $
  */
-public class TotalRecencyConflictResolver extends AbstractConflictResolver {
+public class FifoConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
-    private static final long                         serialVersionUID = 510l;
+    private static final long                 serialVersionUID = 510l;
     /** Singleton instance. */
-    private static final TotalRecencyConflictResolver INSTANCE         = new TotalRecencyConflictResolver();
+    private static final FifoConflictResolver INSTANCE         = new FifoConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -45,7 +48,7 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
      * @return The singleton instance.
      */
     public static ConflictResolver getInstance() {
-        return TotalRecencyConflictResolver.INSTANCE;
+        return FifoConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -55,7 +58,7 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public TotalRecencyConflictResolver() {
+    public FifoConflictResolver() {
         // intentionally left blank
     }
 
@@ -66,15 +69,6 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
      */
     public int compare(final Activation lhs,
                        final Activation rhs) {
-        long leftRecency = 0;
-        long rightRecency = 0;
-//        if ( lhs.getTuple() instanceof LeftTuple ) {
-//            leftRecency = (lhs.getTuple()).getRecency();
-//        }
-//        if ( rhs.getTuple() instanceof LeftTuple ) {
-//            rightRecency = (rhs.getTuple()).getRecency();
-//        }
-        return (rightRecency > leftRecency) ? 1 : (rightRecency < leftRecency) ? -1 : 0;
+        return (int) (lhs.getActivationNumber() - rhs.getActivationNumber());
     }
-
 }

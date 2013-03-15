@@ -29,7 +29,7 @@ import java.util.Properties;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.ArrayAgendaGroupFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
-import org.drools.conflict.DepthConflictResolver;
+import org.drools.core.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.reteoo.ReteooComponentFactory;
@@ -464,7 +464,7 @@ public class RuleBaseConfiguration
                                                                       "" ) );
 
         setConflictResolver( determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
-                                                        "org.drools.conflict.DepthConflictResolver" ) ) );
+                                                        "org.drools.core.conflict.DepthConflictResolver" ) ) );
 
         setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
                                                                                                 "false" ) ).booleanValue() );

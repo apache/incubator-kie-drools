@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.conflict;
+package org.drools.core.conflict;
 
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 
 /**
- * <code>ConflictResolver</code> that orders rules on a Last-In-First-Out
- * basis.
- * 
- * @see #getInstance
+ * A conflict resolver that compares the total recency of a tuple when 
+ * determining firing order.
  * 
  *
- * @version $Id: RandomConflictResolver.java,v 1.1 2004/06/25 01:55:16 mproctor
- *          Exp $
+ * @version $Id$
  */
-public class LifoConflictResolver extends AbstractConflictResolver {
+public class TotalRecencyConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
-    private static final long                 serialVersionUID = 510l;
+    private static final long                         serialVersionUID = 510l;
     /** Singleton instance. */
-    private static final LifoConflictResolver INSTANCE         = new LifoConflictResolver();
+    private static final TotalRecencyConflictResolver INSTANCE         = new TotalRecencyConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -48,7 +45,7 @@ public class LifoConflictResolver extends AbstractConflictResolver {
      * @return The singleton instance.
      */
     public static ConflictResolver getInstance() {
-        return LifoConflictResolver.INSTANCE;
+        return TotalRecencyConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -58,7 +55,7 @@ public class LifoConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public LifoConflictResolver() {
+    public TotalRecencyConflictResolver() {
         // intentionally left blank
     }
 
@@ -69,6 +66,15 @@ public class LifoConflictResolver extends AbstractConflictResolver {
      */
     public int compare(final Activation lhs,
                        final Activation rhs) {
-        return (int) (rhs.getActivationNumber() - lhs.getActivationNumber());
+        long leftRecency = 0;
+        long rightRecency = 0;
+//        if ( lhs.getTuple() instanceof LeftTuple ) {
+//            leftRecency = (lhs.getTuple()).getRecency();
+//        }
+//        if ( rhs.getTuple() instanceof LeftTuple ) {
+//            rightRecency = (rhs.getTuple()).getRecency();
+//        }
+        return (rightRecency > leftRecency) ? 1 : (rightRecency < leftRecency) ? -1 : 0;
     }
+
 }

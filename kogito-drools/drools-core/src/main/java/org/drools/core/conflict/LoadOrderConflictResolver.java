@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.conflict;
+package org.drools.core.conflict;
 
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 
 /**
- * <code>ConflictResolver</code> that uses the numConditions of rules to
- * resolve conflict.
+ * <code>ConflictResolver</code> that uses the loadOrder of rules to resolve
+ * conflict.
  * 
  * @see #getInstance
- * @see org.kie.rule.Rule#getConditionSize
+ * @see org.kie.rule.Rule#getLoadOrder
  * 
  *
- * @version $Id: SimplicityConflictResolver.java,v 1.9 2004/11/13 01:43:07 simon
- *          Exp $
+ * @version $Id: LoadOrderConflictResolver.java,v 1.1 2004/06/25 01:55:16
+ *          mproctor Exp $
  */
-public class SimplicityConflictResolver extends AbstractConflictResolver {
+public class LoadOrderConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
-    private static final long                       serialVersionUID = 510l;
+    private static final long                      serialVersionUID = 510l;
     /** Singleton instance. */
-    private static final SimplicityConflictResolver INSTANCE         = new SimplicityConflictResolver();
+    private static final LoadOrderConflictResolver INSTANCE         = new LoadOrderConflictResolver();
 
     // ----------------------------------------------------------------------
     // Class methods
@@ -49,7 +49,7 @@ public class SimplicityConflictResolver extends AbstractConflictResolver {
      * @return The singleton instance.
      */
     public static ConflictResolver getInstance() {
-        return SimplicityConflictResolver.INSTANCE;
+        return LoadOrderConflictResolver.INSTANCE;
     }
 
     // ----------------------------------------------------------------------
@@ -59,7 +59,7 @@ public class SimplicityConflictResolver extends AbstractConflictResolver {
     /**
      * Construct.
      */
-    public SimplicityConflictResolver() {
+    public LoadOrderConflictResolver() {
         // intentionally left blank
     }
 
@@ -70,6 +70,6 @@ public class SimplicityConflictResolver extends AbstractConflictResolver {
      */
     public int compare(final Activation lhs,
                        final Activation rhs) {
-        return lhs.getRule().getSpecifity() - rhs.getRule().getSpecifity();
+        return (int) (lhs.getRule().getLoadOrder() - rhs.getRule().getLoadOrder());
     }
 }
