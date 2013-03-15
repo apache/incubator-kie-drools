@@ -80,7 +80,7 @@ public class TestMarshallingUtilsTest {
     public void testUnmarshallingSpecificMarshalledData() {
         String testMethodAndSnapNum = "org.drools.persistence.session.RuleFlowGroupRollbackTest.testRuleFlowGroupRollback:1";
         // =
-        // "TimerAndCalendarTest.testTimerRuleAfterIntReloadSession:1";
+        // "org.drools.persistence.timer.integrationtests.TimerAndCalendarTest.testTimerRuleAfterIntReloadSession:1";
         HashMap<String, Object> testContext = initializeMarshalledDataEMF(DROOLS_PERSISTENCE_UNIT_NAME, this.getClass(), true);
         EntityManagerFactory emf = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
         List<MarshalledData> marshalledDataList = retrieveMarshallingData(emf);
