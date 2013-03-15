@@ -1,11 +1,9 @@
-package org.drools.testframework;
+package org.drools.compiler.testframework;
 
 import java.util.HashSet;
 import java.util.List;
 
 import org.drools.spi.Consequence;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -13,7 +11,6 @@ import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.ActivationNode;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.LogicalDependency;
 import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
@@ -24,7 +21,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 
 public class RuleCoverageListenerTest {
 

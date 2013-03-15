@@ -1,10 +1,8 @@
-package org.drools.testframework;
+package org.drools.compiler.testframework;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -14,7 +12,7 @@ public class FactPopulatorTest {
 
     @Test
     public void testMVELPopulate() throws Exception {
-        Object q = MVEL.eval("new org.drools.testframework.DumbFact()");
+        Object q = MVEL.eval("new DumbFact()");
 
         Map m = new HashMap();
         m.put("obj", q);
