@@ -40,13 +40,12 @@ import java.util.concurrent.atomic.AtomicLongArray;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.time.impl.JDKTimerService;
 import org.junit.Assert;
 import org.slf4j.Logger;

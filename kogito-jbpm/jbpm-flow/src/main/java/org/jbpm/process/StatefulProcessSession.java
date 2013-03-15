@@ -8,7 +8,7 @@ import java.util.Queue;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
-import org.drools.base.MapGlobalResolver;
+import org.drools.core.base.MapGlobalResolver;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.WorkingMemoryAction;

@@ -18,7 +18,7 @@ package org.jbpm.persistence.util;
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-import org.drools.base.MapGlobalResolver;
+import org.drools.core.base.MapGlobalResolver;
 import org.drools.impl.EnvironmentFactory;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;

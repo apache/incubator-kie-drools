@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.ReturnValueDescr;
