@@ -19,14 +19,14 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.drools.Address;
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
+import org.drools.compiler.Address;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.TestEnum;
+import org.drools.compiler.TestEnum;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
@@ -862,7 +862,7 @@ public class MVELTest extends CommonTestMethodBase {
         //test various in consequence
         String strBegin = "" +
             "package org.kie \n" +
-            "import org.drools.Cheese \n" +
+            "import org.drools.compiler.Cheese \n" +
             "dialect \"mvel\"\n" +
             "rule rule1 \n" +
             "when \n" +

@@ -244,7 +244,7 @@ ZCAycHg=</byte-elements>
         </org.drools.rule.PackageCompilationData>
         <string>org.drools.reteoo</string>
         <list>
-          <string>org.drools.Message</string>
+          <string>org.drools.compiler.Message</string>
           <string>org.drools.reteoo.*</string>
           <string>java.lang.*</string>
         </list>

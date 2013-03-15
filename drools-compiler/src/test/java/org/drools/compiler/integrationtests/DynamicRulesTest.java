@@ -34,20 +34,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.FactA;
-import org.drools.FactB;
-import org.drools.Order;
-import org.drools.OrderItem;
-import org.drools.Person;
-import org.drools.PersonInterface;
-import org.drools.Precondition;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.FactA;
+import org.drools.compiler.FactB;
+import org.drools.compiler.Order;
+import org.drools.compiler.OrderItem;
+import org.drools.compiler.Person;
+import org.drools.compiler.PersonInterface;
+import org.drools.compiler.Precondition;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.StockTick;
+import org.drools.compiler.StockTick;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
@@ -429,7 +429,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
-            Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
+            Class cheeseClass = loader1.loadClass( "org.drools.compiler.Cheese" );
 
             PackageBuilderConfiguration conf = new PackageBuilderConfiguration( loader1 );
             PackageBuilder builder = new PackageBuilder( conf );
@@ -449,7 +449,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates second class loader and use it to load fact classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
-            cheeseClass = loader2.loadClass( "org.drools.Cheese" );
+            cheeseClass = loader2.loadClass( "org.drools.compiler.Cheese" );
 
             conf = new PackageBuilderConfiguration( loader2 );
             builder = new PackageBuilder( conf );
@@ -479,7 +479,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader1 );
-            Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
+            Class cheeseClass = loader1.loadClass( "org.drools.compiler.Cheese" );
 
             PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -496,7 +496,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader2 );
-            cheeseClass = loader2.loadClass( "org.drools.Cheese" );
+            cheeseClass = loader2.loadClass( "org.drools.compiler.Cheese" );
 
             builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -990,8 +990,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
-            //loader1.loadClass( "org.drools.Primitives" );
-            //loader1.loadClass( "org.drools.TestEnum" );
+            //loader1.loadClass( "org.drools.compiler.Primitives" );
+            //loader1.loadClass( "org.drools.compiler.TestEnum" );
 
             // create a builder with the given classloader
             KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
@@ -1014,8 +1014,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // now, create another classloader and make sure it has access to the classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
-            //loader2.loadClass( "org.drools.Primitives" );
-            //loader2.loadClass( "org.drools.TestEnum" );
+            //loader2.loadClass( "org.drools.compiler.Primitives" );
+            //loader2.loadClass( "org.drools.compiler.TestEnum" );
 
             // set context classloader and use it
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();

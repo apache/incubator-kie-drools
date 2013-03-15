@@ -40,7 +40,7 @@ public class JavaAccumulateBuilderTest {
         AccumulateDescr accumDescr = new AccumulateDescr();
         
         BindingDescr price = new BindingDescr( "$price", "price" );
-        PatternDescr cheeseDescr = new PatternDescr( "org.drools.Cheese" );
+        PatternDescr cheeseDescr = new PatternDescr( "org.drools.compiler.Cheese" );
         cheeseDescr.addConstraint( price );
         accumDescr.setInputPattern( cheeseDescr );
         

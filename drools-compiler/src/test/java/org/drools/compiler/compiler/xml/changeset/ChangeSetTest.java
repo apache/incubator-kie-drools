@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.io.impl.UrlResource;
 import org.drools.xml.XmlChangeSetReader;

@@ -1,6 +1,6 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import org.drools.Cheese;
+import org.drools.compiler.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -343,7 +343,7 @@ public class MVELConsequenceBuilderTest {
         builder = new MVELConsequenceBuilder();
 
         Package pkg = new Package( "org.drools" );
-        pkg.addImport( new ImportDeclaration( "org.drools.Cheese" ) );
+        pkg.addImport( new ImportDeclaration( "org.drools.compiler.Cheese" ) );
 
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         PackageBuilder pkgBuilder = new PackageBuilder( pkg,

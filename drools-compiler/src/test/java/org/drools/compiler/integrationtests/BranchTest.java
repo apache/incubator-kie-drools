@@ -3,8 +3,8 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
@@ -25,7 +25,7 @@ public class BranchTest extends CommonTestMethodBase {
     }
 
     private List<String> executeTestWithCondition(String conditionElement) {
-        String drl = "import org.drools.Cheese;\n " +
+        String drl = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -62,7 +62,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testNonCompilingBreakingConsequences() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -83,7 +83,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testNonCompilingDuplicatedNamedConsequence() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -106,7 +106,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testOutOfScopeNamedConsequences() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -160,7 +160,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testNamedConsequencesOutsideOR() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -184,7 +184,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testNamedConsequencesInsideOR1() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -207,7 +207,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testNamedConsequencesInsideOR2() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -229,7 +229,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testOutOfScopeNamedConsequencesWithOr1() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -251,7 +251,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testOutOfScopeNamedConsequencesWithOr2() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -273,7 +273,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testNonCompilingIFAfterOR() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -296,7 +296,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testIfElse1() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -320,7 +320,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testIfElse2() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -344,7 +344,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testIfElseBreak() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -367,7 +367,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedIfElseBreak() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -392,7 +392,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testIfWithModify() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -413,7 +413,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test(expected=RuntimeException.class)
     public void testEndlessIfWithModify() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -434,7 +434,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testIfWithModify2() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -455,7 +455,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testIfWithModify3() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -481,7 +481,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test
     public void testIfElseWithModify() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +
@@ -504,7 +504,7 @@ public class BranchTest extends CommonTestMethodBase {
 
     @Test(expected=RuntimeException.class)
     public void testEndlessIfElseWithModify() {
-        String str = "import org.drools.Cheese;\n " +
+        String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
                 "rule R1 when\n" +

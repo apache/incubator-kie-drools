@@ -8,7 +8,7 @@
 
  <global identifier="m" type="HashMap" />
  <global identifier="s" type="HashSet" />
- <global identifier="p" type="org.drools.Person" />
+ <global identifier="p" type="org.drools.compiler.Person" />
 
  <importfunction name="org.drools.xml.DumperTest.testStaticMethod1" />
  <importfunction name="org.drools.xml.DumperTest.testStaticMethod2" />

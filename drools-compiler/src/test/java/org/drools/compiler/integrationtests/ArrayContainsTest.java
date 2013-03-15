@@ -3,8 +3,8 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.CommonTestMethodBase;
-import org.drools.Primitives;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Primitives;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.runtime.StatefulKnowledgeSession;

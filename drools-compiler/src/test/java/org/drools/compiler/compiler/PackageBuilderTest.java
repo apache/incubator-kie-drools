@@ -32,11 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.Cheese;
+import org.drools.compiler.Cheese;
 import org.drools.FactHandle;
-import org.drools.Primitives;
+import org.drools.compiler.Primitives;
 import org.drools.RuleBaseFactory;
-import org.drools.StockTick;
+import org.drools.compiler.StockTick;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
@@ -1018,7 +1018,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         typeDescr.addAnnotation( TypeDeclaration.Role.ID,
                                     "event" );
         typeDescr.addAnnotation( TypeDeclaration.ATTR_CLASS,
-                                    "org.drools.StockTick" );
+                                    "org.drools.compiler.StockTick" );
         pkgDescr.addTypeDeclaration( typeDescr );
 
         PackageBuilder builder = new PackageBuilder();
@@ -1239,12 +1239,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         cfg.setAllowMultipleNamespaces( false );
         PackageBuilder bldr = new PackageBuilder( cfg );
-        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Cheese" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.compiler.Cheese" ) );
         assertFalse( bldr.hasErrors() );
-        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Person" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.compiler.Person" ) );
         assertFalse( bldr.hasErrors() );
         // following package will not be added because configuration is set for single namespace builders
-        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.Person" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.compiler.Person" ) );
         assertFalse( bldr.hasErrors() );
 
         assertEquals( 1,
@@ -1254,12 +1254,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertEquals( true,
                       cfg.isAllowMultipleNamespaces() );
         bldr = new PackageBuilder( cfg );
-        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.Cheese" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.compiler.Cheese" ) );
         assertFalse( bldr.hasErrors() );
         // following import will be added to the default package name
-        bldr.addPackageFromDrl( new StringReader( "import org.drools.Person" ) );
+        bldr.addPackageFromDrl( new StringReader( "import org.drools.compiler.Person" ) );
         assertFalse( bldr.hasErrors() );
-        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.Person" ) );
+        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.compiler.Person" ) );
         assertFalse( bldr.hasErrors() );
 
         assertEquals( 3,

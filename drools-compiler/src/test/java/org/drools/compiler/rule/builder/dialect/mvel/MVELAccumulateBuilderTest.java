@@ -1,14 +1,12 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import org.drools.compiler.Cheese;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELAccumulateBuilder;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -47,7 +45,7 @@ public class MVELAccumulateBuilderTest {
                                                                mvelDialect );
 
         final AccumulateDescr accDescr = new AccumulateDescr();
-        final PatternDescr inputPattern = new PatternDescr( "org.drools.Cheese",
+        final PatternDescr inputPattern = new PatternDescr( "org.drools.compiler.Cheese",
                                                             "$cheese" );
         accDescr.setInputPattern( inputPattern );
         accDescr.setInitCode( "total = 0;" );

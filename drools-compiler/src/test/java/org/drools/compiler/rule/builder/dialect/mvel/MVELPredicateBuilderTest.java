@@ -3,13 +3,13 @@ package org.drools.compiler.rule.builder.dialect.mvel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.compiler.Cheese;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;

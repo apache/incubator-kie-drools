@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Date;
 
-import org.drools.Person;
+import org.drools.compiler.Person;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.common.AbstractWorkingMemory;

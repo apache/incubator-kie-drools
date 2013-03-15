@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.drools.Person;
+import org.drools.compiler.Person;
 import org.drools.SessionConfiguration;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.FireAllRulesInterceptor;

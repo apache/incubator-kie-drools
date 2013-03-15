@@ -1,6 +1,8 @@
 package org.drools;
 
-import java.util.ArrayList;
+import java.util.ArrayList
+import org.drools.compiler.Cheesery
+import org.drools.compiler.Cheese;
 
 global java.util.List results;
 

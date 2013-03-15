@@ -7,7 +7,7 @@ import java.io.Reader;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.junit.Test;
 
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.compiler.integrationtests.eventgenerator.Event.EventType;

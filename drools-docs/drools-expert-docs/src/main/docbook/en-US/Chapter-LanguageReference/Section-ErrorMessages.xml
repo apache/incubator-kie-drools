@@ -223,8 +223,8 @@
         <programlisting> 1: package nesting;
  2: dialect "mvel"
  3:
- 4: import org.drools.Person
- 5: import org.drools.Address
+ 4: import org.drools.compiler.Person
+ 5: import org.drools.compiler.Address
  6: 
  7: <emphasis role="bold">fdsfdsfds</emphasis>
  8: 

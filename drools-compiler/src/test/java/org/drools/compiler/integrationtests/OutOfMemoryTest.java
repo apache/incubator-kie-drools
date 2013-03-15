@@ -20,9 +20,9 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;

@@ -4,8 +4,8 @@
    xs:schemaLocation="http://drools.org/drools-5.2 drools.org/drools-5.2.xsd">
 
    <import name="import java.util.List" />
-   <import name="org.drools.Cheese" />
-   <import name="org.drools.Cheesery" />
+   <import name="org.drools.compiler.Cheese" />
+   <import name="org.drools.compiler.Cheesery" />
 
    <global identifier="cheesery" type="Cheesery" />
    <global identifier="list" type="List" />

@@ -3,11 +3,11 @@ package org.drools.compiler.util.debug;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
-import org.drools.Cheese;
-import org.drools.Cheesery;
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
-import org.drools.Worker;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
+import org.drools.compiler.Worker;
 import org.drools.core.util.debug.SessionInspector;
 import org.drools.core.util.debug.SessionReporter;
 import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;

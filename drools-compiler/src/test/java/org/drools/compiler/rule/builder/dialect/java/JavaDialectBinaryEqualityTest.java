@@ -10,7 +10,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.Person;
+import org.drools.compiler.Person;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;

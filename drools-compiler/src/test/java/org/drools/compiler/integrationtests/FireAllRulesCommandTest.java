@@ -6,7 +6,7 @@ import static org.junit.Assert.assertFalse;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.Cheese;
+import org.drools.compiler.Cheese;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

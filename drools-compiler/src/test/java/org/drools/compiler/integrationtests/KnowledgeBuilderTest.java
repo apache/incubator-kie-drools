@@ -344,7 +344,7 @@ public class KnowledgeBuilderTest {
     @Test
     public void testAddKPackageSingle() throws Exception {
         String rule = "package org.drools.test\n" +
-                      "import org.drools.StockTick\n" +
+                      "import org.drools.compiler.StockTick\n" +
                       "rule R1 when\n" +
                       "   StockTick()\n" +
                       "then\n" +
@@ -374,7 +374,7 @@ public class KnowledgeBuilderTest {
     @Test
     public void testAddKPackageCollection() throws Exception {
         String rule = "package org.drools.test\n" +
-                      "import org.drools.StockTick\n" +
+                      "import org.drools.compiler.StockTick\n" +
                       "declare StockTick @role(event) end\n" +
                       "rule R1 when\n" +
                       "   StockTick()\n" +
@@ -401,7 +401,7 @@ public class KnowledgeBuilderTest {
     @Test
     public void testAddPackageSingle() throws Exception {
         String rule = "package org.drools.test\n" +
-                      "import org.drools.StockTick\n" +
+                      "import org.drools.compiler.StockTick\n" +
                       "rule R1 when\n" +
                       "   StockTick()\n" +
                       "then\n" +
@@ -428,7 +428,7 @@ public class KnowledgeBuilderTest {
     @Test
     public void testAddPackageArray() throws Exception {
         String rule = "package org.drools.test\n" +
-                      "import org.drools.StockTick\n" +
+                      "import org.drools.compiler.StockTick\n" +
                       "declare StockTick @role(event) end\n" +
                       "rule R1 when\n" +
                       "   StockTick()\n" +

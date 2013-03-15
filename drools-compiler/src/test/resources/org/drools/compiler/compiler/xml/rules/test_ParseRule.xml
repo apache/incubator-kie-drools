@@ -140,7 +140,7 @@
                      identifier="a4" />
                   <qualified-identifier-restriction
                      evaluator="==">
-                     org.drools.Bar.BAR_ENUM_VALUE
+                    org.drools.compiler.Bar.BAR_ENUM_VALUE
                   </qualified-identifier-restriction>
                </or-restriction-connective>
             </field-constraint>

@@ -2,8 +2,8 @@ package org.drools.compiler.integrationtests;
 
 import java.util.Comparator;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -23,7 +23,7 @@ public class DroolsEventListTest extends CommonTestMethodBase {
     public void testOpenQuery() throws Exception {
         String str = "";
         str += "package org.kie.test  \n";
-        str += "import org.drools.Cheese \n";
+        str += "import org.drools.compiler.Cheese \n";
         str += "query cheeses(String $type1, String $type2) \n";
         str += "    stilton : Cheese(type == $type1, $price : price) \n";
         str += "    cheddar : Cheese(type == $type2, price == stilton.price) \n";

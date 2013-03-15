@@ -13,13 +13,13 @@ import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.Alarm;
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.FactA;
+import org.drools.compiler.Alarm;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.FactA;
 import org.drools.FactHandle;
-import org.drools.Foo;
-import org.drools.Pet;
+import org.drools.compiler.Foo;
+import org.drools.compiler.Pet;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
@@ -116,7 +116,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
         String str = "";
         str += "package org.drools.test\n";
-        str += "import org.drools.Alarm\n";
+        str += "import org.drools.compiler.Alarm\n";
         str += "global java.util.List list;";
         str += "rule \"COMPTEUR\"\n";
         str += "  timer 50\n";

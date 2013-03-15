@@ -1,12 +1,12 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.ClockType;
-import org.drools.CommonTestMethodBase;
-import org.drools.OrderEvent;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.OrderEvent;
 import org.drools.RuleBaseConfiguration;
-import org.drools.Sensor;
-import org.drools.StockTick;
-import org.drools.StockTickInterface;
+import org.drools.compiler.Sensor;
+import org.drools.compiler.StockTick;
+import org.drools.compiler.StockTickInterface;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.TimeIntervalParser;
@@ -2471,7 +2471,7 @@ public class CepEspTest extends CommonTestMethodBase {
         String str =
                 "package org.drools;\n" +
                 "\n" +
-                "import org.drools.StockTick;\n" +
+                "import org.drools.compiler.StockTick;\n" +
                 "\n" +
                 "global java.util.List resultsAfter;\n" +
                 "\n" +

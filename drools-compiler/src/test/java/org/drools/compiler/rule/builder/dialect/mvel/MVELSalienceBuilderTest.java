@@ -11,7 +11,7 @@ import org.kie.definition.rule.Rule;
 
 import static org.junit.Assert.*;
 
-import org.drools.Person;
+import org.drools.compiler.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;

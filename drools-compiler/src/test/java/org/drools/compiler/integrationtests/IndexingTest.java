@@ -3,9 +3,9 @@ package org.drools.compiler.integrationtests;
 import java.io.StringReader;
 import java.util.List;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.common.InternalRuleBase;
@@ -44,7 +44,7 @@ public class IndexingTest extends CommonTestMethodBase {
     public void testBuildsIndexedAlphaNodes() {
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.drools.Person\n";
+        drl += "import org.drools.compiler.Person\n";
         drl += "rule test1\n";
         drl += "when\n";
         drl += "   Person(name == \"Mark\", age == 37)\n";
@@ -85,7 +85,7 @@ public class IndexingTest extends CommonTestMethodBase {
         // tests indexes are correctly built        
         String drl = "";
         drl += "package org.test\n";
-        drl += "import org.drools.Person\n";
+        drl += "import org.drools.compiler.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
         drl += "when\n";
@@ -206,7 +206,7 @@ public class IndexingTest extends CommonTestMethodBase {
     public void testIndexingOnQueryUnification() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
-        str += "import org.drools.Person \n";
+        str += "import org.drools.compiler.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";

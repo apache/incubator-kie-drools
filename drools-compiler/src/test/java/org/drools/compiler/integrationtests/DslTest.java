@@ -1,8 +1,8 @@
 package org.drools.compiler.integrationtests;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
-import org.drools.Person;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
 import org.junit.Ignore;
@@ -237,7 +237,7 @@ public class DslTest extends CommonTestMethodBase {
                 + "[when]-aged less than {age}=age < {age}\n"
                 + "[then]Log {message}=list.add({message});";
 
-        String drl = "import org.drools.Person;\n"
+        String drl = "import org.drools.compiler.Person;\n"
                 + "global java.util.List list\n"
                 + "rule R1\n"
                 + "when\n"
@@ -258,7 +258,7 @@ public class DslTest extends CommonTestMethodBase {
                 + "[when]-aged less than {age}=age < {age}\n"
                 + "[then]Log person name=list.add($p.getName());";
 
-        String drl = "import org.drools.Person;\n"
+        String drl = "import org.drools.compiler.Person;\n"
                 + "global java.util.List list\n"
                 + "rule R1\n"
                 + "when\n"
@@ -280,7 +280,7 @@ public class DslTest extends CommonTestMethodBase {
                 + "[when]-aged less than {age}=age < {age}\n"
                 + "[then]Log {message}=list.add({message});";
 
-        String drl = "import org.drools.Person;\n"
+        String drl = "import org.drools.compiler.Person;\n"
                 + "global java.util.List list\n"
                 + "rule R1\n"
                 + "when\n"

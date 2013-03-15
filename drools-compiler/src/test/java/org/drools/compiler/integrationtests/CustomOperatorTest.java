@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;

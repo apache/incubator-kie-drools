@@ -16,7 +16,7 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

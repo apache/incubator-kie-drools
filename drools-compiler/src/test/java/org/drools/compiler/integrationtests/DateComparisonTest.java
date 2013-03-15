@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.drools.Cheese;
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

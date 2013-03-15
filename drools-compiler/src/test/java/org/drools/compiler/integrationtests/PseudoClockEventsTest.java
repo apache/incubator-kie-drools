@@ -25,9 +25,9 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.CommonTestMethodBase;
-import org.drools.StockTick;
-import org.drools.StockTickInterface;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.StockTick;
+import org.drools.compiler.StockTickInterface;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;

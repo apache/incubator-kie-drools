@@ -2,7 +2,7 @@ package org.drools.compiler.test;
 
 import java.util.ArrayList;
 
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.io.impl.ByteArrayResource;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

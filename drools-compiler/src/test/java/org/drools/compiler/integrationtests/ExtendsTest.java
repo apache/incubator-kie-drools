@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.common.EventFactHandle;
 import org.drools.io.impl.ByteArrayResource;
 import org.junit.Test;

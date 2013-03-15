@@ -32,10 +32,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.ClockType;
-import org.drools.CommonTestMethodBase;
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.SessionConfiguration;
-import org.drools.StockTick;
-import org.drools.StockTickInterface;
+import org.drools.compiler.StockTick;
+import org.drools.compiler.StockTickInterface;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.compiler.DroolsParserException;
@@ -539,7 +539,7 @@ public class StreamsTest extends CommonTestMethodBase {
     @Test
     public void testEventExpirationValue() throws Exception {
         String drl1 = "package org.drools.pkg1\n" +
-                      "import org.drools.StockTick\n" +
+                      "import org.drools.compiler.StockTick\n" +
                       "declare StockTick\n" +
                       "    @role(event)\n" +
                       "end\n" +
@@ -549,7 +549,7 @@ public class StreamsTest extends CommonTestMethodBase {
                       "then\n" +
                       "end\n";
         String drl2 = "package org.drools.pkg2\n" +
-                      "import org.drools.StockTick\n" +
+                      "import org.drools.compiler.StockTick\n" +
                       "declare StockTick\n" +
                       "    @role(event)\n" +
                       "end\n" +
@@ -735,7 +735,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testWindowWithEntryPointCompilationError() {
-        String str = "import org.drools.Cheese;\n" +
+        String str = "import org.drools.compiler.Cheese;\n" +
                 "declare window X\n" +
                 "   Cheese( type == \"gorgonzola\" ) over window:time(1m) from entry-point Z\n" +
                 "end\n" +
