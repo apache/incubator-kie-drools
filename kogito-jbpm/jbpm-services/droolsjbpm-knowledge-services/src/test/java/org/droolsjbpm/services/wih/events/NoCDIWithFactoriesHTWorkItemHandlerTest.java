@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.droolsjbpm.services.api.JbpmKnowledgeServiceFactory;
+import org.droolsjbpm.services.JbpmKnowledgeServiceFactory;
 import org.droolsjbpm.services.test.TestIdentityProvider;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
