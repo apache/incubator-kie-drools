@@ -302,6 +302,20 @@ public class SingleSessionCommandService
                     throw new RuntimeException( "Could not instatiate org.kie.container.spring.beans.persistence.DroolsSpringTransactionManager",
                                                 e );
                 }
+            //	TODO: Gae, assign TransactionManager if it is not null, avoid JTA
+            } else if (env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ) == null && env.get( EnvironmentName.TRANSACTION_MANAGER ) != null  )
+            {
+            	this.txm = (TransactionManager) tm;
+            	 try {
+                     Class< ? > jpaPersistenceCtxMngrClass = Class.forName( "org.jbpm.persistence.JpaProcessPersistenceContextManager" );
+                     Constructor< ? > jpaPersistenceCtxMngrCtor = jpaPersistenceCtxMngrClass.getConstructors()[0];
+                     this.jpm = (PersistenceContextManager) jpaPersistenceCtxMngrCtor.newInstance( new Object[]{this.env} );
+                 } catch ( ClassNotFoundException e ) {
+                     this.jpm = new JpaPersistenceContextManager( this.env );
+                 } catch ( Exception e ) {
+                     throw new RuntimeException( "Error creating JpaProcessPersistenceContextManager",
+                                                 e );
+                 }
             } else {
                 logger.debug( "Instantiating  JtaTransactionManager" );
                 this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),

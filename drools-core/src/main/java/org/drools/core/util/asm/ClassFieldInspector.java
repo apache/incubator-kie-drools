@@ -175,7 +175,11 @@ public class ClassFieldInspector {
      * Convert it to a form so we can load the bytes from the classpath.
      */
     private String getResourcePath( final Class< ? > clazz ) {
-        return "/" + clazz.getCanonicalName() + ".class";
+    //	TODO: Gae invalid method - stackoverflow
+    	if ((System.getProperties().get("com.google.appengine.application.id")==null))
+    		return "/" + clazz.getCanonicalName() + ".class";
+    	else
+    		return "/" + clazz.getCanonicalName().replace('.', '/') + ".class";
     }
 
     /**

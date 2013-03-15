@@ -575,7 +575,7 @@ public class JavaDialectRuntimeData
             Class<?> cls = fastFindClass( name );
 
             if (cls == null) {
-                final CompositeClassLoader parent = (CompositeClassLoader) getParent();
+                final CompositeClassLoader parent = (CompositeClassLoader) getParentCheckSecurityManager();
                 cls = parent.loadClass( name,
                                         resolve,
                                         this );
@@ -586,6 +586,22 @@ public class JavaDialectRuntimeData
             }
 
             return cls;
+        }
+    //	TODO : Gae uses a security Manager and does not allow the method getParent, which invokes
+    //	the method getClassLoader
+        private CompositeClassLoader getParentCheckSecurityManager()
+        {
+        	if ((System.getProperties().get("com.google.appengine.application.id")==null))
+        		return (CompositeClassLoader) getParent();
+        	else
+        	{
+            	CompositeClassLoader cl = new CompositeClassLoader( );
+            	
+                //	Returns the app class loader, seems it works ok!
+            		cl.addClassLoader(JavaDialectRuntimeData.class.getClassLoader());
+                	
+                	return cl;
+        	}
         }
 
         public Class<?> fastFindClass( final String name ) {

@@ -352,7 +352,7 @@ public class JpaPersistentStatefulSessionTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 
-        Person x = new Person( "test" );
+        Person x = new Person( "test", 33 );
         List test = new ArrayList();
         List test2 = new ArrayList();
         test.add( x );
