@@ -1,4 +1,4 @@
-package org.drools;
+package org.drools.compiler
 
 rule "Logical insert order 1"
     salience 10

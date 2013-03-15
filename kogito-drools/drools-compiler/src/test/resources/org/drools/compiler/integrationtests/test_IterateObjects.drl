@@ -1,4 +1,4 @@
-package org.drools;
+package org.drools.compiler
 import org.drools.compiler.Person
 
 global java.util.List results;
