@@ -1,4 +1,4 @@
-package org.drools.builder.impl;
+package org.drools.compiler.builder.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;

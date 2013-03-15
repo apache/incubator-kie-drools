@@ -19,7 +19,7 @@ package org.drools.compiler.osgi;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl;
 import org.drools.compiler.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.marshalling.impl.ProcessMarshallerFactoryService;

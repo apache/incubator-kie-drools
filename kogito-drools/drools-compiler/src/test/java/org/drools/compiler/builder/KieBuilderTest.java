@@ -1,4 +1,4 @@
-package org.drools.builder;
+package org.drools.compiler.builder;
 
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;

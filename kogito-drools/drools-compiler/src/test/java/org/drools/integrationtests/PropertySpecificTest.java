@@ -14,7 +14,7 @@ import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.Person;
 import org.drools.base.ClassObjectType;
-import org.drools.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -38,8 +38,6 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 public class PropertySpecificTest extends CommonTestMethodBase {
