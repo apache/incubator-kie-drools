@@ -172,8 +172,8 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
         return coll;
     }
 
-    protected abstract Object getObject();
-    protected abstract void setObject( Object o );
+    public abstract Object getObject();
+    public abstract void setObject( Object o );
 
     @Override
     public String toString() {
