@@ -2,7 +2,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
-import org.drools.concurrent.ExecutorProviderImpl;
+import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.io.impl.ResourceFactoryServiceImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;

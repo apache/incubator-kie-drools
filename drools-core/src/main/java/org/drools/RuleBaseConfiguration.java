@@ -455,7 +455,7 @@ public class RuleBaseConfiguration
                                                                                                           "identity" ) ) );
 
         setExecutorService( this.chainedProperties.getProperty( "drools.executorService",
-                                                                "org.drools.concurrent.DefaultExecutorService" ) );
+                                                                "org.drools.core.concurrent.DefaultExecutorService" ) );
 
         setConsequenceExceptionHandler( this.chainedProperties.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME,
                                                                             "org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
