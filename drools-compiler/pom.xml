@@ -270,7 +270,7 @@
             </Import-Package>
             <Export-Package>org.drools.lang.descr,!org.drools.commons.*,!org.drools.lang.*,!org.drools.cdi.*,org.drools.builder.impl,org.drools.*,org.kie.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.drools.osgi.compiler.Activator</Bundle-Activator>
+            <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>

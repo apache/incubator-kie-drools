@@ -188,7 +188,7 @@
             <Import-Package>!org.drools.*,*,org.osgi.util.tracker</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
+            <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>

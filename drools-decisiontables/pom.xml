@@ -83,7 +83,7 @@
             <Import-Package>!org.drools.*,*</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>org.drools.*</DynamicImport-Package>
-            <Bundle-Activator>org.drools.osgi.decisiontables.Activator</Bundle-Activator>
+            <Bundle-Activator>org.drools.decisiontable.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
