@@ -1,12 +1,10 @@
-package org.drools.beliefsystem.jtms;
+package org.drools.core.beliefsystem.jtms;
 
-import org.drools.beliefsystem.BeliefSet;
-import org.drools.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
-import org.drools.common.NamedEntryPoint;
 import org.drools.common.SimpleLogicalDependency;
-import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;

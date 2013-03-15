@@ -26,7 +26,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
-import org.drools.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalAgenda;

@@ -1,8 +1,8 @@
-package org.drools.beliefsystem.jtms;
+package org.drools.core.beliefsystem.jtms;
 
-import org.drools.beliefsystem.BeliefSet;
-import org.drools.beliefsystem.BeliefSystem;
-import org.drools.beliefsystem.jtms.JTMSBeliefSet.MODE;
+import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSet.MODE;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.NamedEntryPoint;

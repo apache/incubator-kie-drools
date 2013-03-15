@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.InitialFact;
-import org.drools.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.common.ActivationIterator;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
@@ -64,7 +64,6 @@ import org.drools.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.RightTuple;
-import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.RuleFlowGroup;

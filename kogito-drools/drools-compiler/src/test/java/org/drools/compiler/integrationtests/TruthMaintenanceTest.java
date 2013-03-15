@@ -25,7 +25,7 @@ import org.drools.compiler.Sensor;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.YoungestFather;
-import org.drools.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.NamedEntryPoint;

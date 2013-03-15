@@ -11,8 +11,8 @@ import java.util.List;
 import org.drools.BeliefSystemType;
 import org.drools.compiler.Person;
 import org.drools.SessionConfiguration;
-import org.drools.beliefsystem.jtms.JTMSBeliefSet;
-import org.drools.beliefsystem.jtms.JTMSBeliefSystem;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSet;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.common.EqualityKey;
 import org.drools.common.NamedEntryPoint;
 import org.drools.core.util.ObjectHashMap;
@@ -70,7 +70,7 @@ public class JTMSTest {
     
     @Test
     public void testPosNegNonConflictingInsertions() {
-        String s = "package org.drools.beliefsystem.jtms;\n" +
+        String s = "package org.drools.core.beliefsystem.jtms;\n" +
         		"\n" + 
         		"import org.kie.event.rule.ActivationUnMatchListener;\n" +
         		"import java.util.List \n" +
@@ -160,7 +160,7 @@ public class JTMSTest {
     
     @Test
     public void testChangeInPositivePrime() {
-        String s = "package org.drools.beliefsystem.jtms;\n" +
+        String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
                 "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
@@ -252,7 +252,7 @@ public class JTMSTest {
     
     @Test
     public void testChangeInNegativePrime() {
-        String s = "package org.drools.beliefsystem.jtms;\n" +
+        String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
                 "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
@@ -354,7 +354,7 @@ public class JTMSTest {
     
     @Test
     public void testRetractHandleWhenOnlyNeg() {
-        String s = "package org.drools.beliefsystem.jtms;\n" +
+        String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
                 "import org.kie.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
