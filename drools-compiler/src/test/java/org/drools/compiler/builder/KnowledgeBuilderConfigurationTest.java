@@ -15,11 +15,11 @@
  */
 package org.drools.compiler.builder;
 
-import org.drools.base.accumulators.AverageAccumulateFunction;
-import org.drools.base.accumulators.MaxAccumulateFunction;
-import org.drools.base.evaluators.AfterEvaluatorDefinition;
-import org.drools.base.evaluators.BeforeEvaluatorDefinition;
-import org.drools.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.accumulators.AverageAccumulateFunction;
+import org.drools.core.base.accumulators.MaxAccumulateFunction;
+import org.drools.core.base.evaluators.AfterEvaluatorDefinition;
+import org.drools.core.base.evaluators.BeforeEvaluatorDefinition;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.builder.KnowledgeBuilderConfiguration;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.FactHandle;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.*;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -12,7 +12,6 @@ import org.drools.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.*;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;

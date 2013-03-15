@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Locale;
 
-import org.drools.base.evaluators.Operator;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.verifier.components.Field;
 
 public class MissingNumberPattern extends MissingRange

@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassObjectType;
-import org.drools.base.extractors.BaseObjectClassFieldReader;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.facttemplates.Fact;

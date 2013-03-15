@@ -17,8 +17,8 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;

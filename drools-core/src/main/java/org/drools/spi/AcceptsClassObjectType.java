@@ -16,7 +16,7 @@
 
 package org.drools.spi;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 
 public interface AcceptsClassObjectType
     extends

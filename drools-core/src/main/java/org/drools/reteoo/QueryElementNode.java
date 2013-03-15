@@ -17,9 +17,9 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.DroolsQuery;
-import org.drools.base.InternalViewChangedEventListener;
-import org.drools.base.extractors.ArrayElementReader;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.InternalViewChangedEventListener;
+import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;

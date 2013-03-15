@@ -16,11 +16,11 @@
 
 package org.drools.rule;
 
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
-import org.drools.base.evaluators.BeforeEvaluatorDefinition.BeforeEvaluator;
-import org.drools.base.evaluators.MeetsEvaluatorDefinition.MeetsEvaluator;
-import org.drools.base.evaluators.MetByEvaluatorDefinition.MetByEvaluator;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
+import org.drools.core.base.evaluators.BeforeEvaluatorDefinition.BeforeEvaluator;
+import org.drools.core.base.evaluators.MeetsEvaluatorDefinition.MeetsEvaluator;
+import org.drools.core.base.evaluators.MetByEvaluatorDefinition.MetByEvaluator;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;

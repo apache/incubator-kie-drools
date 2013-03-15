@@ -21,8 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.drools.base.ClassObjectType;
-import org.drools.base.extractors.MVELNumberClassFieldReader;
+import org.drools.core.base.ClassObjectType;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;

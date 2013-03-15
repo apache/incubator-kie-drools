@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.base.ValueType;
+import org.drools.core.base.ValueType;
 
 /**
  * A public interface for Read accessors

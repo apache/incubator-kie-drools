@@ -17,7 +17,7 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.DoubleNonIndexSkipBetaConstraints;

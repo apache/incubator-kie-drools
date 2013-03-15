@@ -1,11 +1,10 @@
 package org.drools.reteoo;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
-import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ObjectType;

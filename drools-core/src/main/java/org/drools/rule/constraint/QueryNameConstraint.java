@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.base.DroolsQuery;
-import org.drools.base.field.ObjectFieldImpl;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.AbstractHashTable;
@@ -19,7 +19,6 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.Constraint.ConstraintType;
 
 public class QueryNameConstraint implements
         AlphaNodeFieldConstraint,

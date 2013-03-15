@@ -19,13 +19,12 @@ package org.drools.reteoo;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.reteoo.builder.BuildContext;
 
 public class PropertyChangeListenerTest {

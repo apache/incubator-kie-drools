@@ -1,8 +1,8 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import org.drools.base.EvaluatorWrapper;
-import org.drools.base.TypeResolver;
-import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.TypeResolver;
+import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;

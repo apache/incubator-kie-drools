@@ -22,14 +22,13 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;

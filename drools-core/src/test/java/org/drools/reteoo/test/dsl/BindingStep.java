@@ -20,13 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.ArrayElements;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
-import org.drools.base.extractors.ArrayElementReader;
-import org.drools.base.extractors.MVELObjectClassFieldReader;
-import org.drools.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.base.ArrayElements;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.spi.InternalReadAccessor;

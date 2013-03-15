@@ -16,15 +16,15 @@
 
 package org.drools.reteoo.test.dsl;
 
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.DroolsQuery;
-import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.base.evaluators.Operator;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.ClassTypeResolver;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.FieldFactory;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.rule.Declaration;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Package;

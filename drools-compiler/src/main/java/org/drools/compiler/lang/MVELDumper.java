@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.drools.base.EvaluatorWrapper;
-import org.drools.base.evaluators.Operator;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BindingDescr;

@@ -19,15 +19,12 @@ package org.drools.reteoo;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
-import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.WorkingMemory;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ReteooRuleBaseTest extends DroolsTestCase {
     ReteooRuleBase ruleBase;

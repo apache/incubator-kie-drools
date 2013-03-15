@@ -34,7 +34,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
-import org.drools.base.MapGlobalResolver;
+import org.drools.core.base.MapGlobalResolver;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.persistence.marshalling.util.EntityManagerFactoryProxy;
 import org.drools.persistence.marshalling.util.UserTransactionProxy;

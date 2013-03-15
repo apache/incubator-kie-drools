@@ -3,8 +3,8 @@ package org.drools.compiler.rule.builder.dialect.mvel;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELSalienceExpression;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;

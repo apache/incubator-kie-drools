@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DoubleBetaConstraints;
@@ -36,10 +36,8 @@ import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.BehaviorManager;
 import org.drools.rule.Declaration;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.mockito.Mockito;
 
 public class NotNodeStep
     implements

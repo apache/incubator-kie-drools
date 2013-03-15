@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;

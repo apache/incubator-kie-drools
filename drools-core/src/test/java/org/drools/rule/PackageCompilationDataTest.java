@@ -23,12 +23,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.security.CodeSource;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.common.InternalRuleBase;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.WorkingMemory;

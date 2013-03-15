@@ -16,14 +16,14 @@
 
 package org.drools.compiler.rule.builder;
 
-import org.drools.base.ClassObjectType;
-import org.drools.base.EvaluatorWrapper;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EvaluatorDefinition.Target;
-import org.drools.base.mvel.ActivationPropertyHandler;
-import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
-import org.drools.base.mvel.MVELCompileable;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
+import org.drools.core.base.mvel.ActivationPropertyHandler;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
+import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.common.AgendaItem;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;

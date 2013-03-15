@@ -22,7 +22,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
-import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
 import org.drools.event.RuleBaseEventListener;

@@ -18,11 +18,11 @@ package org.drools.rule;
 
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassFieldReader;
-import org.drools.base.ClassObjectType;
-import org.drools.base.FieldFactory;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassFieldReader;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.FieldFactory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.test.model.Cheese;

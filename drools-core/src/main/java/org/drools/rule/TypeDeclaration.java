@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateObjectType;

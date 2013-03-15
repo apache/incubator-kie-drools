@@ -18,7 +18,7 @@ package org.drools.reteoo;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Rule;

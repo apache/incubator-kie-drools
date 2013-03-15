@@ -17,7 +17,7 @@ import java.util.Map.Entry;
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;

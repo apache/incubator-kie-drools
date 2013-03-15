@@ -19,15 +19,13 @@ package org.drools.rule;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.ClockType;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
-import org.drools.base.EnabledBoolean;
+import org.drools.core.base.EnabledBoolean;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.time.impl.PseudoClockScheduler;

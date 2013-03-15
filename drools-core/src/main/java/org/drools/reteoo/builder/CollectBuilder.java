@@ -19,7 +19,7 @@ package org.drools.reteoo.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.base.accumulators.CollectAccumulator;
+import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.AccumulateNode;

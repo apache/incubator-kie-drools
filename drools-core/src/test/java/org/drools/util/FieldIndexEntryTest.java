@@ -16,9 +16,9 @@
 
 package org.drools.util;
 
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassFieldReader;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassFieldReader;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.test.model.Cheese;

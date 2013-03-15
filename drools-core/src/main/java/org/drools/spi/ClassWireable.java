@@ -17,8 +17,6 @@
 package org.drools.spi;
 
 
-import org.drools.base.ClassObjectType;
-
 public interface ClassWireable {
 
     public void wire( Class<?> klass );

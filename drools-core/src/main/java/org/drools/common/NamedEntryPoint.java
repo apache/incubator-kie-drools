@@ -33,7 +33,7 @@ import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEntryPoint;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;

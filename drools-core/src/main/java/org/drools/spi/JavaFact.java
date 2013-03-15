@@ -16,7 +16,7 @@
 
 package org.drools.spi;
 
-import org.drools.base.JavaFactRegistryEntry;
+import org.drools.core.base.JavaFactRegistryEntry;
 import org.drools.WorkingMemory;
 
 public interface JavaFact {

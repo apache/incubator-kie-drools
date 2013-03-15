@@ -22,12 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
-import org.drools.base.extractors.ArrayElementReader;
-import org.drools.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.base.mvel.MVELAccumulator;
-import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELCompileable;
+import org.drools.core.base.accumulators.MVELAccumulatorFunctionExecutor;
+import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.base.mvel.MVELAccumulator;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;

@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 
-import org.drools.base.ClassObjectType;
-import org.drools.base.extractors.ArrayElementReader;
-import org.drools.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.util.ArrayUtils;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.Constraint;

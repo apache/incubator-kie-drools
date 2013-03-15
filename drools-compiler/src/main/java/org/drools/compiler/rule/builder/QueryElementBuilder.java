@@ -3,9 +3,9 @@ package org.drools.compiler.rule.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.base.ClassObjectType;
-import org.drools.base.extractors.ArrayElementReader;
-import org.drools.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.compiler.DroolsParserException;

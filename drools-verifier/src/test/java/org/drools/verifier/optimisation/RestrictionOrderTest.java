@@ -17,7 +17,7 @@
 package org.drools.verifier.optimisation;
 
 import org.drools.StatelessSession;
-import org.drools.base.RuleNameMatchesAgendaFilter;
+import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.RuleComponent;

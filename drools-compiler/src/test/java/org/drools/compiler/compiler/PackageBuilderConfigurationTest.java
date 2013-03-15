@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;

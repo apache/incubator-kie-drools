@@ -39,7 +39,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;

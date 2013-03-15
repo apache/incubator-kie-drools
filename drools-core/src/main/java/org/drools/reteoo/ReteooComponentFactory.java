@@ -16,10 +16,10 @@
 
 package org.drools.reteoo;
 
-import org.drools.base.DefaultKnowledgeHelperFactory;
-import org.drools.base.FieldFactory;
-import org.drools.base.FieldDataFactory;
-import org.drools.base.KnowledgeHelperFactory;
+import org.drools.core.base.DefaultKnowledgeHelperFactory;
+import org.drools.core.base.FieldFactory;
+import org.drools.core.base.FieldDataFactory;
+import org.drools.core.base.KnowledgeHelperFactory;
 import org.drools.common.AgendaFactory;
 import org.drools.common.DefaultAgendaFactory;
 import org.drools.core.util.TripleFactory;
@@ -32,7 +32,6 @@ import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.reteoo.builder.DefaultNodeFactory;
 import org.drools.reteoo.builder.NodeFactory;
 import org.drools.rule.DefaultLogicTransformerFactory;
-import org.drools.rule.LogicTransformer;
 import org.drools.rule.LogicTransformerFactory;
 import org.drools.spi.FactHandleFactory;
 

@@ -21,13 +21,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.spi.ObjectType;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

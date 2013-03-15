@@ -36,7 +36,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.SessionConfiguration;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.impl.KnowledgeBaseImpl;

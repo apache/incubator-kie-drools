@@ -1,6 +1,6 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;

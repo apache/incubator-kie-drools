@@ -16,7 +16,7 @@
 
 package org.drools.rule;
 
-import org.drools.base.FieldAccessor;
+import org.drools.core.base.FieldAccessor;
 
 /**
  * An interface for Fact Fields

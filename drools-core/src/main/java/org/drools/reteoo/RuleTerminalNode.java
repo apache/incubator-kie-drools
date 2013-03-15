@@ -16,9 +16,9 @@
 
 package org.drools.reteoo;
 
-import org.drools.base.SalienceInteger;
-import org.drools.base.mvel.MVELEnabledExpression;
-import org.drools.base.mvel.MVELSalienceExpression;
+import org.drools.core.base.SalienceInteger;
+import org.drools.core.base.mvel.MVELEnabledExpression;
+import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.common.AgendaItem;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;

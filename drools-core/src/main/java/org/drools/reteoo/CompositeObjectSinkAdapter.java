@@ -16,19 +16,17 @@
 
 package org.drools.reteoo;
 
-import org.drools.base.ValueType;
-import org.drools.base.extractors.MVELObjectClassFieldReader;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
-import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.IndexableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldValue;

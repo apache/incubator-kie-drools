@@ -1,12 +1,12 @@
 package org.drools.compiler.rule.builder;
 
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
-import org.drools.base.EvaluatorWrapper;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EvaluatorDefinition;
-import org.drools.base.evaluators.Operator;
-import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;

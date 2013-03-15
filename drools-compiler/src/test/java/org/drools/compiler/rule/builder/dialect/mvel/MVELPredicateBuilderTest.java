@@ -12,10 +12,10 @@ import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
-import org.drools.base.mvel.MVELPredicateExpression;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.mvel.MVELPredicateExpression;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.compiler.AnalysisResult;

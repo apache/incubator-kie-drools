@@ -27,8 +27,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DroolsQuery;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.BinaryHeapQueueAgendaGroup;

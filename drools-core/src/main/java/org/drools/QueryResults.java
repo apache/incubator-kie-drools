@@ -16,18 +16,13 @@
 
 package org.drools;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.drools.base.QueryRowWithSubruleIndex;
-import org.drools.base.extractors.ArrayElementReader;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.rule.Declaration;
 
 /**

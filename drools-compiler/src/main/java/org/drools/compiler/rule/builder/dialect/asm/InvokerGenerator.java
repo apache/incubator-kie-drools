@@ -1,6 +1,6 @@
 package org.drools.compiler.rule.builder.dialect.asm;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.rule.builder.dialect.asm.GeneratorHelper;

@@ -16,12 +16,10 @@
 
 package org.drools.facttemplates;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.base.ValueType;
+import org.drools.core.base.ValueType;
 
 public class FieldTemplateTest {
     @Test

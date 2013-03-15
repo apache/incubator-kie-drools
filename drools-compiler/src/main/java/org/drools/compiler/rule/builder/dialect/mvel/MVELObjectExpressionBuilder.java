@@ -1,7 +1,7 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELObjectExpression;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;

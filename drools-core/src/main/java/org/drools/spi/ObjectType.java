@@ -18,7 +18,7 @@ package org.drools.spi;
 
 import java.io.Externalizable;
 
-import org.drools.base.ValueType;
+import org.drools.core.base.ValueType;
 
 /**
  * Semantic object type differentiator.

@@ -18,7 +18,7 @@ import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.InitialFact;
 import org.drools.compiler.Person;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;

@@ -6,7 +6,7 @@ import org.kie.builder.conf.LanguageLevelOption;
 
 import static org.junit.Assert.*;
 
-import org.drools.base.mvel.MVELConsequence;
+import org.drools.core.base.mvel.MVELConsequence;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;

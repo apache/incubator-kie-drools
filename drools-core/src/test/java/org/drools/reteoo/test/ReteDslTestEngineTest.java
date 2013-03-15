@@ -31,7 +31,7 @@ import java.util.Map;
 import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;

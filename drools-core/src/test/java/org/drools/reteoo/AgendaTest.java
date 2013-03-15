@@ -27,7 +27,7 @@ import java.util.Map;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.base.SalienceInteger;
+import org.drools.core.base.SalienceInteger;
 import org.drools.common.AgendaItem;
 import org.drools.common.ArrayAgendaGroup;
 import org.drools.common.BinaryHeapQueueAgendaGroup;

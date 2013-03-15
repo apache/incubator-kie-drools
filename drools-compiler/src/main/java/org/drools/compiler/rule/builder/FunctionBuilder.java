@@ -19,7 +19,7 @@ package org.drools.compiler.rule.builder;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;

@@ -25,8 +25,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.evaluators.EvaluatorDefinition;
-import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;

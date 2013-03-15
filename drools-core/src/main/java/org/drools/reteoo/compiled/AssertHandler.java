@@ -16,7 +16,7 @@
 
 package org.drools.reteoo.compiled;
 
-import org.drools.base.ClassFieldReader;
+import org.drools.core.base.ClassFieldReader;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.AlphaNode;

@@ -16,7 +16,7 @@
 
 package org.drools.reteoo.compiled;
 
-import org.drools.base.ClassFieldReader;
+import org.drools.core.base.ClassFieldReader;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.*;

@@ -19,7 +19,7 @@ package org.drools.reteoo;
 import java.util.List;
 
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;

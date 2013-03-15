@@ -22,7 +22,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.drools.SessionConfiguration;
-import org.drools.base.MapGlobalResolver;
+import org.drools.core.base.MapGlobalResolver;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;

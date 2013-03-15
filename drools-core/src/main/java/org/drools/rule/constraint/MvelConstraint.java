@@ -1,8 +1,8 @@
 package org.drools.rule.constraint;
 
-import org.drools.base.DroolsQuery;
-import org.drools.base.extractors.ArrayElementReader;
-import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;

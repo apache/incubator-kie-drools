@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -38,7 +36,7 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.base.MapGlobalResolver;
+import org.drools.core.base.MapGlobalResolver;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
@@ -54,8 +52,6 @@ import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.GlobalResolver;
-
-import com.google.protobuf.Message;
 
 public class ReteooWorkingMemoryTest {
     /*
