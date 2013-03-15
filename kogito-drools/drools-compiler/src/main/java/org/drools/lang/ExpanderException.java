@@ -15,7 +15,7 @@
  */
 package org.drools.lang;
 
-import org.drools.compiler.DroolsError;
+import org.drools.compiler.compiler.DroolsError;
 
 
 public class ExpanderException extends DroolsError {

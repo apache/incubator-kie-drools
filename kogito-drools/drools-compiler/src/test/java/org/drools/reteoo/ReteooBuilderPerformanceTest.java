@@ -3,19 +3,14 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.junit.After;
-import org.junit.Before;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.integrationtests.LargeRuleBase;
-import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 

@@ -1,7 +1,7 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;

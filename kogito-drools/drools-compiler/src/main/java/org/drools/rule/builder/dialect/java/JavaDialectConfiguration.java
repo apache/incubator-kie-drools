@@ -3,11 +3,11 @@ package org.drools.rule.builder.dialect.java;
 import java.util.Arrays;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectConfiguration;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageRegistry;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.DialectConfiguration;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.rule.Package;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

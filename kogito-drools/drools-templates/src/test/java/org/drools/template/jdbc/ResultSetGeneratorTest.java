@@ -3,7 +3,7 @@ package org.drools.template.jdbc;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.junit.Test;
 
 import java.io.InputStream;

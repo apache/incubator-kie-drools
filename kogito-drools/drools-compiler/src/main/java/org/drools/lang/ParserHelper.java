@@ -20,7 +20,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
@@ -62,7 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import static org.drools.compiler.DRLFactory.lexerId;
+import static org.drools.compiler.compiler.DRLFactory.lexerId;
 
 /**
  * This is a class to hold all the helper functions/methods used

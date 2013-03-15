@@ -6,11 +6,9 @@ import java.io.Reader;
 import java.util.Collection;
 
 import org.drools.common.InternalAgenda;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
-import org.drools.conf.KnowledgeBaseConfigurationTest;
-import org.drools.conf.KnowledgeSessionConfigurationTest;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.runtime.rule.impl.AgendaImpl;

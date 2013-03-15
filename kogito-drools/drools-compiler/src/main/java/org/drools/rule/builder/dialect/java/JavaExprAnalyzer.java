@@ -22,7 +22,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.base.EvaluatorWrapper;
-import org.drools.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.rule.builder.dialect.java.parser.JavaLexer;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaParser;

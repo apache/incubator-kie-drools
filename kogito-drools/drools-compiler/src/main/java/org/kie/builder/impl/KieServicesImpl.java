@@ -26,7 +26,7 @@ import org.kie.runtime.KieContainer;
 
 import java.io.File;
 
-import static org.drools.compiler.io.memory.MemoryFileSystem.readFromJar;
+import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
 
 public class KieServicesImpl implements KieServices {
     private ResourceFactoryService resourceFactory;

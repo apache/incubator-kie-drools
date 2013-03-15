@@ -18,7 +18,7 @@ package org.drools.decisiontable.osgi;
 
 import java.util.Hashtable;
 
-import org.drools.compiler.DecisionTableProvider;
+import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.decisiontable.DecisionTableProviderImpl;
 import org.kie.Service;
 import org.osgi.framework.BundleActivator;

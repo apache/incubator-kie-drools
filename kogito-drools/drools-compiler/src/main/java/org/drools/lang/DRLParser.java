@@ -1,7 +1,7 @@
 package org.drools.lang;
 
 import org.antlr.runtime.RecognitionException;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
 import org.kie.io.Resource;
 

@@ -13,10 +13,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.PMMLCompiler;
-import org.drools.compiler.PMMLCompilerFactory;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageRegistry;
+import org.drools.compiler.compiler.PMMLCompiler;
+import org.drools.compiler.compiler.PMMLCompilerFactory;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.definitions.rule.impl.RuleImpl;

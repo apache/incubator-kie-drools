@@ -17,16 +17,13 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.base.dataproviders.MVELDataProvider;
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.DescrBuildError;
-import org.drools.lang.descr.AccessorDescr;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.MVELExprDescr;

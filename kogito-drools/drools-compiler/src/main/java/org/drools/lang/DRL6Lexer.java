@@ -2,17 +2,15 @@
 
     package org.drools.lang;
 
+    import org.drools.compiler.compiler.DroolsParserException;
     import org.kie.builder.conf.LanguageLevelOption;
-    import org.drools.compiler.DroolsParserException;
-    import org.drools.core.util.StringUtils;
 
 
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
+    import org.antlr.runtime.*;
+
+    import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+
 public class DRL6Lexer extends AbstractDRLLexer {
     public static final int EOF=-1;
     public static final int SHARP=4;

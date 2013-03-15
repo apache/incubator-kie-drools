@@ -1,15 +1,13 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import org.junit.After;
-import org.junit.Before;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.junit.Test;
 import org.kie.builder.conf.LanguageLevelOption;
 
 import static org.junit.Assert.*;
 
 import org.drools.base.mvel.MVELConsequence;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.DrlParser;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;

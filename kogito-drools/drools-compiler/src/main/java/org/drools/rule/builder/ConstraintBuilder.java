@@ -5,7 +5,7 @@ import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;

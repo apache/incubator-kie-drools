@@ -16,7 +16,7 @@
 
 package org.drools.lang;
 
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.lang.dsl.DefaultExpander;
 import org.junit.Test;
 import org.kie.builder.conf.LanguageLevelOption;
@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import static org.drools.compiler.DRLFactory.buildParser;
+import static org.drools.compiler.compiler.DRLFactory.buildParser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;

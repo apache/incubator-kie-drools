@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import org.drools.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.TypeDeclaration.Format;
 import org.drools.rule.TypeDeclaration.Role;

@@ -1,6 +1,6 @@
 package org.kie.builder.impl;
 
-import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.StringUtils;
 import org.drools.kproject.models.KieBaseModelImpl;
 import org.kie.builder.CompositeKnowledgeBuilder;

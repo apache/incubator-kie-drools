@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import org.drools.compiler.DecisionTableProvider;
+import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.core.util.StringUtils;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.DecisionTableInputType;

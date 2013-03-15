@@ -13,17 +13,17 @@ import org.drools.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.MemoryResourceReader;
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageRegistry;
-import org.drools.compiler.PackageBuilder.ErrorHandler;
-import org.drools.compiler.PackageBuilder.FunctionErrorHandler;
-import org.drools.compiler.PackageBuilder.RuleErrorHandler;
-import org.drools.compiler.PackageBuilder.RuleInvokerErrorHandler;
-import org.drools.compiler.PackageBuilder.SrcErrorHandler;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.compiler.PackageBuilder.ErrorHandler;
+import org.drools.compiler.compiler.PackageBuilder.FunctionErrorHandler;
+import org.drools.compiler.compiler.PackageBuilder.RuleErrorHandler;
+import org.drools.compiler.compiler.PackageBuilder.RuleInvokerErrorHandler;
+import org.drools.compiler.compiler.PackageBuilder.SrcErrorHandler;
 import org.drools.core.util.StringUtils;
 import org.drools.io.internal.InternalResource;
 import org.drools.lang.descr.AccumulateDescr;
@@ -142,7 +142,7 @@ public class JavaDialect
     private final List<KnowledgeBuilderResult>       results;
     private final PackageBuilder                     packageBuilder;
 
-    private final PackageRegistry                    packageRegistry;
+    private final PackageRegistry packageRegistry;
 
     public JavaDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,

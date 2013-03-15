@@ -24,7 +24,7 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.reteoo.*;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

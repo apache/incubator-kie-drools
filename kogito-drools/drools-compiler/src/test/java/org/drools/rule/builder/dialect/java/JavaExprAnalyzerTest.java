@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
-import org.drools.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.BoundIdentifiers;
 import org.junit.Test;
 
 public class JavaExprAnalyzerTest {

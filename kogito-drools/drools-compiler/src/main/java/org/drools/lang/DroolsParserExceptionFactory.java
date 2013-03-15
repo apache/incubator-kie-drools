@@ -34,8 +34,8 @@ import org.antlr.runtime.MismatchedTreeNodeException;
 import org.antlr.runtime.NoViableAltException;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
-import org.drools.compiler.DRLFactory;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DRLFactory;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.kie.builder.conf.LanguageLevelOption;
 
 /**

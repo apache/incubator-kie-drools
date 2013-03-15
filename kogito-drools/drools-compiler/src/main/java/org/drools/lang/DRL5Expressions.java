@@ -3,16 +3,11 @@
     package org.drools.lang;
 
     import java.util.LinkedList;
-    import org.drools.compiler.DroolsParserException;
-    import org.drools.lang.ParserHelper;
-    import org.drools.lang.DroolsParserExceptionFactory;
-    import org.drools.lang.Location;
-    import org.drools.CheckedDroolsException;
+    import org.drools.compiler.compiler.DroolsParserException;
 
     import org.drools.lang.api.AnnotatedDescrBuilder;
 
     import org.drools.lang.descr.AtomicExprDescr;
-    import org.drools.lang.descr.AnnotatedBaseDescr;
     import org.drools.lang.descr.AnnotationDescr;
     import org.drools.lang.descr.BaseDescr;
     import org.drools.lang.descr.ConstraintConnectiveDescr;
@@ -24,9 +19,7 @@
 import org.antlr.runtime.*;
 import java.util.Stack;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+
 public class DRL5Expressions extends DRLExpressions {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "SHARP", "EOL", "WS", "Exponent", "FloatTypeSuffix", "FLOAT", "HexDigit", "IntegerTypeSuffix", "HEX", "DECIMAL", "EscapeSequence", "STRING", "TIME_INTERVAL", "UnicodeEscape", "OctalEscape", "BOOL", "NULL", "AT", "PLUS_ASSIGN", "MINUS_ASSIGN", "MULT_ASSIGN", "DIV_ASSIGN", "AND_ASSIGN", "OR_ASSIGN", "XOR_ASSIGN", "MOD_ASSIGN", "UNIFY", "DECR", "INCR", "ARROW", "SEMICOLON", "COLON", "EQUALS", "NOT_EQUALS", "GREATER_EQUALS", "LESS_EQUALS", "GREATER", "LESS", "EQUALS_ASSIGN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "COMMA", "DOT", "NULL_SAFE_DOT", "DOUBLE_AMPER", "DOUBLE_PIPE", "QUESTION", "NEGATION", "TILDE", "PIPE", "AMPER", "XOR", "MOD", "STAR", "MINUS", "PLUS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart", "ID", "DIV", "MISC"

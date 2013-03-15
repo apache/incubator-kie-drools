@@ -2,8 +2,8 @@ package org.drools.rule.builder.dialect.mvel;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELObjectExpression;
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;

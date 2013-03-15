@@ -16,7 +16,7 @@
 
 package org.drools.lang.dsl;
 
-import org.drools.compiler.DroolsError;
+import org.drools.compiler.compiler.DroolsError;
 
 /**
  * MappingError

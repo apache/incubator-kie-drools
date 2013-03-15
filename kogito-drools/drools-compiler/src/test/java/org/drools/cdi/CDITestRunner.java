@@ -14,7 +14,7 @@ import java.util.List;
 import java.io.File;
 
 import org.drools.command.impl.CommandFactoryServiceImpl;
-import org.drools.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
 import org.drools.io.impl.ResourceFactoryServiceImpl;
 import org.drools.kproject.AbstractKnowledgeTest;
@@ -26,7 +26,6 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.junit.AfterClass;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.kie.KieServices;

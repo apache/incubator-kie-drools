@@ -4,8 +4,8 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.drools.CommonTestMethodBase;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.xml.XmlPackageReader;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AccumulateDescr;

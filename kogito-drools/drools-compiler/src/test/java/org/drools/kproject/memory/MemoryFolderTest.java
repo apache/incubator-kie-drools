@@ -5,11 +5,11 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.drools.compiler.io.File;
-import org.drools.compiler.io.FileSystem;
-import org.drools.compiler.io.Folder;
-import org.drools.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.io.memory.MemoryFolder;
+import org.drools.compiler.compiler.io.File;
+import org.drools.compiler.compiler.io.FileSystem;
+import org.drools.compiler.compiler.io.Folder;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.compiler.io.memory.MemoryFolder;
 import org.junit.Test;
 
 public class MemoryFolderTest {

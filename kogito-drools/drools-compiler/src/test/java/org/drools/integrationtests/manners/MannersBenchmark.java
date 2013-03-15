@@ -4,11 +4,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.common.InternalRuleBase;
-import org.drools.compiler.PackageBuilder;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.compiled.CompiledNetwork;
-import org.drools.reteoo.compiled.ObjectTypeNodeCompiler;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.Package;
 
 import java.io.*;

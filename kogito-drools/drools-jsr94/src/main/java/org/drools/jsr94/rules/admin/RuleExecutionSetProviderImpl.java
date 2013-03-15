@@ -34,11 +34,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.xml.SemanticModules;
-import org.drools.compiler.xml.XmlPackageReader;
+import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.w3c.dom.Element;
 
 /**

@@ -1,6 +1,6 @@
 package org.drools.rule.builder.dialect.java;
 
-import org.drools.compiler.DroolsError;
+import org.drools.compiler.compiler.DroolsError;
 
 public class JavaDialectError extends DroolsError {
     private String message;

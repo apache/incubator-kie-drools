@@ -19,7 +19,7 @@ package org.drools.template.parser;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.template.model.*;
 
@@ -27,8 +27,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.drools.rule.Package;
 
 /**
  * Create a rule base for the set of rule templates in the

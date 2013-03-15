@@ -7,7 +7,6 @@ import java.io.StringReader;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -19,8 +18,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.ParserError;
+import org.drools.compiler.compiler.ParserError;
 
 public class DSLTokenizedMappingFile extends DSLMappingFile {
 

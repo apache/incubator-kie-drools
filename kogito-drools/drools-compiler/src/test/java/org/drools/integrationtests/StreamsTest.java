@@ -38,7 +38,7 @@ import org.drools.StockTick;
 import org.drools.StockTickInterface;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
-import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;

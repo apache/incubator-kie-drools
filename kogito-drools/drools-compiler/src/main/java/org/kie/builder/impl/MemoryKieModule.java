@@ -1,7 +1,7 @@
 package org.kie.builder.impl;
 
 import org.drools.commons.jci.readers.ResourceReader;
-import org.drools.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.model.KieModuleModel;

@@ -6,9 +6,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.PackageBuilderErrors;
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.compiler.PackageBuilderErrors;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -43,9 +44,9 @@ public class PackageBuilderThreadSafetyTest {
                 public void run() {
                     try {
                         this.setName( "Thread[" + ID + "]" );
-                        org.drools.compiler.PackageBuilder builder = null;
+                        PackageBuilder builder = null;
                         try {
-                            builder = new org.drools.compiler.PackageBuilder( packageBuilderConfig );
+                            builder = new PackageBuilder( packageBuilderConfig );
                         } catch ( Throwable t ) {
                             t.printStackTrace();
                             throw new RuntimeException( t );

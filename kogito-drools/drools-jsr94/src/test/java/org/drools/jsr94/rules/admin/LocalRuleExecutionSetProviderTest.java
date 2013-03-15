@@ -25,11 +25,10 @@ import javax.rules.admin.LocalRuleExecutionSetProvider;
 import javax.rules.admin.RuleAdministrator;
 import javax.rules.admin.RuleExecutionSet;
 
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.jsr94.rules.RuleEngineTestBase;
 import org.drools.rule.Package;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

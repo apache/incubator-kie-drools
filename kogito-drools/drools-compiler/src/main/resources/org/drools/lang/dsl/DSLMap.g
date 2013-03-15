@@ -30,7 +30,7 @@ tokens {
     package org.drools.lang.dsl;
     import java.util.List;
     import java.util.ArrayList;
-    import org.drools.compiler.ParserError;
+    import org.drools.compiler.compiler.ParserError;
 }
 
 @parser::header {
@@ -38,7 +38,7 @@ tokens {
     import java.util.List;
     import java.util.ArrayList;
     import java.util.regex.Pattern;
-    import org.drools.compiler.ParserError;
+    import org.drools.compiler.compiler.ParserError;
 }
 
 @lexer::members {

@@ -13,7 +13,7 @@ tokens {
     package org.drools.lang;
 
     import org.kie.builder.conf.LanguageLevelOption;
-    import org.drools.compiler.DroolsParserException;
+    import org.drools.compiler.compiler.DroolsParserException;
     import org.drools.core.util.StringUtils;
 }
  

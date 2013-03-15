@@ -30,7 +30,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.NamedEntryPoint;
 import org.drools.common.TruthMaintenanceSystem;
-import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.impl.StatefulKnowledgeSessionImpl;

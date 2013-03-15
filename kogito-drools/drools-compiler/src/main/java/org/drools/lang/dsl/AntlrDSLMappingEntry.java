@@ -17,11 +17,8 @@
 package org.drools.lang.dsl;
 
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
-import org.drools.compiler.ParserError;
 import org.mvel2.util.ParseTools;
 
 /**
