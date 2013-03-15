@@ -16,7 +16,7 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 
 /**
  * This exception is thrown when verifier tries to handle a descr that it is not

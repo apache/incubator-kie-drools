@@ -18,8 +18,7 @@ package org.drools.verifier.components;
 
 import java.io.Serializable;
 
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 
 public class RuleOperatorDescr extends RuleComponent
     implements

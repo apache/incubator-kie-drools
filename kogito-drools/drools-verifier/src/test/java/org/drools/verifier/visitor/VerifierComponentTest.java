@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;

@@ -2,7 +2,7 @@ package org.drools.rule.builder.dialect.asm;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.ReturnValueBuilder;

@@ -16,9 +16,9 @@
 
 package org.drools.rule.builder;
 
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.CollectDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;

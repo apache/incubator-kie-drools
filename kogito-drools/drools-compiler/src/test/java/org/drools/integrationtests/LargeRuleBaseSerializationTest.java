@@ -9,7 +9,7 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.junit.Before;
 import org.junit.Ignore;

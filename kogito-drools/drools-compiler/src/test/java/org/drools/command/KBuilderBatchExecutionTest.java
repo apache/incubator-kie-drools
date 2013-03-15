@@ -30,7 +30,7 @@ import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
 
-    private static final String source = "org/drools/lang/misplaced_parenthesis.drl";
+    private static final String source = "org/drools/compiler/lang/misplaced_parenthesis.drl";
 
     private StatefulKnowledgeSession ksession = null;
     

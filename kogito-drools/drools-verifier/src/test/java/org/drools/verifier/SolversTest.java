@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;

@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.drools.base.evaluators.Operator;
 import org.drools.compiler.compiler.DrlExprParser;
-import org.drools.lang.descr.AtomicExprDescr;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.BindingDescr;
-import org.drools.lang.descr.ConstraintConnectiveDescr;
-import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.RelationalExprDescr;
+import org.drools.compiler.lang.descr.AtomicExprDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.FieldVariable;
 import org.drools.verifier.components.LiteralRestriction;

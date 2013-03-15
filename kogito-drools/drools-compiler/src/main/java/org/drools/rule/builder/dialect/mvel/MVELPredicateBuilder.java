@@ -24,7 +24,7 @@ import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.lang.descr.PredicateDescr;
+import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;

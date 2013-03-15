@@ -8,16 +8,15 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.test.model.DroolsTestCase;
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.BindingDescr;
-import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.ExprConstraintDescr.Type;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr.Type;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
 
 public class QueryBuilderTest extends DroolsTestCase {

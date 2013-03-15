@@ -2,10 +2,10 @@ package org.drools.compiler.compiler;
 
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.io.impl.BaseResource;
-import org.drools.lang.descr.CompositePackageDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
+import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.kie.builder.CompositeKnowledgeBuilder;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;

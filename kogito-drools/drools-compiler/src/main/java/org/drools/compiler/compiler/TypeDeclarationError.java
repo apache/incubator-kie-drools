@@ -16,8 +16,8 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.compiler.lang.descr.TypeFieldDescr;
 
 public class TypeDeclarationError extends DroolsError {
     private String errorMessage;

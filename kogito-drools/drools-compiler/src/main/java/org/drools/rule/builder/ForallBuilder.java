@@ -18,9 +18,9 @@ package org.drools.rule.builder;
 
 import java.util.Iterator;
 
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ForallDescr;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.rule.Forall;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;

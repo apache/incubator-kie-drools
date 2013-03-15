@@ -3,7 +3,7 @@ package org.drools.rule.builder;
 import org.drools.base.ClassObjectType;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.lang.descr.QueryDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.Query;

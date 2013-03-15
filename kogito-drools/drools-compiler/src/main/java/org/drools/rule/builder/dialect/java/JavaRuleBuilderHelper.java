@@ -2,6 +2,8 @@ package org.drools.rule.builder.dialect.java;
 
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.*;
 import org.drools.lang.descr.*;
 import org.drools.reteoo.*;

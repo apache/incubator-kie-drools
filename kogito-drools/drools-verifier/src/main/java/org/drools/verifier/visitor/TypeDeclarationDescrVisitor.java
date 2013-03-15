@@ -19,8 +19,7 @@ package org.drools.verifier.visitor;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.lang.descr.AnnotationDescr;
-import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;

@@ -1,9 +1,9 @@
 package org.drools.rule.builder;
 
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ConditionalBranchDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.NamedConsequenceDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ConditionalBranchDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.rule.ConditionalBranch;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;

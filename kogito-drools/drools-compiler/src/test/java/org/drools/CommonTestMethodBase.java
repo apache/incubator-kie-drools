@@ -10,7 +10,7 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.integrationtests.SerializationHelper;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Assert;
 import org.kie.KnowledgeBase;

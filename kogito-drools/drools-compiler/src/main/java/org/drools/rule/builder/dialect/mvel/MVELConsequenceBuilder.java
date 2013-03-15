@@ -9,7 +9,7 @@ import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;

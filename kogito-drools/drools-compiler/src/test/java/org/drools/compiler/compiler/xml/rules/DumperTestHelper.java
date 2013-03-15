@@ -8,8 +8,8 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
-import org.drools.lang.DrlDumper;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.DrlDumper;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.builder.conf.LanguageLevelOption;
 
 import static org.junit.Assert.*;

@@ -19,7 +19,7 @@ package org.drools.verifier.alwaysTrue;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.*;

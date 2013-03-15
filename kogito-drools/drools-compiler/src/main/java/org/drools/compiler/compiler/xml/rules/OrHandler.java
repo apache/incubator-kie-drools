@@ -16,20 +16,11 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import java.util.HashSet;
-
-import org.drools.lang.descr.AccumulateDescr;
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.ForallDescr;
-import org.drools.lang.descr.MultiPatternDestinationDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.MultiPatternDestinationDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

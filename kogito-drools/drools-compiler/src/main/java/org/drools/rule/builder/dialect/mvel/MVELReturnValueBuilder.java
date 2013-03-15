@@ -23,7 +23,7 @@ import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;

@@ -16,16 +16,8 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-
-import org.drools.lang.descr.ConnectiveDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
-import org.drools.lang.descr.RestrictionConnectiveDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.compiler.lang.descr.ConnectiveDescr;
+import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
