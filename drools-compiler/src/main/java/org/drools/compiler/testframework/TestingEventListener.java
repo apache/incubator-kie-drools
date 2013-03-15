@@ -1,4 +1,4 @@
-package org.drools.testframework;
+package org.drools.compiler.testframework;
 
 import java.io.IOException;
 import java.io.ObjectInput;

@@ -1,4 +1,4 @@
-package org.drools.testframework;
+package org.drools.compiler.testframework;
 
 public class DumbFact {
 
