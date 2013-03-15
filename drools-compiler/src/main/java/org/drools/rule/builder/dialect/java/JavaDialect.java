@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.util.*;
 
 import org.drools.base.TypeResolver;
-import org.drools.commons.jci.compilers.CompilationResult;
-import org.drools.commons.jci.compilers.JavaCompiler;
-import org.drools.commons.jci.compilers.JavaCompilerFactory;
-import org.drools.commons.jci.compilers.JavaCompilerSettings;
-import org.drools.commons.jci.problems.CompilationProblem;
-import org.drools.commons.jci.readers.MemoryResourceReader;
+import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.commons.jci.compilers.JavaCompiler;
+import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
+import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;

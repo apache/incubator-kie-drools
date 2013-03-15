@@ -1,6 +1,6 @@
 package org.drools.rule.builder.dialect;
 
-import org.drools.commons.jci.readers.ResourceReader;
+import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.PackageBuilder;

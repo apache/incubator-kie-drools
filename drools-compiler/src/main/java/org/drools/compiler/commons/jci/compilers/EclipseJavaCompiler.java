@@ -14,21 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.commons.jci.compilers;
+package org.drools.compiler.commons.jci.compilers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.drools.commons.jci.problems.CompilationProblem;
-import org.drools.commons.jci.readers.ResourceReader;
-import org.drools.commons.jci.stores.ResourceStore;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.core.util.ClassUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.ClassFile;
@@ -132,7 +131,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
     }
 
 
-    public org.drools.commons.jci.compilers.CompilationResult compile(
+    public org.drools.compiler.commons.jci.compilers.CompilationResult compile(
             final String[] pSourceFiles,
             final ResourceReader pReader,
             final ResourceStore pStore,
@@ -199,7 +198,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         if (problems.size() > 0) {
             final CompilationProblem[] result = new CompilationProblem[problems.size()];
             problems.toArray(result);
-            return new org.drools.commons.jci.compilers.CompilationResult(result);
+            return new org.drools.compiler.commons.jci.compilers.CompilationResult(result);
         }
 
         final IErrorHandlingPolicy policy = DefaultErrorHandlingPolicies.proceedWithAllProblems();
@@ -407,7 +406,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         final CompilationProblem[] result = new CompilationProblem[problems.size()];
         problems.toArray(result);
-        return new org.drools.commons.jci.compilers.CompilationResult(result);
+        return new org.drools.compiler.commons.jci.compilers.CompilationResult(result);
     }
 
     public JavaCompilerSettings createDefaultSettings() {

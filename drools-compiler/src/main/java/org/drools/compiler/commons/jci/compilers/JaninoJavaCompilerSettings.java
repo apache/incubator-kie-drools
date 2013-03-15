@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.drools.commons.jci.compilers;
+package org.drools.compiler.commons.jci.compilers;
 
 public final class JaninoJavaCompilerSettings extends JavaCompilerSettings {
     // TODO: implement the native janino compiler settings

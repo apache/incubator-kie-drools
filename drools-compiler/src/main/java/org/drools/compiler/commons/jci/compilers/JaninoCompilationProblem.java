@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.drools.commons.jci.compilers;
+package org.drools.compiler.commons.jci.compilers;
 
 import org.codehaus.janino.Location;
 import org.codehaus.janino.util.LocatedException;
-import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
 
 /**
  * Janino version of a CompilationProblem

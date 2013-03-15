@@ -1,8 +1,8 @@
 package org.drools.compiler.kproject;
 
-import org.drools.commons.jci.compilers.CompilationResult;
-import org.drools.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
+import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
+import org.drools.compiler.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Resource;

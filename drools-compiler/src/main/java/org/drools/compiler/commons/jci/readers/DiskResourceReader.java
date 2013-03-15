@@ -1,4 +1,4 @@
-package org.drools.commons.jci.readers;
+package org.drools.compiler.commons.jci.readers;
 
 import java.io.File;
 import java.io.FileInputStream;

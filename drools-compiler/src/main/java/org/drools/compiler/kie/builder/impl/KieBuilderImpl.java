@@ -1,12 +1,12 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.commons.jci.compilers.CompilationResult;
-import org.drools.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
-import org.drools.commons.jci.problems.CompilationProblem;
-import org.drools.commons.jci.readers.DiskResourceReader;
-import org.drools.commons.jci.readers.ResourceReader;
+import org.drools.compiler.commons.jci.compilers.CompilationResult;
+import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
+import org.drools.compiler.commons.jci.compilers.EclipseJavaCompilerSettings;
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.drools.compiler.commons.jci.readers.DiskResourceReader;
+import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
