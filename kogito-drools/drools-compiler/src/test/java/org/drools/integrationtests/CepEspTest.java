@@ -2196,18 +2196,18 @@ public class CepEspTest extends CommonTestMethodBase {
         // third rule
         act = values.get( 2 ).getMatch();
         assertThat( act.getRule().getName(),
-                    is( "ba" ) );
+                    is( "ab" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
                     is( 3 ) );
         assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                    is( 1 ) );
+                    is( 2 ) );
 
-        // fouth rule
+        // fourth rule
         act = values.get( 3 ).getMatch();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                    is( 2 ) );
+                    is( 3 ) );
         assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
                     is( 1 ) );
 
@@ -2218,14 +2218,14 @@ public class CepEspTest extends CommonTestMethodBase {
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
                     is( 3 ) );
         assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                    is( 2 ) );
+                    is( 1 ) );
 
         // sixth rule
         act = values.get( 5 ).getMatch();
         assertThat( act.getRule().getName(),
-                    is( "ab" ) );
+                    is( "ba" ) );
         assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                    is( 3 ) );
+                    is( 2 ) );
         assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
                     is( 1 ) );
 
@@ -2237,6 +2237,7 @@ public class CepEspTest extends CommonTestMethodBase {
                     is( 2 ) );
         assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
                     is( 1 ) );
+
 
     }
 
