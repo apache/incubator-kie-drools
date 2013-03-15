@@ -16,13 +16,9 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import java.util.HashSet;
-
-import org.drools.lang.descr.BindingDescr;
-import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.PredicateDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

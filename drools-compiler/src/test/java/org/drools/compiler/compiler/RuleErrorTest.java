@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
 
 public class RuleErrorTest {

@@ -16,7 +16,7 @@
 
 package org.drools.verifier.components;
 
-import org.drools.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Cause;
 

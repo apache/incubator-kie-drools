@@ -4,7 +4,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.compiled.AssertHandler;
 import org.drools.reteoo.compiled.CompiledNetwork;

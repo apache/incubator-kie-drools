@@ -1,7 +1,7 @@
 package org.drools.verifier.visitor;
 
 import org.drools.base.evaluators.Operator;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.verifier.TestBase;
 import org.drools.verifier.components.*;
 import org.drools.verifier.data.VerifierComponent;

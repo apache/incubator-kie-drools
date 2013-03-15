@@ -16,8 +16,8 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

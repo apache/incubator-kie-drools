@@ -17,7 +17,7 @@
 package org.drools.rule.builder.dialect.java;
 
 import org.drools.core.util.StringUtils;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 

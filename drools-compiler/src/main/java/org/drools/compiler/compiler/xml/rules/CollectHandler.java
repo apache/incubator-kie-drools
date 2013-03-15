@@ -16,12 +16,10 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import java.util.HashSet;
-
-import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.FromDescr;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.CollectDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.FromDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

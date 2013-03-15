@@ -10,9 +10,9 @@ import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.junit.Test;
 

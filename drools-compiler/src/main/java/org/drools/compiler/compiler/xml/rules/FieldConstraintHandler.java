@@ -16,10 +16,10 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import org.drools.lang.descr.ConnectiveDescr;
-import org.drools.lang.descr.ConnectiveDescr.RestrictionConnectiveType;
-import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.ConnectiveDescr;
+import org.drools.compiler.lang.descr.ConnectiveDescr.RestrictionConnectiveType;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

@@ -17,6 +17,14 @@
 package org.drools.verifier.visitor;
 
 import org.drools.base.evaluators.Operator;
+import org.drools.compiler.lang.descr.FieldConstraintDescr;
+import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
+import org.drools.compiler.lang.descr.PredicateDescr;
+import org.drools.compiler.lang.descr.QualifiedIdentifierRestrictionDescr;
+import org.drools.compiler.lang.descr.RestrictionConnectiveDescr;
+import org.drools.compiler.lang.descr.RestrictionDescr;
+import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.compiler.lang.descr.VariableRestrictionDescr;
 import org.drools.lang.descr.*;
 import org.drools.verifier.components.*;
 import org.drools.verifier.data.VerifierData;

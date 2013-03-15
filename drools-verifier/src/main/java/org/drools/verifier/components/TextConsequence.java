@@ -16,7 +16,7 @@
 
 package org.drools.verifier.components;
 
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 
 public class TextConsequence extends RuleComponent<RuleDescr>
     implements

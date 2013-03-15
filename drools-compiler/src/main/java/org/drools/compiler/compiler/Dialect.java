@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.ProcessDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.compiler.lang.descr.ProcessDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;

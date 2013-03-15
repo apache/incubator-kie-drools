@@ -32,12 +32,12 @@ import org.drools.base.EnabledBoolean;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.DateUtils;
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -56,7 +56,7 @@ import antlr.collections.List;
 public class RuleBuilderTest {
 
     /**
-     * Test method for {@link org.drools.rule.builder.RuleBuilder#build(org.drools.rule.Package, org.drools.lang.descr.RuleDescr)}.
+     * Test method for {@link org.drools.rule.builder.RuleBuilder#build(org.drools.rule.Package, org.drools.compiler.lang.descr.RuleDescr)}.
      */
     @Test
     public void testBuild() throws Exception {

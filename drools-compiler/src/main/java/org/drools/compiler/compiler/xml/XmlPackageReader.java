@@ -6,7 +6,7 @@ import java.io.Reader;
 
 import javax.xml.parsers.SAXParser;
 
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.SemanticModules;
 import org.xml.sax.InputSource;

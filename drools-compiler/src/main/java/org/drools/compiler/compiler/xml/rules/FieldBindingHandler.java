@@ -16,8 +16,8 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import org.drools.lang.descr.BindingDescr;
-import org.drools.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

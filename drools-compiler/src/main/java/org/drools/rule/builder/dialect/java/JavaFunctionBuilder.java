@@ -4,7 +4,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.compiler.FunctionError;
 import org.drools.core.util.StringUtils;
-import org.drools.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.builder.FunctionBuilder;

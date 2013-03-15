@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.drools.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.kie.builder.KnowledgeBuilderResult;

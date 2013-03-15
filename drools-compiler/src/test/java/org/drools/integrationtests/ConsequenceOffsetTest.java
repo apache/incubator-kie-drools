@@ -8,8 +8,8 @@ import java.io.Reader;
 
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
 import org.kie.builder.conf.LanguageLevelOption;
 

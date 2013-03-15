@@ -2,9 +2,9 @@ package org.drools.rule.builder.dialect.asm;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.PredicateDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;

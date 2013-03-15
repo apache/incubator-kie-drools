@@ -16,16 +16,16 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.ForallDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.ForallDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.RuleEval;

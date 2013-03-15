@@ -1,8 +1,8 @@
 package org.drools.rule.builder.util;
 
-import org.drools.lang.descr.AccumulateDescr;
-import org.drools.lang.descr.EntryPointDescr;
-import org.drools.lang.descr.WindowReferenceDescr;
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.EntryPointDescr;
+import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.drools.rule.QueryElement;
 import org.drools.rule.RuleConditionElement;
 

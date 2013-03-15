@@ -19,12 +19,12 @@ package org.drools.rule.builder;
 import java.util.Iterator;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
 import org.drools.rule.Pattern;

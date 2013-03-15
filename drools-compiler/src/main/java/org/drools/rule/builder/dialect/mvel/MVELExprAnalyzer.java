@@ -28,7 +28,7 @@ import org.antlr.runtime.RecognitionException;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;

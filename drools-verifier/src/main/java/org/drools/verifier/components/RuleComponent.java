@@ -16,8 +16,7 @@
 
 package org.drools.verifier.components;
 
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 
 public abstract class RuleComponent<D extends BaseDescr> extends PackageComponent<D>
     implements

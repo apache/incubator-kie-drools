@@ -16,11 +16,11 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.lang.descr.AccessorDescr;
-import org.drools.lang.descr.DeclarativeInvokerDescr;
-import org.drools.lang.descr.FieldAccessDescr;
-import org.drools.lang.descr.FunctionCallDescr;
-import org.drools.lang.descr.MethodAccessDescr;
+import org.drools.compiler.lang.descr.AccessorDescr;
+import org.drools.compiler.lang.descr.DeclarativeInvokerDescr;
+import org.drools.compiler.lang.descr.FieldAccessDescr;
+import org.drools.compiler.lang.descr.FunctionCallDescr;
+import org.drools.compiler.lang.descr.MethodAccessDescr;
 import org.drools.verifier.components.VerifierAccessorDescr;
 import org.drools.verifier.components.VerifierFieldAccessDescr;
 import org.drools.verifier.components.VerifierFunctionCallDescr;

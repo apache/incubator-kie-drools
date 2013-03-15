@@ -4,7 +4,7 @@ import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
 import org.drools.factmodel.traits.TraitRegistry;
-import org.drools.lang.descr.ImportDescr;
+import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;

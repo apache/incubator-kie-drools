@@ -17,7 +17,7 @@
 package org.drools.compiler.compiler;
 
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
-import org.drools.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.FunctionDescr;
 
 public class FunctionError extends DroolsError {
     final private FunctionDescr functionDescr;

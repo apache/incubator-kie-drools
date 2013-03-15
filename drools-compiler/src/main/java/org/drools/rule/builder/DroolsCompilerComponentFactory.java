@@ -3,8 +3,8 @@ package org.drools.rule.builder;
 
 import org.drools.base.FieldDataFactory;
 import org.drools.base.FieldFactory;
-import org.drools.lang.MVELDumper;
-import org.drools.lang.ExpressionRewriter;
+import org.drools.compiler.lang.MVELDumper;
+import org.drools.compiler.lang.ExpressionRewriter;
 
 public class DroolsCompilerComponentFactory {
 

@@ -23,11 +23,11 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
-import org.drools.lang.DRLExpressions;
-import org.drools.lang.DRLLexer;
-import org.drools.lang.ParserHelper;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.ConstraintConnectiveDescr;
+import org.drools.compiler.lang.DRLExpressions;
+import org.drools.compiler.lang.DRLLexer;
+import org.drools.compiler.lang.ParserHelper;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.kie.builder.conf.LanguageLevelOption;
 
 /**

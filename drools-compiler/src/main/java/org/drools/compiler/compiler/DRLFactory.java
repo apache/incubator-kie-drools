@@ -10,16 +10,16 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
-import org.drools.lang.DRL5Expressions;
-import org.drools.lang.DRL5Lexer;
-import org.drools.lang.DRL5Parser;
-import org.drools.lang.DRL6Expressions;
-import org.drools.lang.DRL6Lexer;
-import org.drools.lang.DRL6Parser;
-import org.drools.lang.DRLExpressions;
-import org.drools.lang.DRLLexer;
-import org.drools.lang.DRLParser;
-import org.drools.lang.ParserHelper;
+import org.drools.compiler.lang.DRL5Expressions;
+import org.drools.compiler.lang.DRL5Lexer;
+import org.drools.compiler.lang.DRL5Parser;
+import org.drools.compiler.lang.DRL6Expressions;
+import org.drools.compiler.lang.DRL6Lexer;
+import org.drools.compiler.lang.DRL6Parser;
+import org.drools.compiler.lang.DRLExpressions;
+import org.drools.compiler.lang.DRLLexer;
+import org.drools.compiler.lang.DRLParser;
+import org.drools.compiler.lang.ParserHelper;
 import org.kie.builder.conf.LanguageLevelOption;
 
 public class DRLFactory {

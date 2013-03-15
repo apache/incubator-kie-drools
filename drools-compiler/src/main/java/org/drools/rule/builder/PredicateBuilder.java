@@ -2,7 +2,7 @@ package org.drools.rule.builder;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.lang.descr.PredicateDescr;
+import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
 

@@ -16,6 +16,19 @@
 
 package org.drools.verifier.visitor;
 
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.CollectDescr;
+import org.drools.compiler.lang.descr.DeclarativeInvokerDescr;
+import org.drools.compiler.lang.descr.EntryPointDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.FieldConstraintDescr;
+import org.drools.compiler.lang.descr.FromDescr;
+import org.drools.compiler.lang.descr.OrDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.lang.descr.*;
 import org.drools.verifier.components.*;
 import org.drools.verifier.data.VerifierComponent;

@@ -16,7 +16,7 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.lang.descr.ImportDescr;
+import org.drools.compiler.lang.descr.ImportDescr;
 
 public class ImportError extends DroolsError {
     private final ImportDescr importDescr;

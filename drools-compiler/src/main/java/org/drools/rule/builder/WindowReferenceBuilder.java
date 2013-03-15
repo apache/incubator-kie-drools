@@ -1,7 +1,7 @@
 package org.drools.rule.builder;
 
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.WindowReferenceDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.WindowReference;

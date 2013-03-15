@@ -16,12 +16,10 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
-import java.util.HashSet;
-
-import org.drools.lang.descr.FunctionImportDescr;
-import org.drools.lang.descr.GlobalDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.FunctionImportDescr;
+import org.drools.compiler.lang.descr.GlobalDescr;
+import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

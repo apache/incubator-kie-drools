@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.io.impl.ByteArrayResource;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.io.ResourceType;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
 package org.drools.compiler.compiler;
 
-import org.drools.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 
 public class ReturnValueDescr extends BaseDescr {
     private String text;
