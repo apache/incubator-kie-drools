@@ -1,4 +1,4 @@
-package org.drools.compiler.xml.rules;
+package org.drools.compiler.compiler.xml.rules;
 
 import java.io.InputStreamReader;
 import java.util.List;

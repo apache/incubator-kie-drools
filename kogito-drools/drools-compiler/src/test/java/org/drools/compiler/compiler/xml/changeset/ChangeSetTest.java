@@ -1,4 +1,4 @@
-package org.drools.compiler.xml.changeset;
+package org.drools.compiler.compiler.xml.changeset;
 
 import java.io.File;
 import java.io.IOException;

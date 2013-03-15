@@ -1,6 +1,5 @@
-package org.drools.compiler.xml.rules;
+package org.drools.compiler.compiler.xml.rules;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
