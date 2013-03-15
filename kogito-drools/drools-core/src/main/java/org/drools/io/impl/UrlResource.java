@@ -39,7 +39,7 @@ import java.util.List;
 
 import org.drools.core.util.StringUtils;
 import org.drools.io.internal.InternalResource;
-import org.drools.util.codec.Base64;
+import org.drools.core.util.codec.Base64;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 
