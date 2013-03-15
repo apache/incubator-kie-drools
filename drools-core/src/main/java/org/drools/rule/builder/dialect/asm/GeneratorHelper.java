@@ -276,7 +276,7 @@ public final class GeneratorHelper {
                 boolean isObject = readMethod.equals("getValue");
                 String declarationType = declarations[i].getTypeName();
                 String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationType);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
+                mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/core/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
                 if (isObject) {
                     mv.visitTypeInsn(CHECKCAST, internalName(declarationType));
                 }
