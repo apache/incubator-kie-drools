@@ -5,17 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Enumeration;
-import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-
-import org.drools.kproject.KieProjectCDITest.KPTestLiteral;
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;
-import org.kie.builder.impl.ClasspathKieProject;
-import org.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.ClasspathKieProject;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.kie.runtime.KieContainer;
 
 public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {

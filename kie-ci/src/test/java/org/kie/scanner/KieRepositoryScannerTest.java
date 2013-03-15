@@ -10,7 +10,7 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieScanner;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 

@@ -3,7 +3,7 @@ package org.kie.scanner;
 import org.drools.rule.TypeMetaInfo;
 import org.kie.builder.KieModule;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 
 import java.io.File;
 import java.util.Collection;

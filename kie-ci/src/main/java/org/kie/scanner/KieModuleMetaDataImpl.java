@@ -5,7 +5,7 @@ import org.drools.kproject.ReleaseIdImpl;
 import org.drools.kproject.models.KieModuleModelImpl;
 import org.drools.rule.TypeMetaInfo;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.sonatype.aether.artifact.Artifact;
 
@@ -17,7 +17,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;

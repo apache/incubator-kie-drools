@@ -7,7 +7,7 @@ import org.kie.builder.KieFileSystem;
 import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.model.KieSessionModel;
 import org.kie.builder.ReleaseId;
-import org.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;

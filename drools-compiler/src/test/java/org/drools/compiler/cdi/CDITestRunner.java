@@ -29,9 +29,9 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.kie.KieServices;
-import org.kie.builder.impl.KieContainerImpl;
-import org.kie.builder.impl.KieRepositoryImpl;
-import org.kie.builder.impl.KieServicesImpl;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
+import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.kie.runtime.KieContainer;
 
 public class CDITestRunner extends BlockJUnit4ClassRunner {

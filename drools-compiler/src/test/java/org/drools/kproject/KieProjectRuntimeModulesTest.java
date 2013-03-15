@@ -7,10 +7,10 @@ import org.kie.KieBase;
 import org.kie.KieServices;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.model.KieModuleModel;
-import org.kie.builder.impl.FileKieModule;
-import org.kie.builder.impl.KieContainerImpl;
-import org.kie.builder.impl.KieModuleKieProject;
-import org.kie.builder.impl.ZipKieModule;
+import org.drools.compiler.kie.builder.impl.FileKieModule;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.kie.runtime.KieContainer;
 
 import java.io.IOException;
