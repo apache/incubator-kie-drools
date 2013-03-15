@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
+package org.drools.core.audit.event;
+
 /**
- * <body>
- * This is a utility for providing audit trails/explanations of rule actions.
- * </body>
+ * An event filter that can be used to filter log events.
  */
-package org.drools.audit;
+public interface ILogEventFilter {
+
+    /**
+     * Returns whether the given event should be filtered from the event log or not.
+     * @param event The log event
+     * @return Whether the event should be filtered from the event log or not.
+     */
+    boolean acceptEvent(LogEvent event);
+
+}

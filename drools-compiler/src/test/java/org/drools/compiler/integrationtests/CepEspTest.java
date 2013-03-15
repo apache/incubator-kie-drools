@@ -7,7 +7,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
-import org.drools.audit.WorkingMemoryFileLogger;
+import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.common.EventFactHandle;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.audit;
+package org.drools.core.audit;
 
 import org.drools.WorkingMemory;
-import org.drools.audit.event.LogEvent;
+import org.drools.core.audit.event.LogEvent;
 import org.kie.event.KnowledgeRuntimeEventManager;
 
 public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {

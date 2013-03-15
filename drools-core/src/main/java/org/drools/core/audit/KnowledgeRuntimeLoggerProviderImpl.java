@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.audit;
+package org.drools.core.audit;
 
 import org.kie.event.KieRuntimeEventManager;
 import org.kie.event.KnowledgeRuntimeEventManager;

@@ -68,7 +68,7 @@ import org.drools.compiler.StockTick;
 import org.drools.compiler.TestParam;
 import org.drools.compiler.Triangle;
 import org.drools.compiler.Win;
-import org.drools.audit.WorkingMemoryConsoleLogger;
+import org.drools.core.audit.WorkingMemoryConsoleLogger;
 import org.drools.base.RuleNameEndsWithAgendaFilter;
 import org.drools.base.RuleNameEqualsAgendaFilter;
 import org.drools.base.RuleNameMatchesAgendaFilter;

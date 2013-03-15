@@ -1,6 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.audit.KnowledgeRuntimeLoggerProviderImpl;
+import org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.command.impl.CommandFactoryServiceImpl;
 import org.drools.concurrent.ExecutorProviderImpl;
 import org.drools.io.impl.ResourceFactoryServiceImpl;

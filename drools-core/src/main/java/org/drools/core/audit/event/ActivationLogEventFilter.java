@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.audit.event;
+package org.drools.core.audit.event;
 
 /**
  * An event filter that can be used to filter assertion events.
