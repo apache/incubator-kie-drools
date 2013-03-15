@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.ClassFieldAccessor;
+import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.util.StringUtils;
 import org.drools.factmodel.traits.Alias;
 

@@ -17,7 +17,7 @@
 package org.drools.reteoo;
 
 import org.drools.RuleIntegrationException;
-import org.drools.base.SalienceInteger;
+import org.drools.core.base.SalienceInteger;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
@@ -43,18 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.drools.RuleIntegrationException;
-import org.drools.base.SalienceInteger;
-import org.drools.common.BaseNode;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.ReteooRuleBuilder;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.Rule;
-import org.drools.rule.WindowDeclaration;
-import org.drools.spi.Salience;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.

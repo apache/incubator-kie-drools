@@ -18,7 +18,7 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
-import org.drools.base.ValueType;
+import org.drools.core.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.VariableContextEntry;

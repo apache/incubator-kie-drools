@@ -18,10 +18,10 @@ package org.drools.reteoo;
 
 import org.drools.FactException;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassFieldReader;
-import org.drools.base.FieldFactory;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassFieldReader;
+import org.drools.core.base.FieldFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.test.model.Cheese;

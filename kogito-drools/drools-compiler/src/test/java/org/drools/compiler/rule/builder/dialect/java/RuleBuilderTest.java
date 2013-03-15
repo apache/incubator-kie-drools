@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 
-import org.drools.base.EnabledBoolean;
+import org.drools.core.base.EnabledBoolean;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.DateUtils;

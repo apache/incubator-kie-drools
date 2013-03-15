@@ -2,7 +2,7 @@ package org.drools.verifier.visitor;
 
 import java.util.List;
 
-import org.drools.base.evaluators.Operator;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.compiler.lang.descr.BaseDescr;

@@ -1,17 +1,5 @@
 package org.drools.compiler.lang;
 
-import java.io.*;
-import java.lang.reflect.*;
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.*;
-import org.drools.base.evaluators.EvaluatorRegistry;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 public class TestDRL {
     String stdout;
     String stderr;

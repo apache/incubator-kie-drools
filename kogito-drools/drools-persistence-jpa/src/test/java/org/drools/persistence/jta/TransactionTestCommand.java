@@ -23,7 +23,7 @@ import java.util.HashMap;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.base.MapGlobalResolver;
+import org.drools.core.base.MapGlobalResolver;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.EnvironmentFactory;

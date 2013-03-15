@@ -9,8 +9,8 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.drools.compiler.Person;
-import org.drools.base.ClassObjectType;
-import org.drools.base.mvel.MVELPredicateExpression;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.mvel.MVELPredicateExpression;
 import org.drools.common.InternalRuleBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.AlphaNode;

@@ -16,7 +16,7 @@
 
 package org.drools.reteoo.compiled;
 
-import org.drools.base.ClassFieldReader;
+import org.drools.core.base.ClassFieldReader;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.Sink;
 import org.drools.rule.ContextEntry;

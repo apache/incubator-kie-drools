@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.DroolsQuery;
-import org.drools.base.extractors.ArrayElementReader;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;

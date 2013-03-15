@@ -1,7 +1,7 @@
 package org.drools.compiler.compiler;
 
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.TypeResolver;
+import org.drools.core.base.ClassTypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
 import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.compiler.lang.descr.ImportDescr;

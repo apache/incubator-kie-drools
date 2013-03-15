@@ -20,19 +20,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassObjectType;
-import org.drools.base.ValueType;
-import org.drools.base.extractors.BaseNumberClassFieldReader;
-import org.drools.base.extractors.BaseObjectClassFieldReader;
-import org.drools.common.EventFactHandle;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.BaseNumberClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MathUtils;
 import org.drools.facttemplates.Fact;
 
 public class SelfNumberExtractor extends BaseNumberClassFieldReader

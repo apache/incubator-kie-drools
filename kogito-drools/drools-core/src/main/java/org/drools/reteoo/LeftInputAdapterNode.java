@@ -17,8 +17,8 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DroolsQuery;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleSets;

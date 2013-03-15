@@ -17,9 +17,9 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
-import org.drools.base.ValueType;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.ValueType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.EventFactHandle;

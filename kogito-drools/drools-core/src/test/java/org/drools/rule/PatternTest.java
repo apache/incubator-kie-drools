@@ -16,12 +16,10 @@
 
 package org.drools.rule;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.Cheese;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;

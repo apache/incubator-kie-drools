@@ -17,11 +17,11 @@
 package org.drools.common;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
-import org.drools.base.evaluators.EvaluatorRegistry;
-import org.drools.base.evaluators.Operator;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.index.IndexUtil.ConstraintType;

@@ -30,8 +30,8 @@ import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldAccessor;
-import org.drools.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassFieldAccessor;
+import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.common.AbstractRuleBase;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;

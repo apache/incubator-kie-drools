@@ -19,8 +19,8 @@ package org.drools.factmodel;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
 

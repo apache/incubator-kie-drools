@@ -3,7 +3,7 @@ package org.drools.compiler.compiler;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.TypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.ImportDescr;

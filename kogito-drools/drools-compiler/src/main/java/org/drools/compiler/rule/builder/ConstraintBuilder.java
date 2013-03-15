@@ -1,10 +1,10 @@
 package org.drools.compiler.rule.builder;
 
 
-import org.drools.base.EvaluatorWrapper;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EvaluatorDefinition;
-import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.compiler.lang.descr.BaseDescr;

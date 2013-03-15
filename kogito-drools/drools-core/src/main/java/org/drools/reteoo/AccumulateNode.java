@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.DroolsQuery;
+import org.drools.core.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;

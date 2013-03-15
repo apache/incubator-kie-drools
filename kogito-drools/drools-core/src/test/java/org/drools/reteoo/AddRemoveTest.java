@@ -17,15 +17,11 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.builder.BuildContext;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class AddRemoveTest extends DroolsTestCase {
     @Test

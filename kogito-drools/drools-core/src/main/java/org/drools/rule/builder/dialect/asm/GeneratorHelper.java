@@ -1,8 +1,8 @@
 package org.drools.rule.builder.dialect.asm;
 
 import org.drools.WorkingMemory;
-import org.drools.base.ClassTypeResolver;
-import org.drools.base.TypeResolver;
+import org.drools.core.base.ClassTypeResolver;
+import org.drools.core.base.TypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;

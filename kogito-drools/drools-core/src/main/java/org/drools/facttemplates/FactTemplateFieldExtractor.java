@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ValueType;
+import org.drools.core.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MathUtils;

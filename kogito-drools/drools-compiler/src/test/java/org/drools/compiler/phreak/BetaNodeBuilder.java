@@ -2,8 +2,8 @@ package org.drools.compiler.phreak;
 
 import java.beans.IntrospectionException;
 
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.SingleBetaConstraints;

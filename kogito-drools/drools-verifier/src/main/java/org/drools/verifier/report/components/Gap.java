@@ -18,7 +18,7 @@ package org.drools.verifier.report.components;
 
 import java.util.Collection;
 
-import org.drools.base.evaluators.Operator;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.LiteralRestriction;
 

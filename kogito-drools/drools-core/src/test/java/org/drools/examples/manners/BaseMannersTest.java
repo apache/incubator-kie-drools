@@ -17,11 +17,11 @@
 package org.drools.examples.manners;
 
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
-import org.drools.base.field.BooleanFieldImpl;
-import org.drools.base.field.LongFieldImpl;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.field.BooleanFieldImpl;
+import org.drools.core.base.field.LongFieldImpl;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;

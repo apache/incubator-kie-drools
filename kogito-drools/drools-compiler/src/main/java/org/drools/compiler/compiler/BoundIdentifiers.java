@@ -3,7 +3,7 @@ package org.drools.compiler.compiler;
 import java.util.Collections;
 import java.util.Map;
 
-import org.drools.base.EvaluatorWrapper;
+import org.drools.core.base.EvaluatorWrapper;
 import org.drools.rule.Declaration;
 
 public class BoundIdentifiers {

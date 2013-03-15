@@ -5,10 +5,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.base.BaseEvaluator;
-import org.drools.base.ValueType;
-import org.drools.base.evaluators.EvaluatorDefinition;
-import org.drools.base.evaluators.Operator;
+import org.drools.core.base.BaseEvaluator;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;

@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.tool.Rule;
-import org.drools.base.ClassObjectType;
-import org.drools.base.EvaluatorWrapper;
-import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
-import org.drools.base.accumulators.SumAccumulateFunction;
-import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELCompileable;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.accumulators.MVELAccumulatorFunctionExecutor;
+import org.drools.core.base.accumulators.SumAccumulateFunction;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DoubleBetaConstraints;

@@ -49,7 +49,7 @@ import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;

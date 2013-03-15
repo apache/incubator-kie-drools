@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
-import org.drools.base.mvel.MVELDebugHandler;
+import org.drools.core.base.mvel.MVELDebugHandler;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

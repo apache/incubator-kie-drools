@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.builder.BuildContext;

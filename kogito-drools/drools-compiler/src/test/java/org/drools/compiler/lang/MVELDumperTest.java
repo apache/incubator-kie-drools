@@ -3,10 +3,9 @@ package org.drools.compiler.lang;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
-import org.drools.base.evaluators.SetEvaluatorsDefinition;
+import org.drools.core.base.evaluators.MatchesEvaluatorsDefinition;
+import org.drools.core.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.compiler.compiler.DrlExprParser;
-import org.drools.compiler.lang.MVELDumper;
 import org.drools.compiler.lang.MVELDumper.MVELDumperContext;
 import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.compiler.lang.descr.BindingDescr;

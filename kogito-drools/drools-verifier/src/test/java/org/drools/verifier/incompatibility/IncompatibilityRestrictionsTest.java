@@ -18,8 +18,8 @@ package org.drools.verifier.incompatibility;
 
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
-import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.base.evaluators.Operator;
+import org.drools.core.base.RuleNameMatchesAgendaFilter;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;

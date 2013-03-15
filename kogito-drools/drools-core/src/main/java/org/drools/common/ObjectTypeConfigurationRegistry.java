@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.facttemplates.Fact;
 import org.drools.reteoo.ClassObjectTypeConf;
 import org.drools.reteoo.FactTemplateTypeConf;

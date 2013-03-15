@@ -26,7 +26,7 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
-import org.drools.base.RuleNameMatchesAgendaFilter;
+import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;

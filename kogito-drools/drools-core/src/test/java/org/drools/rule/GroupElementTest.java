@@ -16,13 +16,11 @@
 
 package org.drools.rule;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.Person;
 
 public class GroupElementTest {

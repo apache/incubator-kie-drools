@@ -18,7 +18,7 @@ package org.drools.common;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
-import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.util.ClassUtils;
 import org.drools.phreak.RuleNetworkEvaluatorActivation;

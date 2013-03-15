@@ -28,9 +28,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.drools.FactException;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
-import org.drools.base.ShadowProxy;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.ShadowProxy;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
 import org.drools.reteoo.builder.BuildContext;

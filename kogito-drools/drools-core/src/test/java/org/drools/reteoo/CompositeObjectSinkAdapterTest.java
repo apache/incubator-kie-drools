@@ -18,11 +18,11 @@ package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ValueType;
-import org.drools.base.field.LongFieldImpl;
-import org.drools.base.field.ObjectFieldImpl;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.field.LongFieldImpl;
+import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;

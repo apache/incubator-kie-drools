@@ -18,9 +18,9 @@ package org.drools.compiler.rule.builder.dialect.mvel;
 
 import java.util.Map;
 
-import org.drools.base.ClassObjectType;
-import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELPredicateExpression;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELPredicateExpression;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;

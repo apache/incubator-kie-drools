@@ -18,8 +18,8 @@ package org.drools.reteoo.builder;
 
 import org.drools.ActivationListenerFactory;
 import org.drools.RuleIntegrationException;
-import org.drools.base.ClassObjectType;
-import org.drools.base.mvel.MVELSalienceExpression;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;

@@ -27,7 +27,7 @@ import java.util.List;
 import org.drools.SessionConfiguration;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
-import org.drools.base.MapGlobalResolver;
+import org.drools.core.base.MapGlobalResolver;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalStatelessSession;

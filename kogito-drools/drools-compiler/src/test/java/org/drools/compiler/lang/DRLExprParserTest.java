@@ -18,7 +18,7 @@ package org.drools.compiler.lang;
 
 import junit.framework.TestCase;
 
-import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.compiler.lang.descr.BindingDescr;

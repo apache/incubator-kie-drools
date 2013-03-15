@@ -20,13 +20,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.SalienceInteger;
+import org.drools.core.base.SalienceInteger;
 import org.drools.rule.Rule;
 import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;

@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalWorkingMemory;

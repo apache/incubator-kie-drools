@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.EnabledBoolean;
-import org.drools.base.SalienceInteger;
-import org.drools.base.mvel.MVELObjectExpression;
+import org.drools.core.base.EnabledBoolean;
+import org.drools.core.base.SalienceInteger;
+import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.core.util.DateUtils;

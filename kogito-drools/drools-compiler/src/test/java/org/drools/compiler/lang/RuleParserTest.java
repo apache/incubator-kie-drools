@@ -29,11 +29,8 @@ import junit.framework.TestCase;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
-import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.lang.DRL5Lexer;
-import org.drools.compiler.lang.DRL5Parser;
-import org.drools.compiler.lang.DRLParser;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.compiler.lang.descr.AndDescr;

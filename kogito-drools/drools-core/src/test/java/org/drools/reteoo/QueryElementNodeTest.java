@@ -17,7 +17,7 @@
 package org.drools.reteoo;
 
 import org.drools.RuleBaseFactory;
-import org.drools.base.DroolsQuery;
+import org.drools.core.base.DroolsQuery;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;

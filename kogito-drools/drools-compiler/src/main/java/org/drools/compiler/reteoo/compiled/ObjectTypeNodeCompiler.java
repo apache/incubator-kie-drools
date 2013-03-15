@@ -1,7 +1,7 @@
 package org.drools.compiler.reteoo.compiled;
 
-import org.drools.base.ClassObjectType;
-import org.drools.base.ValueType;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.ValueType;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;

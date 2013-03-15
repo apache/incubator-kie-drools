@@ -18,9 +18,8 @@ package org.drools.runtime.rule.impl;
 
 import java.util.List;
 
-import org.drools.base.InternalViewChangedEventListener;
+import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;

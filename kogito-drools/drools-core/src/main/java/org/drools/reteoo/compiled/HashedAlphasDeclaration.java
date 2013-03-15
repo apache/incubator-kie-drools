@@ -16,7 +16,7 @@
 
 package org.drools.reteoo.compiled;
 
-import org.drools.base.ValueType;
+import org.drools.core.base.ValueType;
 
 import java.util.Map;
 import java.util.HashMap;

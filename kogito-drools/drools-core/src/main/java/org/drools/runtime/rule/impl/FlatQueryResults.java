@@ -18,13 +18,9 @@ package org.drools.runtime.rule.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,11 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
-import org.drools.base.extractors.ArrayElementReader;
 import org.drools.rule.Declaration;
-import org.drools.spi.ObjectType;
 import org.drools.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
 import org.drools.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.runtime.rule.FactHandle;

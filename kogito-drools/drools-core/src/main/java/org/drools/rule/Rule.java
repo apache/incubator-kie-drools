@@ -17,8 +17,8 @@
 package org.drools.rule;
 
 import org.drools.WorkingMemory;
-import org.drools.base.EnabledBoolean;
-import org.drools.base.SalienceInteger;
+import org.drools.core.base.EnabledBoolean;
+import org.drools.core.base.SalienceInteger;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;

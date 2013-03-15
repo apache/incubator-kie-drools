@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.util.StringUtils;
 import org.drools.rule.Declaration;
 import org.drools.spi.PatternExtractor;

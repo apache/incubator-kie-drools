@@ -29,9 +29,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
-import org.drools.base.extractors.ArrayElementReader;
-import org.drools.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor;
+import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;

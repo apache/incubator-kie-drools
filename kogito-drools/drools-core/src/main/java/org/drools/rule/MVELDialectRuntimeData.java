@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.drools.base.mvel.MVELCompileable;
+import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.spi.Wireable;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;

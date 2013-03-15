@@ -16,7 +16,7 @@
 
 package org.drools.rule;
 
-import org.drools.base.ClassObjectType;
+import org.drools.core.base.ClassObjectType;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.rule.constraint.MvelConstraint;

@@ -32,8 +32,8 @@ import org.kie.internal.utils.ClassLoaderUtil;
 
 import static org.junit.Assert.*;
 
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
 

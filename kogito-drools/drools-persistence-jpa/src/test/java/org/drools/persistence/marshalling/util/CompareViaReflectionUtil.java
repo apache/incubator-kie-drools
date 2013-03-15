@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicLongArray;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import org.drools.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.core.util.AbstractHashTable;

@@ -38,8 +38,8 @@ import org.drools.compiler.Primitives;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.StockTick;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.ActivationNode;
 import org.drools.common.InternalFactHandle;
@@ -190,7 +190,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                           rule.getLhs(),
                                                           tuple );
 
-        DefaultKnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( workingMemory );
+        DefaultKnowledgeHelper knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( workingMemory );
         knowledgeHelper.setActivation( activation );
 
         rule.getConsequence().evaluate( knowledgeHelper,
@@ -211,7 +211,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         rule = pkg.getRule( "rule-1" );
 
-        knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( workingMemory );
+        knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( workingMemory );
         knowledgeHelper.setActivation( activation );
 
         rule.getConsequence().evaluate( knowledgeHelper,
@@ -274,7 +274,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                           newRule.getLhs(),
                                                           tuple );
 
-        final DefaultKnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( workingMemory );
+        final DefaultKnowledgeHelper knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( workingMemory );
         knowledgeHelper.setActivation( activation );
 
         newRule.getConsequence().evaluate( knowledgeHelper,

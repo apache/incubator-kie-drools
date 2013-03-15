@@ -1,7 +1,7 @@
 package org.drools.verifier.jarloader;
 
 import com.google.common.collect.TreeMultimap;
-import org.drools.base.ClassTypeResolver;
+import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.util.asm.ClassFieldInspector;
 
 import java.io.IOException;

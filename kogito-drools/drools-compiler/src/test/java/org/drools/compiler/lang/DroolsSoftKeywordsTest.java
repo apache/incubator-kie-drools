@@ -1,8 +1,7 @@
 package org.drools.compiler.lang;
 
-import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
 
-import org.drools.compiler.lang.DroolsSoftKeywords;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
