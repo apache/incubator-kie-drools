@@ -9,7 +9,7 @@ import org.drools.common.InternalAgenda;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.integrationtests.SerializationHelper;
+import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Assert;

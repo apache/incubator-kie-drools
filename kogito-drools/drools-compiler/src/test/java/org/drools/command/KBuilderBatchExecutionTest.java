@@ -10,8 +10,8 @@ import org.drools.command.builder.KnowledgeBuilderGetErrorsCommand;
 import org.drools.command.builder.KnowledgeBuilderGetKnowledgePackagesCommand;
 import org.drools.command.builder.KnowledgeBuilderHasErrorsCommand;
 import org.drools.command.builder.NewKnowledgeBuilderCommand;
-import org.drools.integrationtests.DroolsTest.Bar;
-import org.drools.integrationtests.DroolsTest.Foo;
+import org.drools.compiler.integrationtests.DroolsTest.Bar;
+import org.drools.compiler.integrationtests.DroolsTest.Foo;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
@@ -121,8 +121,8 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         String ruleString 
         = "package org.drools.integrationtests;\n"
         + "import " + KBuilderBatchExecutionTest.class.getCanonicalName() + ";\n"
-        + "import org.drools.integrationtests.DroolsTest.Foo;\n"
-        + "import org.drools.integrationtests.DroolsTest.Bar;\n"
+        + "import DroolsTest.Foo;\n"
+        + "import DroolsTest.Bar;\n"
         + "rule test\n"
         + "when\n"
         + "      Foo($p : id, id < " + Integer.toString( NUM_FACTS ) + ")\n"

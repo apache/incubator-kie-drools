@@ -50,7 +50,7 @@ import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
-import org.drools.integrationtests.SerializationHelper;
+import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
