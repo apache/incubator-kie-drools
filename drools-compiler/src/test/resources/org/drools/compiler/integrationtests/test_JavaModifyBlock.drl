@@ -1,6 +1,6 @@
 package org.drools.compiler
 
-import org.drools.OuterClass.InnerClass;
+import org.drools.compiler.OuterClass.InnerClass;
 
 global java.util.List results;
 

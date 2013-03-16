@@ -1,6 +1,6 @@
 package org.drools.integrationtests
 
-import org.drools.SpecialString
+import org.drools.compiler.SpecialString
 import java.util.List
 
 
