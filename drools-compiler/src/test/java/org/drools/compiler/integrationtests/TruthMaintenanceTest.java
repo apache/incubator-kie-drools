@@ -33,7 +33,7 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.junit.Ignore;

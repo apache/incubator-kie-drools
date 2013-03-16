@@ -37,7 +37,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
-import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;

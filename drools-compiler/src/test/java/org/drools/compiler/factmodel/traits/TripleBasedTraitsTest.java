@@ -28,7 +28,7 @@ import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.factmodel.traits.TraitProxy;
 import org.drools.factmodel.traits.TraitableBean;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

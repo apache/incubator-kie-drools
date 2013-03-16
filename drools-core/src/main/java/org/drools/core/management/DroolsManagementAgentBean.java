@@ -17,8 +17,8 @@ package org.drools.core.management;
 
 import java.util.List;
 
-import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.kie.KnowledgeBase;
 import org.kie.runtime.StatefulKnowledgeSession;

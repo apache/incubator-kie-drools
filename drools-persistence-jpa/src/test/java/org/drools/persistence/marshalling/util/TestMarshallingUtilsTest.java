@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

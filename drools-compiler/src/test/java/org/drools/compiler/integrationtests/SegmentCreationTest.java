@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.JoinNode;

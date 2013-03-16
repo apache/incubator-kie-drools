@@ -40,7 +40,7 @@ import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;

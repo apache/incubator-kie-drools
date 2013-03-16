@@ -2,8 +2,8 @@ package org.drools.reteoo;
 
 import org.drools.RuleBase;
 import org.drools.core.common.BaseNode;
-import org.drools.impl.InternalKnowledgeBase;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.KnowledgeBase;
 import org.kie.runtime.KnowledgeRuntime;
 

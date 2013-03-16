@@ -25,7 +25,7 @@ import org.drools.core.common.InternalRuleBase;
 import org.drools.core.util.Entry;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.util.ObjectHashSet;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;

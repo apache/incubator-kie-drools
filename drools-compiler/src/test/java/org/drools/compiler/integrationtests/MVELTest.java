@@ -37,7 +37,7 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DateUtils;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.MapBackedClassLoader;

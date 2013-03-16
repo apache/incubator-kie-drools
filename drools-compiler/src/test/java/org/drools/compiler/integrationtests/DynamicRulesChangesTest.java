@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

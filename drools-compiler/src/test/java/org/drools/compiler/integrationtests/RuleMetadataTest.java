@@ -1,7 +1,7 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.rule.ConsequenceMetaData;
 import org.drools.rule.Rule;
 import org.junit.Test;

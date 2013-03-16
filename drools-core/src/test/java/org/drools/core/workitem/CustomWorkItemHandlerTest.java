@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.SessionConfiguration;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
