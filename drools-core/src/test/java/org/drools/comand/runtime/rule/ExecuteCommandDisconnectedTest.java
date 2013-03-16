@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.core.command.runtime.rule;
+package org.drools.comand.runtime.rule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,11 +92,11 @@ public class ExecuteCommandDisconnectedTest {
                                                                                         null,null,"ksession","localResults");
         ExecutionResults results = (ExecutionResults)commandService.execute(resolveFromContextCommand);
         
-        Assert.assertNotNull(results);
+        assertNotNull(results);
         
-        Assert.assertNotNull(results.getFactHandle("handle"));
+        assertNotNull(results.getFactHandle("handle"));
         
-        Assert.assertTrue(((DefaultFactHandle) results.getFactHandle("handle")).isDisconnected());
+        assertTrue(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
         
         
         
@@ -108,11 +108,11 @@ public class ExecuteCommandDisconnectedTest {
                                                                                         null,null,"ksession","localResults");
         results = (ExecutionResults)commandService.execute(resolveFromContextCommand);
         
-        Assert.assertNotNull(results);
+        assertNotNull(results);
         
-        Assert.assertNotNull(results.getFactHandle("handle"));
+        assertNotNull(results.getFactHandle("handle"));
         
-        Assert.assertFalse(((DefaultFactHandle) results.getFactHandle("handle")).isDisconnected());
+        assertFalse(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
         
     }
     
@@ -145,16 +145,16 @@ public class ExecuteCommandDisconnectedTest {
         ExecutionResults results = (ExecutionResults) commandService.execute(resolveFromContextCommand);
 
         // I'm not expecting any results here
-        Assert.assertNotNull(results);
+        assertNotNull(results);
 
         GetVariableCommand getVariableCmd = new GetVariableCommand("query123", "__TEMP__");
         resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(getVariableCmd,
                 null, null, "ksession", "localResults");
         NativeQueryResults queryResults = (NativeQueryResults) commandService.execute(resolveFromContextCommand);
 
-        Assert.assertNotNull(queryResults);
+        assertNotNull(queryResults);
 
-        Assert.assertEquals(0, queryResults.size());
+        assertEquals(0, queryResults.size());
         
         
     }
