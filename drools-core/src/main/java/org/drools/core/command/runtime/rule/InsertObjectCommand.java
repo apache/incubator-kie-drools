@@ -30,7 +30,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.util.StringUtils;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.command.Context;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;

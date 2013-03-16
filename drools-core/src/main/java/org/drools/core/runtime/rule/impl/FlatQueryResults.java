@@ -32,8 +32,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.rule.Declaration;
-import org.drools.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
-import org.drools.xml.jaxb.util.JaxbMapAdapter;
+import org.drools.core.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.QueryResultsRow;

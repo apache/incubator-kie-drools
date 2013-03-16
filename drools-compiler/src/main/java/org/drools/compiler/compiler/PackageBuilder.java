@@ -98,7 +98,7 @@ import org.drools.compiler.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
-import org.drools.xml.XmlChangeSetReader;
+import org.drools.core.xml.XmlChangeSetReader;
 import org.kie.ChangeSet;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.KnowledgeBuilderResult;

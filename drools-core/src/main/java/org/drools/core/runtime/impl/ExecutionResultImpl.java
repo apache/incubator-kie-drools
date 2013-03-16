@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.xml.jaxb.util.JaxbMapAdapter;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.runtime.ExecutionResults;
 
 @XmlRootElement(name="execution-results")
