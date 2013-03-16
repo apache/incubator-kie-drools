@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.time.Calendar;
+import org.drools.core.time.Calendar;
 
 public class QuartzHelper {
 

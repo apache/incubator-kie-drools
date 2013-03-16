@@ -16,7 +16,7 @@
 
 package org.drools.core.runtime;
 
-import org.drools.time.Calendar;
+import org.drools.core.time.Calendar;
 
 public interface Calendars {
     Calendar get(String identifier);
