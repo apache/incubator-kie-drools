@@ -1,4 +1,4 @@
-package org.drools.core.command.runtime.rule;
+package org.drools.comand.runtime.rule;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
@@ -49,11 +49,11 @@ public class GetFactHandlesCommandTest {
         GetFactHandlesCommand command = new GetFactHandlesCommand();
         Object result = commandService.execute(command);
         if( result instanceof Collection<?> ) { 
-            Assert.assertNotNull(result);
-            Assert.assertTrue(((Collection<?>) result).isEmpty());
+            assertNotNull(result);
+            assertTrue(((Collection<?>) result).isEmpty());
         }
         else { 
-           Assert.fail("result of command was NOT a collection of FactHandles");
+           fail("result of command was NOT a collection of FactHandles"); 
         }
     }
     
@@ -89,11 +89,11 @@ public class GetFactHandlesCommandTest {
         GetFactHandlesCommand command = new GetFactHandlesCommand(true);
         Object result = commandService.execute(command);
         if( result instanceof Collection<?> ) { 
-            Assert.assertNotNull(result);
-            Assert.assertTrue(((Collection<?>) result).isEmpty());
+            assertNotNull(result);
+            assertTrue(((Collection<?>) result).isEmpty());
         }
         else { 
-           Assert.fail("result of command was NOT a collection of FactHandles");
+           fail("result of command was NOT a collection of FactHandles"); 
         }
     }
 
@@ -120,8 +120,8 @@ public class GetFactHandlesCommandTest {
         FactHandle disconnectedFactHandle = (FactHandle) ((Collection<FactHandle>) result).toArray()[0];
       
         // Test fact handle collections
-        Assert.assertTrue(factHandle == connectedFactHandle);
-        Assert.assertTrue(!(factHandle == disconnectedFactHandle));
+        assertTrue( factHandle == connectedFactHandle );
+        assertTrue( ! (factHandle == disconnectedFactHandle) );
     }
 
     @Test
@@ -164,16 +164,16 @@ public class GetFactHandlesCommandTest {
                }
             }
         }
-        Assert.assertTrue(factHandlesCopy.isEmpty());
+        assertTrue( factHandlesCopy.isEmpty() );
         
         for( int i = 0; i < disconnectedFactHandles.size(); ++i ) { 
             for( Object disconnectedFact : disconnectedFactHandles ) { 
                for( Object fact : factHandles ) { 
-                  Assert.assertTrue(!(fact == disconnectedFact));
+                  assertTrue( ! (fact == disconnectedFact) );
                }
             }
         }
-        Assert.assertTrue(factHandles.size() == disconnectedFactHandles.size());
+        assertTrue( factHandles.size() == disconnectedFactHandles.size() );
         
     }
 
@@ -187,16 +187,16 @@ public class GetFactHandlesCommandTest {
                 factHandles = (Collection<FactHandle>) collection;
             }
             catch( Exception e ) { 
-               Assert.fail("Collection was not a Colleciton<FactHandle> " + e.getMessage());
+               fail( "Collection was not a Colleciton<FactHandle> " + e.getMessage()); 
             }
             
-            Assert.assertTrue(!factHandles.isEmpty());
-            Assert.assertTrue(factHandles.size() == 1);
+            assertTrue(! factHandles.isEmpty());
+            assertTrue(factHandles.size() == 1);
             InternalFactHandle factHandle = (InternalFactHandle) factHandles.toArray()[0];
-            Assert.assertTrue(fact.equals(factHandle.getObject()));
+            assertTrue(fact.equals(factHandle.getObject()));
          }
          else { 
-            Assert.fail("result of command was NOT a collection of FactHandles");
+            fail("result of command was NOT a collection of FactHandles"); 
          }
     }
 
@@ -204,18 +204,18 @@ public class GetFactHandlesCommandTest {
         factSet = (HashSet<String>) factSet.clone();
         if( collection instanceof Collection<?> ) { 
             Collection<FactHandle> factHandles = (Collection<FactHandle>) collection;
-            Assert.assertTrue(!factHandles.isEmpty());
-            Assert.assertTrue(factSet.size() + "inserted but only " + factHandles.size() + " facts retrieved", factHandles.size() == factSet.size());
+            assertTrue(! factHandles.isEmpty());
+            assertTrue(factSet.size() + "inserted but only " + factHandles.size() + " facts retrieved", factHandles.size() == factSet.size());
             Object [] internalFactHandles = factHandles.toArray();
             for( int i = 0; i < internalFactHandles.length; ++i ) { 
                 Object factObject = ((InternalFactHandle) internalFactHandles[i]).getObject();
-                Assert.assertTrue(factSet.contains(factObject));
+                assertTrue(factSet.contains(factObject));
                 factSet.remove(factObject);
             }
-            Assert.assertTrue("Additional facts found that weren't inserted.", factSet.isEmpty());
+            assertTrue( "Additional facts found that weren't inserted.", factSet.isEmpty() );
         }
         else { 
-            Assert.fail("result of command was NOT a collection of FactHandles");
+            fail("result of command was NOT a collection of FactHandles"); 
         }
     }
 
