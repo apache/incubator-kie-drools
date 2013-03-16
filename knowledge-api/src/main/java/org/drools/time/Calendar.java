@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.time;
+package org.drools.core.time;
 
 public interface Calendar {
     boolean isTimeIncluded(long timestamp);

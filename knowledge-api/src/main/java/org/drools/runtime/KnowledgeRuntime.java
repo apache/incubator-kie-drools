@@ -22,7 +22,7 @@ import org.drools.KnowledgeBase;
 import org.drools.core.event.KnowledgeRuntimeEventManager;
 import org.drools.core.runtime.process.ProcessRuntime;
 import org.drools.core.runtime.rule.WorkingMemory;
-import org.drools.time.SessionClock;
+import org.drools.core.time.SessionClock;
 
 public interface KnowledgeRuntime
     extends

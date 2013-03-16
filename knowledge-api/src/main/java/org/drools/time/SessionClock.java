@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.time;
+package org.drools.core.time;
 
 /**
  * A clock interface that all engine clocks must implement
