@@ -46,7 +46,7 @@ import org.drools.core.event.RuleBaseEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.management.DroolsManagementAgent;
+import org.drools.core.management.DroolsManagementAgent;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;

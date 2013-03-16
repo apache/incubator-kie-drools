@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.management;
+package org.drools.core.management;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,9 +37,9 @@ import org.drools.core.event.AgendaGroupPushedEvent;
 import org.drools.core.event.BeforeActivationFiredEvent;
 import org.drools.core.event.RuleFlowGroupActivatedEvent;
 import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.management.KieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
-import org.drools.management.KieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
-import org.drools.management.KieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
+import org.drools.core.management.KieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
+import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
+import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;
@@ -82,7 +82,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#reset()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#reset()
      */
     public void reset() {
         this.agendaStats.reset();
@@ -98,56 +98,56 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getName()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getName()
      */
     public ObjectName getName() {
         return name;
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getKnowledgeBaseId()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getKnowledgeBaseId()
      */
     public String getKieBaseId() {
         return kbase.getId();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getKnowledgeSessionId()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getKnowledgeSessionId()
      */
     public int getKieSessionId() {
         return ksession.getId();
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalFactCount()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getTotalFactCount()
      */
     public long getTotalFactCount() {
         return ksession.getTotalFactCount();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalMatchesFired()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getTotalMatchesFired()
      */
     public long getTotalMatchesFired() {
         return this.agendaStats.getConsolidatedStats().matchesFired.get();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalMatchesCancelled()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getTotalMatchesCancelled()
      */
     public long getTotalMatchesCancelled() {
         return this.agendaStats.getConsolidatedStats().matchesCancelled.get();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalMatchesCreated()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getTotalMatchesCreated()
      */
     public long getTotalMatchesCreated() {
         return this.agendaStats.getConsolidatedStats().matchesCreated.get();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getTotalFiringTime()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getTotalFiringTime()
      */
     public long getTotalFiringTime() {
         // converting nano secs to milli secs
@@ -159,7 +159,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getAverageFiringTime()
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getAverageFiringTime()
      */
     public double getAverageFiringTime() {
         long fires = this.agendaStats.getConsolidatedStats().matchesFired.get();
@@ -169,7 +169,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeSessionMonitoringMBean#getStatsForRule(java.lang.String)
+     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getStatsForRule(java.lang.String)
      */
     public String getStatsForRule( String ruleName ) {
         AgendaStatsData data = this.agendaStats.getRuleStats( ruleName );

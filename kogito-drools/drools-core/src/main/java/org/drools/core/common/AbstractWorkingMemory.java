@@ -50,7 +50,7 @@ import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.event.WorkingMemoryEventListener;
 import org.drools.core.event.WorkingMemoryEventSupport;
-import org.drools.management.DroolsManagementAgent;
+import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactImpl;
