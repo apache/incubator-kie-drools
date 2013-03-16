@@ -17,30 +17,8 @@
 package org.drools.agent;
 
 
-import java.io.File;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.kie.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.kie.event.knowledgeagent.AfterResourceProcessedEvent;
-import org.kie.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.kie.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.kie.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.kie.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.kie.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.kie.io.ResourceChangeScannerConfiguration;
-import org.kie.io.ResourceFactory;
-
-import static org.junit.Assert.*;
-
-import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.ResourceChangeNotifierImpl;
-import org.drools.io.impl.ResourceChangeScannerImpl;
 
 public class CompilerIndependenceTest {
 

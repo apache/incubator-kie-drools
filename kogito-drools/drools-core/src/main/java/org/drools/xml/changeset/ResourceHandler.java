@@ -19,10 +19,10 @@ package org.drools.xml.changeset;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.KnowledgeResource;
-import org.drools.io.impl.UrlResource;
-import org.drools.io.internal.InternalResource;
+import org.drools.core.io.impl.ClassPathResource;
+import org.drools.core.io.impl.KnowledgeResource;
+import org.drools.core.io.impl.UrlResource;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

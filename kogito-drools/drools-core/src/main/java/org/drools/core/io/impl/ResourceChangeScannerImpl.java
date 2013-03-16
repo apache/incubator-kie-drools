@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.io.impl;
+package org.drools.core.io.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.drools.io.internal.InternalResource;
+import org.drools.core.io.internal.InternalResource;
 import org.kie.ChangeSet;
 import org.kie.SystemEventListener;
 import org.kie.concurrent.ExecutorProviderFactory;

@@ -16,7 +16,7 @@
 package org.drools.examples.decisiontable;
 
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
-import org.drools.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;

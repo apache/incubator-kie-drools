@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.io.impl;
+package org.drools.core.io.impl;
 
-import org.drools.io.internal.InternalResource;
+import org.drools.core.io.internal.InternalResource;
 import org.kie.io.Resource;
 
 import java.io.Externalizable;

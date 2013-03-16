@@ -17,8 +17,7 @@
 package org.drools.examples.traits;
 
 
-import org.drools.factmodel.traits.TraitFactory;
-import org.drools.io.impl.ClassPathResource;
+import org.drools.core.io.impl.ClassPathResource;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.io.impl;
+package org.drools.core.io.impl;
 
 import java.io.Externalizable;
 import java.io.File;
@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.util.StringUtils;
-import org.drools.io.internal.InternalResource;
+import org.drools.core.io.internal.InternalResource;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;

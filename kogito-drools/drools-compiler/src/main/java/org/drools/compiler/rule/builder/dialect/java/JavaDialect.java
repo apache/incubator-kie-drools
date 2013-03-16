@@ -45,7 +45,7 @@ import org.drools.compiler.rule.builder.dialect.asm.ASMReturnValueStubBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELEnabledBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELSalienceBuilder;
 import org.drools.core.util.StringUtils;
-import org.drools.io.internal.InternalResource;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;

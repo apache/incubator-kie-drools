@@ -27,7 +27,7 @@ import java.util.List;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.io.impl.ClassPathResource;
+import org.drools.core.io.impl.ClassPathResource;
 import org.drools.persistence.util.PersistenceUtil;
 import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.junit.After;

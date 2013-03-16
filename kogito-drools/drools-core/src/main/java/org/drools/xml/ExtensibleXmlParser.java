@@ -67,7 +67,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
     // ----------------------------------------------------------------------
     // Constants
     // ----------------------------------------------------------------------
-    public static final String  ENTITY_RESOLVER_PROPERTY_NAME = "org.drools.io.EntityResolver";
+    public static final String  ENTITY_RESOLVER_PROPERTY_NAME = "org.drools.core.io.EntityResolver";
 
     /** Namespace URI for the general tags. */
     public static final String  RULES_NAMESPACE_URI           = "http://drools.org/rules";

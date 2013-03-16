@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.io.impl;
+package org.drools.core.io.impl;
 
 import org.kie.definition.KieDescr;
 import org.kie.io.Resource;

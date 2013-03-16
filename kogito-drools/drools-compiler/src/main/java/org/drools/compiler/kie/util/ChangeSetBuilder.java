@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;

@@ -18,7 +18,7 @@ package org.drools.xml.changeset;
 
 import java.util.HashSet;
 
-import org.drools.io.impl.ChangeSetImpl;
+import org.drools.core.io.impl.ChangeSetImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

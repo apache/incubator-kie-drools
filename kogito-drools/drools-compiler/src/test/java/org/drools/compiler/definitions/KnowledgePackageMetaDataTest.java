@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.drools.core.definitions.rule.impl.GlobalImpl;
-import org.drools.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

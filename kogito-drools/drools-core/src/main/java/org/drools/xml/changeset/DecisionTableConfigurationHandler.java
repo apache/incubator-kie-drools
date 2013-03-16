@@ -20,7 +20,7 @@ import java.util.HashSet;
 
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.util.StringUtils;
-import org.drools.io.internal.InternalResource;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

@@ -19,7 +19,7 @@ package org.drools.core.osgi;
 import java.util.Hashtable;
 
 import org.drools.core.impl.KnowledgeBaseFactoryServiceImpl;
-import org.drools.io.impl.ResourceFactoryServiceImpl;
+import org.drools.core.io.impl.ResourceFactoryServiceImpl;
 import org.drools.core.marshalling.impl.MarshallerProviderImpl;
 import org.kie.KnowledgeBaseFactoryService;
 import org.kie.Service;

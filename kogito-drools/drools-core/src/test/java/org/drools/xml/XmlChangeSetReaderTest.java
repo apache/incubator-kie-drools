@@ -16,7 +16,7 @@
 package org.drools.xml;
 
 import java.util.Collection;
-import org.drools.io.internal.InternalResource;
+import org.drools.core.io.internal.InternalResource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.ChangeSet;

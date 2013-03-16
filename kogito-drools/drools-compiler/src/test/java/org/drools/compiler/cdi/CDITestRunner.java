@@ -16,7 +16,7 @@ import java.io.File;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.FileManager;
-import org.drools.io.impl.ResourceFactoryServiceImpl;
+import org.drools.core.io.impl.ResourceFactoryServiceImpl;
 import org.drools.compiler.kproject.AbstractKnowledgeTest;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
