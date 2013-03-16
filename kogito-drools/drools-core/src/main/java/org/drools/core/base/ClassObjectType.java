@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.drools.InitialFact;
 import org.drools.reteoo.InitialFactImpl;
-import org.drools.spi.ClassWireable;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.ClassWireable;
+import org.drools.core.spi.ObjectType;
 import org.kie.runtime.rule.Match;
 
 /**

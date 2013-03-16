@@ -9,8 +9,8 @@ import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Constraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Constraint;
 import org.kie.conf.IndexPrecedenceOption;
 
 import java.util.ArrayList;

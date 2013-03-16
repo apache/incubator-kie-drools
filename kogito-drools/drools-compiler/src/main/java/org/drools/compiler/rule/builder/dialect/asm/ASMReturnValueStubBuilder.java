@@ -7,10 +7,10 @@ import org.drools.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.rule.builder.dialect.asm.InvokerDataProvider;
 import org.drools.rule.builder.dialect.asm.ReturnValueGenerator;
 import org.drools.rule.builder.dialect.asm.ReturnValueStub;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.FieldValue;
-import org.drools.spi.ReturnValueExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.ReturnValueExpression;
+import org.drools.core.spi.Tuple;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 

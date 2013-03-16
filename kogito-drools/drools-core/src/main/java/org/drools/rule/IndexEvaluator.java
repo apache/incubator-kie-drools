@@ -1,7 +1,7 @@
 package org.drools.rule;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.InternalReadAccessor;
 
 import java.io.Serializable;
 

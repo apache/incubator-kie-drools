@@ -25,7 +25,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 import java.util.ArrayList;
 import java.util.Collections;

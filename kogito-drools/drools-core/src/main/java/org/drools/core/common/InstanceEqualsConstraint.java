@@ -24,7 +24,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
-import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
 
 /**
  * InstanceEqualsConstraint

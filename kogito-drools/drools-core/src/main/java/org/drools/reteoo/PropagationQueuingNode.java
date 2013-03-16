@@ -29,7 +29,7 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 import java.io.Externalizable;
 import java.io.IOException;

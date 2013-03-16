@@ -24,10 +24,10 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.AcceptsWriteAccessor;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.WriteAccessor;
+import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.AcceptsWriteAccessor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 
 /**
  * This is a wrapper for a ClassFieldExtractor that provides

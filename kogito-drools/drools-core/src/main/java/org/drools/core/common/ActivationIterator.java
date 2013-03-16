@@ -5,7 +5,7 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.kie.KieBase;
 import org.kie.runtime.StatefulKnowledgeSession;
 

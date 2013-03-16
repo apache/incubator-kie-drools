@@ -34,7 +34,7 @@ public class RuleFlowGroupImpl implements RuleFlowGroup, Externalizable {
         
     }
     
-    RuleFlowGroupImpl(org.drools.spi.RuleFlowGroup ruleflowGroup, InternalAgenda agenda) {
+    RuleFlowGroupImpl(org.drools.core.spi.RuleFlowGroup ruleflowGroup, InternalAgenda agenda) {
         this.name = ruleflowGroup.getName();
         this.agenda = agenda;
     }

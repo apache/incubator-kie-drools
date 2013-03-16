@@ -16,8 +16,8 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Rule;
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.spi.DeclarationScopeResolver;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.DeclarationScopeResolver;
+import org.drools.core.spi.KnowledgeHelper;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 

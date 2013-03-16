@@ -490,7 +490,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         mv.visitFieldInsn( GETSTATIC,
                 BuildUtils.getInternalType( masterName ),
                 field.getName()+"_reader",
-                "Lorg/drools/spi/InternalReadAccessor;");
+                "Lorg/drools/core/spi/InternalReadAccessor;");
 
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn( GETFIELD,
@@ -502,7 +502,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
                 BuildUtils.getTypeDescriptor( fieldType ) :
                 "Ljava/lang/Object;";
         mv.visitMethodInsn( INVOKEINTERFACE,
-                "org/drools/spi/InternalReadAccessor",
+                "org/drools/core/spi/InternalReadAccessor",
                 BuildUtils.extractor( fieldType ),
                 "(Ljava/lang/Object;)" + returnType );
     }
@@ -514,7 +514,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         mv.visitFieldInsn( GETSTATIC,
                 BuildUtils.getInternalType( masterName ),
                 fieldName + "_writer",
-                "Lorg/drools/spi/WriteAccessor;");
+                "Lorg/drools/core/spi/WriteAccessor;");
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn( GETFIELD,
                 BuildUtils.getInternalType( masterName ),
@@ -530,7 +530,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
                 BuildUtils.getTypeDescriptor( fieldType ) :
                 "Ljava/lang/Object;";
         mv.visitMethodInsn( INVOKEINTERFACE,
-                "org/drools/spi/WriteAccessor",
+                "org/drools/core/spi/WriteAccessor",
                 BuildUtils.injector( fieldType ),
                 "(Ljava/lang/Object;" + argType + ")V");
 

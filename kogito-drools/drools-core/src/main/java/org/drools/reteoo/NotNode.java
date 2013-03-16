@@ -30,7 +30,7 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;

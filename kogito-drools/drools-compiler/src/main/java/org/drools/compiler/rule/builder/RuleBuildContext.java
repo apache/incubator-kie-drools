@@ -27,7 +27,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
-import org.drools.spi.DeclarationScopeResolver;
+import org.drools.core.spi.DeclarationScopeResolver;
 
 /**
  * A context for the current build

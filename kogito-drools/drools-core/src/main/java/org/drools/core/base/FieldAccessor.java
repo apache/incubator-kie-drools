@@ -16,8 +16,8 @@
 
 package org.drools.core.base;
 
-import org.drools.spi.ReadAccessor;
-import org.drools.spi.WriteAccessor;
+import org.drools.core.spi.ReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 
 
 /**

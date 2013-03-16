@@ -17,7 +17,7 @@
 package org.drools.reteoo;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 public interface RightTupleSink extends Sink {
 

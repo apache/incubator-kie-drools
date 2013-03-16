@@ -8,8 +8,8 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.Query;
 import org.drools.rule.constraint.QueryNameConstraint;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
 
 
 public class QueryBuilder implements EngineElementBuilder {

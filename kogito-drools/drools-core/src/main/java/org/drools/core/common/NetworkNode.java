@@ -19,7 +19,7 @@ package org.drools.core.common;
 import java.io.Externalizable;
 import java.util.Map;
 
-import org.drools.spi.RuleComponent;
+import org.drools.core.spi.RuleComponent;
 import org.kie.definition.rule.Rule;
 
 /**

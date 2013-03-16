@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.base.ValueType;
-import org.drools.spi.Evaluator;
+import org.drools.core.spi.Evaluator;
 
 /**
  * A simple helper class to store Evaluators for a given set of

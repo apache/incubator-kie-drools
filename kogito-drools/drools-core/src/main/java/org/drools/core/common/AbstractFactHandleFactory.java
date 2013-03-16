@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.spi.FactHandleFactory;
+import org.drools.core.spi.FactHandleFactory;
 import org.kie.runtime.rule.SessionEntryPoint;
 
 public abstract class AbstractFactHandleFactory

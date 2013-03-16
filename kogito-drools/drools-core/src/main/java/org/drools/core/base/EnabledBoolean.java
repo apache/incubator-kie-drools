@@ -24,8 +24,8 @@ import java.io.ObjectOutput;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.spi.Enabled;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.Enabled;
+import org.drools.core.spi.Tuple;
 
 public class EnabledBoolean
     implements

@@ -4,7 +4,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.spi.Constraint;
+import org.drools.core.spi.Constraint;
 import org.junit.Test;
 
 import java.util.HashMap;

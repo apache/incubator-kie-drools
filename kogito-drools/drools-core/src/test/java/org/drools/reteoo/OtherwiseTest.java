@@ -34,8 +34,8 @@ import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.WorkingMemory;
-import org.drools.spi.Consequence;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.KnowledgeHelper;
 
 /**
  * This tests the "otherwise" feature.

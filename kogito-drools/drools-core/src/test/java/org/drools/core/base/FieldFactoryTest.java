@@ -24,7 +24,7 @@ import java.util.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.spi.FieldValue;
+import org.drools.core.spi.FieldValue;
 import org.drools.type.DateFormatsImpl;
 
 public class FieldFactoryTest {

@@ -14,11 +14,11 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.rule.IndexableConstraint;
-import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.Constraint;
-import org.drools.spi.FieldValue;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.InternalReadAccessor;
 
 public class QueryNameConstraint implements
         AlphaNodeFieldConstraint,

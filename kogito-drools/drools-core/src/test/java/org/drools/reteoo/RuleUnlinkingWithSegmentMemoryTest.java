@@ -16,7 +16,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.rule.GroupElement.Type;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;

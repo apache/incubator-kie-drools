@@ -45,10 +45,10 @@ import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.Rete;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
-import org.drools.spi.FactHandleFactory;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.PropagationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

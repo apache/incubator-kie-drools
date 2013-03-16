@@ -2227,7 +2227,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         // JBRULES-3538
         String str =
                 "import java.util.*;\n" +
-                "import AccumulateTest.MyPerson;\n" +
+                "import " + MyPerson.class.getName() + ";\n" +
                 "dialect \"mvel\"\n" +
                 "\n" +
                 "rule \"Test\"\n" +

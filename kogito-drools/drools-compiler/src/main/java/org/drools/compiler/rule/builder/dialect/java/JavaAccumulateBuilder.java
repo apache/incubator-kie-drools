@@ -49,9 +49,9 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
-import org.drools.spi.Accumulator;
-import org.drools.spi.DeclarationScopeResolver;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.DeclarationScopeResolver;
+import org.drools.core.spi.InternalReadAccessor;
 import org.kie.runtime.rule.AccumulateFunction;
 
 /**

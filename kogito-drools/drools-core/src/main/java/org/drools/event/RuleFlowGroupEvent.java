@@ -18,7 +18,7 @@ package org.drools.event;
 
 import java.util.EventObject;
 
-import org.drools.spi.RuleFlowGroup;
+import org.drools.core.spi.RuleFlowGroup;
 
 public class RuleFlowGroupEvent extends EventObject {
 

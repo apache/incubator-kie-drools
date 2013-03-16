@@ -27,11 +27,11 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.rule.Declaration;
-import org.drools.spi.Accumulator;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.ReturnValueExpression;
-import org.drools.spi.Tuple;
-import org.drools.spi.Wireable;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.ReturnValueExpression;
+import org.drools.core.spi.Tuple;
+import org.drools.core.spi.Wireable;
 
 /**
  * A Java accumulator function executor implementation

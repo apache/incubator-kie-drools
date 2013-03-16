@@ -34,7 +34,7 @@ import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
-import org.drools.spi.GlobalResolver;
+import org.drools.core.spi.GlobalResolver;
 import org.kie.KieBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.marshalling.Marshaller;

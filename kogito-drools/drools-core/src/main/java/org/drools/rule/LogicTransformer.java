@@ -30,9 +30,9 @@ import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.util.ArrayUtils;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.Constraint;
-import org.drools.spi.DataProvider;
-import org.drools.spi.DeclarationScopeResolver;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.DeclarationScopeResolver;
 
 /**
  * LogicTransformation is reponsible for removing redundant nodes and move Or

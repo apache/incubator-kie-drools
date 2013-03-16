@@ -59,7 +59,7 @@ import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.compiler.rule.builder.dialect.java.JavaFunctionBuilder;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.definition.rule.Rule;
 import org.kie.io.Resource;

@@ -20,7 +20,7 @@ import java.io.Externalizable;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.spi.RuleComponent;
+import org.drools.core.spi.RuleComponent;
 
 public interface RuleConditionElement
     extends

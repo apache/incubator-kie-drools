@@ -21,7 +21,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.drools.spi.GlobalResolver;
+import org.drools.core.spi.GlobalResolver;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

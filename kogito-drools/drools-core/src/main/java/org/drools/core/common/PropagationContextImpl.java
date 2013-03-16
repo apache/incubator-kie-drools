@@ -22,8 +22,8 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.WindowTupleList;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.PropagationContext;
 
 import java.io.IOException;
 import java.io.ObjectInput;

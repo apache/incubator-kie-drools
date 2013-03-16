@@ -4,8 +4,8 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.FieldValue;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.InternalReadAccessor;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 

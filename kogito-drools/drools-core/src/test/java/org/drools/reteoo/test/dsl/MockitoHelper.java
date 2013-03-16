@@ -39,7 +39,7 @@ import org.drools.reteoo.ObjectSinkNode;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.Sink;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.matchers.JUnitMatchers;

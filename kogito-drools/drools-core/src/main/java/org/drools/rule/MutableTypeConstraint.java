@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Constraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Constraint;
 
 /**
  * A base class for constraints

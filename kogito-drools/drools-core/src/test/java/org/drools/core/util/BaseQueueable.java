@@ -26,9 +26,9 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-import org.drools.spi.AgendaGroup;
-import org.drools.spi.Consequence;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.PropagationContext;
 
 public class BaseQueueable
     implements

@@ -27,7 +27,7 @@ import org.drools.reteoo.ClassObjectTypeConf;
 import org.drools.reteoo.FactTemplateTypeConf;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {
     private static final long serialVersionUID = 510l;

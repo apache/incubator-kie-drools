@@ -9,7 +9,7 @@ import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.spi.Consequence;
+import org.drools.core.spi.Consequence;
 import org.kie.io.Resource;
 
 import java.util.HashSet;

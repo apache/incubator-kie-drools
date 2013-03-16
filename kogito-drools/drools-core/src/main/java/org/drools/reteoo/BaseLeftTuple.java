@@ -21,8 +21,8 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.rule.Declaration;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 
 import java.util.Arrays;
 

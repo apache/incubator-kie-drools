@@ -29,16 +29,16 @@ import org.drools.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ReadAccessor;
-import org.drools.spi.Restriction;
-import org.drools.spi.ReturnValueExpression;
-import org.drools.spi.Tuple;
-import org.drools.spi.Wireable;
+import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ReadAccessor;
+import org.drools.core.spi.Restriction;
+import org.drools.core.spi.ReturnValueExpression;
+import org.drools.core.spi.Tuple;
+import org.drools.core.spi.Wireable;
 
 public class ReturnValueRestriction
     implements

@@ -26,7 +26,7 @@ import org.drools.QueryResults;
 import org.drools.StatelessSessionResult;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectStore;
-import org.drools.spi.GlobalResolver;
+import org.drools.core.spi.GlobalResolver;
 
 public class ReteStatelessSessionResult
     implements

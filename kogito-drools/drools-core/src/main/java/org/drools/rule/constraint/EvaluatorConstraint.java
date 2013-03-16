@@ -9,9 +9,9 @@ import org.drools.rule.IntervalProviderConstraint;
 import org.drools.rule.MutableTypeConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
-import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.InternalReadAccessor;
 import org.drools.time.Interval;
 
 import java.io.IOException;

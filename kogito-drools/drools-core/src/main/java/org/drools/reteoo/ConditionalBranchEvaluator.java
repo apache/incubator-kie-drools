@@ -3,7 +3,7 @@ package org.drools.reteoo;
 import org.drools.WorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.rule.EvalCondition;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.Tuple;
 
 import java.io.Externalizable;
 import java.io.IOException;

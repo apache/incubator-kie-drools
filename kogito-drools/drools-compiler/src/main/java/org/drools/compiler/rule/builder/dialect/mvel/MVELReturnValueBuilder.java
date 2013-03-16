@@ -31,7 +31,7 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 
 public class MVELReturnValueBuilder
     implements

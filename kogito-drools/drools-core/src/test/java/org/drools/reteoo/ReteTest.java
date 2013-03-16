@@ -38,7 +38,7 @@ import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.FactHandle;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 import org.junit.Before;
 import org.junit.Test;

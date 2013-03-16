@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.drools.time.Trigger;
 import org.kie.runtime.Calendars;
 

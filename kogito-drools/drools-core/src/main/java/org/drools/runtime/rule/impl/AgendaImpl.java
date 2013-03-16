@@ -36,7 +36,7 @@ public class AgendaImpl
     }
     
     public AgendaGroup getAgendaGroup(String name) {
-        org.drools.spi.AgendaGroup agendaGroup = this.agenda.getAgendaGroup( name );
+        org.drools.core.spi.AgendaGroup agendaGroup = this.agenda.getAgendaGroup( name );
         if (  agendaGroup != null ) {
             return new AgendaGroupImpl( agendaGroup, this.agenda );
         } else {
@@ -45,7 +45,7 @@ public class AgendaImpl
     }
     
     public ActivationGroup getActivationGroup(String name) {
-        org.drools.spi.ActivationGroup activationGroup = this.agenda.getActivationGroup( name );
+        org.drools.core.spi.ActivationGroup activationGroup = this.agenda.getActivationGroup( name );
         if (  activationGroup != null ) {
             return new ActivationGroupImpl( activationGroup, this.agenda );
         } else {
@@ -54,7 +54,7 @@ public class AgendaImpl
     }
     
     public RuleFlowGroup getRuleFlowGroup(String name) {
-        org.drools.spi.RuleFlowGroup ruleFlowGroup = this.agenda.getRuleFlowGroup( name );
+        org.drools.core.spi.RuleFlowGroup ruleFlowGroup = this.agenda.getRuleFlowGroup( name );
         if (  ruleFlowGroup != null ) {
             return new RuleFlowGroupImpl( ruleFlowGroup, this.agenda );
         } else {

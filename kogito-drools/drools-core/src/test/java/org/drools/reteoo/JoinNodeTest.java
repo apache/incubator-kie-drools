@@ -43,8 +43,8 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Test;
 

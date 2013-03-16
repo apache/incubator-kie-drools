@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import org.drools.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 public class WorkingMemoryEventSupport extends AbstractEventSupport<WorkingMemoryEventListener> {
 

@@ -21,7 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.base.ValueType;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.ObjectType;
 
 public class FactTemplateObjectType
     implements

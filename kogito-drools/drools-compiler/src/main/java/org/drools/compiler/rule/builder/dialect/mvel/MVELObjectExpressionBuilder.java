@@ -9,7 +9,7 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 
 import java.util.Arrays;
 import java.util.Map;

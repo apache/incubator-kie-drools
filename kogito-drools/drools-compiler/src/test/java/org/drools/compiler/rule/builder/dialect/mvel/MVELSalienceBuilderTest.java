@@ -29,9 +29,9 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.compiler.rule.builder.SalienceBuilder;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PatternExtractor;
-import org.drools.spi.Salience;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.PatternExtractor;
+import org.drools.core.spi.Salience;
 
 public class MVELSalienceBuilderTest {
     private InstrumentedBuildContent context;

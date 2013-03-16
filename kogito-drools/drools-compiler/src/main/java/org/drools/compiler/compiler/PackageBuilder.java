@@ -95,7 +95,7 @@ import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.compiler.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
 import org.drools.xml.XmlChangeSetReader;

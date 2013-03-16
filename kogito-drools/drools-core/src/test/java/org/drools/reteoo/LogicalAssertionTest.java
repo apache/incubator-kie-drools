@@ -49,10 +49,10 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.spi.Activation;
-import org.drools.spi.Consequence;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.PropagationContext;
 
 import org.junit.Before;
 import org.junit.Test;

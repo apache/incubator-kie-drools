@@ -2244,7 +2244,7 @@ public class MiscTest extends CommonTestMethodBase {
         person.setStatus( "start" );
         ksession.insert( person );
 
-        // TODO org.drools.spi.ConsequenceException: org.drools.FactException: Update error: handle not found for object:
+        // TODO ConsequenceException: org.drools.FactException: Update error: handle not found for object:
         //        ksession    = SerializationHelper.serializeObject(ksession);
         ksession.fireAllRules();
 
@@ -7546,7 +7546,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testEventsInDifferentPackages() {
         String str = "package org.drools.test\n" +
-                     "import org.drools.*\n" +
+                     "import org.drools.compiler.*\n" +
                      "declare StockTick\n" +
                      "    @role( event )\n" +
                      "end\n" +
@@ -9232,7 +9232,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testPackageImportWithMvelDialect() throws Exception {
         // JBRULES-2244
         String str = "package org.drools.test;\n" +
-                     "import org.drools.*\n" +
+                     "import org.drools.compiler.*\n" +
                      "dialect \"mvel\"\n" +
                      "rule R1 no-loop when\n" +
                      "   $p : Person( )" +
@@ -9274,7 +9274,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testMissingClosingBraceOnModify() throws Exception {
         // JBRULES-3436
         String str = "package org.drools.test;\n" +
-                     "import org.drools.*\n" +
+                     "import org.drools.compiler.*\n" +
                      "rule R1 when\n" +
                      "   $p : Person( )" +
                      "   $c : Cheese( )" +
@@ -9292,7 +9292,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testPrimitiveToBoxedCoercionInMethodArgument() throws Exception {
         String str = "package org.drools.test;\n" +
                      "import MiscTest\n" +
-                     "import org.drools.*\n" +
+                     "import org.drools.compiler.*\n" +
                      "rule R1 when\n" +
                      "   Person( $ag1 : age )" +
                      "   $p2 : Person( name == MiscTest.integer2String($ag1) )" +
@@ -9415,7 +9415,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testCheckDuplicateVariables() throws Exception {
         // JBRULES-3035
         String str = "package com.sample\n" +
-                     "import org.drools.*\n" +
+                     "import org.drools.compiler.*\n" +
                      "rule R1 when\n" +
                      "   Person( $a: age, $a: name ) // this should cause a compile-time error\n" +
                      "then\n" +
@@ -9769,7 +9769,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testInstanceof() throws Exception {
         // JBRULES-3591
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                      "rule R1 when\n" +
                      "   Person( address instanceof LongAddress )\n" +
                      "then\n" +
@@ -9788,7 +9788,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testFromNodeWithMultipleBetas() throws Exception {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                      "rule R1 when\n" +
                      "   $p : Person( $name : name, $addresses : addresses )\n" +
                      "   $c : Cheese( $type: type == $name )\n" +
@@ -9876,7 +9876,7 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     public void testGenericsList() throws Exception {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                      "rule R1 when\n" +
                      "   $c : Cheese( $type: type )\n" +
                      "   $p : Person( $name : name, addresses.get(0).street == $type )\n" +
@@ -9899,7 +9899,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testGenericsOption() throws Exception {
         // JBRULES-3579
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                      "rule R1 when\n" +
                      "   $c : Cheese( $type: type )\n" +
                      "   $p : Person( $name : name, addressOption.get.street == $type )\n" +
@@ -9962,7 +9962,7 @@ public class MiscTest extends CommonTestMethodBase {
         // JBRULES-3499
         String str1 = "global java.util.List names;";
 
-        String str2 = "import org.drools.*;\n" +
+        String str2 = "import org.drools.compiler.*;\n" +
                       "global java.util.List names;" +
                       "rule R1 when\n" +
                       "   $p : Person( )\n" +
@@ -9996,7 +9996,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testConstantLeft() {
         // JBRULES-3627
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                      "rule R1 when\n" +
                      "   $p : Person( \"Mark\" == name )\n" +
                      "then\n" +
@@ -10051,7 +10051,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testNullConstantLeft() {
         // JBRULES-3627
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                      "rule R1 when\n" +
                      "   $p : Person( null == name )\n" +
                      "then\n" +
@@ -10089,7 +10089,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testRemoveRuleWithFromNode() throws Exception {
         // JBRULES-3631
         String str =
-                "import org.drools.*;\n" +
+                "import org.drools.compiler.*;\n" +
                         "rule R1 when\n" +
                         "   not( Person( name == \"Mark\" ));\n" +
                         "then\n" +
@@ -10296,7 +10296,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testCommentWithCommaInRHS() {
         // JBRULES-3648
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                      "rule R1 when\n" +
                      "   $p : Person( age < name.length ) \n" +
                      "then\n" +

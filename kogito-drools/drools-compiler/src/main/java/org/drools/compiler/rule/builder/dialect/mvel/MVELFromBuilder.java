@@ -36,7 +36,7 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 
 /**
  * A builder for "from" conditional element

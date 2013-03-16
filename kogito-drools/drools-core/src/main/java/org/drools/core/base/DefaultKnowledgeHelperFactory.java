@@ -18,7 +18,7 @@ package org.drools.core.base;
 
 
 import org.drools.WorkingMemory;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 
 import java.io.Serializable;
 

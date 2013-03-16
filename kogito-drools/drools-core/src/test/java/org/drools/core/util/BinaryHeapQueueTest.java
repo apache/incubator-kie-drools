@@ -1,6 +1,6 @@
 package org.drools.core.util;
 
-import org.drools.spi.Consequence;
+import org.drools.core.spi.Consequence;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
@@ -22,10 +22,10 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
-import org.drools.spi.ConflictResolver;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.ConflictResolver;
+import org.drools.core.spi.PropagationContext;
 
 /**
  * Thes test class uses auxiliary test classes in org.kie.util:

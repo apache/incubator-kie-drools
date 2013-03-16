@@ -36,7 +36,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.ModifyPreviousTuples;
 import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ObjectSource;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.matchers.JUnitMatchers;

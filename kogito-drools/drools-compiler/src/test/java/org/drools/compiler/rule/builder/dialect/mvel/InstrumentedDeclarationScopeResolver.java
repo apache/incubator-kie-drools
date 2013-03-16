@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.spi.DeclarationScopeResolver;
+import org.drools.core.spi.DeclarationScopeResolver;
 
 public class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolver {
     private Map declarations;

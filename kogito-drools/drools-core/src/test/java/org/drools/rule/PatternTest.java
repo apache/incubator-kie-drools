@@ -27,8 +27,8 @@ import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
 
 public class PatternTest {
 

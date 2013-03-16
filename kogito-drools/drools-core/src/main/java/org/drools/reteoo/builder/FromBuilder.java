@@ -22,8 +22,8 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.From;
 import org.drools.rule.RuleConditionElement;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
 
 public class FromBuilder
     implements

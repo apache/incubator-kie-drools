@@ -6,7 +6,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.spi.DeclarationScopeResolver;
+import org.drools.core.spi.DeclarationScopeResolver;
 
 public class InstrumentedBuildContent extends RuleBuildContext {
     private DeclarationScopeResolver declarationScopeResolver;

@@ -51,7 +51,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.rule.EntryPoint;
-import org.drools.spi.GlobalResolver;
+import org.drools.core.spi.GlobalResolver;
 
 public class ReteooWorkingMemoryTest {
     /*

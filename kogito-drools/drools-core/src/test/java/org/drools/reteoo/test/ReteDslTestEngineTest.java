@@ -54,7 +54,7 @@ import org.drools.reteoo.test.dsl.NodeTestCaseResult.NodeTestResult;
 import org.drools.reteoo.test.dsl.NodeTestCaseResult.Result;
 import org.drools.reteoo.test.dsl.NodeTestDef;
 import org.drools.rule.Declaration;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 
 public class ReteDslTestEngineTest {

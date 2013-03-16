@@ -18,7 +18,7 @@ package org.drools;
 
 import java.util.Iterator;
 
-import org.drools.spi.GlobalResolver;
+import org.drools.core.spi.GlobalResolver;
 
 /**
  * StatelessSessionResults allow inspection of session after it has executed. Querries can still be executed, unless you serialise at which point the 

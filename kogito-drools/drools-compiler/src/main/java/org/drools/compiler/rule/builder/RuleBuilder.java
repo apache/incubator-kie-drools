@@ -39,7 +39,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELObjectExpressionBuilder;
-import org.drools.spi.Salience;
+import org.drools.core.spi.Salience;
 import org.drools.time.TimeUtils;
 import org.drools.time.impl.CronExpression;
 import org.drools.time.impl.CronTimer;

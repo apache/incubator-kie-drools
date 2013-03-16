@@ -19,7 +19,7 @@ package org.drools.reteoo;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.RightTupleList;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 public class RightTuple
     implements

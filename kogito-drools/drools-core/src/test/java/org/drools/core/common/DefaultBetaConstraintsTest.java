@@ -19,7 +19,7 @@ package org.drools.core.common;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.test.model.Cheese;
 
-import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.junit.Test;
 
 public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {

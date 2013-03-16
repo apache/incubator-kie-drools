@@ -30,8 +30,8 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.WorkingMemory;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.EvalExpression;
+import org.drools.core.spi.Tuple;
 
 public class PackageCompilationDataTest {
     public static class TestEvalExpression implements EvalExpression {

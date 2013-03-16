@@ -34,7 +34,7 @@ public class ActivationGroupImpl implements ActivationGroup, Externalizable {
         
     }
     
-    ActivationGroupImpl(org.drools.spi.ActivationGroup activationGroup, InternalAgenda agenda) {
+    ActivationGroupImpl(org.drools.core.spi.ActivationGroup activationGroup, InternalAgenda agenda) {
         this.name = activationGroup.getName();
         this.agenda = agenda;
     }

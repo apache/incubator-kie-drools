@@ -25,7 +25,7 @@ import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.rule.TypeDeclaration;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 import org.mvel2.ast.ASTNode;
 import org.mvel2.ast.WithNode;
 import org.mvel2.compiler.AccessorNode;

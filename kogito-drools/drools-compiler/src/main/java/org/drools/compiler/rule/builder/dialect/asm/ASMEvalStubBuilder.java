@@ -7,9 +7,9 @@ import org.drools.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.rule.builder.dialect.asm.EvalGenerator;
 import org.drools.rule.builder.dialect.asm.EvalStub;
 import org.drools.rule.builder.dialect.asm.InvokerDataProvider;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.EvalExpression;
+import org.drools.core.spi.Tuple;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 

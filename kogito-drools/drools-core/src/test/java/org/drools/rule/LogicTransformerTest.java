@@ -24,7 +24,7 @@ import java.io.IOException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.ObjectType;
 
 import org.junit.Test;
 

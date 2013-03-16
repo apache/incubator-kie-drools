@@ -30,8 +30,8 @@ import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
-import org.drools.spi.Accumulator;
-import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 
 public class CollectBuilder
     implements

@@ -5,7 +5,7 @@
          xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
          
   <import name="java.util.HashMap" />
-  <import name="org.drools.*" />
+  <import name="org.drools.compiler.*" />
     <importfunction name="org.drools.function" />
     
 </package>

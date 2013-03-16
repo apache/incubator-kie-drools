@@ -47,15 +47,15 @@ import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.WorkingMemory;
-import org.drools.spi.Activation;
-import org.drools.spi.ActivationGroup;
-import org.drools.spi.AgendaFilter;
-import org.drools.spi.AgendaGroup;
-import org.drools.spi.Consequence;
-import org.drools.spi.ConsequenceException;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleFlowGroup;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ActivationGroup;
+import org.drools.core.spi.AgendaFilter;
+import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.ConsequenceException;
+import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.RuleFlowGroup;
 import org.drools.time.impl.DurationTimer;
 
 import org.junit.Before;
@@ -113,7 +113,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // Add consequence. Notice here the context here for the add to ageyunda
         // is itself
-        rule1.setConsequence( new org.drools.spi.Consequence() {
+        rule1.setConsequence( new org.drools.core.spi.Consequence() {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -137,7 +137,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // Add consequence. Notice here the context here for the add to ageyunda
         // is itself
-        rule2.setConsequence( new org.drools.spi.Consequence() {
+        rule2.setConsequence( new org.drools.core.spi.Consequence() {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -218,7 +218,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // Add consequence. Notice here the context here for the add to ageyunda
         // is itself
-        rule1.setConsequence( new org.drools.spi.Consequence() {
+        rule1.setConsequence( new org.drools.core.spi.Consequence() {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -302,7 +302,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final Map results = new HashMap();
         // add consequence
-        rule.setConsequence( new org.drools.spi.Consequence() {
+        rule.setConsequence( new org.drools.core.spi.Consequence() {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,

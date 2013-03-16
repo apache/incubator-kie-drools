@@ -25,7 +25,7 @@ import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.RightTuple;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

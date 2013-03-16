@@ -52,10 +52,10 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.kie.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.Channel;
 import org.kie.runtime.KieRuntime;
@@ -482,7 +482,7 @@ public class DefaultKnowledgeHelper
                     }
                     Map.Entry<Long, String> entry = nodeInstances.entrySet().iterator().next();
                     ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
-                    org.drools.spi.ProcessContext context = new org.drools.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
+                    org.drools.core.spi.ProcessContext context = new org.drools.core.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
                     context.setProcessInstance(processInstance);
                     String nodeInstance = entry.getValue();
                     String[] nodeInstanceIds = nodeInstance.split(":");

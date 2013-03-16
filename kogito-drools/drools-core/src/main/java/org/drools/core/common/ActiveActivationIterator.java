@@ -2,7 +2,7 @@ package org.drools.core.common;
 
 import org.drools.core.util.Iterator;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ActiveActivationIterator

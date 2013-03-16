@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.spi.FieldValue;
+import org.drools.core.spi.FieldValue;
 
 public class DoubleFieldImpl
     implements

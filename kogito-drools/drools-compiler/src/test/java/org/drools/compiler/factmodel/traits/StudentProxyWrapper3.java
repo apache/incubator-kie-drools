@@ -24,8 +24,8 @@ import java.util.Set;
 import org.drools.core.util.TripleStore;
 import org.drools.factmodel.traits.TraitProxy;
 import org.drools.factmodel.traits.TripleBasedStruct;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.WriteAccessor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 
 public class StudentProxyWrapper3 extends TripleBasedStruct {
 

@@ -21,7 +21,7 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.*;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 
 /**
  * This class is used for reading an {@link ObjectTypeNode} using callbacks.

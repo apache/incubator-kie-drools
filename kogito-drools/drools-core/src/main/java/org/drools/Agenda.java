@@ -16,11 +16,10 @@
 
 package org.drools;
 
-import org.drools.WorkingMemory;
-import org.drools.spi.Activation;
-import org.drools.spi.ActivationGroup;
-import org.drools.spi.AgendaGroup;
-import org.drools.spi.RuleFlowGroup;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ActivationGroup;
+import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.RuleFlowGroup;
 
 /**
  * Agenda interface for the WorkingMemory

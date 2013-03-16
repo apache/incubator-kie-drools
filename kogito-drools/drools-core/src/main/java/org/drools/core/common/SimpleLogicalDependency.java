@@ -18,7 +18,7 @@ package org.drools.core.common;
 
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 
 /**
  * LogicalDependency is a special node for LinkedLists that maintains

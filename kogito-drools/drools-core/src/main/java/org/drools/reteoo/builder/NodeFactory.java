@@ -33,9 +33,9 @@ import org.drools.rule.From;
 import org.drools.rule.GroupElement;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.DataProvider;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.ObjectType;
 
 public interface NodeFactory {
 

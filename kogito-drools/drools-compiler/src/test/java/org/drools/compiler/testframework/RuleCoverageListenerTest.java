@@ -3,7 +3,7 @@ package org.drools.compiler.testframework;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.spi.Consequence;
+import org.drools.core.spi.Consequence;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,9 +18,9 @@ import org.drools.event.AfterActivationFiredEvent;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.PropagationContext;
 
 public class RuleCoverageListenerTest {
 

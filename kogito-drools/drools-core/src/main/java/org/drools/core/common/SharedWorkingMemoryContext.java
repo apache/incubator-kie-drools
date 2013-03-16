@@ -23,8 +23,8 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.spi.FactHandleFactory;
-import org.drools.spi.GlobalResolver;
+import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.spi.GlobalResolver;
 
 public class SharedWorkingMemoryContext {
     protected InternalRuleBase                  ruleBase;

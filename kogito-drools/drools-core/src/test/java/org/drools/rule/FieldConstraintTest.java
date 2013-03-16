@@ -31,9 +31,9 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.PredicateExpression;
+import org.drools.core.spi.Tuple;
 import org.junit.Before;
 import org.junit.Test;
 

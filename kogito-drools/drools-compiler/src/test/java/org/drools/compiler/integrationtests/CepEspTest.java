@@ -21,7 +21,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.ObjectType;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
@@ -2248,7 +2248,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                          IllegalAccessException,
                                          InterruptedException {
         String str = "package org.drools.cloud\n" +
-                     "import org.drools.*\n" +
+                     "import org.drools.compiler.*\n" +
                      "declare Event\n" +
                      "        @role ( event )\n" +
                      "        name : String\n" +

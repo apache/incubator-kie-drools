@@ -33,9 +33,9 @@ import org.drools.rule.Rule;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Consequence;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Test;
 
 public class JavaConsequenceBuilderTest {

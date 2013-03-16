@@ -40,9 +40,9 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
-import org.drools.spi.AgendaFilter;
-import org.drools.spi.GlobalExporter;
-import org.drools.spi.GlobalResolver;
+import org.drools.core.spi.AgendaFilter;
+import org.drools.core.spi.GlobalExporter;
+import org.drools.core.spi.GlobalResolver;
 
 public class ReteooStatelessSession
     implements

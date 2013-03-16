@@ -19,7 +19,7 @@ package org.drools.rule;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.WindowNode.WindowMemory;
-import org.drools.spi.RuleComponent;
+import org.drools.core.spi.RuleComponent;
 
 /**
  * An interface for all behavior implementations

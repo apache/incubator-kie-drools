@@ -35,7 +35,7 @@ import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElement.Type;
 import org.drools.rule.RuleConditionElement;
-import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
 
 public class GroupElementBuilder
     implements

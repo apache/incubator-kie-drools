@@ -6,8 +6,8 @@ import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleSink;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleComponent;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.RuleComponent;
 import org.kie.definition.rule.Rule;
 
 import java.io.IOException;

@@ -20,8 +20,8 @@ import java.util.PriorityQueue;
 
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.Queueable;
-import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.PropagationContext;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added

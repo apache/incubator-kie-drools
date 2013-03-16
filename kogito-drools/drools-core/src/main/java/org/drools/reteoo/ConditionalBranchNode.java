@@ -12,7 +12,7 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 import java.io.Externalizable;
 import java.io.IOException;

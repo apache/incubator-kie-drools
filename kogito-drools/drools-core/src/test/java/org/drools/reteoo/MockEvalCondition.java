@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.EvalExpression;
+import org.drools.core.spi.Tuple;
 
 public class MockEvalCondition extends EvalCondition {
 

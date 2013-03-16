@@ -21,8 +21,8 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Query;
 import org.drools.rule.QueryElement;
 import org.drools.rule.RuleConditionElement;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
 import org.kie.runtime.rule.Variable;
 import org.mvel2.MVEL;
 
