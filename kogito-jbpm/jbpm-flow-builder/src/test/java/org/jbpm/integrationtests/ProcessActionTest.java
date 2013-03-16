@@ -6,7 +6,7 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.drools.io.impl.ReaderResource;
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.Message;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.kie.KnowledgeBase;

@@ -23,11 +23,10 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.jms.XAConnectionFactory;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
-import org.drools.io.impl.ClassPathResource;
+import org.drools.core.io.impl.ClassPathResource;
 import org.hornetq.jms.server.embedded.EmbeddedJMS;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;

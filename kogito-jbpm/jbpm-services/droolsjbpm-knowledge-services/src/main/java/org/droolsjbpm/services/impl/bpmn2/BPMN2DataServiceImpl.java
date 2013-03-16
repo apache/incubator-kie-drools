@@ -27,7 +27,7 @@ import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jbpm.task.TaskDef;

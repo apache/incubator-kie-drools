@@ -8,8 +8,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.io.impl.ByteArrayResource;
-import org.drools.io.impl.ReaderResource;
+import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.Person;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
