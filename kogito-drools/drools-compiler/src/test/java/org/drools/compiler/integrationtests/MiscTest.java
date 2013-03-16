@@ -83,7 +83,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.ParserError;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.PackageDescr;

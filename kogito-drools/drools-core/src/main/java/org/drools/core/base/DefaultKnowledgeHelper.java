@@ -46,7 +46,7 @@ import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.factmodel.traits.TraitableBean;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooWorkingMemory;

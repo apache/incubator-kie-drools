@@ -8,7 +8,7 @@ import java.util.Set;
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.info.WorkItemInfo;

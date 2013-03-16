@@ -21,7 +21,7 @@ import java.util.HashMap;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.kie.command.Command;
 import org.kie.command.Context;

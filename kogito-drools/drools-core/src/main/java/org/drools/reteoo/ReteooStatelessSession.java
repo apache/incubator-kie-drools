@@ -37,7 +37,7 @@ import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.event.WorkingMemoryEventListener;
 import org.drools.core.event.WorkingMemoryEventSupport;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
 import org.drools.core.spi.AgendaFilter;

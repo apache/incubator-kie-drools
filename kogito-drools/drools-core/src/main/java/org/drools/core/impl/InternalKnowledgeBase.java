@@ -1,4 +1,4 @@
-package org.drools.impl;
+package org.drools.core.impl;
 
 import org.drools.RuleBase;
 import org.kie.KieBase;

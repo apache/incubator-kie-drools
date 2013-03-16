@@ -52,7 +52,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.runtime.impl.ExecutionResultImpl;

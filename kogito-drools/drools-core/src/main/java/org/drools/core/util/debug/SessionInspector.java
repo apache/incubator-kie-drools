@@ -23,7 +23,7 @@ import java.util.Stack;
 
 import org.drools.WorkingMemory;
 import org.drools.core.common.NetworkNode;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.EntryPointNode;

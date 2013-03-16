@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.impl;
+package org.drools.core.impl;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -33,8 +33,8 @@ import org.drools.core.common.InternalRuleBase;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.event.WorkingMemoryEventSupport;
-import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
-import org.drools.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;

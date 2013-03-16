@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.impl;
+package org.drools.core.impl;
 
 import java.util.Collection;
 import java.util.Map;

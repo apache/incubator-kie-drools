@@ -1,7 +1,7 @@
 package org.drools.compiler.kproject;
 
 import org.drools.core.common.InternalRuleBase;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Test;
 import org.kie.KieBase;
 import org.kie.KieServices;

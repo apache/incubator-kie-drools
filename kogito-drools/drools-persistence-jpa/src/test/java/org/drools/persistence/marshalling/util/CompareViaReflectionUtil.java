@@ -44,7 +44,7 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.util.AbstractHashTable;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.time.impl.JDKTimerService;
 import org.junit.Assert;

@@ -35,7 +35,7 @@ import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.persistence.marshalling.util.EntityManagerFactoryProxy;
 import org.drools.persistence.marshalling.util.UserTransactionProxy;
 import org.h2.tools.DeleteDbFiles;

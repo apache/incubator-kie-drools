@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlElement;
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.kie.command.Context;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.QueryResults;

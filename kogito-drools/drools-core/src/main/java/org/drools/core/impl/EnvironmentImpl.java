@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.impl;
+package org.drools.core.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.runtime.Environment;
-import org.kie.runtime.Globals;
 
 public class EnvironmentImpl implements Environment {
 

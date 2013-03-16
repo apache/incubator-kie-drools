@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.impl;
+package org.drools.core.impl;
 
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;

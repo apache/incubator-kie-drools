@@ -1,7 +1,7 @@
 package org.drools.core.common;
 
 import org.drools.core.util.Iterator;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;

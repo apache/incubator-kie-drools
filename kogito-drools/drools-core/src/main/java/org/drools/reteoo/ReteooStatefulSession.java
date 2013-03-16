@@ -29,7 +29,7 @@ import org.drools.StatefulSession;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.RuleBaseUpdateListener;
 import org.drools.core.spi.RuleBaseUpdateListenerFactory;
