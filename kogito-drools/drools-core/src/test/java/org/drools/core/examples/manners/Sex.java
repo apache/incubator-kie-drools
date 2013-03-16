@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples.manners;
+package org.drools.core.examples.manners;
 
 public class Sex {
     public static final Sex      M       = new Sex( 0 );

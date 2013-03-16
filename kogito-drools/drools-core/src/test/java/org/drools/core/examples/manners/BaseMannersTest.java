@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples.manners;
+package org.drools.core.examples.manners;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
