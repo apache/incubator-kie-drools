@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.score.holder;
 
-import org.drools.WorkingMemory;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.score.director.drools.DroolsScoreDirector;
@@ -24,7 +23,7 @@ import org.optaplanner.core.solution.Solution;
 
 /**
  * A workaround class that wraps parts of a {@link Score}.
- * It injected as a global by {@link DroolsScoreDirector} in the {@link WorkingMemory}
+ * It injected as a global by {@link DroolsScoreDirector} in the {@link org.drools.core.WorkingMemory}
  * to avoid a performance problem in Drools Expert with using 2 or more accumulates in the same rule.
  * Other {@link ScoreDirector} implementations do not use this class.
  * <p/>
@@ -33,7 +32,7 @@ import org.optaplanner.core.solution.Solution;
 public interface ScoreHolder {
 
     /**
-     * Extracts the {@link Score}, calculated by the {@link WorkingMemory} for {@link DroolsScoreDirector}.
+     * Extracts the {@link Score}, calculated by the {@link org.drools.core.WorkingMemory} for {@link DroolsScoreDirector}.
      * </p>
      * Should not be called directly, use {@link ScoreDirector#calculateScore()} instead.
      * @return never null, the  {@link Score} of the working {@link Solution}

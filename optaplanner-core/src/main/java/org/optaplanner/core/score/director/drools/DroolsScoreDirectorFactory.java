@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.score.director.drools;
 
-import org.drools.RuleBase;
+import org.drools.core.RuleBase;
 import org.optaplanner.core.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.score.director.ScoreDirectorFactory;
 

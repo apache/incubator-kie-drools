@@ -21,11 +21,11 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.drools.ClassObjectFilter;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
+import org.drools.core.ClassObjectFilter;
+import org.drools.core.FactHandle;
+import org.drools.core.RuleBase;
+import org.drools.core.StatefulSession;
+import org.drools.core.WorkingMemory;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.constraint.ConstraintOccurrence;
 import org.optaplanner.core.score.director.AbstractScoreDirector;

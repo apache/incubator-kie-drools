@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.SwingUtilities;
 
-import org.drools.ClassObjectFilter;
-import org.drools.WorkingMemory;
+import org.drools.core.ClassObjectFilter;
+import org.drools.core.WorkingMemory;
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.event.BestSolutionChangedEvent;
 import org.optaplanner.core.event.SolverEventListener;

@@ -18,7 +18,7 @@ package org.optaplanner.core.solution;
 
 import java.util.Collection;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.drools.DroolsScoreDirector;
