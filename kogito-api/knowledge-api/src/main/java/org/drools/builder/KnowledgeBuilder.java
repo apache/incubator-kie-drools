@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.drools.KnowledgeBase;
 import org.drools.definition.KnowledgePackage;
-import org.drools.io.Resource;
+import org.drools.core.io.Resource;
 
 /**
  * <p>

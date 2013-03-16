@@ -1,4 +1,4 @@
-package org.drools.io;
+package org.drools.core.io;
 
 public interface ResourcedObject {
 

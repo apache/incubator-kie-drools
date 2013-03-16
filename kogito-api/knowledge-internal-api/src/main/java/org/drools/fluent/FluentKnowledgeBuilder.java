@@ -18,7 +18,7 @@ package org.drools.fluent;
 
 import org.drools.core.builder.ResourceConfiguration;
 import org.drools.core.builder.ResourceType;
-import org.drools.io.Resource;
+import org.drools.core.io.Resource;
 
 public interface FluentKnowledgeBuilder<T> {
     

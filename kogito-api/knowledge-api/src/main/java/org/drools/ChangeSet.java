@@ -17,9 +17,8 @@
 package org.drools;
 
 import java.util.Collection;
-import java.util.Map;
 
-import org.drools.io.Resource;
+import org.drools.core.io.Resource;
 
 /**
  * <p>

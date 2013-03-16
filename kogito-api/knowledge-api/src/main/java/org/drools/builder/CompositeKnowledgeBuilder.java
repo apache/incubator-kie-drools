@@ -1,6 +1,6 @@
 package org.drools.core.builder;
 
-import org.drools.io.Resource;
+import org.drools.core.io.Resource;
 
 /**
  * A KnowledgeBuilder with a fluent interface allowing to add multiple Resources

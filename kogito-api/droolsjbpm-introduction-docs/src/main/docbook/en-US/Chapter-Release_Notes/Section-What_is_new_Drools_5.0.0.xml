@@ -53,7 +53,7 @@
         </listitem>
 
         <listitem>
-          <para>org.drools.io.ResourceFactory</para>
+          <para>org.drools.core.io.ResourceFactory</para>
         </listitem>
 
         <listitem>
