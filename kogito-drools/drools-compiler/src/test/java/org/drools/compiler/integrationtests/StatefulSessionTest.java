@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
+import org.drools.core.FactHandle;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.junit.Test;

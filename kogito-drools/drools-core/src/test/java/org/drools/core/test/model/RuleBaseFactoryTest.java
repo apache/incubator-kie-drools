@@ -16,11 +16,11 @@
 
 package org.drools.core.test.model;
 
+import org.drools.core.RuleBase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.InternalRuleBase;
 
 public class RuleBaseFactoryTest {

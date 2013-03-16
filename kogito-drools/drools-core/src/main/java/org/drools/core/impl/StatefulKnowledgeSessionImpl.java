@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.drools.FactException;
-import org.drools.RuleBase;
-import org.drools.WorkingMemory;
+import org.drools.core.FactException;
+import org.drools.core.RuleBase;
+import org.drools.core.WorkingMemory;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -417,7 +417,7 @@ public class StatefulKnowledgeSessionImpl
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public void delete(org.drools.FactHandle factHandle,
+    public void delete(org.drools.core.FactHandle factHandle,
                         Rule rule,
                         Activation activation) throws FactException {
         this.session.delete( factHandle,
@@ -429,7 +429,7 @@ public class StatefulKnowledgeSessionImpl
                        Object object,
                        long mask,
                        Activation activation) throws FactException {
-        this.session.update( (org.drools.FactHandle) factHandle,
+        this.session.update( (org.drools.core.FactHandle) factHandle,
                              object,
                              mask,
                              activation );
@@ -443,7 +443,7 @@ public class StatefulKnowledgeSessionImpl
         return session;
     }
 
-    public org.drools.FactHandle getFactHandleByIdentity(Object object) {
+    public org.drools.core.FactHandle getFactHandleByIdentity(Object object) {
         return session.getFactHandleByIdentity( object );
     }
 

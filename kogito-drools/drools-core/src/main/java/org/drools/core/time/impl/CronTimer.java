@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;

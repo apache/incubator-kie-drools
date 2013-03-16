@@ -21,7 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.builder.BuildContext;

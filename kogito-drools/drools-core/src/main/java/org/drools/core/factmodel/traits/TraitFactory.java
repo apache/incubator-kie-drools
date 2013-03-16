@@ -28,8 +28,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.RuleBase;
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuleBase;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.common.AbstractRuleBase;

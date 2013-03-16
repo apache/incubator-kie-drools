@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.StringReader;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;

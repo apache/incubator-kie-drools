@@ -5,13 +5,13 @@ import java.io.StringReader;
 
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.compiler.integrationtests.LargeRuleBase;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;

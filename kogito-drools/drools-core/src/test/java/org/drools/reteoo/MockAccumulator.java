@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
-import org.drools.WorkingMemory;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 

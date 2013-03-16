@@ -18,7 +18,7 @@ package org.drools.compiler.rule.builder;
 
 import java.util.Iterator;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;

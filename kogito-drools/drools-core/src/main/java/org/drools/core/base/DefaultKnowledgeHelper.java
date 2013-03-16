@@ -24,9 +24,9 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
+import org.drools.core.FactException;
+import org.drools.core.FactHandle;
+import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.AgendaItem;

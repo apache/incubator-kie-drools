@@ -23,11 +23,11 @@ import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.util.JavaIteratorAdapter;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.AbstractHashTable.HashTableIterator;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseConfiguration.AssertBehaviour;
+import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.kie.runtime.rule.FactHandle;
 
 public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {

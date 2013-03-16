@@ -22,8 +22,8 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.SessionConfiguration;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Scheduler.ActivationTimerInputMarshaller;
@@ -66,7 +66,7 @@ public class ProtobufMarshaller
     
     KieBase                       kbase;
     GlobalResolver                      globalResolver;
-    RuleBaseConfiguration               ruleBaseConfig;
+    RuleBaseConfiguration ruleBaseConfig;
     MarshallingConfiguration            marshallingConfig;
     ObjectMarshallingStrategyStore      strategyStore;
     ;

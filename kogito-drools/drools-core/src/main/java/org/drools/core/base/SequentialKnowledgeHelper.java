@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
+import org.drools.core.FactHandle;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;

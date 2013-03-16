@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.RuleBase;
-import org.drools.SessionConfiguration;
+import org.drools.core.RuleBase;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.Interceptor;
 import org.drools.core.command.impl.DefaultCommandService;

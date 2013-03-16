@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.spi.Evaluator;

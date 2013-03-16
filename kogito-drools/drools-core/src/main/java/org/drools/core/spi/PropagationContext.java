@@ -19,7 +19,7 @@ package org.drools.core.spi;
 import java.io.Externalizable;
 import java.util.LinkedList;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;

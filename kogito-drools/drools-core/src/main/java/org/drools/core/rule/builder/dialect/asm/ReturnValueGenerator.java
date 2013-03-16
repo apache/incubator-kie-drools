@@ -1,7 +1,7 @@
 package org.drools.core.rule.builder.dialect.asm;
 
+import org.drools.core.WorkingMemory;
 import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
-import org.drools.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;

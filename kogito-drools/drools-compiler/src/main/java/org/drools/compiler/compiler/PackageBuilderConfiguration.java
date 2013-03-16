@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.compiler.xml.RulesSemanticModule;

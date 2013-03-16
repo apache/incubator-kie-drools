@@ -16,8 +16,8 @@
 
 package org.drools.reteoo;
 
-import org.drools.FactException;
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.FactException;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;

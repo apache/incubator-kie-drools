@@ -22,18 +22,18 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Rule;
-import org.drools.WorkingMemory;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.ObjectType;

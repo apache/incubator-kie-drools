@@ -16,7 +16,7 @@
 
 package org.drools.core.event;
 
-import org.drools.RuleBase;
+import org.drools.core.RuleBase;
 import org.drools.core.rule.Package;
 
 public class BeforePackageRemovedEvent extends RuleBaseEvent {

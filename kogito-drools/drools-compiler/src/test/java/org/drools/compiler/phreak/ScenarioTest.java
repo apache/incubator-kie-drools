@@ -7,7 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.beans.IntrospectionException;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.RuleNetworkEvaluator.PhreakJoinNode;

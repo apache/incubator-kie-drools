@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.mvel.ActivationPropertyHandler;

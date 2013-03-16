@@ -16,7 +16,7 @@
 
 package org.drools.core.event;
 
-import org.drools.RuleBase;
+import org.drools.core.RuleBase;
 
 public class BeforeRuleBaseLockedEvent extends RuleBaseEvent {
 

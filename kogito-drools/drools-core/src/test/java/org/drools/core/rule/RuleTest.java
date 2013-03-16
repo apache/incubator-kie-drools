@@ -19,12 +19,12 @@ package org.drools.core.rule;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemory;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.ClockType;
-import org.drools.SessionConfiguration;
-import org.drools.WorkingMemory;
+import org.drools.core.ClockType;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;

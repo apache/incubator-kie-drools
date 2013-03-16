@@ -21,7 +21,7 @@ import java.io.ObjectOutput;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;

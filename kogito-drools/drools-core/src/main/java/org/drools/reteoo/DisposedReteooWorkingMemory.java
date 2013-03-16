@@ -23,12 +23,13 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 
-import org.drools.Agenda;
-import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.QueryResults;
-import org.drools.RuleBase;
-import org.drools.SessionConfiguration;
+import org.drools.core.Agenda;
+import org.drools.core.FactException;
+import org.drools.core.FactHandle;
+import org.drools.core.QueryResults;
+import org.drools.core.RuleBase;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
@@ -384,7 +385,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public org.drools.WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String id ) {
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String id ) {
         throw new IllegalStateException( ERRORMSG );
     }
 

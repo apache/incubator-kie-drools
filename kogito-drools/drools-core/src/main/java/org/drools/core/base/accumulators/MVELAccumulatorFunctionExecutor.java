@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalFactHandle;

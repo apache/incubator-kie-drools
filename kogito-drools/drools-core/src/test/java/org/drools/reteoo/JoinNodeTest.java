@@ -30,8 +30,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;

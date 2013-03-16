@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.WorkingMemory;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.rule.Rule;
-import org.drools.WorkingMemory;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 

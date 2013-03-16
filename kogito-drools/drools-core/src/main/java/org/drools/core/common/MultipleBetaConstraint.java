@@ -1,6 +1,6 @@
 package org.drools.core.common;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.builder.BuildContext;

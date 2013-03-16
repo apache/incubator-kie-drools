@@ -84,7 +84,7 @@ public abstract class AbstractFactHandleFactory
                                                      final SessionEntryPoint wmEntryPoint);
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)
+     * @see org.kie.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.core.FactHandle)
      */
     public final void increaseFactHandleRecency(final InternalFactHandle factHandle) {
         factHandle.setRecency( this.counter.incrementAndGet() );

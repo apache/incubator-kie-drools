@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
 import org.drools.reteoo.LeftTuple;

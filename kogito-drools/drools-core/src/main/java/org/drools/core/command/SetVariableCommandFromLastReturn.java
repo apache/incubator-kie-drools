@@ -19,7 +19,7 @@ package org.drools.core.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.command.Context;

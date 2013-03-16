@@ -16,7 +16,7 @@
 
 package org.drools.core.spi;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.rule.Rule;
 
 /**

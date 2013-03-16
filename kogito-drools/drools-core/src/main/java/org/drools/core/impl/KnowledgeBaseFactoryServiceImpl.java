@@ -16,9 +16,9 @@
 
 package org.drools.core.impl;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.SessionConfiguration;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.SessionConfiguration;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactoryService;
@@ -60,7 +60,7 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
     public KnowledgeBase newKnowledgeBase(String kbaseId, 
                                           KieBaseConfiguration conf) {
         return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase( kbaseId, 
-                                                                   ( RuleBaseConfiguration ) conf ) );
+                                                                   (RuleBaseConfiguration) conf ) );
     }
 
     public Environment newEnvironment() {

@@ -16,7 +16,7 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.kie.event.rule.ObjectUpdatedEvent;
 
@@ -25,7 +25,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements ObjectUpdatedEvent {
-    private FactHandle  factHandle;
+    private FactHandle factHandle;
     private Object      object;
     private Object      oldObject;
     

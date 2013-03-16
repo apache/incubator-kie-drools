@@ -23,11 +23,11 @@ import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatefulSession;
 import org.drools.compiler.TestEnum;
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
@@ -260,7 +260,7 @@ public class MVELTest extends CommonTestMethodBase {
         text += "    $fact.applyValueAddPromo(1,2,3,4,\"mvel\");\n";
         text += "end";
         
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase( );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         // get the java dialect
         ruleBase.addPackage( compileRule( text.replaceAll( "mvel",
                                                           "java" ) ) );

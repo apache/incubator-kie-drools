@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.FactHandle;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
+import org.drools.core.FactHandle;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;

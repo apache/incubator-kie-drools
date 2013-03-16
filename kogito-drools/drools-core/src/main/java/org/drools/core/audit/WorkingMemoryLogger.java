@@ -24,9 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
-import org.drools.WorkingMemoryEventManager;
+import org.drools.core.FactHandle;
+import org.drools.core.WorkingMemory;
+import org.drools.core.WorkingMemoryEventManager;
 import org.drools.core.audit.event.ActivationLogEvent;
 import org.drools.core.audit.event.ILogEventFilter;
 import org.drools.core.audit.event.LogEvent;

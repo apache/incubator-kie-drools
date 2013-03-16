@@ -3,7 +3,7 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.*;
 import org.drools.core.impl.KnowledgeBaseImpl;

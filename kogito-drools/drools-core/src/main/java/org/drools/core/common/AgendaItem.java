@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.Queueable;

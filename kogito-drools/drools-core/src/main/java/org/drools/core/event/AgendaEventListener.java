@@ -18,7 +18,7 @@ package org.drools.core.event;
 
 import java.util.EventListener;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 
 public interface AgendaEventListener
     extends

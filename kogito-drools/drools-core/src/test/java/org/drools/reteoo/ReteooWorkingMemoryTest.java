@@ -24,6 +24,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.core.FactHandle;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatefulSession;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
@@ -32,10 +35,7 @@ import org.kie.runtime.rule.SessionEntryPoint;
 
 import static org.junit.Assert.*;
 
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
+import org.drools.core.RuleBase;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalKnowledgeRuntime;

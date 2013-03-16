@@ -33,16 +33,16 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.drools.Agenda;
-import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.QueryResults;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuntimeDroolsException;
-import org.drools.SessionConfiguration;
-import org.drools.WorkingMemory;
-import org.drools.WorkingMemoryEntryPoint;
+import org.drools.core.Agenda;
+import org.drools.core.FactException;
+import org.drools.core.FactHandle;
+import org.drools.core.QueryResults;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemory;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.CalendarsImpl;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.event.AgendaEventListener;
@@ -692,7 +692,7 @@ public abstract class AbstractWorkingMemory
      * actually attempts to return the value from the handle, before retrieving
      * it from objects map.
      * 
-     * @see WorkingMemory
+     * @see org.drools.core.WorkingMemory
      * 
      * @param handle
      *            The <code>FactHandle</code> reference for the
@@ -711,14 +711,14 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * @see WorkingMemory
+     * @see org.drools.core.WorkingMemory
      */
     public FactHandle getFactHandle(final Object object) {
         return this.defaultEntryPoint.getFactHandle( object );
     }
 
     /**
-     * @see WorkingMemory
+     * @see org.drools.core.WorkingMemory
      */
     public FactHandle getFactHandleByIdentity(final Object object) {
         return getObjectStore().getHandleForObjectIdentity( object );
@@ -775,7 +775,7 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * @see WorkingMemory
+     * @see org.drools.core.WorkingMemory
      */
     public FactHandle insertLogical(final Object object) throws FactException {
         return insert( object, // Not-Dynamic
@@ -843,18 +843,18 @@ public abstract class AbstractWorkingMemory
     }
 
     public void retract(final org.kie.runtime.rule.FactHandle handle) throws FactException {
-        delete( (org.drools.FactHandle) handle,
+        delete( (FactHandle) handle,
                  null,
                  null );
     }
 
     public void delete(final org.kie.runtime.rule.FactHandle handle) throws FactException {
-        delete( (org.drools.FactHandle) handle,
+        delete( (FactHandle) handle,
                  null,
                  null );
     }
 
-    public void delete(final org.drools.FactHandle factHandle,
+    public void delete(final FactHandle factHandle,
                         final Rule rule,
                         final Activation activation) throws FactException {
         this.defaultEntryPoint.delete( factHandle,
@@ -868,7 +868,7 @@ public abstract class AbstractWorkingMemory
 
     public void update(final org.kie.runtime.rule.FactHandle handle,
                        final Object object) throws FactException {
-        update( (org.drools.FactHandle) handle,
+        update( (FactHandle) handle,
                 object,
                 Long.MAX_VALUE,
                 null );
@@ -879,7 +879,7 @@ public abstract class AbstractWorkingMemory
                        final long mask,
                        final Activation activation) throws FactException {
 
-        update( (org.drools.FactHandle) factHandle,
+        update( (FactHandle) factHandle,
                 object,
                 mask,
                 activation );
@@ -889,7 +889,7 @@ public abstract class AbstractWorkingMemory
      * modify is implemented as half way retract / assert due to the truth
      * maintenance issues.
      * 
-     * @see WorkingMemory
+     * @see org.drools.core.WorkingMemory
      */
     public void update(FactHandle factHandle,
                        final Object object,

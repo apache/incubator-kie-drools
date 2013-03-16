@@ -18,7 +18,7 @@ package org.drools.core.event;
 
 import java.util.Iterator;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;

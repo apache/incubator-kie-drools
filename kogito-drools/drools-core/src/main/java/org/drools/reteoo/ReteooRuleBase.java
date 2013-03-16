@@ -28,12 +28,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.RuleBaseConfiguration;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
-import org.drools.StatelessSession;
+import org.drools.core.FactException;
+import org.drools.core.FactHandle;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatefulSession;
+import org.drools.core.StatelessSession;
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DroolsObjectInput;
@@ -272,7 +272,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * @param workingMemory
      *            The working-memory.
      *
-     * @throws FactException
+     * @throws org.drools.core.FactException
      *             If an error occurs while performing the assertion.
      */
     public void assertObject(final FactHandle handle,

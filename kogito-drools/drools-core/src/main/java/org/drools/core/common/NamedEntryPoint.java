@@ -26,13 +26,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.RuntimeDroolsException;
-import org.drools.WorkingMemory;
-import org.drools.WorkingMemoryEntryPoint;
+import org.drools.core.FactException;
+import org.drools.core.FactHandle;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
@@ -122,7 +121,7 @@ public class NamedEntryPoint
        
     
     /**
-     * @see WorkingMemory
+     * @see org.drools.core.WorkingMemory
      */
     public FactHandle insert(final Object object) throws FactException {
         return insert( object, /* Not-Dynamic */
@@ -522,18 +521,18 @@ public class NamedEntryPoint
     }
 
     public void retract(final org.kie.runtime.rule.FactHandle handle) throws FactException {
-        delete( (org.drools.FactHandle) handle,
+        delete( (FactHandle) handle,
                  null,
                  null );
     }
 
     public void delete(final org.kie.runtime.rule.FactHandle handle) throws FactException {
-        delete( (org.drools.FactHandle) handle,
+        delete( (FactHandle) handle,
                  null,
                  null );
     }
 
-    public void delete(final org.drools.FactHandle factHandle,
+    public void delete(final FactHandle factHandle,
                        final Rule rule,
                        final Activation activation) throws FactException {
         if ( factHandle == null ) {

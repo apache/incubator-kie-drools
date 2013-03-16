@@ -16,12 +16,12 @@
 
 package org.drools.core.common;
 
-import org.drools.PackageIntegrationException;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuntimeDroolsException;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
+import org.drools.core.PackageIntegrationException;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatefulSession;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;

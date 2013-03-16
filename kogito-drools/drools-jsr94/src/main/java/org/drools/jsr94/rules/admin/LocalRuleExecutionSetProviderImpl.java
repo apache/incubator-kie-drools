@@ -27,7 +27,7 @@ import javax.rules.admin.LocalRuleExecutionSetProvider;
 import javax.rules.admin.RuleExecutionSet;
 import javax.rules.admin.RuleExecutionSetCreateException;
 
-import org.drools.IntegrationException;
+import org.drools.core.IntegrationException;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;

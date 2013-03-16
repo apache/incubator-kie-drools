@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseDateClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;

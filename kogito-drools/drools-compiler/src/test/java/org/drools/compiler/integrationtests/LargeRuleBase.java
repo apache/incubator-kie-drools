@@ -10,8 +10,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.StringReader;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;

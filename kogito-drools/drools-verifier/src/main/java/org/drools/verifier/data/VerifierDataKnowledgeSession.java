@@ -19,7 +19,7 @@ package org.drools.verifier.data;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.ClassObjectFilter;
+import org.drools.core.ClassObjectFilter;
 import org.drools.verifier.components.EntryPoint;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;

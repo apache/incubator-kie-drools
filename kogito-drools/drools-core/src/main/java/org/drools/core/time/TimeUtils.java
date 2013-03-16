@@ -19,7 +19,7 @@ package org.drools.core.time;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 
 /**
  * A helper class with utility methods for

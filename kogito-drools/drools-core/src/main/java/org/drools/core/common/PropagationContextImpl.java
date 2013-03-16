@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.WindowTupleList;

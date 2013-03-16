@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.util.MathUtils;
 import org.drools.core.spi.FieldValue;

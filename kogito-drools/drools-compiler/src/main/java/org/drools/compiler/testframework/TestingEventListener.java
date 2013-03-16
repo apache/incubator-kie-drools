@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.ActivationCreatedEvent;
 import org.drools.core.event.AfterActivationFiredEvent;

@@ -16,7 +16,7 @@
 
 package org.drools.core.base.evaluators;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.time.TimeUtils;
 
 /**

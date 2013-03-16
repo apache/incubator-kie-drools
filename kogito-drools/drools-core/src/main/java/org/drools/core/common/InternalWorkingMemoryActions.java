@@ -16,8 +16,8 @@
 
 package org.drools.core.common;
 
-import org.drools.FactException;
-import org.drools.FactHandle;
+import org.drools.core.FactException;
+import org.drools.core.FactHandle;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 
@@ -34,14 +34,14 @@ public interface InternalWorkingMemoryActions
                         Rule rule,
                         Activation activation) throws FactException;
 
-    org.drools.FactHandle insert(Object object,
+    FactHandle insert(Object object,
                                  Object value,
                                  boolean dynamic,
                                  boolean logical,
                                  Rule rule,
                                  Activation activation) throws FactException;
 
-    public org.drools.FactHandle insertLogical(Object object,
+    public FactHandle insertLogical(Object object,
                                                boolean dynamic) throws FactException;
 
 }

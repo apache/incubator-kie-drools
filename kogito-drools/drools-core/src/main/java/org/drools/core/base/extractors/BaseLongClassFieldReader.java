@@ -16,7 +16,7 @@
 
 package org.drools.core.base.extractors;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;

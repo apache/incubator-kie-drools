@@ -16,10 +16,10 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.RuntimeDroolsException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.Person;
 

@@ -8,10 +8,10 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.RuleBase;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
-import org.drools.StatelessSession;
+import org.drools.core.RuleBase;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatefulSession;
+import org.drools.core.StatelessSession;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.rule.Package;
 import org.kie.definition.type.FactType;

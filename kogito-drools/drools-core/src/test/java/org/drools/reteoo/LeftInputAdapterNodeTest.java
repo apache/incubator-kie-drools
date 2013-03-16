@@ -18,7 +18,7 @@ package org.drools.reteoo;
 
 import java.util.List;
 
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextImpl;

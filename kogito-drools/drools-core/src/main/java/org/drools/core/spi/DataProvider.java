@@ -19,8 +19,8 @@ package org.drools.core.spi;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Declaration;
-import org.drools.WorkingMemory;
 
 public interface DataProvider
     extends

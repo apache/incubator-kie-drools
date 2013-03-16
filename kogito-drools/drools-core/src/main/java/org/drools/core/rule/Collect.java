@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;

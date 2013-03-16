@@ -16,7 +16,7 @@
 
 package org.drools.verifier.alwaysFalse;
 
-import org.drools.StatelessSession;
+import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.Verifier;

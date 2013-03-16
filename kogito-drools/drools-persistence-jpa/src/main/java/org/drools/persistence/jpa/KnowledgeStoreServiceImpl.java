@@ -15,7 +15,7 @@
  */
  package org.drools.persistence.jpa;
 
-import org.drools.SessionConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.ExistsNode;

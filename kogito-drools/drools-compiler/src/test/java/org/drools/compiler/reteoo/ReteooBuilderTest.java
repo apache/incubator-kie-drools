@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.RuleBase;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSink;
@@ -15,8 +16,7 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.rule.Package;
 
 import com.thoughtworks.xstream.XStream;

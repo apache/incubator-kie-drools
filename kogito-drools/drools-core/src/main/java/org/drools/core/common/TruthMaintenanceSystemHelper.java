@@ -1,6 +1,6 @@
 package org.drools.core.common;
 
-import org.drools.FactException;
+import org.drools.core.FactException;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.util.LinkedList;
 import org.drools.core.rule.Rule;

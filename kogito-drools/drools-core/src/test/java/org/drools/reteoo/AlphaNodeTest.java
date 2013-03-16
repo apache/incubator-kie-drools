@@ -16,8 +16,8 @@
 
 package org.drools.reteoo;
 
-import org.drools.FactException;
-import org.drools.RuleBaseFactory;
+import org.drools.core.FactException;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;

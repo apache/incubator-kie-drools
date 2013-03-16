@@ -16,7 +16,7 @@
 
 package org.drools.core.time;
 
-import org.drools.SessionConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.time.impl.PseudoClockScheduler;
 
 public class TimerServiceFactory {

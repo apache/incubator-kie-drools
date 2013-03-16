@@ -16,11 +16,11 @@
 
 package org.drools.reteoo;
 
-import org.drools.FactHandle;
-import org.drools.QueryResult;
-import org.drools.QueryResults;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
+import org.drools.core.FactHandle;
+import org.drools.core.QueryResult;
+import org.drools.core.QueryResults;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.AccumulateNode;

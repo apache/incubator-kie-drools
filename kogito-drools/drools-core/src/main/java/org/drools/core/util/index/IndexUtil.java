@@ -1,6 +1,6 @@
 package org.drools.core.util.index;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTupleMemory;

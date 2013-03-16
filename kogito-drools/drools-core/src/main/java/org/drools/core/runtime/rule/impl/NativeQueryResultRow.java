@@ -16,15 +16,16 @@
 
 package org.drools.core.runtime.rule.impl;
 
+import org.drools.core.QueryResult;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.QueryResultsRow;
 
 public class NativeQueryResultRow
     implements
     QueryResultsRow {
-    private org.drools.QueryResult result;
+    private QueryResult result;
 
-    public NativeQueryResultRow(org.drools.QueryResult result) {
+    public NativeQueryResultRow(QueryResult result) {
         this.result = result;
     }
 

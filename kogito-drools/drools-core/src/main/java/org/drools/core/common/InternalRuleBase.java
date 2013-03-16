@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.StatefulSession;
+import org.drools.core.FactException;
+import org.drools.core.FactHandle;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.StatefulSession;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooBuilder;
@@ -40,7 +40,7 @@ import org.kie.internal.utils.CompositeClassLoader;
 
 public interface InternalRuleBase
     extends
-    RuleBase {
+        RuleBase {
 
     /**
      * @return the id

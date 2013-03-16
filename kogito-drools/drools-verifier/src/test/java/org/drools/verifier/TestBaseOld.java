@@ -27,9 +27,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatelessSession;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatelessSession;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;

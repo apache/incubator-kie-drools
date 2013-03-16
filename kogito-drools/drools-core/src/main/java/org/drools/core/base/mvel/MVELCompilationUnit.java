@@ -16,8 +16,8 @@
 
 package org.drools.core.base.mvel;
 
-import org.drools.FactHandle;
-import org.drools.RuntimeDroolsException;
+import org.drools.core.FactHandle;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.ModifyInterceptor;
 import org.drools.core.common.InternalFactHandle;

@@ -18,7 +18,7 @@ package org.drools.core.event;
 
 import java.util.EventObject;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.spi.PropagationContext;
 
 public class WorkingMemoryEvent extends EventObject {

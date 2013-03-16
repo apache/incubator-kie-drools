@@ -5,11 +5,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.RuleBase;
+import org.drools.core.WorkingMemory;
 import org.junit.Test;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.RuleBase;
-import org.drools.WorkingMemory;
 import org.drools.compiler.integrationtests.eventgenerator.Event.EventType;
 
 

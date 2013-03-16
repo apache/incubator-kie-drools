@@ -18,7 +18,7 @@ package org.drools.core.event;
 
 import java.util.Iterator;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 

@@ -18,7 +18,7 @@ package org.drools.core.base.extractors;
 
 import java.lang.reflect.Method;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseClassFieldWriter;
 import org.drools.core.base.ValueType;
 

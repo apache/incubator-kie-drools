@@ -16,7 +16,7 @@
 
 package org.drools.core.management;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.kie.management.KieBaseConfigurationMonitorMBean;
 
 /**

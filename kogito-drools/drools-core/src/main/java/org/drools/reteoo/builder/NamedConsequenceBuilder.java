@@ -1,6 +1,6 @@
 package org.drools.reteoo.builder;
 
-import org.drools.ActivationListenerFactory;
+import org.drools.core.ActivationListenerFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;

@@ -25,10 +25,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.FactException;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import org.drools.core.FactException;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;

@@ -186,7 +186,7 @@ ui.createAndShowGUI();
 
         <programlisting language="java">package org.drools.examples
 
-import org.drools.WorkingMemory
+import org.drools.core.WorkingMemory
 import org.drools.examples.petstore.PetStoreExample.Order
 import org.drools.examples.petstore.PetStoreExample.Purchase
 import org.drools.examples.petstore.PetStoreExample.Product

@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.InitialFact;
+import org.drools.core.InitialFact;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
@@ -617,7 +617,7 @@ public class ProtobufOutputMarshaller {
             return ProtobufMessages.FactHandle.HandleType.EVENT;
         } else if ( handle instanceof QueryElementFactHandle ) {
             return ProtobufMessages.FactHandle.HandleType.QUERY;
-        } else if ( handle.getObject() instanceof InitialFact ) {
+        } else if ( handle.getObject() instanceof InitialFact) {
             return ProtobufMessages.FactHandle.HandleType.INITIAL_FACT;
         }
         return ProtobufMessages.FactHandle.HandleType.FACT;

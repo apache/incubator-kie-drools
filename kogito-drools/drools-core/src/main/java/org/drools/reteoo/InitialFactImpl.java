@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.InitialFact;
+import org.drools.core.InitialFact;
 
 /**
  * We dont want users to be able to instantiate InitialFact so we expose it as

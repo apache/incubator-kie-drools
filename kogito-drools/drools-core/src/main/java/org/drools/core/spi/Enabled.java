@@ -18,7 +18,7 @@ package org.drools.core.spi;
 
 import java.io.Serializable;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Rule;
 

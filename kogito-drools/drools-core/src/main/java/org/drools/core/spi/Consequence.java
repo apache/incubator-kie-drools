@@ -16,7 +16,7 @@
 
 package org.drools.core.spi;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 
 /**
  * Consequence to be fired upon successful match of a <code>Rule</code>.

@@ -16,7 +16,7 @@
 
 package org.drools.core.event.knowledgebase;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;

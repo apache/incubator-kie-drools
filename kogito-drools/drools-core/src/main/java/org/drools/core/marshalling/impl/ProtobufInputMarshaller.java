@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.SessionConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;

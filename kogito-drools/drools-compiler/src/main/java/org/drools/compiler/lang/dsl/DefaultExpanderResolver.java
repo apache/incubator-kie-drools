@@ -21,7 +21,7 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.ExpanderResolver;
 

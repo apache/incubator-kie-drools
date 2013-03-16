@@ -6,13 +6,13 @@ import java.util.Map;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.RuleBase;
+import org.drools.core.WorkingMemory;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;

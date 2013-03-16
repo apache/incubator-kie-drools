@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;

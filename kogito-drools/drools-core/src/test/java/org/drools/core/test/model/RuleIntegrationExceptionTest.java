@@ -16,10 +16,10 @@
 
 package org.drools.core.test.model;
 
+import org.drools.core.RuleIntegrationException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.RuleIntegrationException;
 import org.drools.core.rule.Rule;
 
 public class RuleIntegrationExceptionTest {

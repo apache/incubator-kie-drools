@@ -16,7 +16,6 @@
 
 package org.drools.core.common;
 
-import org.drools.FactHandle;
 import org.drools.reteoo.WindowTupleList;
 import org.kie.runtime.rule.SessionEntryPoint;
 
@@ -66,7 +65,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     }
 
     /**
-     * @see FactHandle
+     * @see org.drools.core.FactHandle
      * 1: is used for EventFactHandle
      */
     public String toExternalForm() {

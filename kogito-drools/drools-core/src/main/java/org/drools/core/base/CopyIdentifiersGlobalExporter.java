@@ -22,8 +22,8 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.WorkingMemory;
 import org.drools.core.spi.GlobalExporter;
 import org.drools.core.spi.GlobalResolver;
 

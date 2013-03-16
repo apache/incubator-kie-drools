@@ -16,8 +16,8 @@
 
 package org.drools.core.spi;
 
+import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Declaration;
-import org.drools.WorkingMemory;
 
 public interface ReturnValueExpression
     extends

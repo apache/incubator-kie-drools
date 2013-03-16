@@ -574,7 +574,7 @@ public final class DialectUtil {
         }
 
         if ( declr == null || declr.isInternalFact() ) {
-           consequence.append( "org.drools.FactHandle " );
+           consequence.append( "org.drools.core.FactHandle " );
            consequence.append( obj );
            consequence.append( "__Handle2__ = drools.getFactHandle(" );
            consequence.append( obj );

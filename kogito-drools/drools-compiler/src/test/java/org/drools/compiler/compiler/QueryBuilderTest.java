@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
-import org.drools.QueryResults;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
+import org.drools.core.QueryResults;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatefulSession;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BindingDescr;

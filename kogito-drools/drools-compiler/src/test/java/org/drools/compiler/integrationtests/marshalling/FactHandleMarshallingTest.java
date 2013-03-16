@@ -11,8 +11,8 @@ import java.util.Collections;
 import java.util.Date;
 
 import org.drools.compiler.Person;
-import org.drools.RuleBase;
-import org.drools.SessionConfiguration;
+import org.drools.core.RuleBase;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;

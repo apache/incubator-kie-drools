@@ -20,10 +20,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.Agenda;
-import org.drools.FactException;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import org.drools.core.Agenda;
+import org.drools.core.FactException;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.FactHandle;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.beliefsystem.BeliefSet;
@@ -47,8 +49,6 @@ import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.rule.Rule;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
@@ -104,7 +104,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
-                                 WorkingMemory workingMemory) {                  
+                                 WorkingMemory workingMemory) {
                 LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){

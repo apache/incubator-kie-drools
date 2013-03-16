@@ -19,9 +19,9 @@ package org.drools.examples.state;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 

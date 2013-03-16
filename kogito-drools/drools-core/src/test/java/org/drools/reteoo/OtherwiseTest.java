@@ -20,20 +20,20 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.Otherwise;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.Otherwise;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.TestBean;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Rule;
-import org.drools.WorkingMemory;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 
@@ -97,7 +97,7 @@ public class OtherwiseTest {
      */
     @Test @Ignore
     public void testOtherwiseFiringWithOneRule() throws Exception {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase(RuleBase.RETEOO);
 
         final Package pkg = new Package( "Miss Manners" );
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );

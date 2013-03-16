@@ -5,8 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -307,7 +307,7 @@ public class NodeSegmentUnlinkingTest {
         // Initialise from n3
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( LRUnlinkingOption.ENABLED );        
-        ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
+        ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration) kconf) );
         createSegmentMemory( n3, wm );
 
         BetaMemory bm = (BetaMemory) wm.getNodeMemory( n1 );

@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTuple;
@@ -189,7 +189,7 @@ public class DefaultBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType ) {
         return IndexUtil.Factory.createBetaMemory(config, nodeType, constraints);
     }

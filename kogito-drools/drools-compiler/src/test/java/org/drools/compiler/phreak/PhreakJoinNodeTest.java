@@ -5,7 +5,7 @@ import static org.drools.compiler.phreak.B.b;
 
 import java.beans.IntrospectionException;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;

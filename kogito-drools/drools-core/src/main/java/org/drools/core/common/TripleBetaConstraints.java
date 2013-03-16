@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.constraint.MvelConstraint;

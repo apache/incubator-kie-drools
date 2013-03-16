@@ -18,11 +18,10 @@ package org.drools.core.base;
 
 import java.lang.reflect.Field;
 
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 
 public class DelegateJavaFactHandlerTest {
 

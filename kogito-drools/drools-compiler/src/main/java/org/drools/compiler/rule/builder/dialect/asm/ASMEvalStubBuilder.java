@@ -1,6 +1,6 @@
 package org.drools.compiler.rule.builder.dialect.asm;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;

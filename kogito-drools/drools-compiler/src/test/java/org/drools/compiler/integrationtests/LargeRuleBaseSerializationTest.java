@@ -3,8 +3,8 @@ package org.drools.compiler.integrationtests;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
