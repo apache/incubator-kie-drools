@@ -19,7 +19,7 @@ package org.drools.core.rule;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.integrationtests.SerializationHelper;
+import org.drools.core.integrationtests.SerializationHelper;
 
 /**
  * Created by IntelliJ IDEA. User: Ming Jin Date: Mar 19, 2008 Time: 11:11:45 AM To change this template use File |
