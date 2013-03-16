@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.fluent.impl;
+package org.drools.core.fluent.impl;
 
 import org.drools.core.command.KnowledgeBaseAddKnowledgePackagesCommand;
 import org.drools.core.command.builder.KnowledgeBuilderAddCommand;

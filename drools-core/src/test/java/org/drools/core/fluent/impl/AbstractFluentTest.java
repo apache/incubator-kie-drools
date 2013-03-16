@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.fluent.impl;
+package org.drools.core.fluent.impl;
 
 import org.junit.Ignore;
 
