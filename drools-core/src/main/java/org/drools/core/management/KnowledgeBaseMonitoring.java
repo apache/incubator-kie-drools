@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.management;
+package org.drools.core.management;
 
 import java.util.Map;
 
@@ -191,7 +191,7 @@ public class KnowledgeBaseMonitoring
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeBaseMBean#getGlobals()
+     * @see org.drools.core.management.KnowledgeBaseMBean#getGlobals()
      */
     @SuppressWarnings("unchecked")
     public TabularData getGlobals() throws OpenDataException {
@@ -207,21 +207,21 @@ public class KnowledgeBaseMonitoring
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeBaseMBean#getId()
+     * @see org.drools.core.management.KnowledgeBaseMBean#getId()
      */
     public String getId() {
         return kbase.getId();
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeBaseMBean#getPackages()
+     * @see org.drools.core.management.KnowledgeBaseMBean#getPackages()
      */
     public String[] getPackages() {
         return kbase.getPackagesMap().keySet().toArray( new String[0] );
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.KnowledgeBaseMBean#getSessionCount()
+     * @see org.drools.core.management.KnowledgeBaseMBean#getSessionCount()
      */
     public long getSessionCount() {
         return kbase.getWorkingMemoryCounter();

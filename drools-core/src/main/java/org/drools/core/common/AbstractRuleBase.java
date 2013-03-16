@@ -29,7 +29,7 @@ import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.event.RuleBaseEventSupport;
 import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.management.DroolsManagementAgent;
+import org.drools.core.management.DroolsManagementAgent;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;

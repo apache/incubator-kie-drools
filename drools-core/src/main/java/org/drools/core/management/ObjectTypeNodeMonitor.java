@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.management;
+package org.drools.core.management;
 
 import org.drools.reteoo.ObjectTypeNode;
 import org.kie.management.ObjectTypeNodeMonitorMBean;
@@ -31,42 +31,42 @@ public class ObjectTypeNodeMonitor implements ObjectTypeNodeMonitorMBean  {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getId()
+     * @see org.drools.core.management.ObjectTypeNodeMonitorMbean#getId()
      */
     public int getId() {
         return node.getId();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getEntryPoint()
+     * @see org.drools.core.management.ObjectTypeNodeMonitorMbean#getEntryPoint()
      */
     public String getEntryPoint() {
         return node.getEntryPoint().toString();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getObjectType()
+     * @see org.drools.core.management.ObjectTypeNodeMonitorMbean#getObjectType()
      */
     public String getObjectType() {
         return node.getObjectType().toString();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getPartitionId()
+     * @see org.drools.core.management.ObjectTypeNodeMonitorMbean#getPartitionId()
      */
     public String getPartitionId() {
         return node.getPartitionId().toString();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.ObjectTypeNodeMonitorMbean#isEvent()
+     * @see org.drools.core.management.ObjectTypeNodeMonitorMbean#isEvent()
      */
     public boolean isEvent() {
         return node.getObjectType().isEvent();
     }
     
     /* (non-Javadoc)
-     * @see org.drools.management.ObjectTypeNodeMonitorMbean#getExpirationOffset()
+     * @see org.drools.core.management.ObjectTypeNodeMonitorMbean#getExpirationOffset()
      */
     public long getExpirationOffset() {
         return node.getExpirationOffset();

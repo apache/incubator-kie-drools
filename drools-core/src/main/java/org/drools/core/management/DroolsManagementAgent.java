@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.management;
+package org.drools.core.management;
 
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
