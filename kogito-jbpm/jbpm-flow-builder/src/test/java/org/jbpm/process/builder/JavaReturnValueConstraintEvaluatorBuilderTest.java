@@ -10,7 +10,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.ReturnValueDescr;
-import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;

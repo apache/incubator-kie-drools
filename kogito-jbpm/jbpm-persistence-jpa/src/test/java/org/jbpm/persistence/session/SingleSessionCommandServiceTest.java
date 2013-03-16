@@ -26,7 +26,7 @@ import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JpaJDKTimerService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
