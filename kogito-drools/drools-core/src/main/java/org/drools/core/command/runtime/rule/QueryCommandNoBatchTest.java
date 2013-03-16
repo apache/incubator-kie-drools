@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.comand.runtime.rule;
+package org.drools.core.command.runtime.rule;
 
 import org.junit.*;
 import org.kie.KnowledgeBase;
@@ -84,16 +84,16 @@ public class QueryCommandNoBatchTest {
         ExecutionResults results = (ExecutionResults) commandService.execute(resolveFromContextCommand);
 
         // I'm not expecting any results here
-        assertNull(results);
+        Assert.assertNull(results);
 
         GetVariableCommand getVariableCmd = new GetVariableCommand("query123", "__TEMP__");
         resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(getVariableCmd,
                 null, null, "ksession", "localResults");
         NativeQueryResults queryResults = (NativeQueryResults) commandService.execute(resolveFromContextCommand);
 
-        assertNotNull(queryResults);
+        Assert.assertNotNull(queryResults);
 
-        assertEquals(0, queryResults.size());
+        Assert.assertEquals(0, queryResults.size());
 
     }
 }
