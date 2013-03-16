@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.management;
+package org.drools.core.management;
 
 /**
  * A tree root level class for all the drools management 
