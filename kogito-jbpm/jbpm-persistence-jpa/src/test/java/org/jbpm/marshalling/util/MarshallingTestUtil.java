@@ -52,7 +52,7 @@ import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
-import org.drools.time.impl.DefaultTimerJobInstance;
+import org.drools.core.time.impl.DefaultTimerJobInstance;
 import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
 import org.junit.Test;
 import org.slf4j.Logger;

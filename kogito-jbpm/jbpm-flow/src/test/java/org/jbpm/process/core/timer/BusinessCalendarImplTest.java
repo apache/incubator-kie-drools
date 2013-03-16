@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.time.SessionPseudoClock;
+import org.drools.core.time.SessionPseudoClock;
 import org.junit.Test;
 
 public class BusinessCalendarImplTest {

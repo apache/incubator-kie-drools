@@ -1,6 +1,6 @@
 package org.jbpm.process.core.timer;
 
-import org.drools.time.TimeUtils;
+import org.drools.core.time.TimeUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Period;

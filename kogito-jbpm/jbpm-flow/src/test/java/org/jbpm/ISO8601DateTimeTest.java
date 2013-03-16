@@ -2,10 +2,7 @@ package org.jbpm;
 
 import java.util.Date;
 
-import org.drools.time.TimeUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.format.ISODateTimeFormat;
 import org.joda.time.format.ISOPeriodFormat;

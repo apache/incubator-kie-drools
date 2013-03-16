@@ -22,7 +22,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.drools.core.spi.Activation;
-import org.drools.time.TimeUtils;
+import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;

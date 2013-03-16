@@ -46,7 +46,7 @@ import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.drools.time.impl.JDKTimerService;
+import org.drools.core.time.impl.JDKTimerService;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

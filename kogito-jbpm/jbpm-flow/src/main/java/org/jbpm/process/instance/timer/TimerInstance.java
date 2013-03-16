@@ -18,7 +18,7 @@ package org.jbpm.process.instance.timer;
 
 import java.util.Date;
 
-import org.drools.time.JobHandle;
+import org.drools.core.time.JobHandle;
 
 /**
  * 

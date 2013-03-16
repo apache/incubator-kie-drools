@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.time.TimeUtils;
+import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.Deadlines;
