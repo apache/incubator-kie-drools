@@ -35,7 +35,7 @@ import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.impl.NativeQueryResults;
-import org.drools.world.impl.WorldImpl;
+import org.drools.core.world.impl.WorldImpl;
 import static org.junit.Assert.*;
 
 public class ExecuteCommandDisconnectedTest {

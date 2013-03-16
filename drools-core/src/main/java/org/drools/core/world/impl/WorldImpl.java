@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.world.impl;
+package org.drools.core.world.impl;
 
 import org.drools.core.command.GetDefaultValue;
 import org.drools.core.command.impl.ContextImpl;
