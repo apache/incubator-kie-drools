@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.comand.runtime.rule;
+package org.drools.core.command.runtime.rule;
 
 import org.junit.*;
 import org.kie.KnowledgeBase;
@@ -26,7 +26,6 @@ import org.drools.core.command.ResolvingKnowledgeCommandContext;
 import org.drools.core.command.SetVariableCommandFromCommand;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
-import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.world.impl.WorldImpl;
