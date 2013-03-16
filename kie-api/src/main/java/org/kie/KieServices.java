@@ -109,7 +109,7 @@ public interface KieServices {
 
         static {
             try {                
-                INSTANCE = ( KieServices ) Class.forName( "org.kie.builder.impl.KieServicesImpl" ).newInstance();
+                INSTANCE = ( KieServices ) Class.forName( "org.drools.compiler.kie.builder.impl.KieServicesImpl" ).newInstance();
             } catch (Exception e) {
                 throw new RuntimeException("Unable to instance KieServices", e);
             }
