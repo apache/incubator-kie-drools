@@ -18,7 +18,7 @@ package org.optaplanner.core.event;
 
 import java.util.Iterator;
 
-import org.drools.event.AbstractEventSupport;
+import org.drools.core.event.AbstractEventSupport;
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.solution.Solution;
 
