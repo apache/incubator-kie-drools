@@ -3611,7 +3611,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testEvalInline() throws Exception {
-        final String text = "package org.drools\n" +
+        final String text = "package org.drools.compiler\n" +
                             "rule \"inline eval\"\n" +
                             "when\n" +
                             "    $str : String()\n" +
@@ -3639,7 +3639,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testMethodCalls() throws Exception {
-        final String text = "package org.drools\n" +
+        final String text = "package org.drools.compiler\n" +
                             "rule \"method calls\"\n" +
                             "when\n" +
                             "    Person( getName().substring(2) == 'b' )\n" +
@@ -3664,7 +3664,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testAlphaExpression() throws Exception {
-        final String text = "package org.drools\n" +
+        final String text = "package org.drools.compiler\n" +
                             "rule \"alpha\"\n" +
                             "when\n" +
                             "    Person( 5 < 6 )\n" +
@@ -3683,7 +3683,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testEvalCE() throws Exception {
-        final String text = "package org.drools\n" +
+        final String text = "package org.drools.compiler\n" +
                             "rule \"inline eval\"\n" +
                             "when\n" +
                             "    $str : String()\n" +
@@ -3841,7 +3841,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testNoneTypeSafeDeclarations() {
         // same namespace
-        String str = "package org.drools\n" +
+        String str = "package org.drools.compiler\n" +
                      "global java.util.List list\n" +
                      "declare Person\n" +
                      "    @typesafe(false)\n" +
@@ -4349,7 +4349,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testRuleRemovalWithJoinedRootPattern() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.drools.compiler \n";
         str += "rule rule1 \n";
         str += "when \n";
         str += "  String() \n";
@@ -6159,7 +6159,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testNetworkBuildErrorAcrossEntryPointsAndFroms() throws Exception {
-        String rule1 = "package org.drools\n";
+        String rule1 = "package org.drools.compiler\n";
         rule1 += "global java.util.List list\n";
         rule1 += "rule rule1\n";
         rule1 += "when\n";
