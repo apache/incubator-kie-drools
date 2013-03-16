@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Wireable;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Wireable;
 
 public class DroolsAction implements Externalizable, Wireable {
 	

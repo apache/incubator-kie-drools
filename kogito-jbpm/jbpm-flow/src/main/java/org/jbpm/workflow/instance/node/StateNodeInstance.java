@@ -22,7 +22,7 @@ import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.InternalAgenda;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;

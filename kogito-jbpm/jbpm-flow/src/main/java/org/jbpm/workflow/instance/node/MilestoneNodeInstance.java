@@ -29,7 +29,7 @@ import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.rule.Rule;
 import org.kie.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.InternalAgenda;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.jbpm.workflow.core.node.MilestoneNode;
 
 /**

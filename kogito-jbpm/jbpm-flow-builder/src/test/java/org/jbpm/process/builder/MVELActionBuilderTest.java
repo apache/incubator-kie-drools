@@ -17,7 +17,7 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.spi.ProcessContext;
+import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.builder.dialect.mvel.MVELActionBuilder;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.MVELAction;

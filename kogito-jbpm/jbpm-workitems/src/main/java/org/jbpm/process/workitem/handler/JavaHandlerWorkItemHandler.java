@@ -2,7 +2,7 @@ package org.jbpm.process.workitem.handler;
 
 import java.util.Map;
 
-import org.drools.spi.ProcessContext;
+import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.runtime.StatefulKnowledgeSession;

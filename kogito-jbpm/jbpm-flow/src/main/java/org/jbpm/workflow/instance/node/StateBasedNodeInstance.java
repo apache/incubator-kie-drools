@@ -21,7 +21,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.Declaration;
 import org.drools.runtime.rule.impl.InternalAgenda;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;

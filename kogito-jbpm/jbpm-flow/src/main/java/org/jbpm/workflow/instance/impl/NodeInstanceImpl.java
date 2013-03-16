@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.spi.ProcessContext;
+import org.drools.core.spi.ProcessContext;
 import org.kie.definition.process.Connection;
 import org.kie.definition.process.Node;
 import org.kie.runtime.process.NodeInstance;

@@ -33,7 +33,7 @@ import org.drools.process.instance.impl.WorkItemImpl;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.NodeInstance;
-import org.drools.spi.ProcessContext;
+import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;

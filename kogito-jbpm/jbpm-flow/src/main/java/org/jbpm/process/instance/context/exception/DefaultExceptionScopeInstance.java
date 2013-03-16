@@ -16,7 +16,7 @@
 
 package org.jbpm.process.instance.context.exception;
 
-import org.drools.spi.ProcessContext;
+import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.instance.ContextInstanceContainer;

@@ -22,9 +22,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.kie.definition.process.Connection;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.ProcessContext;
-import org.drools.spi.Wireable;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.ProcessContext;
+import org.drools.core.spi.Wireable;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.instance.NodeInstance;
