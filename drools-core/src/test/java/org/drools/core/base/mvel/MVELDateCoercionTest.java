@@ -23,7 +23,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.core.util.DateUtils;
-import org.drools.type.DateFormatsImpl;
+import org.drools.core.type.DateFormatsImpl;
 
 public class MVELDateCoercionTest {
 

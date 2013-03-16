@@ -35,7 +35,7 @@ import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.time.TimerService;
-import org.drools.type.DateFormats;
+import org.drools.core.type.DateFormats;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;
 import org.kie.runtime.rule.SessionEntryPoint;

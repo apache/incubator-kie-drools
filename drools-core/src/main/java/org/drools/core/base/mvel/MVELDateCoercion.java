@@ -19,7 +19,7 @@ package org.drools.core.base.mvel;
 import java.util.Date;
 
 import org.drools.core.util.DateUtils;
-import org.drools.type.DateFormatsImpl;
+import org.drools.core.type.DateFormatsImpl;
 import org.mvel2.ConversionHandler;
 
 public class MVELDateCoercion implements ConversionHandler {
