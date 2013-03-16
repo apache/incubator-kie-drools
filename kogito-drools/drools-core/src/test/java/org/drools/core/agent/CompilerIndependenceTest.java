@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.agent;
+package org.drools.core.agent;
 
 
 import org.junit.Ignore;
