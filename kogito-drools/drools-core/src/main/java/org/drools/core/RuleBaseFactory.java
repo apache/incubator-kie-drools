@@ -83,7 +83,7 @@ public class RuleBaseFactory {
         switch ( type ) {
             case RuleBase.RETEOO :
 
-                return new org.drools.reteoo.ReteooRuleBase( rulebaseId,
+                return new org.drools.core.reteoo.ReteooRuleBase( rulebaseId,
                                                              config );
             default :
                 throw new IllegalArgumentException( "Unknown engine type: " + type );

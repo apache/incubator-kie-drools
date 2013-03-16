@@ -25,9 +25,9 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
-import org.drools.reteoo.RightTuple;
-import org.drools.reteoo.WindowNode.WindowMemory;
-import org.drools.reteoo.WindowTupleList;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.WindowNode.WindowMemory;
+import org.drools.core.reteoo.WindowTupleList;
 import org.drools.core.spi.PropagationContext;
 
 /**

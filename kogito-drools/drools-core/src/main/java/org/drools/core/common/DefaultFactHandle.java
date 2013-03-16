@@ -19,9 +19,9 @@ package org.drools.core.common;
 import org.drools.core.FactHandle;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.RightTuple;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RightTuple;
 import org.kie.runtime.rule.SessionEntryPoint;
 
 import javax.xml.bind.annotation.XmlAccessType;

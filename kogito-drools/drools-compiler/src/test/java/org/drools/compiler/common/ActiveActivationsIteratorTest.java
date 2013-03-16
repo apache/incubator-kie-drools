@@ -7,7 +7,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActiveActivationIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

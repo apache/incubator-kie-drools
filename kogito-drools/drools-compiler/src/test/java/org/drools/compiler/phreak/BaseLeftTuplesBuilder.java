@@ -3,10 +3,10 @@ package org.drools.compiler.phreak;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleImpl;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.RightTuple;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.RightTuple;
 
 public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
     protected InternalWorkingMemory wm;

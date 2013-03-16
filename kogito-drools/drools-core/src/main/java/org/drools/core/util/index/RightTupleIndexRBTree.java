@@ -9,9 +9,9 @@ import org.drools.core.util.RightTupleRBTree;
 import org.drools.core.util.RightTupleRBTree.Boundary;
 import org.drools.core.util.RightTupleRBTree.Node;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RightTuple;
-import org.drools.reteoo.RightTupleMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleMemory;
 
 import java.io.Externalizable;
 import java.io.IOException;

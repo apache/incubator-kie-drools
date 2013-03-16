@@ -41,7 +41,7 @@ import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.reteoo.ReteooComponentFactory;
+import org.drools.core.reteoo.ReteooComponentFactory;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.Package;
 import org.kie.KieBase;

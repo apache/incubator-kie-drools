@@ -18,7 +18,7 @@ package org.drools.core.rule;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.WindowNode.WindowMemory;
+import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.spi.RuleComponent;
 
 /**

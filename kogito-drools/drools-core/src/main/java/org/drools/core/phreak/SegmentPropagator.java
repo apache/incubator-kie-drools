@@ -2,10 +2,10 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.SegmentMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.SegmentMemory;
 
 public class SegmentPropagator {
 

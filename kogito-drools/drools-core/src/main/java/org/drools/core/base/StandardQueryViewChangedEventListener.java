@@ -22,8 +22,8 @@ import java.util.List;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 

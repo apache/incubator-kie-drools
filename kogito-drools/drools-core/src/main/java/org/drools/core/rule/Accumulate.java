@@ -29,7 +29,7 @@ import java.util.Map;
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;

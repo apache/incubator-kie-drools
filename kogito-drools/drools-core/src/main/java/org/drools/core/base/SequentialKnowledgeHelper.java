@@ -26,7 +26,7 @@ import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;

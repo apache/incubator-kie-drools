@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.reteoo.WindowTupleList;
+import org.drools.core.reteoo.WindowTupleList;
 import org.kie.runtime.rule.SessionEntryPoint;
 
 public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {

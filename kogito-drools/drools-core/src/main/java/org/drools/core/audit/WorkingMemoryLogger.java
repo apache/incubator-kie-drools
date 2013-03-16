@@ -74,7 +74,7 @@ import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.core.event.WorkingMemoryEventListener;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemoryInterface;
+import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;

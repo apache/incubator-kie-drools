@@ -8,11 +8,11 @@ import java.io.PrintWriter;
 
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.ObjectSink;
-import org.drools.reteoo.ObjectSource;
-import org.drools.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

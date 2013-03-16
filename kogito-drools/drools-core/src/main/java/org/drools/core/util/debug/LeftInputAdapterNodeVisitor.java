@@ -19,7 +19,7 @@ package org.drools.core.util.debug;
 import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
-import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
 
 public class LeftInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
     

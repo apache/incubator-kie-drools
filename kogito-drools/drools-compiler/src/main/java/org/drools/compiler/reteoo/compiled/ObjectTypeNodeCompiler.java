@@ -5,13 +5,13 @@ import org.drools.core.base.ValueType;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.compiled.AssertHandler;
-import org.drools.reteoo.compiled.CompiledNetwork;
-import org.drools.reteoo.compiled.DeclarationsHandler;
-import org.drools.reteoo.compiled.HashedAlphasDeclaration;
-import org.drools.reteoo.compiled.ObjectTypeNodeParser;
-import org.drools.reteoo.compiled.SetNodeReferenceHandler;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.compiled.AssertHandler;
+import org.drools.core.reteoo.compiled.CompiledNetwork;
+import org.drools.core.reteoo.compiled.DeclarationsHandler;
+import org.drools.core.reteoo.compiled.HashedAlphasDeclaration;
+import org.drools.core.reteoo.compiled.ObjectTypeNodeParser;
+import org.drools.core.reteoo.compiled.SetNodeReferenceHandler;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 
 import java.util.Collection;
@@ -21,7 +21,7 @@ import java.util.Collection;
  */
 public class ObjectTypeNodeCompiler {
     private static final String NEWLINE = "\n";
-    private static final String PACKAGE_NAME = "org.drools.reteoo.compiled";
+    private static final String PACKAGE_NAME = "org.drools.core.reteoo.compiled";
     private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replace('.', '/');
     /**
      * This field hold the fully qualified class name that the {@link org.kie.reteoo.ObjectTypeNode} is representing.

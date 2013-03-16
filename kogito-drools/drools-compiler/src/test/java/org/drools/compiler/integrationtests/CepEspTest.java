@@ -17,7 +17,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.TypeDeclaration;

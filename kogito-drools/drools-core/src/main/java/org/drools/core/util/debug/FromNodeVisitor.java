@@ -19,9 +19,9 @@ package org.drools.core.util.debug;
 import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
-import org.drools.reteoo.FromNode;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.FromNode.FromMemory;
+import org.drools.core.reteoo.FromNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.FromNode.FromMemory;
 
 public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
     

@@ -41,7 +41,7 @@ import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.AccumulateBuilder;
 import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;

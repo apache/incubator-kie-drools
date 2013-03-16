@@ -2,10 +2,10 @@ package org.drools.core.util.index;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.LeftTupleMemory;
-import org.drools.reteoo.NodeTypeEnums;
-import org.drools.reteoo.RightTupleMemory;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.LeftTupleMemory;
+import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;

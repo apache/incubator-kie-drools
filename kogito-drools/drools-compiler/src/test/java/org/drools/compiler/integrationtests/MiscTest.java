@@ -90,7 +90,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
@@ -8676,7 +8676,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testPatternOnClass() throws Exception {
-        String rule = "import org.drools.reteoo.InitialFactImpl\n" +
+        String rule = "import org.drools.core.reteoo.InitialFactImpl\n" +
                       "import org.drools.compiler.FactB\n" +
                       "rule \"Clear\" when\n" +
                       "   $f: Object(class != FactB.class)\n" +

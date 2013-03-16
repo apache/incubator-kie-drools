@@ -3,7 +3,7 @@ package org.drools.core.common;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.core.base.DefaultKnowledgeHelper;
-import org.drools.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

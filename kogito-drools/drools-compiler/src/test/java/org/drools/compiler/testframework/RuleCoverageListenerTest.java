@@ -15,7 +15,7 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.event.AfterActivationFiredEvent;
-import org.drools.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;

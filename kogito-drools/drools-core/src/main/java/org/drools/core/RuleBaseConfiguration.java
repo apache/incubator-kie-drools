@@ -32,7 +32,7 @@ import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.reteoo.ReteooComponentFactory;
+import org.drools.core.reteoo.ReteooComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.kie.KieBaseConfiguration;

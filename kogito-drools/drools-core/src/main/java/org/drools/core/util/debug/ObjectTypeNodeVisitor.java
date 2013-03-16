@@ -20,8 +20,8 @@ import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.util.ObjectHashSet;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 
 public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
     

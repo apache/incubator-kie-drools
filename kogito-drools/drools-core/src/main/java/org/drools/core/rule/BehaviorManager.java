@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.WindowNode.WindowMemory;
+import org.drools.core.reteoo.WindowNode.WindowMemory;
 
 /**
  * A class to encapsulate behavior management for a given beta node

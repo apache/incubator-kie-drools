@@ -7,7 +7,7 @@ import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.asm.MethodComparator;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.*;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.InternalReadAccessor;

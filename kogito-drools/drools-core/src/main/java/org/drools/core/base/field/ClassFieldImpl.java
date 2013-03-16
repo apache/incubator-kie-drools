@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.spi.FieldValue;
 
 public class ClassFieldImpl implements FieldValue, Externalizable {

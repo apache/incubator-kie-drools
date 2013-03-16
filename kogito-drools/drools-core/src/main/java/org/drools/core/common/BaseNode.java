@@ -16,11 +16,11 @@
 
 package org.drools.core.common;
 
-import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.NodeSet;
-import org.drools.reteoo.ReteooBuilder;
-import org.drools.reteoo.RuleRemovalContext;
-import org.drools.reteoo.builder.BuildContext;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.NodeSet;
+import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.RuleRemovalContext;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.RuleComponent;
 import org.kie.definition.rule.Rule;
 

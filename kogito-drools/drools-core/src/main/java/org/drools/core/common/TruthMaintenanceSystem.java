@@ -31,7 +31,7 @@ import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract;
-import org.drools.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;

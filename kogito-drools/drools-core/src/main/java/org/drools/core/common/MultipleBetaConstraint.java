@@ -2,8 +2,8 @@ package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.util.index.IndexUtil;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.builder.BuildContext;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.kie.conf.IndexPrecedenceOption;

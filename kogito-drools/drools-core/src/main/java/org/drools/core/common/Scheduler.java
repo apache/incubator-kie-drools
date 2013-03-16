@@ -32,7 +32,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.core.marshalling.impl.TimersInputMarshaller;
 import org.drools.core.marshalling.impl.TimersOutputMarshaller;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;

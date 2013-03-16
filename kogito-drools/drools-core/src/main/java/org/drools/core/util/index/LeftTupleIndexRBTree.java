@@ -7,9 +7,9 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.LeftTupleRBTree;
 import org.drools.core.util.LeftTupleRBTree.Node;
 import org.drools.core.util.LeftTupleRBTree.Boundary;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleMemory;
-import org.drools.reteoo.RightTuple;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleMemory;
+import org.drools.core.reteoo.RightTuple;
 
 import java.io.Externalizable;
 import java.io.IOException;

@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.drools.core.common.TerminalNodeIterator;
 import org.drools.core.util.Iterator;
-import org.drools.reteoo.RuleTerminalNode;
-import org.drools.reteoo.TerminalNode;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

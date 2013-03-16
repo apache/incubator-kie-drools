@@ -2,7 +2,7 @@ package org.drools.core.rule.constraint;
 
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.*;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;

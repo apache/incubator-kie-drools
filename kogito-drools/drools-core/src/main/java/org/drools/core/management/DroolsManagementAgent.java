@@ -27,7 +27,7 @@ import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.kie.management.KieManagementAgentMBean;
 import org.kie.management.KieSessionMonitoringMBean;
 import org.slf4j.Logger;
@@ -78,14 +78,14 @@ public class DroolsManagementAgent
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.monitoring.DroolsManagementAgentMBean#getRulebaseCount()
+     * @see org.drools.core.reteoo.monitoring.DroolsManagementAgentMBean#getRulebaseCount()
      */
     public synchronized long getKieBaseCount() {
         return kbases;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.monitoring.DroolsManagementAgentMBean#getSessionCount()
+     * @see org.drools.core.reteoo.monitoring.DroolsManagementAgentMBean#getSessionCount()
      */
     public synchronized long getSessionCount() {
         return ksessions;

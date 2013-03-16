@@ -1,8 +1,8 @@
 package org.drools.compiler.integrationtests;
 
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -18,12 +18,12 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.AlphaNode;
-import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.LeftInputAdapterNode;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
@@ -38,7 +38,7 @@ import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
 
 public class PropertySpecificTest extends CommonTestMethodBase {
     

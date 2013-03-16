@@ -4,9 +4,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.RightTupleSets;
-import org.drools.reteoo.RightTuple;
-import org.drools.reteoo.RightTupleSink;
-import org.drools.reteoo.SegmentMemory;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleSink;
+import org.drools.core.reteoo.SegmentMemory;
 
 public class RightBuilder {
     private InternalWorkingMemory wm;

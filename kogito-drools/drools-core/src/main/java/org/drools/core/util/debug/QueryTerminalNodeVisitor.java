@@ -19,7 +19,7 @@ package org.drools.core.util.debug;
 import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
-import org.drools.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.rule.Rule;
 
 public class QueryTerminalNodeVisitor extends AbstractNetworkNodeVisitor {

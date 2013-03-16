@@ -23,7 +23,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.index.RightTupleList;
-import org.drools.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.LeftTupleImpl;
 
 public class RightTupleListTest {
     @Test

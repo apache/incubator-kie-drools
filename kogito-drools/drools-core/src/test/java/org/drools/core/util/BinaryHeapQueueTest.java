@@ -19,7 +19,7 @@ import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
-import org.drools.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;

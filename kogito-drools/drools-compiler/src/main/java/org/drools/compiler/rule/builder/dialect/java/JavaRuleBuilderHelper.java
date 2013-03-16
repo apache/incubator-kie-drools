@@ -5,7 +5,7 @@ import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.StringUtils;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.Rule;

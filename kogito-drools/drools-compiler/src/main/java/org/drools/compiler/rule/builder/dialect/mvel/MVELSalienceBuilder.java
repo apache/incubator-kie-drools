@@ -7,7 +7,7 @@ import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
+import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.compiler.rule.builder.RuleBuildContext;

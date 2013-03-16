@@ -6,11 +6,11 @@ import java.util.List;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleMemory;
-import org.drools.reteoo.SegmentMemory;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleMemory;
+import org.drools.core.reteoo.SegmentMemory;
 
 import static org.junit.Assert.fail;
 

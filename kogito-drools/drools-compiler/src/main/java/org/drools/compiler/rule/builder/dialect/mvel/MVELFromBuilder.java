@@ -29,7 +29,7 @@ import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.rule.builder.FromBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
-import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
+import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.From;
 import org.drools.core.rule.MVELDialectRuntimeData;

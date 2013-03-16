@@ -112,13 +112,13 @@ public class RuleExecutionSetImpl
         this.description = pkg.getName();//..getDocumentation( );
         
         RuleBaseConfiguration config = ( RuleBaseConfiguration ) this.properties.get( Constants.RES_RULEBASE_CONFIG );
-        org.drools.reteoo.ReteooRuleBase ruleBase;
+        org.drools.core.reteoo.ReteooRuleBase ruleBase;
         if ( config != null ) {
-            ruleBase = new org.drools.reteoo.ReteooRuleBase( null,
+            ruleBase = new org.drools.core.reteoo.ReteooRuleBase( null,
                                                              config,
                                                              new Jsr94FactHandleFactory() );
         } else {
-            ruleBase = new org.drools.reteoo.ReteooRuleBase( null,
+            ruleBase = new org.drools.core.reteoo.ReteooRuleBase( null,
                                                              new Jsr94FactHandleFactory() );
         }
         ruleBase.addPackage( pkg );

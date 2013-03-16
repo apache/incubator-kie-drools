@@ -20,9 +20,9 @@ import org.drools.core.FactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.Queueable;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RuleTerminalNode;
-import org.drools.reteoo.TerminalNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
@@ -416,7 +416,7 @@ public class AgendaItem
     }
 
     public List<String> getDeclarationIds() {
-        Declaration[] declArray = ((org.drools.reteoo.RuleTerminalNode)this.tuple.getLeftTupleSink()).getDeclarations();
+        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode)this.tuple.getLeftTupleSink()).getDeclarations();
         List<String> declarations = new ArrayList<String>();
         for( Declaration decl : declArray ) {
             declarations.add( decl.getIdentifier() );

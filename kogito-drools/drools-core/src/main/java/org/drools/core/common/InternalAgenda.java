@@ -18,9 +18,9 @@ package org.drools.core.common;
 
 import org.drools.core.Agenda;
 import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.PathMemory;
-import org.drools.reteoo.TerminalNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;
 import org.drools.core.spi.AgendaFilter;

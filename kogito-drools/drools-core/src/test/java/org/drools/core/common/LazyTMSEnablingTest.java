@@ -20,8 +20,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.core.RuleBaseFactory;
-import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.EntryPoint;
 import org.junit.Before;
 import org.junit.Test;

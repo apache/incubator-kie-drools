@@ -1,6 +1,6 @@
 package org.drools.core.common;
 
-import org.drools.reteoo.TerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 

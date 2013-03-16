@@ -10,7 +10,7 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.index.IndexUtil;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexEvaluator;

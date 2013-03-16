@@ -26,8 +26,8 @@ import static org.junit.Assert.*;
 
 import org.drools.core.ClockType;
 import org.drools.core.base.EnabledBoolean;
-import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.time.impl.PseudoClockScheduler;
 
 public class RuleTest {

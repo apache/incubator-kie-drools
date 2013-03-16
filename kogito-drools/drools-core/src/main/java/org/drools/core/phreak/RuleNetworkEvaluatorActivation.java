@@ -2,8 +2,8 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.*;
-import org.drools.reteoo.PathMemory;
+import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.PathMemory;
 import org.drools.core.spi.PropagationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

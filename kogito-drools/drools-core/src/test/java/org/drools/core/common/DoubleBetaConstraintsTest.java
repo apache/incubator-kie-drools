@@ -19,7 +19,7 @@ package org.drools.core.common;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.test.model.Cheese;
 
-import org.drools.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.junit.Test;
 

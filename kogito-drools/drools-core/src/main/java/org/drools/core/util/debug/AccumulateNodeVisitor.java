@@ -20,11 +20,11 @@ import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.util.FastIterator;
-import org.drools.reteoo.AccumulateNode;
-import org.drools.reteoo.AccumulateNode.AccumulateContext;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.LeftTuple;
 
 public class AccumulateNodeVisitor extends AbstractNetworkNodeVisitor {
     

@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.kie.runtime.rule.SessionEntryPoint;
 
 /**
