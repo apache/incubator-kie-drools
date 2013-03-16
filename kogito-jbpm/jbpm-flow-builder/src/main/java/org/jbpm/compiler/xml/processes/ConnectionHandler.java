@@ -3,9 +3,9 @@ package org.jbpm.compiler.xml.processes;
 import java.util.HashSet;
 
 import org.kie.definition.process.Node;
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
+import org.drools.core.xml.BaseAbstractHandler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.jbpm.workflow.core.Connection;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;

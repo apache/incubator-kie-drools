@@ -16,7 +16,7 @@
 package org.droolsjbpm.services.impl.bpmn2;
 
 import javax.inject.Inject;
-import org.drools.xml.ExtensibleXmlParser;
+import org.drools.core.xml.ExtensibleXmlParser;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.bpmn2.xml.ProcessHandler;

@@ -4,7 +4,7 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.xml.SemanticModules;
+import org.drools.core.xml.SemanticModules;
 import org.jbpm.process.core.impl.XmlProcessDumper;
 import org.kie.definition.process.Process;
 import org.kie.definition.process.WorkflowProcess;

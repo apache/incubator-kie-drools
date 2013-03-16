@@ -2,9 +2,9 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
+import org.drools.core.xml.BaseAbstractHandler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

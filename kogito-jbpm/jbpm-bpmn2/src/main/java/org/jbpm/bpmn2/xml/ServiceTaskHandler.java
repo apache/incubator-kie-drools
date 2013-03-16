@@ -18,7 +18,7 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.List;
 
-import org.drools.xml.ExtensibleXmlParser;
+import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Interface;
 import org.jbpm.bpmn2.core.Interface.Operation;
 import org.jbpm.compiler.xml.ProcessBuildData;

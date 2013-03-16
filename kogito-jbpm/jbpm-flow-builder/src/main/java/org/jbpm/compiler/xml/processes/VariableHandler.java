@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
+import org.drools.core.xml.BaseAbstractHandler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;

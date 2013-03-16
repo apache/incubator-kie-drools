@@ -2,7 +2,7 @@ package org.droolsjbpm.services.impl.bpmn2;
 
 import javax.inject.Inject;
 
-import org.drools.xml.ExtensibleXmlParser;
+import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.xml.CallActivityHandler;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.SubProcessNode;

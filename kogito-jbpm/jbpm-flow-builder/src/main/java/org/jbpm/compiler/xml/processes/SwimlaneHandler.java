@@ -3,9 +3,9 @@ package org.jbpm.compiler.xml.processes;
 import java.util.HashSet;
 
 import org.kie.definition.process.Process;
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
+import org.drools.core.xml.BaseAbstractHandler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;

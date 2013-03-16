@@ -17,8 +17,8 @@ package org.droolsjbpm.services.impl.bpmn2;
 
 import javax.inject.Inject;
 
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.xml.PropertyHandler;
 import org.jbpm.process.core.context.variable.Variable;
 

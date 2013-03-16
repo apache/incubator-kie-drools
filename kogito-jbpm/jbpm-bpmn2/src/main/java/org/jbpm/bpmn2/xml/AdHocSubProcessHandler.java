@@ -18,7 +18,7 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.List;
 
-import org.drools.xml.ExtensibleXmlParser;
+import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.Node;

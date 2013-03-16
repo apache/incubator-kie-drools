@@ -18,7 +18,7 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.Map;
 
-import org.drools.xml.ExtensibleXmlParser;
+import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.workflow.core.Node;

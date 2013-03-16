@@ -6,7 +6,7 @@ import java.util.Map;
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.kie.definition.process.Connection;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.xml.ExtensibleXmlParser;
+import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ForEachNode;

@@ -36,7 +36,7 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.process.core.impl.WorkImpl;
-import org.drools.xml.SemanticModules;
+import org.drools.core.xml.SemanticModules;
 import org.jbpm.Person;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;

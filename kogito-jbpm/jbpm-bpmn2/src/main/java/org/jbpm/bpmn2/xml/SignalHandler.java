@@ -20,14 +20,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
+import org.drools.core.xml.BaseAbstractHandler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.*;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.kie.definition.process.Process;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

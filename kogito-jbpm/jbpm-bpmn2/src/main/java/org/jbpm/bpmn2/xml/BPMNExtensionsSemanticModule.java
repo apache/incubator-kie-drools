@@ -16,7 +16,7 @@
 
 package org.jbpm.bpmn2.xml;
 
-import org.drools.xml.DefaultSemanticModule;
+import org.drools.core.xml.DefaultSemanticModule;
 
 public class BPMNExtensionsSemanticModule extends DefaultSemanticModule {
 	

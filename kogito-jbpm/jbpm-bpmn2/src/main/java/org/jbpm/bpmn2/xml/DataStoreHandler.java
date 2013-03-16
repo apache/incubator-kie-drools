@@ -22,9 +22,9 @@ import java.util.Map;
 
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
+import org.drools.core.xml.BaseAbstractHandler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.*;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.compiler.xml.ProcessBuildData;

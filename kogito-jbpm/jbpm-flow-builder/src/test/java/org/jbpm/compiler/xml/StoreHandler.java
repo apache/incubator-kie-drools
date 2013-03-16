@@ -3,10 +3,9 @@ package org.jbpm.compiler.xml;
 import java.util.HashSet;
 
 import org.kie.definition.process.Process;
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
-import org.jbpm.compiler.xml.ProcessBuildData;
+import org.drools.core.xml.BaseAbstractHandler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;

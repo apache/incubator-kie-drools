@@ -1,6 +1,6 @@
 package org.jbpm.compiler.xml.processes;
 
-import org.drools.xml.ExtensibleXmlParser;
+import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.TimerNode;
