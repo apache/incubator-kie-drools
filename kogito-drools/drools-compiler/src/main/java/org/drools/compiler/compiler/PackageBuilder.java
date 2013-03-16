@@ -34,7 +34,7 @@ import org.drools.core.util.DeepCloneable;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;

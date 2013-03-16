@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.Person;
-import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;

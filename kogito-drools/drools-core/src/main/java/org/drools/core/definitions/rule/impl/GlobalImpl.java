@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.definitions.rule.impl;
+package org.drools.core.definitions.rule.impl;
 
 import org.kie.definition.rule.Global;
 

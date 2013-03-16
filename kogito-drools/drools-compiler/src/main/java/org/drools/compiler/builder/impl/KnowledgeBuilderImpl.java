@@ -7,7 +7,7 @@ import java.util.List;
 import org.drools.compiler.compiler.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.io.impl.BaseResource;
 import org.drools.rule.Package;
 import org.kie.KnowledgeBase;
