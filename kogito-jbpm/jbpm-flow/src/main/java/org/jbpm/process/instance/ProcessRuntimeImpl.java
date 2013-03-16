@@ -12,7 +12,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.impl.DefaultTimerJobFactoryManager;
 import org.drools.time.impl.TrackableTimeJobFactoryManager;

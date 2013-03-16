@@ -18,7 +18,7 @@ import org.drools.compiler.compiler.PackageBuilder.PackageMergeException;
 import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.rule.Match;
 

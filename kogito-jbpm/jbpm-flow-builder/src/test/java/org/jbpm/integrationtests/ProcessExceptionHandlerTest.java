@@ -13,7 +13,7 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.jbpm.process.instance.ProcessInstance;
 
 public class ProcessExceptionHandlerTest extends TestCase {

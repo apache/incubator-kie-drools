@@ -11,7 +11,7 @@ import org.drools.*;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.jbpm.Person;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.definitions.impl.KnowledgePackageImp;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.impl.Action;

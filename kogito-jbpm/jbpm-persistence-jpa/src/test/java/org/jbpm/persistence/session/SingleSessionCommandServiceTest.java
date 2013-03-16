@@ -32,7 +32,7 @@ import org.drools.persistence.jpa.JpaJDKTimerService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.jbpm.compiler.ProcessBuilderImpl;
 import org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory;
 import org.jbpm.persistence.processinstance.JPASignalManagerFactory;

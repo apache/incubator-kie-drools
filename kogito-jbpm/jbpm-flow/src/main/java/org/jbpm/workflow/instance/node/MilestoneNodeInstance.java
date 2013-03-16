@@ -26,7 +26,7 @@ import org.kie.event.rule.AgendaGroupPushedEvent;
 import org.kie.event.rule.BeforeMatchFiredEvent;
 import org.kie.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.kie.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.drools.core.spi.Activation;

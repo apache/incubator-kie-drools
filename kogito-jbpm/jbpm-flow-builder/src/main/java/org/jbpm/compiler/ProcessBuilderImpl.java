@@ -140,7 +140,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             
             PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry(process.getPackageName());
 			if (pkgRegistry != null) {
-				org.drools.rule.Package p = pkgRegistry.getPackage();
+				org.drools.core.rule.Package p = pkgRegistry.getPackage();
             
 	            if (p != null) {
 	            

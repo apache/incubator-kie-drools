@@ -5,7 +5,7 @@ import java.util.Iterator;
 import org.kie.definition.process.Process;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
-import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.builder.AssignmentBuilder;

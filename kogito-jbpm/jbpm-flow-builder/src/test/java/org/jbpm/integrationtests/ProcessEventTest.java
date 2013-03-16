@@ -11,7 +11,7 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.kie.runtime.process.ProcessInstance;

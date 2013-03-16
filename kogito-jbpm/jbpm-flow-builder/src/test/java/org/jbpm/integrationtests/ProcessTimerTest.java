@@ -18,7 +18,7 @@ import org.drools.StatefulSession;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.time.SessionPseudoClock;
 import org.jbpm.Message;
 import org.jbpm.process.instance.InternalProcessRuntime;

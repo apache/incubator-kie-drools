@@ -36,7 +36,7 @@ import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;

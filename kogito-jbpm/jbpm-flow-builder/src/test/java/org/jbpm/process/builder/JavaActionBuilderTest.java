@@ -14,7 +14,7 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.builder.dialect.ProcessDialect;
