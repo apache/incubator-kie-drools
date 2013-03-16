@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.definitions.impl;
+package org.drools.core.definitions.impl;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 
-import org.drools.definitions.rule.impl.GlobalImpl;
-import org.drools.definitions.rule.impl.RuleImpl;
+import org.drools.core.definitions.rule.impl.GlobalImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.rule.Function;
 import org.drools.rule.Package;
 import org.kie.definition.KnowledgePackage;

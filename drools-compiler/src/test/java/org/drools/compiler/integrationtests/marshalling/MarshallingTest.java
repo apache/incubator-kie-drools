@@ -50,7 +50,7 @@ import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.integrationtests.IteratorToList;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.KeyStoreHelper;
-import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
