@@ -45,9 +45,9 @@ import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
-import org.drools.spi.Accumulator;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.KnowledgeHelper;
 import org.kie.runtime.rule.AccumulateFunction;
 
 /**

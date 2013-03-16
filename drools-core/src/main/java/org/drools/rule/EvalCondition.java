@@ -27,10 +27,10 @@ import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.Tuple;
-import org.drools.spi.Wireable;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.EvalExpression;
+import org.drools.core.spi.Tuple;
+import org.drools.core.spi.Wireable;
 
 public class EvalCondition extends ConditionalElement
     implements

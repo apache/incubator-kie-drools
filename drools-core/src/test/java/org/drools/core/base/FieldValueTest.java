@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.spi.FieldValue;
+import org.drools.core.spi.FieldValue;
 
 public class FieldValueTest {
     FieldValue field1;

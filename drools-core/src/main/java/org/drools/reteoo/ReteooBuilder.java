@@ -26,7 +26,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
-import org.drools.spi.Salience;
+import org.drools.core.spi.Salience;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

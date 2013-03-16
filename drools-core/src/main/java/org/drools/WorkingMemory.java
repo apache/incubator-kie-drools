@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.spi.AgendaFilter;
-import org.drools.spi.AsyncExceptionHandler;
-import org.drools.spi.GlobalResolver;
+import org.drools.core.spi.AgendaFilter;
+import org.drools.core.spi.AsyncExceptionHandler;
+import org.drools.core.spi.GlobalResolver;
 import org.kie.runtime.Environment;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItemManager;

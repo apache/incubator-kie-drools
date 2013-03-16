@@ -7,9 +7,9 @@ import org.drools.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.rule.builder.dialect.asm.ConsequenceGenerator;
 import org.drools.rule.builder.dialect.asm.ConsequenceStub;
 import org.drools.rule.builder.dialect.asm.InvokerDataProvider;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Consequence;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.KnowledgeHelper;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 

@@ -16,8 +16,8 @@
 
 package org.drools.core.conflict;
 
-import org.drools.spi.Activation;
-import org.drools.spi.ConflictResolver;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ConflictResolver;
 
 /**
  * <code>ConflictResolver</code> that uses the numConditions of rules to

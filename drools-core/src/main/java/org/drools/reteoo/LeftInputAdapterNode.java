@@ -29,8 +29,8 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleComponent;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.RuleComponent;
 import org.kie.definition.rule.Rule;
 
 import java.io.IOException;

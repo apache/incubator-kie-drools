@@ -1,8 +1,8 @@
 package org.drools.core.common;
 
 import org.drools.reteoo.TerminalNode;
-import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.PropagationContext;
 
 /**
  * A filter interface for agenda activations

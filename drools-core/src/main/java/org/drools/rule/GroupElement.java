@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.ObjectType;
 
 public class GroupElement extends ConditionalElement
     implements

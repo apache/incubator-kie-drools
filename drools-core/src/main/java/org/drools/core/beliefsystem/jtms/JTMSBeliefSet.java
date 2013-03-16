@@ -9,7 +9,7 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.LinkedListNode;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 public class JTMSBeliefSet  extends LinkedList implements BeliefSet {
     private BeliefSystem beliefSystem;

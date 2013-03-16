@@ -20,7 +20,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.test.dsl.ReteTesterHelper;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.InternalReadAccessor;
 
 public class BetaNodeBuilder {
     BuildContext buildContext;

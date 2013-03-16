@@ -24,7 +24,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.rule.Rule;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 public class NonCloningQueryViewListener 
     implements

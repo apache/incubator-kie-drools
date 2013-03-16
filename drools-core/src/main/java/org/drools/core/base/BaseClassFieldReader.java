@@ -28,7 +28,7 @@ import java.math.BigInteger;
  */
 abstract public class BaseClassFieldReader
     implements
-    org.drools.spi.InternalReadAccessor {
+    org.drools.core.spi.InternalReadAccessor {
 
     private int        index;
 

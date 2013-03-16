@@ -12,11 +12,11 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.rule.builder.dialect.asm.GeneratorHelper;
 import org.drools.rule.builder.dialect.asm.InvokerDataProvider;
-import org.drools.spi.Activation;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Consequence;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.Tuple;
 import org.mvel2.asm.MethodVisitor;
 
 import java.util.Map;
@@ -107,7 +107,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 }
 
                 // @{ruleClassName}.@{methodName}(KnowledgeHelper, @foreach{declr : declarations} Object, FactHandle @end)
-                StringBuilder consequenceMethodDescr = new StringBuilder("(Lorg/drools/spi/KnowledgeHelper;");
+                StringBuilder consequenceMethodDescr = new StringBuilder("(Lorg/drools/core/spi/KnowledgeHelper;");
                 mv.visitVarInsn(ALOAD, 1); // KnowledgeHelper
                 for (int i = 0; i < declarations.length; i++) {
                     load(paramsPos[i] + 1); // obj[i]

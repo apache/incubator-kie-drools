@@ -26,9 +26,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.ArrayUtils;
 import org.drools.reteoo.LeftTuple;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Constraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Constraint;
 
 /**
  * A superclass for all composite constraints, like "OR" and "AND"

@@ -29,7 +29,7 @@ import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
-import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 
 public class AccumulateBuilder
     implements

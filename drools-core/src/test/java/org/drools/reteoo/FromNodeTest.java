@@ -38,10 +38,10 @@ import org.drools.rule.From;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Pattern;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.DataProvider;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.junit.Before;
 import org.junit.Test;
 

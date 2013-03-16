@@ -5,7 +5,7 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
-import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.kie.conf.IndexPrecedenceOption;
 
 import java.io.IOException;

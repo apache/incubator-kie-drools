@@ -34,8 +34,8 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Test;
 

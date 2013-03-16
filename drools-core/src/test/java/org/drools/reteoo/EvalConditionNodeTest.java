@@ -23,7 +23,7 @@ import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 import org.junit.Before;
 import org.junit.Test;

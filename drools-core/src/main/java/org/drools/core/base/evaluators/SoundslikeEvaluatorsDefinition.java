@@ -26,9 +26,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
-import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.InternalReadAccessor;
 import org.mvel2.util.Soundex;
 
 /**

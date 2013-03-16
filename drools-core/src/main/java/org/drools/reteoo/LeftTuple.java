@@ -3,8 +3,8 @@ package org.drools.reteoo;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 
 public interface LeftTuple
         extends

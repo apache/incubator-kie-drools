@@ -25,8 +25,8 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.spi.Evaluator;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.spi.InternalReadAccessor;
 
 import java.io.IOException;
 import java.io.ObjectInput;

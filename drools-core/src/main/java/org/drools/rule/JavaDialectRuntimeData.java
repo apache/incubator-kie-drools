@@ -19,8 +19,8 @@ package org.drools.rule;
 import org.drools.RuntimeDroolsException;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
-import org.drools.spi.Constraint;
-import org.drools.spi.Wireable;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.Wireable;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.internal.utils.FastClassLoader;
 

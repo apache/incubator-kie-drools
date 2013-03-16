@@ -31,7 +31,7 @@ import org.drools.core.marshalling.impl.ProtobufInputMarshaller.PBActivationsFil
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;

@@ -31,7 +31,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.runtime.rule.impl.FlatQueryResults;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.ObjectType;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

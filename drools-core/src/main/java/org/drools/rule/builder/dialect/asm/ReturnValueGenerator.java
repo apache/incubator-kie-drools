@@ -5,10 +5,10 @@ import org.drools.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.FieldValue;
-import org.drools.spi.ReturnValueExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.ReturnValueExpression;
+import org.drools.core.spi.Tuple;
 import org.mvel2.asm.MethodVisitor;
 
 import java.util.List;
@@ -91,7 +91,7 @@ public class ReturnValueGenerator {
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
                 parseGlobals(globals, globalTypes, 5, returnValueMethodDescr);
 
-                returnValueMethodDescr.append(")Lorg/drools/spi/FieldValue;");
+                returnValueMethodDescr.append(")Lorg/drools/core/spi/FieldValue;");
                 mv.visitMethodInsn(INVOKESTATIC, stub.getInternalRuleClassName(), stub.getMethodName(), returnValueMethodDescr.toString());
                 mv.visitInsn(ARETURN);
             }

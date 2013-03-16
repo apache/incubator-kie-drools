@@ -34,12 +34,12 @@ import org.drools.core.base.extractors.MVELDateClassFieldReader;
 import org.drools.core.base.extractors.MVELNumberClassFieldReader;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.rule.TypeDeclaration;
-import org.drools.spi.Acceptor;
-import org.drools.spi.AcceptsClassObjectType;
-import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.AcceptsWriteAccessor;
-import org.drools.spi.ClassWireable;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.Acceptor;
+import org.drools.core.spi.AcceptsClassObjectType;
+import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.AcceptsWriteAccessor;
+import org.drools.core.spi.ClassWireable;
+import org.drools.core.spi.InternalReadAccessor;
 import org.kie.definition.type.FactField;
 
 public class ClassFieldAccessorStore

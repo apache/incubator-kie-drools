@@ -16,8 +16,8 @@
 
 package org.drools.rule;
 
-import org.drools.spi.Duration;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.Duration;
+import org.drools.core.spi.Tuple;
 
 /**
  * A fixed truthness duration.

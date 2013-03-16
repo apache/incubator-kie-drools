@@ -40,9 +40,9 @@ import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.From;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.DataProvider;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.PropagationContext;
 
 import java.io.IOException;
 import java.io.ObjectInput;

@@ -46,7 +46,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 import org.kie.runtime.rule.Variable;
 
 import java.io.IOException;

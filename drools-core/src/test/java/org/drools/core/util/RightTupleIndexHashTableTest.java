@@ -30,7 +30,7 @@ import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;
 import org.junit.Test;
 

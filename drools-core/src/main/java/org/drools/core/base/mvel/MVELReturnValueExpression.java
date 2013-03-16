@@ -29,9 +29,9 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
-import org.drools.spi.FieldValue;
-import org.drools.spi.ReturnValueExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.ReturnValueExpression;
+import org.drools.core.spi.Tuple;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 

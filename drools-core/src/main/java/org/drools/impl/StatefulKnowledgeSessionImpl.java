@@ -72,7 +72,7 @@ import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.runtime.rule.impl.NativeQueryResults;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.drools.time.TimerService;
 import org.kie.KnowledgeBase;
 import org.kie.command.Command;
@@ -739,7 +739,7 @@ public class StatefulKnowledgeSessionImpl
 
     public static class AgendaFilterWrapper
             implements
-            org.drools.spi.AgendaFilter {
+            org.drools.core.spi.AgendaFilter {
         private AgendaFilter filter;
 
         public AgendaFilterWrapper(AgendaFilter filter) {

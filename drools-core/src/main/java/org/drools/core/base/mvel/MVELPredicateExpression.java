@@ -28,8 +28,8 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.PredicateExpression;
+import org.drools.core.spi.Tuple;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 

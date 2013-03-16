@@ -257,7 +257,7 @@ public class IndexingTest extends CommonTestMethodBase {
     }
     @Test
     public void testRangeIndex() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                 "rule R1\n" +
                 "when\n" +
                 "   $s : String()" +
@@ -279,7 +279,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testRangeIndex2() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                 "rule R1\n" +
                 "when\n" +
                 "   $s : String()" +
@@ -301,7 +301,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testNotNode() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                 "rule R1 salience 10\n" +
                 "when\n" +
                 "   Person( $age : age )" +
@@ -327,7 +327,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testNotNodeModifyRight() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                 "rule R1 salience 10 when\n" +
                 "   Person( $age : age )\n" +
                 "   not Cheese( price < $age )\n" +
@@ -352,7 +352,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testRange() {
-        String str = "import org.drools.*;\n" +
+        String str = "import org.drools.compiler.*;\n" +
                 "rule R1 salience 10 when\n" +
                 "   Person( $age : age, $doubleAge : doubleAge )\n" +
                 "   not Cheese( this.price > $age && < $doubleAge )\n" +

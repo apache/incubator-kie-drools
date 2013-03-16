@@ -42,7 +42,7 @@ import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 
 public class BinaryHeapQueue
     implements

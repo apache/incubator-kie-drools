@@ -26,7 +26,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 import java.io.IOException;
 import java.io.ObjectInput;

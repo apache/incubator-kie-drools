@@ -19,8 +19,8 @@ package org.drools.core.common;
 import org.drools.core.util.LinkedListNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.TerminalNode;
-import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.PropagationContext;
 import org.drools.time.JobHandle;
 
 import java.io.Externalizable;

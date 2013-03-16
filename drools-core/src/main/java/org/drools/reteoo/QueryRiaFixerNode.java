@@ -27,7 +27,7 @@ import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.ReteooWorkingMemory.QueryRiaFixerNodeFixer;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 /**
  * Node which filters <code>ReteTuple</code>s.

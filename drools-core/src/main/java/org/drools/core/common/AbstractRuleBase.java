@@ -39,7 +39,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.WindowDeclaration;
-import org.drools.spi.FactHandleFactory;
+import org.drools.core.spi.FactHandleFactory;
 import org.kie.definition.process.Process;
 import org.kie.definition.type.FactType;
 import org.kie.internal.utils.ClassLoaderUtil;

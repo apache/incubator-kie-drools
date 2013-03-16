@@ -18,7 +18,7 @@ package org.drools.event;
 
 import java.util.EventObject;
 
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 
 public class ActivationEvent extends EventObject {
 

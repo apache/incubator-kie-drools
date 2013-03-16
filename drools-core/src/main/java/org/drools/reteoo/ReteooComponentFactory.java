@@ -33,7 +33,7 @@ import org.drools.reteoo.builder.DefaultNodeFactory;
 import org.drools.reteoo.builder.NodeFactory;
 import org.drools.rule.DefaultLogicTransformerFactory;
 import org.drools.rule.LogicTransformerFactory;
-import org.drools.spi.FactHandleFactory;
+import org.drools.core.spi.FactHandleFactory;
 
 import java.io.Serializable;
 

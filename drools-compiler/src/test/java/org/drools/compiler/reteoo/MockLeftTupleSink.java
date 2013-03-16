@@ -37,7 +37,7 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleRemovalContext;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 import java.util.ArrayList;
 import java.util.Collections;

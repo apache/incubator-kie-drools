@@ -32,7 +32,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.InternalReadAccessor;
 
 public class MVELPredicateBuilderTest {
 

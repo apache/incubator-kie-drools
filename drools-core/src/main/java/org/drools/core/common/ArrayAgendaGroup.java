@@ -19,8 +19,8 @@ package org.drools.core.common;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.PropagationContext;
 
 import java.util.PriorityQueue;
 

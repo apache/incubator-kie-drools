@@ -14,10 +14,10 @@ import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
-import org.drools.spi.Constraint;
-import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.InternalReadAccessor;
 
 import java.util.Map;
 

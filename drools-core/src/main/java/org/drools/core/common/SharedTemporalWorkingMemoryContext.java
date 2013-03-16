@@ -17,7 +17,7 @@
 package org.drools.core.common;
 
 
-import org.drools.spi.FactHandleFactory;
+import org.drools.core.spi.FactHandleFactory;
 import org.kie.time.SessionClock;
 
 public class SharedTemporalWorkingMemoryContext<T extends SessionClock>  extends SharedWorkingMemoryContext {

@@ -29,8 +29,8 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Collect;
 import org.drools.rule.Declaration;
-import org.drools.spi.Accumulator;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.Tuple;
 
 /**
  * An accumulator to execute "collect" CEs

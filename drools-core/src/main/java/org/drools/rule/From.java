@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.spi.DataProvider;
-import org.drools.spi.Wireable;
+import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.Wireable;
 
 public class From extends ConditionalElement
     implements

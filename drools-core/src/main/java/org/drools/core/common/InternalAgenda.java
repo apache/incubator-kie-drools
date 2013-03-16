@@ -21,13 +21,13 @@ import org.drools.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.PathMemory;
 import org.drools.reteoo.TerminalNode;
-import org.drools.spi.Activation;
-import org.drools.spi.ActivationGroup;
-import org.drools.spi.AgendaFilter;
-import org.drools.spi.AgendaGroup;
-import org.drools.spi.ConsequenceException;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleFlowGroup;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ActivationGroup;
+import org.drools.core.spi.AgendaFilter;
+import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.ConsequenceException;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.RuleFlowGroup;
 
 public interface InternalAgenda
     extends

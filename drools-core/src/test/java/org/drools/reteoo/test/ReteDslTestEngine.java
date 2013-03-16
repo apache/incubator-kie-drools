@@ -97,7 +97,7 @@ import org.drools.reteoo.test.parser.NodeTestDSLParser.compilation_unit_return;
 import org.drools.reteoo.test.parser.NodeTestDSLTree;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Rule;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;

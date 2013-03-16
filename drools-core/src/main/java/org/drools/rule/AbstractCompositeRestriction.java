@@ -26,7 +26,7 @@ import java.util.Set;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.spi.Restriction;
+import org.drools.core.spi.Restriction;
 
 public abstract class AbstractCompositeRestriction
     implements

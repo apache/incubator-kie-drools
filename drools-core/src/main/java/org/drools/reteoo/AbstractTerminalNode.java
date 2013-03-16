@@ -14,8 +14,8 @@ import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.PropagationContext;
 
 import java.io.Externalizable;
 import java.io.IOException;

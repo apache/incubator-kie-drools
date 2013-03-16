@@ -19,8 +19,8 @@ package org.drools.core.base;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaFilter;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.AgendaFilter;
 import org.kie.runtime.rule.Match;
 
 /**

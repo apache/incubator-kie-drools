@@ -28,11 +28,11 @@ import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.rule.IndexableConstraint;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.FieldValue;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.ReadAccessor;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.ReadAccessor;
 
 import java.io.Externalizable;
 import java.io.IOException;

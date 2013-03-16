@@ -167,7 +167,7 @@ public class AbstractKnowledgeTest {
         kfs.write( fldKB2 + "/rule1.drl", kbase2R1.getBytes() );
         kfs.write( fldKB2 + "/rule2.drl", kbase2R2.getBytes() );
         
-        kfs.write( "src/main/java/org/drools/cdi/test/KProjectTestClass" + namespace + ".java" ,generateKProjectTestClass( kproj, namespace ) );        
+        kfs.write( "src/main/java/org/drools/compiler/cdi/test/KProjectTestClass" + namespace + ".java" ,generateKProjectTestClass( kproj, namespace ) );
         
         
         KieBuilder kBuilder = ks.newKieBuilder( kfs );
@@ -223,6 +223,7 @@ public class AbstractKnowledgeTest {
                 "import " + org.kie.cdi.KBase.class.getName() + ";\n" +
                 "import " + org.kie.cdi.KSession.class.getName() + ";\n" +
                 "import " + KPTest.class.getName() + ";\n" +
+                "import " + KProjectTestClass.class.getName() + ";\n" +
 
                 "@KPTest(\"" + namespace + "\") \n" +
                 "public class KProjectTestClass" + namespace + " implements KProjectTestClass {\n" +

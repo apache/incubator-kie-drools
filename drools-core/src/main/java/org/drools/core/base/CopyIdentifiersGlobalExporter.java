@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.drools.core.common.InternalRuleBase;
 import org.drools.WorkingMemory;
-import org.drools.spi.GlobalExporter;
-import org.drools.spi.GlobalResolver;
+import org.drools.core.spi.GlobalExporter;
+import org.drools.core.spi.GlobalResolver;
 
 /**
  * Creates a new GlobalResolver consisting of just the identifiers specified in the String[].

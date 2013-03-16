@@ -65,8 +65,8 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.Rule;
-import org.drools.spi.AgendaGroup;
-import org.drools.spi.RuleFlowGroup;
+import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.RuleFlowGroup;
 import org.drools.time.JobContext;
 import org.drools.time.SelfRemovalJobContext;
 import org.drools.time.Trigger;
@@ -229,14 +229,14 @@ public class ProtobufOutputMarshaller {
 
         // serialize all dormant activations
         ActivationIterator it = ActivationIterator.iterator( wm );
-        List<org.drools.spi.Activation> dormant = new ArrayList<org.drools.spi.Activation>();
-        for ( org.drools.spi.Activation item = (org.drools.spi.Activation) it.next(); item != null; item = (org.drools.spi.Activation) it.next() ) {
+        List<org.drools.core.spi.Activation> dormant = new ArrayList<org.drools.core.spi.Activation>();
+        for ( org.drools.core.spi.Activation item = (org.drools.core.spi.Activation) it.next(); item != null; item = (org.drools.core.spi.Activation) it.next() ) {
             if ( !item.isActive() ) {
                 dormant.add( item );
             }
         }
         Collections.sort( dormant, ActivationsSorter.INSTANCE );
-        for ( org.drools.spi.Activation activation : dormant ) {
+        for ( org.drools.core.spi.Activation activation : dormant ) {
             _ab.addActivation( writeActivation( context, (AgendaItem) activation ) );
         }
 
@@ -515,7 +515,7 @@ public class ProtobufOutputMarshaller {
             //_belief.setActivation( value )
 
             LogicalDependency dependency = (LogicalDependency) node.getObject();
-            org.drools.spi.Activation activation = dependency.getJustifier();
+            org.drools.core.spi.Activation activation = dependency.getJustifier();
             ProtobufMessages.Activation _activation = ProtobufMessages.Activation.newBuilder()
                     .setPackageName( activation.getRule().getPackage() )
                     .setRuleName( activation.getRule().getName() )
@@ -659,11 +659,11 @@ public class ProtobufOutputMarshaller {
 
     public static class ActivationsSorter
             implements
-            Comparator<org.drools.spi.Activation> {
+            Comparator<org.drools.core.spi.Activation> {
         public static final ActivationsSorter INSTANCE = new ActivationsSorter();
 
-        public int compare(org.drools.spi.Activation o1,
-                           org.drools.spi.Activation o2) {
+        public int compare(org.drools.core.spi.Activation o1,
+                           org.drools.core.spi.Activation o2) {
             int result = o1.getRule().getName().compareTo( o2.getRule().getName() );
             if ( result == 0 ) {
                 LeftTuple t1 = o1.getTuple();

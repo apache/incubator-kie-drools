@@ -16,8 +16,8 @@
 
 package org.drools.core.common;
 
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.AgendaGroup;
 
 public interface InternalAgendaGroup extends AgendaGroup {
     public Activation getNext();

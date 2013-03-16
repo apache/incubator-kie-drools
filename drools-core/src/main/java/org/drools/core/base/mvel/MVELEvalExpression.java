@@ -28,8 +28,8 @@ import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.WorkingMemory;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.EvalExpression;
+import org.drools.core.spi.Tuple;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 

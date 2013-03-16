@@ -1,7 +1,7 @@
 package com.sample 
 
 import java.util.HashMap
-import org.drools.*
+import org.drools.compiler.*
 
 global com.sample.X x
 global com.sample.Yada yada

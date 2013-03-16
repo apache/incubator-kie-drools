@@ -35,10 +35,10 @@ import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
-import org.drools.spi.Accumulator;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Test;
 

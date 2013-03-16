@@ -42,8 +42,8 @@ import org.drools.reteoo.ReteooWorkingMemory.EvaluateResultConstraints;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
 import org.drools.rule.ContextEntry;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.PropagationContext;
 
 /**
  * AccumulateNode

@@ -7,7 +7,7 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 public class SimpleBeliefSet extends LinkedList implements BeliefSet {
     private BeliefSystem beliefSystem;

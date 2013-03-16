@@ -380,7 +380,7 @@ public class SequentialTest extends CommonTestMethodBase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.shadowProxyExcludes",
-                                "org.drools.*" );
+                                "org.drools.compiler.*" );
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration( properties );
         conf.setSequential( sequentialMode );

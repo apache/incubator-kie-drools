@@ -10,11 +10,11 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
-import org.drools.spi.Activation;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Consequence;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.Tuple;
 import org.mvel2.asm.MethodVisitor;
 
 import java.util.List;
@@ -122,7 +122,7 @@ public class ConsequenceGenerator {
                 }
 
                 // @{ruleClassName}.@{methodName}(KnowledgeHelper, @foreach{declr : declarations} Object, FactHandle @end)
-                StringBuilder consequenceMethodDescr = new StringBuilder("(Lorg/drools/spi/KnowledgeHelper;");
+                StringBuilder consequenceMethodDescr = new StringBuilder("(Lorg/drools/core/spi/KnowledgeHelper;");
                 mv.visitVarInsn(ALOAD, 1); // KnowledgeHelper
                 for (int i = 0; i < declarations.length; i++) {
                     load(paramsPos[i] + 1); // obj[i]

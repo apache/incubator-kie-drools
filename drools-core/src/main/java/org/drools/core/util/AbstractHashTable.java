@@ -25,8 +25,8 @@ import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.IndexEvaluator;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ReadAccessor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ReadAccessor;
 
 public abstract class AbstractHashTable
     implements

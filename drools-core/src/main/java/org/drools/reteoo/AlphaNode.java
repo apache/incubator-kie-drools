@@ -31,9 +31,9 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleComponent;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.RuleComponent;
 import org.kie.definition.rule.Rule;
 
 import static org.drools.core.util.BitMaskUtil.intersect;

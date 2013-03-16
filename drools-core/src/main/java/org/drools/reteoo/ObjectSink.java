@@ -18,7 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 /**
  * Receiver of propagated <code>FactHandleImpl</code>s from a

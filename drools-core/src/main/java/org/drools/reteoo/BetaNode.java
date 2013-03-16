@@ -42,9 +42,9 @@ import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.Pattern;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.PropagationContext;
 
 import java.io.IOException;
 import java.io.ObjectInput;

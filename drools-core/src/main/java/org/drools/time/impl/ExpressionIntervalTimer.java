@@ -22,7 +22,7 @@ import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ScheduledAgendaItem;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.drools.time.TimeUtils;
 import org.drools.time.Trigger;
 import org.kie.runtime.Calendars;

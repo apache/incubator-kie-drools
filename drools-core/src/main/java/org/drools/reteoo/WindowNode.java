@@ -37,8 +37,8 @@ import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.EntryPoint;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.PropagationContext;
 
 /**
  * <code>WindowNodes</code> are nodes in the <code>Rete</code> network used

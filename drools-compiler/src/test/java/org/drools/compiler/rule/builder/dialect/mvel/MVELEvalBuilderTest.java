@@ -28,7 +28,7 @@ import org.drools.rule.EvalCondition;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.InternalReadAccessor;
 
 public class MVELEvalBuilderTest {
 

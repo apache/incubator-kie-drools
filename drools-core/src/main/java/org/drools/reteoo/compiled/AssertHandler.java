@@ -23,7 +23,7 @@ import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 /**
  * todo: document

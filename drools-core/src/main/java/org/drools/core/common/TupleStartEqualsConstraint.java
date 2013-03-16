@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
-import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
 
 /**
  * Checks if one tuple is the start subtuple of other tuple.

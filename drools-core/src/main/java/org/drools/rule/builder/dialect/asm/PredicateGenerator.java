@@ -5,9 +5,9 @@ import org.drools.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.Tuple;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.PredicateExpression;
+import org.drools.core.spi.Tuple;
 import org.mvel2.asm.MethodVisitor;
 
 import java.util.List;

@@ -18,7 +18,7 @@ package org.drools.event;
 
 import java.util.EventObject;
 
-import org.drools.spi.AgendaGroup;
+import org.drools.core.spi.AgendaGroup;
 
 public class AgendaGroupEvent extends EventObject {
 

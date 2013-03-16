@@ -24,7 +24,7 @@ import java.math.BigInteger;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.drools.spi.WriteAccessor;
+import org.drools.core.spi.WriteAccessor;
 
 /**
  * This is the supertype for the ASM generated classes for writing values into fields.

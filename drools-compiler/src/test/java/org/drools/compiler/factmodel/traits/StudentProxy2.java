@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.drools.factmodel.traits.TraitProxy;
 import org.drools.factmodel.traits.VetoableTypedMap;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.WriteAccessor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 
 public class StudentProxy2 extends TraitProxy implements IStudent {
 

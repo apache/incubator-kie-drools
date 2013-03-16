@@ -22,7 +22,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.kie.definition.rule.Rule;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;

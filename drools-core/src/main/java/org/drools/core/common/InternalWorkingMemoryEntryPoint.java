@@ -24,7 +24,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 
 
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 import org.kie.runtime.rule.SessionEntryPoint;
 
 public interface InternalWorkingMemoryEntryPoint extends SessionEntryPoint {

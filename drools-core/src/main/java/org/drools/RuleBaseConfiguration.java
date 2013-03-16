@@ -34,7 +34,7 @@ import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
-import org.drools.spi.ConflictResolver;
+import org.drools.core.spi.ConflictResolver;
 import org.kie.KieBaseConfiguration;
 import org.kie.builder.conf.ClassLoaderCacheOption;
 import org.kie.builder.conf.DeclarativeAgendaOption;

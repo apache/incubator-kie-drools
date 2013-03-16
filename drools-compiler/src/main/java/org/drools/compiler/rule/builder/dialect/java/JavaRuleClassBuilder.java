@@ -20,6 +20,7 @@ import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.spi.KnowledgeHelper;
 
 public class JavaRuleClassBuilder
     implements
@@ -42,6 +43,7 @@ public class JavaRuleClassBuilder
         for (String s : context.getPkg().getImports().keySet()) {
             buffer.append("import ").append(s).append(";");
         }
+        buffer.append("import ").append(KnowledgeHelper.class.getName()).append(";");
 
         for (String s : context.getPkg().getStaticImports()) {
             buffer.append("import static ").append(s).append(";");

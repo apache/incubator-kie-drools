@@ -31,7 +31,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.compiler.rule.builder.PredicateBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.KnowledgeHelper;
 
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
 

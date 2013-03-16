@@ -1,6 +1,6 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.spi.ReturnValueExpression;
+import org.drools.core.spi.ReturnValueExpression;
 
 public interface ReturnValueStub extends ReturnValueExpression, InvokerStub {
 

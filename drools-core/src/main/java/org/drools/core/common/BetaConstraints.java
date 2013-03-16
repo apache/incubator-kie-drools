@@ -24,7 +24,7 @@ import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
-import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
 
 public interface BetaConstraints
     extends

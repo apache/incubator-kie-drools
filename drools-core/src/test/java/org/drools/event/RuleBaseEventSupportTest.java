@@ -30,9 +30,9 @@ import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.constraint.MvelConstraint;
-import org.drools.spi.Consequence;
-import org.drools.spi.FieldValue;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.KnowledgeHelper;
 import org.junit.Before;
 import org.junit.Test;
 

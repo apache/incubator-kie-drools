@@ -29,12 +29,12 @@ import org.drools.RuntimeDroolsException;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Evaluator;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.Restriction;
-import org.drools.spi.Wireable;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.PredicateExpression;
+import org.drools.core.spi.Restriction;
+import org.drools.core.spi.Wireable;
 
 /**
  * A predicate can be written as a top level constraint or be nested

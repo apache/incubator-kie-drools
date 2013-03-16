@@ -18,7 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 public class ModifyPreviousTuples {
     private LeftTuple                       leftTuple;

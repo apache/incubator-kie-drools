@@ -34,8 +34,8 @@ import org.drools.rule.GroupElementFactory;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.WorkingMemory;
-import org.drools.spi.Consequence;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.KnowledgeHelper;
 
 public class ReteooRuleBuilderTest {
     private ReteooRuleBuilder builder;

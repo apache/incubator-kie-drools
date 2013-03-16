@@ -19,8 +19,8 @@ package org.drools.factmodel.traits;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.WriteAccessor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;

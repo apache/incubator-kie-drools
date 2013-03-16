@@ -34,7 +34,7 @@ public class AgendaGroupImpl implements AgendaGroup, Externalizable {
         
     }
     
-    AgendaGroupImpl(org.drools.spi.AgendaGroup agendaGroup, InternalAgenda agenda) {
+    AgendaGroupImpl(org.drools.core.spi.AgendaGroup agendaGroup, InternalAgenda agenda) {
         this.name = agendaGroup.getName();
         this.agenda = agenda;
     }

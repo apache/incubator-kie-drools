@@ -18,7 +18,7 @@ package org.drools;
 
 import java.util.List;
 
-import org.drools.spi.AgendaFilter;
+import org.drools.core.spi.AgendaFilter;
 
 /**
  * A stateful session represents a working memory which keeps state

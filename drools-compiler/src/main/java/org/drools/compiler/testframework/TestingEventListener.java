@@ -20,10 +20,10 @@ import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaFilter;
-import org.drools.spi.Consequence;
-import org.drools.spi.KnowledgeHelper;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.AgendaFilter;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.KnowledgeHelper;
 
 /**
  * This tracks what is happening in the engine with rule activations and firings.

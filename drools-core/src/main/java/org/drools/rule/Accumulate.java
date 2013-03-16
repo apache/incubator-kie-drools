@@ -30,10 +30,10 @@ import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.spi.Accumulator;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Tuple;
-import org.drools.spi.Wireable;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Tuple;
+import org.drools.core.spi.Wireable;
 
 /**
  * A class to represent the Accumulate CE

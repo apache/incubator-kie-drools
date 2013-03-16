@@ -32,8 +32,8 @@ import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.WorkingMemory;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.PropagationContext;
 import org.drools.time.impl.DurationTimer;
 
 import org.junit.Before;
@@ -68,7 +68,7 @@ public class SchedulerTest extends DroolsTestCase {
         final List data = new ArrayList();
 
         // add consequence
-        rule.setConsequence( new org.drools.spi.Consequence() {
+        rule.setConsequence( new org.drools.core.spi.Consequence() {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -133,7 +133,7 @@ public class SchedulerTest extends DroolsTestCase {
         final List data = new ArrayList();
 
         // add consequence
-        rule.setConsequence( new org.drools.spi.Consequence() {
+        rule.setConsequence( new org.drools.core.spi.Consequence() {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -217,7 +217,7 @@ public class SchedulerTest extends DroolsTestCase {
         rule.setNoLoop( true );
 
         // add consequence
-        rule.setConsequence( new org.drools.spi.Consequence() {
+        rule.setConsequence( new org.drools.core.spi.Consequence() {
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,

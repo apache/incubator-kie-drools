@@ -12,8 +12,8 @@ import org.drools.core.common.TruthMaintenanceSystem.LogicalCallback;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.spi.Activation;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.PropagationContext;
 
 public class JTMSBeliefSystem
         implements

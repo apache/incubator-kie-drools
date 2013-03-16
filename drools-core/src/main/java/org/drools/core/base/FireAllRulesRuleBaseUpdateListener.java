@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.StatefulSession;
 import org.drools.event.BeforeRuleBaseUnlockedEvent;
 import org.drools.event.DefaultRuleBaseEventListener;
-import org.drools.spi.RuleBaseUpdateListener;
+import org.drools.core.spi.RuleBaseUpdateListener;
 
 public class FireAllRulesRuleBaseUpdateListener extends DefaultRuleBaseEventListener
     implements

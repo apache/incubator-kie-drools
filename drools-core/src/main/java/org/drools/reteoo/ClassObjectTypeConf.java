@@ -37,8 +37,8 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.TypeDeclaration;
-import org.drools.spi.Activation;
-import org.drools.spi.ObjectType;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ObjectType;
 
 public class ClassObjectTypeConf
     implements

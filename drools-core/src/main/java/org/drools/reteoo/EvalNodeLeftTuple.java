@@ -19,7 +19,7 @@ package org.drools.reteoo;
 import java.util.Arrays;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.spi.PropagationContext;
+import org.drools.core.spi.PropagationContext;
 
 public class EvalNodeLeftTuple extends BaseLeftTuple {
 

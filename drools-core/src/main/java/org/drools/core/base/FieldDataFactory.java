@@ -17,7 +17,7 @@
 
 package org.drools.core.base;
 
-import org.drools.spi.FieldValue;
+import org.drools.core.spi.FieldValue;
 import org.drools.type.DateFormats;
 
 

@@ -30,7 +30,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 
 /**
  * Implementation of a <code>RuleFlowGroup</code> that collects activations

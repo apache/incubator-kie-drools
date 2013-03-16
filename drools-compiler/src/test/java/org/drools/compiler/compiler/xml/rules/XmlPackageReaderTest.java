@@ -219,7 +219,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.drools.*",
+        assertEquals( "org.drools.compiler.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List functionImport = packageDescr.getFunctionImports();
@@ -242,7 +242,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.drools.*",
+        assertEquals( "org.drools.compiler.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List globals = packageDescr.getGlobals();
@@ -274,7 +274,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.drools.*",
+        assertEquals( "org.drools.compiler.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List globals = packageDescr.getGlobals();
@@ -429,7 +429,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.drools.*",
+        assertEquals( "org.drools.compiler.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List globals = packageDescr.getGlobals();
@@ -486,7 +486,7 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
                       imports.size() );
         assertEquals( "java.util.HashMap",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.drools.*",
+        assertEquals( "org.drools.compiler.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
         final List globals = packageDescr.getGlobals();

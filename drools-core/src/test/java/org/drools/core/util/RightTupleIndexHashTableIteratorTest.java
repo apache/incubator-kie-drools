@@ -38,8 +38,8 @@ import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MvelConstraintTestUtil;
 import org.drools.rule.Pattern;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.InternalReadAccessor;
+import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Test;
 
 import java.util.ArrayList;

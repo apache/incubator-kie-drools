@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.spi.WriteAccessor;
+import org.drools.core.spi.WriteAccessor;
 
 /**
  * This class implements the WriteAccessor interface

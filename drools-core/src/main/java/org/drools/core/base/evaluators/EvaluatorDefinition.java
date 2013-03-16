@@ -19,7 +19,7 @@ package org.drools.core.base.evaluators;
 import java.io.Externalizable;
 
 import org.drools.core.base.ValueType;
-import org.drools.spi.Evaluator;
+import org.drools.core.spi.Evaluator;
 
 /**
  * An evaluator definition interface that allows for pluggable

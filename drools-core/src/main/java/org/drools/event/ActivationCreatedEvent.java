@@ -16,7 +16,7 @@
 
 package org.drools.event;
 
-import org.drools.spi.Activation;
+import org.drools.core.spi.Activation;
 
 public class ActivationCreatedEvent extends ActivationEvent {
     private static final long serialVersionUID = 510l;
