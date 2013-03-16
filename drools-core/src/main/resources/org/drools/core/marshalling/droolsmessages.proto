@@ -1,6 +1,6 @@
-package org.drools.marshalling;
+package org.drools.core.marshalling;
 
-option java_package = "org.drools.marshalling.impl";
+option java_package = "org.drools.core.marshalling.impl";
 option java_outer_classname = "ProtobufMessages";
 
 // WARNING: Before changing this file, make sure you know what you
