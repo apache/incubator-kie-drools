@@ -3,7 +3,7 @@ package org.kie.scanner;
 import org.drools.core.util.ClassUtils;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.rule.TypeMetaInfo;
+import org.drools.core.rule.TypeMetaInfo;
 import org.kie.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.internal.utils.CompositeClassLoader;
@@ -27,8 +27,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
-import static org.drools.rule.TypeMetaInfo.DEFAULT_TYPE_META_INFO;
-import static org.drools.rule.TypeMetaInfo.unmarshallMetaInfos;
+import static org.drools.core.rule.TypeMetaInfo.DEFAULT_TYPE_META_INFO;
+import static org.drools.core.rule.TypeMetaInfo.unmarshallMetaInfos;
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {

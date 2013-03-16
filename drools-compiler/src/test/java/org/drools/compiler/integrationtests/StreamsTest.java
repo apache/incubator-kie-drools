@@ -42,7 +42,7 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.ObjectType;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Assert;

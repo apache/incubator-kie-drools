@@ -2,7 +2,7 @@ package org.drools.compiler.compiler;
 
 import junit.framework.Assert;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

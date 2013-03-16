@@ -67,7 +67,7 @@ import org.drools.compiler.lang.api.EvalDescrBuilder;
 import org.drools.compiler.lang.api.ParameterSupportBuilder;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.kie.builder.conf.LanguageLevelOption;
 
 import java.util.ArrayList;

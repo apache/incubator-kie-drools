@@ -21,9 +21,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.reteoo.LeftTuple;
-import org.drools.rule.ContextEntry;
-import org.drools.rule.Declaration;
-import org.drools.rule.Pattern;
+import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 
 public class InstanceNotEqualsConstraint

@@ -28,7 +28,7 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.test.model.Address;
 import org.drools.core.test.model.Person;
-import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.MVELDialectRuntimeData;
 
 public class MVELClassFieldExtractorTest {
 

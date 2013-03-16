@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import org.drools.RuleBaseFactory;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.junit.Before;
 import org.junit.Test;
 

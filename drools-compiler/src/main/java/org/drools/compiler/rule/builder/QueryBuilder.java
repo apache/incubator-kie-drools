@@ -4,10 +4,10 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.rule.Declaration;
-import org.drools.rule.Pattern;
-import org.drools.rule.Query;
-import org.drools.rule.constraint.QueryNameConstraint;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.Query;
+import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 

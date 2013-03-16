@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.LeftTuple;
-import org.drools.rule.ContextEntry;
-import org.drools.rule.constraint.MvelConstraint;
+import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 
 import static org.drools.core.util.index.IndexUtil.isIndexableForNode;

@@ -26,7 +26,7 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.SingleIndex;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.RightTuple;
-import org.drools.rule.constraint.MvelConstraint;
+import org.drools.core.rule.constraint.MvelConstraint;
 import org.junit.Before;
 import org.junit.Test;
 

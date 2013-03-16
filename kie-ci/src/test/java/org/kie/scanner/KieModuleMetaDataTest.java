@@ -1,6 +1,6 @@
 package org.kie.scanner;
 
-import org.drools.rule.TypeMetaInfo;
+import org.drools.core.rule.TypeMetaInfo;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieServices;

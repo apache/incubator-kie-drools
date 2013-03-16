@@ -4,12 +4,12 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
-import org.drools.rule.ConditionalBranch;
-import org.drools.rule.EvalCondition;
-import org.drools.rule.GroupElement;
-import org.drools.rule.NamedConsequence;
-import org.drools.rule.Pattern;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.ConditionalBranch;
+import org.drools.core.rule.EvalCondition;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.NamedConsequence;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
 
 import java.util.List;
 

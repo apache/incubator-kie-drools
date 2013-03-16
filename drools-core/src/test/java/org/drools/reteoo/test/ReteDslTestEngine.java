@@ -95,8 +95,8 @@ import org.drools.reteoo.test.parser.NodeTestDSLLexer;
 import org.drools.reteoo.test.parser.NodeTestDSLParser;
 import org.drools.reteoo.test.parser.NodeTestDSLParser.compilation_unit_return;
 import org.drools.reteoo.test.parser.NodeTestDSLTree;
-import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Rule;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
@@ -257,7 +257,7 @@ public class ReteDslTestEngine {
                                                       rbase.getReteooBuilder().getIdGenerator() );
 
         Rule rule = new Rule("rule1", "org.pkg1", null);
-        org.drools.rule.Package pkg = new org.drools.rule.Package( "org.pkg1" );
+        org.drools.core.rule.Package pkg = new org.drools.core.rule.Package( "org.pkg1" );
         pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
         pkg.addRule( rule );
         

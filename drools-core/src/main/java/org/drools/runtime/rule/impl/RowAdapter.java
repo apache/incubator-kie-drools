@@ -18,8 +18,8 @@ package org.drools.runtime.rule.impl;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
-import org.drools.rule.Declaration;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Rule;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.Row;
 

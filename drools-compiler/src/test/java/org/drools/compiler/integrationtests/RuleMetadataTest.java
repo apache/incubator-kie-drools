@@ -2,8 +2,8 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.rule.ConsequenceMetaData;
-import org.drools.rule.Rule;
+import org.drools.core.rule.ConsequenceMetaData;
+import org.drools.core.rule.Rule;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 

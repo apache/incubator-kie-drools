@@ -25,13 +25,13 @@ import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.compiler.reteoo.MockLeftTupleSink;
-import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Package;
-import org.drools.rule.Pattern;
-import org.drools.rule.PredicateConstraint;
-import org.drools.rule.Rule;
-import org.drools.rule.PredicateConstraint.PredicateContextEntry;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.PredicateConstraint;
+import org.drools.core.rule.Rule;
+import org.drools.core.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.core.spi.InternalReadAccessor;
 
 public class MVELPredicateBuilderTest {

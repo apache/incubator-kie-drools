@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.drools.core.base.QueryRowWithSubruleIndex;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 
 /**
  * Returned QueryResults instance for a requested named query. from here you can iterate the returned data, or

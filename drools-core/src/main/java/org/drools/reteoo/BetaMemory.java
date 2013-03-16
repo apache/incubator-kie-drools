@@ -20,7 +20,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.rule.ContextEntry;
+import org.drools.core.rule.ContextEntry;
 
 public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         implements

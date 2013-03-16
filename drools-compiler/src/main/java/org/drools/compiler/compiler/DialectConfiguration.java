@@ -1,6 +1,6 @@
 package org.drools.compiler.compiler;
 
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 /**
  * Each Dialect can have its own configuration. Implementations of this class are typically

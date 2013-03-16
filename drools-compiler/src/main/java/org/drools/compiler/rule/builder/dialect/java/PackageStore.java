@@ -19,7 +19,7 @@ package org.drools.compiler.rule.builder.dialect.java;
 import java.util.List;
 
 import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.JavaDialectRuntimeData;
 import org.kie.builder.KnowledgeBuilderResult;
 
 public class PackageStore

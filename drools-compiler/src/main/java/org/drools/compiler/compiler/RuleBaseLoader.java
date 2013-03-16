@@ -6,7 +6,7 @@ import java.io.Reader;
 import org.drools.CheckedDroolsException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 /**
  * A high level helper class for creating rulebases from source.

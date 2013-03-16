@@ -27,7 +27,7 @@ import javax.rules.admin.RuleExecutionSetProvider;
 
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.jsr94.rules.RuleEngineTestBase;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 import org.junit.After;
 import org.junit.Before;

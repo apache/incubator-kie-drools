@@ -18,7 +18,7 @@ package org.drools.core.spi;
 
 import java.io.Externalizable;
 
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 
 public interface Constraint
     extends

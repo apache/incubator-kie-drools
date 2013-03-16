@@ -29,8 +29,8 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.rule.Dialectable;
-import org.drools.rule.Package;
+import org.drools.core.rule.Dialectable;
+import org.drools.core.rule.Package;
 
 /**
  * A context for the current build

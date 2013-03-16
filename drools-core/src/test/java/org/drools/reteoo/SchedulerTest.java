@@ -30,7 +30,7 @@ import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.drools.WorkingMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;

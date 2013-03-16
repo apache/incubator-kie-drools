@@ -22,7 +22,7 @@ import java.io.InputStream;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 /**
  * This loads up rulebases from binary packages.

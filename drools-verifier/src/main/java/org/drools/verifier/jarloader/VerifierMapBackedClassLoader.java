@@ -1,6 +1,6 @@
 package org.drools.verifier.jarloader;
 
-import org.drools.rule.MapBackedClassLoader;
+import org.drools.core.rule.MapBackedClassLoader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

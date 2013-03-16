@@ -17,9 +17,8 @@
 package org.drools.reteoo.builder;
 
 import org.drools.reteoo.WindowNode;
-import org.drools.rule.EntryPoint;
-import org.drools.rule.RuleConditionElement;
-import org.drools.rule.WindowReference;
+import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.rule.WindowReference;
 
 /**
  * This is a builder for named window references 

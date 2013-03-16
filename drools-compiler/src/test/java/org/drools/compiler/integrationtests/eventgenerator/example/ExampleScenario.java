@@ -15,7 +15,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.compiler.integrationtests.eventgenerator.SimpleEventGenerator;
 import org.drools.compiler.integrationtests.eventgenerator.SimpleEventListener;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 
 public class ExampleScenario {

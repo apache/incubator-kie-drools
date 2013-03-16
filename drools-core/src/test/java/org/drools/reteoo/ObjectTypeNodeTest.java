@@ -40,7 +40,7 @@ import org.drools.core.test.model.Person;
 import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Before;

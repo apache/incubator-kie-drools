@@ -25,7 +25,7 @@ import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectSinkNodeList;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.rule.IndexableConstraint;
+import org.drools.core.rule.IndexableConstraint;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

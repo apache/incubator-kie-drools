@@ -33,10 +33,10 @@ import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Behavior;
-import org.drools.rule.BehaviorManager;
-import org.drools.rule.ContextEntry;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.Behavior;
+import org.drools.core.rule.BehaviorManager;
+import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 

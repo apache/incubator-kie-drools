@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.QueryResultsRow;
 

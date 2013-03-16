@@ -16,7 +16,7 @@
 
 package org.drools.core.spi;
 
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 import org.drools.WorkingMemory;
 
 public interface PredicateExpression

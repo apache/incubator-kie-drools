@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.rule.Dialectable;
-import org.drools.rule.Namespaceable;
+import org.drools.core.rule.Dialectable;
+import org.drools.core.rule.Namespaceable;
 
 public class FunctionDescr extends BaseDescr
     implements

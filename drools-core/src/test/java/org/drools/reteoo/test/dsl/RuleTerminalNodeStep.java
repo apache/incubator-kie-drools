@@ -24,7 +24,7 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.MockTupleSource;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 

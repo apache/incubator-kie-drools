@@ -22,8 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.WorkingMemory;
-import org.drools.rule.Declaration;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.Enabled;
 import org.drools.core.spi.Tuple;
 

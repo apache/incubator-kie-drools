@@ -21,8 +21,8 @@
 @end{}
 
 @declare{"replaceDeclaration"}
-    public void replaceDeclaration(org.drools.rule.Declaration declaration,
-                                   org.drools.rule.Declaration resolved) {
+    public void replaceDeclaration(org.drools.core.rule.Declaration declaration,
+                                   org.drools.core.rule.Declaration resolved) {
         // this class does not cache declarations
     }
 @end{}
@@ -39,8 +39,8 @@ public class @{invokerClassName} implements org.drools.core.spi.ReturnValueExpre
 
     public org.drools.core.spi.FieldValue evaluate(java.lang.Object object,
                             org.drools.core.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] previousDeclarations,
-                            org.drools.rule.Declaration[] localDeclarations,
+                            org.drools.core.rule.Declaration[] previousDeclarations,
+                            org.drools.core.rule.Declaration[] localDeclarations,
                             org.drools.core.WorkingMemory workingMemory,
                             Object context ) throws Exception {
 
@@ -89,8 +89,8 @@ public class @{invokerClassName} implements org.drools.core.spi.PredicateExpress
 
     public boolean evaluate(java.lang.Object object,
                             org.drools.core.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] previousDeclarations,
-                            org.drools.rule.Declaration[] localDeclarations,
+                            org.drools.core.rule.Declaration[] previousDeclarations,
+                            org.drools.core.rule.Declaration[] localDeclarations,
                             org.drools.core.WorkingMemory workingMemory,
                             Object context ) throws Exception {
 
@@ -131,7 +131,7 @@ public class @{invokerClassName} implements org.drools.core.spi.EvalExpression, 
     public Object createContext() { return null; }
 
     public boolean evaluate(org.drools.core.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] declarations,
+                            org.drools.core.rule.Declaration[] declarations,
                             org.drools.core.WorkingMemory workingMemory,
                             Object context ) throws Exception {
 
@@ -182,7 +182,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
     public void init(java.lang.Object workingMemoryContext,
                      java.lang.Object context,
                      org.drools.core.spi.Tuple leftTuple,
-                     org.drools.rule.Declaration[] declarations,
+                     org.drools.core.rule.Declaration[] declarations,
                      org.drools.core.WorkingMemory workingMemory) throws Exception {
         @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, ( (org.drools.core.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
             @code{i0++}
@@ -200,8 +200,8 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                            java.lang.Object context,
                            org.drools.core.spi.Tuple leftTuple,
                            org.drools.core.common.InternalFactHandle handle,
-                           org.drools.rule.Declaration[] declarations,
-                           org.drools.rule.Declaration[] innerDeclarations,
+                           org.drools.core.rule.Declaration[] declarations,
+                           org.drools.core.rule.Declaration[] innerDeclarations,
                            org.drools.core.WorkingMemory workingMemory) throws Exception {
         @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, ( (org.drools.core.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
             @code{ i0++ }
@@ -231,8 +231,8 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
                            java.lang.Object context,
                            org.drools.core.spi.Tuple leftTuple,
                            org.drools.core.common.InternalFactHandle handle,
-                           org.drools.rule.Declaration[] declarations,
-                           org.drools.rule.Declaration[] innerDeclarations,
+                           org.drools.core.rule.Declaration[] declarations,
+                           org.drools.core.rule.Declaration[] innerDeclarations,
                            org.drools.core.WorkingMemory workingMemory) throws Exception {
         @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, ( (org.drools.core.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
             @code{ i0++ }
@@ -259,7 +259,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Accumulator, org
     public Object getResult(java.lang.Object workingMemoryContext,
                             java.lang.Object context,
                             org.drools.core.spi.Tuple leftTuple,
-                            org.drools.rule.Declaration[] declarations,
+                            org.drools.core.rule.Declaration[] declarations,
                             org.drools.core.WorkingMemory workingMemory) throws Exception {
         @code{ i0 = 0 }@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.core.common.InternalWorkingMemory) workingMemory, ( (org.drools.core.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
             @code{ i0++ }
@@ -321,7 +321,7 @@ public class @{invokerClassName} implements org.drools.core.spi.Consequence, org
     public void evaluate(org.drools.core.spi.KnowledgeHelper knowledgeHelper,
                          org.drools.core.WorkingMemory workingMemory) throws Exception {
         org.drools.core.spi.Tuple tuple = knowledgeHelper.getTuple();
-        org.drools.rule.Declaration[] declarations = ((org.drools.core.reteoo.RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getLeftTupleSink()).getDeclarations();
+        org.drools.core.rule.Declaration[] declarations = ((org.drools.core.reteoo.RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getLeftTupleSink()).getDeclarations();
 
         @foreach{declr : declarations, index : indexes, notPattern : notPatterns}
           org.drools.core.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.core.common.InternalFactHandle ) tuple.get( declarations[@{index} ] );

@@ -25,8 +25,8 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.ContextEntry;
-import org.drools.rule.constraint.MvelConstraint;
+import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 
 public class DoubleNonIndexSkipBetaConstraints 

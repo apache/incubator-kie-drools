@@ -21,7 +21,7 @@ import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.Sink;
-import org.drools.rule.ContextEntry;
+import org.drools.core.rule.ContextEntry;
 
 import java.util.*;
 

@@ -4,10 +4,10 @@ import org.drools.ActivationListenerFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
-import org.drools.rule.GroupElement;
-import org.drools.rule.NamedConsequence;
-import org.drools.rule.Rule;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.NamedConsequence;
+import org.drools.core.rule.Rule;
+import org.drools.core.rule.RuleConditionElement;
 
 public class NamedConsequenceBuilder implements ReteooComponentBuilder {
 

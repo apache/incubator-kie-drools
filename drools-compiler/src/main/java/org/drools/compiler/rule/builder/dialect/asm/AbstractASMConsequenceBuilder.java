@@ -5,7 +5,7 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper;
 import org.drools.compiler.rule.builder.dialect.java.KnowledgeHelperFixer;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 
 import java.util.Map;

@@ -10,7 +10,7 @@ import org.drools.StatelessSession;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.integrationtests.DynamicRulesTest;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;

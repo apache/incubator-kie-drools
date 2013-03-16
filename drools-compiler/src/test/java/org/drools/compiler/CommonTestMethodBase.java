@@ -63,7 +63,7 @@ public class CommonTestMethodBase extends Assert {
                                             config );
     }
 
-    protected org.drools.rule.Package loadPackage(final String classPathResource) throws DroolsParserException,
+    protected org.drools.core.rule.Package loadPackage(final String classPathResource) throws DroolsParserException,
                                                                                  IOException {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( classPathResource ) ) );
@@ -72,7 +72,7 @@ public class CommonTestMethodBase extends Assert {
             fail( builder.getErrors().toString() );
         }
 
-        final org.drools.rule.Package pkg = builder.getPackage();
+        final org.drools.core.rule.Package pkg = builder.getPackage();
         return pkg;
     }
 
@@ -93,7 +93,7 @@ public class CommonTestMethodBase extends Assert {
             fail( builder.getErrors().toString() );
         }
 
-        org.drools.rule.Package pkg = builder.getPackage();
+        org.drools.core.rule.Package pkg = builder.getPackage();
         pkg = SerializationHelper.serializeObject( pkg );
 
         // add the package to a rulebase

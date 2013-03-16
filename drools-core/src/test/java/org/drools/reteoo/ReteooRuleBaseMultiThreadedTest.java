@@ -20,8 +20,8 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.test.model.DroolsTestCase;
-import org.drools.rule.JavaDialectRuntimeData;
-import org.drools.rule.Rule;
+import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.junit.Before;
@@ -38,13 +38,13 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
 
     ReteooRuleBase ruleBase;
     Rule rule;
-    org.drools.rule.Package pkg;
+    org.drools.core.rule.Package pkg;
 
     @Before
     public void setUp() {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
 
-        pkg = new org.drools.rule.Package("org.droos.test");
+        pkg = new org.drools.core.rule.Package("org.droos.test");
         pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
 
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();

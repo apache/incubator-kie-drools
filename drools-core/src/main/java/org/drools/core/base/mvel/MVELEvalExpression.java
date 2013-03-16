@@ -24,9 +24,9 @@ import java.io.Serializable;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Package;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.Package;
 import org.drools.WorkingMemory;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;

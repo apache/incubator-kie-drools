@@ -83,21 +83,21 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
 
     @Test
     public void testAddPackage() throws Exception {
-        final org.drools.rule.Package pkg1 = new org.drools.rule.Package( "org.droos.test" );
+        final org.drools.core.rule.Package pkg1 = new org.drools.core.rule.Package( "org.droos.test" );
         pkg1.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg1.addGlobal( "global1",
                         Object.class );
         pkg1.addGlobal( "global2",
                         Object.class );
 
-        final org.drools.rule.Package pkg2 = new org.drools.rule.Package( "org.droos.test" );
+        final org.drools.core.rule.Package pkg2 = new org.drools.core.rule.Package( "org.droos.test" );
         pkg2.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg2.addGlobal( "global1",
                         Object.class );
         pkg2.addGlobal( "global3",
                         Object.class );
 
-        final org.drools.rule.Package pkg3 = new org.drools.rule.Package( "org.droos.test2" );
+        final org.drools.core.rule.Package pkg3 = new org.drools.core.rule.Package( "org.droos.test2" );
         pkg3.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg3.addGlobal( "global3",
                         Object.class );
@@ -134,7 +134,7 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
         assertLength( 4,
                       this.ruleBase.getGlobals().values() );
         // two globals in the package
-        final org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
+        final org.drools.core.rule.Package[] pkgs = this.ruleBase.getPackages();
         for ( int i = 0; i < pkgs.length; i++ ) {
             if ( pkgs[i].getName().equals( pkg3.getName() ) ) {
                 assertLength( 2,
@@ -145,21 +145,21 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
 
     @Test
     public void testRemovePackage() throws Exception {
-        final org.drools.rule.Package pkg1 = new org.drools.rule.Package( "org.droos.test" );
+        final org.drools.core.rule.Package pkg1 = new org.drools.core.rule.Package( "org.droos.test" );
         pkg1.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg1.addGlobal( "global1",
                         Object.class );
         pkg1.addGlobal( "global2",
                         Object.class );
 
-        final org.drools.rule.Package pkg2 = new org.drools.rule.Package( "org.droos.test" );
+        final org.drools.core.rule.Package pkg2 = new org.drools.core.rule.Package( "org.droos.test" );
         pkg2.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg2.addGlobal( "global1",
                         Object.class );
         pkg2.addGlobal( "global3",
                         Object.class );
 
-        final org.drools.rule.Package pkg3 = new org.drools.rule.Package( "org.droos.test2" );
+        final org.drools.core.rule.Package pkg3 = new org.drools.core.rule.Package( "org.droos.test2" );
         pkg3.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg3.addGlobal( "global3",
                         Object.class );

@@ -20,7 +20,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 

@@ -36,7 +36,7 @@ public class RulebasePartitioningTest extends CommonTestMethodBase {
     public void testRulebasePartitions1() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_rulebasePartitions1.drl" ) ) );
-        final org.drools.rule.Package pkg = builder.getPackage();
+        final org.drools.core.rule.Package pkg = builder.getPackage();
 
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setMultithreadEvaluation( true );

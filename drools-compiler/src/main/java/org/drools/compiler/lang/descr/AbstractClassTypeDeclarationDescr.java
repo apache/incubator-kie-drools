@@ -17,7 +17,7 @@
 package org.drools.compiler.lang.descr;
 
 
-import org.drools.rule.Namespaceable;
+import org.drools.core.rule.Namespaceable;
 import org.kie.io.Resource;
 
 import java.io.IOException;

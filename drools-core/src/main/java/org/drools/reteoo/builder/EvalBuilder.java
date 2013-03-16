@@ -18,8 +18,8 @@ package org.drools.reteoo.builder;
 
 import org.drools.reteoo.EvalConditionNode;
 import org.drools.reteoo.LeftTupleSource;
-import org.drools.rule.EvalCondition;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.EvalCondition;
+import org.drools.core.rule.RuleConditionElement;
 
 public class EvalBuilder
     implements

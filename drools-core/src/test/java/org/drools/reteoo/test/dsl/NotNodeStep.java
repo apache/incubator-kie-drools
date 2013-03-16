@@ -36,7 +36,7 @@ import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 
 public class NotNodeStep

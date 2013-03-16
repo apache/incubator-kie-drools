@@ -33,7 +33,7 @@ import org.drools.core.base.AccessorKey.AccessorType;
 import org.drools.core.base.extractors.MVELDateClassFieldReader;
 import org.drools.core.base.extractors.MVELNumberClassFieldReader;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Acceptor;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;

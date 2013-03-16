@@ -19,7 +19,7 @@ package org.drools.reteoo.compiled;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.Sink;
-import org.drools.rule.ContextEntry;
+import org.drools.core.rule.ContextEntry;
 
 /**
  * This handler is used as a base class for all {@link org.kie.reteoo.compiled.NetworkHandler}s used for

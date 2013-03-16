@@ -33,10 +33,10 @@ import org.drools.core.util.index.RightTupleIndexHashTable;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.NodeTypeEnums;
-import org.drools.rule.Declaration;
-import org.drools.rule.IndexableConstraint;
-import org.drools.rule.MvelConstraintTestUtil;
-import org.drools.rule.Pattern;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.rule.MvelConstraintTestUtil;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 

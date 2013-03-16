@@ -21,8 +21,8 @@ import java.io.Externalizable;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.rule.ContextEntry;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.Declaration;
 
 public interface Restriction
     extends

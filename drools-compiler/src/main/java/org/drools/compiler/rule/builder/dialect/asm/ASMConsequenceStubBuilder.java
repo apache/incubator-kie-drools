@@ -1,12 +1,12 @@
 package org.drools.compiler.rule.builder.dialect.asm;
 
 import org.drools.WorkingMemory;
-import org.drools.rule.GroupElement;
+import org.drools.core.rule.GroupElement;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.rule.builder.dialect.asm.ClassGenerator;
-import org.drools.rule.builder.dialect.asm.ConsequenceGenerator;
-import org.drools.rule.builder.dialect.asm.ConsequenceStub;
-import org.drools.rule.builder.dialect.asm.InvokerDataProvider;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
+import org.drools.core.rule.builder.dialect.asm.ConsequenceGenerator;
+import org.drools.core.rule.builder.dialect.asm.ConsequenceStub;
+import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;

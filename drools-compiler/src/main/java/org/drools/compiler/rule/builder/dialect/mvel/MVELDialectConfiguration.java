@@ -5,7 +5,7 @@ import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 /**
  * The MVEL dialect.

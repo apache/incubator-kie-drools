@@ -3,8 +3,8 @@ package org.drools.compiler.rule.builder.dialect.mvel;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.rule.Declaration;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.DeclarationScopeResolver;
 
 public class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolver {

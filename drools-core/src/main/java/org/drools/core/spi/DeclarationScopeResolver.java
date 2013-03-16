@@ -22,12 +22,12 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.rule.Declaration;
-import org.drools.rule.GroupElement;
-import org.drools.rule.Package;
-import org.drools.rule.Pattern;
-import org.drools.rule.Rule;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.Rule;
+import org.drools.core.rule.RuleConditionElement;
 
 /**
  * A class capable of resolving a declaration in the current build context

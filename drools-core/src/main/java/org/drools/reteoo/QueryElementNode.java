@@ -43,9 +43,9 @@ import org.drools.reteoo.ReteooWorkingMemory.QueryResultUpdateAction;
 import org.drools.reteoo.ReteooWorkingMemory.QueryRetractAction;
 import org.drools.reteoo.ReteooWorkingMemory.QueryUpdateAction;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Declaration;
-import org.drools.rule.QueryElement;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.QueryElement;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.kie.runtime.rule.Variable;
 

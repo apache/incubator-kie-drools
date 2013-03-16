@@ -21,7 +21,7 @@ import java.util.Map;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 
 public class QueryResult {
 

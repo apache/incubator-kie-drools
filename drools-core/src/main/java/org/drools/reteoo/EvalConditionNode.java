@@ -27,7 +27,7 @@ import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.EvalCondition;
+import org.drools.core.rule.EvalCondition;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 import org.kie.definition.rule.Rule;

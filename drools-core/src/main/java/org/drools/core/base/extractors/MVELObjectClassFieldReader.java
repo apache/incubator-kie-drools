@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.MVELDialectRuntimeData;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExecutableStatement;

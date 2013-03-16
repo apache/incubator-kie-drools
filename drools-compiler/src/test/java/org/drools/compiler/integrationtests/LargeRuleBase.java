@@ -17,7 +17,7 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.kie.builder.conf.LanguageLevelOption;
 
 /**

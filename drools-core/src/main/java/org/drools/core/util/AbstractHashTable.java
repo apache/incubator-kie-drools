@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 
 import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.reteoo.LeftTuple;
-import org.drools.rule.Declaration;
-import org.drools.rule.IndexEvaluator;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.IndexEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
 

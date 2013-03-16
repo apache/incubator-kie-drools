@@ -30,7 +30,7 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.util.debug.SessionInspector;
 import org.drools.core.util.debug.SessionReporter;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

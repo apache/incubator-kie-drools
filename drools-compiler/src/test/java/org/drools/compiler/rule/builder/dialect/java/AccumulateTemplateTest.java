@@ -11,7 +11,7 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.util.StringUtils;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PatternExtractor;
 import org.junit.Before;
 import org.junit.Test;

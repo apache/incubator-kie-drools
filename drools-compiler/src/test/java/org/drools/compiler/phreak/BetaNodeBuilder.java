@@ -18,8 +18,8 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.test.dsl.ReteTesterHelper;
-import org.drools.rule.Declaration;
-import org.drools.rule.Pattern;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
 
 public class BetaNodeBuilder {

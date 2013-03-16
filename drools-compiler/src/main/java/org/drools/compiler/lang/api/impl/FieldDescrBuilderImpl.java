@@ -5,7 +5,7 @@ import org.drools.compiler.lang.api.FieldDescrBuilder;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.lang.api.AnnotationDescrBuilder;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.TypeDeclaration;
 
 public class FieldDescrBuilderImpl<T extends DescrBuilder<?,?>> extends BaseDescrBuilderImpl<T, TypeFieldDescr>
     implements

@@ -24,8 +24,8 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Pattern;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 

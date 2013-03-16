@@ -33,7 +33,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.TemplateDataListener;
 import org.junit.Test;
@@ -156,7 +156,7 @@ public class ExternalSpreadsheetCompilerTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( drl ) );
 
-        final org.drools.rule.Package pkg = builder.getPackage();
+        final org.drools.core.rule.Package pkg = builder.getPackage();
         assertNotNull( pkg );
         assertEquals( 0,
                 builder.getErrors().getErrors().length );

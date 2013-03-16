@@ -6,8 +6,8 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.KnowledgeHelper;
 

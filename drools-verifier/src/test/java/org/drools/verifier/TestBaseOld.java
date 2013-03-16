@@ -33,7 +33,7 @@ import org.drools.StatelessSession;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.visitor.PackageDescrVisitor;

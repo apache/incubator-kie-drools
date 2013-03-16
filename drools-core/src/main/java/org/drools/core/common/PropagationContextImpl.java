@@ -20,8 +20,8 @@ import org.drools.FactHandle;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.WindowTupleList;
-import org.drools.rule.EntryPoint;
-import org.drools.rule.Rule;
+import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 

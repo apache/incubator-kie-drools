@@ -4,8 +4,8 @@ import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.compiler.rule.builder.ReturnValueBuilder;
-import org.drools.rule.Declaration;
-import org.drools.rule.ReturnValueRestriction;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.ReturnValueRestriction;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 
 import java.util.Map;

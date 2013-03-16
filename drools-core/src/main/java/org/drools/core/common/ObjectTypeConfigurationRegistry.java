@@ -26,7 +26,7 @@ import org.drools.facttemplates.Fact;
 import org.drools.reteoo.ClassObjectTypeConf;
 import org.drools.reteoo.FactTemplateTypeConf;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.Activation;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {

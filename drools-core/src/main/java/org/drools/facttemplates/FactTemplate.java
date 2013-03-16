@@ -18,7 +18,7 @@ package org.drools.facttemplates;
 
 import java.io.Externalizable;
 
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 public interface FactTemplate
     extends

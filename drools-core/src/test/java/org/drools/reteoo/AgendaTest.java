@@ -45,7 +45,7 @@ import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.drools.WorkingMemory;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;

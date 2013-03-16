@@ -18,7 +18,7 @@ package org.drools.factmodel.traits;
 
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.kie.definition.type.FactField;
 
 import java.io.*;

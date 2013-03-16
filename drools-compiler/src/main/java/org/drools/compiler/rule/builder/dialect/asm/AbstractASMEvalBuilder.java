@@ -6,10 +6,10 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.rule.Declaration;
-import org.drools.rule.EvalCondition;
-import org.drools.rule.Pattern;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EvalCondition;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 

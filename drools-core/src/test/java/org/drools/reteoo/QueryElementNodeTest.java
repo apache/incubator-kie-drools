@@ -23,10 +23,10 @@ import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Declaration;
-import org.drools.rule.Pattern;
-import org.drools.rule.QueryElement;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.QueryElement;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 

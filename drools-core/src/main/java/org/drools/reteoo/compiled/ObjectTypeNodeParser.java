@@ -20,7 +20,7 @@ import org.drools.core.base.ClassFieldReader;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.*;
-import org.drools.rule.constraint.MvelConstraint;
+import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 
 /**

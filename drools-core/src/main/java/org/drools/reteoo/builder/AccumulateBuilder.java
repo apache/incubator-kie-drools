@@ -26,9 +26,9 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.rule.Accumulate;
-import org.drools.rule.GroupElement;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 
 public class AccumulateBuilder

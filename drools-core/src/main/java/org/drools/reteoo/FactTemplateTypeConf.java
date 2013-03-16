@@ -27,8 +27,8 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
-import org.drools.rule.EntryPoint;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 
 public class FactTemplateTypeConf

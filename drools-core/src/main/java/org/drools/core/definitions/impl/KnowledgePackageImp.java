@@ -29,8 +29,8 @@ import java.util.Map;
 
 import org.drools.core.definitions.rule.impl.GlobalImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.rule.Function;
-import org.drools.rule.Package;
+import org.drools.core.rule.Function;
+import org.drools.core.rule.Package;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Global;
@@ -57,9 +57,9 @@ public class KnowledgePackageImp
     }
 
     public Collection<Rule> getRules() {
-        org.drools.rule.Rule[] rules = pkg.getRules();
+        org.drools.core.rule.Rule[] rules = pkg.getRules();
         List<Rule> list = new ArrayList<Rule>( rules.length );
-        for ( org.drools.rule.Rule rule : rules ) {
+        for ( org.drools.core.rule.Rule rule : rules ) {
             list.add( new RuleImpl( rule ) );
         }
         return Collections.unmodifiableCollection( list );
@@ -81,7 +81,7 @@ public class KnowledgePackageImp
      * @return
      * @see org.kie.rule.Package#removeRule(org.kie.rule.Rule) 
      */
-    public void removeRule(org.drools.rule.Rule rule) {
+    public void removeRule(org.drools.core.rule.Rule rule) {
         pkg.removeRule(rule);
     }
 
@@ -129,10 +129,10 @@ public class KnowledgePackageImp
     }
 
     public Collection<Query> getQueries() {
-        org.drools.rule.Rule[] rules = pkg.getRules();
+        org.drools.core.rule.Rule[] rules = pkg.getRules();
         List<Query> list = new ArrayList<Query>( rules.length );
-        for ( org.drools.rule.Rule rule : rules ) {
-            if ( rule instanceof org.drools.rule.Query ) {
+        for ( org.drools.core.rule.Rule rule : rules ) {
+            if ( rule instanceof org.drools.core.rule.Query ) {
                 list.add( new RuleImpl( rule ) );
             }
         }

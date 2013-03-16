@@ -20,7 +20,7 @@ import org.drools.core.common.AbstractFactHandleFactory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.kie.runtime.rule.SessionEntryPoint;
 

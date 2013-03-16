@@ -26,10 +26,10 @@ import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.compiler.rule.builder.ReturnValueBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
-import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Pattern;
-import org.drools.rule.ReturnValueRestriction;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.ReturnValueRestriction;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.KnowledgeHelper;
 

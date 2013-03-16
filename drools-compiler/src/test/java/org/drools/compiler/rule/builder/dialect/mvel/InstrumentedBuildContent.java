@@ -4,7 +4,7 @@ import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.DeclarationScopeResolver;
 

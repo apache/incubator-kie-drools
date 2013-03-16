@@ -22,10 +22,10 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Declaration;
-import org.drools.rule.GroupElement;
-import org.drools.rule.Query;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.Query;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 
 import java.io.IOException;

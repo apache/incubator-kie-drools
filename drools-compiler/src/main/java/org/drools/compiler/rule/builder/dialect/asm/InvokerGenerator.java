@@ -2,9 +2,9 @@ package org.drools.compiler.rule.builder.dialect.asm;
 
 import org.drools.core.base.TypeResolver;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.rule.builder.dialect.asm.ClassGenerator;
-import org.drools.rule.builder.dialect.asm.GeneratorHelper;
-import org.drools.rule.builder.dialect.asm.InvokerDataProvider;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
+import org.drools.core.rule.builder.dialect.asm.GeneratorHelper;
+import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 import org.mvel2.asm.MethodVisitor;
 
 import java.util.List;

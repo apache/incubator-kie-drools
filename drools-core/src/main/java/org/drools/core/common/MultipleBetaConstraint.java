@@ -4,7 +4,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.ContextEntry;
+import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.kie.conf.IndexPrecedenceOption;
 
