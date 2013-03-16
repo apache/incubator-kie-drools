@@ -8,7 +8,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.phreak.SegmentUtilities;
+import org.drools.core.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.rule.Pattern;

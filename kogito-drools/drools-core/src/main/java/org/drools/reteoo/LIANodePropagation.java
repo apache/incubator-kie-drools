@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.phreak.SegmentUtilities;
+import org.drools.core.phreak.SegmentUtilities;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.spi.PropagationContext;
 

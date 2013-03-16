@@ -11,7 +11,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PropagationContextImpl;
-import org.drools.phreak.SegmentUtilities;
+import org.drools.core.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;

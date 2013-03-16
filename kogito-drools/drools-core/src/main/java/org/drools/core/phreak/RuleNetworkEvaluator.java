@@ -1,4 +1,4 @@
-package org.drools.phreak;
+package org.drools.core.phreak;
 
 import java.util.Collections;
 import java.util.HashMap;

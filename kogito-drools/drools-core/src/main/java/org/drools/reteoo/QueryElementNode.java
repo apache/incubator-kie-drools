@@ -35,7 +35,7 @@ import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
 import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.phreak.RuleNetworkEvaluator;
+import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.reteoo.ReteooWorkingMemory.QueryInsertAction;
 import org.drools.reteoo.ReteooWorkingMemory.QueryResultInsertAction;
 import org.drools.reteoo.ReteooWorkingMemory.QueryResultRetractAction;

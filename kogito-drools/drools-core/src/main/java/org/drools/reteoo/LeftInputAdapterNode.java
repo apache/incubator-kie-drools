@@ -27,7 +27,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.phreak.SegmentUtilities;
+import org.drools.core.phreak.SegmentUtilities;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;

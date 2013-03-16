@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.index.RightTupleList;
-import org.drools.phreak.RuleNetworkEvaluator;
+import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.PathMemory;
 import org.drools.rule.Query;

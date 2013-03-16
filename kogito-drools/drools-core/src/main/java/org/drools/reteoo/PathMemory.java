@@ -4,7 +4,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.phreak.RuleNetworkEvaluatorActivation;
+import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
