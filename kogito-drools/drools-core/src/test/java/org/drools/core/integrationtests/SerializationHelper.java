@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.integrationtests;
+package org.drools.core.integrationtests;
 
 import java.io.IOException;
 
