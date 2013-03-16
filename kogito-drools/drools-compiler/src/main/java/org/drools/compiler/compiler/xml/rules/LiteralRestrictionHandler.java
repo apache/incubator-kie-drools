@@ -20,9 +20,9 @@ import java.math.BigDecimal;
 
 import org.drools.compiler.lang.descr.ConnectiveDescr;
 import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
+import org.drools.core.xml.BaseAbstractHandler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

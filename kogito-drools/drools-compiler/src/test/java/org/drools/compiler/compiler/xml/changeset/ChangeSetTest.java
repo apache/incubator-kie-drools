@@ -12,7 +12,7 @@ import java.util.List;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.io.impl.UrlResource;
-import org.drools.xml.XmlChangeSetReader;
+import org.drools.core.xml.XmlChangeSetReader;
 import org.junit.Test;
 import org.kie.ChangeSet;
 import org.kie.KnowledgeBase;

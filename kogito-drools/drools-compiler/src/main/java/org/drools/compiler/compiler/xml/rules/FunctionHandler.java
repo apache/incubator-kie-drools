@@ -18,9 +18,9 @@ package org.drools.compiler.compiler.xml.rules;
 
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
+import org.drools.core.xml.BaseAbstractHandler;
+import org.drools.core.xml.ExtensibleXmlParser;
+import org.drools.core.xml.Handler;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;

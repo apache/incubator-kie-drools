@@ -10,9 +10,9 @@
  <global identifier="s" type="HashSet" />
  <global identifier="p" type="org.drools.compiler.Person" />
 
- <importfunction name="org.drools.xml.DumperTest.testStaticMethod1" />
- <importfunction name="org.drools.xml.DumperTest.testStaticMethod2" />
- <importfunction name="org.drools.xml.DumperTest.testStaticMethod3" />
+ <importfunction name="org.drools.core.xml.DumperTest.testStaticMethod1" />
+ <importfunction name="org.drools.core.xml.DumperTest.testStaticMethod2" />
+ <importfunction name="org.drools.core.xml.DumperTest.testStaticMethod3" />
 
 
 

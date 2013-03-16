@@ -31,7 +31,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.StringUtils;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.xml.jaxb.util.JaxbCollectionAdapter;
+import org.drools.core.xml.jaxb.util.JaxbCollectionAdapter;
 import org.kie.command.Context;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;

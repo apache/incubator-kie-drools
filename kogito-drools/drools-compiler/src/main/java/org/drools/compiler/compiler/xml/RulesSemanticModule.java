@@ -25,8 +25,8 @@ import org.drools.compiler.compiler.xml.rules.RestrictionConnectiveHandler;
 import org.drools.compiler.compiler.xml.rules.ReturnValueRestrictionHandler;
 import org.drools.compiler.compiler.xml.rules.RuleHandler;
 import org.drools.compiler.compiler.xml.rules.VariableRestrictionsHandler;
-import org.drools.xml.DefaultSemanticModule;
-import org.drools.xml.SemanticModule;
+import org.drools.core.xml.DefaultSemanticModule;
+import org.drools.core.xml.SemanticModule;
 
 public class RulesSemanticModule extends DefaultSemanticModule
     implements

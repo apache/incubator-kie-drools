@@ -26,7 +26,7 @@ import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.command.Context;
 import org.kie.runtime.KieSession;
 

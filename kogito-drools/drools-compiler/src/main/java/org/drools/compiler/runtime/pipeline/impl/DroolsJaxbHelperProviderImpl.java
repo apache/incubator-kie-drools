@@ -57,7 +57,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.xml.jaxb.util.JaxbListWrapper;
+import org.drools.core.xml.jaxb.util.JaxbListWrapper;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.help.DroolsJaxbHelperProvider;
