@@ -16,10 +16,10 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
-import org.drools.factmodel.traits.Thing;
-import org.drools.factmodel.traits.Traitable;
-import org.drools.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.factmodel.traits.TraitableBean;
 
 import java.util.Collection;
 import java.util.HashMap;

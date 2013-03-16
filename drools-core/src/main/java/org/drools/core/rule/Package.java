@@ -21,7 +21,7 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.factmodel.traits.TraitRegistry;
+import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
 import org.kie.definition.process.Process;
 import org.kie.definition.type.FactType;

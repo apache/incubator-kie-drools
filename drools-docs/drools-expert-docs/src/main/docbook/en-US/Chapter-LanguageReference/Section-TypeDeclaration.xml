@@ -692,9 +692,11 @@ end</programlisting>
     <programlisting>then
     Thing t = shed( $x, GoldenCustomer.class )</programlisting>
 
-    <para>This operation returns another proxy implementing the org.drools.factmodel.traits.Thing interface, where the getFields() and getCore()
-    methods are defined. Internally, in fact, all declared traits are generated to extend this interface (in addition to any others specified).
-    This allows to preserve the wrapper with the soft fields which would otherwise be lost.</para>
+    <para>This operation returns another proxy implementing the org.drools.core.factmodel.traits.Thing interface, where
+      the getFields() and getCore()
+      methods are defined. Internally, in fact, all declared traits are generated to extend this interface (in addition
+      to any others specified).
+      This allows to preserve the wrapper with the soft fields which would otherwise be lost.</para>
   </section>
 
 </section>

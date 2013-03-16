@@ -9,7 +9,7 @@ import org.drools.compiler.rule.builder.dialect.java.parser.JavaTryBlockDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
-import org.drools.factmodel.ClassDefinition;
+import org.drools.core.factmodel.ClassDefinition;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.ImportDescr;

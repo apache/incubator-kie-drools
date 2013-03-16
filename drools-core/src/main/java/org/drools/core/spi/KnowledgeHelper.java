@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.factmodel.traits.Thing;
-import org.drools.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Rule;
 import org.kie.runtime.Channel;

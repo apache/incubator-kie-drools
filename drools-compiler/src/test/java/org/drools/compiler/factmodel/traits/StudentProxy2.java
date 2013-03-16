@@ -19,8 +19,8 @@ package org.drools.compiler.factmodel.traits;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.factmodel.traits.TraitProxy;
-import org.drools.factmodel.traits.VetoableTypedMap;
+import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.VetoableTypedMap;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 

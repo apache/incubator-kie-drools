@@ -28,8 +28,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.drools.factmodel.traits.TraitFactory;
-import org.drools.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -154,7 +154,7 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 2, core.getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
+        assertNotNull( core.getTrait( "org.drools.core.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak" ) );
 
@@ -255,7 +255,7 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 2, core.getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
+        assertNotNull( core.getTrait( "org.drools.core.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask2" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak2" ) );
 
@@ -350,7 +350,7 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 1, core.getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.drools.factmodel.traits.Thing" ) );
+        assertNotNull( core.getTrait( "org.drools.core.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
 
     }

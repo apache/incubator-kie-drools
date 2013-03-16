@@ -17,7 +17,7 @@
 package org.drools.examples.traits;
 
 
-import org.drools.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Thing;
 
 public class ScholarImpl<K> implements Scholar<K> {
 

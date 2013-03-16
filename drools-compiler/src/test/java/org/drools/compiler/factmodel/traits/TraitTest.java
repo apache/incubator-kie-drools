@@ -42,16 +42,16 @@ import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
-import org.drools.factmodel.traits.Entity;
-import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
-import org.drools.factmodel.traits.MapWrapper;
-import org.drools.factmodel.traits.Thing;
-import org.drools.factmodel.traits.TraitFactory;
-import org.drools.factmodel.traits.TraitProxy;
-import org.drools.factmodel.traits.TraitableBean;
-import org.drools.factmodel.traits.TripleBasedBean;
-import org.drools.factmodel.traits.TripleBasedStruct;
-import org.drools.factmodel.traits.VetoableTypedMap;
+import org.drools.core.factmodel.traits.Entity;
+import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
+import org.drools.core.factmodel.traits.MapWrapper;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.TripleBasedBean;
+import org.drools.core.factmodel.traits.TripleBasedStruct;
+import org.drools.core.factmodel.traits.VetoableTypedMap;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.reteoo.ObjectTypeConf;
@@ -1614,7 +1614,7 @@ public class TraitTest extends CommonTestMethodBase {
     public void traitsInBatchExecution( TraitFactory.VirtualPropertyMode mode ) {
         String str = "package org.jboss.qa.brms.traits\n" +
                 "import org.drools.compiler.Person;\n" +
-                "import org.drools.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
                 "" +
                 "global java.util.List list;" +
                 "" +
@@ -1771,8 +1771,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     public void aliasing( TraitFactory.VirtualPropertyMode mode ) {
         String drl = "package org.drools.traits\n" +
-                "import org.drools.factmodel.traits.Traitable;\n" +
-                "import org.drools.factmodel.traits.Alias;\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Alias;\n" +
                 "" +
                 "global java.util.List list;" +
                 "" +
@@ -1859,7 +1859,7 @@ public class TraitTest extends CommonTestMethodBase {
     public void traitLogicalRemoval( TraitFactory.VirtualPropertyMode mode ) {
         String drl = "package org.drools.trait.test;\n" +
                 "\n" +
-                "import org.drools.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -1995,7 +1995,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         String s1 = "package org.drools.test;\n" +
                 "import org.drools.compiler.Person; \n" +
-                "import org.drools.factmodel.traits.Thing; \n" +
+                "import org.drools.core.factmodel.traits.Thing; \n" +
                 "rule \"Init\"\n" +
                 "when\n" +
                 "then\n" +
@@ -2057,7 +2057,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         String s1 = "package org.drools.test;\n" +
                 "import org.drools.compiler.Person; \n" +
-                "import org.drools.factmodel.traits.Thing; \n" +
+                "import org.drools.core.factmodel.traits.Thing; \n" +
                 "rule \"Init\"\n" +
                 "when\n" +
                 "then\n" +
@@ -2229,7 +2229,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         String s1 = "package org.drools.test;\n" +
                 "import org.drools.compiler.Person; \n" +
-                "import org.drools.factmodel.traits.Thing; \n" +
+                "import org.drools.core.factmodel.traits.Thing; \n" +
                 "rule \"Init\"\n" +
                 "when\n" +
                 "then\n" +
@@ -2396,7 +2396,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     public void traitRedundancy( TraitFactory.VirtualPropertyMode mode ) {
-        String str = "package org.drools.factmodel.traits; \n" +
+        String str = "package org.drools.core.factmodel.traits; \n" +
                 "global java.util.List list; \n" +
                 "" +
                 "declare trait IStudent end \n" +
@@ -2475,7 +2475,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     public void traitSimpleTypes( TraitFactory.VirtualPropertyMode mode ) {
 
-        String s1 = "package org.drools.factmodel.traits;\n" +
+        String s1 = "package org.drools.core.factmodel.traits;\n" +
                 "\n" +
                 "declare trait PassMark\n" +
                 "end\n" +

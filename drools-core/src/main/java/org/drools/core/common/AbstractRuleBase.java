@@ -27,7 +27,7 @@ import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.event.RuleBaseEventSupport;
-import org.drools.factmodel.traits.TraitRegistry;
+import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.rule.DialectRuntimeRegistry;

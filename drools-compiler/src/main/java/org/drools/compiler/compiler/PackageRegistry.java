@@ -3,7 +3,7 @@ package org.drools.compiler.compiler;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
-import org.drools.factmodel.traits.TraitRegistry;
+import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.ImportDeclaration;

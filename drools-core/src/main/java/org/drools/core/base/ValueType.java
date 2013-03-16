@@ -25,7 +25,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 import org.drools.core.common.EventFactHandle;
-import org.drools.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.facttemplates.FactTemplate;
 
 public class ValueType
