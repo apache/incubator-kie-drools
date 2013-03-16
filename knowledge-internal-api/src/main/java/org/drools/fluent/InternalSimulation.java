@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.fluent;
+package org.drools.core.fluent;
 
 import org.drools.core.command.Command;
-import org.drools.fluent.CommandScript;
+import org.drools.core.fluent.CommandScript;
 import org.drools.simulation.Simulation;
 
 public interface InternalSimulation extends Simulation, CommandScript {
