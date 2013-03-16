@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.process;
+package org.drools.core.runtime.process;
 
 import java.util.Collection;
 import java.util.Map;
@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * The <code>ProcessRuntime</code> is a super-interface for all <code>StatefulKnowledgeSession</code>s.
  * 
- * @see org.drools.runtime.StatefulKnowledgeSession 
+ * @see org.drools.core.runtime.StatefulKnowledgeSession
  */
 public interface ProcessRuntime {
 

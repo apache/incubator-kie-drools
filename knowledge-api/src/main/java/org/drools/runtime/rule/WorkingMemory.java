@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.rule;
+package org.drools.core.runtime.rule;
 
 import java.util.Collection;
 
@@ -24,7 +24,7 @@ import java.util.Collection;
  * interface instead of <code>WorkingMemory</code> interface, specially because of the <code>dispose()</code> method
  * that is only available in the <code>StatefulKnowledgeSession</code> interface.  
  * 
- * @see org.drools.runtime.StatefulKnowledgeSession 
+ * @see org.drools.core.runtime.StatefulKnowledgeSession
  */
 public interface WorkingMemory
     extends
@@ -35,8 +35,8 @@ public interface WorkingMemory
      * finish executing this rule's consequence before stopping.</p>
      * <p>This method will not remove active activations from the Agenda.
      * In case the application later wants to continue firing rules from the point where it stopped,
-     * it should just call <code>org.drools.runtime.StatefulKnowledgeSession.fireAllRules()</code> or 
-     * <code>org.drools.runtime.StatefulKnowledgeSession.fireUntilHalt()</code> again.</p>
+     * it should just call <code>org.drools.core.runtime.StatefulKnowledgeSession.fireAllRules()</code> or
+     * <code>org.drools.core.runtime.StatefulKnowledgeSession.fireUntilHalt()</code> again.</p>
      */
     void halt();
 

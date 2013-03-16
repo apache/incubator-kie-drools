@@ -537,7 +537,7 @@ public class ShiftAssignment {
       <title>Environment Definition</title>
 
       <para>drools-spring module now supports declarative definition of Environment
-      (org.drools.runtime.Environment)</para>
+        (org.drools.core.runtime.Environment)</para>
 
       <programlisting>
 &lt;drools:environment id="..."&gt;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.process;
+package org.drools.core.runtime.process;
 
 import java.util.Map;
 

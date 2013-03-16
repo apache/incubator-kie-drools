@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.runtime;
+package org.drools.core.runtime;
 
-import org.drools.runtime.process.StatefulProcessSession;
-import org.drools.runtime.rule.StatefulRuleSession;
+import org.drools.core.runtime.process.StatefulProcessSession;
+import org.drools.core.runtime.rule.StatefulRuleSession;
 
 /**
  * StatefulKnowledgeSession is the most common way to interact with the engine. A StatefulKnowledgeSession
@@ -94,7 +94,7 @@ import org.drools.runtime.rule.StatefulRuleSession;
  * for more details.
  * </p>
  * 
- * @see org.drools.runtime.Globals
+ * @see org.drools.core.runtime.Globals
  */
 public interface StatefulKnowledgeSession
     extends

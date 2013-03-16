@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.conf;
+package org.drools.core.runtime.conf;
 
 /**
  * A base interface for type safe configurations

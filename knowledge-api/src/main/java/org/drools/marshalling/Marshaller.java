@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.core.runtime.Environment;
+import org.drools.core.runtime.KnowledgeSessionConfiguration;
+import org.drools.core.runtime.StatefulKnowledgeSession;
 
 public interface Marshaller {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.conf;
+package org.drools.core.runtime.conf;
 
 /**
  * An enum to configure the session query listener configuration.

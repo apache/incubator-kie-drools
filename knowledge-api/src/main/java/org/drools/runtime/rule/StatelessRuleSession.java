@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.rule;
+package org.drools.core.runtime.rule;
 
 
 /**
  * This interface is used as part of the StatelessKnowledSession, which is the interface returned from the KnowledgeBase.
  * Please see StatelessKnowledSession for more details on how to use this api.
  *
- * @see org.drools.runtime.StatelessKnowledgeSession
+ * @see org.drools.core.runtime.StatelessKnowledgeSession
  */
 public interface StatelessRuleSession {
 

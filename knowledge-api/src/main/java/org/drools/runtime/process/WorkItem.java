@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.process;
+package org.drools.core.runtime.process;
 
 import java.util.Map;
 
@@ -38,8 +38,8 @@ import java.util.Map;
  * Result parameters can contain results related to the execution of this
  * work item (e.g. "Success" = true).
  * 
- * @see org.drools.runtime.process.WorkItemHandler
- * @see org.drools.runtime.process.WorkItemManager
+ * @see org.drools.core.runtime.process.WorkItemHandler
+ * @see org.drools.core.runtime.process.WorkItemManager
  */
 public interface WorkItem {
 

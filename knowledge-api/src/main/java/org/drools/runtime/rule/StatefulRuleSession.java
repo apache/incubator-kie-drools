@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.rule;
+package org.drools.core.runtime.rule;
 
 /**
  * An interface for all <code>StatefulRuleSession</code> methods. This interface
  * adds methods available to the StatefulKnowledgeSession beyond what the WorkingMemory provides. 
  * 
- * @see org.drools.runtime.StatefulKnowledgeSession 
+ * @see org.drools.core.runtime.StatefulKnowledgeSession
  */
 public interface StatefulRuleSession {
 

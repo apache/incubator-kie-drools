@@ -25,10 +25,10 @@ import org.drools.definition.rule.Query;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
 import org.drools.core.event.knowledgebase.KnowledgeBaseEventManager;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.core.runtime.Environment;
+import org.drools.core.runtime.KnowledgeSessionConfiguration;
+import org.drools.core.runtime.StatefulKnowledgeSession;
+import org.drools.core.runtime.StatelessKnowledgeSession;
 
 /**
  * <p>

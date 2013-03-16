@@ -16,7 +16,7 @@
 
 package org.drools.core.builder.conf;
 
-import org.drools.runtime.rule.AccumulateFunction;
+import org.drools.core.runtime.rule.AccumulateFunction;
 
 /**
  * A class for the accumulate function configuration.

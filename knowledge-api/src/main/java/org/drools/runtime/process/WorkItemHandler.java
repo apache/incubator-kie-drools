@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.process;
+package org.drools.core.runtime.process;
 
 /**
  * A work item handler is responsible for executing work items

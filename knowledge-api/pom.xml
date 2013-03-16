@@ -65,7 +65,7 @@
             </group>
             <group>
               <title>Runtime API</title>
-              <packages>org.drools.runtime*</packages>
+              <packages>org.drools.core.runtime*</packages>
             </group>
             <group>
               <title>Time API</title>

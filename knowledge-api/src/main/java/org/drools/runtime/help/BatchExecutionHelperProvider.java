@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.help;
+package org.drools.core.runtime.help;
 
 import com.thoughtworks.xstream.XStream;
 

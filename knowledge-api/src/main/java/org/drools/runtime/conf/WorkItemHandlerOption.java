@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.conf;
+package org.drools.core.runtime.conf;
 
-import org.drools.runtime.process.WorkItemHandler;
+import org.drools.core.runtime.process.WorkItemHandler;
 
 /**
  * WorkItemHandlers configuration option

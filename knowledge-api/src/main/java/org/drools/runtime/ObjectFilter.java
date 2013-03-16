@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime;
+package org.drools.core.runtime;
 
 /**
  * ObjectFilter is used with WorkingMemories to filter out instances during Iteration
