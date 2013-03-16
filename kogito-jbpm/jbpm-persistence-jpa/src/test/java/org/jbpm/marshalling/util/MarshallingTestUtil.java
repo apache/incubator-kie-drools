@@ -43,7 +43,7 @@ import org.drools.core.marshalling.impl.ProcessMarshaller;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
-import org.drools.process.instance.WorkItem;
+import org.drools.core.process.instance.WorkItem;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.marshalling.Marshaller;

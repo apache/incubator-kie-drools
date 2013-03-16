@@ -32,7 +32,7 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
-import org.drools.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.DataType;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;

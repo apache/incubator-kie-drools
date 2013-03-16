@@ -23,7 +23,7 @@ public class ProcessFactoryTest {
 	
 	@Test
 	public void testProcessFactory() {
-		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.drools.process");
+		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.drools.core.process");
 		factory
 			// header
 			.name("My process").packageName("org.drools")

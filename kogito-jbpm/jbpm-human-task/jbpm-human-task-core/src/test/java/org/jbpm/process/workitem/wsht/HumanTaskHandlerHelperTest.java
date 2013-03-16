@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.WorkItem;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.task.Deadlines;
 import org.jbpm.task.EmailNotification;
 import org.jbpm.task.EmailNotificationHeader;

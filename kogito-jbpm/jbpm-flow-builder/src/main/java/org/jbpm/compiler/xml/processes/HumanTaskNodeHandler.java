@@ -1,6 +1,6 @@
 package org.jbpm.compiler.xml.processes;
 
-import org.drools.process.core.Work;
+import org.drools.core.process.core.Work;
 import org.drools.xml.ExtensibleXmlParser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.HumanTaskNode;

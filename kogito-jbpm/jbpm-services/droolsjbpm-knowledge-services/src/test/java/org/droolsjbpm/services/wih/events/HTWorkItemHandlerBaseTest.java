@@ -20,10 +20,9 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.droolsjbpm.services.impl.helpers.KieSessionDelegate;
 import org.jbpm.shared.services.api.ServicesSessionManager;
-import org.jbpm.shared.services.api.SessionManager;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.task.AccessType;

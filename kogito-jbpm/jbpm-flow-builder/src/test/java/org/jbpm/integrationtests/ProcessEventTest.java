@@ -30,7 +30,7 @@ public class ProcessEventTest extends TestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"MyVar\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -83,7 +83,7 @@ public class ProcessEventTest extends TestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"MyVar\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -136,7 +136,7 @@ public class ProcessEventTest extends TestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"MyVar\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -192,7 +192,7 @@ public class ProcessEventTest extends TestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"MyVar\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -245,7 +245,7 @@ public class ProcessEventTest extends TestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"MyVar\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -310,7 +310,7 @@ public class ProcessEventTest extends TestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"MyVar\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -375,7 +375,7 @@ public class ProcessEventTest extends TestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"MyVar\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -440,7 +440,7 @@ public class ProcessEventTest extends TestCase {
             "  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"MyVar\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +

@@ -2,8 +2,8 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.process.core.Work;
-import org.drools.process.core.impl.WorkImpl;
+import org.drools.core.process.core.Work;
+import org.drools.core.process.core.impl.WorkImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;

@@ -7,7 +7,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
-import org.drools.process.instance.WorkItem;
+import org.drools.core.process.instance.WorkItem;
 import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.workflow.core.node.Assignment;
 import org.kie.runtime.process.ProcessContext;

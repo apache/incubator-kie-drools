@@ -95,11 +95,11 @@ public class ProcessSubProcessTest extends TestCase {
 			"  <header>\n" +
 			"    <variables>\n" +
 			"      <variable name=\"x\" >\n" +
-			"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+			"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
 			"        <value></value>\n" +
 			"      </variable>\n" +
 			"      <variable name=\"m\" >\n" +
-			"        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+			"        <type name=\"org.drools.core.process.core.datatype.impl.type.IntegerDataType\" />\n" +
 			"        <value></value>\n" +
 			"      </variable>\n" +
 			"    </variables>\n" + 
@@ -136,18 +136,18 @@ public class ProcessSubProcessTest extends TestCase {
 			"    </imports>\n" +
 			"    <variables>\n" +
 			"      <variable name=\"y\" >\n" +
-			"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+			"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
 			"        <value></value>\n" +
 			"      </variable>\n" +
 			"      <variable name=\"z\" >\n" +
-			"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+			"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
 			"        <value>z-value</value>\n" +
 			"      </variable>\n" +
 			"      <variable name=\"n\" >\n" +
-			"        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+			"        <type name=\"org.drools.core.process.core.datatype.impl.type.IntegerDataType\" />\n" +
 			"      </variable>\n" +
 			"      <variable name=\"o\" >\n" +
-			"        <type name=\"org.drools.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+			"        <type name=\"org.drools.core.process.core.datatype.impl.type.IntegerDataType\" />\n" +
 			"        <value>10</value>\n" +
 			"      </variable>\n" +
 			"    </variables>\n" + 
@@ -200,7 +200,7 @@ public class ProcessSubProcessTest extends TestCase {
 			"  <header>\n" +
 			"    <variables>\n" +
 			"      <variable name=\"x\" >\n" +
-			"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+			"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
 			"        <value></value>\n" +
 			"      </variable>\n" +
 			"    </variables>\n" + 

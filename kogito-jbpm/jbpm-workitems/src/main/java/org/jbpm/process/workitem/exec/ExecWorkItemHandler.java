@@ -18,7 +18,7 @@ package org.jbpm.process.workitem.exec;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
-import org.drools.process.instance.WorkItemHandler;
+import org.drools.core.process.instance.WorkItemHandler;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemManager;
 

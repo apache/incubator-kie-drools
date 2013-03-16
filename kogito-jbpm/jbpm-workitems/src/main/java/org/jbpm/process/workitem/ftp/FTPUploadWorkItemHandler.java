@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
-import org.drools.process.instance.WorkItemHandler;
+import org.drools.core.process.instance.WorkItemHandler;
 import org.jbpm.process.workitem.email.Connection;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemManager;

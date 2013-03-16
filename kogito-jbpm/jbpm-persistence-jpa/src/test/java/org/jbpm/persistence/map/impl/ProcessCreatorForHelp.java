@@ -3,9 +3,9 @@ package org.jbpm.persistence.map.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.process.core.Work;
-import org.drools.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.process.core.impl.WorkImpl;
+import org.drools.core.process.core.Work;
+import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.process.core.impl.WorkImpl;
 import org.jbpm.persistence.session.objects.Person;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.event.EventTypeFilter;

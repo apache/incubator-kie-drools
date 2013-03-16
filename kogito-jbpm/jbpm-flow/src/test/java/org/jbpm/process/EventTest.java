@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -52,7 +52,7 @@ public class EventTest {
 	@Test
     public void testEvent1() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.event");
+        process.setId("org.drools.core.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
@@ -132,7 +132,7 @@ public class EventTest {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");
@@ -144,7 +144,7 @@ public class EventTest {
     @Test
     public void testEvent2() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.event");
+        process.setId("org.drools.core.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
@@ -220,7 +220,7 @@ public class EventTest {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");
@@ -235,7 +235,7 @@ public class EventTest {
     @Test
     public void testEvent3() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.event");
+        process.setId("org.drools.core.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
@@ -334,7 +334,7 @@ public class EventTest {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");
@@ -354,7 +354,7 @@ public class EventTest {
     @Test
     public void testEvent4() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.event");
+        process.setId("org.drools.core.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
@@ -449,7 +449,7 @@ public class EventTest {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
         processInstance.signalEvent("myEvent", null);
         assertEquals(2, myList.size());
@@ -459,7 +459,7 @@ public class EventTest {
     @Test
     public void testEvent5() {
         RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.process.event");
+        process.setId("org.drools.core.process.event");
         process.setName("Event Process");
         
         List<Variable> variables = new ArrayList<Variable>();
@@ -542,7 +542,7 @@ public class EventTest {
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
-        ProcessInstance processInstance = ksession.startProcess("org.drools.process.event");
+        ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());
         Person jack = new Person();
         jack.setName("Jack");

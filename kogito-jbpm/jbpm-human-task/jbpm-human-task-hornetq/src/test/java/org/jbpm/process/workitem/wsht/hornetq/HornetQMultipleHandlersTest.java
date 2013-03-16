@@ -18,7 +18,7 @@ package org.jbpm.process.workitem.wsht.hornetq;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
 import org.jbpm.task.AsyncTaskService;

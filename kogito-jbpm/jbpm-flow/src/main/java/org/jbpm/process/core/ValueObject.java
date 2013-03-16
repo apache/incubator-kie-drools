@@ -16,7 +16,7 @@
 
 package org.jbpm.process.core;
 
-import org.drools.process.core.TypeObject;
+import org.drools.core.process.core.TypeObject;
 
 public interface ValueObject extends TypeObject {
 	

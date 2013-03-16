@@ -1,6 +1,6 @@
 package org.jbpm.process.workitem;
 
-public class WorkDefinitionImpl extends org.drools.process.core.impl.WorkDefinitionExtensionImpl {
+public class WorkDefinitionImpl extends org.drools.core.process.core.impl.WorkDefinitionExtensionImpl {
 
 	private static final long serialVersionUID = 5L;
 	

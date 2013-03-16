@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTestNoUserGroupSetup;

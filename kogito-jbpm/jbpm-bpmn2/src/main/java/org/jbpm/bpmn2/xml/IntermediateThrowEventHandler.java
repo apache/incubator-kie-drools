@@ -226,7 +226,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 				actionNode
 						.setAction(new DroolsConsequenceAction(
 								"java",
-								"org.drools.process.instance.impl.WorkItemImpl workItem = new org.drools.process.instance.impl.WorkItemImpl();"
+								"org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();"
 										+ EOL
 										+ "workItem.setName(\"Send Task\");"
 										+ EOL
@@ -237,7 +237,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 										+ (variable == null ? ""
 												: "workItem.setParameter(\"Message\", "
 														+ variable + ");" + EOL)
-										+ "((org.drools.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
+										+ "((org.drools.core.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
 			}
 			xmlNode = xmlNode.getNextSibling();
 		}

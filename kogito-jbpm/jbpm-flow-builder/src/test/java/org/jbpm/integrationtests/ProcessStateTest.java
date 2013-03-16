@@ -543,7 +543,7 @@ public class ProcessStateTest extends TestCase {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"s\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>a</value>\n" +
             "      </variable>\n" +
             "    </variables>\n" +
@@ -611,7 +611,7 @@ public class ProcessStateTest extends TestCase {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"s\" >\n" +
-            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>a</value>\n" +
             "      </variable>\n" +
             "    </variables>\n" +

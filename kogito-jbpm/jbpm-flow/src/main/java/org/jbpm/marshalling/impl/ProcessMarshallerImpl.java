@@ -16,8 +16,8 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterEnums;
 import org.drools.core.marshalling.impl.ProcessMarshaller;
-import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.WorkItemManager;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItem;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -156,7 +156,7 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
         ObjectInputStream stream = context.stream;
         while ( stream.readShort() == PersisterEnums.WORK_ITEM ) {
             WorkItem workItem = readWorkItem( context );
-            ((WorkItemManager) wm.getWorkItemManager()).internalAddWorkItem( (org.drools.process.instance.WorkItem) workItem );
+            ((WorkItemManager) wm.getWorkItemManager()).internalAddWorkItem( (org.drools.core.process.instance.WorkItem) workItem );
         }
     }
 

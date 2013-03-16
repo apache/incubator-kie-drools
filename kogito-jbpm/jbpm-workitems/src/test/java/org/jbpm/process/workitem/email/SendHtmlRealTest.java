@@ -2,7 +2,7 @@ package org.jbpm.process.workitem.email;
 
 import java.util.Random;
 
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

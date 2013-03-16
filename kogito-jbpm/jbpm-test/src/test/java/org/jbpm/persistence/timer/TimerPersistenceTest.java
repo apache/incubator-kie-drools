@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.process.instance.WorkItemHandler;
+import org.drools.core.process.instance.WorkItemHandler;
 import org.jbpm.test.JBPMHelper;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Assert;

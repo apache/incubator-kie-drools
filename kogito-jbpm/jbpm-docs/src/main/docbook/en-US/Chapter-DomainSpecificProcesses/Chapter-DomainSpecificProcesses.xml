@@ -93,22 +93,22 @@ classpath in a directory called META-INF. Our MyWorkDefinitions.wid file
 looks like this:</para>
 
 <programlisting>
-import org.drools.process.core.datatype.impl.type.StringDataType;
-[
+  import org.drools.core.process.core.datatype.impl.type.StringDataType;
+  [
   // the Notification work item
   [
-    "name" : "Notification",
-    "parameters" : [
-      "Message" : new StringDataType(),
-      "From" : new StringDataType(),
-      "To" : new StringDataType(),
-      "Priority" : new StringDataType(),
-    ],
-    "displayName" : "Notification",
-    "icon" : "icons/notification.gif"
+  "name" : "Notification",
+  "parameters" : [
+  "Message" : new StringDataType(),
+  "From" : new StringDataType(),
+  "To" : new StringDataType(),
+  "Priority" : new StringDataType(),
+  ],
+  "displayName" : "Notification",
+  "icon" : "icons/notification.gif"
   ]
 
-]
+  ]
 </programlisting>
 
 <para>The project directory structure could then look something like this:</para>
@@ -197,21 +197,21 @@ the class and method parameters. It includes a custom java.gif icon and consists
 following files and resulting screenshot:</para>
 
 <programlisting>
-import org.drools.process.core.datatype.impl.type.StringDataType;
-[
+  import org.drools.core.process.core.datatype.impl.type.StringDataType;
+  [
   // the Java Node work item located in:
   // project/src/main/resources/META-INF/JavaNodeDefinition.wid
   [
-    "name" : "JavaNode",
-    "parameters" : [
-      "class" : new StringDataType(),
-      "method" : new StringDataType(),
-    ],
-    "displayName" : "Java Node",
-    "icon" : "icons/java.gif"
+  "name" : "JavaNode",
+  "parameters" : [
+  "class" : new StringDataType(),
+  "method" : new StringDataType(),
+  ],
+  "displayName" : "Java Node",
+  "icon" : "icons/java.gif"
   ]
 
-]
+  ]
 </programlisting>
 
 
@@ -399,26 +399,26 @@ been completed.  The abort method can be used to specify how to abort such work 
   describes the Twitter integration service (as shown in the screencast above):</para>
 
 <programlisting>
-import org.drools.process.core.datatype.impl.type.StringDataType;
-[
+  import org.drools.core.process.core.datatype.impl.type.StringDataType;
   [
-    "name" : "Twitter",
-    "description" : "Send a twitter message",
-    "parameters" : [
-    	"Message" : new StringDataType()
-    ],
-    "displayName" : "Twitter",
-    "eclipse:customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor",
-    "icon" : "twitter.gif",
-    "category" : "Communication",
-    "defaultHandler" : "org.jbpm.process.workitem.twitter.TwitterHandler",
-    "documentation" : "index.html",
-    "dependencies" : [ 
-      "file:./lib/jbpm-twitter.jar", 
-      "file:./lib/twitter4j-core-2.2.2.jar"
-    ]
+  [
+  "name" : "Twitter",
+  "description" : "Send a twitter message",
+  "parameters" : [
+  "Message" : new StringDataType()
+  ],
+  "displayName" : "Twitter",
+  "eclipse:customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor",
+  "icon" : "twitter.gif",
+  "category" : "Communication",
+  "defaultHandler" : "org.jbpm.process.workitem.twitter.TwitterHandler",
+  "documentation" : "index.html",
+  "dependencies" : [
+  "file:./lib/jbpm-twitter.jar",
+  "file:./lib/twitter4j-core-2.2.2.jar"
   ]
-]
+  ]
+  ]
 </programlisting>
 
 <para>

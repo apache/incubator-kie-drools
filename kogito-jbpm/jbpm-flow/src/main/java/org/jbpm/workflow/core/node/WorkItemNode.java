@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.definition.process.Connection;
-import org.drools.process.core.Work;
+import org.drools.core.process.core.Work;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;

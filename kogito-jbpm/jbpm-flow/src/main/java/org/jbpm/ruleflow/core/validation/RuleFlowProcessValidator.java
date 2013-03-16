@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.process.core.Work;
-import org.drools.process.core.datatype.DataType;
-import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.process.core.Work;
+import org.drools.core.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.timer.DateTimeUtils;

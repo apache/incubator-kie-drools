@@ -262,7 +262,7 @@ public class ProcessDynamicNodeTest extends TestCase {
                 "  <header>\n" +
         		"    <variables>\n" +
         		"      <variable name=\"x\" >\n" +
-        		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+        		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
         		"        <value>SomeText</value>\n" +
         		"      </variable>\n" +
         		"    </variables>\n" +

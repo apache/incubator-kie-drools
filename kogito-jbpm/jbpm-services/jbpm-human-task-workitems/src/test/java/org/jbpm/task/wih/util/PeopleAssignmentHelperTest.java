@@ -20,8 +20,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.WorkItem;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.task.Group;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.PeopleAssignments;

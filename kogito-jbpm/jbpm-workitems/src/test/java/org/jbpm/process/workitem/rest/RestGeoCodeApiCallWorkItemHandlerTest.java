@@ -22,9 +22,9 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.impl.DefaultWorkItemManager;
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.WorkItemManager;
+import org.drools.core.process.instance.impl.DefaultWorkItemManager;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 
 public class RestGeoCodeApiCallWorkItemHandlerTest extends TestCase {
 

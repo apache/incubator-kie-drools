@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.drools.process.instance.WorkItemHandler;
+import org.drools.core.process.instance.WorkItemHandler;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemManager;
 

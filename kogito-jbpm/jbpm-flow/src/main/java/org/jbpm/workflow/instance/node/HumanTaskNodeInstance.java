@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.drools.process.instance.WorkItem;
+import org.drools.core.process.instance.WorkItem;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.workflow.core.node.HumanTaskNode;
@@ -36,7 +36,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         WorkItem workItem = super.createWorkItem(workItemNode);
         String actorId = assignWorkItem(workItem);
         if (actorId != null) {
-            ((org.drools.process.instance.WorkItem) workItem).setParameter("ActorId", actorId);
+            ((org.drools.core.process.instance.WorkItem) workItem).setParameter("ActorId", actorId);
         }
         return workItem;
     }

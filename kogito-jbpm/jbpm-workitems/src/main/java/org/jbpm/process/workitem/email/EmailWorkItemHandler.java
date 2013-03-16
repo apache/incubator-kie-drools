@@ -18,7 +18,7 @@ package org.jbpm.process.workitem.email;
 
 import java.util.Arrays;
 
-import org.drools.process.instance.WorkItemHandler;
+import org.drools.core.process.instance.WorkItemHandler;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemManager;
 

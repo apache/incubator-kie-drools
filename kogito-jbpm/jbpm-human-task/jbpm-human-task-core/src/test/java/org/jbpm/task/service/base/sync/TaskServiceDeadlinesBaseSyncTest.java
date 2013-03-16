@@ -27,7 +27,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
-import org.drools.process.instance.impl.DefaultWorkItemManager;
+import org.drools.core.process.instance.impl.DefaultWorkItemManager;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Content;
 import org.jbpm.task.MockUserInfo;

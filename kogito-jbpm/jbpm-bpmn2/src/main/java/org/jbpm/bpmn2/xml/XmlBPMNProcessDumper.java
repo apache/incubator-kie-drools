@@ -20,8 +20,8 @@ import java.io.StringReader;
 import java.util.*;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
-import org.drools.process.core.Work;
-import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.process.core.Work;
+import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
@@ -478,7 +478,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
             	DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         		if (action != null) {
         		    String s = action.getConsequence();
-	            	if (s.startsWith("org.drools.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
+	            	if (s.startsWith("org.drools.core.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.core.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.core.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
 	            		s = s.substring(327);
 	                    String type = s.substring(0, s.indexOf("\""));
 	            		if (!escalations.contains(type)) {

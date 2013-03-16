@@ -20,8 +20,8 @@ package org.jbpm.process.workitem.jabber;
 
 import junit.framework.TestCase;
 
-import org.drools.process.instance.impl.DefaultWorkItemManager;
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.impl.DefaultWorkItemManager;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.kie.runtime.process.WorkItemManager;
 
 // @Author: salaboy@gmail.com
