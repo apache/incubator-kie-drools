@@ -1,4 +1,4 @@
-package org.drools.comand.runtime.rule;
+package org.drools.core.command.runtime.rule;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
