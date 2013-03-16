@@ -10,7 +10,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.process.instance.WorkItem;
+import org.drools.core.process.instance.WorkItem;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
 

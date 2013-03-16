@@ -34,7 +34,7 @@ import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.event.WorkingMemoryEventListener;
 import org.drools.core.event.WorkingMemoryEventSupport;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.core.process.instance.WorkItemManager;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;

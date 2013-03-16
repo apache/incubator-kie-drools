@@ -51,7 +51,7 @@ import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
-import org.drools.process.instance.WorkItem;
+import org.drools.core.process.instance.WorkItem;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaNode;

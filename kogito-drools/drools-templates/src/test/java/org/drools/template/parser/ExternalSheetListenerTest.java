@@ -4,7 +4,7 @@ import org.drools.*;
 import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.event.WorkingMemoryEventListener;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.AsyncExceptionHandler;
