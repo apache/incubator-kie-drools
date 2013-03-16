@@ -2,7 +2,7 @@ package org.drools.core.common;
 
 import java.util.Queue;
 
-import org.drools.runtime.process.InternalProcessRuntime;
+import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.time.TimerService;
 import org.kie.runtime.KnowledgeRuntime;
 

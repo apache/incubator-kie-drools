@@ -23,7 +23,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl;
 import org.drools.compiler.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
-import org.drools.runtime.process.ProcessRuntimeFactoryService;
+import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.Service;
 import org.kie.builder.KnowledgeBuilderFactoryService;
 import org.kie.internal.utils.ServiceRegistryImpl;

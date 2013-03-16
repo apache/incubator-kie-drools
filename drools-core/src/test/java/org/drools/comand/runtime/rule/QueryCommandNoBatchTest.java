@@ -27,8 +27,8 @@ import org.drools.core.command.SetVariableCommandFromCommand;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.command.runtime.rule.QueryCommand;
-import org.drools.runtime.impl.ExecutionResultImpl;
-import org.drools.runtime.rule.impl.NativeQueryResults;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.world.impl.WorldImpl;
 import static org.junit.Assert.*;
 

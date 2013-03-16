@@ -76,7 +76,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.rule.Declaration;
-import org.drools.runtime.process.InternalProcessRuntime;
+import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Tuple;
 import org.kie.definition.process.Node;

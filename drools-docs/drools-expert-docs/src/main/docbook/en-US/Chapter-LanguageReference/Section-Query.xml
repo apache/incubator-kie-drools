@@ -136,14 +136,14 @@ end
 </programlisting>
 
   <para>Drools supports unification for derivation queries, in short this
-  means that arguments are optional. It is possible to call queries from java
-  leaving arguments unspecified using the static field
-  org.drools.runtime.rule.Variable.v - note you must use 'v' and not an
-  alternative instance of Variable. These are referred to as 'out' arguments.
-  Note that the query itself does not declare at compile time whether an
-  argument is in or an out, this can be defined purely at runtime on each use.
-  The following example will return all objects contained in the
-  office.</para>
+    means that arguments are optional. It is possible to call queries from java
+    leaving arguments unspecified using the static field
+    org.drools.core.runtime.rule.Variable.v - note you must use 'v' and not an
+    alternative instance of Variable. These are referred to as 'out' arguments.
+    Note that the query itself does not declare at compile time whether an
+    argument is in or an out, this can be defined purely at runtime on each use.
+    The following example will return all objects contained in the
+    office.</para>
 
   <programlisting>results = ksession.getQueryResults( "isContainedIn", new Object[] {  Variable.v, "office" } );
 l = new ArrayList&lt;List&lt;String&gt;&gt;();

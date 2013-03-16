@@ -94,7 +94,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
-import org.drools.runtime.rule.impl.AgendaImpl;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -6649,7 +6649,7 @@ public class MiscTest extends CommonTestMethodBase {
         String drl = "";
         drl += "package test\n";
         drl += "import org.drools.compiler.Person\n";
-        drl += "global org.drools.runtime.StatefulKnowledgeSession ksession\n";
+        drl += "global org.drools.core.runtime.StatefulKnowledgeSession ksession\n";
         drl += "rule test dialect 'mvel'\n";
         drl += "when\n";
         drl += "    $person:Person( name == 'mark' )\n";

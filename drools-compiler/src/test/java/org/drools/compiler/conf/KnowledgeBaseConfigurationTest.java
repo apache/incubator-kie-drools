@@ -18,7 +18,7 @@ package org.drools.compiler.conf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
+import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.KieBaseConfiguration;
