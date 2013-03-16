@@ -29,7 +29,7 @@ import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.rule.FactHandle;
-import org.drools.runtime.rule.impl.InternalAgenda;
+import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;

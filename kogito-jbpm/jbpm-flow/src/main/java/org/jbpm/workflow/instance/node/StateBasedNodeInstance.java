@@ -20,7 +20,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.Declaration;
-import org.drools.runtime.rule.impl.InternalAgenda;
+import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.drools.core.spi.Activation;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.context.variable.VariableScope;

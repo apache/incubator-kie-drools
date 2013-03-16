@@ -1,7 +1,7 @@
 package org.jbpm.process.instance;
 
 import org.drools.core.common.AbstractWorkingMemory;
-import org.drools.runtime.process.ProcessRuntimeFactoryService;
+import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 
 public class ProcessRuntimeFactoryServiceImpl implements ProcessRuntimeFactoryService {
 

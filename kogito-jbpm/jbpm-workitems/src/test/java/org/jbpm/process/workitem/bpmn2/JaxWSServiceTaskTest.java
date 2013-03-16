@@ -14,7 +14,7 @@ import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
-import org.drools.runtime.process.ProcessRuntimeFactory;
+import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;

@@ -30,7 +30,7 @@ import javax.transaction.UserTransaction;
 
 import org.drools.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.runtime.process.InternalProcessRuntime;
+import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.process.ProcessNodeLeftEvent;

@@ -19,7 +19,7 @@ package org.jbpm.process;
 import junit.framework.Assert;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.runtime.process.ProcessRuntimeFactory;
+import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.instance.timer.TimerInstance;

@@ -32,7 +32,7 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.process.core.impl.WorkImpl;
-import org.drools.runtime.process.ProcessRuntimeFactory;
+import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.jbpm.persistence.session.objects.Person;
 import org.jbpm.process.core.context.variable.Variable;

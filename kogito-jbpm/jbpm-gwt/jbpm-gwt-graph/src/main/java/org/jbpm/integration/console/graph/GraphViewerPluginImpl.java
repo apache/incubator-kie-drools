@@ -31,7 +31,7 @@ import java.util.Map;
 import org.drools.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.ProcessBuilderFactory;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
-import org.drools.runtime.process.ProcessRuntimeFactory;
+import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jboss.bpm.console.client.model.ActiveNodeInfo;
 import org.jboss.bpm.console.client.model.DiagramInfo;
 import org.jboss.bpm.console.client.model.DiagramNodeInfo;
