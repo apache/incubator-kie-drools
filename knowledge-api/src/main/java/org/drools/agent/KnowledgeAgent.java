@@ -20,7 +20,7 @@ import org.drools.ChangeSet;
 import org.drools.KnowledgeBase;
 import org.drools.SystemEventListener;
 import org.drools.core.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.io.Resource;
+import org.drools.core.io.Resource;
 import org.drools.core.runtime.KnowledgeSessionConfiguration;
 import org.drools.core.runtime.StatelessKnowledgeSession;
 

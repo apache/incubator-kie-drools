@@ -39,7 +39,7 @@ import org.drools.Service;
 import org.drools.SystemEventListenerService;
 import org.drools.core.builder.KnowledgeBuilderFactoryService;
 import org.drools.core.concurrent.ExecutorProvider;
-import org.drools.io.ResourceFactoryService;
+import org.drools.core.io.ResourceFactoryService;
 import org.drools.core.marshalling.MarshallerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

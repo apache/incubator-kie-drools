@@ -24,7 +24,7 @@ import javax.xml.bind.JAXBException;
 
 import org.drools.KnowledgeBase;
 import org.drools.core.builder.KnowledgeBuilder;
-import org.drools.io.Resource;
+import org.drools.core.io.Resource;
 
 import com.sun.tools.xjc.Options;
 

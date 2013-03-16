@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import org.drools.ChangeSet;
 import org.drools.definition.KnowledgeDefinition;
-import org.drools.io.Resource;
+import org.drools.core.io.Resource;
 
 public class AfterChangeSetProcessedEvent extends ChangeSetProcessingEvent {
 

@@ -26,8 +26,8 @@ import javax.xml.bind.JAXBException;
 import org.drools.KnowledgeBase;
 import org.drools.core.builder.KnowledgeBuilder;
 import org.drools.core.builder.KnowledgeBuilderFactory;
-import org.drools.io.Resource;
-import org.drools.io.ResourceFactory;
+import org.drools.core.io.Resource;
+import org.drools.core.io.ResourceFactory;
 
 import com.sun.tools.xjc.Language;
 import com.sun.tools.xjc.Options;

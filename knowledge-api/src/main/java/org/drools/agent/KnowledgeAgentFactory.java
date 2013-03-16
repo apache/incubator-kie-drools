@@ -21,7 +21,7 @@ import java.util.Properties;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.core.builder.KnowledgeBuilderConfiguration;
-import org.drools.io.ResourceFactory;
+import org.drools.core.io.ResourceFactory;
 
 /**
  * <p>

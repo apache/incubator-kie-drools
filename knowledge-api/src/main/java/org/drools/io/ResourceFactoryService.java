@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.io;
+package org.drools.core.io;
 
 import java.io.File;
 import java.io.InputStream;

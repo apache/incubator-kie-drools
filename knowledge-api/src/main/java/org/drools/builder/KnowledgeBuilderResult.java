@@ -15,7 +15,7 @@
 */
 package org.drools.core.builder;
 
-import org.drools.io.Resource;
+import org.drools.core.io.Resource;
 
 /**
  * A super interface for Knowledge Building result messages.
