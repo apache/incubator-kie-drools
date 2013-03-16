@@ -4,15 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.WorkingMemory;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaEventListener;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.core.event.ActivationCancelledEvent;
+import org.drools.core.event.ActivationCreatedEvent;
+import org.drools.core.event.AfterActivationFiredEvent;
+import org.drools.core.event.AgendaEventListener;
+import org.drools.core.event.AgendaGroupPoppedEvent;
+import org.drools.core.event.AgendaGroupPushedEvent;
+import org.drools.core.event.BeforeActivationFiredEvent;
+import org.drools.core.event.RuleFlowGroupActivatedEvent;
+import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
 
 /**
  * Measure the rule coverage.

@@ -1,9 +1,9 @@
 package org.drools.template.parser;
 
 import org.drools.*;
-import org.drools.event.AgendaEventListener;
-import org.drools.event.RuleBaseEventListener;
-import org.drools.event.WorkingMemoryEventListener;
+import org.drools.core.event.AgendaEventListener;
+import org.drools.core.event.RuleBaseEventListener;
+import org.drools.core.event.WorkingMemoryEventListener;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.AgendaGroup;

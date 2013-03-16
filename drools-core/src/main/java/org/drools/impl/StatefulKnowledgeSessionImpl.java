@@ -40,28 +40,28 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.ObjectInsertedEvent;
-import org.drools.event.ObjectRetractedEvent;
-import org.drools.event.ObjectUpdatedEvent;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.rule.impl.ActivationCancelledEventImpl;
-import org.drools.event.rule.impl.ActivationCreatedEventImpl;
-import org.drools.event.rule.impl.AfterActivationFiredEventImpl;
-import org.drools.event.rule.impl.AgendaGroupPoppedEventImpl;
-import org.drools.event.rule.impl.AgendaGroupPushedEventImpl;
-import org.drools.event.rule.impl.BeforeActivationFiredEventImpl;
-import org.drools.event.rule.impl.ObjectDeletedEventImpl;
-import org.drools.event.rule.impl.ObjectInsertedEventImpl;
-import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
-import org.drools.event.rule.impl.RuleFlowGroupActivatedEventImpl;
-import org.drools.event.rule.impl.RuleFlowGroupDeactivatedEventImpl;
+import org.drools.core.event.ActivationCancelledEvent;
+import org.drools.core.event.ActivationCreatedEvent;
+import org.drools.core.event.AfterActivationFiredEvent;
+import org.drools.core.event.AgendaGroupPoppedEvent;
+import org.drools.core.event.AgendaGroupPushedEvent;
+import org.drools.core.event.BeforeActivationFiredEvent;
+import org.drools.core.event.ObjectInsertedEvent;
+import org.drools.core.event.ObjectRetractedEvent;
+import org.drools.core.event.ObjectUpdatedEvent;
+import org.drools.core.event.RuleFlowGroupActivatedEvent;
+import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.core.event.rule.impl.ActivationCancelledEventImpl;
+import org.drools.core.event.rule.impl.ActivationCreatedEventImpl;
+import org.drools.core.event.rule.impl.AfterActivationFiredEventImpl;
+import org.drools.core.event.rule.impl.AgendaGroupPoppedEventImpl;
+import org.drools.core.event.rule.impl.AgendaGroupPushedEventImpl;
+import org.drools.core.event.rule.impl.BeforeActivationFiredEventImpl;
+import org.drools.core.event.rule.impl.ObjectDeletedEventImpl;
+import org.drools.core.event.rule.impl.ObjectInsertedEventImpl;
+import org.drools.core.event.rule.impl.ObjectUpdatedEventImpl;
+import org.drools.core.event.rule.impl.RuleFlowGroupActivatedEventImpl;
+import org.drools.core.event.rule.impl.RuleFlowGroupDeactivatedEventImpl;
 import org.drools.reteoo.DisposedReteooWorkingMemory;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -576,7 +576,7 @@ public class StatefulKnowledgeSessionImpl
 
     public static class WorkingMemoryEventListenerWrapper
             implements
-            org.drools.event.WorkingMemoryEventListener {
+            org.drools.core.event.WorkingMemoryEventListener {
         private final WorkingMemoryEventListener listener;
 
         public WorkingMemoryEventListenerWrapper(WorkingMemoryEventListener listener) {
@@ -632,7 +632,7 @@ public class StatefulKnowledgeSessionImpl
 
     public static class AgendaEventListenerWrapper
             implements
-            org.drools.event.AgendaEventListener {
+            org.drools.core.event.AgendaEventListener {
         private final AgendaEventListener listener;
 
         public AgendaEventListenerWrapper(AgendaEventListener listener) {

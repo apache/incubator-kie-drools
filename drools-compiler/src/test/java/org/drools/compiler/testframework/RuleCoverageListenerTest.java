@@ -14,7 +14,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
-import org.drools.event.AfterActivationFiredEvent;
+import org.drools.core.event.AfterActivationFiredEvent;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;

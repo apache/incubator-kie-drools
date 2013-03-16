@@ -19,8 +19,8 @@ package org.drools.examples.manners;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.DefaultAgendaEventListener;
+import org.drools.core.event.AfterActivationFiredEvent;
+import org.drools.core.event.DefaultAgendaEventListener;
 import org.junit.Test;
 
 import java.io.InputStream;

@@ -30,9 +30,9 @@ import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.event.AgendaEventSupport;
-import org.drools.event.ProcessEventSupport;
-import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.core.event.AgendaEventSupport;
+import org.drools.core.event.ProcessEventSupport;
+import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
 import org.drools.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
 import org.drools.reteoo.InitialFactImpl;
@@ -133,10 +133,10 @@ public class StatelessKnowledgeSessionImpl
             ((Globals) wm.getGlobalResolver()).setDelegate( this.sessionGlobals );
             if (!initialized) {
             	// copy over the default generated listeners that are used for internal stuff once
-            	for (org.drools.event.AgendaEventListener listener: wm.getAgendaEventSupport().getEventListeners()) {
+            	for (org.drools.core.event.AgendaEventListener listener: wm.getAgendaEventSupport().getEventListeners()) {
             		this.agendaEventSupport.addEventListener(listener);
             	}
-                for (org.drools.event.WorkingMemoryEventListener listener: wm.getWorkingMemoryEventSupport().getEventListeners()) {
+                for (org.drools.core.event.WorkingMemoryEventListener listener: wm.getWorkingMemoryEventSupport().getEventListeners()) {
                 	this.workingMemoryEventSupport.addEventListener(listener);
                 }
                 InternalProcessRuntime processRuntime = wm.getProcessRuntime();
