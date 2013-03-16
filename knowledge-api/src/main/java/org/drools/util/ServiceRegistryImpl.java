@@ -174,13 +174,13 @@ public class ServiceRegistryImpl
                     "org.drools.core.builder.impl.KnowledgeBuilderFactoryServiceImpl" );
 
         addDefault( KnowledgeBaseFactoryService.class,
-                    "org.drools.impl.KnowledgeBaseFactoryServiceImpl" );
+                    "org.drools.core.impl.KnowledgeBaseFactoryServiceImpl" );
 
         addDefault( ResourceFactoryService.class,
                     "org.drools.io.impl.ResourceFactoryServiceImpl" );
         
         addDefault(  SystemEventListenerService.class,
-                     "org.drools.impl.SystemEventListenerServiceImpl" );
+                     "org.drools.core.impl.SystemEventListenerServiceImpl" );
         addDefault(  MarshallerProvider.class,
                      "org.drools.core.marshalling.impl.MarshallerProviderImpl");
         addDefault(  ExecutorProvider.class,
