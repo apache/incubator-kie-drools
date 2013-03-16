@@ -1,4 +1,4 @@
-package org.drools.fluent;
+package org.drools.core.fluent;
 
 import org.drools.core.command.Command;
 

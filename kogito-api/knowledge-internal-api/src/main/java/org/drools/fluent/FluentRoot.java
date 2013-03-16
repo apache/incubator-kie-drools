@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.fluent;
+package org.drools.core.fluent;
 
 public interface FluentRoot {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.fluent;
+package org.drools.core.fluent;
 
 import org.drools.core.builder.ResourceConfiguration;
 import org.drools.core.builder.ResourceType;

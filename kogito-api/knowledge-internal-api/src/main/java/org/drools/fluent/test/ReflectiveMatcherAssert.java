@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.fluent.test;
+package org.drools.core.fluent.test;
 
 import org.drools.core.command.Context;
 
