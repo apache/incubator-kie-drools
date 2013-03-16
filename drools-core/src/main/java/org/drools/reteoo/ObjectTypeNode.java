@@ -50,12 +50,12 @@ import org.drools.core.rule.EvalCondition;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
-import org.drools.time.Job;
-import org.drools.time.JobContext;
-import org.drools.time.JobHandle;
-import org.drools.time.TimerService;
-import org.drools.time.impl.DefaultJobHandle;
-import org.drools.time.impl.PointInTimeTrigger;
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.JobHandle;
+import org.drools.core.time.TimerService;
+import org.drools.core.time.impl.DefaultJobHandle;
+import org.drools.core.time.impl.PointInTimeTrigger;
 
 import java.io.Externalizable;
 import java.io.IOException;

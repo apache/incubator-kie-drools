@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.facttemplates.FactTemplate;
-import org.drools.facttemplates.FactTemplateObjectType;
+import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
 import org.drools.core.rule.EntryPoint;

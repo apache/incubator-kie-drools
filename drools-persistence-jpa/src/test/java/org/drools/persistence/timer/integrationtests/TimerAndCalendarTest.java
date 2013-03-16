@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.ClockType;
-import org.drools.time.SessionPseudoClock;
+import org.drools.core.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

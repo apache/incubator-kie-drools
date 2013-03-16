@@ -26,7 +26,7 @@ import java.util.Date;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.factmodel.traits.Thing;
-import org.drools.facttemplates.FactTemplate;
+import org.drools.core.facttemplates.FactTemplate;
 
 public class ValueType
     implements

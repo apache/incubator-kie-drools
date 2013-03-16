@@ -24,7 +24,7 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.time.Interval;
+import org.drools.core.time.Interval;
 
 import static org.drools.core.base.mvel.MVELCompilationUnit.getFactHandle;
 

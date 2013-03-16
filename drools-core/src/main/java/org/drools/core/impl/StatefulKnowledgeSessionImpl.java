@@ -73,7 +73,7 @@ import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.spi.Activation;
-import org.drools.time.TimerService;
+import org.drools.core.time.TimerService;
 import org.kie.KnowledgeBase;
 import org.kie.command.Command;
 import org.kie.command.Context;

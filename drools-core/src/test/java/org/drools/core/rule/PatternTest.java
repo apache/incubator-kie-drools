@@ -21,12 +21,12 @@ import static org.junit.Assert.*;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.Cheese;
-import org.drools.facttemplates.Fact;
-import org.drools.facttemplates.FactTemplate;
-import org.drools.facttemplates.FactTemplateImpl;
-import org.drools.facttemplates.FactTemplateObjectType;
-import org.drools.facttemplates.FieldTemplate;
-import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.core.facttemplates.Fact;
+import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.facttemplates.FactTemplateImpl;
+import org.drools.core.facttemplates.FactTemplateObjectType;
+import org.drools.core.facttemplates.FieldTemplate;
+import org.drools.core.facttemplates.FieldTemplateImpl;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 

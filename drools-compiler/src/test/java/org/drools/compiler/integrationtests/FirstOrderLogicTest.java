@@ -39,7 +39,7 @@ import org.drools.core.audit.WorkingMemoryConsoleLogger;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
-import org.drools.time.SessionPseudoClock;
+import org.drools.core.time.SessionPseudoClock;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

@@ -44,7 +44,7 @@ import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.WindowReference;
-import org.drools.time.TemporalDependencyMatrix;
+import org.drools.core.time.TemporalDependencyMatrix;
 import org.kie.conf.EventProcessingOption;
 
 import java.util.ArrayList;

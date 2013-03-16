@@ -26,13 +26,13 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElement.Type;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
-import org.drools.time.Interval;
-import org.drools.time.TemporalDependencyMatrix;
+import org.drools.core.time.Interval;
+import org.drools.core.time.TemporalDependencyMatrix;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.drools.time.Interval.MAX;
-import static org.drools.time.Interval.MIN;
+import static org.drools.core.time.Interval.MAX;
+import static org.drools.core.time.Interval.MIN;
 import static org.junit.Assert.assertEquals;
 
 public class BuildUtilsTest {

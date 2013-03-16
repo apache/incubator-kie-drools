@@ -44,9 +44,9 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
-import org.drools.time.Interval;
-import org.drools.time.TemporalDependencyMatrix;
-import org.drools.time.TimeUtils;
+import org.drools.core.time.Interval;
+import org.drools.core.time.TemporalDependencyMatrix;
+import org.drools.core.time.TimeUtils;
 
 /**
  * Utility functions for reteoo build

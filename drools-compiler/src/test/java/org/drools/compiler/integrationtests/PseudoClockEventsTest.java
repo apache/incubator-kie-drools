@@ -29,7 +29,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.time.impl.PseudoClockScheduler;
+import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;

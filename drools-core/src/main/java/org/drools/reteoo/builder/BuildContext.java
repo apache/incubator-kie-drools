@@ -38,7 +38,7 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.RuleComponent;
-import org.drools.time.TemporalDependencyMatrix;
+import org.drools.core.time.TemporalDependencyMatrix;
 
 /**
  * A build context for Reteoo Builder

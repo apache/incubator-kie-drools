@@ -40,12 +40,12 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Rule;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELObjectExpressionBuilder;
 import org.drools.core.spi.Salience;
-import org.drools.time.TimeUtils;
-import org.drools.time.impl.CronExpression;
-import org.drools.time.impl.CronTimer;
-import org.drools.time.impl.ExpressionIntervalTimer;
-import org.drools.time.impl.IntervalTimer;
-import org.drools.time.impl.Timer;
+import org.drools.core.time.TimeUtils;
+import org.drools.core.time.impl.CronExpression;
+import org.drools.core.time.impl.CronTimer;
+import org.drools.core.time.impl.ExpressionIntervalTimer;
+import org.drools.core.time.impl.IntervalTimer;
+import org.drools.core.time.impl.Timer;
 import org.mvel2.MVEL;
 
 /**

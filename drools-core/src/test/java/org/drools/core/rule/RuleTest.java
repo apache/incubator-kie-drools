@@ -28,7 +28,7 @@ import org.drools.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.time.impl.PseudoClockScheduler;
+import org.drools.core.time.impl.PseudoClockScheduler;
 
 public class RuleTest {
 

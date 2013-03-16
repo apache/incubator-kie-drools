@@ -39,7 +39,7 @@ import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.time.AcceptsTimerJobFactoryManager;
+import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.kie.KieBase;
 import org.kie.command.BatchExecutionCommand;
 import org.kie.command.Command;

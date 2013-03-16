@@ -52,7 +52,7 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 import org.drools.core.process.instance.WorkItem;
-import org.drools.time.impl.DefaultTimerJobInstance;
+import org.drools.core.time.impl.DefaultTimerJobInstance;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

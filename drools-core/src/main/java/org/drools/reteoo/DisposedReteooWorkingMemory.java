@@ -54,7 +54,7 @@ import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
-import org.drools.time.TimerService;
+import org.drools.core.time.TimerService;
 import org.drools.core.type.DateFormats;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.runtime.Calendars;
