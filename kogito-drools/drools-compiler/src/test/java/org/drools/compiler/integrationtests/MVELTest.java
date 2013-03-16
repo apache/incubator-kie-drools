@@ -45,7 +45,7 @@ import org.drools.rule.Package;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
-import org.drools.type.DateFormatsImpl;
+import org.drools.core.type.DateFormatsImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

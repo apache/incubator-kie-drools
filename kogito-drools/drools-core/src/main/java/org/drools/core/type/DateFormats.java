@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.type;
+package org.drools.core.type;
 
 import java.text.DateFormat;
 import java.util.Date;

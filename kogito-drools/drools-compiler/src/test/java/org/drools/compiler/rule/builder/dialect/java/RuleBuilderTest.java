@@ -47,7 +47,7 @@ import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.time.TimeUtils;
 import org.drools.time.impl.IntervalTimer;
-import org.drools.type.DateFormatsImpl;
+import org.drools.core.type.DateFormatsImpl;
 import org.junit.Test;
 import org.kie.builder.conf.LanguageLevelOption;
 

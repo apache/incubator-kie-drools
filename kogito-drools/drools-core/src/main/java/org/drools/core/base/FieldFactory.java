@@ -29,7 +29,7 @@ import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.MathUtils;
 import org.drools.core.spi.FieldValue;
-import org.drools.type.DateFormats;
+import org.drools.core.type.DateFormats;
 
 public class FieldFactory implements FieldDataFactory, Serializable {
     private static final FieldFactory INSTANCE = new FieldFactory();
