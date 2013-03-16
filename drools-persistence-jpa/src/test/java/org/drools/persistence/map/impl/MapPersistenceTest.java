@@ -15,7 +15,7 @@
  */
 package org.drools.persistence.map.impl;
 
-import org.drools.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.junit.Assert;
 import org.junit.Test;

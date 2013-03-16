@@ -14,75 +14,73 @@
  * limitations under the License.
  */
 
-package org.drools.io.impl;
+package org.drools.core.io.impl;
 
-import org.drools.io.internal.InternalResource;
+import org.drools.core.io.internal.InternalResource;
+import org.kie.definition.KieDescr;
 import org.kie.io.Resource;
+import org.kie.io.ResourceType;
 
-import java.io.ByteArrayInputStream;
 import java.io.Externalizable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collection;
 
-public class ByteArrayResource extends BaseResource
-    implements
-    InternalResource,
-    Externalizable {
+public class DescrResource extends BaseResource implements InternalResource, Externalizable {
+    private static final long serialVersionUID = 3931132608413160031L;
+    
+    private KieDescr descr;
+    
+    public DescrResource() { }
 
-    private byte[] bytes;
-
-    public ByteArrayResource() { }
-
-    public ByteArrayResource(byte[] bytes) {
-        if ( bytes == null || bytes.length == 0 ) {
-            throw new IllegalArgumentException( "bytes cannot be null" );
+    public DescrResource(KieDescr descr ) {
+        if ( descr == null ) {
+            throw new IllegalArgumentException( "descr cannot be null" );
         }
-        this.bytes = bytes;
+        this.descr = descr;
+        setResourceType( ResourceType.DESCR );
     }
-
+    
     @Override
     public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
+                                            ClassNotFoundException {
         super.readExternal( in );
-        bytes = (byte[]) in.readObject();
+        descr = (KieDescr) in.readObject();
     }
-
+    
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject( bytes );
+        out.writeObject( descr );
+    }
+    
+    public URL getURL() throws IOException {
+        throw new FileNotFoundException( "descr cannot be resolved to URL");
     }
 
     public InputStream getInputStream() throws IOException {
-        return new ByteArrayInputStream( this.bytes );
+        throw new IOException( "descr does not support input streams");
     }
     
     public Reader getReader() throws IOException {
-        return new InputStreamReader( getInputStream() );
-    }
-    
-    public boolean hasURL() {
-        return false;
+        throw new IOException( "descr does not support readers");
     }
 
-    public URL getURL() throws IOException {
-        throw new FileNotFoundException( "byte[] cannot be resolved to URL" );
-    }
-    
     public long getLastModified() {
-        throw new IllegalStateException( "reader does have a modified date" );
+        throw new IllegalStateException( "descr does not have a modified date" );
     }
     
     public long getLastRead() {
-        throw new IllegalStateException( "reader does have a modified date" );
+        throw new IllegalStateException( "descr does not have a modified date" );
+    }
+    
+    public KieDescr getDescr() {
+        return this.descr;
     }
     
     public boolean isDirectory() {
@@ -92,19 +90,13 @@ public class ByteArrayResource extends BaseResource
     public Collection<Resource> listResources() {
         throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
     }
-
-    public boolean equals(Object object) {
-        return (object == this || (object instanceof ByteArrayResource
-                && Arrays.equals( ((ByteArrayResource) object).bytes, this.bytes )));
-    }
-
-    public int hashCode() {
-        return Arrays.hashCode(this.bytes);
+    
+    public boolean hasURL() {
+        return false;
     }
     
     public String toString() {
-        return "[ByteArrayResource resource=" + this.bytes + "]";
+        return "[DescrResource resource=" + this.descr + "']";
     }
-
 
 }

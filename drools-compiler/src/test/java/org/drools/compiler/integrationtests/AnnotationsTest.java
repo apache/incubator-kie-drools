@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

@@ -1,7 +1,7 @@
 package org.drools.compiler.compiler;
 
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
-import org.drools.io.impl.BaseResource;
+import org.drools.core.io.impl.BaseResource;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;

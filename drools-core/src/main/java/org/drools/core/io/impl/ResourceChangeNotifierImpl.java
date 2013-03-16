@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.io.impl;
+package org.drools.core.io.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;

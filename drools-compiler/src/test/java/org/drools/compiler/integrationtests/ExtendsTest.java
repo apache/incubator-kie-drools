@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.EventFactHandle;
-import org.drools.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

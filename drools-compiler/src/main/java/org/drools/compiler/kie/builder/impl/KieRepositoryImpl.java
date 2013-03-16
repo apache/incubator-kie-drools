@@ -1,6 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.io.internal.InternalResource;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.builder.ReleaseId;

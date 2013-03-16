@@ -25,7 +25,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.io.impl.ByteArrayResource;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.Package;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Ignore;

@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.InputStreamResource;
-import org.drools.io.impl.ReaderResource;
+import org.drools.core.io.impl.ClassPathResource;
+import org.drools.core.io.impl.InputStreamResource;
+import org.drools.core.io.impl.ReaderResource;
 import org.drools.compiler.lang.DRLLexer;
 import org.drools.compiler.lang.DRLParser;
 import org.drools.compiler.lang.DroolsSentence;
