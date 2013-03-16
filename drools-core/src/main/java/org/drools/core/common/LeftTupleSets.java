@@ -1,6 +1,6 @@
 package org.drools.core.common;
 
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 
 public class LeftTupleSets {
 

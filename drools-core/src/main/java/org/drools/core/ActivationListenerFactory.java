@@ -1,8 +1,8 @@
 package org.drools.core;
 
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.TerminalNode;
-import org.drools.reteoo.builder.BuildContext;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
 

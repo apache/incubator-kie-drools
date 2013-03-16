@@ -17,8 +17,8 @@
 package org.drools.core.common;
 
 import org.drools.core.util.LinkedListNode;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.TerminalNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.JobHandle;

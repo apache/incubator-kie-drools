@@ -16,7 +16,7 @@
 
 package org.drools.core.marshalling.impl;
 
-import org.drools.reteoo.Sink;
+import org.drools.core.reteoo.Sink;
 
 public class RightTupleKey {
     private final int  id;

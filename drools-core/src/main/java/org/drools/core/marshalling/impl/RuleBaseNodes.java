@@ -21,15 +21,15 @@ import java.util.Map;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.ObjectSink;
-import org.drools.reteoo.ObjectSource;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.PropagationQueuingNode;
-import org.drools.reteoo.QueryRiaFixerNode;
-import org.drools.reteoo.QueryTerminalNode;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PropagationQueuingNode;
+import org.drools.core.reteoo.QueryRiaFixerNode;
+import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNode;
 
 public class RuleBaseNodes {
     public static Map<Integer, BaseNode> getNodeMap(InternalRuleBase ruleBase) {

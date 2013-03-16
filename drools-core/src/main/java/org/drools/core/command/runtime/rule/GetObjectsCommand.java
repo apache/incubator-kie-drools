@@ -29,7 +29,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.kie.command.Context;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.ObjectFilter;

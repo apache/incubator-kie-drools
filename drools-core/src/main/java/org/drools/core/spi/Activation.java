@@ -24,7 +24,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
 import org.kie.runtime.rule.AgendaGroup;

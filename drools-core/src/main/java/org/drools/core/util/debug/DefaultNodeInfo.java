@@ -25,12 +25,12 @@ import java.util.Set;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.ObjectSink;
-import org.drools.reteoo.ObjectSource;
-import org.drools.reteoo.Rete;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.Rete;
 import org.drools.core.rule.Rule;
 
 public class DefaultNodeInfo

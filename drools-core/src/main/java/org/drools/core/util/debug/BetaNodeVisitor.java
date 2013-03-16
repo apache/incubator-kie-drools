@@ -19,8 +19,8 @@ package org.drools.core.util.debug;
 import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
 
 public class BetaNodeVisitor extends AbstractNetworkNodeVisitor {
     

@@ -23,8 +23,8 @@ import org.drools.core.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.WindowTupleList;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.WindowTupleList;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.rule.Rule;
 

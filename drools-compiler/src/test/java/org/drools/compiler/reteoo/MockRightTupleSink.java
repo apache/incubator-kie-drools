@@ -2,10 +2,10 @@ package org.drools.compiler.reteoo;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.reteoo.NodeTypeEnums;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.RightTuple;
-import org.drools.reteoo.RightTupleSink;
+import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 import org.kie.definition.rule.Rule;

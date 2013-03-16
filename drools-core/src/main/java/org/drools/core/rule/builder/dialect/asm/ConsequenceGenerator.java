@@ -2,13 +2,13 @@ package org.drools.core.rule.builder.dialect.asm;
 
 import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
-import org.drools.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.CompiledInvoker;

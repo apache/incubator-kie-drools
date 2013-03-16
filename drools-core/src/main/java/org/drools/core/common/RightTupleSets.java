@@ -1,7 +1,7 @@
 package org.drools.core.common;
 
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RightTuple;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
 
 public class RightTupleSets {
 

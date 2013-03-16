@@ -19,8 +19,8 @@ package org.drools.core.util.debug;
 import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
-import org.drools.reteoo.PropagationQueuingNode;
-import org.drools.reteoo.PropagationQueuingNode.PropagationQueueingNodeMemory;
+import org.drools.core.reteoo.PropagationQueuingNode;
+import org.drools.core.reteoo.PropagationQueuingNode.PropagationQueueingNodeMemory;
 
 public class PropagationQueueingNodeVisitor extends AbstractNetworkNodeVisitor {
     

@@ -5,9 +5,9 @@ import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.RBTree;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleMemory;
-import org.drools.reteoo.RightTuple;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleMemory;
+import org.drools.core.reteoo.RightTuple;
 
 import java.io.Externalizable;
 import java.io.IOException;

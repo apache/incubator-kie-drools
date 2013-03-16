@@ -20,7 +20,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.core.test.model.Cheese;
-import org.drools.reteoo.ReteooFactHandleFactory;
+import org.drools.core.reteoo.ReteooFactHandleFactory;
 
 public class EqualityKeyTest {
     @Test

@@ -24,9 +24,9 @@ import java.util.List;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleList;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.builder.BuildContext;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 

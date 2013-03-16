@@ -54,7 +54,7 @@ import org.drools.core.factmodel.traits.TripleBasedStruct;
 import org.drools.core.factmodel.traits.VetoableTypedMap;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.junit.*;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

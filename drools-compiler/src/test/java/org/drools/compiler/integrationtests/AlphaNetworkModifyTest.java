@@ -8,10 +8,10 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.LeftInputAdapterNode;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooWorkingMemoryInterface;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 

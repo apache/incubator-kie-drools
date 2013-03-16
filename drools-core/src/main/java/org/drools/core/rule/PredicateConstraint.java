@@ -28,7 +28,7 @@ import java.util.List;
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.InternalReadAccessor;

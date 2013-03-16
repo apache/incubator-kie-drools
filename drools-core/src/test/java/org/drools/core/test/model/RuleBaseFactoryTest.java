@@ -28,7 +28,7 @@ public class RuleBaseFactoryTest {
     @Test
     public void testReteOO() {
         final RuleBase rb = RuleBaseFactory.newRuleBase();
-        assertTrue( rb instanceof org.drools.reteoo.ReteooRuleBase );
+        assertTrue( rb instanceof org.drools.core.reteoo.ReteooRuleBase );
 
         assertTrue( !"default".equals( ((InternalRuleBase) rb).getId() ) );
         assertTrue( !"".equals( ((InternalRuleBase) rb).getId() ) );
@@ -37,7 +37,7 @@ public class RuleBaseFactoryTest {
         final RuleBase rb2 = RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                                           null );
 
-        assertTrue( rb2 instanceof org.drools.reteoo.ReteooRuleBase );
+        assertTrue( rb2 instanceof org.drools.core.reteoo.ReteooRuleBase );
         assertNotSame( rb2,
                        rb );
 

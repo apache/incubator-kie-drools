@@ -20,7 +20,7 @@ import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;

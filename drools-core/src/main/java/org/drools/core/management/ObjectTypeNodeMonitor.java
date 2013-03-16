@@ -16,7 +16,7 @@
 
 package org.drools.core.management;
 
-import org.drools.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.kie.management.ObjectTypeNodeMonitorMBean;
 
 /**

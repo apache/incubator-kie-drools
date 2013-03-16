@@ -9,8 +9,8 @@ import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleIndexHashTable;
 import org.drools.core.util.index.RightTupleList;
-import org.drools.reteoo.LeftTupleImpl;
-import org.drools.reteoo.RightTuple;
+import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.RightTuple;
 import org.junit.Test;
 
 public class IndexedHashtableIteratorTest {

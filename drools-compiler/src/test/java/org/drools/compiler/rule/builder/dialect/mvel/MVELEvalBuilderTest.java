@@ -21,7 +21,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;

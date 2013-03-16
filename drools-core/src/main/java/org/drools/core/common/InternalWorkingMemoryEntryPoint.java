@@ -19,7 +19,7 @@ package org.drools.core.common;
 import org.drools.core.FactException;
 import org.drools.core.FactHandle;
 import org.drools.core.RuleBase;
-import org.drools.reteoo.EntryPointNode;
+import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.rule.Rule;
 

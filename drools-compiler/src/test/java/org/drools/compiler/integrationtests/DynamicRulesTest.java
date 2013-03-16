@@ -57,7 +57,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
-import org.drools.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.rule.Package;
 import org.junit.Test;
 import org.kie.KieBaseConfiguration;

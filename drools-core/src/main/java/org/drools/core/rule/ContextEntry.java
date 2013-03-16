@@ -20,7 +20,7 @@ import java.io.Externalizable;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 
 public interface ContextEntry
     extends

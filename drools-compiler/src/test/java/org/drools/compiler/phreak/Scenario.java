@@ -14,17 +14,17 @@ import org.drools.core.phreak.RuleNetworkEvaluator.PhreakJoinNode;
 import org.drools.core.phreak.RuleNetworkEvaluator.PhreakNotNode;
 import org.drools.core.phreak.RuleNetworkEvaluator.PhreakExistsNode;
 import org.drools.core.phreak.SegmentPropagator;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.ExistsNode;
-import org.drools.reteoo.JoinNode;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleMemory;
-import org.drools.reteoo.LeftTupleSink;
-import org.drools.reteoo.NotNode;
-import org.drools.reteoo.RightTuple;
-import org.drools.reteoo.RightTupleMemory;
-import org.drools.reteoo.SegmentMemory;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.ExistsNode;
+import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleMemory;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.NotNode;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleMemory;
+import org.drools.core.reteoo.SegmentMemory;
 import org.junit.Assert;
 
 public class Scenario {

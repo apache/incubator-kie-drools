@@ -3,7 +3,7 @@ package org.drools.core.beliefsystem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 

@@ -17,7 +17,7 @@
 package org.drools.core.spi;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 
 public interface BetaNodeFieldConstraint

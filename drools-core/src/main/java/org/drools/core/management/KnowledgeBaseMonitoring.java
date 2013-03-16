@@ -50,9 +50,9 @@ import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.kie.management.KieBaseConfigurationMonitorMBean;
 import org.kie.management.ObjectTypeNodeMonitorMBean;
 import org.slf4j.Logger;

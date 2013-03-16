@@ -23,9 +23,9 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.facttemplates.Fact;
-import org.drools.reteoo.ClassObjectTypeConf;
-import org.drools.reteoo.FactTemplateTypeConf;
-import org.drools.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ClassObjectTypeConf;
+import org.drools.core.reteoo.FactTemplateTypeConf;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.Activation;
 

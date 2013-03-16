@@ -19,7 +19,7 @@ package org.drools.core.common;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;

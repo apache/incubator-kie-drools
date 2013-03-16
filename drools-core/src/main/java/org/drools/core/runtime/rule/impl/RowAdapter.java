@@ -17,7 +17,7 @@
 package org.drools.core.runtime.rule.impl;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Rule;
 import org.kie.runtime.rule.FactHandle;

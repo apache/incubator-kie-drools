@@ -20,8 +20,8 @@ import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.util.ObjectHashMap;
-import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
+import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 
 public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
     

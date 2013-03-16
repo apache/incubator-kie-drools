@@ -2,9 +2,9 @@ package org.drools.core.common;
 
 import org.drools.core.util.Iterator;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RuleTerminalNode;
-import org.drools.reteoo.TerminalNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.kie.KieBase;
 import org.kie.runtime.StatefulKnowledgeSession;

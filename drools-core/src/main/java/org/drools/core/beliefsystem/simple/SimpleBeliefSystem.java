@@ -10,7 +10,7 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.common.TruthMaintenanceSystem.LogicalCallback;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 

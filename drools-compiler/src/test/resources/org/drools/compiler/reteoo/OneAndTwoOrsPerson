@@ -1,7 +1,7 @@
-<org.drools.reteoo.ReteooRuleBase>
+<org.drools.core.reteoo.ReteooRuleBase>
   <map>
     <entry>
-      <string>org.drools.reteoo</string>
+      <string>org.drools.core.reteoo</string>
       <org.drools.core.rule.Package>
         <org.drools.core.rule.PackageCompilationData>
           <map>
@@ -218,12 +218,12 @@ aWdEZWNpbWFscQB+APVMAA1nZXRCaWdJbnRlZ2VycQB+APZMAAdnZXRIYWlycQB+AARMAAhnZXRM
 aWtlc3EAfgAETAAHZ2V0TmFtZXEAfgAETAAJZ2V0U3RhdHVzcQB+AAR4cQB+APRxAH4ASXh4dAAN
 SGVsbG8gV29ybGQgMnB4</byte-elements>
         </org.drools.core.rule.PackageCompilationData>
-        <string>org.drools.reteoo</string>
+        <string>org.drools.core.reteoo</string>
         <list>
           <string>org.drools.compiler.Message</string>
           <string>org.drools.compiler.Cheese</string>
           <string>org.drools.compiler.Person</string>
-          <string>org.drools.reteoo.*</string>
+          <string>org.drools.core.reteoo.*</string>
           <string>java.lang.*</string>
         </list>
         <java.util.Collections-EmptyList/>
@@ -654,4 +654,4 @@ Y2Vzc09yZGVyeHEAfgANP0AAAAAAAAx3CAAAABAAAAAAeABzcQB+AA0/QAAAAAAADHcIAAAAEAAA
 AAJxAH4BLXVyAB1bTG9yZy5kcm9vbHMuY29tbW9uLkJhc2VOb2RlO3gP5nV9Cv4lAgAAeHAAAAAE
 cQB+AHRxAH4BLHEAfgGEcQB+AY5xAH4AfnVxAH4B0QAAAAhxAH4Ad3EAfgGmcQB+AShxAH4BeHEA
 fgGHcQB+AX9xAH4BinEAfgGReHEAfgGP</byte-elements>
-</org.drools.reteoo.ReteooRuleBase>
+</org.drools.core.reteoo.ReteooRuleBase>

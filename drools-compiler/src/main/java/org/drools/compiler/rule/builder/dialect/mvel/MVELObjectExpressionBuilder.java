@@ -5,7 +5,7 @@ import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.compiler.rule.builder.RuleBuildContext;

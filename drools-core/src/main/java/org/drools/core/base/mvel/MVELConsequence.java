@@ -25,7 +25,7 @@ import java.io.Serializable;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Package;
 import org.drools.core.spi.Consequence;

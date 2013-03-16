@@ -5,14 +5,14 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.reteoo.*;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
-import org.drools.reteoo.EvalConditionNode.EvalMemory;
-import org.drools.reteoo.FromNode.FromMemory;
-import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
+import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
+import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
+import org.drools.core.reteoo.FromNode.FromMemory;
+import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
+import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
+import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 
 public class SegmentUtilities {

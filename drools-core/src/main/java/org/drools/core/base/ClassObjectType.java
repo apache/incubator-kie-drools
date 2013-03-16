@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import java.util.Map;
 
 import org.drools.core.InitialFact;
-import org.drools.reteoo.InitialFactImpl;
+import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
 import org.kie.runtime.rule.Match;

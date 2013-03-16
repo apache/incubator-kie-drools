@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.drools.core.common.NetworkNode;
-import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.ReteooWorkingMemoryInterface;
+import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
 
