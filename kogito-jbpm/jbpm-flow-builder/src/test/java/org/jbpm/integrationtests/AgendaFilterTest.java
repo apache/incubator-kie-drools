@@ -1,7 +1,7 @@
 package org.jbpm.integrationtests;
 
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
-import org.drools.event.DebugProcessEventListener;
+import org.drools.core.event.DebugProcessEventListener;
 import org.drools.rule.Rule;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

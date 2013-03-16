@@ -18,7 +18,7 @@ package org.jbpm.task.admin.listener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.event.DefaultProcessEventListener;
+import org.drools.core.event.DefaultProcessEventListener;
 import org.jbpm.task.Status;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;

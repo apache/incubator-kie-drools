@@ -232,10 +232,10 @@ public class MVELSingleSessionManager extends AbstractSessionManager {
                     } else if (listener instanceof WorkingMemoryEventListener) {
                         ksession.addEventListener((WorkingMemoryEventListener) listener);
                         
-                    } else if (listener instanceof org.drools.event.AgendaEventListener) {
+                    } else if (listener instanceof org.drools.core.event.AgendaEventListener) {
                         ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
                                 .getCommandService().getContext()).getStatefulKnowledgesession() )
-                                .session.addEventListener((org.drools.event.AgendaEventListener)listener);
+                                .session.addEventListener((org.drools.core.event.AgendaEventListener)listener);
                     }
                 } catch (Exception e) {
                     logger.error("Addition of event listener " + eventListenerDef + " failed due to " + e.getMessage(), e);

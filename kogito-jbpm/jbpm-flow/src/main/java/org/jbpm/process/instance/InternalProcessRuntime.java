@@ -1,6 +1,6 @@
 package org.jbpm.process.instance;
 
-import org.drools.event.ProcessEventSupport;
+import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.process.instance.event.SignalManager;
 import org.jbpm.process.instance.timer.TimerManager;
 

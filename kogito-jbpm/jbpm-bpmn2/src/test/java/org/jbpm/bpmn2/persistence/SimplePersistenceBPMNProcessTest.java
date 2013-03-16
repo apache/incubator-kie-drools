@@ -9,7 +9,7 @@ import javax.persistence.Persistence;
 import org.drools.WorkingMemory;
 import org.drools.core.command.impl.*;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.event.*;
+import org.drools.core.event.*;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.jbpm.bpmn2.*;
@@ -337,7 +337,7 @@ public class SimplePersistenceBPMNProcessTest extends JbpmBpmn2TestCase {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         
-        final org.drools.event.AgendaEventListener agendaEventListener = new org.drools.event.AgendaEventListener() {
+        final org.drools.core.event.AgendaEventListener agendaEventListener = new org.drools.core.event.AgendaEventListener() {
             public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory){
                 ksession.fireAllRules();
             }
