@@ -3,9 +3,9 @@ package org.drools.compiler.command;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.impl.DefaultWorkItemManager;
-import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.core.process.instance.WorkItem;
+import org.drools.core.process.instance.impl.DefaultWorkItemManager;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.junit.Test;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;

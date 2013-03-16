@@ -19,8 +19,8 @@ package org.drools.core.command.runtime.process;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.core.process.instance.WorkItem;
+import org.drools.core.process.instance.WorkItemManager;
 import org.kie.command.Context;
 import org.kie.runtime.KieSession;
 

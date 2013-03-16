@@ -43,8 +43,8 @@ rule "Email alerts"
     when
         Email( $emailAddress : emailAddress, $message : message ) 
     then
-        org.drools.process.instance.WorkItemManager wiManager = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();
-        org.drools.process.instance.impl.WorkItemImpl wiEmail = new org.drools.process.instance.impl.WorkItemImpl();
+        org.drools.core.process.instance.WorkItemManager wiManager = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();
+        org.drools.core.process.instance.impl.WorkItemImpl wiEmail = new org.drools.core.process.instance.impl.WorkItemImpl();
         wiEmail.setName( "EmailWorkItemHandler" );
         wiEmail.getParameters().put( "emailAddress", $emailAddress );
         wiEmail.getParameters().put( "message", $message );

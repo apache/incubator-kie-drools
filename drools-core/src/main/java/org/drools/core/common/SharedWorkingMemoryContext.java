@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.WorkingMemoryEventSupport;
-import org.drools.process.instance.WorkItemManager;
+import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 

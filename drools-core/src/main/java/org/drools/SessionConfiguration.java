@@ -19,7 +19,7 @@ package org.drools;
 import org.drools.core.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.process.instance.WorkItemManagerFactory;
+import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.time.TimerService;
 import org.drools.time.impl.TimerJobFactoryManager;
 import org.kie.KnowledgeBase;
@@ -360,7 +360,7 @@ public class SessionConfiguration
     @SuppressWarnings("unchecked")
     private void initWorkItemManagerFactory() {
         String className = this.chainedProperties.getProperty( "drools.workItemManagerFactory",
-                                                               "org.drools.process.instance.impl.DefaultWorkItemManagerFactory" );
+                                                               "org.drools.core.process.instance.impl.DefaultWorkItemManagerFactory" );
         Class<WorkItemManagerFactory> clazz = null;
         try {
             clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( className );
