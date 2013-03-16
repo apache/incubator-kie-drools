@@ -24,10 +24,10 @@ import static junit.framework.Assert.fail;
 import java.util.Date;
 
 import org.drools.core.common.AbstractRuleBase;
-import org.drools.factmodel.traits.Thing;
-import org.drools.factmodel.traits.TraitFactory;
-import org.drools.factmodel.traits.TraitProxy;
-import org.drools.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

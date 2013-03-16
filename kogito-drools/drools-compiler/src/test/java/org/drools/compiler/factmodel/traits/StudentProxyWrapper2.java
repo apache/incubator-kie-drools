@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.factmodel.traits.MapWrapper;
-import org.drools.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.MapWrapper;
+import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 

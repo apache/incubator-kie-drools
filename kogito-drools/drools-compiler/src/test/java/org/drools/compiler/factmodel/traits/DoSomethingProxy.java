@@ -16,7 +16,7 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitProxy;
 
 import java.util.Map;
 

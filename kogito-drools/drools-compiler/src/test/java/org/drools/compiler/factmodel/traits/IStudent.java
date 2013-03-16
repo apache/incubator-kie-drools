@@ -16,9 +16,9 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.factmodel.traits.Thing;
-import org.drools.factmodel.traits.Trait;
-import org.drools.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Trait;
+import org.drools.core.factmodel.traits.TraitableBean;
 
 @Trait
 public interface IStudent<K extends TraitableBean> extends IPerson<K>,Thing<K> {

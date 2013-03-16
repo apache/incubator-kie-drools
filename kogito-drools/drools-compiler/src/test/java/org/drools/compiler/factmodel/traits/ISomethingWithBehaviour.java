@@ -16,7 +16,7 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.factmodel.traits.Trait;
+import org.drools.core.factmodel.traits.Trait;
 
 @Trait( impl = SomethingImpl.class )
 public interface ISomethingWithBehaviour<K> extends IDoSomething<K> {

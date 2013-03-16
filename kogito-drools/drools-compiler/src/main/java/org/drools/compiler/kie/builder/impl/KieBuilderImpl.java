@@ -10,7 +10,7 @@ import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.StringUtils;
-import org.drools.factmodel.ClassDefinition;
+import org.drools.core.factmodel.ClassDefinition;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.JavaDialectRuntimeData;
